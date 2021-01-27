@@ -2,10 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { StyleSheet } from 'react-native';
 import _ from 'lodash';
 import MainLayout from '@components/MainLayout';
-import { Text, TouchableOpacity } from '@components/core';
+import { Text, TouchableOpacity, RoundCornerButton } from '@components/core';
 import { THEME } from '@src/styles';
 import AsyncStorage from '@react-native-community/async-storage';
 import Row from '@components/Row';
+import clipboard from '@services/clipboard';
+import Storage from '@services/storage';
 
 const styles = StyleSheet.create({
   item: {
@@ -25,6 +27,7 @@ const ManageStorage = () => {
       newItems.push({
         key,
         data: data?.length,
+        rawData: data,
       });
     }
 
@@ -42,14 +45,28 @@ const ManageStorage = () => {
     loadItems();
   }, []);
 
+  const handleSpamData = async () => {
+    const randomKey = `SPAM-${Math.floor(Math.random() * 1e7)}`;
+    const randomData = new Array(5e6).fill('1').join('');
+
+    await Storage.setItem(randomKey, randomData);
+    await loadItems();
+  };
+
   return (
     <MainLayout header="Manage storage" scrollable>
+      <RoundCornerButton title="Spam data" onPress={handleSpamData} />
       {items.map(item => (
-        <Row spaceBetween center style={styles.item}>
-          <Text>{item.key} ({item.data})</Text>
-          <TouchableOpacity onPress={() => handleRemove(item.key)}>
-            <Text>Remove</Text>
-          </TouchableOpacity>
+        <Row spaceBetween center style={styles.item} key={item.key}>
+          <Text style={{ width: 200 }}>{item.key} ({item.data})</Text>
+          <Row>
+            <TouchableOpacity onPress={() => handleRemove(item.key)} style={{ marginRight: 20 }}>
+              <Text>Remove</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => clipboard.set(JSON.stringify(item.rawData), { copiedMessage: `${item.key} copied.` })}>
+              <Text>Copy</Text>
+            </TouchableOpacity>
+          </Row>
         </Row>
       ))}
     </MainLayout>
