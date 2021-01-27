@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     fontSize: 14,
     color: COLORS.orange,
-  }
+  },
 });
 
 const VerifyPassphrase = () => {
