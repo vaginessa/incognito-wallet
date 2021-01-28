@@ -220,6 +220,8 @@ export default class Account {
       paymentInfos,
       tokenFee,
       memo,
+      null,
+      txHandler,
     );
   }
 
