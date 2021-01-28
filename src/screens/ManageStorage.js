@@ -46,10 +46,18 @@ const ManageStorage = () => {
   }, []);
 
   const handleSpamData = async () => {
-    const randomKey = `SPAM-${Math.floor(Math.random() * 1e7)}`;
-    const randomData = new Array(5e6).fill('1').join('');
+    const randomKey = 'SPAM';
+    const randomData = new Array(5e5).fill('1').join('');
 
-    await Storage.setItem(randomKey, randomData);
+    let spamData = await Storage.getItem(randomKey);
+
+    if (!spamData) {
+      spamData = '';
+    }
+
+    spamData += randomData;
+
+    await Storage.setItem(randomKey, spamData);
     await loadItems();
   };
 
