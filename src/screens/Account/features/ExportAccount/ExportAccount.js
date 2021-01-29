@@ -11,7 +11,7 @@ import { ScrollView } from '@src/components/core';
 import withExportAccount from './ExportAccount.enhance';
 import styleSheet from './ExportAccount.styled';
 
-const ExportItem = ({ label, data, onPress, onPressQRCode }) => (
+const ExportItem = ({ label, data, onPress, onPressQRCode, itemShowFullAddress, itemPressAddress }) => (
   <View onPress={onPress} style={styleSheet.itemContainer}>
     <View style={styleSheet.extra}>
       <Text style={styleSheet.label}>{label}</Text>
@@ -24,13 +24,24 @@ const ExportItem = ({ label, data, onPress, onPressQRCode }) => (
         <BtnCopy onPress={onPress} />
       </View>
     </View>
-    <Text numberOfLines={1} ellipsizeMode="middle" style={styleSheet.itemData}>
-      {data}
-    </Text>
+    {
+      itemShowFullAddress ? (
+        <ScrollView horizontal>
+          <Text onPress={itemPressAddress} style={styleSheet.itemDataShowFull}>
+            {data}
+          </Text>
+        </ScrollView>
+      )
+        : (
+          <Text onPress={itemPressAddress} numberOfLines={1} ellipsizeMode="middle" style={styleSheet.itemData}>
+            {data}
+          </Text>
+        )
+    }
   </View>
 );
 
-const ExportAccount = ({ account, token, title }) => {
+const ExportAccount = ({ account, token, title, onPressAddress, isShowFullAddress }) => {
   const navigation = useNavigation();
   const parseShard = (bytes) => {
     const arr = bytes.split(',');
@@ -40,7 +51,9 @@ const ExportAccount = ({ account, token, title }) => {
   const renderItem = (label, value) =>
     value ? (
       <ExportItem
+        itemShowFullAddress={isShowFullAddress}
         label={label}
+        itemPressAddress={onPressAddress}
         data={value}
         onPressQRCode={() =>
           navigation.navigate(routeNames.ExportAccountModal, {
@@ -87,6 +100,8 @@ ExportAccount.propTypes = {
   account: PropTypes.object.isRequired,
   token: PropTypes.string,
   title: PropTypes.string.isRequired,
+  onPressAddress: PropTypes.func.isRequired,
+  isShowFullAddress: PropTypes.bool
 };
 
 ExportItem.propTypes = {
@@ -94,6 +109,8 @@ ExportItem.propTypes = {
   data: PropTypes.string.isRequired,
   onPress: PropTypes.func.isRequired,
   onPressQRCode: PropTypes.func.isRequired,
+  itemShowFullAddress: PropTypes.bool,
+  itemPressAddress: PropTypes.func.isRequired
 };
 
 export default withExportAccount(ExportAccount);
