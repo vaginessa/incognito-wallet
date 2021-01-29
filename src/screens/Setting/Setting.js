@@ -7,7 +7,6 @@ import { useSelector } from 'react-redux';
 import CurrencySection from '@screens/Setting/features/CurrencySection/CurrencySection';
 import MainLayout from '@components/MainLayout/index';
 import RemoveStorage from '@screens/Setting/features/RemoveStorage/RemoveStorage';
-import { isAndroid } from '@utils/platform';
 import PINSection from './features/PINSection';
 import SeparatorSection from './features/SeparatorSection';
 import DevSection from './features/DevSection';
@@ -47,7 +46,7 @@ const Setting = () => {
         <CurrencySection />
         <AddressBookSection />
         <UTXOSection />
-        {isAndroid() && <RemoveStorage />}
+        {<RemoveStorage />}
         {global.isDebug() && <DevSection />}
       </View>
       <Text style={settingStyle.textVersion}>
