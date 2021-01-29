@@ -34,12 +34,22 @@ const enhance = WrappedComp => props => {
         {
           UTXOCacheds.push(key);
         }
-        if (key === 'Wallet' || key.includes('master-masterless')) {
+        if (key === 'Wallet' ||
+          key === '$testnet-master-masterless' ||
+          key === '$mainnet-master-masterless') {
           walletCacheds.push(key);
         }
       }
     }
     return { UTXOCacheds, walletCacheds };
+  };
+
+  const restartApp = () => {
+
+    setTimeout(() => {
+      setRemoving(false);
+      RNRestart.Restart();
+    }, 1000);
   };
 
   const handleRemoveStorage = async () => {
@@ -72,9 +82,7 @@ const enhance = WrappedComp => props => {
     } catch (e) {
       dispatch(actionLogEvent({ desc: 'ERROR REMOVE DATA: ' + JSON.stringify(e) }));
     } finally {
-      setRemoving(false);
-      /** Restart app */
-      RNRestart.Restart();
+      restartApp();
     }
   };
 
