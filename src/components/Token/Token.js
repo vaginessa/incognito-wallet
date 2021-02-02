@@ -5,7 +5,7 @@ import withToken from '@src/components/Token/Token.enhance';
 import { TokenVerifiedIcon } from '@src/components/Icons';
 import round from 'lodash/round';
 import Swipeout from 'react-native-swipeout';
-import { BtnDelete } from '@src/components/Button';
+import { BtnDelete, BtnInfo } from '@src/components/Button';
 import replace from 'lodash/replace';
 import trim from 'lodash/trim';
 import { TouchableOpacity, ActivityIndicator } from '@src/components/core';
@@ -55,11 +55,12 @@ NormalText.defaultProps = {
 };
 
 export const Name = (props) => {
-  const { name, isVerified } = props;
+  const { name, isVerified, tokenId, shouldShowFollowed } = props;
   return (
     <View style={[styled.name, props?.styledContainerName]}>
       <NormalText text={name} style={[styled.boldText, props?.styledName]} />
       {isVerified && <TokenVerifiedIcon />}
+      {shouldShowFollowed && <BtnInfo tokenId={tokenId} />}
     </View>
   );
 };
@@ -67,11 +68,15 @@ export const Name = (props) => {
 Name.propTypes = {
   name: PropTypes.string,
   isVerified: PropTypes.bool,
+  tokenId: PropTypes.string,
+  shouldShowFollowed: PropTypes.bool,
 };
 
 Name.defaultProps = {
   name: 'Sample Name',
   isVerified: false,
+  tokenId: null,
+  shouldShowFollowed: false,
 };
 
 export const AmountBasePRV = (props) => {
