@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Text, View } from 'react-native';
+import { Text, View, TouchableOpacity } from 'react-native';
 import clipboard from '@src/services/clipboard';
 import { BtnQRCode, BtnCopy } from '@src/components/Button';
 import Header from '@src/components/Header';
@@ -26,10 +26,12 @@ const ExportItem = ({ label, data, onPress, onPressQRCode, itemShowFullAddress, 
     </View>
     {
       itemShowFullAddress ? (
-        <ScrollView horizontal>
-          <Text onPress={itemPressAddress} style={styleSheet.itemDataShowFull}>
-            {data}
-          </Text>
+        <ScrollView horizontal nestedScrollEnabled={false}>
+          <TouchableOpacity activeOpacity={1} onPress={itemPressAddress}>
+            <Text style={styleSheet.itemDataShowFull}>
+              {data}
+            </Text>
+          </TouchableOpacity>
         </ScrollView>
       )
         : (
