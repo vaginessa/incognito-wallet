@@ -26,7 +26,7 @@ const BackupKeys = (props) => {
           <Text style={style.title}>{name}</Text>
           <IconCopy />
         </View>
-        <Text numberOfLines={1} ellipsizeMode="middle" style={style.desc}>
+        <Text style={style.desc}>
           {key}
         </Text>
       </CopiableText>
