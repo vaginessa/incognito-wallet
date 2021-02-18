@@ -25,6 +25,7 @@ export default StyleSheet.create({
     fontSize: FONT.SIZE.superMedium,
     lineHeight: FONT.SIZE.superMedium + 4,
     color: COLORS.black,
+    flex: 1
   },
   desc: {
     fontFamily: FONT.NAME.medium,
@@ -42,11 +43,28 @@ export default StyleSheet.create({
     marginTop: 10,
   },
   copyAllButton: {
-    marginVertical: 50,
+    borderRadius: 15,
+    flex: 1
   },
   copyNext: {
     paddingVertical: 15,
     height: 90,
-    borderRadius: 11,
+    borderRadius: 10,
   },
+  qrCode: {
+    marginRight: 15,
+  },
+  bottomGroup: {
+    marginVertical: 50,
+    flexDirection: 'row'
+  },
+  btnQRCode: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: 50,
+    width: 50,
+    backgroundColor: '#ECECEC',
+    marginRight: 5,
+    borderRadius: 12,
+  }
 });

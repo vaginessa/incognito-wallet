@@ -117,6 +117,7 @@ const enhance = (WrappedComponent) => (props) => {
         onCopyAll={debounce(handleCopyAll, 300)}
         backupData={backupData}
         getNameKey={getNameKey}
+        backupDataStr={backupDataStr}
       />
     );
   }

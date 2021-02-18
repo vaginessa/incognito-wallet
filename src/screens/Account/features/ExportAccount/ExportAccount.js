@@ -69,7 +69,7 @@ const ExportAccount = ({ account, token, title }) => {
             ? renderItem('BLS key', account?.BLSPublicKey)
             : null}
           {__DEV__ || global.isDEV ? renderItem('Device token', token) : null}
-          {renderItem('ID', account?.ID)}
+          {renderItem('ID', account?.ID.toString())}
           {__DEV__ || global.isDEV
             ? renderItem('Shard', parseShard(account?.PublicKeyBytes))
             : null}
