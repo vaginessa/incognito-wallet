@@ -9,10 +9,9 @@ const enhance = (WrappedComponent) => (props) => {
   const account = useNavigationParam('account');
   const title = account?.name ? `${account?.name}'s keys` : 'Your keys';
   const [state, setState] = React.useState({
-    token: null,
-    isShowFullAddress: false
+    token: null
   });
-  const { token, isShowFullAddress } = state;
+  const { token } = state;
   const loadDeviceToken = async () => {
     const token = await getToken();
     setState({ ...state, token });
@@ -21,17 +20,10 @@ const enhance = (WrappedComponent) => (props) => {
     loadDeviceToken();
   }, []);
 
-  const onPressAddress = () => {
-    setState({
-      ...state,
-      isShowFullAddress: !isShowFullAddress
-    });
-  };
-
   if (!account) {
     return <LoadingContainer />;
   }
-  return <WrappedComponent {...{ ...props, account, token, title, onPressAddress, isShowFullAddress }} />;
+  return <WrappedComponent {...{ ...props, account, token, title }} />;
 };
 
 export default compose(

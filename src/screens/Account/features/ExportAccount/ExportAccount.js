@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Text, View, TouchableOpacity } from 'react-native';
+import { Text, View } from 'react-native';
 import clipboard from '@src/services/clipboard';
 import { BtnQRCode, BtnCopy } from '@src/components/Button';
 import Header from '@src/components/Header';
@@ -11,7 +11,7 @@ import { ScrollView } from '@src/components/core';
 import withExportAccount from './ExportAccount.enhance';
 import styleSheet from './ExportAccount.styled';
 
-const ExportItem = ({ label, data, onPress, onPressQRCode, itemShowFullAddress, itemPressAddress }) => (
+const ExportItem = ({ label, data, onPress, onPressQRCode }) => (
   <View onPress={onPress} style={styleSheet.itemContainer}>
     <View style={styleSheet.extra}>
       <Text style={styleSheet.label}>{label}</Text>
@@ -24,26 +24,13 @@ const ExportItem = ({ label, data, onPress, onPressQRCode, itemShowFullAddress, 
         <BtnCopy onPress={onPress} />
       </View>
     </View>
-    {
-      itemShowFullAddress ? (
-        <ScrollView horizontal nestedScrollEnabled={false}>
-          <TouchableOpacity activeOpacity={1} onPress={itemPressAddress}>
-            <Text style={styleSheet.itemDataShowFull}>
-              {data}
-            </Text>
-          </TouchableOpacity>
-        </ScrollView>
-      )
-        : (
-          <Text onPress={itemPressAddress} numberOfLines={1} ellipsizeMode="middle" style={styleSheet.itemData}>
-            {data}
-          </Text>
-        )
-    }
+    <Text style={styleSheet.itemData}>
+      {data}
+    </Text>
   </View>
 );
 
-const ExportAccount = ({ account, token, title, onPressAddress, isShowFullAddress }) => {
+const ExportAccount = ({ account, token, title }) => {
   const navigation = useNavigation();
   const parseShard = (bytes) => {
     const arr = bytes.split(',');
@@ -53,9 +40,7 @@ const ExportAccount = ({ account, token, title, onPressAddress, isShowFullAddres
   const renderItem = (label, value) =>
     value ? (
       <ExportItem
-        itemShowFullAddress={isShowFullAddress}
         label={label}
-        itemPressAddress={onPressAddress}
         data={value}
         onPressQRCode={() =>
           navigation.navigate(routeNames.ExportAccountModal, {
@@ -84,7 +69,7 @@ const ExportAccount = ({ account, token, title, onPressAddress, isShowFullAddres
             ? renderItem('BLS key', account?.BLSPublicKey)
             : null}
           {__DEV__ || global.isDEV ? renderItem('Device token', token) : null}
-          {renderItem('ID', account?.ID)}
+          {renderItem('ID', account?.ID.toString())}
           {__DEV__ || global.isDEV
             ? renderItem('Shard', parseShard(account?.PublicKeyBytes))
             : null}
@@ -102,8 +87,6 @@ ExportAccount.propTypes = {
   account: PropTypes.object.isRequired,
   token: PropTypes.string,
   title: PropTypes.string.isRequired,
-  onPressAddress: PropTypes.func.isRequired,
-  isShowFullAddress: PropTypes.bool
 };
 
 ExportItem.propTypes = {
@@ -111,8 +94,6 @@ ExportItem.propTypes = {
   data: PropTypes.string.isRequired,
   onPress: PropTypes.func.isRequired,
   onPressQRCode: PropTypes.func.isRequired,
-  itemShowFullAddress: PropTypes.bool,
-  itemPressAddress: PropTypes.func.isRequired
 };
 
 export default withExportAccount(ExportAccount);
