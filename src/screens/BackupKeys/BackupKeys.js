@@ -16,7 +16,7 @@ import style from './BackupKeys.styled';
 import withBackupKeys from './BackupKeys.enhance';
 
 const BackupKeys = (props) => {
-  const { onSaveAs, onCopyAll, backupData, getNameKey, onNext, onBack, backupDataStr} = props;
+  const { onSaveAs, onCopyAll, noMasterless, masterless, getNameKey, onNext, onBack, backupDataStr} = props;
   const navigation = useNavigation();
   
   const onNavigateToQrPage = (label, value) => {
@@ -65,8 +65,16 @@ const BackupKeys = (props) => {
       <Header title="Back up private keys" onGoBack={onBack} />
       <View style={style.wrapper}>
         <ScrollView>
+          <View>
+            <Text style={style.titleGroup}>Master keys</Text>
+            {noMasterless.length > 0 && (noMasterless?.map((pair) => {
+              const [name, key] = getNameKey(pair);
+              return renderAccountItem(name, key);
+            }))}
+          </View>
           <View style={style.topGroup}>
-            {backupData?.map((pair) => {
+            <Text style={style.titleGroup}>Masterless</Text>
+            {masterless?.map((pair) => {
               const [name, key] = getNameKey(pair);
               return renderAccountItem(name, key);
             })}
@@ -100,14 +108,16 @@ const BackupKeys = (props) => {
 
 BackupKeys.defaultProps = {
   backupDataStr: '',
-  backupData: [],
+  noMasterless: [],
+  masterless: [],
   onNext: undefined,
   onBack: undefined,
 };
 
 BackupKeys.propTypes = {
   backupDataStr: PropTypes.string,
-  backupData: PropTypes.arrayOf(PropTypes.object),
+  masterless: PropTypes.arrayOf(PropTypes.object),
+  noMasterless: PropTypes.arrayOf(PropTypes.object),
   onSaveAs: PropTypes.func.isRequired,
   onCopyAll: PropTypes.func.isRequired,
   getNameKey: PropTypes.func.isRequired,
