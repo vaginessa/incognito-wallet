@@ -32,24 +32,44 @@ const withPoolData = (WrappedComp) => (props) => {
   };
 
   const getUserData = async (account, coins) => {
-    const userData = await getUserPoolData(account.PaymentAddress, coins);
+    let userData = await getUserPoolData(account.PaymentAddress, coins);
+    if (userData && userData.length > 0) {
+      userData = userData.sort((a, b) =>
+        a.balance < b.balance ? 1 : b.balance < a.balance ? -1 : 0,
+      );
+    }
     setUserData(userData);
 
-    if (userData && userData.some(coin => coin.balance ||
-      coin.rewardBalance ||
-      coin.pendingBalance ||
-      coin.unstakePendingBalance ||
-      coin.WithdrawPendingBalance)) {
+    if (
+      userData &&
+      userData.some(
+        (coin) =>
+          coin.balance ||
+          coin.rewardBalance ||
+          coin.pendingBalance ||
+          coin.unstakePendingBalance ||
+          coin.WithdrawPendingBalance,
+      )
+    ) {
       setWithdrawable(true);
     } else {
       setWithdrawable(false);
     }
 
-    const totalReducer = (accumulator, item) => accumulator + item.rewardBalance;
+    const totalReducer = (accumulator, item) =>
+      accumulator + item.rewardBalance;
     const totalRewards = userData.reduce(totalReducer, 0);
 
-    const displayClipTotalRewards = formatUtils.amountFull(totalRewards, COINS.PRV.pDecimals, true);
-    const displayFullTotalRewards = formatUtils.amountFull(totalRewards, COINS.PRV.pDecimals, false);
+    const displayClipTotalRewards = formatUtils.amountFull(
+      totalRewards,
+      COINS.PRV.pDecimals,
+      true,
+    );
+    const displayFullTotalRewards = formatUtils.amountFull(
+      totalRewards,
+      COINS.PRV.pDecimals,
+      false,
+    );
 
     setTotalRewards(totalRewards);
     setDisplayClipTotalRewards(displayClipTotalRewards.toString());
