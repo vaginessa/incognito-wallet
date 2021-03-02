@@ -18,11 +18,19 @@ import { actionToggleGuide } from '@src/screens/Shield/Shield.actions';
 import Tooltip from '@src/components/Tooltip/Tooltip';
 import { COLORS } from '@src/styles';
 import isNaN from 'lodash/isNaN';
-import { BottomBar, ScrollView, TouchableOpacity } from '@src/components/core';
+import {
+  BottomBar,
+  ScrollView,
+  TouchableOpacity,
+  Image,
+} from '@src/components/core';
 import useFeatureConfig from '@src/shared/hooks/featureConfig';
 import { useStreamLine } from '@src/screens/Streamline';
 import { PRV } from '@services/wallet/tokenService';
 import SelectAccountButton from '@components/SelectAccountButton';
+import PropTypes from 'prop-types';
+import srcHideBlanceIcon from '@src/assets/images/icons/ic_hide_blance.png';
+import srcShowBlanceIcon from '@src/assets/images/icons/ic_show_blance.png';
 import {
   styled,
   styledHook,
@@ -107,7 +115,8 @@ const Hook = React.memo(() => {
   );
 });
 
-const Balance = React.memo(() => {
+const Balance = React.memo((props) => {
+  const { hideBlance, onPressHideBlance } = props;
   let totalShielded = useSelector(totalShieldedTokensSelector);
   const isGettingTotalBalance =
     useSelector(isGettingTotalBalanceSelector).length > 0;
@@ -127,13 +136,34 @@ const Balance = React.memo(() => {
         stylePSymbol={styledBalance.pSymbol}
         containerStyle={styledBalance.balanceContainer}
         size="large"
+        hideBlance={hideBlance}
+        fromBlance
       />
-      <Text style={styledBalance.title}>Shielded Balance</Text>
+      <View style={styled.contentShieldBlance}>
+        <Text style={styledBalance.title}>Shielded Balance</Text>
+        <TouchableOpacity
+          style={styled.btnHideBlance}
+          onPress={onPressHideBlance}
+        >
+          <Image source={hideBlance ? srcHideBlanceIcon : srcShowBlanceIcon} />
+        </TouchableOpacity>
+      </View>
     </View>
   );
 });
 
-const FollowToken = React.memo(() => {
+Balance.defaultProps = {
+  hideBlance: false,
+  onPressHideBlance: null,
+};
+
+Balance.propTypes = {
+  hideBlance: PropTypes.bool,
+  onPressHideBlance: PropTypes.func,
+};
+
+const FollowToken = React.memo((props) => {
+  const { hideBlance } = props;
   const followed = useSelector(tokenSeleclor.tokensFollowedSelector);
   const { walletProps } = React.useContext(WalletContext);
   const {
@@ -147,12 +177,12 @@ const FollowToken = React.memo(() => {
     <View style={styledFollow.container}>
       <ScrollView
         showsVerticalScrollIndicator={false}
-        refreshControl={(
+        refreshControl={
           <RefreshControl
             refreshing={isReloading}
             onRefresh={() => fetchData(true)}
           />
-        )}
+        }
         nestedScrollEnabled
       >
         <Token
@@ -162,6 +192,7 @@ const FollowToken = React.memo(() => {
             followed.length === 0 && styledToken.lastChild,
           ]}
           onPress={() => handleSelectToken(CONSTANT_COMMONS.PRV_TOKEN_ID)}
+          hideBlance={hideBlance}
         />
         {followed.map((token, index) => (
           <Token
@@ -176,6 +207,7 @@ const FollowToken = React.memo(() => {
             swipable
             removable
             showGettingBalance={token?.loading}
+            hideBlance={hideBlance}
           />
         ))}
         <AddToken />
@@ -183,6 +215,14 @@ const FollowToken = React.memo(() => {
     </View>
   );
 });
+
+FollowToken.defaultProps = {
+  hideBlance: false,
+};
+
+FollowToken.propTypes = {
+  hideBlance: PropTypes.bool,
+};
 
 const AddToken = React.memo(() => {
   const navigation = useNavigation();
@@ -210,11 +250,17 @@ const StreamLine = React.memo(() => {
 });
 
 const Extra = React.memo(() => {
+  const [hideBlance, setHideBlance] = React.useState(true);
+
+  const onPressHideBlance = () => {
+    setHideBlance(!hideBlance);
+  };
+
   return (
     <View style={extraStyled.container}>
-      <Balance />
+      <Balance hideBlance={hideBlance} onPressHideBlance={onPressHideBlance} />
       <GroupButton />
-      <FollowToken />
+      <FollowToken hideBlance={hideBlance} />
       <StreamLine />
     </View>
   );
