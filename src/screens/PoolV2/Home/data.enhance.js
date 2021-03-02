@@ -6,8 +6,11 @@ import { getPoolConfig, getUserPoolData } from '@services/api/pool';
 import COINS from '@src/constants/coin';
 import formatUtils from '@utils/format';
 import { useFocusEffect } from 'react-navigation-hooks';
+import { useSelector } from 'react-redux';
+import { PRV_ID } from '@src/screens/DexV2/constants';
+import { selectedPrivacySeleclor } from '@src/redux/selectors';
 
-const withPoolData = WrappedComp => (props) => {
+const withPoolData = (WrappedComp) => (props) => {
   const [loading, setLoading] = useState(false);
   const [config, setConfig] = useState(null);
   const [userData, setUserData] = useState([]);
@@ -16,6 +19,9 @@ const withPoolData = WrappedComp => (props) => {
   const [displayFullTotalRewards, setDisplayFullTotalRewards] = useState('');
   const [displayClipTotalRewards, setDisplayClipTotalRewards] = useState('');
 
+  const nativeToken = useSelector(
+    selectedPrivacySeleclor.getPrivacyDataByTokenID,
+  )(PRV_ID);
   const { account } = props;
 
   const getConfig = async () => {
@@ -68,12 +74,14 @@ const withPoolData = WrappedComp => (props) => {
 
   const loadDataDebounce = useCallback(_.debounce(loadData, 200), []);
 
-  useFocusEffect(useCallback(() => {
-    setUserData(null);
-    setConfig(null);
-    loadDataDebounce.cancel();
-    loadDataDebounce(account);
-  }, [account.PaymentAddress]));
+  useFocusEffect(
+    useCallback(() => {
+      setUserData(null);
+      setConfig(null);
+      loadDataDebounce.cancel();
+      loadDataDebounce(account);
+    }, [account.PaymentAddress]),
+  );
 
   return (
     <WrappedComp
@@ -87,6 +95,7 @@ const withPoolData = WrappedComp => (props) => {
         displayFullTotalRewards,
         displayClipTotalRewards,
         onLoad: loadData,
+        nativeToken,
       }}
     />
   );
