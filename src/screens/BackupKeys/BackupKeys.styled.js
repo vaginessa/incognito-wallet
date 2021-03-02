@@ -11,7 +11,7 @@ export default StyleSheet.create({
   },
   accountItemContainer: {
     marginBottom: 30,
-    width: '100%',
+    marginHorizontal: 10
   },
   accountItemHeader: {
     width: '100%',
@@ -32,6 +32,16 @@ export default StyleSheet.create({
     fontSize: FONT.SIZE.medium,
     lineHeight: FONT.SIZE.medium + 4,
     color: COLORS.colorGreyBold,
+    alignSelf: 'flex-start'
+  },
+  titleGroup: {
+    fontFamily: FONT.NAME.bold,
+    fontSize: FONT.SIZE.large,
+    lineHeight: FONT.SIZE.large + 4,
+    color: COLORS.black,
+    flex: 1,
+    marginTop: 5,
+    marginBottom: 25,
   },
   topGroup: {
     flex: 1,
