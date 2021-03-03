@@ -29,6 +29,8 @@ import { useStreamLine } from '@src/screens/Streamline';
 import { PRV } from '@services/wallet/tokenService';
 import SelectAccountButton from '@components/SelectAccountButton';
 import PropTypes from 'prop-types';
+import { showWalletBlanceSelector } from '@src/screens/Setting/Setting.selector';
+import { actionUpdateShowWalletBlance } from '@src/screens/Setting/Setting.actions';
 import srcHideBlanceIcon from '@src/assets/images/icons/ic_hide_blance.png';
 import srcShowBlanceIcon from '@src/assets/images/icons/ic_show_blance.png';
 import {
@@ -249,17 +251,17 @@ const StreamLine = React.memo(() => {
 });
 
 const Extra = React.memo(() => {
-  const [hideBlance, setHideBlance] = React.useState(false);
-
-  const onPressHideBlance = () => {
-    setHideBlance(!hideBlance);
+  const dispatch = useDispatch();
+  const showWalletBlance = useSelector(showWalletBlanceSelector);
+  const updateShowWalletBlance = () => {
+    dispatch(actionUpdateShowWalletBlance());
   };
 
   return (
     <View style={extraStyled.container}>
-      <Balance hideBlance={hideBlance} onPressHideBlance={onPressHideBlance} />
+      <Balance hideBlance={showWalletBlance} onPressHideBlance={updateShowWalletBlance} />
       <GroupButton />
-      <FollowToken hideBlance={hideBlance} />
+      <FollowToken hideBlance={showWalletBlance} />
       <StreamLine />
     </View>
   );
