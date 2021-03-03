@@ -28,9 +28,7 @@ const withPoolData = (WrappedComp) => (props) => {
   const getUserData = async (account, coins) => {
     let userData = await getUserPoolData(account.PaymentAddress, coins);
     if (userData && userData.length > 0) {
-      userData = userData.sort((a, b) =>
-        a.displayBalance < b.displayBalance ? 1 : b.displayBalance < a.displayBalance ? -1 : 0,
-      );
+      userData = _.orderBy(userData, ['displayBalance'], ['desc', 'asc']);
     }
     setUserData(userData);
 
