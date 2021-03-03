@@ -250,7 +250,7 @@ const StreamLine = React.memo(() => {
 });
 
 const Extra = React.memo(() => {
-  const [hideBlance, setHideBlance] = React.useState(true);
+  const [hideBlance, setHideBlance] = React.useState(false);
 
   const onPressHideBlance = () => {
     setHideBlance(!hideBlance);
