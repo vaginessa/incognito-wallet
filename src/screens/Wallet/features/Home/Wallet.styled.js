@@ -42,11 +42,18 @@ export const styled = StyleSheet.create({
   },
   contentShieldBlance: {
     flexDirection: 'row', 
-    alignItems: 'center'
+    alignItems: 'center',
+    marginTop: 10,
   },
   btnHideBlance: {
-    marginTop: 11, 
-    marginLeft: 5
+    position: 'absolute',
+    right: -15,
+    top: -15,
+    width: 50,
+    height: 50,
+  },
+  iconHide:{
+    marginLeft: 5,
   }
 });
 
@@ -90,7 +97,6 @@ export const styledBalance = StyleSheet.create({
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.medium,
     color: COLORS.colorGreyBold,
-    marginTop: 10,
   },
   balance: {
     fontFamily: FONT.NAME.bold,

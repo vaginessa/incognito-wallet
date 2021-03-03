@@ -141,12 +141,11 @@ const Balance = React.memo((props) => {
       />
       <View style={styled.contentShieldBlance}>
         <Text style={styledBalance.title}>Shielded Balance</Text>
+        <Image source={hideBlance ? srcHideBlanceIcon : srcShowBlanceIcon} style={styled.iconHide} />
         <TouchableOpacity
           style={styled.btnHideBlance}
           onPress={onPressHideBlance}
-        >
-          <Image source={hideBlance ? srcHideBlanceIcon : srcShowBlanceIcon} />
-        </TouchableOpacity>
+        />
       </View>
     </View>
   );
@@ -250,7 +249,7 @@ const StreamLine = React.memo(() => {
 });
 
 const Extra = React.memo(() => {
-  const [hideBlance, setHideBlance] = React.useState(true);
+  const [hideBlance, setHideBlance] = React.useState(false);
 
   const onPressHideBlance = () => {
     setHideBlance(!hideBlance);
