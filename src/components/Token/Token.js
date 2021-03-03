@@ -9,20 +9,10 @@ import { BtnDelete, BtnInfo } from '@src/components/Button';
 import replace from 'lodash/replace';
 import trim from 'lodash/trim';
 import { TouchableOpacity, ActivityIndicator } from '@src/components/core';
-import { COLORS } from '@src/styles';
 import { useSelector } from 'react-redux';
-import {
-  currencySelector,
-  decimalDigitsSelector
-} from '@src/screens/Setting';
-import {
-  prefixCurrency,
-  pTokenSelector
-} from '@src/redux/selectors/shared';
-import {
-  formatAmount,
-  formatPrice
-} from '@components/Token/Token.utils';
+import { currencySelector, decimalDigitsSelector } from '@src/screens/Setting';
+import { prefixCurrency, pTokenSelector } from '@src/redux/selectors/shared';
+import { formatAmount, formatPrice } from '@components/Token/Token.utils';
 import { styled } from './Token.styled';
 
 export const NormalText = (props) => {
@@ -30,7 +20,9 @@ export const NormalText = (props) => {
   const { style, stylePSymbol, containerStyle, text, hasPSymbol } = props;
   return (
     <View style={[styled.normalText, containerStyle]}>
-      {hasPSymbol && <Text style={[styled.pSymbol, stylePSymbol]}>{prefix}</Text>}
+      {hasPSymbol && (
+        <Text style={[styled.pSymbol, stylePSymbol]}>{prefix}</Text>
+      )}
       <Text numberOfLines={1} style={[styled.text, style]} ellipsizeMode="tail">
         {trim(text)}
       </Text>
@@ -86,6 +78,7 @@ export const AmountBasePRV = (props) => {
     pricePrv,
     customPSymbolStyle,
     customStyle,
+    hideBlance,
   } = props;
   const decimalDigits = useSelector(decimalDigitsSelector);
 
@@ -95,13 +88,13 @@ export const AmountBasePRV = (props) => {
     pDecimals,
     pDecimals,
     decimalDigits,
-    false
+    false,
   );
 
   return (
     <NormalText
-      hasPSymbol
-      text={`${currentAmount}`}
+      hasPSymbol={hideBlance ? false : true}
+      text={hideBlance ? '•••' : `${currentAmount}`}
       style={[styled.rightText, customStyle]}
       stylePSymbol={[customPSymbolStyle]}
     />
@@ -113,7 +106,7 @@ AmountBasePRV.defaultProps = {
   pricePrv: 0,
   customStyle: null,
   customPSymbolStyle: null,
-  isUSDT: false
+  hideBlance: false,
 };
 
 AmountBasePRV.propTypes = {
@@ -122,7 +115,7 @@ AmountBasePRV.propTypes = {
   customStyle: PropTypes.any,
   customPSymbolStyle: PropTypes.any,
   pDecimals: PropTypes.number.isRequired,
-  isUSDT: PropTypes.bool
+  hideBlance: PropTypes.bool,
 };
 
 export const AmountBaseUSDT = React.memo((props) => {
@@ -132,6 +125,7 @@ export const AmountBaseUSDT = React.memo((props) => {
     priceUsd,
     customPSymbolStyle,
     customStyle,
+    hideBlance,
   } = props;
   const decimalDigits = useSelector(decimalDigitsSelector);
 
@@ -141,13 +135,13 @@ export const AmountBaseUSDT = React.memo((props) => {
     pDecimals,
     pDecimals,
     decimalDigits,
-    false
+    false,
   );
 
   return (
     <NormalText
-      hasPSymbol
-      text={`${currentAmount}`}
+      hasPSymbol={hideBlance ? false : true}
+      text={hideBlance ? '•••' : `${currentAmount}`}
       style={[styled.rightText, customStyle]}
       stylePSymbol={[customPSymbolStyle]}
     />
@@ -204,13 +198,11 @@ const Price = (props) => {
 Price.propTypes = {
   priceUsd: PropTypes.number,
   pricePrv: PropTypes.number,
-  pDecimals: PropTypes.number
 };
 
 Price.defaultProps = {
   priceUsd: 0,
   pricePrv: 0,
-  pDecimals: 0
 };
 
 export const Amount = (props) => {
@@ -226,6 +218,8 @@ export const Amount = (props) => {
     stylePSymbol,
     containerStyle,
     size,
+    hideBlance,
+    fromBlance,
   } = props;
   const decimalDigits = useSelector(decimalDigitsSelector);
   const shouldShowGettingBalance = isGettingBalance || showGettingBalance;
@@ -239,14 +233,20 @@ export const Amount = (props) => {
     pDecimals,
     pDecimals,
     decimalDigits,
-    false
+    false,
   );
 
   return (
     <NormalText
       style={[styled.bottomText, styled.boldText, customStyle]}
-      text={`${amountWithDecimalDigits} ${showSymbol ? symbol : ''}`}
-      hasPSymbol={hasPSymbol}
+      text={
+        hideBlance
+          ? fromBlance
+            ? '•••••••'
+            : `••• ${showSymbol ? symbol : ''}`
+          : `${amountWithDecimalDigits} ${showSymbol ? symbol : ''}`
+      }
+      hasPSymbol={hideBlance ? false : hasPSymbol}
       stylePSymbol={stylePSymbol}
       containerStyle={containerStyle}
     />
@@ -265,6 +265,8 @@ Amount.propTypes = {
   hasPSymbol: PropTypes.bool,
   stylePSymbol: PropTypes.any,
   containerStyle: PropTypes.any,
+  hideBlance: PropTypes.bool,
+  fromBlance: PropTypes.bool,
 };
 
 Amount.defaultProps = {
@@ -279,6 +281,8 @@ Amount.defaultProps = {
   hasPSymbol: false,
   stylePSymbol: null,
   containerStyle: null,
+  hideBlance: false,
+  fromBlance: false,
 };
 
 export const Symbol = (props) => {
@@ -371,22 +375,15 @@ export const Follow = (props) => {
 Follow.propTypes = {
   shouldShowFollowed: PropTypes.bool.isRequired,
   isFollowed: PropTypes.bool.isRequired,
-  tokenId: PropTypes.number.isRequired,
 };
 
 const Token = (props) => {
-  const {
-    handleRemoveToken = null,
-    swipable = false,
-    pricePrv,
-    isPRV
-  } = props;
+  const { handleRemoveToken = null, swipable = false, pricePrv, isPRV } = props;
   const isToggleUSD = useSelector(currencySelector);
   let TokenComponent;
   if (isToggleUSD) {
-    TokenComponent = (<TokenPairUSDT {...props} />);
-  }
-  else {
+    TokenComponent = <TokenPairUSDT {...props} />;
+  } else {
     const pairWithPRV = pricePrv !== 0 && !isPRV;
     TokenComponent = pairWithPRV ? (
       <TokenPairPRV {...props} />
@@ -394,7 +391,6 @@ const Token = (props) => {
       <TokenDefault {...props} />
     );
   }
-
 
   if (swipable === true) {
     return (
