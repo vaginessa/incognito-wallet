@@ -6,6 +6,7 @@ import { getPoolConfig, getUserPoolData } from '@services/api/pool';
 import COINS from '@src/constants/coin';
 import formatUtils from '@utils/format';
 import { useFocusEffect } from 'react-navigation-hooks';
+import convert from '@src/utils/convert';
 
 const withPoolData = (WrappedComp) => (props) => {
   const [loading, setLoading] = useState(false);
@@ -28,7 +29,11 @@ const withPoolData = (WrappedComp) => (props) => {
   const getUserData = async (account, coins) => {
     let userData = await getUserPoolData(account.PaymentAddress, coins);
     if (userData && userData.length > 0) {
-      userData = _.orderBy(userData, ['displayBalance'], ['desc', 'asc']);
+      userData = userData.map(item => ({
+        ...item,
+        decimalBalance: convert.toNumber(item.displayBalance, true),
+      }));
+      userData = _.orderBy(userData, ['decimalBalance'], ['desc', 'asc']);
     }
     setUserData(userData);
 
