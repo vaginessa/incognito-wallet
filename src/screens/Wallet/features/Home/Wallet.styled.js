@@ -40,6 +40,14 @@ export const styled = StyleSheet.create({
   disabled: {
     opacity: 0.5,
   },
+  contentShieldBlance: {
+    flexDirection: 'row', 
+    alignItems: 'center'
+  },
+  btnHideBlance: {
+    marginTop: 11, 
+    marginLeft: 5
+  }
 });
 
 export const styledHook = StyleSheet.create({
