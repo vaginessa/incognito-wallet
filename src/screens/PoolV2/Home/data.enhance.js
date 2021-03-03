@@ -29,7 +29,7 @@ const withPoolData = (WrappedComp) => (props) => {
     let userData = await getUserPoolData(account.PaymentAddress, coins);
     if (userData && userData.length > 0) {
       userData = userData.sort((a, b) =>
-        a.balance < b.balance ? 1 : b.balance < a.balance ? -1 : 0,
+        a.displayBalance < b.displayBalance ? 1 : b.displayBalance < a.displayBalance ? -1 : 0,
       );
     }
     setUserData(userData);
