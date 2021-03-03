@@ -141,12 +141,11 @@ const Balance = React.memo((props) => {
       />
       <View style={styled.contentShieldBlance}>
         <Text style={styledBalance.title}>Shielded Balance</Text>
+        <Image source={hideBlance ? srcHideBlanceIcon : srcShowBlanceIcon} style={styled.iconHide} />
         <TouchableOpacity
           style={styled.btnHideBlance}
           onPress={onPressHideBlance}
-        >
-          <Image source={hideBlance ? srcHideBlanceIcon : srcShowBlanceIcon} />
-        </TouchableOpacity>
+        />
       </View>
     </View>
   );
