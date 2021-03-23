@@ -22,6 +22,7 @@ const MAIN_NET_SERVER = {
   username: '',
   password: '',
   name: 'Mainnet',
+  coinServices: '',
 };
 const TEST_NET_SERVER = {
   id: 'testnet',
@@ -30,6 +31,7 @@ const TEST_NET_SERVER = {
   username: '',
   password: '',
   name: 'Testnet',
+  coinServices: 'http://51.161.119.66:9001',
 };
 const LOCAL_SERVER = {
   id: 'local',
@@ -99,11 +101,15 @@ export default class Server {
       if (result && result.length) {
         for (const s of result) {
           if (s.default) {
-            return s;
+            const id = s?.id;
+            const server = DEFAULT_LIST_SERVER.find((item) => item?.id === id);
+            return {
+              ...s,
+              coinServices: server?.coinServices,
+            };
           }
         }
       }
-
       this.setDefault(MAIN_NET_SERVER);
       return MAIN_NET_SERVER;
     });
