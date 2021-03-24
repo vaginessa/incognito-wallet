@@ -16,7 +16,7 @@ const TermOfUseShield = (props) => {
   const dispatch = useDispatch();
 
   const tokenId = navigation.getParam('tokenId');
-  const terms = ['I will send tokens from centralized exchanges other than Incognito Bridge', 
+  const terms = ['I will send tokens from centralized exchanges', 
     'I will send tokens from a smart contract', 'I will send tokens from my own wallet'];
   const [choose, setChoose] = React.useState(undefined);
 
@@ -49,7 +49,7 @@ const TermOfUseShield = (props) => {
         <RoundCornerButton
           style={styled.button}
           title="Next"
-          disabled={choose !== terms.length - 1}
+          disabled={(choose !== 0 && choose !== 1)}
           onPress={handlePress}
         />
       </ScrollView>
