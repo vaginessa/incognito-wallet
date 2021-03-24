@@ -7,8 +7,7 @@ import {
   genImageFromStr as genImageFromStrWallet,
   RpcClient,
   SuccessTx as SuccessTxWallet,
-  Wallet,
-  setCoinsServicesURL,
+  Wallet
 } from 'incognito-chain-web-js/build/wallet';
 import { randomBytes } from 'react-native-randombytes';
 import { DEX } from '@utils/dex';
@@ -28,7 +27,7 @@ export const FailedTx = FailedTxWallet;
 export async function loadListAccount(wallet) {
   try {
     const listAccountRaw = (await wallet.listAccount()) || [];
-    return listAccountRaw.map((account) => new AccountModel(account)) || [];
+    return listAccountRaw.map(account => new AccountModel(account)) || [];
   } catch (e) {
     throw e;
   }
@@ -57,7 +56,7 @@ export async function loadWallet(passphrase, name = 'Wallet') {
   Wallet.RpcClient = new RpcClient(
     server.address,
     server.username,
-    server.password,
+    server.password
   );
 
   Wallet.ShardNumber = 8;
@@ -71,17 +70,11 @@ export async function loadWallet(passphrase, name = 'Wallet') {
   const accounts = wallet.MasterAccount.child;
   for (const account of accounts) {
     try {
-      await account.loadAccountCached(
-        storage,
-        `${name}-${account.name}-cached`,
-      );
+      await account.loadAccountCached(storage, `${name}-${account.name}-cached`);
     } catch (e) {
       console.debug('LOAD ACCOUNTS CACHE ERROR', e);
       await account.clearCached(`${name}-${account.name}-cached`);
-      await account.saveAccountCached(
-        storage,
-        `${name}-${account.name}-cached`,
-      );
+      await account.saveAccountCached(storage, `${name}-${account.name}-cached`);
     }
   }
   return wallet?.Name ? wallet : false;
@@ -112,9 +105,7 @@ export function deleteWallet(wallet) {
 
 export async function loadHistoryByAccount(wallet, accountName) {
   wallet.Storage = storage;
-  await updateStatusHistory(wallet).catch(() =>
-    console.warn('History statuses were not updated'),
-  );
+  await updateStatusHistory(wallet).catch(() => console.warn('History statuses were not updated'));
   return (await wallet.getHistoryByAccount(accountName)) || [];
 }
 
@@ -151,12 +142,7 @@ export async function createDefaultAccounts(wallet) {
 
   let accounts = await wallet.listAccount();
 
-  if (
-    !accounts.find(
-      (item) =>
-        item.AccountName.toLowerCase() === DEX.MAIN_ACCOUNT.toLowerCase(),
-    )
-  ) {
+  if (!accounts.find((item) => item.AccountName.toLowerCase() === DEX.MAIN_ACCOUNT.toLowerCase())) {
     const newAccount = await accountService.createAccount(
       DEX.MAIN_ACCOUNT,
       wallet,
@@ -165,12 +151,7 @@ export async function createDefaultAccounts(wallet) {
     isCreatedNewAccount = true;
     accounts.push(newAccountInfo);
   }
-  if (
-    !accounts.find(
-      (item) =>
-        item.AccountName.toLowerCase() === DEX.WITHDRAW_ACCOUNT.toLowerCase(),
-    )
-  ) {
+  if (!accounts.find((item) => item.AccountName.toLowerCase() === DEX.WITHDRAW_ACCOUNT.toLowerCase())) {
     accounts = await wallet.listAccount();
     const newAccount = await accountService.createAccount(
       DEX.WITHDRAW_ACCOUNT,
@@ -183,12 +164,11 @@ export async function createDefaultAccounts(wallet) {
 
   if (isCreatedNewAccount) {
     const masterAccountInfo = await wallet.MasterAccount.getDeserializeInformation();
-    await updateWalletAccounts(
-      masterAccountInfo.PublicKeyCheckEncode,
-      accounts.map((item) => ({
+    await updateWalletAccounts(masterAccountInfo.PublicKeyCheckEncode, accounts
+      .map(item => ({
         id: item.ID,
         name: item.AccountName,
-      })),
+      }))
     );
   }
 
@@ -200,9 +180,8 @@ export async function configRPC() {
   Wallet.RpcClient = new RpcClient(
     server.address,
     server.username,
-    server.password,
+    server.password
   );
-  setCoinsServicesURL({ url: server?.coinServices });
 }
 
 export async function storeWalletAccountIdsOnAPI(wallet) {

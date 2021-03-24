@@ -5,7 +5,7 @@ import { withNavigation } from 'react-navigation';
 import Modal, { actionToggleModal } from '@src/components/Modal';
 import withFCM from '@src/screens/Notification/Notification.withFCM';
 import withWallet from '@screens/Wallet/features/Home/Wallet.enhance';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector, useDispatch, connect } from 'react-redux';
 import { useFocusEffect } from 'react-navigation-hooks';
 import APIService from '@src/services/api/miner/APIService';
 import { accountSeleclor } from '@src/redux/selectors';
@@ -95,15 +95,16 @@ const enhance = (WrappedComp) => (props) => {
 
   useBackHandler({ handleGoBack });
 
-  React.useEffect(() => {}, []);
+  React.useEffect(() => {
+    getFollowingToken(false);
+  }, []);
 
   React.useEffect(() => {
-    configRPC();
     fetchData();
     retryLastTxsUnshieldDecentralized();
     retryLastTxsUnshieldCentralized();
     airdrop();
-    getFollowingToken(false);
+    configRPC();
   }, []);
 
   React.useEffect(() => {
