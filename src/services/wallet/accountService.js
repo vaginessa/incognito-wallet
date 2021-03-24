@@ -17,7 +17,7 @@ import bn from 'bn.js';
 import Server from '@services/wallet/Server';
 import { PRV_ID } from '@screens/DexV2/constants';
 import { CustomError, ErrorCode } from '../exception';
-import tokenService from './tokenService';
+import tokenService, { PRV } from './tokenService';
 import {
   loadListAccountWithBLSPubKey,
   saveWallet,
@@ -29,18 +29,19 @@ const TAG = 'Account';
 export const getBalanceNoCache = (
   indexAccount,
   wallet,
-  tokenId,
+  tokenId = PRV.id,
 ) => async () => {
-  const account = wallet.MasterAccount.child[indexAccount];
-  account.isRevealViewKeyToGetCoins = true;
-
-  const balance = await wallet.MasterAccount.child[indexAccount].getBalance(
-    tokenId,
-  );
-
-  if (Object.keys(account.derivatorToSerialNumberCache).length < 10000) {
-    await account.saveAccountCached(wallet.storage, `${wallet.Name}-${account.name}-cached`);
-  }
+  let account = wallet.MasterAccount.child[indexAccount];
+  account.setStorageServices(storage);
+  // account.isRevealViewKeyToGetCoins = true;
+  let balance = 0;
+  balance = await account.getBalance(tokenId);
+  // if (Object.keys(account.derivatorToSerialNumberCache).length < 10000) {
+  //   await account.saveAccountCached(
+  //     wallet.storage,
+  //     `${wallet.Name}-${account.name}-cached`,
+  //   );
+  // }
 
   return balance;
 };
@@ -101,7 +102,11 @@ export default class Account {
     // console.log("Wallet when import account: ", wallet);
     let account;
     try {
-      account = await wallet.importAccount(privakeyStr, accountName, passPhrase);
+      account = await wallet.importAccount(
+        privakeyStr,
+        accountName,
+        passPhrase,
+      );
     } catch (e) {
       console.log(`Error when importing account:  ${e}`);
       throw e;
@@ -144,7 +149,14 @@ export default class Account {
 
     result = await wallet.MasterAccount.child[
       indexAccount
-    ].createAndSendNativeToken(paymentInfos, fee, isPrivacy, infoStr, false, txHandler);
+    ].createAndSendNativeToken(
+      paymentInfos,
+      fee,
+      isPrivacy,
+      infoStr,
+      false,
+      txHandler,
+    );
 
     console.log(
       'Spendingcoin after sendConstant: ',
@@ -326,7 +338,11 @@ export default class Account {
       let newAccount;
 
       while (lastByte !== 0) {
-        newAccount = await wallet.createAccount(accountName, 0, wallet.deletedAccountIds || []);
+        newAccount = await wallet.createAccount(
+          accountName,
+          0,
+          wallet.deletedAccountIds || [],
+        );
         const childKey = newAccount.key;
         lastByte =
           childKey.KeySet.PaymentAddress.Pk[
@@ -345,7 +361,11 @@ export default class Account {
       shardID = 0;
     }
 
-    return await wallet.createNewAccount(accountName, shardID, wallet.deletedAccountIds || []);
+    return await wallet.createNewAccount(
+      accountName,
+      shardID,
+      wallet.deletedAccountIds || [],
+    );
   }
 
   // get progress tx
@@ -392,7 +412,8 @@ export default class Account {
    * If `tokenId` is not passed, this method will return native token (PRV) balance, else custom token balance (from `tokenId`)
    */
   static async getBalance(account, wallet, tokenId) {
-    const key = `balance-${wallet.Name}-${account.name || account.AccountName}-${tokenId ||
+    const key = `balance-${wallet.Name}-${account.name ||
+      account.AccountName}-${tokenId ||
       '0000000000000000000000000000000000000000000000000000000000000004'}`;
     const indexAccount = wallet.getAccountIndexByName(
       this.getAccountName(account),
@@ -412,22 +433,26 @@ export default class Account {
   }
 
   static getFollowingTokens(account, wallet) {
-    const indexAccount = wallet.getAccountIndexByName(this.getAccountName(account));
+    const indexAccount = wallet.getAccountIndexByName(
+      this.getAccountName(account),
+    );
     const followedTokens = wallet.MasterAccount.child[indexAccount]
       .listFollowingTokens()
       ?.map(tokenModel.fromJson);
 
-    if (followedTokens && followedTokens.find(item => item?.id === PRV_ID)) {
+    if (followedTokens && followedTokens.find((item) => item?.id === PRV_ID)) {
       this.removeFollowingToken(PRV_ID, account, wallet);
 
-      return followedTokens.filter(item => item?.id !== PRV_ID);
+      return followedTokens.filter((item) => item?.id !== PRV_ID);
     }
 
     return followedTokens;
   }
 
   static async addFollowingTokens(tokens, account, wallet) {
-    const indexAccount = wallet.getAccountIndexByName(this.getAccountName(account));
+    const indexAccount = wallet.getAccountIndexByName(
+      this.getAccountName(account),
+    );
     const walletAccount = wallet.MasterAccount.child[indexAccount];
     await walletAccount.addFollowingToken(...tokens);
     saveWallet(wallet);
@@ -435,7 +460,9 @@ export default class Account {
   }
 
   static async removeFollowingToken(tokenId, account, wallet) {
-    const indexAccount = wallet.getAccountIndexByName(this.getAccountName(account));
+    const indexAccount = wallet.getAccountIndexByName(
+      this.getAccountName(account),
+    );
     await wallet.MasterAccount.child[indexAccount].removeFollowingToken(
       tokenId,
     );
