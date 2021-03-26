@@ -158,6 +158,8 @@ export default class Account {
       infoStr,
       false,
       txHandler,
+      depositId,
+      tradeHandler,
     );
 
     console.log(
