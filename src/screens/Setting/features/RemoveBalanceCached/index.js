@@ -28,11 +28,13 @@ const RemoveBalanceCached = () => {
           setVisible(false);
           onRemoveItem().then();
         }}
+        title="Clear balance"
+        subTitle="This will delete balance cached. Are you sure you want to continue?"
       />
       <Section
         data={{
           title: 'Clear balance cached',
-          desc: 'Remove locally stored data',
+          desc: 'Remove locally stored balance',
           handlePress: onPressRemove,
         }}
       />

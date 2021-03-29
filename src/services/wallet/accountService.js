@@ -909,15 +909,17 @@ export default class Account {
         .map((token) => token?.ID);
       const allTokens = [...followTokens, PRV.id];
       let task = allTokens.map(async (tokenId) => {
-        const totalCoinsKey = await account.getKeyTotalCoinsStorageByTokenId(
+        const totalCoinsKey = account.getKeyTotalCoinsStorageByTokenId(tokenId);
+        const unspentCoinsKey = account.getKeyListUnspentCoinsByTokenId(
           tokenId,
         );
-        const unspentCoinsKey = await account.getKeyListUnspentCoinsByTokenId(
+        const spendingCoinsKey = account.getKeySpendingCoinsStorageByTokenId(
           tokenId,
         );
         return [
           account.clearAccountStorage(totalCoinsKey),
           account.clearAccountStorage(unspentCoinsKey),
+          account.clearAccountStorage(spendingCoinsKey),
         ];
       });
       await Promise.all(task);
