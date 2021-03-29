@@ -20,18 +20,15 @@ import {
 } from '@src/redux/utils/token';
 import { getBalance as getAccountBalance } from '@src/redux/actions/account';
 import internalTokenModel from '@models/token';
-import {
-  getReceiveHistoryByRPC,
-} from '@src/services/wallet/RpcClientService';
+import { getReceiveHistoryByRPC } from '@src/services/wallet/RpcClientService';
 import { actionLogEvent } from '@src/screens/Performance';
 import { ConfirmedTx } from '@src/services/wallet/WalletService';
 import { CONSTANT_COMMONS } from '@src/constants';
 import { uniqBy } from 'lodash';
-import {
-  receiveHistorySelector,
-} from '@src/redux/selectors/token';
+import { receiveHistorySelector } from '@src/redux/selectors/token';
 import { MAX_LIMIT_RECEIVE_HISTORY_ITEM } from '@src/redux/reducers/token';
 import { PRV_ID } from '@screens/DexV2/constants';
+import { devSelector } from '@src/screens/Dev';
 import { setWallet } from './wallet';
 
 export const setToken = (
@@ -113,17 +110,11 @@ export const getBalance = (token) => async (dispatch, getState) => {
   if (!token) {
     throw new Error('Token object is required');
   }
-  let symbol = token?.externalSymbol || token?.symbol;
   try {
-    await dispatch(
-      actionLogEvent({
-        desc: `Start getting balance token ${symbol}`,
-      }),
-    );
-
-    dispatch(getBalanceStart(token?.id));
-
-    const wallet = getState()?.wallet;
+    await dispatch(getBalanceStart(token?.id));
+    const state = getState();
+    const wallet = state?.wallet;
+    const isDev = devSelector(state);
     const account = accountSeleclor.defaultAccount(getState());
     if (!wallet) {
       throw new Error('Wallet is not exist');
@@ -132,11 +123,42 @@ export const getBalance = (token) => async (dispatch, getState) => {
       throw new Error('Account is not exist');
     }
     const balance = await accountService.getBalance(account, wallet, token.id);
-    await dispatch(
-      actionLogEvent({
-        desc: `Balance token ${symbol} is: ${balance}`,
-      }),
-    );
+    if (isDev) {
+      const {
+        unspentCoins,
+        totalCoins,
+        spendingCoins,
+      } = await accountService.getStorageAccountByTokenId(
+        account,
+        wallet,
+        token?.id,
+      );
+      if (totalCoins) {
+        await dispatch(
+          actionLogEvent({
+            desc: `TOTAL COINS: ${totalCoins}`,
+          }),
+        );
+      }
+      if (spendingCoins) {
+        await dispatch(
+          actionLogEvent({
+            desc: `SPENDING COINS SIZE: ${
+              spendingCoins?.length
+            } - LIST ${JSON.stringify(spendingCoins)}`,
+          }),
+        );
+      }
+      if (unspentCoins) {
+        await dispatch(
+          actionLogEvent({
+            desc: `UNSPENT COINS SIZE: ${
+              unspentCoins?.length
+            } - LIST ${JSON.stringify(unspentCoins)}`,
+          }),
+        );
+      }
+    }
     dispatch(
       setToken({
         ...token,
@@ -155,11 +177,6 @@ export const getBalance = (token) => async (dispatch, getState) => {
     throw e;
   } finally {
     dispatch(getBalanceFinish(token?.id));
-    await dispatch(
-      actionLogEvent({
-        desc: `Finish getting balance token ${symbol}`,
-      }),
-    );
   }
 };
 
@@ -205,7 +222,7 @@ export const actionAddFollowTokenSuccess = (payload) => ({
 export const actionAddFollowToken = (tokenId) => async (dispatch, getState) => {
   const state = getState();
   let wallet = state.wallet;
-  if(!tokenId || tokenId === PRV_ID){
+  if (!tokenId || tokenId === PRV_ID) {
     return;
   }
   try {
@@ -235,7 +252,7 @@ export const actionRemoveFollowToken = (tokenId) => async (
 ) => {
   const state = getState();
   let wallet = state.wallet;
-  if(!tokenId){
+  if (!tokenId) {
     return;
   }
   try {
