@@ -33,16 +33,8 @@ export const getBalanceNoCache = (
 ) => async () => {
   let account = wallet.MasterAccount.child[indexAccount];
   account.setStorageServices(storage);
-  // account.isRevealViewKeyToGetCoins = true;
   let balance = 0;
   balance = await account.getBalance(tokenId);
-  // if (Object.keys(account.derivatorToSerialNumberCache).length < 10000) {
-  //   await account.saveAccountCached(
-  //     wallet.storage,
-  //     `${wallet.Name}-${account.name}-cached`,
-  //   );
-  // }
-
   return balance;
 };
 
@@ -428,7 +420,6 @@ export default class Account {
     const indexAccount = wallet.getAccountIndexByName(
       this.getAccountName(account),
     );
-
     return await cachePromise(
       key,
       getBalanceNoCache(indexAccount, wallet, tokenId),
@@ -889,6 +880,53 @@ export default class Account {
     await saveWallet(wallet);
     await Wallet.resetProgressTx();
     return result;
+  }
+
+  static async getAccount(defaultAccount, wallet) {
+    try {
+      if (!wallet) {
+        throw new Error('Missing wallet');
+      }
+      if (!defaultAccount) {
+        throw new Error('Missing account');
+      }
+      const indexAccount = wallet.getAccountIndexByName(
+        this.getAccountName(defaultAccount),
+      );
+      let account = wallet.MasterAccount.child[indexAccount];
+      account.setStorageServices(storage);
+      return account;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  static async getStorageAccountByTokenId(defaultAccount, wallet, tokenID) {
+    try {
+      if (!wallet) {
+        throw new Error('Missing wallet');
+      }
+      if (!defaultAccount) {
+        throw new Error('Missing account');
+      }
+      let tokenId = tokenID || PRV_ID;
+      const account = await this.getAccount(defaultAccount, wallet);
+      let unspentCoins = await account.getListUnspentCoinsStorage(tokenId);
+      unspentCoins = unspentCoins.map(
+        ({ Value, SerialNumber, SNDerivator }) => ({
+          Value,
+          SerialNumber,
+          SNDerivator,
+        }),
+      );
+      return {
+        unspentCoins,
+        totalCoins: await account.getTotalCoinsStorage(tokenId),
+        spendingCoins: await account.getSpendingCoinsStorageByTokenId(tokenId),
+      };
+    } catch (error) {
+      throw error;
+    }
   }
 
   static async removeCacheBalance(defaultAccount, wallet) {

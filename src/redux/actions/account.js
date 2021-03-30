@@ -13,11 +13,12 @@ import { actionLogEvent } from '@src/screens/Performance';
 import {
   currentMasterKeySelector,
   masterlessKeyChainSelector,
-  noMasterLessSelector
+  noMasterLessSelector,
 } from '@src/redux/selectors/masterKey';
 import { switchMasterKey, updateMasterKey } from '@src/redux/actions/masterKey';
 import { storeWalletAccountIdsOnAPI } from '@services/wallet/WalletService';
 import { getSignPublicKey } from '@services/gomobile';
+import { devSelector } from '@src/screens/Dev';
 import { tokenSeleclor, accountSeleclor } from '../selectors';
 import { getBalance as getTokenBalance, setListToken } from './token';
 
@@ -112,7 +113,9 @@ const setSignPublicKeyEncode = (signPublicKeyEncode) => {
 };
 
 const updateDefaultAccount = (account) => {
-  accountService.saveDefaultAccountToStorage(accountService.getAccountName(account));
+  accountService.saveDefaultAccountToStorage(
+    accountService.getAccountName(account),
+  );
   return {
     type: type.SET_DEFAULT_ACCOUNT,
     data: account,
@@ -133,35 +136,51 @@ export const getBalance = (account) => async (dispatch, getState) => {
   let balance = 0;
   try {
     if (!account) throw new Error('Account object is required');
-
-    await dispatch(
-      actionLogEvent({
-        desc: `Getting balance account ${account?.name}`,
-      }),
-    );
-
-    dispatch(getBalanceStart(account?.name));
-
-    const wallet = getState()?.wallet;
-
+    await dispatch(getBalanceStart(account?.name));
+    const state = getState();
+    const wallet = state?.wallet;
+    const isDev = devSelector(state);
     if (!wallet) {
       throw new Error('Wallet is not exist');
     }
-
     balance = await accountService.getBalance(account, wallet);
-
-    await dispatch(
-      actionLogEvent({
-        desc: `Balance account ${account?.name} is: ${balance}`,
-      }),
-    );
-
+    if (isDev) {
+      const {
+        unspentCoins,
+        totalCoins,
+        spendingCoins,
+      } = await accountService.getStorageAccountByTokenId(account, wallet);
+      if (totalCoins) {
+        await dispatch(
+          actionLogEvent({
+            desc: `TOTAL COINS: ${totalCoins}`,
+          }),
+        );
+      }
+      if (spendingCoins) {
+        await dispatch(
+          actionLogEvent({
+            desc: `SPENDING COINS SIZE: ${
+              spendingCoins?.length
+            } - LIST ${JSON.stringify(spendingCoins)}`,
+          }),
+        );
+      }
+      if (unspentCoins) {
+        await dispatch(
+          actionLogEvent({
+            desc: `UNSPENT COINS SIZE: ${
+              unspentCoins?.length
+            } - LIST ${JSON.stringify(unspentCoins)}`,
+          }),
+        );
+      }
+    }
     const accountMerge = {
       ...account,
       value: balance,
     };
-    // console.log(TAG,'getBalance = accountMerge = ',accountMerge);
-    dispatch(setAccount(accountMerge));
+    await dispatch(setAccount(accountMerge));
   } catch (e) {
     account &&
       dispatch(
@@ -173,14 +192,7 @@ export const getBalance = (account) => async (dispatch, getState) => {
     throw e;
   } finally {
     dispatch(getBalanceFinish(account?.name));
-
-    await dispatch(
-      actionLogEvent({
-        desc: `Finish balance account ${account?.name}`,
-      }),
-    );
   }
-
   return balance ?? 0;
 };
 
@@ -347,7 +359,9 @@ export const actionSwitchAccount = (
   try {
     const state = getState();
     const account = accountSeleclor.getAccountByName(state)(accountName);
-    const defaultAccountName = accountSeleclor.defaultAccountNameSelector(state);
+    const defaultAccountName = accountSeleclor.defaultAccountNameSelector(
+      state,
+    );
     if (defaultAccountName !== account?.name) {
       await dispatch(setDefaultAccount(account));
     }
