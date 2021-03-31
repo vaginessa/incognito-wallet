@@ -124,37 +124,15 @@ export const getBalance = (token) => async (dispatch, getState) => {
     }
     const balance = await accountService.getBalance(account, wallet, token.id);
     if (isDev) {
-      const {
-        unspentCoins,
-        totalCoins,
-        spendingCoins,
-      } = await accountService.getStorageAccountByTokenId(
+      const { coinsStorage } = await accountService.getStorageAccountByTokenId(
         account,
         wallet,
         token?.id,
       );
-      if (totalCoins) {
+      if (coinsStorage) {
         await dispatch(
           actionLogEvent({
-            desc: `TOTAL COINS: ${totalCoins}`,
-          }),
-        );
-      }
-      if (spendingCoins) {
-        await dispatch(
-          actionLogEvent({
-            desc: `SPENDING COINS SIZE: ${
-              spendingCoins?.length
-            } - LIST ${JSON.stringify(spendingCoins)}`,
-          }),
-        );
-      }
-      if (unspentCoins) {
-        await dispatch(
-          actionLogEvent({
-            desc: `UNSPENT COINS SIZE: ${
-              unspentCoins?.length
-            } - LIST ${JSON.stringify(unspentCoins)}`,
+            desc: `COINS STORAGE ${JSON.stringify(coinsStorage)}`,
           }),
         );
       }
