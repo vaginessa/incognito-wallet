@@ -31,7 +31,7 @@ const TEST_NET_SERVER = {
   username: '',
   password: '',
   name: 'Testnet',
-  coinServices: 'http://51.161.119.66:9001',
+  coinServices: 'https://api-stg.coinservice.incognito.corncob.dev',
 };
 const LOCAL_SERVER = {
   id: 'local',

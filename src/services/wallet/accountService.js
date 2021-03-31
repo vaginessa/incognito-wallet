@@ -923,6 +923,7 @@ export default class Account {
         unspentCoins,
         totalCoins: await account.getTotalCoinsStorage(tokenId),
         spendingCoins: await account.getSpendingCoinsStorageByTokenId(tokenId),
+        coinsStorage: await account.getCoinsStorage(tokenId),
       };
     } catch (error) {
       throw error;
@@ -954,10 +955,12 @@ export default class Account {
         const spendingCoinsKey = account.getKeySpendingCoinsStorageByTokenId(
           tokenId,
         );
+        const storageCoins = account.getKeyCoinsStorageByTokenId(tokenId);
         return [
           account.clearAccountStorage(totalCoinsKey),
           account.clearAccountStorage(unspentCoinsKey),
           account.clearAccountStorage(spendingCoinsKey),
+          account.clearAccountStorage(storageCoins),
         ];
       });
       await Promise.all(task);
