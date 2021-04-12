@@ -22,7 +22,7 @@ const MAIN_NET_SERVER = {
   username: '',
   password: '',
   name: 'Mainnet',
-  coinServices: '',
+  coinServices: 'https://api-coinservice.incognito.org',
 };
 const TEST_NET_SERVER = {
   id: 'testnet',
