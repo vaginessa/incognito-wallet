@@ -16,6 +16,7 @@ import { chooseBestCoinToSpent } from 'incognito-chain-web-js/lib/tx/utils';
 import bn from 'bn.js';
 import Server from '@services/wallet/Server';
 import { PRV_ID } from '@screens/DexV2/constants';
+import BigNumber from 'bignumber.js';
 import { CustomError, ErrorCode } from '../exception';
 import tokenService, { PRV } from './tokenService';
 import {
@@ -34,8 +35,8 @@ export const getBalanceNoCache = (
   let account = wallet.MasterAccount.child[indexAccount];
   account.setStorageServices(storage);
   let balance = 0;
-  balance = await account.getBalance(tokenId);
-  return balance;
+  balance = await account.getBalance(tokenId) || 0;
+  return new BigNumber(balance).toNumber();
 };
 
 const getPendingHistory = (histories, spendingCoins) => {
