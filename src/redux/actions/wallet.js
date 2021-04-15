@@ -100,13 +100,10 @@ export const reloadWallet = (accountName) => async (dispatch, getState) => {
           dispatch(setListAccount(accounts));
           dispatch(setDefaultAccount(account));
           dispatch(setAccount(account));
-          dispatch(getBalanceStart(account?.name));
+          // dispatch(getBalanceStart(account?.name));
           dispatch(setListToken(followed));
         });
-
-        setTimeout(() => {
-          dispatch(actionReloadFollowingToken(true));
-        }, 1000);
+        dispatch(actionReloadFollowingToken(true));
       }
 
       return wallet;

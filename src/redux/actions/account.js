@@ -19,7 +19,12 @@ import { switchMasterKey, updateMasterKey } from '@src/redux/actions/masterKey';
 import { storeWalletAccountIdsOnAPI } from '@services/wallet/WalletService';
 import { getSignPublicKey } from '@services/gomobile';
 import { devSelector } from '@src/screens/Dev';
-import { tokenSeleclor, accountSeleclor } from '../selectors';
+import {
+  tokenSeleclor,
+  accountSeleclor,
+  sharedSeleclor,
+  selectedPrivacySeleclor,
+} from '../selectors';
 import { getBalance as getTokenBalance, setListToken } from './token';
 
 /**
@@ -136,8 +141,14 @@ export const getBalance = (account) => async (dispatch, getState) => {
   let balance = 0;
   try {
     if (!account) throw new Error('Account object is required');
-    await dispatch(getBalanceStart(account?.name));
     const state = getState();
+    const gettingBalance = sharedSeleclor.isGettingBalance(state);
+    const selectedPrivacy = selectedPrivacySeleclor.selectedPrivacy(state);
+    const isGettingBalance = gettingBalance.includes(selectedPrivacy.tokenId);
+    if (isGettingBalance) {
+      return;
+    }
+    await dispatch(getBalanceStart(account?.name));
     const wallet = state?.wallet;
     const isDev = devSelector(state);
     if (!wallet) {
