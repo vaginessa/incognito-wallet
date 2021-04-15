@@ -3,6 +3,7 @@ import type from '@src/redux/types/token';
 import {
   accountSeleclor,
   selectedPrivacySeleclor,
+  sharedSeleclor,
   tokenSeleclor,
 } from '@src/redux/selectors';
 import { getTokenList } from '@src/services/api/token';
@@ -113,6 +114,12 @@ export const getBalance = (token) => async (dispatch, getState) => {
   try {
     await dispatch(getBalanceStart(token?.id));
     const state = getState();
+    const gettingBalance = sharedSeleclor.isGettingBalance(state);
+    const selectedPrivacy = selectedPrivacySeleclor.selectedPrivacy(state);
+    const isGettingBalance = gettingBalance.includes(selectedPrivacy.tokenId);
+    if (isGettingBalance) {
+      return;
+    }
     const wallet = state?.wallet;
     const isDev = devSelector(state);
     const account = accountSeleclor.defaultAccount(getState());
@@ -289,9 +296,6 @@ export const actionFetchHistoryToken = (refreshing = false) => async (
         dispatch(getHistoryFromApi()),
         dispatch(actionFetchReceiveHistory(refreshing)),
       ];
-      if (token) {
-        dispatch(getBalance(token));
-      }
       const [
         historiesToken,
         historiesTokenFromApi,
@@ -324,29 +328,29 @@ export const actionFetchHistoryMainCrypto = (refreshing = false) => async (
   try {
     const state = getState();
     const selectedPrivacy = selectedPrivacySeleclor.selectedPrivacy(state);
-    const account = accountSeleclor.defaultAccountSelector(state);
     const { isFetching } = tokenSeleclor.historyTokenSelector(state);
-    if (isFetching || !selectedPrivacy?.tokenId) {
+    if (
+      isFetching ||
+      !selectedPrivacy?.tokenId ||
+      !selectedPrivacy.isMainCrypto
+    ) {
       return;
     }
     await dispatch(actionFetchingHistory({ refreshing }));
-    dispatch(getAccountBalance(account));
     let histories = [];
-    if (selectedPrivacy?.isMainCrypto) {
-      const [accountHistory, receiveHistory] = await new Promise.all([
-        dispatch(loadAccountHistory()),
-        dispatch(actionFetchReceiveHistory(refreshing)),
-      ]);
-      const mergeHistories = mergeReceiveAndLocalHistory({
-        localHistory: accountHistory,
-        receiveHistory,
-      });
-      histories = normalizeData(
-        mergeHistories,
-        selectedPrivacy?.decimals,
-        selectedPrivacy?.pDecimals,
-      );
-    }
+    const [accountHistory, receiveHistory] = await new Promise.all([
+      dispatch(loadAccountHistory()),
+      dispatch(actionFetchReceiveHistory(refreshing)),
+    ]);
+    const mergeHistories = mergeReceiveAndLocalHistory({
+      localHistory: accountHistory,
+      receiveHistory,
+    });
+    histories = normalizeData(
+      mergeHistories,
+      selectedPrivacy?.decimals,
+      selectedPrivacy?.pDecimals,
+    );
     await dispatch(actionFetchedHistory(histories));
   } catch (error) {
     await dispatch(actionFetchFailHistory());
