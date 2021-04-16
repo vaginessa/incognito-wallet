@@ -35,7 +35,7 @@ export const getBalanceNoCache = (
   let account = wallet.MasterAccount.child[indexAccount];
   account.setStorageServices(storage);
   let balance = 0;
-  balance = await account.getBalance(tokenId) || 0;
+  balance = (await account.getBalance(tokenId)) || 0;
   return new BigNumber(balance).toNumber();
 };
 
@@ -926,6 +926,23 @@ export default class Account {
         spendingCoins: await account.getSpendingCoinsStorageByTokenId(tokenId),
         coinsStorage: await account.getCoinsStorage(tokenId),
       };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  static async getListAccountSpentCoins(defaultAccount, wallet, tokenID) {
+    try {
+      if (!wallet) {
+        throw new Error('Missing wallet');
+      }
+      if (!defaultAccount) {
+        throw new Error('Missing account');
+      }
+      let tokenId = tokenID || PRV_ID;
+      const account = await this.getAccount(defaultAccount, wallet);
+      const spentCoins = await account.getListSpentCoinsStorage(tokenId);
+      return spentCoins || {};
     } catch (error) {
       throw error;
     }

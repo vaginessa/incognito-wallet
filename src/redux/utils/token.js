@@ -298,22 +298,19 @@ export const loadAccountHistory = () => async (dispatch, getState) => {
   }
 };
 
-export const getTypeHistoryReceive = ({ account, serialNumbers }) => {
+export const getTypeHistoryReceive = ({ spentCoins, serialNumbers }) => {
   let type = CONSTANT_COMMONS.HISTORY.TYPE.RECEIVE;
   if (!serialNumbers) {
     return type;
   }
   if (serialNumbers) {
-    const accountSerialNumbers = account?.derivatorToSerialNumberCache;
     try {
-      for (let key in accountSerialNumbers) {
-        const accountSerialNumber = accountSerialNumbers[key];
-        const isExisted = serialNumbers?.includes(accountSerialNumber);
+      Object.keys(spentCoins).forEach((snBase64Encode) => {
+        const isExisted = serialNumbers?.includes(snBase64Encode);
         if (isExisted) {
-          type = CONSTANT_COMMONS.HISTORY.TYPE.SEND;
-          break;
+          return CONSTANT_COMMONS.HISTORY.TYPE.SEND;
         }
-      }
+      });
     } catch (error) {
       throw error;
     }
