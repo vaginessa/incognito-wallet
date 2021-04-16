@@ -114,12 +114,6 @@ export const getBalance = (token) => async (dispatch, getState) => {
   try {
     await dispatch(getBalanceStart(token?.id));
     const state = getState();
-    const gettingBalance = sharedSeleclor.isGettingBalance(state);
-    const selectedPrivacy = selectedPrivacySeleclor.selectedPrivacy(state);
-    const isGettingBalance = gettingBalance.includes(selectedPrivacy.tokenId);
-    if (isGettingBalance) {
-      return;
-    }
     const wallet = state?.wallet;
     const isDev = devSelector(state);
     const account = accountSeleclor.defaultAccount(getState());
