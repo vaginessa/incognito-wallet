@@ -3,7 +3,6 @@ import type from '@src/redux/types/token';
 import {
   accountSeleclor,
   selectedPrivacySeleclor,
-  sharedSeleclor,
   tokenSeleclor,
 } from '@src/redux/selectors';
 import { getTokenList } from '@src/services/api/token';
@@ -19,7 +18,6 @@ import {
   handleFilterHistoryReceiveByTokenId,
   mergeReceiveAndLocalHistory,
 } from '@src/redux/utils/token';
-import { getBalance as getAccountBalance } from '@src/redux/actions/account';
 import internalTokenModel from '@models/token';
 import { getReceiveHistoryByRPC } from '@src/services/wallet/RpcClientService';
 import { actionLogEvent } from '@src/screens/Performance';
@@ -381,6 +379,7 @@ export const actionFetchReceiveHistory = (refreshing = false) => async (
   getState,
 ) => {
   const state = getState();
+  const wallet = state?.wallet;
   const selectedPrivacy = selectedPrivacySeleclor.selectedPrivacy(state);
   let data = [];
   const receiveHistory = receiveHistorySelector(state);
@@ -408,11 +407,16 @@ export const actionFetchReceiveHistory = (refreshing = false) => async (
       tokenId: selectedPrivacy?.tokenId,
       histories,
     });
+    const spentCoins = await accountService.getListAccountSpentCoins(
+      account,
+      wallet,
+      selectedPrivacy?.tokenId,
+    );
     data = await new Promise.all([
       ...historiesFilterByTokenId?.map(async (history) => {
         const txID = history?.txID;
         let type = getTypeHistoryReceive({
-          account,
+          spentCoins,
           serialNumbers: history?.serialNumbers,
         });
         const h = {
