@@ -19,6 +19,7 @@ import { switchMasterKey, updateMasterKey } from '@src/redux/actions/masterKey';
 import { storeWalletAccountIdsOnAPI } from '@services/wallet/WalletService';
 import { getSignPublicKey } from '@services/gomobile';
 import { devSelector } from '@src/screens/Dev';
+import { CONSTANT_COMMONS } from '@src/constants';
 import {
   tokenSeleclor,
   accountSeleclor,
@@ -142,12 +143,6 @@ export const getBalance = (account) => async (dispatch, getState) => {
   try {
     if (!account) throw new Error('Account object is required');
     const state = getState();
-    const gettingBalance = sharedSeleclor.isGettingBalance(state);
-    const selectedPrivacy = selectedPrivacySeleclor.selectedPrivacy(state);
-    const isGettingBalance = gettingBalance.includes(selectedPrivacy.tokenId);
-    if (isGettingBalance) {
-      return;
-    }
     await dispatch(getBalanceStart(account?.name));
     const wallet = state?.wallet;
     const isDev = devSelector(state);
@@ -373,7 +368,7 @@ export const actionReloadFollowingToken = (shouldLoadBalance = true) => async (
     const wallet = state.wallet;
     const account = accountSeleclor.defaultAccountSelector(state);
     const followed = await accountService.getFollowingTokens(account, wallet);
-    dispatch(setListToken(followed));
+    await dispatch(setListToken(followed));
     if (shouldLoadBalance) {
       dispatch(getBalance(account));
       [...followed].map((token) => dispatch(getTokenBalance(token)));

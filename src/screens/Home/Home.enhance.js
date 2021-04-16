@@ -95,8 +95,6 @@ const enhance = (WrappedComp) => (props) => {
 
   useBackHandler({ handleGoBack });
 
-  React.useEffect(() => {}, []);
-
   React.useEffect(() => {
     configRPC();
     fetchData();
