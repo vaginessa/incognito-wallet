@@ -123,15 +123,15 @@ export const getBalance = (token) => async (dispatch, getState) => {
     }
     const balance = await accountService.getBalance(account, wallet, token.id);
     if (isDev) {
-      const { coinsStorage } = await accountService.getStorageAccountByTokenId(
+      const { spentCoins } = await accountService.getStorageAccountByTokenId(
         account,
         wallet,
         token?.id,
       );
-      if (coinsStorage) {
+      if (spentCoins) {
         await dispatch(
           actionLogEvent({
-            desc: `COINS STORAGE ${JSON.stringify(coinsStorage)}`,
+            desc: spentCoins,
           }),
         );
       }

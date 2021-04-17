@@ -305,10 +305,10 @@ export const getTypeHistoryReceive = ({ spentCoins, serialNumbers }) => {
   }
   if (serialNumbers) {
     try {
-      let isTypeSend = Object.keys(spentCoins).find((snBase64Encode) =>
-        serialNumbers?.includes(snBase64Encode),
-      );
-      if (isTypeSend) {
+      let indexType = Object.keys(spentCoins).findIndex((snBase64Encode) => {
+        return serialNumbers?.includes(snBase64Encode);
+      });
+      if (indexType > -1) {
         type = CONSTANT_COMMONS.HISTORY.TYPE.SEND;
       }
     } catch (error) {
