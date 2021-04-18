@@ -920,11 +920,16 @@ export default class Account {
           SNDerivator,
         }),
       );
+      const spentCoins = await this.getListAccountSpentCoins(
+        defaultAccount,
+        wallet,
+      );
       return {
         unspentCoins,
         totalCoins: await account.getTotalCoinsStorage(tokenId),
         spendingCoins: await account.getSpendingCoinsStorageByTokenId(tokenId),
         coinsStorage: await account.getCoinsStorage(tokenId),
+        spentCoins,
       };
     } catch (error) {
       throw error;

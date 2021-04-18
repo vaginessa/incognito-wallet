@@ -19,13 +19,7 @@ import { switchMasterKey, updateMasterKey } from '@src/redux/actions/masterKey';
 import { storeWalletAccountIdsOnAPI } from '@services/wallet/WalletService';
 import { getSignPublicKey } from '@services/gomobile';
 import { devSelector } from '@src/screens/Dev';
-import { CONSTANT_COMMONS } from '@src/constants';
-import {
-  tokenSeleclor,
-  accountSeleclor,
-  sharedSeleclor,
-  selectedPrivacySeleclor,
-} from '../selectors';
+import { tokenSeleclor, accountSeleclor } from '../selectors';
 import { getBalance as getTokenBalance, setListToken } from './token';
 
 /**
@@ -151,14 +145,14 @@ export const getBalance = (account) => async (dispatch, getState) => {
     }
     balance = await accountService.getBalance(account, wallet);
     if (isDev) {
-      const { coinsStorage } = await accountService.getStorageAccountByTokenId(
+      const { spentCoins } = await accountService.getStorageAccountByTokenId(
         account,
         wallet,
       );
-      if (coinsStorage) {
+      if (spentCoins) {
         await dispatch(
           actionLogEvent({
-            desc: coinsStorage,
+            desc: spentCoins,
           }),
         );
       }
