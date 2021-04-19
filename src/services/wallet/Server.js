@@ -56,7 +56,7 @@ const MAINNET_1_SERVER = {
   address: MAINNET_1_FULLNODE,
   username: '',
   password: '',
-  name: 'Mainnet 1',
+  name: 'Mainnet server 1',
   coinServices: 'https://api-coinservice.incognito.org',
 };
 const DEFAULT_LIST_SERVER = [
