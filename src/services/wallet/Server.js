@@ -2,6 +2,7 @@ import storage from '@src/services/storage';
 import _ from 'lodash';
 
 export const MAINNET_FULLNODE = 'https://lb-fullnode.incognito.org/fullnode';
+export const MAINNET_1_FULLNODE = 'https://51.83.237.20:9338';
 export const TESTNET_FULLNODE = 'https://testnet.incognito.org/fullnode';
 export const TESTNET1_FULLNODE = 'http://51.83.36.184:20002/fullnode';
 
@@ -49,12 +50,22 @@ const TEST_NET_1_SERVER = {
   password: '',
   name: 'Testnet 1',
 };
+const MAINNET_1_SERVER = {
+  id: 'mainnet1',
+  default: false,
+  address: MAINNET_1_FULLNODE,
+  username: '',
+  password: '',
+  name: 'Mainnet 1',
+  coinServices: 'https://api-coinservice.incognito.org',
+};
 const DEFAULT_LIST_SERVER = [
   LOCAL_SERVER,
   TEST_NET_SERVER,
   TEST_NODE_SERVER,
   MAIN_NET_SERVER,
   TEST_NET_1_SERVER,
+  MAINNET_1_SERVER,
 ];
 
 export const KEY = {
@@ -76,11 +87,12 @@ export default class Server {
       if (!cachedList.find((item) => item.id === TEST_NODE_SERVER.id)) {
         cachedList.push(TEST_NODE_SERVER);
       }
-
       if (!cachedList.find((item) => item.id === TEST_NET_1_SERVER.id)) {
         cachedList.push(TEST_NET_1_SERVER);
       }
-
+      if (!cachedList.find((item) => item.id === MAINNET_1_SERVER.id)) {
+        cachedList.push(MAINNET_1_SERVER);
+      }
       if (
         cachedList.find(
           (item) =>
@@ -142,7 +154,9 @@ export default class Server {
   }
 
   static isMainnet(network): Boolean {
-    return _.isEqual(network?.id, 'mainnet');
+    return (
+      _.isEqual(network?.id, 'mainnet') || _.isEqual(network?.id, 'mainnet1')
+    );
   }
 
   static setDefaultList() {
