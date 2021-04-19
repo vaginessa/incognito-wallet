@@ -2,7 +2,7 @@ import storage from '@src/services/storage';
 import _ from 'lodash';
 
 export const MAINNET_FULLNODE = 'https://lb-fullnode.incognito.org/fullnode';
-export const MAINNET_1_FULLNODE = 'https://51.83.237.20:9338';
+export const MAINNET_1_FULLNODE = 'http://51.83.237.20:9338';
 export const TESTNET_FULLNODE = 'https://testnet.incognito.org/fullnode';
 export const TESTNET1_FULLNODE = 'http://51.83.36.184:20002/fullnode';
 
