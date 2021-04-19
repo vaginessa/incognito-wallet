@@ -433,13 +433,13 @@ export const actionFetchReceiveHistory = (refreshing = false) => async (
         return h;
       }),
     ]);
+    data = refreshing ? [...data, ...oldData] : [...oldData, ...data];
+    data = uniqBy(data, (item) => item?.id) || [];
     data = data
       .filter(
         (history) => history?.type === CONSTANT_COMMONS.HISTORY.TYPE.RECEIVE,
       )
       .filter((history) => !!history?.amount);
-    data = refreshing ? [...data, ...oldData] : [...oldData, ...data];
-    data = uniqBy(data, (item) => item?.id) || [];
     const oversize = histories?.length < curLimit;
     const notEnoughData = data?.length < oldData?.length + 5;
     let payload = {
