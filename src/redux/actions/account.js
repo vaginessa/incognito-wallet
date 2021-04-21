@@ -145,14 +145,14 @@ export const getBalance = (account) => async (dispatch, getState) => {
     }
     balance = await accountService.getBalance(account, wallet);
     if (isDev) {
-      const { spentCoins } = await accountService.getStorageAccountByTokenId(
+      const { coinsStorage } = await accountService.getStorageAccountByTokenId(
         account,
         wallet,
       );
-      if (spentCoins) {
+      if (coinsStorage) {
         await dispatch(
           actionLogEvent({
-            desc: spentCoins,
+            desc: coinsStorage,
           }),
         );
       }
