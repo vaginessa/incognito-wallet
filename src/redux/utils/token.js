@@ -305,7 +305,7 @@ export const getTypeHistoryReceive = ({ spentCoins, serialNumbers }) => {
   }
   if (serialNumbers) {
     try {
-      let indexType = Object.keys(spentCoins).findIndex((snBase64Encode) => {
+      let indexType = spentCoins.findIndex((snBase64Encode) => {
         return serialNumbers?.includes(snBase64Encode);
       });
       if (indexType > -1) {

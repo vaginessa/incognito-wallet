@@ -947,7 +947,7 @@ export default class Account {
       let tokenId = tokenID || PRV_ID;
       const account = await this.getAccount(defaultAccount, wallet);
       const spentCoins = await account.getListSpentCoinsStorage(tokenId);
-      return spentCoins || {};
+      return spentCoins || [];
     } catch (error) {
       throw error;
     }
@@ -979,11 +979,13 @@ export default class Account {
           tokenId,
         );
         const storageCoins = account.getKeyCoinsStorageByTokenId(tokenId);
+        const spentCoinsKey = account.getKeyListSpentCoinsByTokenId(tokenId);
         return [
           account.clearAccountStorage(totalCoinsKey),
           account.clearAccountStorage(unspentCoinsKey),
           account.clearAccountStorage(spendingCoinsKey),
           account.clearAccountStorage(storageCoins),
+          account.clearAccountStorage(spentCoinsKey),
         ];
       });
       await Promise.all(task);
