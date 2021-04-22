@@ -395,14 +395,14 @@ export const actionFetchReceiveHistory = (refreshing = false) => async (
     const curLimit =
       refreshing && page > 0 ? MAX_LIMIT_RECEIVE_HISTORY_ITEM : limit;
     const account = accountSeleclor?.defaultAccountSelector(state);
-    const histories =
-      (await getReceiveHistoryByRPC({
-        PaymentAddress: account?.paymentAddress,
-        ReadonlyKey: account?.readonlyKey,
-        Limit: curLimit,
-        Skip: curSkip,
-        TokenID: selectedPrivacy?.tokenId,
-      })) || [];
+    // const key = `${selectedPrivacy?.tokenId}-${account?.readonlyKey}-${account?.paymentAddress}-${curLimit}-${curSkip}-RECEIVE-HISTORY`;
+    const histories = await getReceiveHistoryByRPC({
+      PaymentAddress: account?.paymentAddress,
+      ReadonlyKey: account?.readonlyKey,
+      Limit: curLimit,
+      Skip: curSkip,
+      TokenID: selectedPrivacy?.tokenId,
+    });
     const historiesFilterByTokenId = handleFilterHistoryReceiveByTokenId({
       tokenId: selectedPrivacy?.tokenId,
       histories,
