@@ -50,22 +50,13 @@ const TEST_NET_1_SERVER = {
   password: '',
   name: 'Testnet 1',
 };
-const MAINNET_1_SERVER = {
-  id: 'mainnet1',
-  default: false,
-  address: MAINNET_1_FULLNODE,
-  username: '',
-  password: '',
-  name: 'Mainnet server 1',
-  coinServices: 'https://api-coinservice.incognito.org',
-};
+
 const DEFAULT_LIST_SERVER = [
   LOCAL_SERVER,
   TEST_NET_SERVER,
   TEST_NODE_SERVER,
   MAIN_NET_SERVER,
   TEST_NET_1_SERVER,
-  MAINNET_1_SERVER,
 ];
 
 export const KEY = {
@@ -89,9 +80,6 @@ export default class Server {
       }
       if (!cachedList.find((item) => item.id === TEST_NET_1_SERVER.id)) {
         cachedList.push(TEST_NET_1_SERVER);
-      }
-      if (!cachedList.find((item) => item.id === MAINNET_1_SERVER.id)) {
-        cachedList.push(MAINNET_1_SERVER);
       }
       if (
         cachedList.find(
@@ -154,9 +142,7 @@ export default class Server {
   }
 
   static isMainnet(network): Boolean {
-    return (
-      _.isEqual(network?.id, 'mainnet') || _.isEqual(network?.id, 'mainnet1')
-    );
+    return _.isEqual(network?.id, 'mainnet');
   }
 
   static setDefaultList() {
