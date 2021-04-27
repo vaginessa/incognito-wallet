@@ -75,7 +75,9 @@ const withConfirm = WrappedComp => (props) => {
   const onMessage = event => {
     if (event && event.nativeEvent.data) {
       if (['cancel', 'error', 'expired'].includes(event.nativeEvent.data)) {
-        return captchaForm.hide();
+        if (captchaForm.current) {
+          captchaForm.current.hide();
+        }
       } else {
         const verifyCode = event.nativeEvent.data;
         console.log('Verified code from Google', event.nativeEvent.data);
