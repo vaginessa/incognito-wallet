@@ -1,15 +1,19 @@
 import React from 'react';
+import { ACCOUNT_CONSTANT } from 'incognito-chain-web-js/build/wallet';
 import { ExHandler } from '@services/exception';
 import accountService from '@services/wallet/accountService';
 import { provide } from '@services/api/pool';
 import LocalDatabase from '@utils/LocalDatabase';
 import { useSelector } from 'react-redux';
-import { accountSeleclor } from '@src/redux/selectors';
+import { accountSelector } from '@src/redux/selectors';
 import ReCaptchaV3 from '@haskkor/react-native-recaptchav3';
 import appConstant from '@src/constants/app';
+import { PRV_ID } from '@src/constants/common';
 
-const withConfirm = WrappedComp => (props) => {
-  const signPublicKeyEncode = useSelector(accountSeleclor.signPublicKeyEncodeSelector);
+const withConfirm = (WrappedComp) => (props) => {
+  const signPublicKeyEncode = useSelector(
+    accountSelector.signPublicKeyEncodeSelector,
+  );
   const [error, setError] = React.useState('');
   const [providing, setProviding] = React.useState(false);
   const [sendTx, setSendTx] = React.useState(null);
@@ -32,7 +36,13 @@ const withConfirm = WrappedComp => (props) => {
       if (!sendTx) return;
       const { txHistory, txInfo, provideValue } = sendTx;
       if (!global.isDEV && txInfo && txInfo.txId) {
-        await provide(account.PaymentAddress, txInfo.txId, signPublicKeyEncode, provideValue, verifyCode);
+        await provide(
+          account.PaymentAddress,
+          txInfo.txId,
+          signPublicKeyEncode,
+          provideValue,
+          verifyCode,
+        );
         txHistory.splice(txHistory.length - 1, 1);
         await LocalDatabase.saveProvideTxs(txHistory);
         onSuccess(true);
@@ -48,33 +58,66 @@ const withConfirm = WrappedComp => (props) => {
     try {
       if (sendTx) return;
       let provideValue = isPrv ? originProvide : value;
-      let providerFee  = fee;
-      const txs = await LocalDatabase.getProvideTxs();
-      const txHandler = async (txHash) => {
-        txs.push({
-          paymentAddress: account.PaymentAddress,
-          txId: txHash,
-          signPublicKeyEncode,
-          provideValue,
-          value: provideValue,
-          time: new Date().getTime(),
+      let providerFee = fee;
+      let result;
+      // const txs = await LocalDatabase.getProvideTxs();
+      // const txHandler = async (txHash) => {
+      //   txs.push({
+      //     paymentAddress: account.PaymentAddress,
+      //     txId: txHash,
+      //     signPublicKeyEncode,
+      //     provideValue,
+      //     value: provideValue,
+      //     time: new Date().getTime(),
+      //   });
+      //   await LocalDatabase.saveProvideTxs(txs);
+      // };
+      coin.masterAddress =
+        '12skvWhcpghKA5TZfGPdbKNCPFQmHNtep2Rm1u19E3f7eoikSUmAio59PEcrHA9jCDfRtEfcANm8dkRW1yoi3RgUnuhgSt8eT1EtWMfaWBTqLHNFAXK5RSvLRmrZ83zZG6uGw3yJgrZStHAHPqkn';
+      if (coin.id === PRV_ID) {
+        result = await accountService.createAndSendNativeToken({
+          wallet,
+          account,
+          fee: providerFee,
+          prvPayments: [
+            {
+              PaymentAddress: coin.masterAddress,
+              Amount: provideValue,
+              Message: '',
+            },
+          ],
+          txType: ACCOUNT_CONSTANT.TX_TYPE.PROVIDE,
         });
-        await LocalDatabase.saveProvideTxs(txs);
-      };
-
-      const result = await accountService.createAndSendToken(
-        account,
-        wallet,
-        coin.masterAddress,
-        provideValue,
-        coin.id,
-        providerFee,
-        0,
-        0,
-        '',
-        txHandler,
-      );
-      setSendTx({ txHistory: txs, txInfo: result, provideValue });
+      } else {
+        result = await accountService.createAndSendPrivacyToken({
+          wallet,
+          account,
+          fee: providerFee,
+          tokenPayments: [
+            {
+              PaymentAddress: coin.masterAddress,
+              Amount: provideValue,
+              Message: '',
+            },
+          ],
+          txType: ACCOUNT_CONSTANT.TX_TYPE.PROVIDE,
+          tokenID: coin.id,
+        });
+      }
+      // const result = await accountService.createAndSendToken(
+      //   account,
+      //   wallet,
+      //   coin.masterAddress,
+      //   provideValue,
+      //   coin.id,
+      //   providerFee,
+      //   0,
+      //   0,
+      //   '',
+      //   txHandler,
+      // );
+      // setSendTx({ txHistory: txs, txInfo: result, provideValue });
+      setSendTx({ txHistory: [], txInfo: result, provideValue });
       if (captchaRef.current) {
         setTimeout(() => {
           captchaRef.current?.refreshToken();

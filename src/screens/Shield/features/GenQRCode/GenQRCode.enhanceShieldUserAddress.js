@@ -7,7 +7,7 @@ import Header from '@components/Header';
 import {styled} from '@screens/Shield/features/GenQRCode/GenQRCode.styled';
 import {BtnInfo} from '@components/Button';
 import routeNames from '@routers/routeNames';
-import { selectedPrivacySeleclor } from '@src/redux/selectors';
+import { selectedPrivacySelector } from '@src/redux/selectors';
 import { useNavigation } from 'react-navigation-hooks';
 import TermOfUseShield from '@screens/Shield/features/TermOfUseShield';
 
@@ -16,7 +16,7 @@ const enhance = (WrappedComp) => (props) => {
   const { isShieldAddressDecentralized } = useSelector(shieldDataSelector);
   const [showTerm, setShowTerm] = useState(true);
   const navigation = useNavigation();
-  const selectedPrivacy = useSelector(selectedPrivacySeleclor.selectedPrivacy);
+  const selectedPrivacy = useSelector(selectedPrivacySelector.selectedPrivacy);
   const handleToggleTooltip = () => {
     navigation.navigate(routeNames.CoinInfo, { isShieldAddressDecentralized });
   };
