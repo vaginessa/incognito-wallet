@@ -1,7 +1,7 @@
 import { Validator } from 'incognito-chain-web-js/build/wallet';
 
 export const getAccountNameByAccount = (account) => {
-  new Validator('account', account).required();
+  new Validator('account', account).object().required();
   if (account) {
     return account.name || account.AccountName || account.accountName;
   }
@@ -10,8 +10,8 @@ export const getAccountNameByAccount = (account) => {
 
 export const getAccountWallet = (account, wallet) => {
   try {
-    new Validator('account', account).required();
-    new Validator('wallet', wallet).required();
+    new Validator('account', account).object().required();
+    new Validator('wallet', wallet).object().required();
     const indexAccount = wallet.getAccountIndexByName(
       getAccountNameByAccount(account),
     );

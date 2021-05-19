@@ -122,8 +122,8 @@ export const reloadWallet = (accountName) => async (dispatch, getState) => {
           dispatch(setAccount(account));
           dispatch(setListToken(followed));
         });
-        dispatch(actionReloadFollowingToken(true));
       }
+      dispatch(actionReloadFollowingToken(true));
       return wallet;
     }
     return false;

@@ -13,8 +13,6 @@ import {
 } from 'incognito-chain-web-js/build/wallet';
 import _ from 'lodash';
 import { STACK_TRACE } from '@services/exception/customError/code/webjsCode';
-import { chooseBestCoinToSpent } from 'incognito-chain-web-js/lib/tx/utils';
-import bn from 'bn.js';
 import Server from '@services/wallet/Server';
 import { PRV, PRV_ID } from '@src/constants/common';
 import {
@@ -23,11 +21,7 @@ import {
 } from '@src/services/wallet/Wallet.shared';
 import { PRVIDSTR } from 'incognito-chain-web-js/lib/wallet/constants';
 import { CustomError, ErrorCode, ExHandler } from '../exception';
-import {
-  loadListAccountWithBLSPubKey,
-  saveWallet,
-  SuccessTx,
-} from './WalletService';
+import { loadListAccountWithBLSPubKey, saveWallet } from './WalletService';
 
 const TAG = 'Account';
 
@@ -198,6 +192,9 @@ export default class Account {
   }
 
   static async createAccount(accountName, wallet, initShardID) {
+    new Validator('accountName', accountName).string().required();
+    new Validator('wallet', wallet).required().object();
+    new Validator('initShardID', initShardID).number();
     const server = await Server.getDefault();
     if (server.id === 'testnode') {
       let lastByte = null;
@@ -298,8 +295,8 @@ export default class Account {
   }
 
   static getFollowingTokens(account, wallet) {
-    new Validator('account', account).required();
-    new Validator('wallet', wallet).required();
+    new Validator('account', account).object().required();
+    new Validator('wallet', wallet).object().required();
     const accountWallet = this.getAccount(account, wallet);
     const followedTokens = accountWallet
       .listFollowingTokens()
@@ -517,6 +514,7 @@ export default class Account {
   }
 
   static getAccountName(account) {
+    new Validator('account', account).object().required();
     return getAccountNameByAccount(account);
   }
 
