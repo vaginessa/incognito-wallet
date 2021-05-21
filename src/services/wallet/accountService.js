@@ -20,7 +20,8 @@ import {
   getAccountWallet,
 } from '@src/services/wallet/Wallet.shared';
 import { PRVIDSTR } from 'incognito-chain-web-js/lib/wallet/constants';
-import { CustomError, ErrorCode, ExHandler } from '../exception';
+import { PDexHistoryPureModel } from '@models/pDefi';
+import { CustomError, ErrorCode } from '../exception';
 import { loadListAccountWithBLSPubKey, saveWallet } from './WalletService';
 
 const TAG = 'Account';
@@ -766,5 +767,24 @@ export default class Account {
       unspentCoins,
       accountInstance,
     };
+  }
+
+  static async getPDexHistory({
+    account,
+    wallet,
+    offset,
+    limit
+  }) {
+    let histories = [];
+    try {
+      const accountWallet = await this.getAccount(account, wallet);
+      histories = await accountWallet.getPDexHistory({
+        offset: offset || 0,
+        limit: limit || 10000,
+      });
+    } catch (error) {
+      console.debug('GET PDEX HISTORIES ERROR: ', error);
+    }
+    return histories.map(history => new PDexHistoryPureModel({ history, accountName: account.name }));
   }
 }
