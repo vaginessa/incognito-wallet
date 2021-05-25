@@ -56,41 +56,26 @@ const withConfirm = (WrappedComp) => (props) => {
     }
   };
 
-  const submitProvideRawData = (params) => {
+  const submitProvideRawData = async (params) => {
     if (!params || captchaRef.current) {
-      const { TxID: txId, RawData: rawData } = params;
+      const { txId, rawTx: rawData } = params;
       setProvideTx({ txId, rawData });
       setTimeout(() => {
         captchaRef.current?.refreshToken();
       }, 1000);
     }
+    return true;
   };
 
   const handleSendTransaction = async () => {
     try {
       if (provideTx) return;
       let provideValue = isPrv ? originProvide : value;
-      let providerFee = fee;
-      let result;
-      // const txs = await LocalDatabase.getProvideTxs();
-      // const txHandler = async (txHash) => {
-      //   txs.push({
-      //     paymentAddress: account.PaymentAddress,
-      //     txId: txHash,
-      //     signPublicKeyEncode,
-      //     provideValue,
-      //     value: provideValue,
-      //     time: new Date().getTime(),
-      //   });
-      //   await LocalDatabase.saveProvideTxs(txs);
-      // };
-      coin.masterAddress =
-        '12skvWhcpghKA5TZfGPdbKNCPFQmHNtep2Rm1u19E3f7eoikSUmAio59PEcrHA9jCDfRtEfcANm8dkRW1yoi3RgUnuhgSt8eT1EtWMfaWBTqLHNFAXK5RSvLRmrZ83zZG6uGw3yJgrZStHAHPqkn';
       if (coin.id === PRV_ID) {
-        result = await accountService.createAndSendNativeToken({
+        await accountService.createAndSendNativeToken({
           wallet,
           account,
-          fee: providerFee,
+          fee,
           prvPayments: [
             {
               PaymentAddress: coin.masterAddress,
@@ -99,12 +84,13 @@ const withConfirm = (WrappedComp) => (props) => {
             },
           ],
           txType: ACCOUNT_CONSTANT.TX_TYPE.PROVIDE,
+          txHandler: submitProvideRawData
         });
       } else {
-        result = await accountService.createAndSendPrivacyToken({
+        await accountService.createAndSendPrivacyToken({
           wallet,
           account,
-          fee: providerFee,
+          fee,
           tokenPayments: [
             {
               PaymentAddress: coin.masterAddress,
@@ -114,13 +100,8 @@ const withConfirm = (WrappedComp) => (props) => {
           ],
           txType: ACCOUNT_CONSTANT.TX_TYPE.PROVIDE,
           tokenID: coin.id,
+          txHandler: submitProvideRawData
         });
-      }
-      setProvideTx({ txHistory: [], txInfo: result, provideValue });
-      if (captchaRef.current) {
-        setTimeout(() => {
-          captchaRef.current?.refreshToken();
-        }, 1000);
       }
     } catch (e) {
       setProvideTx(null);
@@ -144,6 +125,7 @@ const withConfirm = (WrappedComp) => (props) => {
       }
       handleSendTransaction().then();
     } catch (error) {
+      console.log('SANG TEST: ', error);
       handleSendTransaction().then();
     }
   };

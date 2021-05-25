@@ -79,6 +79,7 @@ export default class Account {
     metadata,
     isEncryptMessage = true,
     txType,
+    txHandler
   } = {}) {
     try {
       new Validator('wallet', wallet).required();
@@ -98,7 +99,7 @@ export default class Account {
           prvPayments,
           fee,
         },
-        extra: { metadata, isEncryptMessage, txType },
+        extra: { metadata, isEncryptMessage, txType, txHandler },
       });
       console.log('result', result);
       // save wallet
@@ -121,6 +122,7 @@ export default class Account {
     isEncryptMessage = true,
     isEncryptMessageToken = true,
     txType,
+    txHandler
   } = {}) {
     new Validator('wallet', wallet).required();
     new Validator('account', account).required();
@@ -133,6 +135,7 @@ export default class Account {
     new Validator('isEncryptMessage', isEncryptMessage).boolean();
     new Validator('isEncryptMessageToken', isEncryptMessageToken).boolean();
     new Validator('txType', txType).required().number();
+
     let result;
     const accountWallet = this.getAccount(account, wallet);
     await accountWallet.resetProgressTx();
@@ -145,7 +148,7 @@ export default class Account {
         fee,
         tokenID,
       },
-      extra: { metadata, isEncryptMessage, isEncryptMessageToken, txType },
+      extra: { metadata, isEncryptMessage, isEncryptMessageToken, txType, txHandler },
     });
     console.log('result', result);
     await saveWallet(wallet);
@@ -413,7 +416,7 @@ export default class Account {
         console.log(TAG, 'getFullDataOfAccount begin');
         const listAccounts = (await loadListAccountWithBLSPubKey(wallet)) || [];
         console.log(TAG, 'getFullDataOfAccount listAccount ', listAccounts);
-        let account: JSON = listAccounts.find((item) =>
+        let account = listAccounts.find((item) =>
           _.isEqual(item.AccountName, accountName),
         );
 
