@@ -12,7 +12,9 @@ import {
   ACTION_UPDATE_SLIPPAGE,
   ACTION_UPDATE_PRIORITY,
   ACTION_RETRY_TRADE_INFO,
-  ACTION_UPDATE_BALANCE
+  ACTION_UPDATE_BALANCE,
+  ACTION_UPDATE_PDEX_HISTORIES,
+  ACTION_CLEAR_PDEX_HISTORIES
 } from '@screens/DexV2/components/Trade/TradeV2/Trade.constant';
 import {
   calculateInputIncognitoNetWork,
@@ -29,9 +31,13 @@ import {
   calculatorInputERC20Network,
   getInputBalance, calculatorOriginalOutputSlippage, getSlippagePercent,
 } from '@screens/DexV2/components/Trade/TradeV2/Trade.utils';
-import { debounce } from 'lodash';
+import { debounce, orderBy, uniqBy } from 'lodash';
 import { actionLogEvent } from '@screens/Performance';
 import { PRIORITY_PDEX, TRADE_LOADING_VALUE } from '@screens/DexV2/components/Trade/TradeV2/Trade.appConstant';
+import {accountServices} from '@services/wallet';
+import {defaultAccountSelector} from '@src/redux/selectors/account';
+import {walletSelector} from '@src/redux/selectors/wallet';
+import {LIMIT} from '@screens/DexV2/constants';
 
 /** Change InputToken
  * @param {object} inputToken
@@ -696,5 +702,74 @@ export const actionLoadInputBalance = (payload) => async (dispatch, getState) =>
 
   } catch (error) {
     console.debug('TRADE LOAD INPUT BALANCE WITH ERROR: ', error);
+  }
+};
+
+export const actionClearPDexHistory = () => ({
+  type: ACTION_CLEAR_PDEX_HISTORIES,
+});
+
+const actionUpdatePDexHistory = (payload) => ({
+  type: ACTION_UPDATE_PDEX_HISTORIES,
+  payload
+});
+
+export const actionGetPDexHistory = ({ limit } = {}) => async (dispatch, getState) => {
+  try {
+    const state = getState();
+    const account = defaultAccountSelector(state);
+    const wallet = walletSelector(state);
+    let { pdexHistories: oldHistories, historiesPage } = state.trade;
+
+    const limitPage = limit || LIMIT;
+    const page = historiesPage + 1;
+    const offset = page * limitPage;
+
+    const tasks = [
+      await accountServices.getPDexHistories({
+        account,
+        wallet,
+        limit: limitPage,
+        offset,
+      }),
+      await accountServices.getPDexStorageHistories({
+        account,
+        wallet,
+      })
+    ];
+    let [newHistories, storageHistories] = await Promise.all(tasks);
+    const oldIds = oldHistories.map(item => item.requestTx);
+    newHistories = newHistories.filter(item => !oldIds.includes(item.requestTx));
+    let apiHistories = uniqBy(
+      oldHistories.concat(newHistories.filter(item => !oldIds.includes(item.requestTx))),
+      item => item.requestTx
+    );
+
+    const pendingStorage = [];
+    storageHistories.forEach(history => {
+      const notHave = apiHistories.some(item => item?.requestTx === history?.requestTx);
+      if (!notHave) {
+        pendingStorage.push(history);
+      }
+    });
+
+    const mergeHistory = orderBy(
+      apiHistories.concat(pendingStorage),
+      [
+        'requesttime',
+      ],
+      ['desc'],
+    );
+
+    console.log('mergeHistory: ', mergeHistory);
+
+    dispatch(actionUpdatePDexHistory({
+      histories: mergeHistory,
+      historiesPage: page,
+      reachedHistories: newHistories.length < limitPage
+    }));
+  } catch (error) {
+    console.log('GET PDEX HISTORIES ERROR: ', error);
+    // error
   }
 };

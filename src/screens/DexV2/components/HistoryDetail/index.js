@@ -5,19 +5,17 @@ import { View, Text, ScrollView, FlexView } from '@components/core';
 import { withLayout_2 } from '@components/Layout';
 import Header from '@components/Header/index';
 import ExtraInfo from '@screens/DexV2/components/ExtraInfo';
-import { CONSTANT_COMMONS, MESSAGES } from '@src/constants';
+import { MESSAGES } from '@src/constants';
 import { HISTORY_STATUS } from '@src/constants/trading';
 import { useSelector } from 'react-redux';
 import { maxPriceSelector } from '@screens/DexV2/components/Trade/TradeV2/Trade.selector';
+import { TRANSFER_STATUS } from '@src/redux/actions/dex';
 import styles from './style';
 import withData from './data.enhance';
 
 const HistoryDetail = ({ history }) => {
-  const isSuccess = history?.status === HISTORY_STATUS.SUCCESSFUL;
-  const buyAmount = isSuccess
-  && history?.amountReceive
-    ? history?.amountReceive
-    : history?.buyAmount;
+  const isSuccess = history?.status === TRANSFER_STATUS.SUCCESSFUL;
+  const buyAmount = history?.buyAmount;
 
   const maxPrice = useSelector(maxPriceSelector)(
     history?.sellTokenId,
