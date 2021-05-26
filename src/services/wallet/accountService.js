@@ -804,4 +804,19 @@ export default class Account {
     }
     return histories;
   }
+  /**
+   * Sign staking pool withdraw
+   * @param {object} account
+   * @param {object} wallet
+   * @param {number} amount
+   * @returns {Promise<string>} signatureEncode
+   */
+  static async signPoolWithdraw({ account, wallet, amount }) {
+    new Validator('account', account).required();
+    new Validator('wallet', wallet).required();
+    new Validator('amount', amount).required();
+    const accountWallet = await this.getAccount(account, wallet);
+    return await accountWallet.signPoolWithdraw({ amount: amount.toString() });
+  }
+
 }

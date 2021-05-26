@@ -39,34 +39,3 @@ try {
 } catch {
   console.error('GO modules can not loaded');
 }
-
-/**
- * Sign staking pool withdraw
- * @param {string} privateKey
- * @param {string} paymentAddress
- * @param {string | number} amount
- * @returns {Promise<string>} signatureEncode
- */
-export const signPoolWithdraw = (privateKey, paymentAddress, amount) => {
-  if (!privateKey) {
-    throw new Error('Private key is missing');
-  }
-
-  if (!paymentAddress) {
-    throw new Error('Payment address is missing');
-  }
-
-  if (!Number.isInteger(Number.parseInt(amount))) {
-    throw new Error('Amount is invalid');
-  }
-
-  const args = {
-    data: {
-      privateKey,
-      paymentAddress,
-      amount: amount.toString(),
-    },
-  };
-
-  return global.signPoolWithdraw(JSON.stringify(args));
-};

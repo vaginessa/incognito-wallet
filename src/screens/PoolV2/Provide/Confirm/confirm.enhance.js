@@ -125,7 +125,6 @@ const withConfirm = (WrappedComp) => (props) => {
       }
       handleSendTransaction().then();
     } catch (error) {
-      console.log('SANG TEST: ', error);
       handleSendTransaction().then();
     }
   };
