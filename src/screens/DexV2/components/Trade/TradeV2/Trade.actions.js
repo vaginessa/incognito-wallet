@@ -770,6 +770,5 @@ export const actionGetPDexHistory = ({ limit } = {}) => async (dispatch, getStat
     }));
   } catch (error) {
     console.log('GET PDEX HISTORIES ERROR: ', error);
-    // error
   }
 };
