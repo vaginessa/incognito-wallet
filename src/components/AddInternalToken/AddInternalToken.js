@@ -20,7 +20,6 @@ import { withNavigation } from 'react-navigation';
 import { CONSTANT_COMMONS } from '@src/constants';
 import { getEstimateFeeForPToken } from '@src/services/wallet/RpcClientService';
 import { addTokenInfo } from '@src/services/api/token';
-import Token from '@src/services/wallet/tokenService';
 import formatUtil from '@src/utils/format';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
@@ -28,6 +27,7 @@ import { setWallet } from '@src/redux/actions/wallet';
 import { getInternalTokenList } from '@src/redux/actions/token';
 import { ExHandler } from '@src/services/exception';
 import ROUTES_NAME from '@routers/routeNames';
+import { accountServices } from '@services/wallet';
 import styleSheet from './style';
 
 const formName = 'addInternalToken';
@@ -130,37 +130,25 @@ class AddInternalToken extends Component {
     } = values;
     const parseAmount = Number(amount);
 
-    const tokenObject = {
-      Privacy: true,
-      TokenID: '',
-      TokenName: name,
-      TokenSymbol: symbol,
-      TokenTxType: CONSTANT_COMMONS.TOKEN_TX_TYPE.INIT,
-      TokenAmount: parseAmount,
-      TokenReceivers: [
-        {
-          PaymentAddress: account?.PaymentAddress,
-          Amount: parseAmount,
-        },
-      ],
-    };
-
     try {
       this.setState({ isCreatingOrSending: true });
-      const res = await Token.createSendPToken(
-        tokenObject,
-        TOKEN_FEE || 0,
-        account,
+      const res = await accountServices.createSendInitPToken({
         wallet,
-      );
+        account,
+        fee: TOKEN_FEE,
+        info: description,
+        tokenName: name,
+        tokenSymbol: symbol,
+        tokenAmount: amount
+      });
       if (res.txId) {
-        const { tokenID, tokenName, tokenSymbol } = res;
+        const { tokenID } = res;
         Toast.showSuccess('Create coin successfully');
 
         await this.handleSaveCoinInfo({
           tokenId: tokenID,
-          name: tokenName,
-          symbol: tokenSymbol,
+          name,
+          symbol,
           logoFile: logo,
           ownerAddress: account?.PaymentAddress,
           showOwnerAddress,
