@@ -61,7 +61,11 @@ const enhance = WrappedComp => props => {
     const {
       unspentCoins,
       accountInstance: accountWallet
-    } = await accountService.getUnspentCoinsV1(account, wallet, false);
+    } = await accountService.getUnspentCoinsV1({
+      account,
+      wallet,
+      forceGetCoins: false
+    });
 
     const prvUnspent = unspentCoins.find((coin) => coin.tokenId === PRV_ID);
     const pTokenUnspent = unspentCoins.filter((coin) => coin.tokenId !== PRV_ID && coin.balance > 0);

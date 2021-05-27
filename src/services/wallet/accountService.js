@@ -765,7 +765,12 @@ export default class Account {
     });
   }
 
-  static async getUnspentCoinsV1(account, wallet, forceGetCoins) {
+  static async getUnspentCoinsV1({ account, wallet, forceGetCoins }) {
+    forceGetCoins = !!forceGetCoins;
+    new Validator('wallet', wallet).required();
+    new Validator('account', account).required();
+    new Validator('forceGetCoins', forceGetCoins).required().boolean();
+
     let unspentCoins = [];
     let accountInstance = null;
     try {
@@ -783,12 +788,17 @@ export default class Account {
   }
 
   static async getPDexHistories({ account, wallet, offset, limit }) {
+    new Validator('wallet', wallet).required();
+    new Validator('account', account).required();
+    new Validator('offset', offset).required().number();
+    new Validator('limit', limit).required().number();
+
     let histories = [];
     try {
       const accountWallet = await this.getAccount(account, wallet);
       histories = await accountWallet.getPDexHistories({
-        offset: offset || 0,
-        limit: limit || 10000,
+        offset,
+        limit,
       });
     } catch (error) {
       console.debug('GET PDEX HISTORIES ERROR: ', error);
@@ -800,6 +810,8 @@ export default class Account {
   }
 
   static async getPDexStorageHistories({ account, wallet }) {
+    new Validator('wallet', wallet).required();
+    new Validator('account', account).required();
     let histories = [];
     try {
       const accountWallet = await this.getAccount(account, wallet);
@@ -831,9 +843,48 @@ export default class Account {
       new Validator('account', account).required().object();
       const getAccount = getAccountWallet(account, wallet);
       new Validator('getAccount', getAccount).required().object();
-      return getAccount.getTxsHistory({ tokenID });
+      return getAccount.getTxsHistory({tokenID});
     } catch (error) {
       throw error;
     }
+  }
+
+  static async createSendInitPToken({
+    wallet,
+    account,
+    fee,
+    info,
+    tokenName,
+    tokenSymbol,
+    tokenAmount
+  }) {
+    new Validator('account', account).required();
+    new Validator('wallet', wallet).required();
+    new Validator('fee', fee).required().number();
+    new Validator('info', info).string();
+    new Validator('tokenName', tokenName).required().string();
+    new Validator('tokenSymbol', tokenSymbol).required().string();
+    new Validator('tokenAmount', tokenAmount).required().string();
+
+    let response;
+    try {
+      const accountWallet = getAccountWallet(account, wallet);
+      response = await accountWallet.createAndSendInitTokenTx({
+        transfer: {
+          fee,
+          info,
+          tokenPayments: [
+            { Amount: tokenAmount, PaymentAddress: account.PaymentAddress },
+          ],
+        },
+        extra: {
+          tokenName,
+          tokenSymbol,
+        },
+      });
+    } catch (e) {
+      throw e;
+    }
+    return response;
   }
 }

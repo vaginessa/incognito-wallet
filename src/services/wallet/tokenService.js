@@ -1,4 +1,4 @@
-import { Wallet } from 'incognito-chain-web-js/build/wallet';
+import { Wallet, Validator } from 'incognito-chain-web-js/build/wallet';
 import _, { isArray } from 'lodash';
 import storage from '@src/services/storage';
 import { CONSTANT_KEYS } from '@src/constants';
@@ -23,83 +23,35 @@ export const PRV = {
 const BurningForDepositToSCRequestMeta = 96;
 
 export default class Token {
-  static async createSendPToken(
-    submitParam,
-    feeNativeToken = 0,
-    account,
+  static async createSendPToken({
     wallet,
-    paymentInfo,
-    feePToken = 0,
-    info = '',
-    actionLogEvent = null,
-    txHandler,
-    depositId,
-    tradeHandler = null,
-  ) {
-    await Wallet.resetProgressTx();
-    const { TokenSymbol, TokenName, TokenAmount } = submitParam;
-    let _submitParam = { ...submitParam };
-    if (typeof TokenSymbol !== 'string' || TokenSymbol.trim() === '')
-      throw new Error('TokenSymbol is invalid');
-    if (typeof TokenName !== 'string' || TokenName.trim() === '')
-      throw new Error('TokenName is invalid');
-    if (typeof TokenAmount !== 'number' || TokenAmount <= 0)
-      throw new Error('TokenAmount is invalid');
-
-    let paymentInfos = [];
-    if (isArray(paymentInfo)) {
-      paymentInfos = [...paymentInfo];
-    } else if (!!paymentInfo && typeof paymentInfo === 'object') {
-      paymentInfos = [paymentInfo];
-    }
-
-    if (isArray(paymentInfos) && paymentInfos?.length > 0) {
-      paymentInfos = [
-        ...paymentInfos.filter(
-          (item) => Number(item?.amount) > 0 && item?.paymentAddressStr !== '',
-        ),
-      ];
-    }
-
-    if (
-      isArray(submitParam?.TokenReceivers) &&
-      submitParam?.TokenReceivers?.length > 0
-    ) {
-      _submitParam.TokenReceivers = [
-        ..._submitParam?.TokenReceivers.filter(
-          (item) => Number(item?.Amount) > 0 && item?.PaymentAddress !== '',
-        ),
-      ];
-    }
-
+    account,
+    fee,
+    info,
+    tokenName,
+    tokenSymbol,
+    tokenAmount
+  }) {
     let response;
-    const hasPrivacyForNativeToken = true;
-    const hasPrivacyForPToken = true;
-    const strInfo = typeof info !== 'string' ? JSON.stringify(info) : info;
     try {
       const accountWallet = getAccountWallet(account, wallet);
-      response = await accountWallet.createAndSendPrivacyToken(
-        paymentInfos,
-        _submitParam,
-        feeNativeToken,
-        feePToken,
-        hasPrivacyForNativeToken,
-        hasPrivacyForPToken,
-        strInfo,
-        false,
-        false,
-        txHandler,
-        depositId,
-        tradeHandler,
-      );
-
+      response = await accountWallet.createAndSendInitTokenTx({
+        transfer: {
+          fee,
+          info,
+          tokenPayments: [
+            { Amount: tokenAmount, PaymentAddress: account.PaymentAddress },
+          ],
+        },
+        extra: {
+          tokenName,
+          tokenSymbol,
+        },
+      });
       await saveWallet(wallet);
     } catch (e) {
       throw e;
     }
-
-    await Wallet.resetProgressTx();
-
     return response;
   }
 

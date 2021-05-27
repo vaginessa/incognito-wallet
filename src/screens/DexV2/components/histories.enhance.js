@@ -44,7 +44,6 @@ const withHistories = WrappedComp => (props) => {
     }
   };
 
-  console.log('SANG isLoadMore', isLoadMore);
   return (
     <WrappedComp
       {...{
