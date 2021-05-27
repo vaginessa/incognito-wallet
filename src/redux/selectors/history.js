@@ -106,7 +106,9 @@ export const historyTxsSelector = createSelector(
   historyReceiverSelector,
   (history, txsTransactor, txsReceiver) => {
     const { isFetching } = history;
-    const histories = [...txsTransactor, ...txsReceiver] || [];
+    const histories =
+      [...txsTransactor, ...txsReceiver].sort((a, b) => b?.time - a?.time) ||
+      [];
     return {
       ...history,
       isEmpty: histories.length === 0,
