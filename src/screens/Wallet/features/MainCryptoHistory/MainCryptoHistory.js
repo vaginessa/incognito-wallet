@@ -1,51 +1,46 @@
 import React, { memo } from 'react';
-import HistoryList, { useHistoryList } from '@src/components/HistoryList';
+import { HistoryList } from '@src/screens/Wallet/features/History';
 import { useDispatch, useSelector } from 'react-redux';
-import { accountSelector, tokenSelector } from '@src/redux/selectors';
-import { actionFetchHistoryMainCrypto } from '@src/redux/actions/token';
+import { accountSelector, selectedPrivacySelector } from '@src/redux/selectors';
 import { ExHandler } from '@src/services/exception';
 import { getBalance as getAccountBalance } from '@src/redux/actions/account';
+import { historyTxsSelector } from '@src/redux/selectors/history';
+import { actionFetch as actionFetchHistory } from '@src/redux/actions/history';
+import { switchAccountSelector } from '@src/redux/selectors/account';
+import { walletSelector } from '@src/redux/selectors/wallet';
 import withMainCryptoHistory from './MainCryptoHistory.enhance';
 import EmptyHistory from './MainCryptoHistory.empty';
 
 const MainCryptoHistory = () => {
+  const wallet = useSelector(walletSelector);
   const account = useSelector(accountSelector.defaultAccountSelector);
-  const { histories } = useSelector(tokenSelector.historyTokenSelector);
-  const { isFetching, oversize } = useSelector(
-    tokenSelector.receiveHistorySelector,
-  );
   const dispatch = useDispatch();
-  const handleLoadHistory = (refreshing) => {
-    try {
-      dispatch(actionFetchHistoryMainCrypto(refreshing));
-    } catch (error) {
-      new ExHandler(error).showErrorToast();
-    }
-  };
-  const handleLoadBalance = () => {
+  const switchAccount = useSelector(switchAccountSelector);
+  const selectedPrivacy = useSelector(selectedPrivacySelector.selectedPrivacy);
+  const { histories, isEmpty, isFetching, refreshing, oversize } = useSelector(
+    historyTxsSelector,
+  );
+  const handleRefresh = () => {
     try {
       dispatch(getAccountBalance(account));
+      dispatch(actionFetchHistory());
     } catch (error) {
       new ExHandler(error).showErrorToast();
     }
   };
-  const handleRefresh = () => {
-    handleLoadBalance();
-    handleLoadHistory(true);
-  };
-  const [showEmpty, refreshing] = useHistoryList({
-    handleLoadHistory,
-    handleLoadBalance,
-  });
+  React.useEffect(() => {
+    if (!switchAccount) {
+      handleRefresh();
+    }
+  }, [selectedPrivacy.tokenId, account.PaymentAddress, wallet, switchAccount]);
   return (
     <HistoryList
       histories={histories}
       onRefreshHistoryList={handleRefresh}
-      onLoadmoreHistory={() => !oversize && handleLoadHistory(false)}
       refreshing={refreshing}
       loading={isFetching}
       renderEmpty={() => <EmptyHistory />}
-      showEmpty={showEmpty}
+      showEmpty={isEmpty}
       oversize={oversize}
     />
   );

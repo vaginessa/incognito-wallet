@@ -68,8 +68,14 @@ export async function loadWallet(passphrase, name = 'Wallet') {
 export async function initWallet(walletName = 'Wallet') {
   try {
     const passphrase = await getPassphrase();
+    const server = await Server.getDefault();
     const wallet = new Wallet();
+    wallet.RpcClient = server.address;
+    wallet.RpcCoinService = server?.coinServices;
     wallet.Storage = storage;
+    wallet.PrivacyVersion = PrivacyVersion.ver2;
+    wallet.UseLegacyEncoding = true;
+    wallet.PubsubService = server?.pubsubServices;
     await wallet.init(passphrase, storage, walletName, 'Anon');
     await wallet.save(passphrase);
     return wallet;
@@ -115,7 +121,13 @@ export async function importWallet(mnemonic, name) {
   try {
     const passphrase = await getPassphrase();
     const wallet = new Wallet();
+    const server = await Server.getDefault();
+    wallet.RpcClient = server.address;
+    wallet.RpcCoinService = server?.coinServices;
     wallet.Storage = storage;
+    wallet.PrivacyVersion = PrivacyVersion.ver2;
+    wallet.UseLegacyEncoding = true;
+    wallet.PubsubService = server?.pubsubServices;
     await wallet.import(mnemonic, passphrase, name, storage);
     await wallet.save(passphrase);
     return wallet;

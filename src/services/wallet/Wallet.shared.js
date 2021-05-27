@@ -16,7 +16,15 @@ export const getAccountWallet = (account, wallet) => {
       getAccountNameByAccount(account),
     );
     let accountWallet = wallet.MasterAccount.child[indexAccount];
-    new Validator('accountWallet', accountWallet).required();
+    if (!accountWallet) {
+      return {};
+    }
+    new Validator('accountWallet', accountWallet).object();
+    new Validator('wallet.RpcClient', wallet.RpcClient).string();
+    new Validator('wallet.Storage', wallet.Storage).object();
+    new Validator('wallet.RpcCoinService', wallet.RpcCoinService).string();
+    new Validator('wallet.PrivacyVersion', wallet.PrivacyVersion).number();
+    new Validator('wallet.PubsubService', wallet.PubsubService).string();
     accountWallet.setRPCClient(wallet.RpcClient);
     accountWallet.setStorageServices(wallet.Storage);
     accountWallet.setRPCCoinServices(wallet.RpcCoinService);

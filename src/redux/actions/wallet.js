@@ -1,8 +1,5 @@
 import { batch } from 'react-redux';
-import {
-  loadListAccount,
-  loadListAccountWithBLSPubKey,
-} from '@src/services/wallet/WalletService';
+import { loadListAccount } from '@src/services/wallet/WalletService';
 import accountService from '@src/services/wallet/accountService';
 import type from '@src/redux/types/wallet';
 // eslint-disable-next-line import/no-cycle

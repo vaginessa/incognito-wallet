@@ -108,36 +108,27 @@ const followDefaultTokenForWallet = (wallet, accounts) => async (
 export const initMasterKey = (masterKeyName, mnemonic) => async (dispatch) => {
   await updateNetwork();
   const isMigrated = await migrateData();
-
   const defaultMasterKey = new MasterKeyModel(DEFAULT_MASTER_KEY);
   const masterlessMasterKey = new MasterKeyModel(MASTERLESS);
   const masterlessWallet = await masterlessMasterKey.loadWallet();
-
   if (!isMigrated) {
     masterlessWallet.MasterAccount.child = [];
   }
-
   defaultMasterKey.name = masterKeyName;
   const wallet = await importWallet(
     mnemonic,
     defaultMasterKey.getStorageName(),
   );
   await syncServerAccounts(wallet);
-
   defaultMasterKey.mnemonic = wallet.Mnemonic;
   defaultMasterKey.wallet = wallet;
-
   await saveWallet(wallet);
   await saveWallet(masterlessWallet);
-
   const masterKeys = [defaultMasterKey, masterlessMasterKey];
-
   await storeWalletAccountIdsOnAPI(wallet);
   await dispatch(initMasterKeySuccess(masterKeys));
-
   await dispatch(switchMasterKey(defaultMasterKey.name));
   await dispatch(followDefaultTokenForWallet(wallet));
-
   await saveWallet(wallet);
   await saveWallet(masterlessWallet);
 };
@@ -230,15 +221,11 @@ export const createMasterKey = (data) => async (dispatch) => {
     newMasterKey.getStorageName(),
   );
   await saveWallet(wallet);
-
   newMasterKey.wallet = wallet;
   newMasterKey.mnemonic = wallet.Mnemonic;
-
   await dispatch(createMasterKeySuccess(newMasterKey));
   await dispatch(switchMasterKey(data.name));
-
   await dispatch(followDefaultTokenForWallet(wallet));
-
   await wallet.save();
   await storeWalletAccountIdsOnAPI(wallet);
   await dispatch(reloadWallet());

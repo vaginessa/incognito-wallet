@@ -168,9 +168,7 @@ const enhance = (WrappedComp) => (props) => {
     requestAnimationFrame(async () => {
       try {
         await dispatch(loadPin());
-        console.debug('LOAD PTOKEN LIST');
         await dispatch(getPTokenList());
-        console.debug(';AA');
         await dispatch(loadAllMasterKeys());
       } catch (error) {
         console.debug(error);
@@ -180,7 +178,6 @@ const enhance = (WrappedComp) => (props) => {
   }, []);
 
   React.useEffect(() => {
-    console.debug('retunr?', !loadMasterKeys);
     if (!masterKeys || !loadMasterKeys || isFetching) {
       return;
     }

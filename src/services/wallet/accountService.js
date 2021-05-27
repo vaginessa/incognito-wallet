@@ -79,7 +79,7 @@ export default class Account {
     metadata,
     isEncryptMessage = true,
     txType,
-    txHandler
+    txHandler,
   } = {}) {
     try {
       new Validator('wallet', wallet).required();
@@ -122,7 +122,7 @@ export default class Account {
     isEncryptMessage = true,
     isEncryptMessageToken = true,
     txType,
-    txHandler
+    txHandler,
   } = {}) {
     new Validator('wallet', wallet).required();
     new Validator('account', account).required();
@@ -148,7 +148,13 @@ export default class Account {
         fee,
         tokenID,
       },
-      extra: { metadata, isEncryptMessage, isEncryptMessageToken, txType, txHandler },
+      extra: {
+        metadata,
+        isEncryptMessage,
+        isEncryptMessageToken,
+        txType,
+        txHandler,
+      },
     });
     console.log('result', result);
     await saveWallet(wallet);
@@ -671,6 +677,7 @@ export default class Account {
         );
         const storageCoins = account.getKeyCoinsStorageByTokenId(tokenId);
         const spentCoinsKey = account.getKeyListSpentCoinsByTokenId(tokenId);
+        const txsTransactorKey = account.getKeyTxHistoryByTokenId(tokenId);
         return [
           account.clearAccountStorage(totalCoinsKey),
           account.clearAccountStorage(unspentCoinsKey),
@@ -678,6 +685,7 @@ export default class Account {
           account.clearAccountStorage(storageCoins),
           account.clearAccountStorage(spentCoinsKey),
           account.clearAccountStorage(account.getOTAKey()),
+          account.clearAccountStorage(txsTransactorKey),
         ];
       });
       await Promise.all(task);
@@ -753,7 +761,7 @@ export default class Account {
     new Validator('tokenID', tokenID).required().string();
     const account = this.getAccount(defaultAccount, wallet);
     return account.createAndSendStopAutoStakingTx({
-      transfer: {fee, tokenID},
+      transfer: { fee, tokenID },
     });
   }
 
@@ -762,7 +770,9 @@ export default class Account {
     let accountInstance = null;
     try {
       accountInstance = await this.getAccount(account, wallet);
-      unspentCoins = await accountInstance.getAllUnspentCoinsV1({ forceGetCoins });
+      unspentCoins = await accountInstance.getAllUnspentCoinsV1({
+        forceGetCoins,
+      });
     } catch (error) {
       console.log('Get unspent coins v1 error: ', error);
     }
@@ -772,12 +782,7 @@ export default class Account {
     };
   }
 
-  static async getPDexHistories({
-    account,
-    wallet,
-    offset,
-    limit
-  }) {
+  static async getPDexHistories({ account, wallet, offset, limit }) {
     let histories = [];
     try {
       const accountWallet = await this.getAccount(account, wallet);
@@ -788,13 +793,13 @@ export default class Account {
     } catch (error) {
       console.debug('GET PDEX HISTORIES ERROR: ', error);
     }
-    return histories.map(history => new PDexHistoryPureModel({ history, accountName: account.name }));
+    return histories.map(
+      (history) =>
+        new PDexHistoryPureModel({ history, accountName: account.name }),
+    );
   }
 
-  static async getPDexStorageHistories({
-    account,
-    wallet,
-  }) {
+  static async getPDexStorageHistories({ account, wallet }) {
     let histories = [];
     try {
       const accountWallet = await this.getAccount(account, wallet);
@@ -819,4 +824,16 @@ export default class Account {
     return await accountWallet.signPoolWithdraw({ amount: amount.toString() });
   }
 
+  static async getTxsHistory({ tokenID, wallet, account } = {}) {
+    try {
+      new Validator('tokenID', tokenID).required().string();
+      new Validator('wallet', wallet).required().object();
+      new Validator('account', account).required().object();
+      const getAccount = getAccountWallet(account, wallet);
+      new Validator('getAccount', getAccount).required().object();
+      return getAccount.getTxsHistory({ tokenID });
+    } catch (error) {
+      throw error;
+    }
+  }
 }

@@ -29,6 +29,7 @@ import globalReducer from './globalReducer';
 import receivers from './receivers';
 import settings from './settings';
 import masterKey from './masterKey';
+import history from './history';
 
 const rootReducer = reduceReducers(
   combineReducers({
@@ -60,6 +61,7 @@ const rootReducer = reduceReducers(
     node,
     masterKey,
     trade,
+    history,
   }),
   globalReducer,
 );
