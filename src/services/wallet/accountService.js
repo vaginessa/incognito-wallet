@@ -836,4 +836,18 @@ export default class Account {
       throw error;
     }
   }
+
+  static async getTxHistoryByTxID({ tokenID, txId, wallet, account } = {}) {
+    try {
+      new Validator('tokenID', tokenID).required().string();
+      new Validator('txId', txId).required().string();
+      new Validator('wallet', wallet).required().object();
+      new Validator('account', account).required().object();
+      const getAccount = getAccountWallet(account, wallet);
+      new Validator('getAccount', getAccount).required().object();
+      return getAccount.getTxHistoryByTxID({ tokenID, txId });
+    } catch (error) {
+      throw error;
+    }
+  }
 }

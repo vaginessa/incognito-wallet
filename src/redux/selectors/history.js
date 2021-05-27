@@ -6,6 +6,7 @@ import { createSelector } from 'reselect';
 import formatUtil from '@src/utils/format';
 import { decimalDigitsSelector } from '@src/screens/Setting';
 import { selectedPrivacy } from './selectedPrivacy';
+import { TX_STATUS_COLOR } from '../utils/history';
 
 const renderAmount = ({ amount, pDecimals, decimalDigits } = {}) => {
   new Validator('amount', amount).amount();
@@ -24,56 +25,79 @@ export const historySelector = createSelector(
   (history) => history,
 );
 
-export const historyTransactorSelector = createSelector(
-  historySelector,
+export const mappingTxTransactorSelector = createSelector(
   selectedPrivacy,
   decimalDigitsSelector,
-  ({ txsTransactor }, selectedPrivacy, decimalDigits) =>
-    txsTransactor.map((ht) => {
-      const { pDecimals, isMainCrypto } = selectedPrivacy;
-      const {
-        txId,
-        amount,
-        status,
-        txType,
-        tx,
-        fee,
-        receivers,
-        tokenReceivers,
-      } = ht;
-      const statusStr = ACCOUNT_CONSTANT.TX_STATUS_STR[status];
-      const txTypeStr = ACCOUNT_CONSTANT.TX_TYPE_STR[txType];
-      const time = tx?.LockTime * 1000;
-      const timeStr = formatUtil.formatDateTime(time);
-      const receiverAddress = isMainCrypto ? receivers[0] : tokenReceivers[0];
-      const result = {
-        txId,
-        amount,
-        amountStr: renderAmount({ amount, pDecimals, decimalDigits }),
-        status,
-        statusStr,
-        txType,
-        txTypeStr,
-        time,
-        timeStr,
-        fee,
-        receiverAddress,
-      };
-      console.log('data', result);
-      return result;
-    }),
+  (selectedPrivacy, decimalDigits) => (txt) => {
+    new Validator('txt', txt).required().object();
+    const { pDecimals, isMainCrypto } = selectedPrivacy;
+    const {
+      txId,
+      amount,
+      status,
+      txType,
+      tx,
+      fee,
+      receivers,
+      tokenReceivers,
+      memo,
+    } = txt;
+    const statusStr = ACCOUNT_CONSTANT.TX_STATUS_STR[status];
+    const txTypeStr = ACCOUNT_CONSTANT.TX_TYPE_STR[txType];
+    const time = tx?.LockTime * 1000;
+    const timeStr = formatUtil.formatDateTime(time);
+    const receiverAddress = isMainCrypto ? receivers[0] : tokenReceivers[0];
+    const result = {
+      txId,
+      amount,
+      amountStr: renderAmount({ amount, pDecimals, decimalDigits }),
+      status,
+      statusStr,
+      txType,
+      txTypeStr,
+      time,
+      timeStr,
+      fee,
+      feeStr: renderAmount({ amount: fee, pDecimals, decimalDigits: false }),
+      receiverAddress,
+      statusColor: TX_STATUS_COLOR[status],
+      memo,
+    };
+    console.log('data', result);
+    return result;
+  },
 );
 
-const historyReceiverSelector = createSelector(
+export const historyTransactorSelector = createSelector(
   historySelector,
+  mappingTxTransactorSelector,
+  ({ txsTransactor }, mappingTxt) =>
+    txsTransactor.map((txt) => mappingTxt(txt)),
+);
+
+export const mappingTxRecieverSelector = createSelector(
   selectedPrivacy,
   decimalDigitsSelector,
-  ({ txsReceiver }, { pDecimals }, decimalDigits) =>
-    txsReceiver.map((tx) => ({
-      ...tx,
-      timeStr: formatUtil.formatDateTime(tx?.lockTime),
-      amountStr: renderAmount({ amount: tx?.amount, pDecimals, decimalDigits }),
-    })),
+  ({ pDecimals }, decimalDigits) => (txr) => {
+    const result = {
+      ...txr,
+      timeStr: formatUtil.formatDateTime(txr?.lockTime),
+      amountStr: renderAmount({
+        amount: txr?.amount,
+        pDecimals,
+        decimalDigits,
+      }),
+      statusColor: TX_STATUS_COLOR[(txr?.status)],
+    };
+    console.log('result', result);
+    return result;
+  },
+);
+
+export const historyReceiverSelector = createSelector(
+  historySelector,
+  mappingTxRecieverSelector,
+  ({ txsReceiver }, mappingTxr) => txsReceiver.map((txr) => mappingTxr(txr)),
 );
 
 export const historyTxsSelector = createSelector(
@@ -91,4 +115,9 @@ export const historyTxsSelector = createSelector(
       histories,
     };
   },
+);
+
+export const historyDetailSelector = createSelector(
+  historySelector,
+  ({ detail }) => detail,
 );

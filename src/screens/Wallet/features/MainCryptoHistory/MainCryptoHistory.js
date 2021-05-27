@@ -1,5 +1,5 @@
 import React, { memo } from 'react';
-import { HistoryList } from '@src/screens/Wallet/features/History';
+import HistoryList from '@src/screens/Wallet/features/HistoryList';
 import { useDispatch, useSelector } from 'react-redux';
 import { accountSelector, selectedPrivacySelector } from '@src/redux/selectors';
 import { ExHandler } from '@src/services/exception';

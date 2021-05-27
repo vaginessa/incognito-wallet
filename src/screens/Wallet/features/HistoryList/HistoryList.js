@@ -1,13 +1,16 @@
 import React from 'react';
+import Swipeout from 'react-native-swipeout';
 import { Text, TouchableOpacity, View } from '@src/components/core';
 import { FlatList } from '@components/core/FlatList';
 import { COLORS } from '@src/styles';
 import PropTypes from 'prop-types';
 import { generateTestId } from '@utils/misc';
 import { TOKEN } from '@src/constants/elements';
-import Swipeout from 'react-native-swipeout';
 import trim from 'lodash/trim';
-
+import { useNavigation } from 'react-navigation-hooks';
+import { useDispatch } from 'react-redux';
+import { actionSetSelectedTx } from '@src/redux/actions/history';
+import routeNames from '@src/router/routeNames';
 import styleSheet from './History.styled';
 
 const HistoryItemWrapper = ({ history, onCancelEtaHistory, ...otherProps }) =>
@@ -32,11 +35,10 @@ const HistoryItemWrapper = ({ history, onCancelEtaHistory, ...otherProps }) =>
         </Swipeout>
       );
     }
-
     return component;
   }, [history]);
 
-const NormalText = ({ style, text, testId, ...rest }) => (
+const NormalText = React.memo(({ style, text, testId, ...rest }) => (
   <Text
     numberOfLines={1}
     style={[styleSheet.text, style]}
@@ -46,14 +48,19 @@ const NormalText = ({ style, text, testId, ...rest }) => (
   >
     {trim(text)}
   </Text>
-);
+));
 
 const HistoryItem = React.memo(({ history }) => {
   const { amountStr, txTypeStr, timeStr, statusStr } = history;
+  const navigation = useNavigation();
+  const dispatch = useDispatch();
   if (!history) {
     return null;
   }
-  const onPress = () => {};
+  const onPress = () => {
+    dispatch(actionSetSelectedTx(history));
+    navigation.navigate(routeNames.TxHistoryDetail);
+  };
   return (
     <TouchableOpacity onPress={onPress} style={styleSheet.itemContainer}>
       <View style={[styleSheet.row, styleSheet.rowTop]}>

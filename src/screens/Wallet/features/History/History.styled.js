@@ -1,84 +1,50 @@
-import { FONT, COLORS, DECOR, UTILS } from '@src/styles';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Dimensions } from 'react-native';
+import { COLORS, FONT } from '@src/styles';
 
-const style = StyleSheet.create({
+const { width, height } = Dimensions.get('window');
+export const styled = StyleSheet.create({
   container: {
     flex: 1,
-    marginBottom: 50,
   },
-  loadingContainer: {
-    marginVertical: 15,
-  },
-  content: {
-    flex: 1,
-    padding: 20,
-    backgroundColor: COLORS.white,
-    borderRadius: DECOR.borderRadiusBorder,
-  },
-  row: {
-    flex: 1,
-    alignItems: 'center',
+  rowText: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  rowTop: {
-    marginBottom: 10,
-  },
-  itemContainer: {
-    paddingVertical: 15,
-  },
-  amountText: {
-    flex: 1,
-    textAlign: 'right',
-    color: COLORS.lightGrey1,
-  },
-  typeText: {
-    flex: 1,
-    color: COLORS.black,
-    fontFamily: FONT.NAME.bold,
-    fontSize: FONT.SIZE.superMedium,
-  },
-  statusText: {
-    flex: 1,
-    fontSize: FONT.SIZE.small,
-    textAlign: 'right',
-  },
-  timeText: {
-    flex: 1,
-    textAlign: 'right',
-    color: COLORS.lightGrey1,
-  },
-  noHistoryContainer: {
-    flex: 1,
-    justifyContent: 'flex-start',
     alignItems: 'center',
-    paddingVertical: 30,
+    marginTop: 15,
+    position: 'relative',
   },
-  noHistoryText: {
-    ...FONT.STYLE.medium,
-    fontSize: 20,
-    textAlign: 'center',
-    lineHeight: 24,
+  icon: {
+    fontSize: 100,
+    color: COLORS.primary,
+    marginVertical: 40,
   },
-  noHistoryActionButton: {
-    width: 200,
-  },
-  divider: {
-    marginBottom: 15,
-  },
-  title: {
-    fontFamily: FONT.NAME.bold,
-    fontSize: FONT.SIZE.superMedium,
-    lineHeight: FONT.SIZE.superMedium + 4,
-    color: COLORS.black,
-  },
-  text: {
-    maxWidth: UTILS.screenWidth() / 2 - 50,
-    color: COLORS.colorGreyBold,
+  labelText: {
+    flex: 1,
     fontFamily: FONT.NAME.medium,
-    fontSize: FONT.SIZE.medium,
-    lineHeight: FONT.SIZE.medium + 4,
+    color: COLORS.colorGreyBold,
+    fontSize: 15,
+    lineHeight: 18,
+    minWidth: 70,
+  },
+  extra: {
+    flex: 5,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  valueText: {
+    fontFamily: FONT.NAME.bold,
+    color: COLORS.black,
+    fontSize: 15,
+    lineHeight: 18,
+    textAlign: 'left',
+    flex: 1,
+  },
+  copyIcon: {
+    marginLeft: 5,
+  },
+  linkingIcon: {
+    marginLeft: 5,
+  },
+  rowFullText: {
+    height: 30,
   },
 });
-
-export default style;

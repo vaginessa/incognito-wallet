@@ -19,7 +19,7 @@ import TradeHistory from '@screens/DexV2/components/History';
 import TradeHistoryDetail from '@screens/DexV2/components/HistoryDetail';
 import UnShieldModal from '@screens/UnShield/UnShield.modal';
 import pApp from '@src/screens/PappView';
-import TxHistoryDetail from '@screens/Wallet/features/TxHistoryDetail';
+import TxHistoryDetail from '@screens/Wallet/features/History';
 import ImportAccount from '@src/screens/Account/features/ImportAccount';
 import CreateAccount from '@src/screens/Account/features/CreateAccount';
 import BackupKeys from '@src/screens/BackupKeys';
@@ -73,7 +73,7 @@ import {
   KeysExplained,
   MasterKeyList,
   Passphrase,
-  VerifyPassPhrase
+  VerifyPassPhrase,
 } from '@screens/BackUpPassphrase';
 import ManageStorage from '@screens/ManageStorage';
 import BackUpAllData from '@screens/BackUpAllData';

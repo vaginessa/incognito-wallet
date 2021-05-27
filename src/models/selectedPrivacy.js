@@ -128,6 +128,7 @@ class SelectedPrivacy {
     this.rootNetworkName = rootNetworkName;
     this.isUSDT = this.tokenId === BIG_COINS.USDT;
     this.isPRV = this.tokenId === BIG_COINS.PRV;
+    this.symbol = this.symbol || this.externalSymbol;
   }
 }
 
