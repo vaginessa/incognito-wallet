@@ -1,3 +1,4 @@
+import orderBy from 'lodash/orderBy';
 import {
   Validator,
   ACCOUNT_CONSTANT,
@@ -31,7 +32,7 @@ export const mappingTxTransactorSelector = createSelector(
   (selectedPrivacy, decimalDigits) => (txt) => {
     new Validator('txt', txt).required().object();
     const { pDecimals, isMainCrypto } = selectedPrivacy;
-    const {
+    let {
       txId,
       amount,
       status,
@@ -41,16 +42,24 @@ export const mappingTxTransactorSelector = createSelector(
       receivers,
       tokenReceivers,
       memo,
+      tokenAmount,
     } = txt;
+    tx = isMainCrypto ? txt?.tx : txt?.tx?.Tx;
     const statusStr = ACCOUNT_CONSTANT.TX_STATUS_STR[status];
     const txTypeStr = ACCOUNT_CONSTANT.TX_TYPE_STR[txType];
     const time = tx?.LockTime * 1000;
     const timeStr = formatUtil.formatDateTime(time);
     const receiverAddress = isMainCrypto ? receivers[0] : tokenReceivers[0];
+    const _amount = isMainCrypto ? amount : tokenAmount;
+    const amountStr = renderAmount({
+      amount: _amount,
+      pDecimals,
+      decimalDigits,
+    });
     const result = {
       txId,
       amount,
-      amountStr: renderAmount({ amount, pDecimals, decimalDigits }),
+      amountStr,
       status,
       statusStr,
       txType,
@@ -63,7 +72,6 @@ export const mappingTxTransactorSelector = createSelector(
       statusColor: TX_STATUS_COLOR[status],
       memo,
     };
-    console.log('data', result);
     return result;
   },
 );
@@ -89,7 +97,6 @@ export const mappingTxRecieverSelector = createSelector(
       }),
       statusColor: TX_STATUS_COLOR[(txr?.status)],
     };
-    console.log('result', result);
     return result;
   },
 );
@@ -105,16 +112,15 @@ export const historyTxsSelector = createSelector(
   historyTransactorSelector,
   historyReceiverSelector,
   (history, txsTransactor, txsReceiver) => {
-    const { isFetching } = history;
-    const histories =
-      [...txsTransactor, ...txsReceiver].sort((a, b) => b?.time - a?.time) ||
-      [];
+    const { isFetching, isFetched } = history;
+    const histories = [...txsTransactor, ...txsReceiver] || [];
+    const sort = orderBy(histories, 'time', 'desc');
     return {
       ...history,
-      isEmpty: histories.length === 0,
+      isEmpty: histories.length === 0 && !isFetching && isFetched,
       refreshing: isFetching,
       oversize: true,
-      histories,
+      histories: [...sort],
     };
   },
 );

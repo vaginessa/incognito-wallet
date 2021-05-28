@@ -5,7 +5,7 @@ import { ButtonBasic, BtnQRCode, BtnClose } from '@src/components/Button';
 import { tokenSelector } from '@src/redux/selectors';
 import { useSelector, useDispatch } from 'react-redux';
 import Token from '@src/components/Token';
-import { useNavigation } from 'react-navigation-hooks';
+import { useFocusEffect, useNavigation } from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
 import { CONSTANT_COMMONS } from '@src/constants';
 import {
@@ -34,6 +34,7 @@ import { actionUpdateShowWalletBlance } from '@src/screens/Setting/Setting.actio
 import srcHideBlanceIcon from '@src/assets/images/icons/ic_hide_blance.png';
 import srcShowBlanceIcon from '@src/assets/images/icons/ic_show_blance.png';
 import appConstant from '@src/constants/app';
+import { actionFree as actionFreeHistory } from '@src/redux/actions/history';
 import {
   styled,
   styledHook,
@@ -56,7 +57,10 @@ const GroupButton = React.memo(() => {
       await dispatch(actionToggleGuide());
     }
   };
-  const [onFeaturePress, isDisabled] = useFeatureConfig(appConstant.DISABLED.SHIELD, handleShield);
+  const [onFeaturePress, isDisabled] = useFeatureConfig(
+    appConstant.DISABLED.SHIELD,
+    handleShield,
+  );
   return (
     <View
       style={[
@@ -141,7 +145,10 @@ const Balance = React.memo((props) => {
       />
       <View style={styled.contentShieldBlance}>
         <Text style={styledBalance.title}>Shielded Balance</Text>
-        <Image source={hideBlance ? srcHideBlanceIcon : srcShowBlanceIcon} style={styled.iconHide} />
+        <Image
+          source={hideBlance ? srcHideBlanceIcon : srcShowBlanceIcon}
+          style={styled.iconHide}
+        />
         <TouchableOpacity
           style={styled.btnHideBlance}
           onPress={onPressHideBlance}
@@ -256,7 +263,10 @@ const Extra = React.memo(() => {
 
   return (
     <View style={extraStyled.container}>
-      <Balance hideBlance={showWalletBlance} onPressHideBlance={updateShowWalletBlance} />
+      <Balance
+        hideBlance={showWalletBlance}
+        onPressHideBlance={updateShowWalletBlance}
+      />
       <GroupButton />
       <FollowToken hideBlance={showWalletBlance} />
       <StreamLine />
@@ -281,6 +291,12 @@ const RightHeader = React.memo(() => {
 const Wallet = () => {
   const navigation = useNavigation();
   const onGoBack = () => navigation.navigate(routeNames.Home);
+  const dispatch = useDispatch();
+  useFocusEffect(
+    React.useCallback(() => {
+      dispatch(actionFreeHistory());
+    }, []),
+  );
   return (
     <View style={[styled.container]}>
       <Header

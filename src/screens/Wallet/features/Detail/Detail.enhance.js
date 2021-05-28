@@ -33,11 +33,7 @@ const enhance = (WrappedComp) => (props) => {
       retryLastTxsUnshieldDecentralized();
     }, []),
   );
-  React.useEffect(() => {
-    return () => {
-      handleFreeHistoryData();
-    };
-  }, []);
+
   return (
     <ErrorBoundary>
       <WrappedComp {...{ ...props }} />

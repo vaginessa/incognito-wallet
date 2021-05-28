@@ -1,12 +1,8 @@
 /* eslint-disable import/no-cycle */
-import { differenceBy } from 'lodash';
 import type from '@src/redux/types/account';
-import TokenModel from '@src/models/token';
 import walletType from '@src/redux/types/wallet';
 import accountService from '@src/services/wallet/accountService';
 import { getPassphrase } from '@src/services/wallet/passwordService';
-import { getUserUnfollowTokenIDs } from '@src/services/wallet/tokenService';
-import convert from '@src/utils/convert';
 import { reloadAccountList } from '@src/redux/actions/wallet';
 import AccountModel from '@src/models/account';
 import { actionLogEvent } from '@src/screens/Performance';
@@ -20,6 +16,7 @@ import { storeWalletAccountIdsOnAPI } from '@services/wallet/WalletService';
 import { devSelector } from '@src/screens/Dev';
 import { tokenSelector, accountSelector } from '../selectors';
 import { getBalance as getTokenBalance, setListToken } from './token';
+import { walletSelector } from '../selectors/wallet';
 
 /**
  *  return basic account object from its name like its KEY, not including account methods (please use accountWallet instead)
@@ -116,15 +113,18 @@ const updateDefaultAccount = (account) => {
 export const setDefaultAccount = (account) => async (dispatch) => {
   try {
     dispatch(updateDefaultAccount(account));
-    global.__gobridge__.getSignPublicKey(JSON.stringify({
-      data: {
-        privateKey: account?.PrivateKey
-      }
-    }), (error, signPublicKeyEncode) => {
-      if (signPublicKeyEncode) {
-        dispatch(setSignPublicKeyEncode(signPublicKeyEncode));
-      }
-    });
+    global.__gobridge__.getSignPublicKey(
+      JSON.stringify({
+        data: {
+          privateKey: account?.PrivateKey,
+        },
+      }),
+      (error, signPublicKeyEncode) => {
+        if (signPublicKeyEncode) {
+          dispatch(setSignPublicKeyEncode(signPublicKeyEncode));
+        }
+      },
+    );
   } catch (e) {
     console.debug('SET DEFAULT ACCOUNT WITH ERROR: ', e);
   }
@@ -305,17 +305,25 @@ export const actionReloadFollowingToken = (shouldLoadBalance = true) => async (
 ) => {
   try {
     const state = getState();
-    const wallet = state.wallet;
+    const wallet = walletSelector(state);
     const account = accountSelector.defaultAccountSelector(state);
     const followed = await accountService.getFollowingTokens(account, wallet);
     await dispatch(setListToken(followed));
+    await accountService.setSubmitedOTAKey({ account, wallet });
     if (shouldLoadBalance) {
       dispatch(getBalance(account));
-      [...followed].map((token) => dispatch(getTokenBalance(token)));
+      followed.forEach((token) => {
+        try {
+          console.log('get token balance', token?.id);
+          dispatch(getTokenBalance(token?.id));
+        } catch {
+          console.log('error', token?.id);
+        }
+      });
     }
     return followed;
   } catch (error) {
-    throw Error(error);
+    throw error;
   }
 };
 

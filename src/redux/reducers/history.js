@@ -33,8 +33,8 @@ export default (state = initialState, action) => {
       ...state,
       isFetching: false,
       isFetched: true,
-      txsTransactor,
-      txsReceiver,
+      txsTransactor: [...txsTransactor],
+      txsReceiver: [...txsReceiver],
     };
   }
   case ACTION_FETCH_FAIL: {

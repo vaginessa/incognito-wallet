@@ -16,8 +16,8 @@ import {
 import { getPrice } from '../utils/selectedPrivacy';
 
 export const selectedPrivacyTokenID = createSelector(
-  state => state?.selectedPrivacy?.tokenID,
-  tokenId => tokenId,
+  (state) => state?.selectedPrivacy?.tokenID,
+  (tokenId) => tokenId,
 );
 
 export const getPrivacyDataByTokenID = createSelector(
@@ -26,15 +26,16 @@ export const getPrivacyDataByTokenID = createSelector(
   pTokens,
   tokensFollowedSelector,
   (account, _internalTokens, _pTokens, _followed) =>
-    memoize(tokenID => {
+    memoize((tokenID) => {
       try {
         // ‘PRV’ is not a token
         const internalTokenData =
           _internalTokens?.find(
-            t => t?.id !== CONSTANT_COMMONS.PRV_TOKEN_ID && t?.id === tokenID,
+            (t) => t?.id !== CONSTANT_COMMONS.PRV_TOKEN_ID && t?.id === tokenID,
           ) || {};
-        const pTokenData = _pTokens?.find(t => t?.tokenId === tokenID);
-        const followedTokenData = _followed.find(t => t?.id === tokenID) || {};
+        const pTokenData = _pTokens?.find((t) => t?.tokenId === tokenID);
+        const followedTokenData =
+          _followed.find((t) => t?.id === tokenID) || {};
         if (
           !internalTokenData &&
           !pTokenData &&
@@ -49,7 +50,7 @@ export const getPrivacyDataByTokenID = createSelector(
           pTokenData,
         );
         const tokenUSDT = _pTokens.find(
-          token => token?.tokenId === BIG_COINS.USDT,
+          (token) => token?.tokenId === BIG_COINS.USDT,
         );
         const price = getPrice({ token, tokenUSDT });
         let data = {
@@ -70,15 +71,15 @@ export const getPrivacyDataBaseOnAccount = createSelector(
   pTokens,
   tokensFollowedSelector,
   selectedPrivacyTokenID,
-  (_internalTokens, _pTokens, _followed, tokenID) => account => {
+  (_internalTokens, _pTokens, _followed, tokenID) => (account) => {
     try {
       // 'PRV' is not a token
       const internalTokenData =
         _internalTokens?.find(
-          t => t?.id !== CONSTANT_COMMONS.PRV_TOKEN_ID && t?.id === tokenID,
+          (t) => t?.id !== CONSTANT_COMMONS.PRV_TOKEN_ID && t?.id === tokenID,
         ) || {};
-      const pTokenData = _pTokens?.find(t => t?.tokenId === tokenID);
-      const followedTokenData = _followed.find(t => t?.id === tokenID) || {};
+      const pTokenData = _pTokens?.find((t) => t?.tokenId === tokenID);
+      const followedTokenData = _followed.find((t) => t?.id === tokenID) || {};
 
       if (
         !internalTokenData &&
@@ -111,7 +112,12 @@ export const selectedPrivacyByFollowedSelector = createSelector(
   selectedPrivacy,
   tokensFollowedSelector,
   (selected, followed) =>
-    followed.find(token => token?.id === selected?.tokenId),
+    followed.find((token) => token?.id === selected?.tokenId),
+);
+
+export const findTokenFollowedByIdSelector = createSelector(
+  tokensFollowedSelector,
+  (followed) => (tokenID) => followed.find((token) => token?.id === tokenID),
 );
 
 export default {
@@ -120,4 +126,5 @@ export default {
   selectedPrivacy,
   getPrivacyDataBaseOnAccount,
   selectedPrivacyByFollowedSelector,
+  findTokenFollowedByIdSelector,
 };

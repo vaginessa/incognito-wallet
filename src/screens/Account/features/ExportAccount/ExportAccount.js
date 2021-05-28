@@ -24,9 +24,7 @@ const ExportItem = ({ label, data, onPress, onPressQRCode }) => (
         <BtnCopy onPress={onPress} />
       </View>
     </View>
-    <Text style={styleSheet.itemData}>
-      {data}
-    </Text>
+    <Text style={styleSheet.itemData}>{data}</Text>
   </View>
 );
 

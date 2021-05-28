@@ -28,6 +28,7 @@ import { receiveHistorySelector } from '@src/redux/selectors/token';
 import { MAX_LIMIT_RECEIVE_HISTORY_ITEM } from '@src/redux/reducers/token';
 import { PRV_ID } from '@screens/DexV2/constants';
 import { devSelector } from '@src/screens/Dev';
+import { Validator } from 'incognito-chain-web-js/build/wallet';
 import { setWallet } from './wallet';
 
 export const setToken = (
@@ -105,28 +106,26 @@ export const getBalanceFinish = (tokenSymbol) => ({
   data: tokenSymbol,
 });
 
-export const getBalance = (token) => async (dispatch, getState) => {
+export const getBalance = (tokenId) => async (dispatch, getState) => {
+  new Validator('tokenId', tokenId).string();
+  const state = getState();
+  const wallet = state?.wallet;
+  const isDev = devSelector(state);
+  const account = accountSelector.defaultAccount(getState());
+  const token = selectedPrivacySelector.findTokenFollowedByIdSelector(state)(
+    tokenId,
+  );
   if (!token) {
-    throw new Error('Token object is required');
+    return;
   }
   try {
-    await dispatch(getBalanceStart(token?.id));
-    const state = getState();
-    const wallet = state?.wallet;
-    const isDev = devSelector(state);
-    const account = accountSelector.defaultAccount(getState());
-    if (!wallet) {
-      throw new Error('Wallet is not exist');
-    }
-    if (!account) {
-      throw new Error('Account is not exist');
-    }
-    const balance = await accountService.getBalance(account, wallet, token.id);
+    await dispatch(getBalanceStart(tokenId));
+    const balance = await accountService.getBalance(account, wallet, tokenId);
     if (isDev) {
       const { coinsStorage } = await accountService.getStorageAccountByTokenId(
         account,
         wallet,
-        token?.id,
+        tokenId,
       );
       if (coinsStorage) {
         await dispatch(
@@ -153,7 +152,7 @@ export const getBalance = (token) => async (dispatch, getState) => {
     );
     throw e;
   } finally {
-    dispatch(getBalanceFinish(token?.id));
+    dispatch(getBalanceFinish(tokenId));
   }
 };
 
