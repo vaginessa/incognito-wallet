@@ -45,7 +45,7 @@ export default (state = initialState, action) => {
     };
   }
   case ACTION_FREE: {
-    return Object.assign(state, initialState);
+    return { ...initialState };
   }
   case ACTION_SET_SELECTED_TX: {
     return {
@@ -66,7 +66,7 @@ export default (state = initialState, action) => {
     };
   }
   case ACTION_FETCHED_TX: {
-    return {
+    return { 
       ...state,
       detail: {
         ...state.detail,
