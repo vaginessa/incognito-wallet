@@ -76,6 +76,7 @@ export const reloadWallet = (accountName) => async (dispatch, getState) => {
     wallet.PrivacyVersion = PrivacyVersion.ver2;
     wallet.UseLegacyEncoding = true;
     wallet.PubsubService = server?.pubsubServices;
+    wallet.RpcRequestService = server?.requestServices;
     let defaultAccount = accountSelector.defaultAccount(state);
     if (wallet) {
       const accounts = await loadListAccount(wallet);

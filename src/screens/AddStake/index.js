@@ -67,7 +67,7 @@ class AddStakeContainer extends BaseScreen {
     const deviceIndex = listDevice.findIndex((item) =>
       _.isEqual(Device.getInstance(item).AccountName, name),
     );
-    listDevice[deviceIndex].minerInfo.stakeTx = rs.txId;
+    listDevice[deviceIndex].SelfStakeTx = rs.txId;
     await LocalDatabase.saveListDevices(listDevice);
     Toast.showInfo('You staked successfully.');
     navigation.navigate(routeNames.Node, {

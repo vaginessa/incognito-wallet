@@ -11,6 +11,7 @@ class Account {
     this.BLSPublicKey = data?.BLSPublicKey;
     // this.BlockProducerKey = data?.BlockProducerKey;
     this.ValidatorKey = data?.ValidatorKey;
+    this.OTAKey = data?.OTAKey;
     this.ID = data.ID;
   }
 

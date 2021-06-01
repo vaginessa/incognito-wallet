@@ -60,6 +60,7 @@ export async function loadWallet(passphrase, name = 'Wallet') {
   wallet.PrivacyVersion = PrivacyVersion.ver2;
   wallet.UseLegacyEncoding = true;
   wallet.PubsubService = server?.pubsubServices;
+  wallet.RpcRequestService = server?.requestServices;
   await wallet.loadWallet(passphrase, name);
   await saveWallet(wallet);
   return wallet?.Name ? wallet : false;
@@ -76,6 +77,7 @@ export async function initWallet(walletName = 'Wallet') {
     wallet.PrivacyVersion = PrivacyVersion.ver2;
     wallet.UseLegacyEncoding = true;
     wallet.PubsubService = server?.pubsubServices;
+    wallet.RpcRequestService = server?.requestServices;
     await wallet.init(passphrase, storage, walletName, 'Anon');
     await wallet.save(passphrase);
     return wallet;
@@ -128,6 +130,7 @@ export async function importWallet(mnemonic, name) {
     wallet.PrivacyVersion = PrivacyVersion.ver2;
     wallet.UseLegacyEncoding = true;
     wallet.PubsubService = server?.pubsubServices;
+    wallet.RpcRequestService = server?.requestServices;
     await wallet.import(mnemonic, passphrase, name, storage);
     await wallet.save(passphrase);
     return wallet;

@@ -10,6 +10,7 @@ import {
   Wallet,
   constants,
   Validator,
+  PrivacyVersion
 } from 'incognito-chain-web-js/build/wallet';
 import _ from 'lodash';
 import { STACK_TRACE } from '@services/exception/customError/code/webjsCode';
@@ -686,6 +687,7 @@ export default class Account {
           account.clearAccountStorage(spentCoinsKey),
           account.clearAccountStorage(account.getOTAKey()),
           account.clearAccountStorage(txsTransactorKey),
+          account.clearCacheBalanceV1(),
         ];
       });
       await Promise.all(task);
@@ -765,25 +767,25 @@ export default class Account {
     });
   }
 
-  static async getUnspentCoinsV1({ account, wallet, forceGetCoins }) {
-    forceGetCoins = !!forceGetCoins;
+  static async getUnspentCoinsV1({ account, wallet, fromApi }) {
+    fromApi = !!fromApi;
     new Validator('wallet', wallet).required();
     new Validator('account', account).required();
-    new Validator('forceGetCoins', forceGetCoins).required().boolean();
+    new Validator('fromApi', fromApi).required().boolean();
 
     let unspentCoins = [];
-    let accountInstance = null;
+    let accountWallet = null;
     try {
-      accountInstance = await this.getAccount(account, wallet);
-      unspentCoins = await accountInstance.getAllUnspentCoinsV1({
-        forceGetCoins,
+      accountWallet = await this.getAccount(account, wallet);
+      unspentCoins = await accountWallet.getUnspentCoinsV1({
+        fromApi,
       });
     } catch (error) {
       console.log('Get unspent coins v1 error: ', error);
     }
     return {
       unspentCoins,
-      accountInstance,
+      accountWallet,
     };
   }
 
