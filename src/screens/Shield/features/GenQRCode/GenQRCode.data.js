@@ -8,6 +8,8 @@ import {
 } from '@screens/Shield/Shield.selector';
 import { selectedPrivacySelector } from '@src/redux/selectors';
 import { actionFetch as fetchDataShield } from '@screens/Shield/Shield.actions';
+import { wcProviderOptionals } from '@screens/Wallet/features/BridgeConnect';
+import WalletConnectProvider from '@walletconnect/react-native-dapp';
 
 const enhance = (WrappedComp) => (props) => {
   const loadingRef = React.useRef(true);
@@ -31,22 +33,24 @@ const enhance = (WrappedComp) => (props) => {
   }, []);
 
   return (
-    <ErrorBoundary>
-      <WrappedComp
-        {...{
-          ...props,
-          loading: loadingRef.current,
-          tokenId,
-          tokenSymbol,
-          selectedPrivacy,
-          isFetching,
-          isFetched,
-          isShieldAddressDecentralized,
+    <WalletConnectProvider {...wcProviderOptionals}>
+      <ErrorBoundary>
+        <WrappedComp
+          {...{
+            ...props,
+            loading: loadingRef.current,
+            tokenId,
+            tokenSymbol,
+            selectedPrivacy,
+            isFetching,
+            isFetched,
+            isShieldAddressDecentralized,
 
-          handleShield,
-        }}
-      />
-    </ErrorBoundary>
+            handleShield,
+          }}
+        />
+      </ErrorBoundary>
+    </WalletConnectProvider>
   );
 };
 
