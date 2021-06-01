@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useCallback, useState} from 'react';
 import ErrorBoundary from '@src/components/ErrorBoundary';
 import { debounce } from 'lodash';
 import { useSelector } from 'react-redux';
@@ -15,13 +15,12 @@ const enhance = WrappedComp => (props) => {
   const wallet = useSelector((state) => state?.wallet);
   const [showBottom, setShowBottom] = useState(false);
 
-  const detectUTXOSV1 = debounce(async () => {
+  const detectUTXOSV1 = React.useCallback(debounce(async () => {
     const { unspentCoins } = await accountService.getUnspentCoinsV1({
       account,
       wallet,
-      forceGetCoins: true
+      fromApi: true
     });
-
     const hasUnspentCoins = unspentCoins.some(coin => {
       if (coin.tokenId === PRV_ID) {
         return coin.balance > 100;
@@ -29,18 +28,17 @@ const enhance = WrappedComp => (props) => {
       return coin.balance > 0;
     });
     setShowBottom(hasUnspentCoins);
-  }, 500);
+  }, 1000),[account, wallet]);
 
   const navigateConvert = () => {
     navigation.navigate(routeNames.Convert);
   };
 
-  useFocusEffect(
-    React.useCallback(() => {
-      if (!account || !wallet) return;
-      detectUTXOSV1();
-    }, [account, wallet]),
-  );
+  useFocusEffect(useCallback(() => {
+    if (!account) return;
+    detectUTXOSV1.cancel();
+    detectUTXOSV1();
+  }, [account.PaymentAddress]));
 
   return (
     <ErrorBoundary>

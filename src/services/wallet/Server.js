@@ -25,7 +25,8 @@ const MAIN_NET_SERVER = {
   password: '',
   name: 'Mainnet',
   coinServices: 'https://api-coinservice.incognito.org',
-  pubsubServices: 'http://51.161.119.66:8001'
+  pubsubServices: 'http://51.161.119.66:8001',
+  requestServices: 'http://51.161.119.66:5000',
 };
 const TEST_NET_SERVER = {
   id: 'testnet',
@@ -61,6 +62,7 @@ const DEV_TEST_SERVER = {
   name: 'Dev test server',
   coinServices: 'http://51.161.119.66:9009',
   pubsubServices: 'http://51.161.119.66:8001',
+  requestServices: 'http://51.161.119.66:5000',
 };
 
 const DEFAULT_LIST_SERVER = [
@@ -122,7 +124,8 @@ export default class Server {
             return {
               ...s,
               coinServices: server?.coinServices,
-              pubsubServices: server?.pubsubServices
+              pubsubServices: server?.pubsubServices,
+              requestServices: server?.requestServices,
             };
           }
         }

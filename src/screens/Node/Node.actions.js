@@ -18,7 +18,6 @@ import { ExHandler } from '@services/exception';
 import { apiGetNodesInfo } from '@screens/Node/Node.services';
 import Device from '@models/device';
 import LocalDatabase from '@utils/LocalDatabase';
-import VirtualNodeService from '@services/VirtualNodeService';
 import { parseNodeRewardsToArray } from '@screens/Node/utils';
 import {
   parseRewards,
