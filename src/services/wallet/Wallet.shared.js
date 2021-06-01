@@ -30,6 +30,7 @@ export const getAccountWallet = (account, wallet) => {
     accountWallet.setRPCCoinServices(wallet.RpcCoinService);
     accountWallet.setPrivacyVersion(wallet.PrivacyVersion);
     accountWallet.setRPCTxServices(wallet.PubsubService);
+    accountWallet.setRPCRequestServices(wallet.RpcRequestService);
     // accountWallet.setUseLegacyEncoding(wallet.UseLegacyEncoding);
     return accountWallet;
   } catch (error) {
