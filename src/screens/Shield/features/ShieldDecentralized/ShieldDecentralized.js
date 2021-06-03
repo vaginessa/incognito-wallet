@@ -150,11 +150,8 @@ const ShieldDecentralized = (props) => {
   };
 
   const renderBalance = () => {
-    if (!balanceLoaded) {
-      web3LoadBalance();
-    }
-    const right =
-      balanceLoaded === undefined ? (
+    const right = balanceLoaded === undefined ?
+      (
         <View style={{ maxWidth: 50, alignSelf: 'flex-end' }}>
           <ActivityIndicator size="small" />
         </View>
@@ -261,8 +258,7 @@ const ShieldDecentralized = (props) => {
   };
 
   const handleRefresh = async () => {
-    if (!connector || connector.connected || isEmpty(connector.accounts))
-      return;
+    if (!connector || !connector.connected || isEmpty(connector.accounts)) return;
     try {
       setRefresh(true);
       setLoadBalance(undefined);
@@ -275,8 +271,7 @@ const ShieldDecentralized = (props) => {
   };
 
   React.useEffect(() => {
-    if (!connector || connector.connected || isEmpty(connector.accounts))
-      return;
+    if (!connector || !connector.connected || isEmpty(connector.accounts)) return;
     web3LoadBalance().then();
   }, [connector, tokenIDInput]);
 
