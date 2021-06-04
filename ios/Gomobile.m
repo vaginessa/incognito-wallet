@@ -158,4 +158,24 @@ RCT_EXPORT_METHOD(estimateTxSize:(NSString *)data callback:(RCTResponseSenderBlo
   }
 }
 
+RCT_EXPORT_METHOD(aesEncrypt:(NSString *)data callback:(RCTResponseSenderBlock)callback){
+  @try{
+    NSString *rs = GomobileAesEncrypt(data, nil);
+    callback(@[[NSNull null], rs]);
+  }
+  @catch(NSException *exception){
+    callback(@[exception.reason, [NSNull null]]);
+  }
+}
+
+RCT_EXPORT_METHOD(aesDecrypt:(NSString *)data callback:(RCTResponseSenderBlock)callback){
+  @try{
+    NSString *rs = GomobileAesDecrypt(data, nil);
+    callback(@[[NSNull null], rs]);
+  }
+  @catch(NSException *exception){
+    callback(@[exception.reason, [NSNull null]]);
+  }
+}
+
 @end
