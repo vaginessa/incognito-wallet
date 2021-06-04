@@ -160,9 +160,7 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
         fast2x,
       };
       if (!userFeesData?.ID) throw new Error('Missing id withdraw session');
-
       let _tx;
-
       const txHandler = async (txId) => {
         _tx = { ...data, burningTxId: txId };
         await dispatch(
@@ -172,9 +170,7 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
           }),
         );
       };
-
       const tx = await handleBurningToken(payload, txHandler);
-
       if (toggleDecentralized) {
         await setState({
           ...state,

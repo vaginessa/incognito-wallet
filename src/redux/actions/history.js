@@ -10,9 +10,9 @@ import {
   mappingTxRecieverSelector,
   mappingTxTransactorSelector,
 } from '@src/redux/selectors/history';
-import { defaultAccountSelector } from '../selectors/account';
-import { walletSelector } from '../selectors/wallet';
-import { selectedPrivacy } from '../selectors/selectedPrivacy';
+import { defaultAccountSelector } from '@src/redux/selectors/account';
+import { walletSelector } from '@src/redux/selectors/wallet';
+import { selectedPrivacy } from '@src/redux/selectors/selectedPrivacy';
 
 export const ACTION_FETCHING = '[history] Fetching data';
 export const ACTION_FETCHED = '[history] Fetched data';
@@ -57,7 +57,6 @@ export const actionFetch = ({ tokenID } = {}) => async (dispatch, getState) => {
     const wallet = walletSelector(state);
     await dispatch(actionFetching());
     const _tokenID = tokenID || selectedPrivacy.tokenId;
-    console.log('_tokenID', _tokenID);
     new Validator('tokenID', _tokenID).required().string();
     const data = await accountServices.getTxsHistory({
       tokenID: _tokenID,

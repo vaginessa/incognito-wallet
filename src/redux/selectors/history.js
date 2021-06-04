@@ -1,16 +1,14 @@
 import orderBy from 'lodash/orderBy';
-import {
-  Validator,
-  ACCOUNT_CONSTANT,
-} from 'incognito-chain-web-js/build/wallet';
+import { Validator } from 'incognito-chain-web-js/build/wallet';
 import { createSelector } from 'reselect';
 import formatUtil from '@src/utils/format';
 import { decimalDigitsSelector } from '@src/screens/Setting';
+import { PRV } from '@src/constants/common';
 import { selectedPrivacy } from './selectedPrivacy';
 import { TX_STATUS_COLOR } from '../utils/history';
 
 const renderAmount = ({ amount, pDecimals, decimalDigits } = {}) => {
-  new Validator('amount', amount).amount();
+  // new Validator('amount', amount).amount();
   new Validator('pDecimals', pDecimals).number();
   new Validator('decimalDigits', decimalDigits).boolean();
   let amountStr = '';
@@ -31,46 +29,24 @@ export const mappingTxTransactorSelector = createSelector(
   decimalDigitsSelector,
   (selectedPrivacy, decimalDigits) => (txt) => {
     new Validator('txt', txt).required().object();
-    const { pDecimals, isMainCrypto } = selectedPrivacy;
-    let {
-      txId,
-      amount,
-      status,
-      txType,
-      tx,
-      fee,
-      receivers,
-      tokenReceivers,
-      memo,
-      tokenAmount,
-    } = txt;
-    tx = isMainCrypto ? txt?.tx : txt?.tx?.Tx;
-    const statusStr = ACCOUNT_CONSTANT.TX_STATUS_STR[status];
-    const txTypeStr = ACCOUNT_CONSTANT.TX_TYPE_STR[txType];
-    const time = tx?.LockTime * 1000;
+    const { pDecimals } = selectedPrivacy;
+    let { time, amount, fee, status } = txt;
     const timeStr = formatUtil.formatDateTime(time);
-    const receiverAddress = isMainCrypto ? receivers[0] : tokenReceivers[0];
-    const _amount = isMainCrypto ? amount : tokenAmount;
     const amountStr = renderAmount({
-      amount: _amount,
+      amount,
       pDecimals,
       decimalDigits,
     });
     const result = {
-      txId,
-      amount,
+      ...txt,
+      feeStr: renderAmount({
+        amount: fee,
+        pDecimals: PRV.pDecimals,
+        decimalDigits: false,
+      }),
       amountStr,
-      status,
-      statusStr,
-      txType,
-      txTypeStr,
-      time,
       timeStr,
-      fee,
-      feeStr: renderAmount({ amount: fee, pDecimals, decimalDigits: false }),
-      receiverAddress,
       statusColor: TX_STATUS_COLOR[status],
-      memo,
     };
     return result;
   },
@@ -89,7 +65,7 @@ export const mappingTxRecieverSelector = createSelector(
   ({ pDecimals }, decimalDigits) => (txr) => {
     const result = {
       ...txr,
-      timeStr: formatUtil.formatDateTime(txr?.lockTime),
+      timeStr: formatUtil.formatDateTime(txr?.time),
       amountStr: renderAmount({
         amount: txr?.amount,
         pDecimals,

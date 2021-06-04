@@ -10,7 +10,7 @@ import {
   Wallet,
   constants,
   Validator,
-  PrivacyVersion
+  PrivacyVersion,
 } from 'incognito-chain-web-js/build/wallet';
 import _ from 'lodash';
 import { STACK_TRACE } from '@services/exception/customError/code/webjsCode';
@@ -678,16 +678,24 @@ export default class Account {
         );
         const storageCoins = account.getKeyCoinsStorageByTokenId(tokenId);
         const spentCoinsKey = account.getKeyListSpentCoinsByTokenId(tokenId);
-        const txsTransactorKey = account.getKeyTxHistoryByTokenId(tokenId);
+        // const txsTransactorKey = account.getKeyTxHistoryByTokenId(tokenId);
+        const keySetKeysImage = account.getKeySetKeysImageStorage({
+          tokenID: tokenId,
+        });
+        const keySetKeysPublic = account.getKeySetPublickKeysStorage({
+          tokenID: tokenId,
+        });
         return [
           account.clearAccountStorage(totalCoinsKey),
           account.clearAccountStorage(unspentCoinsKey),
           account.clearAccountStorage(spendingCoinsKey),
           account.clearAccountStorage(storageCoins),
           account.clearAccountStorage(spentCoinsKey),
-          account.clearAccountStorage(account.getOTAKey()),
-          account.clearAccountStorage(txsTransactorKey),
-          account.clearCacheBalanceV1(),
+          account.clearAccountStorage(keySetKeysImage),
+          account.clearAccountStorage(keySetKeysPublic),
+          // account.clearAccountStorage(account.getOTAKey()),
+          // account.clearAccountStorage(txsTransactorKey),
+          // account.clearCacheBalanceV1(),
         ];
       });
       await Promise.all(task);
@@ -881,7 +889,6 @@ export default class Account {
     new Validator('tokenName', tokenName).required().string();
     new Validator('tokenSymbol', tokenSymbol).required().string();
     new Validator('tokenAmount', tokenAmount).required().string();
-
     let response;
     try {
       const accountWallet = getAccountWallet(account, wallet);
@@ -917,7 +924,14 @@ export default class Account {
     new Validator('wallet', wallet).required().object();
     new Validator('tokenID', tokenID).required().string();
     const accountWallet = getAccountWallet(account, wallet);
-    console.log('typeof', typeof accountWallet.getTxsTransactor);
     return accountWallet.getTxsTransactor({ tokenID });
+  }
+
+  static async getTxsTransactorFromStorage({ wallet, account, tokenID } = {}) {
+    new Validator('account', account).required().object();
+    new Validator('wallet', wallet).required().object();
+    new Validator('tokenID', tokenID).required().string();
+    const accountWallet = getAccountWallet(account, wallet);
+    return accountWallet.getTxsTransactorFromStorage({ tokenID });
   }
 }
