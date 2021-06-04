@@ -186,7 +186,6 @@ const History = (props) => {
     }
   };
   let factories = getFactories();
-  console.log('factories', factories, tx);
   return (
     <View style={styled.container}>
       <Header title="Transaction detail" />

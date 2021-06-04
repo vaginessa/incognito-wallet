@@ -8,13 +8,17 @@ import { selectedPrivacy } from './selectedPrivacy';
 import { TX_STATUS_COLOR } from '../utils/history';
 
 const renderAmount = ({ amount, pDecimals, decimalDigits } = {}) => {
-  // new Validator('amount', amount).amount();
-  new Validator('pDecimals', pDecimals).number();
-  new Validator('decimalDigits', decimalDigits).boolean();
   let amountStr = '';
-  const amountToNumber = Number(amount) || 0;
-  if (amountToNumber) {
-    amountStr = formatUtil.amount(amount, pDecimals, true, decimalDigits);
+  try {
+    new Validator('amount', amount).amount();
+    new Validator('pDecimals', pDecimals).number();
+    new Validator('decimalDigits', decimalDigits).boolean();
+    const amountToNumber = Number(amount) || 0;
+    if (amountToNumber) {
+      amountStr = formatUtil.amount(amount, pDecimals, true, decimalDigits);
+    }
+  } catch (error) {
+    console.log(error);
   }
   return amountStr;
 };
