@@ -73,6 +73,8 @@ export const withdraw = (data) => {
     UserFeeSelection: isUsedPRVFee ? 2 : 1,
     UserFeeLevel: fast2x ? 2 : 1,
   };
+  console.log('withdraw data: ', data);
+  console.log('withdraw payload: ', payload);
 
   if (signPublicKeyEncode) {
     payload.SignPublicKeyEncode = signPublicKeyEncode;
