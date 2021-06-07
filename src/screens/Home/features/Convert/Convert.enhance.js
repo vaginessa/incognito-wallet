@@ -53,7 +53,7 @@ const enhance = WrappedComp => props => {
       } catch (errors) {
         errorsList = errorsList.concat(errors);
       }
-      editStep(unspentCoin?.tokenId, true);
+      editStep(unspentCoin?.tokenId, errorsList.length === 0);
     }
   };
 

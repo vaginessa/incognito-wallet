@@ -81,6 +81,7 @@ export default class Account {
     isEncryptMessage = true,
     txType,
     txHandler,
+    txHashHandler
   } = {}) {
     try {
       new Validator('wallet', wallet).required();
@@ -100,7 +101,7 @@ export default class Account {
           prvPayments,
           fee,
         },
-        extra: { metadata, isEncryptMessage, txType, txHandler },
+        extra: { metadata, isEncryptMessage, txType, txHandler, txHashHandler },
       });
       console.log('result', result);
       // save wallet
@@ -124,6 +125,7 @@ export default class Account {
     isEncryptMessageToken = true,
     txType,
     txHandler,
+    txHashHandler
   } = {}) {
     new Validator('wallet', wallet).required();
     new Validator('account', account).required();
@@ -155,6 +157,7 @@ export default class Account {
         isEncryptMessageToken,
         txType,
         txHandler,
+        txHashHandler
       },
     });
     console.log('result', result);
@@ -770,7 +773,7 @@ export default class Account {
     new Validator('fee', fee).required().amount();
     new Validator('tokenID', tokenID).required().string();
     const account = this.getAccount(defaultAccount, wallet);
-    return account.createAndSendStopAutoStakingTx({
+    return account.createAndSendWithdrawRewardTx({
       transfer: { fee, tokenID },
     });
   }
@@ -781,16 +784,11 @@ export default class Account {
     new Validator('account', account).required();
     new Validator('fromApi', fromApi).required().boolean();
 
-    let unspentCoins = [];
-    let accountWallet = null;
-    try {
-      accountWallet = await this.getAccount(account, wallet);
-      unspentCoins = await accountWallet.getUnspentCoinsV1({
-        fromApi,
-      });
-    } catch (error) {
-      console.log('Get unspent coins v1 error: ', error);
-    }
+    const accountWallet = await this.getAccount(account, wallet);
+    const unspentCoins = await accountWallet.getUnspentCoinsV1({
+      fromApi,
+    });
+
     return {
       unspentCoins,
       accountWallet,
@@ -933,5 +931,42 @@ export default class Account {
     new Validator('tokenID', tokenID).required().string();
     const accountWallet = getAccountWallet(account, wallet);
     return accountWallet.getTxsTransactorFromStorage({ tokenID });
+  }
+
+  static async createBurningRequest({
+    wallet,
+    account,
+    fee,
+    tokenId,
+    burnAmount,
+    prvPayments,
+    info,
+    remoteAddress,
+    txHashHandler,
+  } = {}) {
+    new Validator('account', account).required();
+    new Validator('wallet', wallet).required();
+    new Validator('fee', fee).required().amount();
+    new Validator('tokenId', tokenId).required().string();
+    new Validator('burnAmount', burnAmount).required().amount();
+    new Validator('prvPayments', prvPayments).required().array();
+    new Validator('remoteAddress', remoteAddress).required().string();
+    new Validator('info', info).string();
+
+    const accountWallet = getAccountWallet(account, wallet);
+
+    return accountWallet.createAndSendBurningRequestTx({
+      transfer: {
+        fee,
+        tokenID: tokenId,
+        prvPayments,
+        info
+      },
+      extra: {
+        remoteAddress,
+        burnAmount,
+        txHashHandler
+      },
+    });
   }
 }

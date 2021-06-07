@@ -8,6 +8,7 @@ import { useFocusEffect, useNavigation } from 'react-navigation-hooks';
 import routeNames from '@routers/routeNames';
 import accountService from '@services/wallet/accountService';
 import { PRV_ID } from '@screens/Dex/constants';
+import { ExHandler } from '@services/exception';
 
 const enhance = WrappedComp => (props) => {
   const navigation = useNavigation();
@@ -16,18 +17,22 @@ const enhance = WrappedComp => (props) => {
   const [showBottom, setShowBottom] = useState(false);
 
   const detectUTXOSV1 = React.useCallback(debounce(async () => {
-    const { unspentCoins } = await accountService.getUnspentCoinsV1({
-      account,
-      wallet,
-      fromApi: true
-    });
-    const hasUnspentCoins = unspentCoins.some(coin => {
-      if (coin.tokenId === PRV_ID) {
-        return coin.balance > 100;
-      }
-      return coin.balance > 0;
-    });
-    setShowBottom(hasUnspentCoins);
+    try {
+      const { unspentCoins } = await accountService.getUnspentCoinsV1({
+        account,
+        wallet,
+        fromApi: true
+      });
+      const hasUnspentCoins = unspentCoins.some(coin => {
+        if (coin.tokenId === PRV_ID) {
+          return coin.balance > 100;
+        }
+        return coin.balance > 0;
+      });
+      setShowBottom(hasUnspentCoins);
+    } catch (error) {
+      new ExHandler(error).showErrorToast();
+    }
   }, 1000),[account, wallet]);
 
   const navigateConvert = () => {
