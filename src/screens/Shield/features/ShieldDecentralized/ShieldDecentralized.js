@@ -6,8 +6,6 @@ import { ActivityIndicator, BaseTextInput, RoundCornerButton } from '@components
 import { useWalletConnect } from '@walletconnect/react-native-dapp';
 import { CONSTANT_COMMONS } from '@src/constants';
 import withBridgeConnect from '@screens/Wallet/features/BridgeConnect/WalletConnect.enhance';
-import { useSelector } from 'react-redux';
-import { selectedPrivacySeleclor } from '@src/redux/selectors';
 import { ExHandler } from '@services/exception';
 import { useNavigation } from 'react-navigation-hooks';
 import { isEmpty } from 'lodash';
@@ -34,6 +32,7 @@ const ShieldDecentralized = (props) => {
     handleDepositERC20,
     handleGetNonce,
     setShowTerm,
+    selectPrivacy
   } = props;
 
   // state
@@ -47,7 +46,7 @@ const ShieldDecentralized = (props) => {
   const navigation = useNavigation();
   // selector
   const connector = useWalletConnect();
-  const { externalSymbol, contractId } = useSelector(selectedPrivacySeleclor.selectedPrivacy);
+  const { externalSymbol, contractId } = selectPrivacy;
 
   const tokenIDInput = React.useMemo(() => {
     return contractId ? contractId : CONSTANT_COMMONS.ETH_TOKEN_ADDRESS;
@@ -279,6 +278,7 @@ ShieldDecentralized.propTypes = {
   handleDepositERC20: PropTypes.func.isRequired,
   handleGetNonce: PropTypes.func.isRequired,
   setShowTerm: PropTypes.func.isRequired,
+  selectPrivacy: PropTypes.object.isRequired,
 };
 
 export default withBridgeConnect(memo(ShieldDecentralized));

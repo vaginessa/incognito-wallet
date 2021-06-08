@@ -87,31 +87,35 @@ export const actionGetAddressToShield = async ({ selectedPrivacy, account, signP
   }
 };
 
-export const actionFetch = ({ tokenId }) => async (dispatch, getState) => {
+export const actionFetch = ({ tokenId, selectedPrivacy, account }) => async (dispatch, getState) => {
   try {
-    await dispatch(setSelectedPrivacy(tokenId));
+    const startTime = Date.now();
     const state = getState();
-    const account = defaultAccountSelector(state);
     const { isFetching } = shieldSelector(state);
-    const selectedPrivacy = selectedPrivacySeleclor.selectedPrivacy(state);
     const signPublicKeyEncode = signPublicKeyEncodeSelector(state);
     if (!selectedPrivacy || isFetching) {
       return;
     }
-    await dispatch(actionFetching());
-    await dispatch(actionAddFollowToken(tokenId));
-    const dataMinMax = await actionGetMinMaxShield({ tokenId });
+    dispatch(actionFetching());
+    const [dataMinMax, addressShield] = await Promise.all([
+      actionGetMinMaxShield({ tokenId }),
+      actionGetAddressToShield({ selectedPrivacy, account, signPublicKeyEncode }),
+    ]);
+
     let {
       address,
       expiredAt,
       isShieldAddressDecentralized,
       tokenFee,
       estimateFee,
-    } = await actionGetAddressToShield({ selectedPrivacy, account, signPublicKeyEncode });
+    } = addressShield;
+
     const [min, max] = dataMinMax;
     if (expiredAt) {
       expiredAt = formatUtil.formatDateTime(expiredAt);
     }
+    const endTime = Date.now();
+    alert(`Loaded in ${endTime - startTime}`);
     await dispatch(
       actionFetched({
         min,
