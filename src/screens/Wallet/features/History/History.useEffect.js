@@ -15,14 +15,14 @@ export const useHistoryEffect = () => {
   const switchAccount = useSelector(switchAccountSelector);
   const selectedPrivacy = useSelector(selectedPrivacySelector.selectedPrivacy);
 
-  const handleRefresh = () => {
+  const handleRefresh = async () => {
     try {
       if (selectedPrivacy.isMainCrypto) {
-        dispatch(getAccountBalance(account));
+        await dispatch(getAccountBalance(account));
       } else if (selectedPrivacy.isToken) {
-        dispatch(getTokenBalance(selectedPrivacy.tokenId));
+        await dispatch(getTokenBalance(selectedPrivacy.tokenId));
       }
-      dispatch(actionFetchHistory());
+      await dispatch(actionFetchHistory());
     } catch (error) {
       new ExHandler(error).showErrorToast();
     }
