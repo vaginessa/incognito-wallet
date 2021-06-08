@@ -37,7 +37,7 @@ const MASTER_NODE_ADDRESS = isMainnet ? MAINNET_FULLNODE : TESTNET_FULLNODE;
 const NODE_URL = 'https://node.incognito.org/node.html';
 const USDT_TOKEN_ID = isMainnet
   ? '716fd1009e2a1669caacc36891e707bfdf02590f96ebd897548e8963c95ebac0'
-  : '4946b16a08a9d4afbdf416edf52ef15073db0fc4a63e78eb9de80f94f6c0852a';
+  : 'ef80ac984c6367c9c45f8e3b89011d00e76a6f17bd782e939f649fcf95a05b74';
 const TRACK_LOG_URL = 'https://device-network.incognito.org';
 
 const ETH_TOKEN_ID = isMainnet
@@ -52,19 +52,18 @@ const HOME_CONFIG_DATA =
     ? 'https://api-data.incognito.org/v2/home-configs'
     : 'https://api-data-staging.incognito.org/v2/home-configs';
 
-const NODE_MONITOR_URL = isMainnet ? 'https://monitor.incognito.org/' : 'http://51.91.72.45:36215/';
+const NODE_MONITOR_URL = isMainnet
+  ? 'https://monitor.incognito.org/'
+  : 'http://51.91.72.45:36215/';
 const NODE_MONITOR_DETAIL_URL = NODE_MONITOR_URL + 'monitor-detail?mpk=';
 
 const HOME_CONFIG_EVENT = () => {
   const isStaging = global.homeConfig !== 'staging';
   const prefix = 'https://';
-  const content = `${
-    isStaging 
-      ? 'hunt'
-      : 'hunt-staging'}.incognito.org`;
+  const content = `${isStaging ? 'hunt' : 'hunt-staging'}.incognito.org`;
   return {
     title: content,
-    url: prefix + content
+    url: prefix + content,
   };
 };
 
@@ -72,9 +71,8 @@ const HUNT_CONFIG_QR_CODE = () => {
   const isStaging = global.homeConfig !== 'staging';
   const prefix = 'https://api-hunt';
   const content = `${
-    isStaging
-      ? ''
-      : '-staging'}.incognito.org/api/app/txqrcode/`;
+    isStaging ? '' : '-staging'
+  }.incognito.org/api/app/txqrcode/`;
   return prefix + content;
 };
 
@@ -86,12 +84,9 @@ const APP_VERSION = isMainnet
     isIOS() ? 'ios' : 'android'
   }/last-version`;
 
-const URL_SERVICE_UPDATE_FIRMWARE =
-  `https://${
-    global.isMainnet 
-      ? ''
-      : 'staging-'
-  }api-service.incognito.org/pool/check-lan-setup`;
+const URL_SERVICE_UPDATE_FIRMWARE = `https://${
+  global.isMainnet ? '' : 'staging-'
+}api-service.incognito.org/pool/check-lan-setup`;
 
 export default {
   isMainnet,
