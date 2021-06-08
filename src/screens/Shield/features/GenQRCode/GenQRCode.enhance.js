@@ -18,10 +18,10 @@ const enhance = (WrappedComp) => (props) => {
   const {
     tokenSymbol,
     isShieldAddressDecentralized,
-    selectedPrivacy,
     isFetched,
     isFetching,
     loading,
+    selectedPrivacy
   } = props;
 
   const [showTerm, setShowTerm] = useState(true);
