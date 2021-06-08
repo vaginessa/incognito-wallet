@@ -32,7 +32,7 @@ const ShieldDecentralized = (props) => {
     handleDepositERC20,
     handleGetNonce,
     setShowTerm,
-    selectPrivacy
+    selectedPrivacy
   } = props;
 
   // state
@@ -46,7 +46,7 @@ const ShieldDecentralized = (props) => {
   const navigation = useNavigation();
   // selector
   const connector = useWalletConnect();
-  const { externalSymbol, contractId } = selectPrivacy;
+  const { externalSymbol, contractId } = selectedPrivacy;
 
   const tokenIDInput = React.useMemo(() => {
     return contractId ? contractId : CONSTANT_COMMONS.ETH_TOKEN_ADDRESS;
@@ -278,7 +278,7 @@ ShieldDecentralized.propTypes = {
   handleDepositERC20: PropTypes.func.isRequired,
   handleGetNonce: PropTypes.func.isRequired,
   setShowTerm: PropTypes.func.isRequired,
-  selectPrivacy: PropTypes.object.isRequired,
+  selectedPrivacy: PropTypes.object.isRequired,
 };
 
 export default withBridgeConnect(memo(ShieldDecentralized));
