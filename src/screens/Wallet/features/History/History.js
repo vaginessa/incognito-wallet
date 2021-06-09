@@ -100,6 +100,7 @@ const History = (props) => {
       timeStr,
       status,
       statusStr,
+      txTypeStr
     } = tx;
     switch (txType) {
     case ACCOUNT_CONSTANT.TX_TYPE.RECEIVE: {
@@ -131,10 +132,15 @@ const History = (props) => {
           value: timeStr,
           disabled: !time,
         },
+        {
+          label: 'Type',
+          value: txTypeStr,
+          disabled: !txTypeStr,
+        },
       ];
     }
     default: {
-      const { fee, receiverAddress, memo } = tx;
+      const { fee, receiverAddress, memo, txTypeStr } = tx;
       return [
         {
           label: 'TxID',
@@ -180,6 +186,11 @@ const History = (props) => {
           disabled: !memo,
           copyable: true,
           fullText: true,
+        },
+        {
+          label: 'Type',
+          value: txTypeStr,
+          disabled: !txTypeStr,
         },
       ];
     }

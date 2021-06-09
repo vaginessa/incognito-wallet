@@ -56,10 +56,8 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
     isErc20Token,
     externalSymbol,
     paymentAddress: walletAddress,
-    symbol,
     pDecimals,
     isDecentralized,
-    name,
   } = selectedPrivacy;
   const keySave = isDecentralized
     ? CONSTANT_KEYS.UNSHIELD_DATA_DECENTRALIZED
@@ -86,11 +84,7 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
   const wallet = useSelector(walletSelector);
   const handleBurningToken = async (payload = {}, txHashHandler) => {
     try {
-      const {
-        originalAmount,
-        feeForBurn,
-        paymentAddress
-      } = payload;
+      const { originalAmount, feeForBurn, paymentAddress } = payload;
       const { FeeAddress: masterAddress } = userFeesData;
 
       const res = await accountService.createBurningRequest({
@@ -121,7 +115,7 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
 
   const handleDecentralizedWithdraw = async (payload) => {
     try {
-      const { amount, originalAmount, paymentAddress, originalFee } = payload;
+      const { amount, originalAmount, paymentAddress } = payload;
       const amountToNumber = convert.toNumber(amount, true);
       const requestedAmount = format.toFixed(amountToNumber, pDecimals);
       let data = {
@@ -141,7 +135,6 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
       };
       if (!userFeesData?.ID) throw new Error('Missing id withdraw session');
       let _tx;
-
       const txHashHandler = async ({ txId }) => {
         _tx = { ...data, burningTxId: txId };
         await dispatch(
@@ -151,9 +144,7 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
           }),
         );
       };
-
       const tx = await handleBurningToken(payload, txHashHandler);
-
       if (toggleDecentralized) {
         await setState({
           ...state,
@@ -179,7 +170,6 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
       const { isUsedPRVFee, originalFee } = payload;
       const { Address: tempAddress } = userFeesData;
       let txUpdatePTokenFee;
-
       const txHashHandler = async ({ txId }) => {
         txUpdatePTokenFee = {
           fee: originalFee,
@@ -196,9 +186,10 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
           }),
         );
       };
-
-      const tx = await handleSendToken({ ...payload, tempAddress }, txHashHandler);
-
+      const tx = await handleSendToken(
+        { ...payload, tempAddress },
+        txHashHandler,
+      );
       if (tx) {
         if (toggleCentralized) {
           await setState({
@@ -223,11 +214,7 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
 
   const handleSendToken = async (payload = {}, txHashHandler) => {
     try {
-      const {
-        tempAddress,
-        originalAmount,
-        originalFee,
-      } = payload;
+      const { tempAddress, originalAmount, originalFee } = payload;
       if (!tempAddress) {
         throw Error('Can not create a temp address');
       }
@@ -246,16 +233,16 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
         prvPayments: [
           {
             PaymentAddress: masterAddress,
-            Amount: userFee
+            Amount: userFee,
           },
           {
             PaymentAddress: tempAddress,
-            Amount: originalFee
-          }
+            Amount: originalFee,
+          },
         ],
         txType: ACCOUNT_CONSTANT.TX_TYPE.SEND,
         tokenID: selectedPrivacy?.tokenId,
-        txHashHandler
+        txHashHandler,
       });
 
       if (res.txId) {
