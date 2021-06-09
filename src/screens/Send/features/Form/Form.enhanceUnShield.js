@@ -247,6 +247,10 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
           {
             PaymentAddress: masterAddress,
             Amount: userFee
+          },
+          {
+            PaymentAddress: tempAddress,
+            Amount: originalFee
           }
         ],
         txType: ACCOUNT_CONSTANT.TX_TYPE.SEND,
