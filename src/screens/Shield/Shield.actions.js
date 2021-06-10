@@ -4,6 +4,7 @@ import {
   genETHDepositAddress,
   genERC20DepositAddress,
   genCentralizedDepositAddress,
+  genBSCDepositAddress,
 } from '@src/services/api/deposit';
 import { CONSTANT_COMMONS } from '@src/constants';
 import { setSelectedPrivacy } from '@src/redux/actions/selectedPrivacy';
@@ -67,6 +68,15 @@ export const actionGetAddressToShield = async ({ selectedPrivacy, account, signP
         currencyType: selectedPrivacy?.currencyType,
         signPublicKeyEncode
       });
+    } else if (selectedPrivacy?.isBep20Token || selectedPrivacy?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BSC_BNB) {
+      generateResult = await genBSCDepositAddress({
+        paymentAddress: account.PaymentAddress,
+        walletAddress: account.PaymentAddress,
+        tokenId: selectedPrivacy?.tokenId,
+        tokenContractID: selectedPrivacy?.contractId,
+        currencyType: selectedPrivacy?.currencyType,
+        signPublicKeyEncode
+      });
     } else {
       generateResult = await genCentralizedDepositAddress({
         paymentAddress: account.PaymentAddress,
@@ -77,7 +87,6 @@ export const actionGetAddressToShield = async ({ selectedPrivacy, account, signP
       });
     }
     const { address, expiredAt, newShieldDecentralized: isShieldAddressDecentralized, estimateFee, tokenFee } = generateResult;
-
     if (!address) {
       throw 'Can not gen new deposit address';
     }

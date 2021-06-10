@@ -47,8 +47,8 @@ const ShieldDecentralized = (props) => {
   // selector
   const connector = useWalletConnect();
   const { externalSymbol, contractId } = selectedPrivacy;
-  const isBSC = (selectedPrivacy.CurrencyType === 7 || selectedPrivacy.CurrencyType === 8);
-
+  const isBSC = (selectedPrivacy?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BSC_BNB
+    || selectedPrivacy?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BSC_BEP20);
   const tokenIDInput = React.useMemo(() => {
     return contractId ? contractId : CONSTANT_COMMONS.ETH_TOKEN_ADDRESS;
   }, [contractId]);
@@ -73,7 +73,7 @@ const ShieldDecentralized = (props) => {
         let tx;
         let nonce = -1;
         try {
-          if (externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.ETH) {
+          if (externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.ETH || selectedPrivacy?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BSC_BNB) {
             tx = await handleDepositETH(shieldAmountNum, connector.accounts[0], account?.PaymentAddress, isBSC);
             setShieldTxHash(tx);
           } else {

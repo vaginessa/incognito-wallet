@@ -76,8 +76,8 @@ const Extra = () => {
   };
 
   const renderEstimateFee = () => {
-    const isETH = selectedPrivacy?.externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.ETH;
-    let humanFee = convert.toNumber((isETH ? estimateFee : tokenFee) || 0, true);
+    const isNativeToken = (selectedPrivacy?.externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.ETH) || selectedPrivacy?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BSC_BNB;
+    let humanFee = convert.toNumber((isNativeToken ? estimateFee : tokenFee) || 0, true);
     const originalFee = convert.toOriginalAmount(humanFee, selectedPrivacy?.pDecimals);
     humanFee = convert.toHumanAmount(originalFee, selectedPrivacy?.pDecimals);
     if (!humanFee) return null;
