@@ -22,8 +22,9 @@ import {
 } from '@src/services/wallet/Wallet.shared';
 import { PRVIDSTR } from 'incognito-chain-web-js/lib/wallet/constants';
 import { PDexHistoryPureModel } from '@models/pDefi';
-import { CustomError, ErrorCode } from '../exception';
+import { CustomError, ErrorCode, ExHandler } from '../exception';
 import { loadListAccountWithBLSPubKey, saveWallet } from './WalletService';
+import { cachePromise } from '../cache';
 
 const TAG = 'Account';
 
@@ -81,7 +82,7 @@ export default class Account {
     isEncryptMessage = true,
     txType,
     txHandler,
-    txHashHandler
+    txHashHandler,
   } = {}) {
     try {
       new Validator('wallet', wallet).required();
@@ -125,7 +126,7 @@ export default class Account {
     isEncryptMessageToken = true,
     txType,
     txHandler,
-    txHashHandler
+    txHashHandler,
   } = {}) {
     new Validator('wallet', wallet).required();
     new Validator('account', account).required();
@@ -157,7 +158,7 @@ export default class Account {
         isEncryptMessageToken,
         txType,
         txHandler,
-        txHashHandler
+        txHashHandler,
       },
     });
     console.log('result', result);
@@ -294,7 +295,12 @@ export default class Account {
     const accountWallet = this.getAccount(account, wallet);
     let balance = 0;
     try {
-      balance = await accountWallet.getBalance(tokenId);
+      const key = `CACHE-BALANCE-${
+        wallet.Name
+      }-${accountWallet.getOTAKey()}-${tokenId}`;
+      balance = await cachePromise(key, () =>
+        accountWallet.getBalance(tokenId),
+      );
       return new BigNumber(balance).toNumber();
     } catch (error) {
       throw error;
@@ -659,51 +665,18 @@ export default class Account {
 
   static async removeCacheBalance(defaultAccount, wallet) {
     try {
-      if (!wallet) {
-        throw new Error('Missing wallet');
-      }
-      if (!defaultAccount) {
-        throw new Error('Missing account');
-      }
+      new Validator('wallet', wallet).object();
+      new Validator('defaultAccount', defaultAccount).object();
       const account = this.getAccount(defaultAccount, wallet);
-      account.setStorageServices(storage);
-      const followTokens = account
-        .listFollowingTokens()
-        .map((token) => token?.ID);
-      const allTokens = [...followTokens, PRV.id];
-      let task = allTokens.map(async (tokenId) => {
-        const totalCoinsKey = account.getKeyTotalCoinsStorageByTokenId(tokenId);
-        const unspentCoinsKey = account.getKeyListUnspentCoinsByTokenId(
-          tokenId,
-        );
-        const spendingCoinsKey = account.getKeySpendingCoinsStorageByTokenId(
-          tokenId,
-        );
-        const storageCoins = account.getKeyCoinsStorageByTokenId(tokenId);
-        const spentCoinsKey = account.getKeyListSpentCoinsByTokenId(tokenId);
-        // const txsTransactorKey = account.getKeyTxHistoryByTokenId(tokenId);
-        const keySetKeysImage = account.getKeySetKeysImageStorage({
-          tokenID: tokenId,
+      const keyInfo = (await account.getKeyInfo(PRVIDSTR)) || {};
+      if (keyInfo?.coinindex) {
+        let task = Object.keys(keyInfo.coinindex).map((tokenID) => {
+          return account.clearCacheStorage({ tokenID });
         });
-        const keySetKeysPublic = account.getKeySetPublickKeysStorage({
-          tokenID: tokenId,
-        });
-        return [
-          account.clearAccountStorage(totalCoinsKey),
-          account.clearAccountStorage(unspentCoinsKey),
-          account.clearAccountStorage(spendingCoinsKey),
-          account.clearAccountStorage(storageCoins),
-          account.clearAccountStorage(spentCoinsKey),
-          account.clearAccountStorage(keySetKeysImage),
-          account.clearAccountStorage(keySetKeysPublic),
-          // account.clearAccountStorage(account.getOTAKey()),
-          // account.clearAccountStorage(txsTransactorKey),
-          // account.clearCacheBalanceV1(),
-        ];
-      });
-      await Promise.all(task);
+        await Promise.all(task);
+      }
     } catch (error) {
-      throw error;
+      new ExHandler(error).showErrorToast();
     }
   }
 
@@ -783,12 +756,10 @@ export default class Account {
     new Validator('wallet', wallet).required();
     new Validator('account', account).required();
     new Validator('fromApi', fromApi).required().boolean();
-
-    const accountWallet = await this.getAccount(account, wallet);
+    let accountWallet = this.getAccount(account, wallet);
     const unspentCoins = await accountWallet.getUnspentCoinsV1({
       fromApi,
     });
-
     return {
       unspentCoins,
       accountWallet,
@@ -960,12 +931,12 @@ export default class Account {
         fee,
         tokenID: tokenId,
         prvPayments,
-        info
+        info,
       },
       extra: {
         remoteAddress,
         burnAmount,
-        txHashHandler
+        txHashHandler,
       },
     });
   }

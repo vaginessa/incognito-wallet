@@ -1,5 +1,8 @@
 import { batch } from 'react-redux';
-import { loadListAccount } from '@src/services/wallet/WalletService';
+import {
+  configsWallet,
+  loadListAccount,
+} from '@src/services/wallet/WalletService';
 import accountService from '@src/services/wallet/accountService';
 import type from '@src/redux/types/wallet';
 // eslint-disable-next-line import/no-cycle
@@ -69,14 +72,7 @@ export const reloadWallet = (accountName) => async (dispatch, getState) => {
     const state = getState();
     const masterKey = currentMasterKeySelector(state);
     let wallet = masterKey.wallet;
-    const server = await Server.getDefault();
-    wallet.RpcClient = server.address;
-    wallet.RpcCoinService = server?.coinServices;
-    wallet.Storage = Storage;
-    wallet.PrivacyVersion = PrivacyVersion.ver2;
-    wallet.UseLegacyEncoding = true;
-    wallet.PubsubService = server?.pubsubServices;
-    wallet.RpcRequestService = server?.requestServices;
+    await configsWallet(wallet);
     let defaultAccount = accountSelector.defaultAccount(state);
     if (wallet) {
       const accounts = await loadListAccount(wallet);
@@ -122,7 +118,7 @@ export const reloadWallet = (accountName) => async (dispatch, getState) => {
           dispatch(setListToken(followed));
         });
       }
-      dispatch(actionReloadFollowingToken(true));
+      await dispatch(actionReloadFollowingToken(true));
       return wallet;
     }
     return false;

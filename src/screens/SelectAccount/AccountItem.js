@@ -86,7 +86,7 @@ const AccountItem = ({
         `Can not switch to account "${accountName}", please try again.`,
       ).showErrorToast();
     } finally {
-      dispatch(actionSwitchAccountFetched());
+      await dispatch(actionSwitchAccountFetched());
     }
   };
 

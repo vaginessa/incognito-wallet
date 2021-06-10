@@ -51,26 +51,24 @@ export async function loadListAccountWithBLSPubKey(wallet) {
 }
 
 export async function loadWallet(passphrase, name = 'Wallet') {
-  let wallet = new Wallet();
-  const server = await Server.getDefault();
-  wallet.RpcClient = server.address;
-  wallet.RpcCoinService = server?.coinServices;
-  wallet.Name = name;
-  wallet.Storage = storage;
-  wallet.PrivacyVersion = PrivacyVersion.ver2;
-  wallet.UseLegacyEncoding = true;
-  wallet.PubsubService = server?.pubsubServices;
-  wallet.RpcRequestService = server?.requestServices;
-  await wallet.loadWallet(passphrase, name);
-  await saveWallet(wallet);
-  return wallet?.Name ? wallet : false;
+  try {
+    let wallet = new Wallet();
+    await configsWallet(wallet);
+    wallet.Name = name;
+    await wallet.loadWallet(passphrase, name);
+    await saveWallet(wallet);
+    return wallet?.Name ? wallet : false;
+  } catch (error) {
+    console.log('ERROR WHEN LOAD WALLET', error);
+  }
 }
 
-export async function initWallet(walletName = 'Wallet') {
+export async function configsWallet(wallet) {
   try {
-    const passphrase = await getPassphrase();
+    if (!wallet) {
+      return;
+    }
     const server = await Server.getDefault();
-    const wallet = new Wallet();
     wallet.RpcClient = server.address;
     wallet.RpcCoinService = server?.coinServices;
     wallet.Storage = storage;
@@ -78,6 +76,18 @@ export async function initWallet(walletName = 'Wallet') {
     wallet.UseLegacyEncoding = true;
     wallet.PubsubService = server?.pubsubServices;
     wallet.RpcRequestService = server?.requestServices;
+  } catch (error) {
+    console.log('CONFIGS_WALLET_ERROR', error);
+    throw error;
+  }
+  return wallet;
+}
+
+export async function initWallet(walletName = 'Wallet') {
+  try {
+    const passphrase = await getPassphrase();
+    let wallet = new Wallet();
+    await configsWallet(wallet);
     await wallet.init(passphrase, storage, walletName, 'Anon');
     await wallet.save(passphrase);
     return wallet;
@@ -122,15 +132,8 @@ export async function updateHistoryStatus(wallet, txId) {
 export async function importWallet(mnemonic, name) {
   try {
     const passphrase = await getPassphrase();
-    const wallet = new Wallet();
-    const server = await Server.getDefault();
-    wallet.RpcClient = server.address;
-    wallet.RpcCoinService = server?.coinServices;
-    wallet.Storage = storage;
-    wallet.PrivacyVersion = PrivacyVersion.ver2;
-    wallet.UseLegacyEncoding = true;
-    wallet.PubsubService = server?.pubsubServices;
-    wallet.RpcRequestService = server?.requestServices;
+    let wallet = new Wallet();
+    await configsWallet(wallet);
     await wallet.import(mnemonic, passphrase, name, storage);
     await wallet.save(passphrase);
     return wallet;

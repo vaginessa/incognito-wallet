@@ -13,10 +13,11 @@ import {
 } from '@src/redux/selectors/masterKey';
 import { switchMasterKey, updateMasterKey } from '@src/redux/actions/masterKey';
 import { storeWalletAccountIdsOnAPI } from '@services/wallet/WalletService';
+import { ExHandler } from '@src/services/exception';
 import { devSelector } from '@src/screens/Dev';
-import { tokenSelector, accountSelector } from '../selectors';
+import { tokenSelector, accountSelector } from '@src/redux/selectors';
+import { walletSelector } from '@src/redux/selectors/wallet';
 import { getBalance as getTokenBalance, setListToken } from './token';
-import { walletSelector } from '../selectors/wallet';
 
 /**
  *  return basic account object from its name like its KEY, not including account methods (please use accountWallet instead)
@@ -49,9 +50,9 @@ export const setListAccount = (
 };
 
 export const removeAccount = (account) => async (dispatch, getState) => {
+  const state = getState();
+  const wallet = walletSelector(state);
   try {
-    const state = getState();
-    const wallet = state?.wallet;
     if (!account) {
       new Error('Account is required');
     }
@@ -59,6 +60,11 @@ export const removeAccount = (account) => async (dispatch, getState) => {
       throw new Error(
         'Wallet is not existed, can not remove account right now',
       );
+    }
+    try {
+      await accountService.removeCacheBalance(account, wallet);
+    } catch (error) {
+      console.log('ERROR REMOVE CACHE STORAGE', error);
     }
     const { PrivateKey } = account;
     const passphrase = await getPassphrase();
@@ -76,7 +82,6 @@ export const removeAccount = (account) => async (dispatch, getState) => {
       type: type.REMOVE_BY_PRIVATE_KEY,
       data: PrivateKey,
     });
-
     return true;
   } catch (e) {
     throw e;
@@ -136,7 +141,7 @@ export const getBalance = (account) => async (dispatch, getState) => {
     if (!account) throw new Error('Account object is required');
     const state = getState();
     await dispatch(getBalanceStart(account?.name));
-    const wallet = state?.wallet;
+    const wallet = walletSelector(state);
     const isDev = devSelector(state);
     if (!wallet) {
       throw new Error('Wallet is not exist');
@@ -292,7 +297,7 @@ export const actionSwitchAccount = (
     if (defaultAccountName !== account?.name) {
       await dispatch(setDefaultAccount(account));
     }
-    dispatch(actionReloadFollowingToken(shouldLoadBalance));
+    await dispatch(actionReloadFollowingToken(shouldLoadBalance));
     return account;
   } catch (error) {
     throw Error(error);
@@ -314,9 +319,8 @@ export const actionReloadFollowingToken = (shouldLoadBalance = true) => async (
       dispatch(getBalance(account));
       followed.forEach((token) => {
         try {
-          console.log('get token balance', token?.id);
           dispatch(getTokenBalance(token?.id));
-        } catch {
+        } catch (error) {
           console.log('error', token?.id);
         }
       });
