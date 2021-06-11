@@ -9,6 +9,7 @@ import {
   importWallet,
   saveWallet,
   storeWalletAccountIdsOnAPI,
+  configsWallet,
 } from '@services/wallet/WalletService';
 // eslint-disable-next-line import/no-cycle
 import { reloadWallet } from '@src/redux/actions/wallet';
@@ -139,53 +140,54 @@ const loadAllMasterKeysSuccess = (data) => ({
 });
 
 export const loadAllMasterKeys = () => async (dispatch) => {
-  await updateNetwork();
-
-  let masterKeyList = _.uniqBy(
-    await LocalDatabase.getMasterKeyList(),
-    (item) => item.name,
-  ).map((item) => new MasterKeyModel(item));
-
-  for (let key of masterKeyList) {
-    await key.loadWallet();
-    if (key.name.toLowerCase() === 'masterless') {
-      continue;
-    }
-    const wallet = key.wallet;
-    let masterAccountInfo = await wallet.MasterAccount.getDeserializeInformation();
-    const serverAccounts = await getWalletAccounts(
-      masterAccountInfo.PublicKeyCheckEncode,
-    );
-    const accountIds = [];
-    for (const account of wallet.MasterAccount.child) {
-      const accountInfo = await account.getDeserializeInformation();
-      accountIds.push(accountInfo.ID);
-    }
-    const newAccounts = serverAccounts.filter(
-      (item) =>
-        !accountIds.includes(item.id) &&
-        !(key.deletedAccountIds || []).includes(item.id),
-    );
-
-    if (newAccounts.length > 0) {
-      const newCreatedAccounts = [];
-      for (const account of newAccounts) {
-        try {
-          const newAccount = await wallet.importAccountWithId(
-            account.id,
-            account.name,
-          );
-          newCreatedAccounts.push(newAccount);
-        } catch {
-          //
-        }
+  try {
+    await updateNetwork();
+    let masterKeyList = _.uniqBy(
+      await LocalDatabase.getMasterKeyList(),
+      (item) => item.name,
+    ).map((item) => new MasterKeyModel(item));
+    for (let key of masterKeyList) {
+      await key.loadWallet();
+      if (key.name.toLowerCase() === 'masterless') {
+        continue;
       }
-      await dispatch(followDefaultTokenForWallet(wallet, newCreatedAccounts));
-      await wallet.save();
+      let wallet = key.wallet;
+      await configsWallet(wallet);
+      let masterAccountInfo = await wallet.MasterAccount.getDeserializeInformation();
+      const serverAccounts = await getWalletAccounts(
+        masterAccountInfo.PublicKeyCheckEncode,
+      );
+      const accountIds = [];
+      for (const account of wallet.MasterAccount.child) {
+        const accountInfo = await account.getDeserializeInformation();
+        accountIds.push(accountInfo.ID);
+      }
+      const newAccounts = serverAccounts.filter(
+        (item) =>
+          !accountIds.includes(item.id) &&
+          !(key.deletedAccountIds || []).includes(item.id),
+      );
+      if (newAccounts.length > 0) {
+        const newCreatedAccounts = [];
+        for (const account of newAccounts) {
+          try {
+            const newAccount = await wallet.importAccountWithId(
+              account.id,
+              account.name,
+            );
+            newCreatedAccounts.push(newAccount);
+          } catch {
+            //
+          }
+        }
+        await dispatch(followDefaultTokenForWallet(wallet, newCreatedAccounts));
+        await wallet.save();
+      }
     }
+    await dispatch(loadAllMasterKeysSuccess(masterKeyList));
+  } catch (error) {
+    console.log('ERROR LOAD MASTER KEY', error);
   }
-
-  await dispatch(loadAllMasterKeysSuccess(masterKeyList));
 };
 
 const switchMasterKeySuccess = (data) => ({

@@ -7,6 +7,7 @@ import { actionFetch as actionFetchHistory } from '@src/redux/actions/history';
 import { switchAccountSelector } from '@src/redux/selectors/account';
 import { walletSelector } from '@src/redux/selectors/wallet';
 import { getBalance as getTokenBalance } from '@src/redux/actions/token';
+import { useFocusEffect } from 'react-navigation-hooks';
 
 export const useHistoryEffect = () => {
   const wallet = useSelector(walletSelector);
@@ -43,12 +44,18 @@ export const useHistoryEffect = () => {
       new ExHandler(e).showErrorToast();
     }
   };
-  React.useEffect(() => {
-    if (!switchAccount) {
-      handleRefresh();
-    }
-  }, [selectedPrivacy.tokenId, account.PaymentAddress, wallet, switchAccount]);
-
+  useFocusEffect(
+    React.useCallback(() => {
+      if (!switchAccount) {
+        handleRefresh();
+      }
+    }, [
+      selectedPrivacy.tokenId,
+      account.PaymentAddress,
+      wallet,
+      switchAccount,
+    ]),
+  );
   return {
     handleRefresh,
     handleCancelEtaHistory,

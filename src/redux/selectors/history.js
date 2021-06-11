@@ -18,7 +18,7 @@ const renderAmount = ({ amount, pDecimals, decimalDigits } = {}) => {
       amountStr = formatUtil.amount(amount, pDecimals, true, decimalDigits);
     }
   } catch (error) {
-    console.log(error);
+    console.log('renderAmount', error);
   }
   return amountStr;
 };
