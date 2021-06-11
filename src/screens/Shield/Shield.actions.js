@@ -98,7 +98,6 @@ export const actionGetAddressToShield = async ({ selectedPrivacy, account, signP
 
 export const actionFetch = ({ tokenId, selectedPrivacy, account }) => async (dispatch, getState) => {
   try {
-    const startTime = Date.now();
     const state = getState();
     const { isFetching } = shieldSelector(state);
     const signPublicKeyEncode = signPublicKeyEncodeSelector(state);
@@ -123,8 +122,6 @@ export const actionFetch = ({ tokenId, selectedPrivacy, account }) => async (dis
     if (expiredAt) {
       expiredAt = formatUtil.formatDateTime(expiredAt);
     }
-    const endTime = Date.now();
-    alert(`Loaded in ${endTime - startTime}`);
     await dispatch(
       actionFetched({
         min,

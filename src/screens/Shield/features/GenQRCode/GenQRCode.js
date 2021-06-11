@@ -82,12 +82,24 @@ const Extra = () => {
     humanFee = convert.toHumanAmount(originalFee, selectedPrivacy?.pDecimals);
     if (!humanFee) return null;
     return(
-      <NormalText text="Estimated shielding fee: ">
-        <Text style={[styled.boldText]}>
-          {`${humanFee} ${selectedPrivacy?.externalSymbol ||
-          selectedPrivacy?.symbol}`}
-        </Text>
-      </NormalText>
+      <>
+        <NormalText text="Estimated shielding fee: ">
+          <Text style={[styled.boldText]}>
+            {`${humanFee} ${selectedPrivacy?.externalSymbol ||
+            selectedPrivacy?.symbol}`}
+          </Text>
+        </NormalText>
+        <View style={styled.centerRaw}>
+          <Text style={styled.smallText}>
+            This fee will be deducted from the shielded funds.
+          </Text>
+          <BtnInfo
+            isBlack
+            style={styled.btnInfo}
+            onPress={() => navigation.navigate(routeNames.ShieldDecentralizeDescription)}
+          />
+        </View>
+      </>
     );
   };
 
@@ -136,16 +148,6 @@ const Extra = () => {
       </View>
       <View style={styled.hook}>
         {renderEstimateFee()}
-        <View style={styled.centerRaw}>
-          <Text style={styled.smallText}>
-            This fee will be deducted from the shielded funds.
-          </Text>
-          <BtnInfo
-            isBlack
-            style={styled.btnInfo}
-            onPress={() => navigation.navigate(routeNames.ShieldDecentralizeDescription)}
-          />
-        </View>
       </View>
       <CopiableText data={address} />
       <View style={{ marginTop: 15 }}>
