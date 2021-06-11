@@ -6,32 +6,41 @@ import {
   shieldDataSelector,
   shieldSelector,
 } from '@screens/Shield/Shield.selector';
-import { selectedPrivacySelector } from '@src/redux/selectors';
 import { actionFetch as fetchDataShield } from '@screens/Shield/Shield.actions';
 import { wcProviderOptionals } from '@screens/Wallet/features/BridgeConnect';
 import WalletConnectProvider from '@walletconnect/react-native-dapp';
+import { setSelectedPrivacy } from '@src/redux/actions/selectedPrivacy';
+import { actionAddFollowToken } from '@src/redux/actions/token';
+import { defaultAccountSelector } from '@src/redux/selectors/account';
 
 const enhance = (WrappedComp) => (props) => {
   const loadingRef = React.useRef(true);
   const dispatch = useDispatch();
-
-  const tokenId = useNavigationParam('tokenId');
-  const tokenSymbol = useNavigationParam('tokenSymbol');
-
+  const account = useSelector(defaultAccountSelector);
+  const tokenShield = useNavigationParam('tokenShield') || {};
+  const tokenSymbol = tokenShield?.externalSymbol || tokenShield?.symbol;
+  const { tokenId } = tokenShield;
   const { isShieldAddressDecentralized } = useSelector(shieldDataSelector);
   const { isFetching, isFetched } = useSelector(shieldSelector);
-
-  const selectedPrivacy = useSelector(selectedPrivacySelector.selectedPrivacy);
-
-  const handleShield = () => dispatch(fetchDataShield({ tokenId }));
-
+  const handleShield = () =>
+    dispatch(
+      fetchDataShield({ tokenId, selectedPrivacy: tokenShield, account }),
+    );
+  const handleUpdateTokenSelector = () => {
+    dispatch(setSelectedPrivacy(tokenId));
+    dispatch(actionAddFollowToken(tokenId));
+  };
   React.useEffect(() => {
     setTimeout(() => {
       loadingRef.current = false;
       handleShield();
-    }, 500);
+    }, 300);
   }, []);
-
+  React.useEffect(() => {
+    setTimeout(() => {
+      handleUpdateTokenSelector();
+    }, 2000);
+  }, []);
   return (
     <WalletConnectProvider {...wcProviderOptionals}>
       <ErrorBoundary>
@@ -41,11 +50,11 @@ const enhance = (WrappedComp) => (props) => {
             loading: loadingRef.current,
             tokenId,
             tokenSymbol,
-            selectedPrivacy,
+            selectedPrivacy: tokenShield,
             isFetching,
             isFetched,
             isShieldAddressDecentralized,
-
+            tokenShield,
             handleShield,
           }}
         />

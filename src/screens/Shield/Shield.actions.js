@@ -4,13 +4,14 @@ import {
   genETHDepositAddress,
   genERC20DepositAddress,
   genCentralizedDepositAddress,
+  genBSCDepositAddress,
 } from '@src/services/api/deposit';
 import { CONSTANT_COMMONS } from '@src/constants';
 import { setSelectedPrivacy } from '@src/redux/actions/selectedPrivacy';
 import { actionAddFollowToken } from '@src/redux/actions/token';
 import {
   defaultAccountSelector,
-  signPublicKeyEncodeSelector
+  signPublicKeyEncodeSelector,
 } from '@src/redux/selectors/account';
 import formatUtil from '@utils/format';
 import {
@@ -42,7 +43,11 @@ export const actionGetMinMaxShield = async ({ tokenId }) => {
   }
 };
 
-export const actionGetAddressToShield = async ({ selectedPrivacy, account, signPublicKeyEncode }) => {
+export const actionGetAddressToShield = async ({
+  selectedPrivacy,
+  account,
+  signPublicKeyEncode,
+}) => {
   try {
     let generateResult = {};
     if (!selectedPrivacy?.isPToken) {
@@ -65,7 +70,20 @@ export const actionGetAddressToShield = async ({ selectedPrivacy, account, signP
         tokenId: selectedPrivacy?.tokenId,
         tokenContractID: selectedPrivacy?.contractId,
         currencyType: selectedPrivacy?.currencyType,
-        signPublicKeyEncode
+        signPublicKeyEncode,
+      });
+    } else if (
+      selectedPrivacy?.isBep20Token ||
+      selectedPrivacy?.currencyType ===
+        CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BSC_BNB
+    ) {
+      generateResult = await genBSCDepositAddress({
+        paymentAddress: account.PaymentAddress,
+        walletAddress: account.PaymentAddress,
+        tokenId: selectedPrivacy?.tokenId,
+        tokenContractID: selectedPrivacy?.contractId,
+        currencyType: selectedPrivacy?.currencyType,
+        signPublicKeyEncode,
       });
     } else {
       generateResult = await genCentralizedDepositAddress({
@@ -73,41 +91,60 @@ export const actionGetAddressToShield = async ({ selectedPrivacy, account, signP
         walletAddress: account.PaymentAddress,
         tokenId: selectedPrivacy?.tokenId,
         currencyType: selectedPrivacy?.currencyType,
-        signPublicKeyEncode
+        signPublicKeyEncode,
       });
     }
-    const { address, expiredAt, newShieldDecentralized: isShieldAddressDecentralized, estimateFee, tokenFee } = generateResult;
-
+    const {
+      address,
+      expiredAt,
+      newShieldDecentralized: isShieldAddressDecentralized,
+      estimateFee,
+      tokenFee,
+    } = generateResult;
     if (!address) {
       throw 'Can not gen new deposit address';
     }
-    return { address, expiredAt, isShieldAddressDecentralized: Boolean(isShieldAddressDecentralized || 0), estimateFee, tokenFee };
+    return {
+      address,
+      expiredAt,
+      isShieldAddressDecentralized: Boolean(isShieldAddressDecentralized || 0),
+      estimateFee,
+      tokenFee,
+    };
   } catch (error) {
     throw error;
   }
 };
 
-export const actionFetch = ({ tokenId }) => async (dispatch, getState) => {
+export const actionFetch = ({ tokenId, selectedPrivacy, account }) => async (
+  dispatch,
+  getState,
+) => {
   try {
-    await dispatch(setSelectedPrivacy(tokenId));
     const state = getState();
-    const account = defaultAccountSelector(state);
     const { isFetching } = shieldSelector(state);
-    const selectedPrivacy = selectedPrivacySelector.selectedPrivacy(state);
     const signPublicKeyEncode = signPublicKeyEncodeSelector(state);
     if (!selectedPrivacy || isFetching) {
       return;
     }
-    await dispatch(actionFetching());
-    await dispatch(actionAddFollowToken(tokenId));
-    const dataMinMax = await actionGetMinMaxShield({ tokenId });
+    dispatch(actionFetching());
+    const [dataMinMax, addressShield] = await Promise.all([
+      actionGetMinMaxShield({ tokenId }),
+      actionGetAddressToShield({
+        selectedPrivacy,
+        account,
+        signPublicKeyEncode,
+      }),
+    ]);
+
     let {
       address,
       expiredAt,
       isShieldAddressDecentralized,
       tokenFee,
       estimateFee,
-    } = await actionGetAddressToShield({ selectedPrivacy, account, signPublicKeyEncode });
+    } = addressShield;
+
     const [min, max] = dataMinMax;
     if (expiredAt) {
       expiredAt = formatUtil.formatDateTime(expiredAt);
