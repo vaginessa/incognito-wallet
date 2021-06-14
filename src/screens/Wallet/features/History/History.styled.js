@@ -47,4 +47,15 @@ export const styled = StyleSheet.create({
   rowFullText: {
     height: 30,
   },
+  a: {
+    color: COLORS.black,
+    textDecorationLine: 'underline',
+  },
+  p: {
+    fontFamily: FONT.NAME.medium,
+    color: COLORS.colorGreyBold,
+    fontSize: 14,
+    lineHeight: 21,
+    marginTop: 20,
+  },
 });

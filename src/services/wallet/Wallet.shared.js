@@ -29,12 +29,16 @@ export const getAccountWallet = (
     new Validator('wallet.RpcCoinService', wallet.RpcCoinService).string();
     new Validator('wallet.PrivacyVersion', wallet.PrivacyVersion).number();
     new Validator('wallet.PubsubService', wallet.PubsubService).string();
+    new Validator('wallet.AuthToken', wallet.AuthToken).string();
+    new Validator('wallet.RpcApiService', wallet.RpcApiService).string();
     accountWallet.setRPCClient(wallet.RpcClient);
     accountWallet.setStorageServices(wallet.Storage);
     accountWallet.setRPCCoinServices(wallet.RpcCoinService);
     accountWallet.setPrivacyVersion(version);
     accountWallet.setRPCTxServices(wallet.PubsubService);
     accountWallet.setRPCRequestServices(wallet.RpcRequestService);
+    accountWallet.setAuthToken(wallet.AuthToken);
+    accountWallet.setRPCApiServices(wallet.RpcApiService, wallet.AuthToken);
     // accountWallet.setUseLegacyEncoding(wallet.UseLegacyEncoding);
     return accountWallet;
   } catch (error) {
