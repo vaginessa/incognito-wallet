@@ -136,12 +136,12 @@ const enhance = (WrappedComp) => (props) => {
       console.debug('LOADED MASTER KEY');
       await setState({ ...initialState, isInitialing: true });
       await login();
-      dispatch(actionFetchHomeConfigs());
-      dispatch(getInternalTokenList());
       const [servers] = await new Promise.all([
         serverService.get(),
         dispatch(actionFetchProfile()),
         getFunctionConfigs().catch((e) => e),
+        dispatch(getInternalTokenList()),
+        dispatch(actionFetchHomeConfigs()),
       ]);
       if (!servers || servers?.length === 0) {
         await serverService.setDefaultList();

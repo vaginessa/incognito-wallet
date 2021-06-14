@@ -1,4 +1,5 @@
 /* eslint-disable import/no-cycle */
+import { PRVIDSTR } from 'incognito-chain-web-js/lib/wallet/constants';
 import BigNumber from 'bignumber.js';
 import AccountModel from '@models/account';
 import { COINS, CONSTANT_KEYS } from '@src/constants';
@@ -10,21 +11,19 @@ import {
   Wallet,
   constants,
   Validator,
-  PrivacyVersion,
 } from 'incognito-chain-web-js/build/wallet';
 import _ from 'lodash';
 import { STACK_TRACE } from '@services/exception/customError/code/webjsCode';
 import Server from '@services/wallet/Server';
-import { PRV, PRV_ID } from '@src/constants/common';
+import { PRV_ID } from '@src/constants/common';
 import {
   getAccountNameByAccount,
   getAccountWallet,
 } from '@src/services/wallet/Wallet.shared';
-import { PRVIDSTR } from 'incognito-chain-web-js/lib/wallet/constants';
+import { cachePromise } from '@src/services/cache';
 import { PDexHistoryPureModel } from '@models/pDefi';
 import { CustomError, ErrorCode, ExHandler } from '../exception';
 import { loadListAccountWithBLSPubKey, saveWallet } from './WalletService';
-import { cachePromise } from '../cache';
 
 const TAG = 'Account';
 
@@ -815,14 +814,15 @@ export default class Account {
     return await accountWallet.signPoolWithdraw({ amount: amount.toString() });
   }
 
-  static async getTxsHistory({ tokenID, wallet, account } = {}) {
+  static async getTxsHistory({ tokenID, wallet, account, isPToken } = {}) {
     try {
       new Validator('tokenID', tokenID).required().string();
       new Validator('wallet', wallet).required().object();
       new Validator('account', account).required().object();
+      new Validator('isPToken', isPToken).required().boolean();
       const getAccount = getAccountWallet(account, wallet);
       new Validator('getAccount', getAccount).required().object();
-      return getAccount.getTxsHistory({ tokenID });
+      return getAccount.getTxsHistory({ tokenID, isPToken });
     } catch (error) {
       throw error;
     }

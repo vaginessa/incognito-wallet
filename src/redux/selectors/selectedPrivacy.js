@@ -80,15 +80,13 @@ export const getPrivacyDataBaseOnAccount = createSelector(
         ) || {};
       const pTokenData = _pTokens?.find((t) => t?.tokenId === tokenID);
       const followedTokenData = _followed.find((t) => t?.id === tokenID) || {};
-
       if (
         !internalTokenData &&
         !pTokenData &&
         tokenID !== CONSTANT_COMMONS.PRV_TOKEN_ID
       ) {
-        throw new Error(`Can not find coin with id ${tokenID}`);
+        console.log(`Can not find coin with id ${tokenID}`);
       }
-
       return new SelectedPrivacy(
         account,
         { ...internalTokenData, ...followedTokenData },

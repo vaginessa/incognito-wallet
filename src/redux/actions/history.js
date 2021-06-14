@@ -7,7 +7,7 @@ import { selectedPrivacySelector } from '@src/redux/selectors';
 import {
   historyDetailSelector,
   historySelector,
-  mappingTxRecieverSelector,
+  mappingTxReceiverSelector,
   mappingTxTransactorSelector,
 } from '@src/redux/selectors/history';
 import { defaultAccountSelector } from '@src/redux/selectors/account';
@@ -62,6 +62,7 @@ export const actionFetch = ({ tokenID } = {}) => async (dispatch, getState) => {
       tokenID: _tokenID,
       account,
       wallet,
+      isPToken: selectedPrivacy.isPToken,
     });
     await dispatch(actionFetched(data));
   } catch (error) {
@@ -97,7 +98,7 @@ export const actionFetchTx = () => async (dispatch, getState) => {
     const wallet = walletSelector(state);
     switch (txType) {
     case ACCOUNT_CONSTANT.TX_TYPE.RECEIVE: {
-      tx = mappingTxRecieverSelector(state)(tx);
+      tx = mappingTxReceiverSelector(state)(tx);
       break;
     }
     default: {
