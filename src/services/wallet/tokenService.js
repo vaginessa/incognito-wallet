@@ -66,6 +66,7 @@ export default class Token {
     paymentInfos = [],
     info = '',
     txHandler,
+    metatype,
   ) {
     await Wallet.resetProgressTx();
     let response;
@@ -78,7 +79,7 @@ export default class Token {
         feePToken,
         remoteAddress,
         info,
-        undefined,
+        metatype,
         undefined,
         undefined,
         txHandler,
