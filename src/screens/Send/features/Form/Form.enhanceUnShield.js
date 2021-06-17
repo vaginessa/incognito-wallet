@@ -27,10 +27,10 @@ import {
 } from '@screens/UnShield';
 import Utils from '@src/utils/Util';
 import { devSelector } from '@src/screens/Dev';
+import { ACCOUNT_CONSTANT } from 'incognito-chain-web-js/build/wallet';
 import { formName } from './Form.enhance';
 
 const BurningPBSCRequestMeta = 252;
-
 export const enhanceUnshield = (WrappedComp) => (props) => {
   const {
     isETH,
@@ -47,7 +47,9 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
   } = useSelector(feeDataSelector);
   const dev = useSelector(devSelector);
   const selectedPrivacy = useSelector(selectedPrivacySelector.selectedPrivacy);
-  const signPublicKeyEncode = useSelector(accountSelector.signPublicKeyEncodeSelector);
+  const signPublicKeyEncode = useSelector(
+    accountSelector.signPublicKeyEncodeSelector,
+  );
   const {
     tokenId,
     contractId,
@@ -84,55 +86,28 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
   const dispatch = useDispatch();
   const account = useSelector(defaultAccountSelector);
   const wallet = useSelector(walletSelector);
-  const handleBurningToken = async (payload = {}, txHandler) => {
+  const handleBurningToken = async (payload = {}, txHashHandler) => {
     try {
-      const {
-        originalAmount,
-        isUsedPRVFee,
-        paymentAddress,
-        feeForBurn,
-        isBSC,
-      } = payload;
+      const { originalAmount, feeForBurn, paymentAddress, isBSC } = payload;
       const { FeeAddress: masterAddress } = userFeesData;
-      //Token Object Decentralized
-      const tokenObject = {
-        Privacy: true,
-        TokenID: tokenId,
-        TokenName: name,
-        TokenSymbol: symbol,
-        TokenTxType: CONSTANT_COMMONS.TOKEN_TX_TYPE.SEND,
-        TokenAmount: originalAmount,
-        TokenReceivers: isUsedPRVFee
-          ? []
-          : [
-            {
-              paymentAddress: masterAddress,
-              amount: userFee,
-            },
-          ],
-      };
-      const paymentInfos = isUsedPRVFee
-        ? [
+
+      const res = await accountService.createBurningRequest({
+        wallet,
+        account,
+        fee: feeForBurn,
+        tokenId,
+        burnAmount: originalAmount,
+        prvPayments: [
           {
-            paymentAddressStr: masterAddress,
+            paymentAddress: masterAddress,
             amount: userFee,
           },
-        ]
-        : [];
-
-      let metatype = isBSC ? BurningPBSCRequestMeta : undefined;
-      const res = await tokenService.createBurningRequest(
-        tokenObject,
-        isUsedPRVFee ? feeForBurn : 0,
-        isUsedPRVFee ? 0 : feeForBurn,
-        paymentAddress,
-        account,
-        wallet,
-        paymentInfos,
+        ],
         info,
-        txHandler,
-        metatype,
-      );
+        remoteAddress: paymentAddress,
+        txHashHandler,
+        burningType: isBSC ? BurningPBSCRequestMeta : 240, //TODO: fix it
+      });
       if (res.txId) {
         return { ...res, burningTxId: res?.txId };
       } else {
@@ -165,10 +140,8 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
         fast2x,
       };
       if (!userFeesData?.ID) throw new Error('Missing id withdraw session');
-
       let _tx;
-
-      const txHandler = async (txId) => {
+      const txHashHandler = async ({ txId }) => {
         _tx = { ...data, burningTxId: txId };
         await dispatch(
           actionAddStorageDataDecentralized({
@@ -177,9 +150,7 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
           }),
         );
       };
-
-      const tx = await handleBurningToken(payload, txHandler);
-
+      const tx = await handleBurningToken(payload, txHashHandler);
       if (toggleDecentralized) {
         await setState({
           ...state,
@@ -187,7 +158,7 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
         });
         await Utils.delay(15);
       }
-      await withdraw({..._tx, signPublicKeyEncode});
+      await withdraw({ ..._tx, signPublicKeyEncode });
       await dispatch(
         actionRemoveStorageDataDecentralized({
           keySave,
@@ -202,39 +173,17 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
 
   const handleCentralizedWithdraw = async (payload) => {
     try {
-      const { isUsedPRVFee, originalAmount, originalFee } = payload;
+      const { isUsedPRVFee, originalFee } = payload;
       const { Address: tempAddress } = userFeesData;
-      const prvFee = isUsedPRVFee ? originalFee : 0;
-      const tokenFee = isUsedPRVFee ? 0 : originalFee;
-      let spendingPRV;
-      let spendingCoin;
-      if (prvFee) {
-        spendingPRV = await accountService.hasSpendingCoins(
-          account,
-          wallet,
-          prvFee,
-        );
-      }
-      spendingCoin = await accountService.hasSpendingCoins(
-        account,
-        wallet,
-        originalAmount + tokenFee,
-        tokenId,
-      );
-      if (spendingCoin || spendingPRV) {
-        return Toast.showError(MESSAGES.PENDING_TRANSACTIONS);
-      }
-
       let txUpdatePTokenFee;
-
-      const txHandler = async (txId) => {
+      const txHashHandler = async ({ txId }) => {
         txUpdatePTokenFee = {
           fee: originalFee,
           paymentAddress: tempAddress,
           userFeesData,
           isUsedPRVFee,
           fast2x,
-          txId: txId,
+          txId,
         };
         await dispatch(
           actionAddStorageDataCentralized({
@@ -243,11 +192,11 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
           }),
         );
       };
-
-      const tx = await handleSendToken({ ...payload, tempAddress }, txHandler);
-
+      const tx = await handleSendToken(
+        { ...payload, tempAddress },
+        txHashHandler,
+      );
       if (tx) {
-
         if (toggleCentralized) {
           await setState({
             ...state,
@@ -255,7 +204,7 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
           });
           await Utils.delay(15);
         }
-        await updatePTokenFee({ ...txUpdatePTokenFee, signPublicKeyEncode  });
+        await updatePTokenFee({ ...txUpdatePTokenFee, signPublicKeyEncode });
         await dispatch(
           actionRemoveStorageDataCentralized({
             keySave,
@@ -269,69 +218,38 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
     }
   };
 
-  const handleSendToken = async (payload = {}, txHandler) => {
+  const handleSendToken = async (payload = {}, txHashHandler) => {
     try {
-      const {
-        tempAddress,
-        originalAmount,
-        originalFee,
-        isUsedPRVFee,
-        feeForBurn,
-      } = payload;
+      const { tempAddress, originalAmount, originalFee } = payload;
       if (!tempAddress) {
         throw Error('Can not create a temp address');
       }
       const { FeeAddress: masterAddress } = userFeesData;
-      const type = CONSTANT_COMMONS.TOKEN_TX_TYPE.SEND;
-      const tokenObject = {
-        Privacy: true,
-        TokenID: tokenId,
-        TokenName: name,
-        TokenSymbol: symbol,
-        TokenTxType: type,
-        TokenAmount: originalAmount + (isUsedPRVFee ? 0 : feeForBurn),
-        TokenReceivers: isUsedPRVFee
-          ? [
-            {
-              PaymentAddress: tempAddress,
-              Amount: originalAmount,
-            },
-          ]
-          : [
-            {
-              PaymentAddress: tempAddress,
-              Amount: originalAmount + feeForBurn,
-            },
-            {
-              PaymentAddress: masterAddress,
-              Amount: userFee,
-            },
-          ],
-      };
-      const paymentInfos = isUsedPRVFee
-        ? [
-          {
-            paymentAddressStr: tempAddress,
-            amount: feeForBurn,
-          },
-          {
-            paymentAddressStr: masterAddress,
-            amount: userFee,
-          },
-        ]
-        : [];
 
-      const res = await tokenService.createSendPToken(
-        tokenObject,
-        isUsedPRVFee ? originalFee : 0,
-        account,
+      const res = await accountService.createAndSendPrivacyToken({
         wallet,
-        isUsedPRVFee ? paymentInfos : null,
-        isUsedPRVFee ? 0 : originalFee,
-        info,
-        false,
-        txHandler,
-      );
+        account,
+        fee: originalFee,
+        tokenPayments: [
+          {
+            PaymentAddress: tempAddress,
+            Amount: originalAmount,
+          },
+        ],
+        prvPayments: [
+          {
+            PaymentAddress: masterAddress,
+            Amount: userFee,
+          },
+          {
+            PaymentAddress: tempAddress,
+            Amount: originalFee,
+          },
+        ],
+        txType: ACCOUNT_CONSTANT.TX_TYPE.SEND,
+        tokenID: selectedPrivacy?.tokenId,
+        txHashHandler,
+      });
 
       if (res.txId) {
         return res;
@@ -366,7 +284,9 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
         feeForBurn,
         feeForBurnText: _fee,
         fee: _fee,
-        isBSC: isBep20Token || currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BSC_BNB,
+        isBSC:
+          isBep20Token ||
+          currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BSC_BNB,
       };
       let res;
       if (isDecentralized) {

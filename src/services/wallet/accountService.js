@@ -914,6 +914,7 @@ export default class Account {
     info,
     remoteAddress,
     txHashHandler,
+    burningType,
   } = {}) {
     new Validator('account', account).required();
     new Validator('wallet', wallet).required();
@@ -923,6 +924,7 @@ export default class Account {
     new Validator('prvPayments', prvPayments).required().array();
     new Validator('remoteAddress', remoteAddress).required().string();
     new Validator('info', info).string();
+    new Validator('burningType', burningType).required().number();
 
     const accountWallet = getAccountWallet(account, wallet);
 
@@ -937,6 +939,7 @@ export default class Account {
         remoteAddress,
         burnAmount,
         txHashHandler,
+        burningType,
       },
     });
   }
