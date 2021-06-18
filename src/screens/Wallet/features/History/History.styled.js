@@ -58,4 +58,22 @@ export const styled = StyleSheet.create({
     lineHeight: 21,
     marginTop: 20,
   },
+  btnResume: {
+    height: 30,
+    width: 80,
+    borderRadius: 15,
+    marginLeft: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: COLORS.colorGrey,
+    marginRight: 30,
+  },
+  btnChevron: {
+    height: '100%',
+    position: 'absolute',
+    right: 0,
+    justifyContent: 'center',
+    alignItems: 'flex-end',
+    width: 30,
+  },
 });

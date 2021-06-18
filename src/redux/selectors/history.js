@@ -118,6 +118,8 @@ export const mappingTxPTokenSelector = createSelector(
       statusDetail,
       isExpiredShieldCentralized,
       isShielding,
+      inchainFee,
+      outchainFee,
     } = txp;
     const shouldRenderQrShieldingAddress =
       isShieldTx &&
@@ -130,7 +132,8 @@ export const mappingTxPTokenSelector = createSelector(
     const statusColor = isShieldTx
       ? getStatusColorShield(txp)
       : getStatusColorUnshield(txp);
-    const showStatusDetail = !!statusDetail;
+    const showDetail = !!statusDetail;
+
     const result = {
       ...txp,
       timeStr: formatUtil.formatDateTime(time),
@@ -145,7 +148,17 @@ export const mappingTxPTokenSelector = createSelector(
       isShielding,
       expiredAtStr,
       statusColor,
-      showStatusDetail,
+      showDetail,
+      inchainFeeStr: renderAmount({
+        amount: inchainFee,
+        pDecimals: PRV.pDecimals,
+        decimalDigits,
+      }),
+      outchainFeeStr: renderAmount({
+        amount: outchainFee,
+        pDecimals: PRV.pDecimals,
+        decimalDigits,
+      }),
     };
     return result;
   },
@@ -188,6 +201,7 @@ export const historyDetailFactoriesSelector = createSelector(
   ({ tx }, selectedPrivacy) => {
     const { txType } = tx;
     try {
+      console.log('txType', txType);
       switch (txType) {
       case ACCOUNT_CONSTANT.TX_TYPE.RECEIVE: {
         const {
@@ -199,6 +213,7 @@ export const historyDetailFactoriesSelector = createSelector(
           status,
           statusStr,
           txTypeStr,
+          memo,
         } = tx;
         return [
           {
@@ -233,6 +248,13 @@ export const historyDetailFactoriesSelector = createSelector(
             value: txTypeStr,
             disabled: !txTypeStr,
           },
+          {
+            label: 'Memo',
+            value: memo,
+            disabled: !memo,
+            copyable: true,
+            fullText: true,
+          },
         ];
       }
       case ACCOUNT_CONSTANT.TX_TYPE.SHIELD: {
@@ -248,8 +270,9 @@ export const historyDetailFactoriesSelector = createSelector(
           statusColor,
           isShielding,
           statusDetail,
-          showStatusDetail,
+          showDetail,
           erc20TokenAddress,
+          canRetryExpiredShield,
         } = tx;
         return [
           {
@@ -268,8 +291,9 @@ export const historyDetailFactoriesSelector = createSelector(
             value: statusStr,
             disabled: !statusStr,
             valueTextStyle: { color: statusColor },
-            statusDetail,
-            showStatusDetail,
+            detail: statusDetail,
+            showDetail,
+            canRetryExpiredShield,
           },
           {
             label: 'Time',
@@ -295,9 +319,105 @@ export const historyDetailFactoriesSelector = createSelector(
           },
           {
             label: 'Contract',
-            valueText: erc20TokenAddress,
+            value: erc20TokenAddress,
             copyable: true,
             disabled: !erc20TokenAddress,
+          },
+        ];
+      }
+      case ACCOUNT_CONSTANT.TX_TYPE.UNSHIELD: {
+        const {
+          id,
+          statusStr,
+          timeStr,
+          amountStr,
+          symbol,
+          inChainTx,
+          expiredAtStr,
+          userPaymentAddress,
+          statusColor,
+          statusDetail,
+          showDetail,
+          erc20TokenAddress,
+          canRetryExpiredShield,
+          outChainTx,
+          inchainFee,
+          outchainFee,
+          inchainFeeStr,
+          outchainFeeStr,
+          memo,
+        } = tx;
+        return [
+          {
+            label: 'ID',
+            value: `#${id}`,
+            copyable: true,
+            disabled: !id,
+          },
+          {
+            label: 'Unshield',
+            value: `${amountStr} ${symbol}`,
+            disabled: !amountStr,
+          },
+          {
+            label: 'Inchain fee',
+            value: `${inchainFeeStr} ${PRV.symbol}`,
+            disabled: !inchainFee,
+          },
+          {
+            label: 'Outchain fee',
+            value: `${outchainFeeStr} ${PRV.symbol}`,
+            disabled: !outchainFee,
+          },
+          {
+            label: 'Status',
+            value: statusStr,
+            disabled: !statusStr,
+            valueTextStyle: { color: statusColor },
+            detail: statusDetail,
+            showDetail,
+            canRetryExpiredShield,
+          },
+          {
+            label: 'Time',
+            value: timeStr,
+            disabled: !timeStr,
+          },
+          {
+            label: 'Expired at',
+            value: expiredAtStr,
+            disabled: !expiredAtStr,
+          },
+          {
+            label: 'To address',
+            value: userPaymentAddress,
+            disabled: !userPaymentAddress,
+          },
+          {
+            label: 'Inchain TxID',
+            value: inChainTx,
+            disabled: !inChainTx,
+            openUrl: !!inChainTx,
+            handleOpenUrl: () => LinkingService.openUrl(inChainTx),
+          },
+          {
+            label: 'Outchain TxID',
+            value: outChainTx,
+            disabled: !outChainTx,
+            openUrl: !!outChainTx,
+            handleOpenUrl: () => LinkingService.openUrl(outChainTx),
+          },
+          {
+            label: 'Contract',
+            value: erc20TokenAddress,
+            copyable: true,
+            disabled: !erc20TokenAddress,
+          },
+          {
+            label: 'Memo',
+            value: memo,
+            copyable: true,
+            disabled: !memo,
           },
         ];
       }

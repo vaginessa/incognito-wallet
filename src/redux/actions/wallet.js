@@ -19,9 +19,7 @@ import { walletSelector } from '@src/redux/selectors/wallet';
 import { updateMasterKey } from '@src/redux/actions/masterKey';
 // eslint-disable-next-line import/no-cycle
 import { setListToken } from '@src/redux/actions/token';
-import Server from '@src/services/wallet/Server';
-import { Validator, PrivacyVersion } from 'incognito-chain-web-js/build/wallet';
-import Storage from '@src/services/storage';
+import { Validator } from 'incognito-chain-web-js/build/wallet';
 
 const getStoredDefaultAccountName = async (listAccount) => {
   const firstAccountName = listAccount && listAccount[0]?.name;

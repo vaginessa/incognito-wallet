@@ -82,16 +82,27 @@ export default class Account {
     txType,
     txHandler,
     txHashHandler,
+    version,
   } = {}) {
     try {
-      new Validator('wallet', wallet).required();
-      new Validator('account', account).required();
-      new Validator('prvPayments', prvPayments).required().paymentInfoList();
-      new Validator('fee', fee).required().amount();
-      new Validator('info', info).string();
-      new Validator('isEncryptMessage', isEncryptMessage).boolean();
-      new Validator('metadata', metadata).object();
-      new Validator('txType', txType).required().number();
+      new Validator('createAndSendNativeToken-wallet', wallet).required();
+      new Validator('createAndSendNativeToken-account', account).required();
+      new Validator('createAndSendNativeToken-prvPayments', prvPayments)
+        .required()
+        .paymentInfoList();
+      new Validator('createAndSendNativeToken-fee', fee).required().amount();
+      new Validator('createAndSendNativeToken-info', info).string();
+      new Validator(
+        'createAndSendNativeToken-isEncryptMessage',
+        isEncryptMessage,
+      ).boolean();
+      new Validator('createAndSendNativeToken-metadata', metadata).object();
+      new Validator('createAndSendNativeToken-txType', txType)
+        .required()
+        .number();
+      new Validator('createAndSendNativeToken-version', version)
+        .required()
+        .number();
       const accountWallet = this.getAccount(account, wallet);
       await accountWallet.resetProgressTx();
       const infoStr = typeof info !== 'string' ? JSON.stringify(info) : info;
@@ -101,7 +112,14 @@ export default class Account {
           prvPayments,
           fee,
         },
-        extra: { metadata, isEncryptMessage, txType, txHandler, txHashHandler },
+        extra: {
+          metadata,
+          isEncryptMessage,
+          txType,
+          txHandler,
+          txHashHandler,
+          version,
+        },
       });
       console.log('result', result);
       // save wallet
@@ -126,18 +144,37 @@ export default class Account {
     txType,
     txHandler,
     txHashHandler,
+    version,
   } = {}) {
-    new Validator('wallet', wallet).required();
-    new Validator('account', account).required();
-    new Validator('prvPayments', prvPayments).paymentInfoList();
-    new Validator('tokenPayments', tokenPayments).required().paymentInfoList();
-    new Validator('fee', fee).required().amount();
-    new Validator('info', info).string();
-    new Validator('tokenID', tokenID).string().required();
-    new Validator('metadata', metadata).object();
-    new Validator('isEncryptMessage', isEncryptMessage).boolean();
-    new Validator('isEncryptMessageToken', isEncryptMessageToken).boolean();
-    new Validator('txType', txType).required().number();
+    new Validator('createAndSendPrivacyToken-wallet', wallet).required();
+    new Validator('createAndSendPrivacyToken-account', account).required();
+    new Validator(
+      'createAndSendPrivacyToken-prvPayments',
+      prvPayments,
+    ).paymentInfoList();
+    new Validator('createAndSendPrivacyToken-tokenPayments', tokenPayments)
+      .required()
+      .paymentInfoList();
+    new Validator('createAndSendPrivacyToken-fee', fee).required().amount();
+    new Validator('createAndSendPrivacyToken-info', info).string();
+    new Validator('createAndSendPrivacyToken-tokenID', tokenID)
+      .string()
+      .required();
+    new Validator('createAndSendPrivacyToken-metadata', metadata).object();
+    new Validator(
+      'createAndSendPrivacyToken-isEncryptMessage',
+      isEncryptMessage,
+    ).boolean();
+    new Validator(
+      'createAndSendPrivacyToken-isEncryptMessageToken',
+      isEncryptMessageToken,
+    ).boolean();
+    new Validator('createAndSendPrivacyToken-txType', txType)
+      .required()
+      .number();
+    new Validator('createAndSendPrivacyToken-version', version)
+      .required()
+      .number();
 
     let result;
     const accountWallet = this.getAccount(account, wallet);
@@ -158,6 +195,7 @@ export default class Account {
         txType,
         txHandler,
         txHashHandler,
+        version,
       },
     });
     console.log('result', result);
@@ -814,34 +852,6 @@ export default class Account {
     return await accountWallet.signPoolWithdraw({ amount: amount.toString() });
   }
 
-  static async getTxsHistory({ tokenID, wallet, account, isPToken } = {}) {
-    try {
-      new Validator('tokenID', tokenID).required().string();
-      new Validator('wallet', wallet).required().object();
-      new Validator('account', account).required().object();
-      new Validator('isPToken', isPToken).required().boolean();
-      const getAccount = getAccountWallet(account, wallet);
-      new Validator('getAccount', getAccount).required().object();
-      return getAccount.getTxsHistory({ tokenID, isPToken });
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  static async getTxHistoryByTxID({ tokenID, txId, wallet, account } = {}) {
-    try {
-      new Validator('tokenID', tokenID).required().string();
-      new Validator('txId', txId).required().string();
-      new Validator('wallet', wallet).required().object();
-      new Validator('account', account).required().object();
-      const getAccount = getAccountWallet(account, wallet);
-      new Validator('getAccount', getAccount).required().object();
-      return getAccount.getTxHistoryByTxID({ tokenID, txId });
-    } catch (error) {
-      throw error;
-    }
-  }
-
   static async createSendInitPToken({
     wallet,
     account,
@@ -927,7 +937,6 @@ export default class Account {
     new Validator('burningType', burningType).required().number();
 
     const accountWallet = getAccountWallet(account, wallet);
-
     return accountWallet.createAndSendBurningRequestTx({
       transfer: {
         fee,
@@ -942,5 +951,24 @@ export default class Account {
         burningType,
       },
     });
+  }
+
+  static async retryExpiredShield({ account, wallet, history }) {
+    new Validator('retryExpiredShield-account', account).required();
+    new Validator('retryExpiredShield-wallet', wallet).required();
+    new Validator('retryExpiredShield-history', history).required().object();
+    const accountWallet = getAccountWallet(account, wallet);
+    return accountWallet.handleRetryExpiredShield({ history });
+  }
+
+  static async getSignPublicKeyEncode({ account, wallet }) {
+    try {
+      new Validator('getSignPublicKeyEncode-account', account).required();
+      new Validator('getSignPublicKeyEncode-wallet', wallet).required();
+      const accountWallet = getAccountWallet(account, wallet);
+      return accountWallet.getSignPublicKeyEncode();
+    } catch (error) {
+      throw error;
+    }
   }
 }
