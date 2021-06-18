@@ -115,21 +115,18 @@ const updateDefaultAccount = (account) => {
   };
 };
 
-export const setDefaultAccount = (account) => async (dispatch) => {
+export const setDefaultAccount = (account) => async (dispatch, getState) => {
   try {
-    dispatch(updateDefaultAccount(account));
-    global.__gobridge__.getSignPublicKey(
-      JSON.stringify({
-        data: {
-          privateKey: account?.PrivateKey,
-        },
-      }),
-      (error, signPublicKeyEncode) => {
-        if (signPublicKeyEncode) {
-          dispatch(setSignPublicKeyEncode(signPublicKeyEncode));
-        }
-      },
-    );
+    await dispatch(updateDefaultAccount(account));
+    const state = getState();
+    const wallet = walletSelector(state);
+    const signPublicKeyEncode = await accountService.getSignPublicKeyEncode({
+      wallet,
+      account,
+    });
+    if (signPublicKeyEncode) {
+      dispatch(setSignPublicKeyEncode(signPublicKeyEncode));
+    }
   } catch (e) {
     console.debug('SET DEFAULT ACCOUNT WITH ERROR: ', e);
   }

@@ -8,11 +8,7 @@ export const getAccountNameByAccount = (account) => {
   return '';
 };
 
-export const getAccountWallet = (
-  account,
-  wallet,
-  version = PrivacyVersion.ver2,
-) => {
+export const getAccountWallet = (account, wallet) => {
   try {
     new Validator('account', account).object().required();
     new Validator('wallet', wallet).object().required();
@@ -34,7 +30,6 @@ export const getAccountWallet = (
     accountWallet.setRPCClient(wallet.RpcClient);
     accountWallet.setStorageServices(wallet.Storage);
     accountWallet.setRPCCoinServices(wallet.RpcCoinService);
-    accountWallet.setPrivacyVersion(version);
     accountWallet.setRPCTxServices(wallet.PubsubService);
     accountWallet.setRPCRequestServices(wallet.RpcRequestService);
     accountWallet.setAuthToken(wallet.AuthToken);

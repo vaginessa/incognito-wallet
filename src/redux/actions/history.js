@@ -1,18 +1,18 @@
 import {
   ACCOUNT_CONSTANT,
   Validator,
+  PrivacyVersion,
 } from 'incognito-chain-web-js/build/wallet';
-import { accountServices } from '@src/services/wallet';
 import { selectedPrivacySelector } from '@src/redux/selectors';
 import {
   historyDetailSelector,
   historySelector,
+  mappingTxPTokenSelector,
   mappingTxReceiverSelector,
   mappingTxTransactorSelector,
 } from '@src/redux/selectors/history';
-import { defaultAccountSelector } from '@src/redux/selectors/account';
-import { walletSelector } from '@src/redux/selectors/wallet';
 import { selectedPrivacy } from '@src/redux/selectors/selectedPrivacy';
+import { getDefaultAccountWalletSelector } from '@src/redux/selectors/shared';
 
 export const ACTION_FETCHING = '[history] Fetching data';
 export const ACTION_FETCHED = '[history] Fetched data';
@@ -53,16 +53,14 @@ export const actionFetch = ({ tokenID } = {}) => async (dispatch, getState) => {
       return;
     }
     const selectedPrivacy = selectedPrivacySelector.selectedPrivacy(state);
-    const account = defaultAccountSelector(state);
-    const wallet = walletSelector(state);
+    const accountWallet = getDefaultAccountWalletSelector(state);
     await dispatch(actionFetching());
     const _tokenID = tokenID || selectedPrivacy.tokenId;
     new Validator('tokenID', _tokenID).required().string();
-    const data = await accountServices.getTxsHistory({
+    const data = await accountWallet.getTxsHistory({
       tokenID: _tokenID,
-      account,
-      wallet,
       isPToken: selectedPrivacy.isPToken,
+      version: PrivacyVersion.ver2,
     });
     await dispatch(actionFetched(data));
   } catch (error) {
@@ -89,24 +87,35 @@ export const actionFetchTx = () => async (dispatch, getState) => {
   try {
     new Validator('tx', tx).required().object();
     await dispatch(actionFetchingTx());
-    if (!tx.txId) {
+    console.log('txID', tx.id);
+    if (!tx) {
       return;
     }
-    const { txType, txId } = tx;
+    const { txType } = tx;
     const { tokenId: tokenID } = selectedPrivacy(state);
-    const account = defaultAccountSelector(state);
-    const wallet = walletSelector(state);
+    const accountWallet = getDefaultAccountWalletSelector(state);
+    new Validator('accountWallet', accountWallet).required().object();
+    const version = PrivacyVersion.ver2;
     switch (txType) {
     case ACCOUNT_CONSTANT.TX_TYPE.RECEIVE: {
       tx = mappingTxReceiverSelector(state)(tx);
       break;
     }
+    case ACCOUNT_CONSTANT.TX_TYPE.SHIELD:
+    case ACCOUNT_CONSTANT.TX_TYPE.UNSHIELD: {
+      console.log('tx', tx);
+      const txp = await accountWallet.getPTokenHistoryById({
+        history: tx,
+      });
+      tx = mappingTxPTokenSelector(state)(txp);
+      break;
+    }
     default: {
-      const txt = await accountServices.getTxHistoryByTxID({
-        account,
-        wallet,
+      const { txId } = tx;
+      const txt = await accountWallet.getTxHistoryByTxID({
         txId,
         tokenID,
+        version,
       });
       tx = mappingTxTransactorSelector(state)(txt);
       break;

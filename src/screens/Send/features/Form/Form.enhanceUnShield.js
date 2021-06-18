@@ -17,7 +17,6 @@ import { reset } from 'redux-form';
 import { withdraw, updatePTokenFee } from '@src/services/api/withdraw';
 import { defaultAccountSelector } from '@src/redux/selectors/account';
 import { walletSelector } from '@src/redux/selectors/wallet';
-import tokenService from '@services/wallet/tokenService';
 import accountService from '@services/wallet/accountService';
 import {
   actionAddStorageDataDecentralized,
@@ -27,10 +26,15 @@ import {
 } from '@screens/UnShield';
 import Utils from '@src/utils/Util';
 import { devSelector } from '@src/screens/Dev';
-import { ACCOUNT_CONSTANT } from 'incognito-chain-web-js/build/wallet';
+import {
+  ACCOUNT_CONSTANT,
+  CORE_CONSTANT,
+  PrivacyVersion,
+} from 'incognito-chain-web-js/build/wallet';
 import { formName } from './Form.enhance';
 
-const BurningPBSCRequestMeta = 252;
+const { BurningPBSCRequestMeta, BurningRequestMeta } = CORE_CONSTANT;
+
 export const enhanceUnshield = (WrappedComp) => (props) => {
   const {
     isETH,
@@ -106,7 +110,8 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
         info,
         remoteAddress: paymentAddress,
         txHashHandler,
-        burningType: isBSC ? BurningPBSCRequestMeta : 240, //TODO: fix it
+        burningType: isBSC ? BurningPBSCRequestMeta : BurningRequestMeta,
+        version: PrivacyVersion.ver2,
       });
       if (res.txId) {
         return { ...res, burningTxId: res?.txId };
@@ -249,6 +254,7 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
         txType: ACCOUNT_CONSTANT.TX_TYPE.SEND,
         tokenID: selectedPrivacy?.tokenId,
         txHashHandler,
+        version: PrivacyVersion.ver2,
       });
 
       if (res.txId) {

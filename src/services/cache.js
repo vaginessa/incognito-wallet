@@ -34,14 +34,13 @@ export function cache(key, data, expiredTime) {
  */
 export async function cachePromise(key, promiseFunc, expiredTime = 40000) {
   const cachedData = getCache(key);
-
   if (cachedData !== null) {
     return cachedData;
   }
-
   const data = await promiseFunc();
-  cache(key, data, expiredTime);
-
+  if (data) {
+    cache(key, data, expiredTime);
+  }
   return data;
 }
 
@@ -72,15 +71,13 @@ export const clearCache = (key) => {
 };
 
 export const clearAllCaches = () => {
-  Object.keys(caches)
-    .forEach(key => delete caches[key]);
+  Object.keys(caches).forEach((key) => delete caches[key]);
 };
 
 export const clearWalletCaches = () => {
-  Object.keys(caches)
-    .forEach(key => {
-      if (key.includes(KEYS.PDEX_HISTORY)) {
-        delete caches[key];
-      }
-    });
+  Object.keys(caches).forEach((key) => {
+    if (key.includes(KEYS.PDEX_HISTORY)) {
+      delete caches[key];
+    }
+  });
 };

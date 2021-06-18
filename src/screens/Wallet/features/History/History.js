@@ -21,9 +21,14 @@ import { CopyIcon, OpenUrlIcon } from '@src/components/Icons';
 import { Header } from '@src/components';
 import { withLayout_2 } from '@src/components/Layout';
 import { QrCodeAddressDefault } from '@src/components/QrCodeAddress';
-import { BtnChevron } from '@src/components/Button';
+import { BtnChevron, BtnResume } from '@src/components/Button';
 import HTML from 'react-native-render-html';
 import LinkingService from '@src/services/linking';
+import { ExHandler } from '@src/services/exception';
+import { useNavigation } from 'react-navigation-hooks';
+import { defaultAccountSelector } from '@src/redux/selectors/account';
+import { walletSelector } from '@src/redux/selectors/wallet';
+import { getDefaultAccountWalletSelector } from '@src/redux/selectors/shared';
 import { styled } from './History.styled';
 
 const Hook = React.memo((props) => {
@@ -36,13 +41,41 @@ const Hook = React.memo((props) => {
     copyable,
     disabled,
     fullText = false,
-    showStatusDetail = false,
-    statusDetail = '',
+    showDetail = false,
+    detail = '',
+    canRetryExpiredShield = false,
   } = props || {};
-  const [toggleStatusDetail, setToggleStatusDetail] = React.useState(false);
+  const account = useSelector(defaultAccountSelector);
+  const wallet = useSelector(walletSelector);
+  const accountWallet = useSelector(getDefaultAccountWalletSelector);
+  const { tx } = useSelector(historyDetailSelector);
+  const [toggle, setToggle] = React.useState(false);
+  const [resume, setResume] = React.useState(false);
+  const navigation = useNavigation();
   const handleCopyText = () => {
     Clipboard.setString(value);
     Toast.showInfo('Copied');
+  };
+  const handleRetryExpiredShield = async () => {
+    try {
+      if (resume) {
+        return;
+      }
+      await setResume(true);
+      const result = await accountWallet.handleRetryExpiredShield({
+        history: tx,
+      });
+      if (result) {
+        Toast.showInfo(
+          'Your request has been sent, we will process it soon. The history status will be updated',
+        );
+      }
+    } catch (error) {
+      new ExHandler(error).showErrorToast();
+    } finally {
+      await setResume(false);
+      navigation.goBack();
+    }
   };
   if (disabled) {
     return null;
@@ -65,6 +98,13 @@ const Hook = React.memo((props) => {
           >
             {value}
           </Text>
+          {canRetryExpiredShield && (
+            <BtnResume
+              style={styled.btnResume}
+              onPress={handleRetryExpiredShield}
+              resuming={resume}
+            />
+          )}
           {copyable && (
             <TouchableOpacity
               style={styled.rowTextTouchable}
@@ -81,19 +121,19 @@ const Hook = React.memo((props) => {
               <OpenUrlIcon style={styled.linkingIcon} />
             </TouchableOpacity>
           )}
-          {showStatusDetail && (
+          {showDetail && (
             <BtnChevron
               style={styled.btnChevron}
               size={18}
-              toggle={toggleStatusDetail}
-              onPress={() => setToggleStatusDetail(!toggleStatusDetail)}
+              toggle={toggle}
+              onPress={() => setToggle(!toggle)}
             />
           )}
         </View>
       </View>
-      {toggleStatusDetail && (
+      {toggle && (
         <HTML
-          html={`<p>${statusDetail}</p>`}
+          html={`<p>${detail}</p>`}
           imagesMaxWidth={Dimensions.get('window').width}
           onLinkPress={(e, href) => {
             LinkingService.openURL(href);
@@ -111,7 +151,6 @@ const Hook = React.memo((props) => {
 const History = () => {
   const factories = useSelector(historyDetailFactoriesSelector);
   const { tx, fetching } = useSelector(historyDetailSelector);
-  console.log('tx', tx);
   // const selectedPrivacy = useSelector(selectedPrivacySelector.selectedPrivacy);
   // const dev = useSelector(devSelector);
   const dispatch = useDispatch();
