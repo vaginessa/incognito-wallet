@@ -28,12 +28,11 @@ import Utils from '@src/utils/Util';
 import { devSelector } from '@src/screens/Dev';
 import {
   ACCOUNT_CONSTANT,
-  CORE_CONSTANT,
+  BurningPBSCRequestMeta,
+  BurningRequestMeta,
   PrivacyVersion,
 } from 'incognito-chain-web-js/build/wallet';
 import { formName } from './Form.enhance';
-
-const { BurningPBSCRequestMeta, BurningRequestMeta } = CORE_CONSTANT;
 
 export const enhanceUnshield = (WrappedComp) => (props) => {
   const {

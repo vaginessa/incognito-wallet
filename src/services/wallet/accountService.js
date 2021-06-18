@@ -318,30 +318,30 @@ export default class Account {
     }
   }
 
-  /**
-   *
-   * @param {object} account
-   * @param {object} wallet
-   * @param {string} tokenId
-   *
-   * If `tokenId` is not passed, this method will return native token (PRV) balance, else custom token balance (from `tokenId`)
-   */
-  static async getBalance(account, wallet, tokenId = PRVIDSTR) {
-    new Validator('account', account).required();
-    new Validator('wallet', wallet).required();
+  static async getBalance({ account, wallet, tokenID, version }) {
+    new Validator('getBalance-account', account).required();
+    new Validator('getBalance-wallet', wallet).required();
+    new Validator('getBalance-tokenID', tokenID).required().string();
+    new Validator('getBalance-version', version).required().number();
     const accountWallet = this.getAccount(account, wallet);
     let balance = 0;
     try {
+      console.log('VERSION', version);
       const key = `CACHE-BALANCE-${
         wallet.Name
-      }-${accountWallet.getOTAKey()}-${tokenId}`;
+      }-${accountWallet.getOTAKey()}-${tokenID}`;
       balance = await cachePromise(key, () =>
-        accountWallet.getBalance(tokenId),
+        accountWallet.getBalance({
+          tokenID,
+          version,
+        }),
       );
-      return new BigNumber(balance).toNumber();
+      balance = new BigNumber(balance).toNumber();
+      console.log('BALANCE', balance);
     } catch (error) {
       throw error;
     }
+    return balance;
   }
 
   static parseShard(account) {
@@ -649,39 +649,7 @@ export default class Account {
     }
   }
 
-  static async getStorageAccountByTokenId(defaultAccount, wallet, tokenID) {
-    try {
-      if (!wallet) {
-        throw new Error('Missing wallet');
-      }
-      if (!defaultAccount) {
-        throw new Error('Missing account');
-      }
-      let tokenId = tokenID || PRV_ID;
-      const account = this.getAccount(defaultAccount, wallet);
-      let unspentCoins = await account.getListUnspentCoinsStorage(tokenId);
-      unspentCoins = unspentCoins.map(
-        ({ Value, SerialNumber, SNDerivator }) => ({
-          Value,
-          SerialNumber,
-          SNDerivator,
-        }),
-      );
-      const spentCoins = await this.getListAccountSpentCoins(
-        defaultAccount,
-        wallet,
-      );
-      return {
-        unspentCoins,
-        totalCoins: await account.getTotalCoinsStorage(tokenId),
-        spendingCoins: await account.getSpendingCoinsStorageByTokenId(tokenId),
-        coinsStorage: await account.getCoinsStorage(tokenId),
-        spentCoins,
-      };
-    } catch (error) {
-      throw error;
-    }
-  }
+ 
 
   static async getListAccountSpentCoins(defaultAccount, wallet, tokenID) {
     try {

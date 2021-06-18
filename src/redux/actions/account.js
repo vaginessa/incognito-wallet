@@ -1,4 +1,5 @@
 /* eslint-disable import/no-cycle */
+import { PrivacyVersion } from 'incognito-chain-web-js/build/wallet';
 import type from '@src/redux/types/account';
 import walletType from '@src/redux/types/wallet';
 import accountService from '@src/services/wallet/accountService';
@@ -13,11 +14,12 @@ import {
 } from '@src/redux/selectors/masterKey';
 import { switchMasterKey, updateMasterKey } from '@src/redux/actions/masterKey';
 import { storeWalletAccountIdsOnAPI } from '@services/wallet/WalletService';
-import { ExHandler } from '@src/services/exception';
 import { devSelector } from '@src/screens/Dev';
 import { tokenSelector, accountSelector } from '@src/redux/selectors';
 import { walletSelector } from '@src/redux/selectors/wallet';
+import { PRV } from '@src/constants/common';
 import { getBalance as getTokenBalance, setListToken } from './token';
+import { getDefaultAccountWalletSelector } from '../selectors/shared';
 
 /**
  *  return basic account object from its name like its KEY, not including account methods (please use accountWallet instead)
@@ -143,12 +145,18 @@ export const getBalance = (account) => async (dispatch, getState) => {
     if (!wallet) {
       throw new Error('Wallet is not exist');
     }
-    balance = await accountService.getBalance(account, wallet);
+    balance = await accountService.getBalance({
+      account,
+      wallet,
+      tokenID: PRV.id,
+      version: PrivacyVersion.ver2,
+    });
     if (isDev) {
-      const { coinsStorage } = await accountService.getStorageAccountByTokenId(
-        account,
-        wallet,
-      );
+      const accountWallet = getDefaultAccountWalletSelector(state);
+      const coinsStorage = await accountWallet.getCoinsStorage({
+        tokenID: PRV.id,
+        version: PrivacyVersion.ver2,
+      });
       if (coinsStorage) {
         await dispatch(
           actionLogEvent({

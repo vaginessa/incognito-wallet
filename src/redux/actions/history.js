@@ -87,7 +87,6 @@ export const actionFetchTx = () => async (dispatch, getState) => {
   try {
     new Validator('tx', tx).required().object();
     await dispatch(actionFetchingTx());
-    console.log('txID', tx.id);
     if (!tx) {
       return;
     }
@@ -103,7 +102,6 @@ export const actionFetchTx = () => async (dispatch, getState) => {
     }
     case ACCOUNT_CONSTANT.TX_TYPE.SHIELD:
     case ACCOUNT_CONSTANT.TX_TYPE.UNSHIELD: {
-      console.log('tx', tx);
       const txp = await accountWallet.getPTokenHistoryById({
         history: tx,
       });
@@ -112,11 +110,13 @@ export const actionFetchTx = () => async (dispatch, getState) => {
     }
     default: {
       const { txId } = tx;
-      const txt = await accountWallet.getTxHistoryByTxID({
+      const params = {
         txId,
         tokenID,
         version,
-      });
+      };
+      console.log('PARAMS', params);
+      const txt = await accountWallet.getTxHistoryByTxID(params);
       tx = mappingTxTransactorSelector(state)(txt);
       break;
     }

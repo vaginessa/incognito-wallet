@@ -28,8 +28,9 @@ import { receiveHistorySelector } from '@src/redux/selectors/token';
 import { MAX_LIMIT_RECEIVE_HISTORY_ITEM } from '@src/redux/reducers/token';
 import { PRV_ID } from '@screens/DexV2/constants';
 import { devSelector } from '@src/screens/Dev';
-import { Validator } from 'incognito-chain-web-js/build/wallet';
+import { Validator, PrivacyVersion } from 'incognito-chain-web-js/build/wallet';
 import { setWallet } from './wallet';
+import { getDefaultAccountWalletSelector } from '../selectors/shared';
 
 export const setToken = (
   token = throw new Error('Token object is required'),
@@ -107,7 +108,7 @@ export const getBalanceFinish = (tokenSymbol) => ({
 });
 
 export const getBalance = (tokenId) => async (dispatch, getState) => {
-  new Validator('tokenId', tokenId).string();
+  new Validator('tokenId', tokenId).required().string();
   const state = getState();
   const wallet = state?.wallet;
   const isDev = devSelector(state);
@@ -120,13 +121,18 @@ export const getBalance = (tokenId) => async (dispatch, getState) => {
   }
   try {
     await dispatch(getBalanceStart(tokenId));
-    const balance = await accountService.getBalance(account, wallet, tokenId);
+    const balance = await accountService.getBalance({
+      account,
+      wallet,
+      tokenID: tokenId,
+      version: PrivacyVersion.ver2,
+    });
     if (isDev) {
-      const { coinsStorage } = await accountService.getStorageAccountByTokenId(
-        account,
-        wallet,
-        tokenId,
-      );
+      const accountWallet = getDefaultAccountWalletSelector(state);
+      const coinsStorage = await accountWallet.getCoinsStorage({
+        tokenID: tokenId,
+        version: PrivacyVersion.ver2,
+      });
       if (coinsStorage) {
         await dispatch(
           actionLogEvent({
