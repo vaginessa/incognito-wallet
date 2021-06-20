@@ -7,12 +7,7 @@ import {
   genBSCDepositAddress,
 } from '@src/services/api/deposit';
 import { CONSTANT_COMMONS } from '@src/constants';
-import { setSelectedPrivacy } from '@src/redux/actions/selectedPrivacy';
-import { actionAddFollowToken } from '@src/redux/actions/token';
-import {
-  defaultAccountSelector,
-  signPublicKeyEncodeSelector,
-} from '@src/redux/selectors/account';
+import { signPublicKeyEncodeSelector } from '@src/redux/selectors/account';
 import formatUtil from '@utils/format';
 import {
   ACTION_FETCHING,
@@ -97,20 +92,14 @@ export const actionGetAddressToShield = async ({
     const {
       address,
       expiredAt,
-      newShieldDecentralized: isShieldAddressDecentralized,
+      decentralized,
       estimateFee,
       tokenFee,
     } = generateResult;
     if (!address) {
       throw 'Can not gen new deposit address';
     }
-    return {
-      address,
-      expiredAt,
-      isShieldAddressDecentralized: Boolean(isShieldAddressDecentralized || 0),
-      estimateFee,
-      tokenFee,
-    };
+    return { address, expiredAt, decentralized, estimateFee, tokenFee };
   } catch (error) {
     throw error;
   }
@@ -140,7 +129,7 @@ export const actionFetch = ({ tokenId, selectedPrivacy, account }) => async (
     let {
       address,
       expiredAt,
-      isShieldAddressDecentralized,
+      decentralized,
       tokenFee,
       estimateFee,
     } = addressShield;
@@ -155,7 +144,7 @@ export const actionFetch = ({ tokenId, selectedPrivacy, account }) => async (
         max,
         address,
         expiredAt,
-        isShieldAddressDecentralized,
+        decentralized,
         tokenFee,
         estimateFee,
       }),

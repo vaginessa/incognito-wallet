@@ -20,7 +20,7 @@ const enhance = (WrappedComp) => (props) => {
   const tokenShield = useNavigationParam('tokenShield') || {};
   const tokenSymbol = tokenShield?.externalSymbol || tokenShield?.symbol;
   const { tokenId } = tokenShield;
-  const { isShieldAddressDecentralized } = useSelector(shieldDataSelector);
+  const { decentralized } = useSelector(shieldDataSelector);
   const { isFetching, isFetched } = useSelector(shieldSelector);
   const handleShield = () =>
     dispatch(
@@ -53,7 +53,7 @@ const enhance = (WrappedComp) => (props) => {
             selectedPrivacy: tokenShield,
             isFetching,
             isFetched,
-            isShieldAddressDecentralized,
+            decentralized,
             tokenShield,
             handleShield,
           }}
