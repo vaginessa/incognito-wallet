@@ -115,7 +115,6 @@ export const actionFetchTx = () => async (dispatch, getState) => {
         tokenID,
         version,
       };
-      console.log('PARAMS', params);
       const txt = await accountWallet.getTxHistoryByTxID(params);
       tx = mappingTxTransactorSelector(state)(txt);
       break;

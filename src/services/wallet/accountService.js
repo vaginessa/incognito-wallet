@@ -649,8 +649,6 @@ export default class Account {
     }
   }
 
- 
-
   static async getListAccountSpentCoins(defaultAccount, wallet, tokenID) {
     try {
       if (!wallet) {
@@ -919,14 +917,6 @@ export default class Account {
         burningType,
       },
     });
-  }
-
-  static async retryExpiredShield({ account, wallet, history }) {
-    new Validator('retryExpiredShield-account', account).required();
-    new Validator('retryExpiredShield-wallet', wallet).required();
-    new Validator('retryExpiredShield-history', history).required().object();
-    const accountWallet = getAccountWallet(account, wallet);
-    return accountWallet.handleRetryExpiredShield({ history });
   }
 
   static async getSignPublicKeyEncode({ account, wallet }) {

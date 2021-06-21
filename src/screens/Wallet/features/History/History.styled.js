@@ -9,7 +9,7 @@ export const styled = StyleSheet.create({
   rowText: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 15,
+    marginTop: 30,
     position: 'relative',
   },
   icon: {
