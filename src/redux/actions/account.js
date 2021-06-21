@@ -317,10 +317,14 @@ export const actionReloadFollowingToken = (shouldLoadBalance = true) => async (
     const state = getState();
     const wallet = walletSelector(state);
     const account = accountSelector.defaultAccountSelector(state);
+    const accountWallet = getDefaultAccountWalletSelector(state);
     const followed = await accountService.getFollowingTokens(account, wallet);
     await dispatch(setListToken(followed));
     await accountService.setSubmitedOTAKey({ account, wallet });
     if (shouldLoadBalance) {
+      const keyInfo = await accountWallet.getKeyInfo({
+        version: PrivacyVersion.ver2,
+      });
       dispatch(getBalance(account));
       followed.forEach((token) => {
         try {
