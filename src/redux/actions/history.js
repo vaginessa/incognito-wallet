@@ -102,9 +102,12 @@ export const actionFetchTx = () => async (dispatch, getState) => {
     }
     case ACCOUNT_CONSTANT.TX_TYPE.SHIELD:
     case ACCOUNT_CONSTANT.TX_TYPE.UNSHIELD: {
-      const txp = await accountWallet.getPTokenHistoryById({
+      const txp = await accountWallet.handleGetPTokenHistoryById({
         history: tx,
       });
+      if (!txp) {
+        return tx;
+      }
       tx = mappingTxPTokenSelector(state)(txp);
       break;
     }
@@ -116,6 +119,9 @@ export const actionFetchTx = () => async (dispatch, getState) => {
         version,
       };
       const txt = await accountWallet.getTxHistoryByTxID(params);
+      if (!txt) {
+        return tx;
+      }
       tx = mappingTxTransactorSelector(state)(txt);
       break;
     }

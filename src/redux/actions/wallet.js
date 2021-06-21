@@ -20,6 +20,7 @@ import { updateMasterKey } from '@src/redux/actions/masterKey';
 // eslint-disable-next-line import/no-cycle
 import { setListToken } from '@src/redux/actions/token';
 import { Validator } from 'incognito-chain-web-js/build/wallet';
+import { ExHandler } from '@src/services/exception';
 
 const getStoredDefaultAccountName = async (listAccount) => {
   const firstAccountName = listAccount && listAccount[0]?.name;
@@ -121,6 +122,6 @@ export const reloadWallet = (accountName) => async (dispatch, getState) => {
     }
     return false;
   } catch (e) {
-    throw e;
+    new ExHandler(e).showErrorToast();
   }
 };
