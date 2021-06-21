@@ -201,7 +201,6 @@ export const historyDetailFactoriesSelector = createSelector(
   ({ tx }, selectedPrivacy) => {
     const { txType } = tx;
     try {
-      console.log('txType', txType);
       switch (txType) {
       case ACCOUNT_CONSTANT.TX_TYPE.RECEIVE: {
         const {
@@ -309,6 +308,7 @@ export const historyDetailFactoriesSelector = createSelector(
             label: 'To address',
             value: userPaymentAddress,
             disabled: !userPaymentAddress,
+            copyable: true,
           },
           {
             label: 'Inchain TxID',
@@ -322,6 +322,12 @@ export const historyDetailFactoriesSelector = createSelector(
             value: erc20TokenAddress,
             copyable: true,
             disabled: !erc20TokenAddress,
+          },
+          {
+            label: 'Coin',
+            value: symbol,
+            copyable: true,
+            disabled: !symbol,
           },
         ];
       }
@@ -392,6 +398,7 @@ export const historyDetailFactoriesSelector = createSelector(
             label: 'To address',
             value: userPaymentAddress,
             disabled: !userPaymentAddress,
+            copyable: true,
           },
           {
             label: 'Inchain TxID',
@@ -418,6 +425,12 @@ export const historyDetailFactoriesSelector = createSelector(
             value: memo,
             copyable: true,
             disabled: !memo,
+          },
+          {
+            label: 'Coin',
+            value: symbol,
+            copyable: true,
+            disabled: !symbol,
           },
         ];
       }

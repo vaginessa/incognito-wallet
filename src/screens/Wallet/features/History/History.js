@@ -26,8 +26,6 @@ import HTML from 'react-native-render-html';
 import LinkingService from '@src/services/linking';
 import { ExHandler } from '@src/services/exception';
 import { useNavigation } from 'react-navigation-hooks';
-import { defaultAccountSelector } from '@src/redux/selectors/account';
-import { walletSelector } from '@src/redux/selectors/wallet';
 import { getDefaultAccountWalletSelector } from '@src/redux/selectors/shared';
 import { styled } from './History.styled';
 
@@ -45,8 +43,6 @@ const Hook = React.memo((props) => {
     detail = '',
     canRetryExpiredShield = false,
   } = props || {};
-  const account = useSelector(defaultAccountSelector);
-  const wallet = useSelector(walletSelector);
   const accountWallet = useSelector(getDefaultAccountWalletSelector);
   const { tx } = useSelector(historyDetailSelector);
   const [toggle, setToggle] = React.useState(false);
