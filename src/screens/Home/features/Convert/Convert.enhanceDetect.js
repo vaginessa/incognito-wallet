@@ -1,18 +1,18 @@
 import React, { useState } from 'react';
 import ErrorBoundary from '@src/components/ErrorBoundary';
 import { debounce } from 'lodash';
-import { useSelector } from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import { accountSelector } from '@src/redux/selectors';
 import { BottomBar } from '@components/core';
 import { useFocusEffect, useNavigation } from 'react-navigation-hooks';
 import routeNames from '@routers/routeNames';
-import accountService from '@services/wallet/accountService';
-import { PRV_ID } from '@screens/Dex/constants';
 import { ExHandler } from '@services/exception';
 import BottomLoading from '@components/core/BottomLoading';
+import { actionFetchCoinsV1 } from '@screens/Home/features/Convert/Convert.actions';
 
 const enhance = WrappedComp => (props) => {
   const navigation = useNavigation();
+  const dispatch = useDispatch();
   const account = useSelector(accountSelector.defaultAccountSelector);
   const wallet = useSelector((state) => state?.wallet);
   const [{
@@ -25,18 +25,7 @@ const enhance = WrappedComp => (props) => {
 
   const detectUTXOSV1 = React.useCallback(async () => {
     try {
-      const { unspentCoins } = await accountService.getUnspentCoinsV1({
-        account,
-        wallet,
-        fromApi: true
-      });
-      const hasUnspentCoins = unspentCoins.some(coin => {
-        if (coin.tokenID === PRV_ID) {
-          return coin.balance > 100;
-        }
-        return coin.balance > 0;
-      });
-
+      const hasUnspentCoins = await dispatch(actionFetchCoinsV1());
       setShowBottom({
         loading: false,
         showConvert: hasUnspentCoins
@@ -61,7 +50,7 @@ const enhance = WrappedComp => (props) => {
     });
     debounceDetectUTXOSV1.cancel();
     debounceDetectUTXOSV1();
-  }, [account.PaymentAddress, wallet]));
+  }, [account]));
 
   return (
     <ErrorBoundary>
