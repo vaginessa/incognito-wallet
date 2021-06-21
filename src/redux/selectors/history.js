@@ -272,6 +272,7 @@ export const historyDetailFactoriesSelector = createSelector(
           showDetail,
           erc20TokenAddress,
           canRetryExpiredShield,
+          outChainTx,
         } = tx;
         return [
           {
@@ -316,6 +317,13 @@ export const historyDetailFactoriesSelector = createSelector(
             disabled: !inChainTx,
             openUrl: !!inChainTx,
             handleOpenUrl: () => LinkingService.openUrl(inChainTx),
+          },
+          {
+            label: 'Outchain TxID',
+            value: outChainTx,
+            disabled: !outChainTx,
+            openUrl: !!outChainTx,
+            handleOpenUrl: () => LinkingService.openUrl(outChainTx),
           },
           {
             label: 'Contract',
