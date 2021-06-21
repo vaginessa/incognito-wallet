@@ -15,6 +15,7 @@ import { PRV } from '@services/wallet/tokenService';
 import { apiGetQuote } from '@screens/DexV2';
 import { initFee } from '@screens/DexV2/components/Trade/TradeV2/Trade.reducer';
 import { PRV_ID } from '@screens/Dex/constants';
+import { PrivacyVersion, PRVIDSTR } from 'incognito-chain-web-js/build/wallet';
 
 /**
  * Slippage percent decision outputValue,
@@ -404,7 +405,12 @@ export const checkMethodGetNetworkTrading = (inputToken, outputToken) => ({
 export const getInputBalance = async (payload) => {
   const { account, inputToken, wallet, inputFee } = payload;
   const token = inputToken;
-  const balance = await accountService.getBalance(account, wallet, token.id);
+  const balance = await accountService.getBalance({
+    account,
+    wallet,
+    tokenID: token.id || token.tokenId,
+    version: PrivacyVersion.ver2
+  });
 
   if (inputToken?.id !== token.id) {
     return;
@@ -412,7 +418,12 @@ export const getInputBalance = async (payload) => {
 
   let prvBalance = balance;
   if (token !== PRV) {
-    prvBalance = await accountService.getBalance(account, wallet);
+    prvBalance = await accountService.getBalance({
+      account,
+      wallet,
+      tokenID: PRVIDSTR,
+      version: PrivacyVersion.ver2
+    });
   }
 
   let newInputText = '';

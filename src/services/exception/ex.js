@@ -234,16 +234,18 @@ class Exception {
       }
 
       if (
-        this.exception?.code?.toLowerCase().includes('econnaborted') ||
+        (typeof this.exception?.code === 'string' && this.exception?.code?.toLowerCase().includes('econnaborted')) ||
         this.message?.toLowerCase().includes('lock wait timeout exceeded;')
       ) {
         return MESSAGES.API_POOL_ERROR;
       }
 
-      if (this?.exception?.code?.toLowerCase().includes('api_error')) {
+      if (typeof this.exception?.code === 'string' && this?.exception?.code?.toLowerCase().includes('api_error')) {
         return `${this.message} (${this.exception.code})`;
       }
-
+      if (typeof this.exception.code === 'number' && this.exception.name) {
+        return `${defaultMessage || MESSAGES.GENERAL} ${this.exception.name}(${this.exception.code})`;
+      }
       return `${defaultMessage || MESSAGES.GENERAL} (${this.exception.code})`;
     } catch (error) {
       return error.message;

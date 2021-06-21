@@ -34,10 +34,10 @@ import {
 import { debounce, orderBy, uniqBy } from 'lodash';
 import { actionLogEvent } from '@screens/Performance';
 import { PRIORITY_PDEX, TRADE_LOADING_VALUE } from '@screens/DexV2/components/Trade/TradeV2/Trade.appConstant';
-import {accountServices} from '@services/wallet';
-import {defaultAccountSelector} from '@src/redux/selectors/account';
-import {walletSelector} from '@src/redux/selectors/wallet';
-import {LIMIT} from '@screens/DexV2/constants';
+import { accountServices } from '@services/wallet';
+import { defaultAccountSelector } from '@src/redux/selectors/account';
+import { walletSelector } from '@src/redux/selectors/wallet';
+import { LIMIT } from '@screens/DexV2/constants';
 
 /** Change InputToken
  * @param {object} inputToken

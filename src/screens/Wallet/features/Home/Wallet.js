@@ -35,6 +35,8 @@ import srcHideBlanceIcon from '@src/assets/images/icons/ic_hide_blance.png';
 import srcShowBlanceIcon from '@src/assets/images/icons/ic_show_blance.png';
 import appConstant from '@src/constants/app';
 import { actionFree as actionFreeHistory } from '@src/redux/actions/history';
+import withDetectConvert from '@screens/Home/features/Convert/Convert.enhanceDetect';
+import { compose } from 'recompose';
 import {
   styled,
   styledHook,
@@ -288,7 +290,7 @@ const RightHeader = React.memo(() => {
   );
 });
 
-const Wallet = () => {
+const Wallet = React.memo(() => {
   const navigation = useNavigation();
   const onGoBack = () => navigation.navigate(routeNames.Home);
   const dispatch = useDispatch();
@@ -308,8 +310,11 @@ const Wallet = () => {
       <Extra />
     </View>
   );
-};
+});
 
 Wallet.propTypes = {};
 
-export default withWallet(Wallet);
+export default compose(
+  withDetectConvert,
+  withWallet,
+)(Wallet);

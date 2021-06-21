@@ -84,6 +84,12 @@ import TermOfUseShield from '@screens/Shield/features/TermOfUseShield';
 import MonitorDetail from '@screens/Node/MonitorDetail';
 import ShieldDecentralizeDescription from '@screens/Shield/features/ShieldDecentralizeDescription';
 import Convert from '@screens/Home/features/Convert';
+import ConfirmLiquidity from '@screens/Dex/components/Confirm';
+import HistoriesLiquidity from '@screens/Dex/features/Histories';
+import HistoryContributeDetail from '@screens/Dex/features/HistoryContributeDetail';
+import HistoryWithdrawDetail from '@screens/Dex/features/HistoryWithdrawDetail';
+import ConfirmRetryLiquidity from '@screens/Dex/features/ConfirmRetry';
+import TwoTokensSelect from '@screens/Dex/features/TwoTokensSelect';
 
 const masterKeyRoutes = [
   {
@@ -433,6 +439,30 @@ const routes = [
   {
     screen: Convert,
     name: routeNames.Convert,
+  },
+  {
+    screen: ConfirmLiquidity,
+    name: routeNames.ConfirmLiquidity,
+  },
+  {
+    screen: HistoriesLiquidity,
+    name: routeNames.HistoriesLiquidity,
+  },
+  {
+    screen: HistoryContributeDetail,
+    name: routeNames.HistoryContributeDetail,
+  },
+  {
+    screen: HistoryWithdrawDetail,
+    name: routeNames.HistoryWithdrawDetail,
+  },
+  {
+    screen: ConfirmRetryLiquidity,
+    name: routeNames.ConfirmRetryLiquidity,
+  },
+  {
+    screen: TwoTokensSelect,
+    name: routeNames.TwoTokensSelect,
   },
 ];
 

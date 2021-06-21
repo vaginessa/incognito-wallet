@@ -108,6 +108,8 @@ export const MESSAGES = {
   NO_PAIR: 'You haven\'t added any pairs yet.',
   SLIPPAGE_WARNING: 'Your trade may fail at this range.',
   SLIPPAGE_ERROR: 'Enter a number from 0 to 99.99.',
+  LIQUIDITY_ERROR: 'We seem to have hit a snag. Please initiate the liquidity again.',
+  WITH_DRAW_FEE_MUST_BE_AN_INTERGER_NUMBER: 'Withdraw value must be an interger number'
 };
 export const MILLISECOND = 1;
 export const SECOND = 1000 * MILLISECOND;

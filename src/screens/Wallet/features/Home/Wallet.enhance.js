@@ -22,8 +22,6 @@ import {
 } from '@src/screens/UnShield';
 import { withdraw, updatePTokenFee } from '@src/services/api/withdraw';
 import { accountSelector } from '@src/redux/selectors';
-import { compose } from 'recompose';
-// import withDetectConvert from '@screens/Home/features/Convert/Convert.enhanceDetect';
 
 export const WalletContext = React.createContext({});
 
@@ -160,7 +158,4 @@ const enhance = (WrappedComp) => (props) => {
   );
 };
 
-export default compose(
-  // withDetectConvert,
-  enhance,
-);
+export default enhance;

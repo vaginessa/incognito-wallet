@@ -10,7 +10,7 @@ import accountService from '@src/services/wallet/accountService';
 import { walletSelector } from '@src/redux/selectors/wallet';
 import stylesheet from './style';
 
-const Loading = ({ open }) => {
+const Loading = ({ open, showPercent }) => {
   const account = useSelector(defaultAccountSelector);
   const wallet = useSelector(walletSelector);
   const [state, setState] = React.useState({
@@ -40,10 +40,16 @@ const Loading = ({ open }) => {
             'Completing this action...\n\nPlease do not navigate away from the app.'
           }
         </Text>
-        <Text style={stylesheet.percent}>{`${percent}%`}</Text>
-        {!!global.isDebug() && !!message && (
-          <Text style={stylesheet.desc}>{message}</Text>
-        )}
+        {
+          showPercent && (
+            <>
+              <Text style={stylesheet.percent}>{`${percent}%`}</Text>
+              {!!global.isDebug() && !!message && (
+                <Text style={stylesheet.desc}>{message}</Text>
+              )}
+            </>
+          )
+        }
         <KeepAwake />
       </View>
     </Modal>
@@ -52,6 +58,12 @@ const Loading = ({ open }) => {
 
 Loading.propTypes = {
   open: PropTypes.bool.isRequired,
+  showPercent: PropTypes.bool,
 };
+
+Loading.defaultProps = {
+  showPercent: true,
+};
+
 
 export default Loading;
