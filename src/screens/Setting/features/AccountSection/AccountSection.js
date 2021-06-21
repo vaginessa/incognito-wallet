@@ -135,10 +135,7 @@ const AccountSection = ({
     );
   };
 
-  const isDeletable = (account) =>
-    listAccount.length > 1 &&
-    !dexUtils.isDEXAccount(account?.name) &&
-    !isNodeAccount(account?.name, devices);
+  const isDeletable = listAccount.length > 1;
 
   return (
     <Section
@@ -151,7 +148,7 @@ const AccountSection = ({
               account,
               onHandleSwitchAccount,
               handleExportKey,
-              isDeletable(account) ? handleDelete : null,
+              isDeletable && handleDelete,
               account?.name === defaultAccount?.name,
               listAccount?.length - 1 === index,
             )}
