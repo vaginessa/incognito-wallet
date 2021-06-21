@@ -12,6 +12,8 @@ const DECENTRALIZED_STATUS = {
   EXPIRED: [14],
 };
 
+export const DECENTRALIZED_RECEIVE_TYPES = [ 27, 240, 252, 96, 242 ];
+
 const getStatusText = (status, isDecentralized) => {
   if (isDecentralized) {
     // decentralized token history
