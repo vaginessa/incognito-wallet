@@ -1,5 +1,3 @@
-import TwoTokensSelect from '@screens/Dex/features/TwoTokensSelect';
-
 export default {
   RootApp: 'App',
   RootSplash: 'RootSplash',
