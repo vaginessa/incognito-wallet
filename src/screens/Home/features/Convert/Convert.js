@@ -6,10 +6,7 @@ import { compose } from 'recompose';
 import { withLayout_2 } from '@components/Layout';
 import withData from '@screens/Home/features/Convert/Convert.enhanceData';
 import withConvert from '@screens/Home/features/Convert/Convert.enhance';
-import styles from '@screens/Home/features/Convert/Convert.styled';
-import { RoundCornerButton } from '@components/core';
 import ConvertStep from '@screens/Home/features/Convert/Components/Step';
-import theme from '@src/styles/theme';
 
 const Convert = (props) => {
   const {
@@ -19,16 +16,7 @@ const Convert = (props) => {
   } = props;
 
   const renderContent = () => (
-    <>
-      <ConvertStep steps={steps} currentStep={currentStep} />
-      {/*<View style={styles.footer}>*/}
-      {/*  <RoundCornerButton*/}
-      {/*    title="Next"*/}
-      {/*    disabled={!!currentStep}*/}
-      {/*    style={[currentStep ? theme.BUTTON.GRAY_TYPE_DISABLE : theme.BUTTON.BLACK_TYPE]}*/}
-      {/*  />*/}
-      {/*</View>*/}
-    </>
+    <ConvertStep steps={steps} currentStep={currentStep} />
   );
 
   return (

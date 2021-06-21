@@ -6,10 +6,10 @@ import { useSelector } from 'react-redux';
 import { selectedPrivacySelector } from '@src/redux/selectors';
 import styles from './style';
 
-const TokenItem = ({ name, id, symbol, verified }) => {
+const TokenItem = React.memo(({ name, id, symbol, verified }) => {
   const token = useSelector(state => selectedPrivacySelector.getPrivacyDataByTokenID(state)(id));
   return (
-    <View style={styles.tokenItem}>
+    <View style={{ flex: 1 }}>
       <View style={{ marginTop: 8 }}>
         <VerifiedText text={name} isVerified={verified} style={styles.tokenName} />
       </View>
@@ -19,7 +19,7 @@ const TokenItem = ({ name, id, symbol, verified }) => {
       </View>
     </View>
   );
-};
+});
 
 TokenItem.propTypes = {
   name: PropTypes.string.isRequired,

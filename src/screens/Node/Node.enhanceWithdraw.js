@@ -45,7 +45,7 @@ const enhanceWithdraw = (WrappedComp) => (props) => {
       );
       const res = await accountService.createAndSendWithdrawRewardTx({
         tokenId,
-        defaultAccount: account,
+        account,
         wallet: account.Wallet,
         fee: MAX_FEE_PER_TX,
       });

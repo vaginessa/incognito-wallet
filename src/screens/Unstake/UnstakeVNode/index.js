@@ -7,6 +7,7 @@ import LocalDatabase from '@utils/LocalDatabase';
 import _ from 'lodash';
 import Device from '@models/device';
 import { MAX_FEE_PER_TX } from '@src/components/EstimateFee/EstimateFee.utils';
+import { PRVIDSTR } from 'incognito-chain-web-js/build/wallet';
 import Unstake from './Unstake';
 
 export const TAG = 'Unstake';
@@ -29,7 +30,11 @@ class UnstakeVNode extends PureComponent {
   async getBalance() {
     const { device } = this.props;
     const account = device.Account;
-    const balance = await accountService.getBalance(account, account.Wallet);
+    const balance = await accountService.getBalance({
+      account,
+      wallet: account.Wallet,
+      tokenID: PRVIDSTR
+    });
     this.setState({ balance });
   }
 
@@ -44,17 +49,17 @@ class UnstakeVNode extends PureComponent {
       const account = device.Account;
       const name = device.AccountName;
       const rs = await accountService.createAndSendStopAutoStakingTx({
-        defaultAccount: account,
+        account,
         wallet: account.Wallet,
         fee,
       });
       console.log('res', rs);
-      const listDevice = (await LocalDatabase.getListDevices()) || [];
+      const listDevice = ((await LocalDatabase.getListDevices()) || []).map(device => Device.getInstance(device));
       await LocalDatabase.saveListDevices(listDevice);
       const deviceIndex = listDevice.findIndex((item) =>
-        _.isEqual(Device.getInstance(item).AccountName, name),
+        _.isEqual(item.AccountName, name),
       );
-      listDevice[deviceIndex].minerInfo.unstakeTx = rs.txId;
+      listDevice[deviceIndex].SelfUnstakeTx = rs.txId;
       await LocalDatabase.saveListDevices(listDevice);
       Toast.showInfo('Unstaking complete.');
       onFinish();

@@ -1,18 +1,17 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import ErrorBoundary from '@src/components/ErrorBoundary';
 import { debounce, isEmpty } from 'lodash';
 import accountService from '@services/wallet/accountService';
 import { PRV_ID } from '@screens/Dex/constants';
-
-export const AIR_DROP = 'air-drop';
+import { MAX_FEE_PER_TX } from '@components/EstimateFee/EstimateFee.utils';
+import Exception from '@services/exception/ex';
+import {ExHandler} from '@services/exception';
 
 const enhance = WrappedComp => props => {
   const { account, wallet, pTokens } = props;
   const [steps, setSteps] = useState([]);
   const [appLoading, setAppLoading] = useState(true);
   const [currentStep, setCurrentStep] = useState(null);
-
-  const sleep = () => (new Promise((resolve) => setTimeout(resolve, 4000)));
 
   const editStep = (key, isSuccess) => {
     setSteps(steps => {
@@ -25,35 +24,40 @@ const enhance = WrappedComp => props => {
     });
   };
 
-  const handleRequestAirdrop = async () => {
-    setCurrentStep(AIR_DROP);
-    await sleep();
-    editStep(AIR_DROP, true);
-  };
-
   const handleConvertPRV = async ({
     accountWallet,
     unspentCoins
   }) => {
     setCurrentStep(PRV_ID);
-    const { errors } = await accountWallet.createAndSendConvertNativeToken(unspentCoins);
-    editStep(PRV_ID, errors.length === 0);
+    try {
+      const {
+        tokenID,
+        balance
+      } = unspentCoins;
+      await accountWallet.createAndSendConvertNativeToken({
+        tokenID,
+        balance
+      });
+      editStep(PRV_ID, true);
+    } catch (error) {
+      editStep(PRV_ID, false);
+      new ExHandler(error).showErrorToast();
+    }
   };
 
   const handleConvertPToken = async ({
     accountWallet,
     unspentCoins
   }) =>{
-    let errorsList = [];
     for (const unspentCoin of unspentCoins) {
       try {
-        const { tokenId: tokenID, balance } = unspentCoin;
+        const { tokenID, balance } = unspentCoin;
         setCurrentStep(tokenID);
         await accountWallet.createAndSendConvertPToken({ tokenID, balance });
-      } catch (errors) {
-        errorsList = errorsList.concat(errors);
+        editStep(unspentCoin?.tokenID, true);
+      } catch (error) {
+        editStep(unspentCoin?.tokenID, false);
       }
-      editStep(unspentCoin?.tokenId, errorsList.length === 0);
     }
   };
 
@@ -64,10 +68,11 @@ const enhance = WrappedComp => props => {
     } = await accountService.getUnspentCoinsV1({
       account,
       wallet,
+      fromApi: false
     });
 
-    const prvUnspent = unspentCoins.find((coin) => coin.tokenId === PRV_ID);
-    const pTokenUnspent = unspentCoins.filter((coin) => coin.tokenId !== PRV_ID && coin.balance > 0);
+    const prvUnspent = unspentCoins.find((coin) => coin.tokenID === PRV_ID && coin.balance > MAX_FEE_PER_TX);
+    const pTokenUnspent = unspentCoins.filter((coin) => coin.tokenID !== PRV_ID && coin.balance > 0);
     return {
       accountWallet,
       prvUnspent,
@@ -76,21 +81,18 @@ const enhance = WrappedComp => props => {
   };
 
   const getConvertSteps = (coins) => {
-    // const airdropStep = [{ name: 'Requesting airdrop', key: AIR_DROP }];
-    const convertSteps = coins.reduce((prev, coin) => {
+    return coins.reduce((prev, coin) => {
       let steps = prev;
-      const { tokenId, balance } = coin;
-      if (tokenId === PRV_ID && balance > 100) {
-        steps.push({ name: 'Convert PRV', key: tokenId, tokenName: 'PRV' });
+      const { tokenID, balance } = coin;
+      if (tokenID === PRV_ID && balance > 100) {
+        steps.push({ name: 'Convert PRV', key: tokenID, tokenName: 'PRV' });
       }
-      if (tokenId !== PRV_ID && balance > 0) {
-        const token = pTokens.find(token => token.tokenId === tokenId);
-        steps.push({ name: `Convert ${token?.name}`, key: tokenId, tokenName: token?.name });
+      if (tokenID !== PRV_ID && balance > 0) {
+        const token = pTokens.find(token => token.tokenId === tokenID);
+        steps.push({ name: `Convert ${token?.name}`, key: tokenID, tokenName: token?.name });
       }
       return steps;
     }, []);
-
-    return convertSteps;
   };
 
   const handleConvert = debounce(async () => {
@@ -104,15 +106,21 @@ const enhance = WrappedComp => props => {
 
     /** load unspent coins success */
 
-    setSteps(getConvertSteps([prvUnspent].concat(pTokenUnspent)));
+    const allToken = [prvUnspent].concat(pTokenUnspent).filter(token => !!token);
+
+    setSteps(getConvertSteps(allToken));
 
     setAppLoading(false);
 
-    if (!isEmpty(prvUnspent) && prvUnspent.balance > 100) {
-      await handleConvertPRV({
-        accountWallet,
-        unspentCoins: prvUnspent
-      });
+    if (!isEmpty(prvUnspent)) {
+      try {
+        await handleConvertPRV({
+          accountWallet,
+          unspentCoins: prvUnspent
+        });
+      } catch (error) {
+        console.log('Convert PRV Error ', error);
+      }
     }
 
     await handleConvertPToken({

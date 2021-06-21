@@ -1,6 +1,6 @@
 import React from 'react';
 import isEmpty from 'lodash/isEmpty';
-import { ACCOUNT_CONSTANT } from 'incognito-chain-web-js/build/wallet';
+import { ACCOUNT_CONSTANT , PrivacyVersion } from 'incognito-chain-web-js/build/wallet';
 import { ExHandler } from '@services/exception';
 import accountService from '@services/wallet/accountService';
 import { submitProvideRawTx, checkPreviousProvision } from '@services/api/pool';
@@ -9,6 +9,7 @@ import { accountSelector } from '@src/redux/selectors';
 import ReCaptchaV3 from '@haskkor/react-native-recaptchav3';
 import appConstant from '@src/constants/app';
 import { PRV_ID } from '@src/constants/common';
+
 
 const withConfirm = (WrappedComp) => (props) => {
   const signPublicKeyEncode = useSelector(
@@ -84,7 +85,8 @@ const withConfirm = (WrappedComp) => (props) => {
             },
           ],
           txType: ACCOUNT_CONSTANT.TX_TYPE.PROVIDE,
-          txHandler: submitProvideRawData
+          txHandler: submitProvideRawData,
+          version: PrivacyVersion.ver2,
         });
       } else {
         await accountService.createAndSendPrivacyToken({
@@ -100,7 +102,8 @@ const withConfirm = (WrappedComp) => (props) => {
           ],
           txType: ACCOUNT_CONSTANT.TX_TYPE.PROVIDE,
           tokenID: coin.id,
-          txHandler: submitProvideRawData
+          txHandler: submitProvideRawData,
+          version: PrivacyVersion.ver2,
         });
       }
     } catch (e) {

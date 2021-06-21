@@ -1,6 +1,5 @@
-import _ from 'lodash';
-import convertUtil from '@utils/convert';
-import formatUtil from '@utils/format';
+import { ceil, isNaN, floor, isNumber } from 'lodash';
+import formatUtils from '@utils/format';
 
 export const DEX = {
   MAIN_ACCOUNT: 'pDEX',
@@ -42,12 +41,12 @@ export default {
     });
   },
 
-  calculateValue(inputToken, inputValue, outputToken, pair) {
+  calculateValue(inputToken, inputValue, outputToken, pair, isInput) {
     if (!pair) {
       return;
     }
 
-    if (!outputToken || !_.isNumber(inputValue) || _.isNaN(inputValue) || !inputValue) {
+    if (!outputToken || !isNumber(inputValue) || isNaN(inputValue) || !inputValue) {
       return { outputValue: 0, outputText: '0' };
     }
 
@@ -55,9 +54,11 @@ export default {
     const outputPool = pair[outputToken.id];
     // const initialPool = inputPool / outputPool;
     // const newInputPool = inputPool + inputValue;
-    const outputValue = _.floor((inputValue * outputPool) / inputPool);
-    const outputOriginal = convertUtil.toHumanAmount(outputValue, outputToken.pDecimals);
-    const outputText = formatUtil.toFixed(outputOriginal, outputToken.pDecimals);
+    const number = (inputValue * outputPool) / inputPool;
+    const outputValue = isInput ? floor(number) : ceil(number);
+    const outputText = formatUtils.amountFull(outputValue, outputToken.pDecimals);
+    // let outputOriginal = convertUtil.toHumanAmount(outputValue, outputToken.pDecimals, true);
+    // const outputText = formatUtil.toFixed(outputOriginal, outputToken.pDecimals);
     return { outputValue, outputText, pair };
   }
 };

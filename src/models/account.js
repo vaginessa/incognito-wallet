@@ -12,6 +12,7 @@ class Account {
     // this.BlockProducerKey = data?.BlockProducerKey;
     this.ValidatorKey = data?.ValidatorKey;
     this.OTAKey = data?.OTAKey;
+    this.OldPaymentAddress = data?.OldPaymentAddress;
     this.ID = data.ID;
   }
 
