@@ -106,6 +106,7 @@ const Liquidity = React.memo((props) => {
           />
           {renderContent()}
         </View>
+        <View style={{ height: 70 }} />
       </ScrollView>
       {renderBottomView()}
     </View>
