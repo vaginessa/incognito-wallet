@@ -87,7 +87,7 @@ export const getFeeData = (estimateFee, selectedPrivacy) => {
   const isETH =
     selectedPrivacy?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.ETH;
   const isBTC =
-    selectedPrivacy?.externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.BTC;
+    selectedPrivacy?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BTC;
   // const editableInput = !isFetching && !userFees.isFetching;
   const editableInput = true;
   return {
