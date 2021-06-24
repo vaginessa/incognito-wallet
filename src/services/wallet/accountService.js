@@ -672,18 +672,21 @@ export default class Account {
     }
   }
 
-  static async removeCacheBalance(defaultAccount, wallet) {
+  static async removeCacheBalance(defaultAccount, wallet, version = PrivacyVersion.ver2) {
     try {
       new Validator('wallet', wallet).object();
       new Validator('defaultAccount', defaultAccount).object();
       const account = this.getAccount(defaultAccount, wallet);
-      const keyInfo = (await account.getKeyInfo(PRVIDSTR)) || {};
+      const keyInfo = (await account.getKeyInfo({ version })) || {};
+      let task = [
+        account.removeStorageCoinsV1()
+      ];
       if (keyInfo?.coinindex) {
-        let task = Object.keys(keyInfo.coinindex).map((tokenID) => {
+        task = task.concat(Object.keys(keyInfo.coinindex).map((tokenID) => {
           return account.clearCacheStorage({ tokenID });
-        });
-        await Promise.all(task);
+        }));
       }
+      await Promise.all(task);
     } catch (error) {
       new ExHandler(error).showErrorToast();
     }
