@@ -1,6 +1,8 @@
 import React, { memo } from 'react';
 import PropTypes from 'prop-types';
 import ExtraInfo from '@screens/DexV2/components/ExtraInfo';
+import BigNumber from 'bignumber.js';
+import formatUtil from '@utils/format';
 
 const Shares = ({
   share,
@@ -8,11 +10,14 @@ const Shares = ({
   showPercent,
 }) => {
   if (!share) return null;
-  const percent = showPercent && totalShare ? `(${(share / totalShare) * 100})%` : '';
+  const getPercent = () => {
+    const percent = formatUtil.toFixed(new BigNumber(share).dividedBy(totalShare).multipliedBy(100).toNumber(), 7);
+    return showPercent && totalShare ? `(${percent})%` : '';
+  };
   return (
     <ExtraInfo
       left="Shares"
-      right={`${share} ${percent}`}
+      right={`${share} ${getPercent()}`}
     />
   );
 };
