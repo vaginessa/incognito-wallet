@@ -914,6 +914,7 @@ export default class Account {
     remoteAddress,
     txHashHandler,
     burningType,
+    version = PrivacyVersion.ver2,
   } = {}) {
     new Validator('account', account).required();
     new Validator('wallet', wallet).required();
@@ -938,6 +939,7 @@ export default class Account {
         burnAmount,
         txHashHandler,
         burningType,
+        version,
       },
     });
   }
