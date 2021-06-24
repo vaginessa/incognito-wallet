@@ -515,3 +515,13 @@ export const headerTabStyle = StyleSheet.create({
     ...FONT.STYLE.medium,
   }
 });
+
+export const styled = StyleSheet.create({
+  warning: {
+    ...FONT.STYLE.medium,
+    color: COLORS.orange,
+    fontSize: 16,
+    textAlign: 'center',
+    top: -35,
+  },
+});
