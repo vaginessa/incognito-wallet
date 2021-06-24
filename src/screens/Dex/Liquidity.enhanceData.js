@@ -20,6 +20,7 @@ const withData = WrappedComp => props => {
     inputValue,
     outputValue,
     pair,
+    outputToken,
   } = useSelector(mergeInputSelector);
 
   const account = useSelector(accountSelector.defaultAccount);
@@ -37,7 +38,8 @@ const withData = WrappedComp => props => {
           account,
           inputValue,
           outputValue,
-          pair
+          pair,
+          outputToken,
         }}
       />
     </ErrorBoundary>
