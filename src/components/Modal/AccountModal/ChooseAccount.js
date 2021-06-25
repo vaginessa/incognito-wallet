@@ -14,7 +14,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { actionToggleModal } from '@src/components/Modal';
 import { AccountIcon } from '@src/components/Icons';
 import format from '@src/utils/format';
-import { switchAccount } from '@src/redux/actions/account';
+import { actionSwitchAccount } from '@src/redux/actions/account';
 import PropTypes from 'prop-types';
 import srcAccountIcon from '@src/assets/images/icons/account_staking_pool.png';
 import { ExHandler } from '@src/services/exception';
@@ -74,7 +74,7 @@ const Account = props => {
         return;
       }
       onSelectAccount && onSelectAccount(account);
-      await dispatch(switchAccount(name));
+      await dispatch(actionSwitchAccount(name));
       await dispatch(actionToggleModal());
 
     } catch (error) {

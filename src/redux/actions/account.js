@@ -18,8 +18,10 @@ import { devSelector } from '@src/screens/Dev';
 import { tokenSelector, accountSelector } from '@src/redux/selectors';
 import { walletSelector } from '@src/redux/selectors/wallet';
 import { PRV } from '@src/constants/common';
+import { ExHandler } from '@src/services/exception';
+import { getDefaultAccountWalletSelector } from '@src/redux/selectors/shared';
+import { burnerAddressSelector } from '@src/redux/selectors/account';
 import { getBalance as getTokenBalance, setListToken } from './token';
-import { getDefaultAccountWalletSelector } from '../selectors/shared';
 
 /**
  *  return basic account object from its name like its KEY, not including account methods (please use accountWallet instead)
@@ -251,32 +253,6 @@ export const followDefaultTokens = (account, pTokenList) => async (
   }
 };
 
-export const switchAccount = (accountName) => async (dispatch, getState) => {
-  try {
-    if (!accountName) throw new Error('accountName is required');
-    const state = getState();
-    const wallet = state?.wallet;
-    if (!wallet) {
-      throw new Error('Wallet is not exist');
-    }
-    const account = getBasicAccountObjectByName(state)(accountName);
-    const defaultAccount = accountSelector.defaultAccount(state);
-    if (defaultAccount?.name === account?.name) {
-      return;
-    }
-    await new Promise.all([
-      dispatch(setDefaultAccount(account)),
-      dispatch(getBalance(account)),
-      dispatch(
-        reloadAccountFollowingToken(account, { shouldLoadBalance: true }),
-      ),
-    ]);
-    return accountSelector.defaultAccount(state);
-  } catch (e) {
-    throw e;
-  }
-};
-
 export const actionSwitchAccountFetching = () => ({
   type: type.ACTION_SWITCH_ACCOUNT_FETCHING,
 });
@@ -321,8 +297,9 @@ export const actionReloadFollowingToken = (shouldLoadBalance = true) => async (
     const followed = await accountService.getFollowingTokens(account, wallet);
     await dispatch(setListToken(followed));
     await accountService.setSubmitedOTAKey({ account, wallet });
+    dispatch(actionFetchBurnerAddress());
     if (shouldLoadBalance) {
-      const keyInfo = await accountWallet.getKeyInfo({
+      await accountWallet.getKeyInfo({
         version: PrivacyVersion.ver2,
       });
       dispatch(getBalance(account));
@@ -456,5 +433,23 @@ export const actionFetchImportAccount = ({ accountName, privateKey }) => async (
   } catch (error) {
     await dispatch(actionFetchFailImportAccount());
     throw error;
+  }
+};
+
+export const actionFetchBurnerAddress = () => async (dispatch, getState) => {
+  try {
+    const state = getState();
+    const burnerAddress = burnerAddressSelector(state);
+    if (burnerAddress) {
+      return;
+    }
+    const account = getDefaultAccountWalletSelector(state);
+    const payload = await account.getBurnerAddress();
+    await dispatch({
+      type: type.ACTION_GET_BURNER_ADDRESS,
+      payload,
+    });
+  } catch (error) {
+    new ExHandler(error).showErrorToast();
   }
 };
