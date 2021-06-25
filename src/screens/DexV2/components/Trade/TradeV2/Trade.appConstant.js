@@ -36,3 +36,5 @@ export const TRADE_LOADING_VALUE = {
   INPUT: 'INPUT',
   OUTPUT: 'OUTPUT',
 };
+
+export const ERC20_CURRENCY_TYPE = [1, 3];

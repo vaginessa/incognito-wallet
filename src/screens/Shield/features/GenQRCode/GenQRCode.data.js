@@ -1,7 +1,7 @@
 import React from 'react';
 import ErrorBoundary from '@src/components/ErrorBoundary';
 import { useNavigationParam } from 'react-navigation-hooks';
-import { useDispatch, useSelector } from 'react-redux';
+import { batch, useDispatch, useSelector } from 'react-redux';
 import {
   shieldDataSelector,
   shieldSelector,
@@ -14,7 +14,7 @@ import { actionAddFollowToken } from '@src/redux/actions/token';
 import { defaultAccountSelector } from '@src/redux/selectors/account';
 
 const enhance = (WrappedComp) => (props) => {
-  const loadingRef = React.useRef(true);
+  const [loading, setLoading] = React.useState(true);
   const dispatch = useDispatch();
   const account = useSelector(defaultAccountSelector);
   const tokenShield = useNavigationParam('tokenShield') || {};
@@ -27,19 +27,20 @@ const enhance = (WrappedComp) => (props) => {
       fetchDataShield({ tokenId, selectedPrivacy: tokenShield, account }),
     );
   const handleUpdateTokenSelector = () => {
-    dispatch(setSelectedPrivacy(tokenId));
-    dispatch(actionAddFollowToken(tokenId));
+    batch(() => {
+      dispatch(setSelectedPrivacy(tokenId));
+      dispatch(actionAddFollowToken(tokenId));
+    });
   };
   React.useEffect(() => {
     setTimeout(() => {
-      loadingRef.current = false;
-      handleShield();
+      setLoading(false);
     }, 300);
   }, []);
   React.useEffect(() => {
     setTimeout(() => {
       handleUpdateTokenSelector();
-    }, 2000);
+    }, 1000);
   }, []);
   return (
     <WalletConnectProvider {...wcProviderOptionals}>
@@ -47,7 +48,7 @@ const enhance = (WrappedComp) => (props) => {
         <WrappedComp
           {...{
             ...props,
-            loading: loadingRef.current,
+            loading,
             tokenId,
             tokenSymbol,
             selectedPrivacy: tokenShield,
