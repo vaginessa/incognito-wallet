@@ -24,7 +24,6 @@ const enhance = WrappedComp => props => {
   const onChangeOutputText = (newOutputText) => dispatch(actionChangeOutputText({ newOutputText }));
 
   const onSelectOutputToken = (newOutputToken, newInputToken) => {
-    console.log('SANG TEST: ', newOutputToken, newInputToken);
     dispatch(actionChangeOutputToken({ newInputToken, newOutputToken }));
   };
 

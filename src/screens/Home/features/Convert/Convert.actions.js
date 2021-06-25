@@ -1,9 +1,8 @@
 import {walletSelector} from '@src/redux/selectors/wallet';
 import {accountSelector} from '@src/redux/selectors';
 import accountService from '@services/wallet/accountService';
-import {PRV_ID} from '@screens/Dex/constants';
-import {useSelector} from 'react-redux';
-import {switchAccountSelector} from '@src/redux/selectors/account';
+import { PRV_ID } from '@screens/Dex/constants';
+import { switchAccountSelector } from '@src/redux/selectors/account';
 
 export const actionFetchCoinsV1 = () => async (dispatch, getState) => {
   let hasUnspentCoins = false;
