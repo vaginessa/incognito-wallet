@@ -4,15 +4,18 @@ import { debounce, isEmpty } from 'lodash';
 import accountService from '@services/wallet/accountService';
 import { PRV_ID } from '@screens/Dex/constants';
 import { MAX_FEE_PER_TX } from '@components/EstimateFee/EstimateFee.utils';
-import Exception from '@services/exception/ex';
-import {ExHandler} from '@services/exception';
+import { ExHandler } from '@services/exception';
+import { useSelector } from 'react-redux';
+import { selectedPrivacySelector } from '@src/redux/selectors';
 
 const enhance = WrappedComp => props => {
-  const { account, wallet, pTokens } = props;
+  const { account, wallet } = props;
   const [steps, setSteps] = useState([]);
   const [appLoading, setAppLoading] = useState(true);
   const [currentStep, setCurrentStep] = useState(null);
-
+  const getPrivacyDataByTokenID = useSelector(
+    selectedPrivacySelector.getPrivacyDataByTokenID,
+  );
   const editStep = (key, isSuccess) => {
     setSteps(steps => {
       const stepIndex = steps.findIndex(step => step.key === key);
@@ -41,7 +44,7 @@ const enhance = WrappedComp => props => {
       editStep(PRV_ID, true);
     } catch (error) {
       editStep(PRV_ID, false);
-      new ExHandler(error).showErrorToast();
+      new ExHandler(error).showErrorToast(true);
     }
   };
 
@@ -88,7 +91,8 @@ const enhance = WrappedComp => props => {
         steps.push({ name: 'Convert PRV', key: tokenID, tokenName: 'PRV' });
       }
       if (tokenID !== PRV_ID && balance > 0) {
-        const token = pTokens.find(token => token.tokenId === tokenID);
+        // const token = pTokens.find(token => token.tokenId === tokenID);
+        const token = getPrivacyDataByTokenID(tokenID);
         steps.push({ name: `Convert ${token?.name}`, key: tokenID, tokenName: token?.name });
       }
       return steps;
