@@ -9,14 +9,17 @@ const initialState = {
   switch: false,
   create: false,
   import: false,
-  signPublicKeyEncode: ''
+  signPublicKeyEncode: '',
+  burnerAddress: '',
 };
 
 const setAccount = (list, account) => {
   let newList = [...list];
   // console.log(TAG,'setAccount account = ',account);
   try {
-    const foundIndex = list.findIndex((a) => a.PaymentAddress === account.PaymentAddress);
+    const foundIndex = list.findIndex(
+      (a) => a.PaymentAddress === account.PaymentAddress,
+    );
     if (foundIndex >= 0) {
       newList[foundIndex] = account;
     }
@@ -148,7 +151,13 @@ const reducer = (state = initialState, action) => {
     const { signPublicKeyEncode } = action;
     return {
       ...state,
-      signPublicKeyEncode
+      signPublicKeyEncode,
+    };
+  }
+  case type.ACTION_GET_BURNER_ADDRESS: {
+    return {
+      ...state,
+      burnerAddress: action.payload,
     };
   }
   default:

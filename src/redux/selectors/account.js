@@ -2,6 +2,11 @@ import _, { memoize } from 'lodash';
 import { createSelector } from 'reselect';
 import { walletSelector } from './wallet';
 
+export const accountSelector = createSelector(
+  (state) => state.account,
+  (account) => account,
+);
+
 export const isGettingBalance = createSelector(
   (state) => state?.account?.isGettingBalance || [],
 );
@@ -132,6 +137,11 @@ export const signPublicKeyEncodeSelector = createSelector(
   (account) => account?.signPublicKeyEncode,
 );
 
+export const burnerAddressSelector = createSelector(
+  accountSelector,
+  ({ burnerAddress }) => burnerAddress,
+);
+
 export default {
   defaultAccountName,
   listAccount,
@@ -149,4 +159,5 @@ export default {
   importAccountSelector,
   getAccountByNameSelector,
   signPublicKeyEncodeSelector,
+  burnerAddressSelector,
 };

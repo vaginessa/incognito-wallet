@@ -15,6 +15,7 @@ import {
 import { PRV } from '@src/constants/common';
 import { CONSTANT_CONFIGS } from '@src/constants';
 import { selectedPrivacy } from './selectedPrivacy';
+import { burnerAddressSelector } from './account';
 
 const renderAmount = ({ amount, pDecimals, decimalDigits } = {}) => {
   let amountStr = '';
@@ -198,7 +199,8 @@ export const historyDetailSelector = createSelector(
 export const historyDetailFactoriesSelector = createSelector(
   historyDetailSelector,
   selectedPrivacy,
-  ({ tx }, selectedPrivacy) => {
+  burnerAddressSelector,
+  ({ tx }, selectedPrivacy, burnerAddress) => {
     const { txType } = tx;
     try {
       switch (txType) {
@@ -456,7 +458,7 @@ export const historyDetailFactoriesSelector = createSelector(
           status,
           statusStr,
         } = tx;
-        return [
+        let factories = [
           {
             label: 'TxID',
             value: `#${txId}`,
@@ -508,6 +510,19 @@ export const historyDetailFactoriesSelector = createSelector(
             disabled: !txTypeStr,
           },
         ];
+        try {
+          if (receiverAddress === burnerAddress) {
+            let foundIndex = factories.findIndex(
+              (item) => item.value === receiverAddress,
+            );
+            if (foundIndex > -1) {
+              factories[foundIndex].label = 'Burn address';
+            }
+          }
+        } catch {
+          //
+        }
+        return factories;
       }
       }
     } catch (error) {
