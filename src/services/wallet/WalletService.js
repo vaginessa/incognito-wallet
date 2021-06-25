@@ -16,6 +16,7 @@ import { updateWalletAccounts } from '@services/api/masterKey';
 import { getToken } from '@src/services/auth';
 import { getPassphrase } from './passwordService';
 import Server from './Server';
+import { ExHandler } from '../exception';
 
 Wallet.RandomBytesFunc = randomBytes;
 Wallet.setPrivacyUtilRandomBytesFunc(randomBytes);
@@ -60,7 +61,7 @@ export async function loadWallet(passphrase, name = 'Wallet') {
     await saveWallet(wallet);
     return wallet?.Name ? wallet : false;
   } catch (error) {
-    console.log('ERROR WHEN LOAD WALLET', error);
+    new ExHandler(error).showErrorToast();
   }
 }
 
