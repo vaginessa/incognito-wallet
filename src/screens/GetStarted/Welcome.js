@@ -1,4 +1,6 @@
-import { LoadingContainer } from '@src/components/core';
+import {
+  LoadingContainer,
+} from '@src/components/core';
 import { StyleSheet } from 'react-native';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigation } from 'react-navigation-hooks';
@@ -9,13 +11,12 @@ import WelcomeNewUser from '@screens/GetStarted/WelcomeNewUser';
 import WelcomeOldUser from '@screens/GetStarted/WelcomeOldUser';
 import BackupKeys from '@screens/BackupKeys';
 import ConfirmBackUp from '@screens/GetStarted/ConfirmBackUpKeys';
-import { loadWallet } from '@src/services/wallet/WalletService';
+import { loadWallet as loadWallet } from '@src/services/wallet/WalletService';
 import { CONSTANT_CONFIGS } from '@src/constants';
-import { ExHandler } from '@src/services/exception';
 
 const styles = StyleSheet.create({
   flex: {
-    flex: 1,
+    flex: 1
   },
 });
 
@@ -29,22 +30,20 @@ const Welcome = () => {
   const navigation = useNavigation();
 
   const loadWalletData = useCallback(async () => {
-    try {
-      const data = await storage.getItem('Wallet');
-      setIsExisted(!!data);
-      if (data) {
-        const wallet = await loadWallet(
-          CONSTANT_CONFIGS.PASSPHRASE_WALLET_DEFAULT,
-        );
-        const accounts = await wallet.listAccount();
-        setListAccount(accounts);
-        setTimeout(() => {
-          setLoadingWallet(false);
-        }, 100);
-      }
-    } catch (error) {
-      new ExHandler(error).showErrorToast();
+    const data = await storage.getItem('Wallet');
+
+    setIsExisted(!!data);
+
+    if (data) {
+      const wallet = await loadWallet(CONSTANT_CONFIGS.PASSPHRASE_WALLET_DEFAULT);
+      const accounts = await wallet.listAccount();
+
+      setListAccount(accounts);
     }
+
+    setTimeout(() => {
+      setLoadingWallet(false);
+    }, 100);
   }, []);
 
   const handleShowBackUp = useCallback(() => {
@@ -60,7 +59,7 @@ const Welcome = () => {
   };
 
   const handleCreate = () => {
-    navigation.navigate(routeNames.InitMasterKey, { init: true });
+    navigation.navigate(routeNames.InitMasterKey , { init: true });
   };
 
   useEffect(() => {
@@ -91,16 +90,9 @@ const Welcome = () => {
   }
 
   const renderContent = () => {
-    return !isExisted ? (
-      <WelcomeNewUser onImport={handleImport} onCreate={handleCreate} />
-    ) : (
-      <WelcomeOldUser
-        onImport={handleImport}
-        onCreate={handleCreate}
-        isBackUp={isBackUp}
-        onBackUp={handleShowBackUp}
-      />
-    );
+    return !isExisted ?
+      <WelcomeNewUser onImport={handleImport} onCreate={handleCreate} /> :
+      <WelcomeOldUser onImport={handleImport} onCreate={handleCreate} isBackUp={isBackUp} onBackUp={handleShowBackUp} />;
   };
 
   return (
