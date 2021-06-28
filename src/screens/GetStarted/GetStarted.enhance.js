@@ -35,6 +35,7 @@ import {
   actionToggleShowWizard,
   actionToggleFollowDefaultPTokens,
 } from './GetStarted.actions';
+import withDetectStatusNetwork from './GetStarted.enhanceNetwork';
 
 const enhance = (WrappedComp) => (props) => {
   const [loadMasterKeys, setLoadMasterKeys] = useState(false);
@@ -231,6 +232,7 @@ const enhance = (WrappedComp) => (props) => {
 };
 
 export default compose(
+  withDetectStatusNetwork,
   withPin,
   enhance,
 );
