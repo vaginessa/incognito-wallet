@@ -184,9 +184,10 @@ export const historyTxsSelector = createSelector(
     return {
       ...history,
       isEmpty: histories.length === 0 && !isFetching && isFetched,
-      refreshing: isFetching,
+      refreshing: isFetching && isFetched,
       oversize: true,
       histories: [...sort],
+      loading: isFetching && !isFetched,
     };
   },
 );

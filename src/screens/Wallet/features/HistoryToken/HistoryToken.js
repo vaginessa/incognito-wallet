@@ -6,7 +6,7 @@ import { useHistoryEffect } from '@src/screens/Wallet/features/History/History.u
 import EmptyHistory from './HistoryToken.empty';
 
 const HistoryToken = () => {
-  const { histories, isEmpty, isFetching, refreshing, oversize } = useSelector(
+  const { histories, isEmpty, loading, refreshing, oversize } = useSelector(
     historyTxsSelector,
   );
   const { handleRefresh, handleCancelEtaHistory } = useHistoryEffect();
@@ -16,7 +16,7 @@ const HistoryToken = () => {
       onCancelEtaHistory={handleCancelEtaHistory}
       onRefreshHistoryList={handleRefresh}
       refreshing={refreshing}
-      loading={isFetching}
+      loading={loading}
       renderEmpty={() => <EmptyHistory />}
       showEmpty={isEmpty}
       oversize={oversize}

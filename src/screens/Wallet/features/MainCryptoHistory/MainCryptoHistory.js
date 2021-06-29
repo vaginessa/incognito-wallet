@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux';
 import EmptyHistory from './MainCryptoHistory.empty';
 
 const MainCryptoHistory = () => {
-  const { histories, isEmpty, isFetching, refreshing, oversize } = useSelector(
+  const { histories, isEmpty, loading, refreshing, oversize } = useSelector(
     historyTxsSelector,
   );
   const { handleRefresh } = useHistoryEffect();
@@ -15,7 +15,7 @@ const MainCryptoHistory = () => {
       histories={histories}
       onRefreshHistoryList={handleRefresh}
       refreshing={refreshing}
-      loading={isFetching}
+      loading={loading}
       renderEmpty={() => <EmptyHistory />}
       showEmpty={isEmpty}
       oversize={oversize}
