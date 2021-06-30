@@ -52,7 +52,7 @@ const Setting = () => {
         <CurrencySection />
         <AddressBookSection />
         <ExportCSVSection handlePress={handlePressExportCSV} />
-        <UTXOSection />
+        {/*<UTXOSection />*/}
         <RemoveStorage />
         <RemoveBalanceCached />
         {global.isDebug() && <DevSection />}

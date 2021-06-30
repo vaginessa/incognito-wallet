@@ -42,7 +42,6 @@ const enhance = (WrappedComp) => (props) => {
 };
 
 export default compose(
-  withLayout_2,
   withWallet,
   enhance,
 );

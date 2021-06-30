@@ -25,6 +25,7 @@ import { useBtnTrade } from '@src/components/UseEffect/useBtnTrade';
 import useFeatureConfig from '@src/shared/hooks/featureConfig';
 import { pTokenSelector } from '@src/redux/selectors/shared';
 import appConstant from '@src/constants/app';
+import StreamLineBottomBar from '@screens/Streamline/features/StreamLineBottomBar';
 import withDetail from './Detail.enhance';
 import {
   styled,
@@ -126,20 +127,23 @@ const Detail = (props) => {
   const onGoBack = () => navigation.navigate(routeNames.Wallet);
   const [BtnTrade, hasTradeBtn] = useBtnTrade();
   return (
-    <View style={styled.container}>
-      <Header
-        title={selected?.name}
-        customHeaderTitle={<BtnInfo />}
-        rightHeader={<BtnTrade />}
-        onGoBack={onGoBack}
-        styledContainerHeaderTitle={
-          hasTradeBtn && styled.styledContainerHeaderTitle
-        }
-      />
-      <Balance />
-      <GroupButton />
-      <History {...{ ...props, refreshing }} />
-    </View>
+    <>
+      <View style={[styled.container, { marginHorizontal: 25 }]}>
+        <Header
+          title={selected?.name}
+          customHeaderTitle={<BtnInfo />}
+          rightHeader={<BtnTrade />}
+          onGoBack={onGoBack}
+          styledContainerHeaderTitle={
+            hasTradeBtn && styled.styledContainerHeaderTitle
+          }
+        />
+        <Balance />
+        <GroupButton />
+        <History {...{ ...props, refreshing }} />
+      </View>
+      <StreamLineBottomBar />
+    </>
   );
 };
 
