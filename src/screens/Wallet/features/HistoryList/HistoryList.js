@@ -107,8 +107,8 @@ const HistoryList = (props) => {
     onCancelEtaHistory,
     loading,
   } = props;
-
-  if (loading) {
+  const initing = loading && histories.length === 0;
+  if (initing) {
     return (
       <LoadingContainer
         containerStyled={{
@@ -128,7 +128,7 @@ const HistoryList = (props) => {
       onRefresh={() =>
         typeof onRefreshHistoryList === 'function' && onRefreshHistoryList()
       }
-      refreshing={refreshing}
+      refreshing={refreshing && !initing}
       onEndReached={() =>
         typeof onLoadmoreHistory === 'function' && onLoadmoreHistory()
       }
