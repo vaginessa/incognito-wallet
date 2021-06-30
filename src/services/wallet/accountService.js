@@ -596,7 +596,7 @@ export default class Account {
     return '';
   }
 
-  static async getUTXOs(wallet, account, coinId) {
+  static getUTXOs(wallet, account, coinId) {
     if (!wallet || !account) {
       return 0;
     }

@@ -1,54 +1,46 @@
-import accountServices from '@src/services/wallet/accountService';
-import { walletSelector } from '@src/redux/selectors/wallet';
-import { defaultAccountSelector } from '@src/redux/selectors/account';
+import React from 'react';
+import { switchAccountSelector } from '@src/redux/selectors/account';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigation } from 'react-navigation-hooks';
+import { useFocusEffect, useNavigation } from 'react-navigation-hooks';
 import { CONSTANT_COMMONS, CONSTANT_KEYS } from '@src/constants';
 import routeNames from '@src/router/routeNames';
-import { accountSelector } from '@src/redux/selectors';
+import { accountSelector, selectedPrivacySelector } from '@src/redux/selectors';
 import format from '@src/utils/format';
-import { MAX_FEE_PER_TX } from '@src/components/EstimateFee/EstimateFee.utils';
-import React from 'react';
-import { devSelector } from '@screens/Dev';
-import { actionFetch } from './Streamline.actions';
+import memmoize from 'memoize-one';
+import debounce from 'lodash/debounce';
+import { actionFetch, actionConditionConsolidate } from './Streamline.actions';
 import {
   streamlineStorageSelector,
   streamlineDataSelector,
   streamlineSelector,
+  streamlineIsConsolidateSelector,
 } from './Streamline.selector';
 
-export const useStreamLine = () => {
+export const useStreamLine = ({ fetchUTXO = false } = {}) => {
   const keySave = CONSTANT_KEYS.UTXOS_DATA;
   const navigation = useNavigation();
+  const selectedPrivacy = useSelector(selectedPrivacySelector.selectedPrivacy);
+  const tokenID = selectedPrivacy?.tokenId;
   const dispatch = useDispatch();
-  const wallet = useSelector(walletSelector);
-  const account = useSelector(defaultAccountSelector);
   const accountBalance = useSelector(
     accountSelector.defaultAccountBalanceSelector,
   );
-  const dev = useSelector(devSelector);
-  const isAutoUTXOs = dev[CONSTANT_KEYS.DEV_TEST_TOGGLE_UTXOS];
   const streamline = useSelector(streamlineSelector);
-  const { isFetching, isFetched, isPending } = streamline;
+  const { isFetching, isFetched, isPending, isFetchingUTXOS } = streamline;
   const streamlineStorage = useSelector(streamlineStorageSelector);
   const { data } = streamlineStorage[keySave];
-  const { totalFee, UTXONativeCoin, times, consolidated } = useSelector(
+  const { totalFee, times, consolidated } = useSelector(
     streamlineDataSelector,
   );
-  const onNavigateStreamLine = () => navigation.navigate(routeNames.Streamline);
+  const switchingAccount = useSelector(switchAccountSelector);
+
+  const { isConsolidate: hasExceededMaxInputPRV, noUTXOS } = useSelector(streamlineIsConsolidateSelector);
+  const onNavigateStreamLine = () => {
+    navigation.navigate(routeNames.Streamline);
+  };
   const handleNavigateWhyStreamline = () =>
     navigation.navigate(routeNames.WhyStreamline);
-  const [state, setState] = React.useState({
-    shouldDisabledForm: false,
-  });
-  const { shouldDisabledForm } = state;
-  const hasExceededMaxInputPRV = isAutoUTXOs
-    ? true
-    : accountServices.hasExceededMaxInput(
-      wallet,
-      account,
-      CONSTANT_COMMONS.PRV.id,
-    );
+
   const hookFactories = [
     {
       title: 'Balance',
@@ -66,9 +58,10 @@ export const useStreamLine = () => {
     },
     {
       title: 'UTXO count',
-      desc: UTXONativeCoin,
+      desc: noUTXOS,
     },
   ];
+
   const handleDefragmentNativeCoin = async () => {
     if (shouldDisabledForm || !hasExceededMaxInputPRV) {
       return;
@@ -76,18 +69,24 @@ export const useStreamLine = () => {
     await dispatch(actionFetch());
   };
 
-  const maxUTXOPerDefragment = Math.min(accountServices.NO_OF_INPUT_PER_DEFRAGMENT, UTXONativeCoin);
+  const checkConditionConsolidate = React.useCallback(debounce(({ tokenID }) => {
+    dispatch(actionConditionConsolidate({ tokenID }));
+  }, 500), []);
 
-  React.useEffect(() => {
-    setState({ ...state, shouldDisabledForm: accountBalance < MAX_FEE_PER_TX });
-  }, [accountBalance]);
+  const shouldDisabledForm = React.useMemo(memmoize(() => {
+    return accountBalance && accountBalance < totalFee;
+  }), [accountBalance, totalFee]);
+
+  useFocusEffect(React.useCallback(() => {
+    if (!switchingAccount && !fetchUTXO) return;
+    checkConditionConsolidate({ tokenID });
+  }, [switchingAccount]));
 
   return {
     hasExceededMaxInputPRV,
     onNavigateStreamLine,
     handleNavigateWhyStreamline,
     handleDefragmentNativeCoin,
-    UTXONativeCoin,
     accountBalance,
     hookFactories,
     shouldDisabledForm,
@@ -98,6 +97,7 @@ export const useStreamLine = () => {
     isPending,
     totalTimes: times,
     currentTime: consolidated,
-    maxUTXOPerDefragment,
+    noUTXOS,
+    isFetchingUTXOS,
   };
 };

@@ -6,7 +6,7 @@ import srcQuestion from '@src/assets/images/icons/question_gray.png';
 import { LoadingContainer, ScrollView } from '@src/components/core';
 import LoadingTx from '@src/components/LoadingTx';
 import PropTypes from 'prop-types';
-import accountService from '@services/wallet/accountService';
+import { MaxInputNumberForDefragment } from '@screens/Streamline/Streamline.selector';
 import withStreamline from './Streamline.enhance';
 import { useStreamLine } from './Streamline.useStreamline';
 import { styled } from './Streamline.styled';
@@ -29,8 +29,7 @@ const Extra = () => {
     handleDefragmentNativeCoin,
     hookFactories,
     shouldDisabledForm,
-    UTXONativeCoin,
-    maxUTXOPerDefragment,
+    noUTXOS,
   } = useStreamLine();
 
   return (
@@ -39,12 +38,12 @@ const Extra = () => {
         Consolidate your UTXOs to ensure successful transactions of any amount.
       </Text>
       <Text style={styled.tooltip}>
-        There are {UTXONativeCoin} UTXOs in this keychain. You can consolidate{' '}
-        {maxUTXOPerDefragment} UTXOs at a time.
+        There are {noUTXOS} UTXOs in this keychain. You can consolidate{' '}
+        {noUTXOS} UTXOs at a time.
       </Text>
       <ButtonBasic
         btnStyle={styled.btnStyle}
-        title={`Consolidate ${maxUTXOPerDefragment}`}
+        title="Consolidate"
         onPress={handleDefragmentNativeCoin}
         disabled={shouldDisabledForm}
       />
@@ -67,18 +66,14 @@ const Empty = React.memo(() => {
 });
 
 const Pending = React.memo(() => {
-  const { UTXONativeCoin } = useStreamLine();
+  const { noUTXOS } = useStreamLine();
 
-  const remainingUTXOs =
-    UTXONativeCoin -
-    accountService.NO_OF_INPUT_PER_DEFRAGMENT +
-    accountService.MAX_DEFRAGMENT_TXS;
-  if (remainingUTXOs > accountService.NO_OF_INPUT_PER_DEFRAGMENT) {
+  if (noUTXOS > MaxInputNumberForDefragment) {
     return (
       <View style={styled.pendingContainer}>
         <Text style={styled.emptyTitle}>Consolidation in process.</Text>
         <Text style={styled.emptyText}>
-          Your remaining UTXO count is {remainingUTXOs}. Please make another
+          Your remaining UTXOS {noUTXOS}. Please make another
           consolidation after this one is complete.
         </Text>
       </View>
@@ -93,7 +88,7 @@ const Streamline = (props) => {
     hasExceededMaxInputPRV,
     handleNavigateWhyStreamline,
     isFetching,
-    isPending,
+    isPending
   } = useStreamLine();
   const { refresh, handleFetchData, loading } = props;
   const renderMain = () => {
@@ -129,7 +124,6 @@ const Streamline = (props) => {
             onPress={handleNavigateWhyStreamline}
           />
         )}
-        accountSelectable
       />
       {renderMain()}
     </View>

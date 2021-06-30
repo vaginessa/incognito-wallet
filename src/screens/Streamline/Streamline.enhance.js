@@ -3,7 +3,7 @@ import ErrorBoundary from '@src/components/ErrorBoundary';
 import { compose } from 'recompose';
 import { withLayout_2 } from '@src/components/Layout';
 import { loadAccountHistory, normalizeData } from '@src/redux/utils/token';
-import { useDispatch, useSelector } from 'react-redux';
+import { batch, useDispatch, useSelector } from 'react-redux';
 import { CONSTANT_COMMONS } from '@src/constants';
 import { ExHandler } from '@src/services/exception';
 import { useFocusEffect } from 'react-navigation-hooks';
@@ -16,6 +16,7 @@ import {
   actionInitProccess,
   actionTogglePending,
   actionRemoveLocalUTXOs,
+  actionClearStreamLine,
 } from './Streamline.actions';
 import { useStreamLine } from './Streamline.useStreamline';
 
@@ -82,7 +83,10 @@ const enhance = (WrappedComp) => (props) => {
 
   React.useEffect(() => {
     return () => {
-      dispatch(actionTogglePending(false));
+      batch(() => {
+        dispatch(actionClearStreamLine());
+        dispatch(actionTogglePending(false));
+      });
     };
   }, []);
 
