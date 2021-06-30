@@ -928,14 +928,6 @@ export default class Account {
     return response;
   }
 
-  static async setSubmitedOTAKey({ wallet, account }) {
-    new Validator('account', account).required();
-    new Validator('wallet', wallet).required();
-    const accountWallet = getAccountWallet(account, wallet);
-    const otaKey = accountWallet.getOTAKey();
-    return accountWallet.setAccountStorage(otaKey, true);
-  }
-
   static async getTxsTransactor({ wallet, account, tokenID } = {}) {
     new Validator('account', account).required().object();
     new Validator('wallet', wallet).required().object();
