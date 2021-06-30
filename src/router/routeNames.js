@@ -143,5 +143,6 @@ export default {
   HistoryContributeDetail: 'HistoryContributeDetail',
   HistoryWithdrawDetail: 'HistoryWithdrawDetail',
   ConfirmRetryLiquidity: 'ConfirmRetryLiquidity',
-  TwoTokensSelect: 'TwoTokensSelect'
+  TwoTokensSelect: 'TwoTokensSelect',
+  SelectTokenStreamline: 'SelectTokenStreamline'
 };

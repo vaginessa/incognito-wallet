@@ -1,14 +1,13 @@
 import React from 'react';
 import { useStreamLine } from '@screens/Streamline';
 import { BottomBar } from '@components/core';
-import BottomLoading from '@components/core/BottomLoading';
+import {useSelector} from 'react-redux';
+import {convertHasUnspentCoinsSelector} from '@screens/Home/features/Convert/Convert.selector';
 
 const StreamLineBottomBar = React.memo(() => {
   const { hasExceededMaxInputPRV, isFetchingUTXOS, onNavigateStreamLine } = useStreamLine({ fetchUTXO: true });
-  if (isFetchingUTXOS) {
-    return <BottomLoading loading />;
-  }
-  if (!hasExceededMaxInputPRV) {
+  const hasUnspentCoins = useSelector(convertHasUnspentCoinsSelector);
+  if (!hasExceededMaxInputPRV || !!isFetchingUTXOS || hasUnspentCoins) {
     return null;
   }
   return (

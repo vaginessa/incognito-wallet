@@ -90,6 +90,7 @@ import HistoryContributeDetail from '@screens/Dex/features/HistoryContributeDeta
 import HistoryWithdrawDetail from '@screens/Dex/features/HistoryWithdrawDetail';
 import ConfirmRetryLiquidity from '@screens/Dex/features/ConfirmRetry';
 import TwoTokensSelect from '@screens/Dex/features/TwoTokensSelect';
+import SelectTokenStreamline from '@screens/Streamline/features/SelectTokens';
 
 const masterKeyRoutes = [
   {
@@ -464,6 +465,10 @@ const routes = [
     screen: TwoTokensSelect,
     name: routeNames.TwoTokensSelect,
   },
+  {
+    screen: SelectTokenStreamline,
+    name: routeNames.SelectTokenStreamline,
+  }
 ];
 
 export const getRoutesNoHeader = () =>

@@ -25,7 +25,6 @@ import { useBtnTrade } from '@src/components/UseEffect/useBtnTrade';
 import useFeatureConfig from '@src/shared/hooks/featureConfig';
 import { pTokenSelector } from '@src/redux/selectors/shared';
 import appConstant from '@src/constants/app';
-import StreamLineBottomBar from '@screens/Streamline/features/StreamLineBottomBar';
 import withDetail from './Detail.enhance';
 import {
   styled,
@@ -142,7 +141,6 @@ const Detail = (props) => {
         <GroupButton />
         <History {...{ ...props, refreshing }} />
       </View>
-      <StreamLineBottomBar />
     </>
   );
 };

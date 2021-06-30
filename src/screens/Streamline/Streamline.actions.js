@@ -2,7 +2,10 @@ import { ExHandler } from '@src/services/exception';
 import { getDefaultAccountWalletSelector } from '@src/redux/selectors/shared';
 import { PrivacyVersion } from 'incognito-chain-web-js/build/wallet';
 import { batch } from 'react-redux';
-import { selectedPrivacySelector } from '@src/redux/selectors';
+import {selectedPrivacySelector, tokenSelector} from '@src/redux/selectors';
+import {switchAccountSelector} from '@src/redux/selectors/account';
+import {PRV_ID} from '@screens/Dex/constants';
+import cloneDeep from 'lodash/cloneDeep';
 import { streamlineSelector } from './Streamline.selector';
 import {
   ACTION_FETCHING,
@@ -11,8 +14,10 @@ import {
   ACTION_FETCHED_ALL_TXS,
   ACTION_TOGGLE_PENDING,
   ACTION_REMOVE_LOCAL_UTXOS,
-  ACTION_FETCHED_UTXO, ACTION_CLEAR_STREAM_LINE, ACTION_FETCHING_UTXO,
-} from './Streamline.constant';
+  ACTION_FETCHED_UTXO,
+  ACTION_CLEAR_STREAM_LINE,
+  ACTION_FETCHING_UTXO,
+} from './Streamline.actionsName';
 
 export const actionFetching = () => ({
   type: ACTION_FETCHING,
@@ -96,13 +101,26 @@ export const actionFetchingUTXO = (payload) => ({
   payload
 });
 
-export const actionConditionConsolidate = ({ tokenID, version = PrivacyVersion.ver2 } = {}) => async (dispatch, getState) => {
+export const actionConditionConsolidate = ({ version = PrivacyVersion.ver2 } = {}) => async (dispatch, getState) => {
   try {
-    dispatch(actionFetchingUTXO(true));
     const state = getState();
+    const switchingAccount = switchAccountSelector(state);
+    if (switchingAccount) return;
+    /** start fetching UTXOS */
+    dispatch(actionFetchingUTXO(true));
     const accountWallet = getDefaultAccountWalletSelector(state);
-    const unspentCoins = (await accountWallet.getSpendingCoins({ tokenID, version })) || [];
-    const newUTXOS = { tokenID, address: accountWallet?.getPaymentAddress(), unspentCoins };
+    let followed = cloneDeep(tokenSelector.tokensFollowedSelector(state));
+    const address = accountWallet?.getPaymentAddress();
+    followed = [{ id: PRV_ID }].concat(followed);
+    const tasks = followed.map(async ({ id: tokenID }) => {
+      const unspentCoins = (await accountWallet.getSpendingCoins({ tokenID, version })) || [];
+      return {
+        tokenID,
+        address,
+        unspentCoins,
+      };
+    });
+    const newUTXOS = (await Promise.all(tasks)).filter(item => !!item);
     batch(() => {
       dispatch(actionFetchingUTXO(false));
       dispatch(actionFetchedUTXO(newUTXOS));

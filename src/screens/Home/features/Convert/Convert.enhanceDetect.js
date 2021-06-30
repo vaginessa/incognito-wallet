@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import ErrorBoundary from '@src/components/ErrorBoundary';
 import { debounce } from 'lodash';
 import {useDispatch, useSelector} from 'react-redux';
@@ -7,47 +7,37 @@ import { BottomBar } from '@components/core';
 import { useFocusEffect, useNavigation } from 'react-navigation-hooks';
 import routeNames from '@routers/routeNames';
 import { ExHandler } from '@services/exception';
-import BottomLoading from '@components/core/BottomLoading';
-import { actionFetchCoinsV1 } from '@screens/Home/features/Convert/Convert.actions';
+import {actionClearConvertData, actionFetchCoinsV1} from '@screens/Home/features/Convert/Convert.actions';
+import { convertHasUnspentCoinsSelector } from '@screens/Home/features/Convert/Convert.selector';
 
 const enhance = WrappedComp => (props) => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const account = useSelector(accountSelector.defaultAccountSelector);
-  const wallet = useSelector((state) => state?.wallet);
-  const [{
-    loading,
-    showConvert,
-  }, setShowBottom] = useState({
-    loading: true,
-    showConvert: false,
-  });
+  const hasUnspentCoins = useSelector(convertHasUnspentCoinsSelector);
 
-  const detectUTXOSV1 = React.useCallback(async () => {
+  const detectUTXOSV1 = () => {
     try {
-      const hasUnspentCoins = await dispatch(actionFetchCoinsV1());
-      setShowBottom({
-        loading: false,
-        showConvert: hasUnspentCoins
-      });
+      dispatch(actionFetchCoinsV1());
     } catch (error) {
       new ExHandler(error).showErrorToast();
     }
-  });
+  };
 
   const navigateConvert = () => {
     navigation.navigate(routeNames.Convert);
   };
 
-  const debounceDetectUTXOSV1 = React.useCallback(debounce(detectUTXOSV1, 500), [account, wallet]);
+  const debounceDetectUTXOSV1 = React.useCallback(debounce(detectUTXOSV1, 500), []);
 
+  React.useEffect(() => {
+    return () => {
+      dispatch(actionClearConvertData());
+    };
+  }, []);
 
   useFocusEffect(React.useCallback(() => {
     if (!account) return;
-    setShowBottom({
-      loading: true,
-      showConvert: false
-    });
     debounceDetectUTXOSV1.cancel();
     debounceDetectUTXOSV1();
   }, [account]));
@@ -59,13 +49,12 @@ const enhance = WrappedComp => (props) => {
           ...props,
         }}
       />
-      {showConvert && (
+      {hasUnspentCoins && (
         <BottomBar
           onPress={navigateConvert}
           text="Have unspent coins version 1"
         />
       )}
-      <BottomLoading loading={loading} />
     </ErrorBoundary>
   );
 };
