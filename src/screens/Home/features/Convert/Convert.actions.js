@@ -3,6 +3,16 @@ import {accountSelector} from '@src/redux/selectors';
 import accountService from '@services/wallet/accountService';
 import { PRV_ID } from '@screens/Dex/constants';
 import { switchAccountSelector } from '@src/redux/selectors/account';
+import { TYPES } from '@screens/Home/features/Convert/Convert.actionsName';
+
+export const actionFetched = (payload) => ({
+  type: TYPES.ACTION_FETCH_COINS_V1,
+  payload
+});
+
+export const actionClearConvertData = () => ({
+  type: TYPES.ACTION_CLEAR_CONVERT_DATA,
+});
 
 export const actionFetchCoinsV1 = () => async (dispatch, getState) => {
   let hasUnspentCoins = false;
@@ -10,6 +20,7 @@ export const actionFetchCoinsV1 = () => async (dispatch, getState) => {
     const state = getState();
     const switchingAccount = switchAccountSelector(state);
     if(!switchingAccount) {
+      dispatch(actionClearConvertData());
       const wallet = walletSelector(state);
       const account = accountSelector.defaultAccountSelector(state);
       const { unspentCoins } = await accountService.getUnspentCoinsV1({
@@ -26,6 +37,7 @@ export const actionFetchCoinsV1 = () => async (dispatch, getState) => {
     }
   } catch (error) {
     console.log('actionFetchCoinsV1 error: ', error);
+  } finally {
+    dispatch(actionFetched(hasUnspentCoins));
   }
-  return hasUnspentCoins;
 };

@@ -10,8 +10,9 @@ import {
   ACTION_TOGGLE_PENDING,
   ACTION_REMOVE_LOCAL_UTXOS,
   ACTION_FETCHED_UTXO,
-  ACTION_CLEAR_STREAM_LINE, ACTION_FETCHING_UTXO,
-} from './Streamline.constant';
+  ACTION_CLEAR_STREAM_LINE,
+  ACTION_FETCHING_UTXO,
+} from './Streamline.actionsName';
 
 const initialState = {
   consolidated: 0,
@@ -19,7 +20,7 @@ const initialState = {
   isFetching: false,
   isFetched: false,
   isPending: false,
-  UTXOS: undefined,
+  UTXOS: [],
   isFetchingUTXOS: false,
   storage: {
     [CONSTANT_KEYS.UTXOS_DATA]: {
@@ -108,7 +109,7 @@ const streamlineReducer = (state = initialState, action) => {
       isFetching: false,
       isFetched: false,
       isPending: false,
-      UTXOS: undefined,
+      UTXOS: [],
     };
   }
   case ACTION_FETCHING_UTXO: {

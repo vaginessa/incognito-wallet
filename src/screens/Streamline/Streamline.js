@@ -6,7 +6,10 @@ import srcQuestion from '@src/assets/images/icons/question_gray.png';
 import { LoadingContainer, ScrollView } from '@src/components/core';
 import LoadingTx from '@src/components/LoadingTx';
 import PropTypes from 'prop-types';
-import { MaxInputNumberForDefragment } from '@screens/Streamline/Streamline.selector';
+import { MAX_NO_INPUT_DEFRAGMENT } from '@screens/Streamline/Streamline.constant';
+import {useNavigation} from 'react-navigation-hooks';
+import {useSelector} from 'react-redux';
+import {selectedPrivacySelector} from '@src/redux/selectors';
 import withStreamline from './Streamline.enhance';
 import { useStreamLine } from './Streamline.useStreamline';
 import { styled } from './Streamline.styled';
@@ -31,15 +34,15 @@ const Extra = () => {
     shouldDisabledForm,
     noUTXOS,
   } = useStreamLine();
-
+  const selectPrivacy = useSelector(selectedPrivacySelector.selectedPrivacy);
   return (
     <>
       <Text style={[styled.tooltip, { marginBottom: 30 }]}>
         Consolidate your UTXOs to ensure successful transactions of any amount.
       </Text>
       <Text style={styled.tooltip}>
-        There are {noUTXOS} UTXOs in this keychain. You can consolidate{' '}
-        {noUTXOS} UTXOs at a time.
+        There are {noUTXOS} UTXOs {selectPrivacy?.symbol} in this keychain. You can consolidate{' '}
+        {noUTXOS} UTXOs {selectPrivacy?.symbol} at a time.
       </Text>
       <ButtonBasic
         btnStyle={styled.btnStyle}
@@ -68,7 +71,7 @@ const Empty = React.memo(() => {
 const Pending = React.memo(() => {
   const { noUTXOS } = useStreamLine();
 
-  if (noUTXOS > MaxInputNumberForDefragment) {
+  if (noUTXOS > MAX_NO_INPUT_DEFRAGMENT) {
     return (
       <View style={styled.pendingContainer}>
         <Text style={styled.emptyTitle}>Consolidation in process.</Text>
@@ -84,15 +87,18 @@ const Pending = React.memo(() => {
 });
 
 const Streamline = (props) => {
+  const { onClearData, handleFetchData } = props;
+  const navigation = useNavigation();
+  const selectPrivacy = useSelector(selectedPrivacySelector.selectedPrivacy);
   const {
     hasExceededMaxInputPRV,
     handleNavigateWhyStreamline,
     isFetching,
+    isFetchingUTXOS,
     isPending
   } = useStreamLine();
-  const { refresh, handleFetchData, loading } = props;
   const renderMain = () => {
-    if (loading) {
+    if (isFetchingUTXOS) {
       return <LoadingContainer />;
     }
     if (!hasExceededMaxInputPRV) {
@@ -102,12 +108,7 @@ const Streamline = (props) => {
       return <Pending />;
     }
     return (
-      <ScrollView
-        refreshControl={
-          <RefreshControl refreshing={refresh} onRefresh={handleFetchData} />
-        }
-        style={styled.scrollview}
-      >
+      <ScrollView style={styled.scrollview}>
         <Extra {...props} />
         {isFetching && <LoadingTx />}
       </ScrollView>
@@ -116,7 +117,7 @@ const Streamline = (props) => {
   return (
     <View style={styled.container}>
       <Header
-        title="Consolidate"
+        title={`Consolidate ${selectPrivacy?.symbol}`}
         customHeaderTitle={(
           <BtnQuestionDefault
             style={styled.questionIcon}
@@ -124,6 +125,13 @@ const Streamline = (props) => {
             onPress={handleNavigateWhyStreamline}
           />
         )}
+        onGoBack={() => {
+          if (isPending) {
+            onClearData();
+            handleFetchData();
+          }
+          navigation.goBack();
+        }}
       />
       {renderMain()}
     </View>
@@ -132,8 +140,7 @@ const Streamline = (props) => {
 
 Streamline.propTypes = {
   handleFetchData: PropTypes.func.isRequired,
-  refresh: PropTypes.bool.isRequired,
-  loading: PropTypes.bool.isRequired,
+  onClearData: PropTypes.func.isRequired,
 };
 
 export default withStreamline(Streamline);

@@ -35,6 +35,7 @@ import appConstant from '@src/constants/app';
 import { actionFree as actionFreeHistory } from '@src/redux/actions/history';
 import withDetectConvert from '@screens/Home/features/Convert/Convert.enhanceDetect';
 import { compose } from 'recompose';
+import StreamLineBottomBar from '@screens/Streamline/features/StreamLineBottomBar';
 import {
   styled,
   styledHook,
@@ -292,6 +293,7 @@ const Wallet = React.memo(() => {
         onGoBack={onGoBack}
       />
       <Extra />
+      <StreamLineBottomBar />
     </View>
   );
 });

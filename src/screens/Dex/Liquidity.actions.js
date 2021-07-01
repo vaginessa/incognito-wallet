@@ -201,7 +201,7 @@ export const actionFilterOutput = () => async (dispatch, getState) => {
       const poolOutputValue = pair[outputToken.id];
       sharePercent = new BigNumber(share).dividedBy(totalShare).toNumber();
       maxInputShare = Math.ceil(new BigNumber(sharePercent).multipliedBy(poolInputValue).toNumber()) || 0;
-      maxOutputShare = Math.floor(new BigNumber(sharePercent).multipliedBy(poolOutputValue).toNumber()) || 0;
+      maxOutputShare = Math.ceil(new BigNumber(sharePercent).multipliedBy(poolOutputValue).toNumber()) || 0;
     }
 
     const tasks = [await accountServices.getBalance({

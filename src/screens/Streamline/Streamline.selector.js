@@ -1,10 +1,9 @@
-import {accountSelector, selectedPrivacySelector} from '@src/redux/selectors';
-import { walletSelector } from '@src/redux/selectors/wallet';
+import { selectedPrivacySelector } from '@src/redux/selectors';
 import { createSelector } from 'reselect';
 import { MAX_FEE_PER_TX } from '@src/components/EstimateFee/EstimateFee.utils';
-import { ACCOUNT_CONSTANT } from 'incognito-chain-web-js/build/wallet';
+import { defaultAccountSelector } from '@src/redux/selectors/account';
+import { MAX_NO_INPUT_DEFRAGMENT } from '@screens/Streamline/Streamline.constant';
 
-export const { MaxInputNumberForDefragment } = ACCOUNT_CONSTANT;
 
 export const streamlineSelector = createSelector(
   (state) => state.streamline,
@@ -21,33 +20,35 @@ export const streamlineUTXOSSelector = createSelector(
   (streamline) => streamline?.UTXOS,
 );
 
-export const streamlineIsConsolidateSelector = createSelector(
-  selectedPrivacySelector.selectedPrivacy,
+export const streamlineConsolidateSelector = createSelector(
+  defaultAccountSelector,
   streamlineUTXOSSelector,
-  ({ tokenId, id }, UTXOS) => {
-    const tokenID = tokenId || id;
-    let isConsolidate = false;
-    let noUTXOS = 0;
-    if (!!UTXOS && UTXOS?.tokenID === tokenID)  {
-      const { unspentCoins } = UTXOS;
-      isConsolidate = (unspentCoins || []).length > MaxInputNumberForDefragment;
-      noUTXOS = (unspentCoins || []).length;
-    }
+  (account, UTXOS) => {
+    const address = account.PaymentAddress;
+    const UTXOSFiltered = UTXOS.filter(item => item?.address === address) || [];
+    const hasExceededMaxInputPRV = UTXOSFiltered.some(({ unspentCoins }) => unspentCoins.length > MAX_NO_INPUT_DEFRAGMENT);
     return {
-      isConsolidate,
-      noUTXOS
+      hasExceededMaxInputPRV,
+      UTXOSFiltered,
     };
   },
 );
 
 export const streamlineDataSelector = createSelector(
-  walletSelector,
-  accountSelector.defaultAccountSelector,
+  selectedPrivacySelector.selectedPrivacy,
   streamlineSelector,
-  streamlineIsConsolidateSelector,
-  (wallet, account, streamline, { noUTXOS }) => {
+  streamlineConsolidateSelector,
+  ({ tokenId, id }, streamline, { UTXOSFiltered }) => {
+    const tokenID = tokenId || id;
     const { consolidated } = streamline;
-    const times = Math.ceil(noUTXOS / MaxInputNumberForDefragment);
+
+    const currToken = UTXOSFiltered.find(item => item.tokenID === tokenID);
+
+    let noUTXOS = 0;
+    if (currToken) {
+      noUTXOS = currToken.unspentCoins.length;
+    }
+    const times = Math.ceil(noUTXOS / MAX_NO_INPUT_DEFRAGMENT);
     const totalFee = MAX_FEE_PER_TX * times;
     return {
       totalFee,
