@@ -6,7 +6,7 @@ import { selectedPrivacySelector } from '@src/redux/selectors';
 import { useSelector } from 'react-redux';
 import { COLORS, FONT } from '@src/styles';
 
-const styles = StyleSheet.create({
+export const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',

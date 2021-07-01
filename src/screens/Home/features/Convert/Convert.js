@@ -1,44 +1,42 @@
 import React from 'react';
 import { View } from 'react-native';
-import PropTypes from 'prop-types';
-import {Header, LoadingContainer} from '@src/components';
+import { Header, LoadingContainer } from '@src/components';
 import { compose } from 'recompose';
 import { withLayout_2 } from '@components/Layout';
-import withData from '@screens/Home/features/Convert/Convert.enhanceData';
-import withConvert from '@screens/Home/features/Convert/Convert.enhance';
 import ConvertStep from '@screens/Home/features/Convert/Components/Step';
+import { useSelector } from 'react-redux';
+import { convertCoinsDataSelector } from '@screens/Home/features/Convert/Convert.selector';
+import { useNavigation, useNavigationParam } from 'react-navigation-hooks';
+import { Toast } from '@components/core';
+import { MESSAGES } from '@screens/Dex/constants';
 
-const Convert = (props) => {
-  const {
-    steps,
-    appLoading,
-    currentStep
-  } = props;
-
+const Convert = () => {
+  const { isFetching, isConverting, isConverted } = useSelector(convertCoinsDataSelector);
+  const fetchCoinsV1 = useNavigationParam('fetchCoinsV1');
+  const navigation = useNavigation();
   const renderContent = () => (
-    <ConvertStep steps={steps} currentStep={currentStep} />
+    <ConvertStep />
   );
 
   return (
     <View style={{ flex: 1 }}>
-      <Header title="Convert Transaction" />
-      {appLoading ? <LoadingContainer /> : renderContent()}
+      <Header
+        title="Convert Transactions"
+        onGoBack={() => {
+          if (isConverting) {
+            return Toast.showInfo(MESSAGES.CONVERT_PROCESS);
+          }
+          if (isConverted && typeof fetchCoinsV1 === 'function') {
+            fetchCoinsV1();
+          }
+          navigation.goBack();
+        }}
+      />
+      {isFetching ? <LoadingContainer /> : renderContent()}
     </View>
   );
 };
 
-Convert.propTypes = {
-  steps: PropTypes.array,
-  appLoading: PropTypes.bool.isRequired,
-  currentStep: PropTypes.string.isRequired,
-};
-
-Convert.defaultProps = {
-  steps: []
-};
-
 export default compose(
   withLayout_2,
-  withData,
-  withConvert,
 )(React.memo(Convert));

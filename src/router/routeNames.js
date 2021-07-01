@@ -144,5 +144,6 @@ export default {
   HistoryWithdrawDetail: 'HistoryWithdrawDetail',
   ConfirmRetryLiquidity: 'ConfirmRetryLiquidity',
   TwoTokensSelect: 'TwoTokensSelect',
-  SelectTokenStreamline: 'SelectTokenStreamline'
+  SelectTokenStreamline: 'SelectTokenStreamline',
+  ConvertTokenList: 'ConvertTokenList'
 };
