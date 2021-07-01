@@ -7,6 +7,7 @@ import { useSelector } from 'react-redux';
 import CurrencySection from '@screens/Setting/features/CurrencySection/CurrencySection';
 import MainLayout from '@components/MainLayout/index';
 import RemoveStorage from '@screens/Setting/features/RemoveStorage/RemoveStorage';
+import ConvertCoinsSection from '@screens/Setting/features/ConvertCoinsSection';
 import PINSection from './features/PINSection';
 import SeparatorSection from './features/SeparatorSection';
 import DevSection from './features/DevSection';
@@ -53,6 +54,7 @@ const Setting = () => {
         <AddressBookSection />
         <ExportCSVSection handlePress={handlePressExportCSV} />
         <UTXOSection />
+        <ConvertCoinsSection />
         <RemoveStorage />
         <RemoveBalanceCached />
         {global.isDebug() && <DevSection />}

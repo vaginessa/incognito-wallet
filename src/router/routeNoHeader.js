@@ -91,6 +91,7 @@ import HistoryWithdrawDetail from '@screens/Dex/features/HistoryWithdrawDetail';
 import ConfirmRetryLiquidity from '@screens/Dex/features/ConfirmRetry';
 import TwoTokensSelect from '@screens/Dex/features/TwoTokensSelect';
 import SelectTokenStreamline from '@screens/Streamline/features/SelectTokens';
+import ConvertTokenList from '@screens/Home/features/Convert/features/ConvertTokenList';
 
 const masterKeyRoutes = [
   {
@@ -468,6 +469,10 @@ const routes = [
   {
     screen: SelectTokenStreamline,
     name: routeNames.SelectTokenStreamline,
+  },
+  {
+    screen: ConvertTokenList,
+    name: routeNames.ConvertTokenList,
   }
 ];
 
