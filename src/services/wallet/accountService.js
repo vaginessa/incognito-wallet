@@ -1,5 +1,4 @@
 /* eslint-disable import/no-cycle */
-import { PRVIDSTR } from 'incognito-chain-web-js/lib/wallet/constants';
 import BigNumber from 'bignumber.js';
 import AccountModel from '@models/account';
 import { COINS, CONSTANT_KEYS } from '@src/constants';
@@ -12,6 +11,7 @@ import {
   constants,
   Validator,
   PrivacyVersion,
+  PRVIDSTR,
 } from 'incognito-chain-web-js/build/wallet';
 import _, { cloneDeep } from 'lodash';
 import { STACK_TRACE } from '@services/exception/customError/code/webjsCode';

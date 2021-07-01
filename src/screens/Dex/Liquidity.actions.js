@@ -351,7 +351,7 @@ export const actionFetchContributeHistories = ({ isRefresh = false } = {}) => as
       storageHistories: uniqBy(newStorageHistories.concat(storageHistories), 'pairId'),
       offset,
       isEnd: newHistories.length < limit,
-      originalContributes: uniqBy(newOriginalContributes.concat(originalContributes), 'requestTx')
+      originalContributes: uniqBy(newOriginalContributes.concat(originalContributes), 'id')
     }));
   } catch (error) {
     console.log('actionFetchContributeHistories error: ', error);
