@@ -16,36 +16,18 @@ const styles = StyleSheet.create({
   },
   errorText: {
     ...FONT.STYLE.medium,
-    textAlign: 'center',
-    color: COLORS.orange,
+    color: COLORS.red,
+    fontSize: 14,
+    marginTop: -20,
+    marginBottom: 20,
   },
-  qrError: {
+  warning: {
     ...FONT.STYLE.medium,
     color: COLORS.orange,
-    textAlign: 'center',
-    fontSize: 13,
-  },
-  errorWifi: {
-    ...TextStyle.minimizeText,
-    textAlign: 'left',
-    color: COLORS.orange,
-  },
-  title1: {
-    ...TextStyle.minimizeText,
-    ...FontStyle.medium,
-    color: '#101111',
-    marginVertical: scaleInApp(10),
-    textAlign: 'center',
-  },
-  title2: {
-    width: '100%',
-    color: COLORS.black,
-    fontFamily: FONT.NAME.bold,
-    fontSize: FONT.SIZE.superMedium,
-    alignSelf: 'center',
-    textAlign: 'center',
-    lineHeight: 28,
-    marginBottom: 50,
+    fontSize: 14,
+    marginTop: -20,
+    marginBottom: 20,
+    textAlign: 'center'
   },
   content: {
     justifyContent: 'center',
@@ -63,12 +45,6 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     resizeMode: 'contain',
     marginVertical: 25,
-  },
-  content_step2_image: {
-    alignSelf: 'center',
-    resizeMode: 'contain',
-    width: '100%',
-    height: 70,
   },
   contentWrapper: {
     paddingTop: 42,
@@ -171,7 +147,7 @@ const styles = StyleSheet.create({
   log: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 20,
+    marginBottom: 25,
   },
   logIcon: {
     marginRight: 15,
@@ -184,6 +160,12 @@ const styles = StyleSheet.create({
   },
   headerRight: {
     marginRight: 15,
+  },
+  stepText: {
+    ...FONT.STYLE.medium,
+    fontFamily: FONT.NAME.medium,
+    color: COLORS.newGrey,
+    fontSize: FONT.SIZE.regular
   }
 });
 

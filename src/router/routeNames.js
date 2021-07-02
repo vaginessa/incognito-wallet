@@ -136,6 +136,14 @@ export default {
   MonitorDetail: 'MonitorDetail',
 
   ShieldDecentralizeDescription: 'ShieldDecentralizeDescription',
-  // Convert transaction v1 -> v2
-  Convert: 'Convert',
+
+  Convert: 'Convert', // Convert transaction v1 -> v2
+  ConfirmLiquidity: 'ConfirmLiquidity',
+  HistoriesLiquidity: 'HistoriesLiquidity',
+  HistoryContributeDetail: 'HistoryContributeDetail',
+  HistoryWithdrawDetail: 'HistoryWithdrawDetail',
+  ConfirmRetryLiquidity: 'ConfirmRetryLiquidity',
+  TwoTokensSelect: 'TwoTokensSelect',
+  SelectTokenStreamline: 'SelectTokenStreamline',
+  ConvertTokenList: 'ConvertTokenList'
 };

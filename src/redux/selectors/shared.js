@@ -6,13 +6,19 @@ import {
   tokensFollowedSelector,
 } from '@src/redux/selectors/token';
 import { selectedPrivacySelector } from '@src/redux/selectors';
-import { uniqBy, isNaN, compact, fromPairs } from 'lodash';
+import { uniqBy, isNaN, compact, fromPairs, create } from 'lodash';
 import convert from '@src/utils/convert';
 import { BIG_COINS } from '@src/screens/DexV2/constants';
 import { currencySelector, decimalDigitsSelector } from '@screens/Setting';
 import { formatAmount } from '@components/Token';
 import { PRV } from '@services/wallet/tokenService';
-import { defaultAccountName, defaultAccountBalanceSelector } from './account';
+import { getAccountWallet } from '@src/services/wallet/Wallet.shared';
+import {
+  defaultAccountName,
+  defaultAccountBalanceSelector,
+  defaultAccountSelector,
+} from './account';
+import { walletSelector } from './wallet';
 
 export const isGettingBalance = createSelector(
   (state) => state?.token?.isGettingBalance,
@@ -139,6 +145,13 @@ export const unFollowTokensSelector = createSelector(
   (tokens) => tokens.filter((token) => !(token?.isFollowed === true)),
 );
 
+export const getDefaultAccountWalletSelector = createSelector(
+  defaultAccountSelector,
+  walletSelector,
+  (account, wallet) => getAccountWallet(account, wallet),
+);
+
 export default {
   isGettingBalance,
+  getDefaultAccountWalletSelector,
 };

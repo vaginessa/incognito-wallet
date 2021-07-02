@@ -7,7 +7,8 @@ import floor from 'lodash/floor';
 export const DEFAULT_FEE_PER_KB_HUMAN_AMOUNT = 0.000000001; // in nano
 export const DEFAULT_FEE_PER_KB = DEFAULT_FEE_PER_KB_HUMAN_AMOUNT * 1e9; // in nano
 export const MAX_TX_SIZE = 10;
-export const MAX_FEE_PER_TX = DEFAULT_FEE_PER_KB * MAX_TX_SIZE;
+// export const MAX_FEE_PER_TX = DEFAULT_FEE_PER_KB * MAX_TX_SIZE;
+export const MAX_FEE_PER_TX = 100;
 // export const MAX_DEX_FEE = MAX_FEE_PER_TX * MAX_PDEX_TRADE_STEPS;
 export const MAX_DEX_FEE = 100;
 
@@ -86,9 +87,9 @@ export const getFeeData = (estimateFee, selectedPrivacy) => {
     feePDecimals,
   );
   const isETH =
-    selectedPrivacy?.externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.ETH;
+    selectedPrivacy?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.ETH;
   const isBTC =
-    selectedPrivacy?.externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.BTC;
+    selectedPrivacy?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BTC;
   // const editableInput = !isFetching && !userFees.isFetching;
   const editableInput = true;
   return {

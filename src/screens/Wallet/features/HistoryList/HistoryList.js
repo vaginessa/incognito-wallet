@@ -1,6 +1,11 @@
 import React from 'react';
 import Swipeout from 'react-native-swipeout';
-import { Text, TouchableOpacity, View } from '@src/components/core';
+import {
+  LoadingContainer,
+  Text,
+  TouchableOpacity,
+  View,
+} from '@src/components/core';
 import { FlatList } from '@components/core/FlatList';
 import { COLORS } from '@src/styles';
 import PropTypes from 'prop-types';
@@ -100,7 +105,19 @@ const HistoryList = (props) => {
     onRefreshHistoryList,
     onLoadmoreHistory,
     onCancelEtaHistory,
+    loading,
   } = props;
+  const initing = loading && histories.length === 0;
+  if (initing) {
+    return (
+      <LoadingContainer
+        containerStyled={{
+          alignItems: 'center',
+          justifyContent: 'flex-start',
+        }}
+      />
+    );
+  }
   return (
     <FlatList
       data={histories}
@@ -111,7 +128,7 @@ const HistoryList = (props) => {
       onRefresh={() =>
         typeof onRefreshHistoryList === 'function' && onRefreshHistoryList()
       }
-      refreshing={refreshing}
+      refreshing={refreshing && !initing}
       onEndReached={() =>
         typeof onLoadmoreHistory === 'function' && onLoadmoreHistory()
       }

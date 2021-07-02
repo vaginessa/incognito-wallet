@@ -222,7 +222,7 @@ const withTrade = (WrappedComp) => (props) => {
           }),
         );
       }
-      setError(new ExHandler(error).getMessage(MESSAGES.TRADE_ERROR));
+      setError(new ExHandler(error).getMessage(error?.message || MESSAGES.TRADE_ERROR));
     } finally {
       setTrading(false);
       dispatch(actionAddFollowToken(inputToken?.id));

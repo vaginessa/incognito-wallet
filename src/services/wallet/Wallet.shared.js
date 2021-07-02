@@ -1,4 +1,4 @@
-import { Validator } from 'incognito-chain-web-js/build/wallet';
+import { Validator, PrivacyVersion } from 'incognito-chain-web-js/build/wallet';
 
 export const getAccountNameByAccount = (account) => {
   new Validator('account', account).object().required();
@@ -25,12 +25,15 @@ export const getAccountWallet = (account, wallet) => {
     new Validator('wallet.RpcCoinService', wallet.RpcCoinService).string();
     new Validator('wallet.PrivacyVersion', wallet.PrivacyVersion).number();
     new Validator('wallet.PubsubService', wallet.PubsubService).string();
+    new Validator('wallet.AuthToken', wallet.AuthToken).string();
+    new Validator('wallet.RpcApiService', wallet.RpcApiService).string();
     accountWallet.setRPCClient(wallet.RpcClient);
     accountWallet.setStorageServices(wallet.Storage);
     accountWallet.setRPCCoinServices(wallet.RpcCoinService);
-    accountWallet.setPrivacyVersion(wallet.PrivacyVersion);
     accountWallet.setRPCTxServices(wallet.PubsubService);
     accountWallet.setRPCRequestServices(wallet.RpcRequestService);
+    accountWallet.setAuthToken(wallet.AuthToken);
+    accountWallet.setRPCApiServices(wallet.RpcApiService, wallet.AuthToken);
     // accountWallet.setUseLegacyEncoding(wallet.UseLegacyEncoding);
     return accountWallet;
   } catch (error) {

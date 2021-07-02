@@ -1,4 +1,5 @@
 /* eslint-disable import/no-cycle */
+import { PrivacyVersion } from 'incognito-chain-web-js/build/wallet';
 import type from '@src/redux/types/account';
 import walletType from '@src/redux/types/wallet';
 import accountService from '@src/services/wallet/accountService';
@@ -14,9 +15,13 @@ import {
 import { switchMasterKey, updateMasterKey } from '@src/redux/actions/masterKey';
 import { storeWalletAccountIdsOnAPI } from '@services/wallet/WalletService';
 import { devSelector } from '@src/screens/Dev';
-import { tokenSelector, accountSelector } from '../selectors';
+import { tokenSelector, accountSelector } from '@src/redux/selectors';
+import { walletSelector } from '@src/redux/selectors/wallet';
+import { PRV } from '@src/constants/common';
+import { ExHandler } from '@src/services/exception';
+import { getDefaultAccountWalletSelector } from '@src/redux/selectors/shared';
+import { burnerAddressSelector } from '@src/redux/selectors/account';
 import { getBalance as getTokenBalance, setListToken } from './token';
-import { walletSelector } from '../selectors/wallet';
 
 /**
  *  return basic account object from its name like its KEY, not including account methods (please use accountWallet instead)
@@ -49,9 +54,9 @@ export const setListAccount = (
 };
 
 export const removeAccount = (account) => async (dispatch, getState) => {
+  const state = getState();
+  const wallet = walletSelector(state);
   try {
-    const state = getState();
-    const wallet = state?.wallet;
     if (!account) {
       new Error('Account is required');
     }
@@ -59,6 +64,11 @@ export const removeAccount = (account) => async (dispatch, getState) => {
       throw new Error(
         'Wallet is not existed, can not remove account right now',
       );
+    }
+    try {
+      await accountService.removeCacheBalance(account, wallet);
+    } catch (error) {
+      console.log('ERROR REMOVE CACHE STORAGE', error);
     }
     const { PrivateKey } = account;
     const passphrase = await getPassphrase();
@@ -76,7 +86,6 @@ export const removeAccount = (account) => async (dispatch, getState) => {
       type: type.REMOVE_BY_PRIVATE_KEY,
       data: PrivateKey,
     });
-
     return true;
   } catch (e) {
     throw e;
@@ -110,21 +119,18 @@ const updateDefaultAccount = (account) => {
   };
 };
 
-export const setDefaultAccount = (account) => async (dispatch) => {
+export const setDefaultAccount = (account) => async (dispatch, getState) => {
   try {
-    dispatch(updateDefaultAccount(account));
-    global.__gobridge__.getSignPublicKey(
-      JSON.stringify({
-        data: {
-          privateKey: account?.PrivateKey,
-        },
-      }),
-      (error, signPublicKeyEncode) => {
-        if (signPublicKeyEncode) {
-          dispatch(setSignPublicKeyEncode(signPublicKeyEncode));
-        }
-      },
-    );
+    await dispatch(updateDefaultAccount(account));
+    const state = getState();
+    const wallet = walletSelector(state);
+    const signPublicKeyEncode = await accountService.getSignPublicKeyEncode({
+      wallet,
+      account,
+    });
+    if (signPublicKeyEncode) {
+      dispatch(setSignPublicKeyEncode(signPublicKeyEncode));
+    }
   } catch (e) {
     console.debug('SET DEFAULT ACCOUNT WITH ERROR: ', e);
   }
@@ -136,17 +142,23 @@ export const getBalance = (account) => async (dispatch, getState) => {
     if (!account) throw new Error('Account object is required');
     const state = getState();
     await dispatch(getBalanceStart(account?.name));
-    const wallet = state?.wallet;
+    const wallet = walletSelector(state);
     const isDev = devSelector(state);
     if (!wallet) {
       throw new Error('Wallet is not exist');
     }
-    balance = await accountService.getBalance(account, wallet);
+    balance = await accountService.getBalance({
+      account,
+      wallet,
+      tokenID: PRV.id,
+      version: PrivacyVersion.ver2,
+    });
     if (isDev) {
-      const { coinsStorage } = await accountService.getStorageAccountByTokenId(
-        account,
-        wallet,
-      );
+      const accountWallet = getDefaultAccountWalletSelector(state);
+      const coinsStorage = await accountWallet.getCoinsStorage({
+        tokenID: PRV.id,
+        version: PrivacyVersion.ver2,
+      });
       if (coinsStorage) {
         await dispatch(
           actionLogEvent({
@@ -241,32 +253,6 @@ export const followDefaultTokens = (account, pTokenList) => async (
   }
 };
 
-export const switchAccount = (accountName) => async (dispatch, getState) => {
-  try {
-    if (!accountName) throw new Error('accountName is required');
-    const state = getState();
-    const wallet = state?.wallet;
-    if (!wallet) {
-      throw new Error('Wallet is not exist');
-    }
-    const account = getBasicAccountObjectByName(state)(accountName);
-    const defaultAccount = accountSelector.defaultAccount(state);
-    if (defaultAccount?.name === account?.name) {
-      return;
-    }
-    await new Promise.all([
-      dispatch(setDefaultAccount(account)),
-      dispatch(getBalance(account)),
-      dispatch(
-        reloadAccountFollowingToken(account, { shouldLoadBalance: true }),
-      ),
-    ]);
-    return accountSelector.defaultAccount(state);
-  } catch (e) {
-    throw e;
-  }
-};
-
 export const actionSwitchAccountFetching = () => ({
   type: type.ACTION_SWITCH_ACCOUNT_FETCHING,
 });
@@ -292,7 +278,7 @@ export const actionSwitchAccount = (
     if (defaultAccountName !== account?.name) {
       await dispatch(setDefaultAccount(account));
     }
-    dispatch(actionReloadFollowingToken(shouldLoadBalance));
+    await dispatch(actionReloadFollowingToken(shouldLoadBalance));
     return account;
   } catch (error) {
     throw Error(error);
@@ -307,16 +293,20 @@ export const actionReloadFollowingToken = (shouldLoadBalance = true) => async (
     const state = getState();
     const wallet = walletSelector(state);
     const account = accountSelector.defaultAccountSelector(state);
+    const accountWallet = getDefaultAccountWalletSelector(state);
     const followed = await accountService.getFollowingTokens(account, wallet);
+    await accountWallet.submitOTAKey();
     await dispatch(setListToken(followed));
-    await accountService.setSubmitedOTAKey({ account, wallet });
+    dispatch(actionFetchBurnerAddress());
     if (shouldLoadBalance) {
+      await accountWallet.getKeyInfo({
+        version: PrivacyVersion.ver2,
+      });
       dispatch(getBalance(account));
       followed.forEach((token) => {
         try {
-          console.log('get token balance', token?.id);
           dispatch(getTokenBalance(token?.id));
-        } catch {
+        } catch (error) {
           console.log('error', token?.id);
         }
       });
@@ -443,5 +433,23 @@ export const actionFetchImportAccount = ({ accountName, privateKey }) => async (
   } catch (error) {
     await dispatch(actionFetchFailImportAccount());
     throw error;
+  }
+};
+
+export const actionFetchBurnerAddress = () => async (dispatch, getState) => {
+  try {
+    const state = getState();
+    const burnerAddress = burnerAddressSelector(state);
+    if (burnerAddress) {
+      return;
+    }
+    const account = getDefaultAccountWalletSelector(state);
+    const payload = await account.getBurnerAddress();
+    await dispatch({
+      type: type.ACTION_GET_BURNER_ADDRESS,
+      payload,
+    });
+  } catch (error) {
+    new ExHandler(error).showErrorToast();
   }
 };

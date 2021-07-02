@@ -1,7 +1,6 @@
-import { StyleSheet, Dimensions } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { COLORS, FONT } from '@src/styles';
 
-const { width, height } = Dimensions.get('window');
 export const styled = StyleSheet.create({
   container: {
     flex: 1,
@@ -9,7 +8,7 @@ export const styled = StyleSheet.create({
   rowText: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 15,
+    marginTop: 30,
     position: 'relative',
   },
   icon: {
@@ -46,5 +45,34 @@ export const styled = StyleSheet.create({
   },
   rowFullText: {
     height: 30,
+  },
+  a: {
+    color: COLORS.black,
+    textDecorationLine: 'underline',
+  },
+  p: {
+    fontFamily: FONT.NAME.medium,
+    color: COLORS.colorGreyBold,
+    fontSize: 14,
+    lineHeight: 21,
+    marginTop: 20,
+  },
+  btnResume: {
+    height: 30,
+    width: 80,
+    borderRadius: 15,
+    marginLeft: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: COLORS.colorGrey,
+    marginRight: 30,
+  },
+  btnChevron: {
+    height: '100%',
+    position: 'absolute',
+    right: 0,
+    justifyContent: 'center',
+    alignItems: 'flex-end',
+    width: 30,
   },
 });

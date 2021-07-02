@@ -5,7 +5,7 @@ import {
   TouchableOpacity,
   View,
 } from '@src/components/core';
-import { removeAccount, switchAccount } from '@src/redux/actions/account';
+import { removeAccount, actionSwitchAccount } from '@src/redux/actions/account';
 import { accountSelector } from '@src/redux/selectors';
 import ROUTE_NAMES from '@src/router/routeNames';
 import { ExHandler } from '@src/services/exception';
@@ -21,12 +21,6 @@ import { BtnExport } from '@src/components/Button';
 import Section, { sectionStyle } from '@screens/Setting/features/Section';
 import { settingSelector } from '@screens/Setting/Setting.selector';
 import { accountSection } from './AccountSection.styled';
-
-function isNodeAccount(name, devices) {
-  return devices.find(
-    (device) => device.IsPNode && device.AccountName === name,
-  );
-}
 
 const createItem = (
   account,
@@ -85,7 +79,6 @@ const AccountSection = ({
   switchAccount,
   label,
 }) => {
-  const { devices } = useSelector(settingSelector);
   const navigation = useNavigation();
   const onHandleSwitchAccount = onClickView(async (account) => {
     try {
@@ -93,7 +86,6 @@ const AccountSection = ({
         Toast.showInfo(`Your current keychain is "${account?.name}"`);
         return;
       }
-
       await switchAccount(account?.name);
     } catch (e) {
       new ExHandler(
@@ -135,10 +127,7 @@ const AccountSection = ({
     );
   };
 
-  const isDeletable = (account) =>
-    listAccount.length > 1 &&
-    !dexUtils.isDEXAccount(account?.name) &&
-    !isNodeAccount(account?.name, devices);
+  const isDeletable = listAccount.length > 1;
 
   return (
     <Section
@@ -151,7 +140,7 @@ const AccountSection = ({
               account,
               onHandleSwitchAccount,
               handleExportKey,
-              isDeletable(account) ? handleDelete : null,
+              isDeletable && handleDelete,
               account?.name === defaultAccount?.name,
               listAccount?.length - 1 === index,
             )}
@@ -174,7 +163,7 @@ const mapState = (state) => ({
   listAccount: accountSelector.listAccount(state),
 });
 
-const mapDispatch = { removeAccount, switchAccount };
+const mapDispatch = { removeAccount, switchAccount: actionSwitchAccount };
 
 export default connect(
   mapState,

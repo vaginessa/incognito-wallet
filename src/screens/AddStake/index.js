@@ -21,6 +21,7 @@ import { switchMasterKey } from '@src/redux/actions/masterKey';
 import { accountSelector } from '@src/redux/selectors';
 import { walletSelector } from '@src/redux/selectors/wallet';
 import { accountServices } from '@src/services/wallet';
+import {PRV_ID} from '@src/constants/common';
 import AddStake from './AddStake';
 
 export const TAG = 'AddStake';
@@ -43,7 +44,11 @@ class AddStakeContainer extends BaseScreen {
   async getBalance() {
     const { device } = this.state;
     const account = device.Account;
-    const balance = await accountService.getBalance(account, account.Wallet);
+    const balance = await accountService.getBalance({
+      account,
+      wallet: account.Wallet,
+      tokenID: PRV_ID,
+    });
     this.setState({ balance });
   }
 
@@ -63,9 +68,9 @@ class AddStakeContainer extends BaseScreen {
     const { navigation } = this.props;
     const { device } = this.state;
     const name = device.AccountName;
-    const listDevice = (await LocalDatabase.getListDevices()) || [];
+    const listDevice = ((await LocalDatabase.getListDevices()) || []).map(device => Device.getInstance(device));
     const deviceIndex = listDevice.findIndex((item) =>
-      _.isEqual(Device.getInstance(item).AccountName, name),
+      _.isEqual(item.AccountName, name),
     );
     listDevice[deviceIndex].SelfStakeTx = rs.txId;
     await LocalDatabase.saveListDevices(listDevice);
@@ -81,7 +86,7 @@ class AddStakeContainer extends BaseScreen {
       const account = device.Account;
       this.setState({ isStaking: true });
       const rs = await accountService.createAndSendStakingTx({
-        defaultAccount: account,
+        account,
         wallet: account.Wallet,
         fee: MAX_FEE_PER_TX,
       });

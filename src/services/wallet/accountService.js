@@ -10,19 +10,20 @@ import {
   Wallet,
   constants,
   Validator,
-  PrivacyVersion
+  PrivacyVersion,
+  PRVIDSTR,
 } from 'incognito-chain-web-js/build/wallet';
-import _ from 'lodash';
+import _, { cloneDeep } from 'lodash';
 import { STACK_TRACE } from '@services/exception/customError/code/webjsCode';
 import Server from '@services/wallet/Server';
-import { PRV, PRV_ID } from '@src/constants/common';
+import { PRV_ID } from '@src/constants/common';
 import {
   getAccountNameByAccount,
   getAccountWallet,
 } from '@src/services/wallet/Wallet.shared';
-import { PRVIDSTR } from 'incognito-chain-web-js/lib/wallet/constants';
+import { cachePromise, clearAllCaches } from '@src/services/cache';
 import { PDexHistoryPureModel } from '@models/pDefi';
-import { CustomError, ErrorCode } from '../exception';
+import { CustomError, ErrorCode, ExHandler } from '../exception';
 import { loadListAccountWithBLSPubKey, saveWallet } from './WalletService';
 
 const TAG = 'Account';
@@ -81,16 +82,28 @@ export default class Account {
     isEncryptMessage = true,
     txType,
     txHandler,
+    txHashHandler,
+    version,
   } = {}) {
     try {
-      new Validator('wallet', wallet).required();
-      new Validator('account', account).required();
-      new Validator('prvPayments', prvPayments).required().paymentInfoList();
-      new Validator('fee', fee).required().amount();
-      new Validator('info', info).string();
-      new Validator('isEncryptMessage', isEncryptMessage).boolean();
-      new Validator('metadata', metadata).object();
-      new Validator('txType', txType).required().number();
+      new Validator('createAndSendNativeToken-wallet', wallet).required();
+      new Validator('createAndSendNativeToken-account', account).required();
+      new Validator('createAndSendNativeToken-prvPayments', prvPayments)
+        .required()
+        .paymentInfoList();
+      new Validator('createAndSendNativeToken-fee', fee).required().amount();
+      new Validator('createAndSendNativeToken-info', info).string();
+      new Validator(
+        'createAndSendNativeToken-isEncryptMessage',
+        isEncryptMessage,
+      ).boolean();
+      new Validator('createAndSendNativeToken-metadata', metadata).object();
+      new Validator('createAndSendNativeToken-txType', txType)
+        .required()
+        .number();
+      new Validator('createAndSendNativeToken-version', version)
+        .required()
+        .number();
       const accountWallet = this.getAccount(account, wallet);
       await accountWallet.resetProgressTx();
       const infoStr = typeof info !== 'string' ? JSON.stringify(info) : info;
@@ -100,7 +113,14 @@ export default class Account {
           prvPayments,
           fee,
         },
-        extra: { metadata, isEncryptMessage, txType, txHandler },
+        extra: {
+          metadata,
+          isEncryptMessage,
+          txType,
+          txHandler,
+          txHashHandler,
+          version,
+        },
       });
       console.log('result', result);
       // save wallet
@@ -124,18 +144,38 @@ export default class Account {
     isEncryptMessageToken = true,
     txType,
     txHandler,
+    txHashHandler,
+    version,
   } = {}) {
-    new Validator('wallet', wallet).required();
-    new Validator('account', account).required();
-    new Validator('prvPayments', prvPayments).paymentInfoList();
-    new Validator('tokenPayments', tokenPayments).required().paymentInfoList();
-    new Validator('fee', fee).required().amount();
-    new Validator('info', info).string();
-    new Validator('tokenID', tokenID).string().required();
-    new Validator('metadata', metadata).object();
-    new Validator('isEncryptMessage', isEncryptMessage).boolean();
-    new Validator('isEncryptMessageToken', isEncryptMessageToken).boolean();
-    new Validator('txType', txType).required().number();
+    new Validator('createAndSendPrivacyToken-wallet', wallet).required();
+    new Validator('createAndSendPrivacyToken-account', account).required();
+    new Validator(
+      'createAndSendPrivacyToken-prvPayments',
+      prvPayments,
+    ).paymentInfoList();
+    new Validator('createAndSendPrivacyToken-tokenPayments', tokenPayments)
+      .required()
+      .paymentInfoList();
+    new Validator('createAndSendPrivacyToken-fee', fee).required().amount();
+    new Validator('createAndSendPrivacyToken-info', info).string();
+    new Validator('createAndSendPrivacyToken-tokenID', tokenID)
+      .string()
+      .required();
+    new Validator('createAndSendPrivacyToken-metadata', metadata).object();
+    new Validator(
+      'createAndSendPrivacyToken-isEncryptMessage',
+      isEncryptMessage,
+    ).boolean();
+    new Validator(
+      'createAndSendPrivacyToken-isEncryptMessageToken',
+      isEncryptMessageToken,
+    ).boolean();
+    new Validator('createAndSendPrivacyToken-txType', txType)
+      .required()
+      .number();
+    new Validator('createAndSendPrivacyToken-version', version)
+      .required()
+      .number();
 
     let result;
     const accountWallet = this.getAccount(account, wallet);
@@ -155,6 +195,8 @@ export default class Account {
         isEncryptMessageToken,
         txType,
         txHandler,
+        txHashHandler,
+        version,
       },
     });
     console.log('result', result);
@@ -171,17 +213,30 @@ export default class Account {
     sellAmount,
     minAcceptableAmount,
     tradingFee,
+    version = PrivacyVersion.ver2,
   } = {}) {
-    new Validator('wallet', wallet).required();
-    new Validator('account', account).required();
-    new Validator('tokenIDToBuy', tokenIDToBuy).required().string();
-    new Validator('tokenIDToSell', tokenIDToSell).required().string();
-    new Validator('sellAmount', sellAmount).required().amount();
-    new Validator('minAcceptableAmount', minAcceptableAmount)
+    new Validator('createAndSendTradeRequestTx-wallet', wallet).required();
+    new Validator('createAndSendTradeRequestTx-account', account).required();
+    new Validator('createAndSendTradeRequestTx-tokenIDToBuy', tokenIDToBuy)
+      .required()
+      .string();
+    new Validator('createAndSendTradeRequestTx-tokenIDToSell', tokenIDToSell)
+      .required()
+      .string();
+    new Validator('createAndSendTradeRequestTx-sellAmount', sellAmount)
+      .required()
+      .amount();
+    new Validator(
+      'createAndSendTradeRequestTx-minAcceptableAmount',
+      minAcceptableAmount,
+    )
       .required()
       .amount();
     new Validator('tradingFee', tradingFee).required().amount();
     new Validator('fee', fee).required().amount();
+    new Validator('createAndSendTradeRequestTx-version', version)
+      .required()
+      .number();
     let result;
     const accountWallet = this.getAccount(account, wallet);
     await accountWallet.resetProgressTx();
@@ -195,6 +250,7 @@ export default class Account {
         sellAmount,
         minAcceptableAmount,
         tradingFee,
+        version,
       },
     });
     console.log('result', result);
@@ -277,25 +333,28 @@ export default class Account {
     }
   }
 
-  /**
-   *
-   * @param {object} account
-   * @param {object} wallet
-   * @param {string} tokenId
-   *
-   * If `tokenId` is not passed, this method will return native token (PRV) balance, else custom token balance (from `tokenId`)
-   */
-  static async getBalance(account, wallet, tokenId = PRVIDSTR) {
-    new Validator('account', account).required();
-    new Validator('wallet', wallet).required();
+  static async getBalance({ account, wallet, tokenID, version }) {
+    new Validator('getBalance-account', account).required();
+    new Validator('getBalance-wallet', wallet).required();
+    new Validator('getBalance-tokenID', tokenID).required().string();
+    new Validator('getBalance-version', version).number();
+    version = version || PrivacyVersion.ver2;
     const accountWallet = this.getAccount(account, wallet);
     let balance = 0;
     try {
-      balance = await accountWallet.getBalance(tokenId);
-      return new BigNumber(balance).toNumber();
+      const params = { tokenID, version };
+      const key = accountWallet.getKeyCacheBalance(params);
+      balance = await cachePromise(key, () =>
+        accountWallet.getBalance({
+          tokenID,
+          version,
+        }),
+      );
+      balance = new BigNumber(balance).toNumber();
     } catch (error) {
       throw error;
     }
+    return balance;
   }
 
   static parseShard(account) {
@@ -537,7 +596,7 @@ export default class Account {
     return '';
   }
 
-  static async getUTXOs(wallet, account, coinId) {
+  static getUTXOs(wallet, account, coinId) {
     if (!wallet || !account) {
       return 0;
     }
@@ -603,40 +662,6 @@ export default class Account {
     }
   }
 
-  static async getStorageAccountByTokenId(defaultAccount, wallet, tokenID) {
-    try {
-      if (!wallet) {
-        throw new Error('Missing wallet');
-      }
-      if (!defaultAccount) {
-        throw new Error('Missing account');
-      }
-      let tokenId = tokenID || PRV_ID;
-      const account = this.getAccount(defaultAccount, wallet);
-      let unspentCoins = await account.getListUnspentCoinsStorage(tokenId);
-      unspentCoins = unspentCoins.map(
-        ({ Value, SerialNumber, SNDerivator }) => ({
-          Value,
-          SerialNumber,
-          SNDerivator,
-        }),
-      );
-      const spentCoins = await this.getListAccountSpentCoins(
-        defaultAccount,
-        wallet,
-      );
-      return {
-        unspentCoins,
-        totalCoins: await account.getTotalCoinsStorage(tokenId),
-        spendingCoins: await account.getSpendingCoinsStorageByTokenId(tokenId),
-        coinsStorage: await account.getCoinsStorage(tokenId),
-        spentCoins,
-      };
-    } catch (error) {
-      throw error;
-    }
-  }
-
   static async getListAccountSpentCoins(defaultAccount, wallet, tokenID) {
     try {
       if (!wallet) {
@@ -654,45 +679,32 @@ export default class Account {
     }
   }
 
-  static async removeCacheBalance(defaultAccount, wallet) {
+  static async removeCacheBalance(
+    defaultAccount,
+    wallet,
+    version = PrivacyVersion.ver2,
+  ) {
     try {
-      if (!wallet) {
-        throw new Error('Missing wallet');
-      }
-      if (!defaultAccount) {
-        throw new Error('Missing account');
-      }
+      new Validator('wallet', wallet).object();
+      new Validator('defaultAccount', defaultAccount).object();
       const account = this.getAccount(defaultAccount, wallet);
-      account.setStorageServices(storage);
-      const followTokens = account
-        .listFollowingTokens()
-        .map((token) => token?.ID);
-      const allTokens = [...followTokens, PRV.id];
-      let task = allTokens.map(async (tokenId) => {
-        const totalCoinsKey = account.getKeyTotalCoinsStorageByTokenId(tokenId);
-        const unspentCoinsKey = account.getKeyListUnspentCoinsByTokenId(
-          tokenId,
+      const keyInfo = (await account.getKeyInfo({ version })) || {};
+      let task = [account.removeStorageCoinsV1()];
+      clearAllCaches();
+      if (keyInfo?.coinindex) {
+        task = task.concat(
+          Object.keys(keyInfo.coinindex).map((tokenID) => {
+            const params = {
+              tokenID,
+              version,
+            };
+            return account.clearCacheStorage(params);
+          }),
         );
-        const spendingCoinsKey = account.getKeySpendingCoinsStorageByTokenId(
-          tokenId,
-        );
-        const storageCoins = account.getKeyCoinsStorageByTokenId(tokenId);
-        const spentCoinsKey = account.getKeyListSpentCoinsByTokenId(tokenId);
-        const txsTransactorKey = account.getKeyTxHistoryByTokenId(tokenId);
-        return [
-          account.clearAccountStorage(totalCoinsKey),
-          account.clearAccountStorage(unspentCoinsKey),
-          account.clearAccountStorage(spendingCoinsKey),
-          account.clearAccountStorage(storageCoins),
-          account.clearAccountStorage(spentCoinsKey),
-          account.clearAccountStorage(account.getOTAKey()),
-          account.clearAccountStorage(txsTransactorKey),
-          account.clearCacheBalanceV1(),
-        ];
-      });
+      }
       await Promise.all(task);
     } catch (error) {
-      throw error;
+      new ExHandler(error).showErrorToast();
     }
   }
 
@@ -710,17 +722,29 @@ export default class Account {
 
   /**
    * createAndSendStakingTx
-   * @param {object} defaultAccount
+   * @param {object} account
    * @param {object} wallet
    * @param {number} fee
+   * @param {number} version
    */
-  static async createAndSendStakingTx({ defaultAccount, wallet, fee }) {
+  static async createAndSendStakingTx({
+    account,
+    wallet,
+    fee,
+    version = PrivacyVersion.ver2,
+  } = {}) {
     try {
-      new Validator('defaultAccount', defaultAccount).required();
-      new Validator('wallet', wallet).required();
-      new Validator('fee', fee).required().amount();
-      const account = this.getAccount(defaultAccount, wallet);
-      return account.createAndSendStakingTx({ transfer: { fee } });
+      new Validator('createAndSendStakingTx-account', account).required();
+      new Validator('createAndSendStakingTx-wallet', wallet).required();
+      new Validator('createAndSendStakingTx-fee', fee).required().amount();
+      new Validator('createAndSendStakingTx-version', version)
+        .required()
+        .number();
+      const accountWallet = this.getAccount(account, wallet);
+      return accountWallet.createAndSendStakingTx({
+        transfer: { fee },
+        extra: { version },
+      });
     } catch (error) {
       throw error;
     }
@@ -728,17 +752,34 @@ export default class Account {
 
   /**
    * createAndSendStopAutoStakingTx
-   * @param {object} defaultAccount
+   * @param {object} account
    * @param {object} wallet
    * @param {number} fee
+   * @param {number} version
    */
-  static async createAndSendStopAutoStakingTx({ defaultAccount, wallet, fee }) {
+  static async createAndSendStopAutoStakingTx({
+    account,
+    wallet,
+    fee,
+    version = PrivacyVersion.ver2,
+  } = {}) {
     try {
-      new Validator('defaultAccount', defaultAccount).required();
-      new Validator('wallet', wallet).required();
-      new Validator('fee', fee).required().amount();
-      const account = this.getAccount(defaultAccount, wallet);
-      return account.createAndSendStopAutoStakingTx({ transfer: { fee } });
+      new Validator(
+        'createAndSendStopAutoStakingTx-account',
+        account,
+      ).required();
+      new Validator('createAndSendStopAutoStakingTx-wallet', wallet).required();
+      new Validator('createAndSendStopAutoStakingTx-fee', fee)
+        .required()
+        .amount();
+      new Validator('createAndSendStopAutoStakingTx-version', version)
+        .required()
+        .number();
+      const accountWallet = this.getAccount(account, wallet);
+      return accountWallet.createAndSendStopAutoStakingTx({
+        transfer: { fee },
+        extra: { version },
+      });
     } catch (error) {
       throw error;
     }
@@ -747,42 +788,44 @@ export default class Account {
   /**
    * createAndSendWithdrawRewardTx
    * @param {string} tokenID
-   * @param {object} defaultAccount
+   * @param {object} account
    * @param {object} wallet
    * @param {number} fee
+   * @param {number} version
    */
   static async createAndSendWithdrawRewardTx({
-    defaultAccount,
+    account,
     wallet,
     fee,
     tokenID = PRVIDSTR,
+    version = PrivacyVersion.ver2,
   } = {}) {
-    new Validator('defaultAccount', defaultAccount).required();
-    new Validator('wallet', wallet).required();
-    new Validator('fee', fee).required().amount();
-    new Validator('tokenID', tokenID).required().string();
-    const account = this.getAccount(defaultAccount, wallet);
-    return account.createAndSendStopAutoStakingTx({
+    new Validator(
+      'createAndSendWithdrawRewardTx-defaultAccount',
+      account,
+    ).required();
+    new Validator('createAndSendWithdrawRewardTx-wallet', wallet).required();
+    new Validator('createAndSendWithdrawRewardTx-fee', fee).required().amount();
+    new Validator('createAndSendWithdrawRewardTx-tokenID', tokenID)
+      .required()
+      .string();
+    const accountWallet = this.getAccount(account, wallet);
+    return accountWallet.createAndSendWithdrawRewardTx({
       transfer: { fee, tokenID },
+      extra: { version },
     });
   }
 
-  static async getUnspentCoinsV1({ account, wallet, fromApi }) {
-    fromApi = !!fromApi;
+  static async getUnspentCoinsV1({ account, wallet, fromApi = true } = {}) {
     new Validator('wallet', wallet).required();
     new Validator('account', account).required();
     new Validator('fromApi', fromApi).required().boolean();
-
-    let unspentCoins = [];
-    let accountWallet = null;
-    try {
-      accountWallet = await this.getAccount(account, wallet);
-      unspentCoins = await accountWallet.getUnspentCoinsV1({
-        fromApi,
-      });
-    } catch (error) {
-      console.log('Get unspent coins v1 error: ', error);
-    }
+    let accountWallet = cloneDeep(
+      this.getAccount(account, wallet, PrivacyVersion.ver1),
+    );
+    const unspentCoins = await accountWallet.getUnspentCoinsV1({
+      fromApi,
+    });
     return {
       unspentCoins,
       accountWallet,
@@ -838,33 +881,6 @@ export default class Account {
     return await accountWallet.signPoolWithdraw({ amount: amount.toString() });
   }
 
-  static async getTxsHistory({ tokenID, wallet, account } = {}) {
-    try {
-      new Validator('tokenID', tokenID).required().string();
-      new Validator('wallet', wallet).required().object();
-      new Validator('account', account).required().object();
-      const getAccount = getAccountWallet(account, wallet);
-      new Validator('getAccount', getAccount).required().object();
-      return getAccount.getTxsHistory({ tokenID });
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  static async getTxHistoryByTxID({ tokenID, txId, wallet, account } = {}) {
-    try {
-      new Validator('tokenID', tokenID).required().string();
-      new Validator('txId', txId).required().string();
-      new Validator('wallet', wallet).required().object();
-      new Validator('account', account).required().object();
-      const getAccount = getAccountWallet(account, wallet);
-      new Validator('getAccount', getAccount).required().object();
-      return getAccount.getTxHistoryByTxID({ tokenID, txId });
-    } catch (error) {
-      throw error;
-    }
-  }
-
   static async createSendInitPToken({
     wallet,
     account,
@@ -873,15 +889,22 @@ export default class Account {
     tokenName,
     tokenSymbol,
     tokenAmount,
-  }) {
-    new Validator('account', account).required();
-    new Validator('wallet', wallet).required();
-    new Validator('fee', fee).required().number();
-    new Validator('info', info).string();
-    new Validator('tokenName', tokenName).required().string();
-    new Validator('tokenSymbol', tokenSymbol).required().string();
-    new Validator('tokenAmount', tokenAmount).required().string();
-
+    version = PrivacyVersion.ver2,
+  } = {}) {
+    new Validator('createSendInitPToken-account', account).required();
+    new Validator('createSendInitPToken-wallet', wallet).required();
+    new Validator('createSendInitPToken-fee', fee).required().number();
+    new Validator('createSendInitPToken-info', info).string();
+    new Validator('createSendInitPToken-tokenName', tokenName)
+      .required()
+      .string();
+    new Validator('createSendInitPToken-tokenSymbol', tokenSymbol)
+      .required()
+      .string();
+    new Validator('createSendInitPToken-tokenAmount', tokenAmount)
+      .required()
+      .string();
+    new Validator('createSendInitPToken-version', version).required().number();
     let response;
     try {
       const accountWallet = getAccountWallet(account, wallet);
@@ -896,6 +919,7 @@ export default class Account {
         extra: {
           tokenName,
           tokenSymbol,
+          version,
         },
       });
     } catch (e) {
@@ -904,20 +928,365 @@ export default class Account {
     return response;
   }
 
-  static async setSubmitedOTAKey({ wallet, account }) {
-    new Validator('account', account).required();
-    new Validator('wallet', wallet).required();
-    const accountWallet = getAccountWallet(account, wallet);
-    const otaKey = accountWallet.getOTAKey();
-    return accountWallet.setAccountStorage(otaKey, true);
-  }
-
   static async getTxsTransactor({ wallet, account, tokenID } = {}) {
     new Validator('account', account).required().object();
     new Validator('wallet', wallet).required().object();
     new Validator('tokenID', tokenID).required().string();
     const accountWallet = getAccountWallet(account, wallet);
-    console.log('typeof', typeof accountWallet.getTxsTransactor);
     return accountWallet.getTxsTransactor({ tokenID });
+  }
+
+  static async getTxsTransactorFromStorage({ wallet, account, tokenID } = {}) {
+    new Validator('account', account).required().object();
+    new Validator('wallet', wallet).required().object();
+    new Validator('tokenID', tokenID).required().string();
+    const accountWallet = getAccountWallet(account, wallet);
+    return accountWallet.getTxsTransactorFromStorage({ tokenID });
+  }
+
+  static async createBurningRequest({
+    wallet,
+    account,
+    fee,
+    tokenId,
+    burnAmount,
+    prvPayments,
+    info,
+    remoteAddress,
+    txHashHandler,
+    burningType,
+    version = PrivacyVersion.ver2,
+  } = {}) {
+    new Validator('account', account).required();
+    new Validator('wallet', wallet).required();
+    new Validator('fee', fee).required().amount();
+    new Validator('tokenId', tokenId).required().string();
+    new Validator('burnAmount', burnAmount).required().amount();
+    new Validator('prvPayments', prvPayments).required().array();
+    new Validator('remoteAddress', remoteAddress).required().string();
+    new Validator('info', info).string();
+    new Validator('burningType', burningType).required().number();
+
+    const accountWallet = getAccountWallet(account, wallet);
+    return accountWallet.createAndSendBurningRequestTx({
+      transfer: {
+        fee,
+        tokenID: tokenId,
+        prvPayments,
+        info,
+      },
+      extra: {
+        remoteAddress,
+        burnAmount,
+        txHashHandler,
+        burningType,
+        version,
+      },
+    });
+  }
+
+  static async getSignPublicKeyEncode({ account, wallet }) {
+    try {
+      new Validator('getSignPublicKeyEncode-account', account).required();
+      new Validator('getSignPublicKeyEncode-wallet', wallet).required();
+      const accountWallet = getAccountWallet(account, wallet);
+      return accountWallet.getSignPublicKeyEncode();
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  static async getPairs({ account, wallet }) {
+    new Validator('account', account).required();
+    new Validator('wallet', wallet).required();
+    const accountWallet = getAccountWallet(account, wallet);
+    return accountWallet.getPairs();
+  }
+
+  static async createAndSendTxsWithContributions({
+    account,
+    wallet,
+    tokenID1,
+    tokenID2,
+    symbol1,
+    symbol2,
+    contributedAmount1,
+    contributedAmount2,
+    fee,
+    version = PrivacyVersion.ver2,
+  } = {}) {
+    new Validator(
+      'createAndSendTxWithContribution-account',
+      account,
+    ).required();
+    new Validator('createAndSendTxWithContribution-wallet', wallet).required();
+    new Validator('createAndSendTxWithContribution-tokenID1', tokenID1)
+      .required()
+      .string();
+    new Validator('createAndSendTxWithContribution-tokenID2', tokenID2)
+      .required()
+      .string();
+    new Validator('createAndSendTxWithContribution-symbol1', symbol1)
+      .required()
+      .string();
+    new Validator('createAndSendTxWithContribution-symbol2', symbol2)
+      .required()
+      .string();
+    new Validator(
+      'createAndSendTxWithContribution-contributedAmount1',
+      contributedAmount1,
+    )
+      .required()
+      .amount();
+    new Validator(
+      'createAndSendTxWithContribution-contributedAmount2',
+      contributedAmount2,
+    )
+      .required()
+      .amount();
+    new Validator('createAndSendTxWithContribution-fee', fee).amount();
+    new Validator('createAndSendTxWithContribution-version', version)
+      .required()
+      .number();
+    const accountWallet = getAccountWallet(account, wallet);
+    await accountWallet.createAndSendTxsWithContributions({
+      tokenID1,
+      tokenID2,
+      symbol1,
+      symbol2,
+      contributedAmount1,
+      contributedAmount2,
+      fee,
+      version,
+    });
+  }
+
+  static async createAndSendTxWithRetryContribution({
+    account,
+    wallet,
+    tokenID,
+    amount,
+    pairID,
+    fee,
+    version = PrivacyVersion.ver2,
+  } = {}) {
+    new Validator(
+      'createAndSendTxWithRetryContribution-account',
+      account,
+    ).required();
+    new Validator(
+      'createAndSendTxWithRetryContribution-wallet',
+      wallet,
+    ).required();
+    new Validator('createAndSendTxWithRetryContribution-amount', amount)
+      .required()
+      .amount();
+    new Validator('createAndSendTxWithRetryContribution-tokenID', tokenID)
+      .required()
+      .string();
+    new Validator('createAndSendTxWithRetryContribution-pairID', pairID)
+      .required()
+      .string();
+    new Validator('createAndSendTxWithRetryContribution-fee', fee).amount();
+    new Validator('createAndSendTxWithRetryContribution-version', version)
+      .required()
+      .number();
+
+    const accountWallet = getAccountWallet(account, wallet);
+
+    const res = await accountWallet.createAndSendTxWithContribution({
+      transfer: {
+        fee,
+        tokenID: tokenID,
+      },
+      extra: { pairID, contributedAmount: amount, version },
+    });
+    console.debug(res);
+    return res;
+  }
+
+  static async createAndSendWithdrawContributionTx({
+    account,
+    wallet,
+    tokenID1,
+    tokenID2,
+    withdrawalShareAmt,
+    fee,
+    version = PrivacyVersion.ver2,
+  } = {}) {
+    new Validator(
+      'createAndSendWithdrawContributionTx-account',
+      account,
+    ).required();
+    new Validator(
+      'createAndSendWithdrawContributionTx-wallet',
+      wallet,
+    ).required();
+    new Validator('createAndSendWithdrawContributionTx-tokenID1', tokenID1)
+      .required()
+      .string();
+    new Validator('createAndSendWithdrawContributionTx-tokenID2', tokenID2)
+      .required()
+      .string();
+    new Validator(
+      'createAndSendWithdrawContributionTx-withdrawalShareAmt',
+      withdrawalShareAmt,
+    )
+      .required()
+      .amount();
+    new Validator('createAndSendWithdrawContributionTx-fee', fee).amount();
+    new Validator('createAndSendWithdrawContributionTx-version', version)
+      .required()
+      .number();
+
+    const accountWallet = getAccountWallet(account, wallet);
+    let response = await accountWallet.createAndSendWithdrawContributionTx({
+      transfer: {
+        fee,
+      },
+      extra: {
+        withdrawalToken1IDStr: tokenID1,
+        withdrawalToken2IDStr: tokenID2,
+        withdrawalShareAmt,
+        version,
+      },
+    });
+    console.log(response);
+  }
+
+  static async createAndSendWithdrawContributionFeeTx({
+    account,
+    wallet,
+    tokenID1,
+    tokenID2,
+    withdrawalFeeAmt,
+    fee,
+    version = PrivacyVersion.ver2,
+  } = {}) {
+    new Validator(
+      'createAndSendWithdrawContributionFeeTx-account',
+      account,
+    ).required();
+    new Validator(
+      'createAndSendWithdrawContributionFeeTx-wallet',
+      wallet,
+    ).required();
+    new Validator('createAndSendWithdrawContributionFeeTx-tokenID1', tokenID1)
+      .required()
+      .string();
+    new Validator('createAndSendWithdrawContributionFeeTx-tokenID2', tokenID2)
+      .required()
+      .string();
+    new Validator(
+      'createAndSendWithdrawContributionFeeTx-withdrawalFeeAmt',
+      withdrawalFeeAmt,
+    )
+      .required()
+      .amount();
+    new Validator('createAndSendWithdrawContributionFeeTx-fee', fee).amount();
+    new Validator('createAndSendWithdrawContributionFeeTx-version', version)
+      .required()
+      .number();
+
+    const accountWallet = getAccountWallet(account, wallet);
+    let response = await accountWallet.createAndSendWithdrawContributionFeeTx({
+      transfer: {
+        fee,
+      },
+      extra: {
+        withdrawalToken1IDStr: tokenID1,
+        withdrawalToken2IDStr: tokenID2,
+        withdrawalFeeAmt,
+        version,
+      },
+    });
+    console.log(response);
+  }
+
+  static async getContributeHistories({
+    account,
+    wallet,
+    offset,
+    limit,
+    oldApiHistories,
+  }) {
+    new Validator('getContributeHistories-account', account).required();
+    new Validator('getContributeHistories-wallet', wallet).required();
+    new Validator('getContributeHistories-wallet', wallet).required();
+    new Validator('getContributeHistories-offset', offset).required().number();
+    new Validator('getContributeHistories-limit', limit).required().number();
+    new Validator('getContributeHistories-oldApiHistories', oldApiHistories)
+      .required()
+      .array();
+    const accountWallet = getAccountWallet(account, wallet);
+    return accountWallet.getContributeHistoriesWithStorage({
+      offset,
+      limit,
+      oldApiHistories,
+    });
+  }
+
+  static async getWithdrawLiquidityHistories({
+    account,
+    wallet,
+    offset,
+    limit,
+  }) {
+    new Validator('getWithdrawLiquidityHistories-account', account).required();
+    new Validator('getWithdrawLiquidityHistories-wallet', wallet).required();
+    new Validator('getWithdrawLiquidityHistories-wallet', wallet).required();
+    new Validator('getWithdrawLiquidityHistories-offset', offset)
+      .required()
+      .number();
+    new Validator('getWithdrawLiquidityHistories-limit', limit)
+      .required()
+      .number();
+    const accountWallet = getAccountWallet(account, wallet);
+    return accountWallet.getLiquidityWithdrawHistoriesWithStorage({
+      offset,
+      limit,
+    });
+  }
+
+  static async getWithdrawLiquidityFeeHistories({
+    account,
+    wallet,
+    offset,
+    limit,
+  }) {
+    new Validator(
+      'getWithdrawLiquidityFeeHistories-account',
+      account,
+    ).required();
+    new Validator('getWithdrawLiquidityFeeHistories-wallet', wallet).required();
+    new Validator('getWithdrawLiquidityFeeHistories-wallet', wallet).required();
+    new Validator('getWithdrawLiquidityFeeHistories-offset', offset)
+      .required()
+      .number();
+    new Validator('getWithdrawLiquidityFeeHistories-limit', limit)
+      .required()
+      .number();
+    const accountWallet = getAccountWallet(account, wallet);
+    return accountWallet.getLiquidityWithdrawFeeHistoriesWithStorage({
+      offset,
+      limit,
+    });
+  }
+
+  static async removeTxHistoryByTxIDs({
+    account,
+    wallet,
+    txIDs,
+    tokenIDs,
+    version = PrivacyVersion.ver2,
+  } = {}) {
+    new Validator('removeTxHistoryByTxIDs-account', account).required();
+    new Validator('removeTxHistoryByTxIDs-wallet', txIDs).required();
+    new Validator('removeTxHistoryByTxIDs-wallet', tokenIDs)
+      .required()
+      .string();
+    new Validator('removeTxHistoryByTxIDs-offset', version).required().number();
+    const accountWallet = getAccountWallet(account, wallet);
+    return accountWallet.removeTxHistoryByTxIDs({ txIDs, tokenIDs, version });
   }
 }

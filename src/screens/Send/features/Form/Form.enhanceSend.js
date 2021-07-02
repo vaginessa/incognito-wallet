@@ -1,7 +1,10 @@
 /* eslint-disable no-unreachable */
 /* eslint-disable import/no-cycle */
 import React from 'react';
-import { ACCOUNT_CONSTANT } from 'incognito-chain-web-js/build/wallet';
+import {
+  ACCOUNT_CONSTANT,
+  PrivacyVersion,
+} from 'incognito-chain-web-js/build/wallet';
 import ErrorBoundary from '@src/components/ErrorBoundary';
 import { useSelector, useDispatch } from 'react-redux';
 import convert from '@src/utils/convert';
@@ -10,12 +13,11 @@ import { feeDataSelector } from '@src/components/EstimateFee/EstimateFee.selecto
 import format from '@src/utils/format';
 import { reset } from 'redux-form';
 import { Toast } from '@src/components/core';
-import { MESSAGES, CONSTANT_KEYS, CONSTANT_COMMONS } from '@src/constants';
+import { MESSAGES, CONSTANT_KEYS } from '@src/constants';
 import { ExHandler } from '@src/services/exception';
 import { walletSelector } from '@src/redux/selectors/wallet';
 import { defaultAccountSelector } from '@src/redux/selectors/account';
 import accountService from '@services/wallet/accountService';
-import tokenService from '@services/wallet/tokenService';
 import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
 import { selectedPrivacySelector } from '@src/redux/selectors';
@@ -45,6 +47,7 @@ export const enhanceSend = (WrappedComp) => (props) => {
           },
         ],
         txType: ACCOUNT_CONSTANT.TX_TYPE.SEND,
+        version: PrivacyVersion.ver2,
       });
       return res;
     } catch (e) {
@@ -69,6 +72,7 @@ export const enhanceSend = (WrappedComp) => (props) => {
         ],
         txType: ACCOUNT_CONSTANT.TX_TYPE.SEND,
         tokenID: selectedPrivacy?.tokenId,
+        version: PrivacyVersion.ver2,
       });
       return res;
     } catch (e) {
