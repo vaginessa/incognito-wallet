@@ -12,7 +12,7 @@ class Account {
     // this.BlockProducerKey = data?.BlockProducerKey;
     this.ValidatorKey = data?.ValidatorKey;
     this.OTAKey = data?.OTAKey;
-    this.OldPaymentAddress = data?.OldPaymentAddress;
+    this.PaymentAddressV1 = data?.PaymentAddressV1;
     this.ID = data.ID;
   }
 
@@ -28,7 +28,8 @@ class Account {
       PublicKeyCheckEncode:this.PublicKeyCheckEncode,
       PublicKeyBytes:this.PublicKeyBytes,
       BLSPublicKey:this.BLSPublicKey,
-      ValidatorKey:this.ValidatorKey
+      ValidatorKey:this.ValidatorKey,
+      PaymentAddressV1: this.PaymentAddressV1,
     };
   }
 }
