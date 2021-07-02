@@ -31,6 +31,8 @@ const asyncMethods = [
   'hybridEncryptionASM',
   'hybridDecryptionASM',
   'estimateTxSize',
+  'aesEncrypt',
+  'aesDecrypt',
 ];
 try {
   console.log('INIT GOMOBILE');
