@@ -37,6 +37,8 @@ export const getAccountWallet = (account, wallet) => {
     accountWallet.setAuthToken(wallet.AuthToken);
     accountWallet.setRPCApiServices(wallet.RpcApiService, wallet.AuthToken);
     // accountWallet.setUseLegacyEncoding(wallet.UseLegacyEncoding);
+    //todo: update url for portal backend
+    accountWallet.setRPCPortalServices('http://0.0.0.0:8091'); //(local)
     return accountWallet;
   } catch (error) {
     console.log('getAccountWallet error', error);
