@@ -71,7 +71,7 @@ export const removeAccount = (account) => async (dispatch, getState) => {
       console.log('ERROR REMOVE CACHE STORAGE', error);
     }
     const { PrivateKey } = account;
-    const passphrase = await getPassphrase();
+    const { aesKey } = await getPassphrase();
     const masterKey = currentMasterKeySelector(state);
     const walletAccount = accountService.getAccount(account, wallet);
     const accountInfo = await walletAccount.getDeserializeInformation();
@@ -81,7 +81,7 @@ export const removeAccount = (account) => async (dispatch, getState) => {
     masterKey.deletedAccountIds.push(accountInfo.ID);
     wallet.deletedAccountIds = masterKey.deletedAccountIds;
     dispatch(updateMasterKey(masterKey));
-    await accountService.removeAccount(PrivateKey, passphrase, wallet);
+    await accountService.removeAccount(PrivateKey, aesKey, wallet);
     dispatch({
       type: type.REMOVE_BY_PRIVATE_KEY,
       data: PrivateKey,
@@ -395,7 +395,7 @@ export const actionFetchImportAccount = ({ accountName, privateKey }) => async (
   }
   try {
     await dispatch(actionFetchingImportAccount());
-    const passphrase = await getPassphrase();
+    const { aesKey } = await getPassphrase();
     for (const masterKey of masterKeys) {
       try {
         const isCreated = await masterKey.wallet.hasCreatedAccount(privateKey);
@@ -411,7 +411,7 @@ export const actionFetchImportAccount = ({ accountName, privateKey }) => async (
     const isImported = await accountService.importAccount(
       privateKey,
       accountName,
-      passphrase,
+      aesKey,
       wallet,
     );
     if (isImported) {
