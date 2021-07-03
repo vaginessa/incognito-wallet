@@ -89,36 +89,16 @@ export class PDexTradeHistoryModel {
     this.exchange = 'Incognito';
     // this.exchange = TYPES[history.Type] || 'Incognito';
     this.description = `${this.sellAmount} ${this.sellTokenSymbol} to ${this.buyAmount} ${this.buyTokenSymbol}`;
-    this.createdAt = formatUtil.formatUnixDateTime(history?.requesttime, LONG_DATE_TIME_FORMAT);
+    this.createdAt = formatUtil.formatUnixDateTime(history?.requestTime, LONG_DATE_TIME_FORMAT);
 
     // status
     const status = history.status;
-    if (HISTORY_STATUS.REFUND.includes(status) || HISTORY_STATUS.REJECTED.includes(status)) {
+    if (HISTORY_STATUS.REFUND.includes(status) || HISTORY_STATUS.REJECTED.includes(status) || HISTORY_STATUS.FAIL.includes(status)) {
       this.status = TRANSFER_STATUS.FAILED;
     } else if (HISTORY_STATUS.ACCEPTED.includes(status)) {
       this.status = TRANSFER_STATUS.SUCCESSFUL;
     } else {
       this.status = TRANSFER_STATUS.PENDING;
     }
-  }
-}
-
-export class PDexHistoryPureModel {
-  constructor({ history, accountName }) {
-    this.sellAmount = history?.sell;
-    this.requestTx = history?.requesttx;
-    if (!isEmpty(history?.respondtx)) {
-      this.responseTx = history?.respondtx[0];
-    }
-    this.status = history?.status;
-    this.buyTokenId = history?.buytoken;
-    this.sellTokenId = history?.selltoken;
-    this.buyAmount = 0;
-    if (this.buyTokenId && !isEmpty(history?.receive) && history?.receive[this.buyTokenId]) {
-      this.buyAmount = history?.receive[this.buyTokenId];
-    }
-    this.networkFee = history?.fee;
-    this.requesttime = history?.requesttime;
-    this.accountName = accountName;
   }
 }

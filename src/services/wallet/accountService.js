@@ -22,7 +22,6 @@ import {
   getAccountWallet,
 } from '@src/services/wallet/Wallet.shared';
 import { cachePromise, clearAllCaches } from '@src/services/cache';
-import { PDexHistoryPureModel } from '@models/pDefi';
 import { CustomError, ErrorCode, ExHandler } from '../exception';
 import { loadListAccountWithBLSPubKey, saveWallet } from './WalletService';
 
@@ -832,40 +831,20 @@ export default class Account {
     };
   }
 
-  static async getPDexHistories({ account, wallet, offset, limit }) {
+  static async getPDexHistories({ account, wallet, offset, limit, oldHistories }) {
     new Validator('wallet', wallet).required();
     new Validator('account', account).required();
     new Validator('offset', offset).required().number();
     new Validator('limit', limit).required().number();
-
-    let histories = [];
-    try {
-      const accountWallet = await this.getAccount(account, wallet);
-      histories = await accountWallet.getPDexHistories({
-        offset,
-        limit,
-      });
-    } catch (error) {
-      console.debug('GET PDEX HISTORIES ERROR: ', error);
-    }
-    return histories.map(
-      (history) =>
-        new PDexHistoryPureModel({ history, accountName: account.name }),
-    );
+    new Validator('oldHistories', oldHistories).required().array();
+    const accountWallet = await this.getAccount(account, wallet);
+    return await accountWallet.getPDexHistories({
+      offset,
+      limit,
+      oldHistories,
+    });
   }
 
-  static async getPDexStorageHistories({ account, wallet }) {
-    new Validator('wallet', wallet).required();
-    new Validator('account', account).required();
-    let histories = [];
-    try {
-      const accountWallet = await this.getAccount(account, wallet);
-      histories = (await accountWallet.getTxPdexStorageHistories()) || [];
-    } catch (error) {
-      console.debug('GET PDEX STORAGE HISTORIES ERROR: ', error);
-    }
-    return histories;
-  }
   /**
    * Sign staking pool withdraw
    * @param {object} account

@@ -8,6 +8,7 @@ import CurrencySection from '@screens/Setting/features/CurrencySection/CurrencyS
 import MainLayout from '@components/MainLayout/index';
 import RemoveStorage from '@screens/Setting/features/RemoveStorage/RemoveStorage';
 import ConvertCoinsSection from '@screens/Setting/features/ConvertCoinsSection';
+import DeviceInfo from 'react-native-device-info';
 import PINSection from './features/PINSection';
 import SeparatorSection from './features/SeparatorSection';
 import DevSection from './features/DevSection';
@@ -60,7 +61,7 @@ const Setting = () => {
         {global.isDebug() && <DevSection />}
       </View>
       <Text style={settingStyle.textVersion}>
-        {`v${AppUpdater.appVersion}`}
+        {`v${AppUpdater.appVersion}${global.isDebug() ? ` (${DeviceInfo.getBuildNumber()})` : ''}`}
       </Text>
     </MainLayout>
   );

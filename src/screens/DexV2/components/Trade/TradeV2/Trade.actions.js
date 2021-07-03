@@ -725,48 +725,20 @@ export const actionGetPDexHistory = ({ limit } = {}) => async (dispatch, getStat
     const page = historiesPage + 1;
     const offset = page * limitPage;
 
-    const tasks = [
-      await accountServices.getPDexHistories({
-        account,
-        wallet,
-        limit: limitPage,
-        offset,
-      }),
-      await accountServices.getPDexStorageHistories({
-        account,
-        wallet,
-      })
-    ];
-    let [newHistories, storageHistories] = await Promise.all(tasks);
-    const oldIds = oldHistories.map(item => item.requestTx);
-    newHistories = newHistories.filter(item => !oldIds.includes(item.requestTx));
-    let apiHistories = uniqBy(
-      oldHistories.concat(newHistories.filter(item => !oldIds.includes(item.requestTx))),
-      item => item.requestTx
-    );
-
-    const pendingStorage = [];
-    storageHistories.forEach(history => {
-      const notHave = apiHistories.some(item => item?.requestTx === history?.requestTx);
-      if (!notHave) {
-        pendingStorage.push(history);
-      }
+    const { histories, apiHistoriesLength } = await accountServices.getPDexHistories({
+      account,
+      wallet,
+      limit: limitPage,
+      offset,
+      oldHistories,
     });
 
-    const mergeHistory = orderBy(
-      apiHistories.concat(pendingStorage),
-      [
-        'requesttime',
-      ],
-      ['desc'],
-    );
-
-    console.log('mergeHistory: ', mergeHistory);
+    console.log('actionGetPDexHistory: ', histories);
 
     dispatch(actionUpdatePDexHistory({
-      histories: mergeHistory,
+      histories: histories,
       historiesPage: page,
-      reachedHistories: newHistories.length < limitPage
+      reachedHistories: apiHistoriesLength < limitPage
     }));
   } catch (error) {
     console.log('GET PDEX HISTORIES ERROR: ', error);

@@ -4,7 +4,7 @@ import {
   Validator,
 } from 'incognito-chain-web-js/build/wallet';
 
-const {
+export const {
   TX_STATUS,
   STATUS_CODE_SHIELD_DECENTRALIZED,
   STATUS_CODE_SHIELD_CENTRALIZED,

@@ -15,6 +15,7 @@ import {useNavigation} from 'react-navigation-hooks';
 import routeNames from '@routers/routeNames';
 import styleSheet from '@components/HistoryList/style';
 import LoadingContainer from '@components/LoadingContainer';
+import { LIMIT } from '@screens/DexV2/constants';
 
 const Description = React.memo(({ data }) => {
   if (isEmpty(data)) return null;
@@ -121,7 +122,6 @@ const Histories = React.memo(({ histories, historyTabName, onRefresh, onLoadMore
         style={{ marginTop: 37 }}
         keyExtractor={({ pairId, id }) => `item-key-${pairId || id}`}
         refreshing={refreshing}
-        onScroll={() => detectRef.current = true}
         showsVerticalScrollIndicator={false}
         onRefresh={() => {
           if (typeof onRefresh === 'function') {
@@ -131,8 +131,10 @@ const Histories = React.memo(({ histories, historyTabName, onRefresh, onLoadMore
         onEndReachedThreshold={0.7}
         onEndReached={() => detectRef.current = true}
         onMomentumScrollEnd={() => {
-          detectRef.current && onLoadMore();
-          detectRef.current = false;
+          if ((histories || []).length >= LIMIT && detectRef.current && typeof onLoadMore === 'function') {
+            detectRef.current && onLoadMore();
+            detectRef.current = false;
+          }
         }}
         ListFooterComponent={
           isLoadMore ? (
