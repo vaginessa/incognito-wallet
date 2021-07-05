@@ -4,7 +4,7 @@ import _ from 'lodash';
 export const MAINNET_FULLNODE = 'https://lb-fullnode.incognito.org/fullnode';
 export const MAINNET_1_FULLNODE = 'http://51.83.237.20:9338';
 export const TESTNET_FULLNODE = 'https://testnet.incognito.org/fullnode';
-export const TESTNET1_FULLNODE = 'http://51.83.36.184:20002/fullnode';
+export const TESTNET1_FULLNODE = 'https://testnet1.incognito.org/fullnode';
 export const DEV_TEST_FULLNODE = 'http://139.162.55.124:8334';
 
 let cachedList = null;
@@ -54,6 +54,9 @@ const TEST_NET_1_SERVER = {
   username: '',
   password: '',
   name: 'Testnet 1',
+  coinServices: 'https://api-coinservice-staging2.incognito.org',
+  pubsubServices: 'https://api-coinservice-staging2.incognito.org/txservice',
+  apiServices: 'https://privacyv2-api-service.incognito.org',
 };
 const DEV_TEST_SERVER = {
   id: 'devtest',
