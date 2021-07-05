@@ -16,7 +16,7 @@ import { actionFetch as actionFetchHomeConfigs } from '@screens/Home/Home.action
 import { useNavigation, useFocusEffect } from 'react-navigation-hooks';
 import { useMigrate } from '@src/components/UseEffect/useMigrate';
 import storageService from '@src/services/storage';
-import { LoadingContainer } from '@src/components/core';
+import { LoadingContainer, Text } from '@src/components/core';
 import { actionFetch as actionFetchProfile } from '@screens/Profile';
 import { KEYS } from '@src/constants/keys';
 import { getFunctionConfigs } from '@services/api/misc';
@@ -27,6 +27,8 @@ import {
 import { masterKeysSelector } from '@src/redux/selectors/masterKey';
 import Welcome from '@screens/GetStarted/Welcome';
 import withPin from '@components/pin.enhance';
+import KeepAwake from 'react-native-keep-awake';
+import { COLORS, FONT } from '@src/styles';
 import {
   wizardSelector,
   isFollowedDefaultPTokensSelector,
@@ -210,23 +212,49 @@ const enhance = (WrappedComp) => (props) => {
     }
   }, [pin]);
 
-  if (isMigrating || !loadMasterKeys) {
-    return <LoadingContainer size="large" />;
-  }
-
-  if (isFetching) {
-    return <Wizard />;
-  }
-
-  if (masterKeys.length === 0) {
-    return <Welcome />;
-  }
-
-  return (
-    <ErrorBoundary>
+  const renderMain = () => {
+    if (isMigrating || !loadMasterKeys) {
+      return (
+        <LoadingContainer
+          size="large"
+          custom={
+            isFetched && (
+              <Text
+                style={{
+                  color: COLORS.colorGreyBold,
+                  fontFamily: FONT.NAME.medium,
+                  fontSize: FONT.SIZE.medium,
+                  lineHeight: FONT.SIZE.medium + 5,
+                  textAlign: 'center',
+                  marginTop: 30,
+                }}
+              >
+                {
+                  'This may take a couple of minutes.\nPlease do not navigate away from the app.'
+                }
+              </Text>
+            )
+          }
+        />
+      );
+    }
+    if (isFetching) {
+      return <Wizard />;
+    }
+    if (masterKeys.length === 0) {
+      return <Welcome />;
+    }
+    return (
       <WrappedComp
         {...{ ...props, errorMsg, isInitialing, isCreating, onRetry: initApp }}
       />
+    );
+  };
+
+  return (
+    <ErrorBoundary>
+      {renderMain()}
+      <KeepAwake />
     </ErrorBoundary>
   );
 };
