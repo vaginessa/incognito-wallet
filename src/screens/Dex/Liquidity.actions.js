@@ -201,7 +201,7 @@ export const actionFilterOutput = () => async (dispatch, getState) => {
       const poolOutputValue = pair[outputToken.id];
       sharePercent = new BigNumber(share).dividedBy(totalShare).toNumber();
       maxInputShare = Math.ceil(new BigNumber(sharePercent).multipliedBy(poolInputValue).toNumber()) || 0;
-      maxOutputShare = Math.floor(new BigNumber(sharePercent).multipliedBy(poolOutputValue).toNumber()) || 0;
+      maxOutputShare = Math.ceil(new BigNumber(sharePercent).multipliedBy(poolOutputValue).toNumber()) || 0;
     }
 
     const tasks = [await accountServices.getBalance({
@@ -351,7 +351,7 @@ export const actionFetchContributeHistories = ({ isRefresh = false } = {}) => as
       storageHistories: uniqBy(newStorageHistories.concat(storageHistories), 'pairId'),
       offset,
       isEnd: newHistories.length < limit,
-      originalContributes: uniqBy(newOriginalContributes.concat(originalContributes), 'requestTx')
+      originalContributes: uniqBy(newOriginalContributes.concat(originalContributes), 'id')
     }));
   } catch (error) {
     console.log('actionFetchContributeHistories error: ', error);

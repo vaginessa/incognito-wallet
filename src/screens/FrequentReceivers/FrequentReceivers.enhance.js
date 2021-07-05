@@ -4,7 +4,7 @@ import { groupBy, forEach } from 'lodash';
 import { useSelector, useDispatch } from 'react-redux';
 import { receiversSelector } from '@src/redux/selectors/receivers';
 import { selectedPrivacySelector, accountSelector } from '@src/redux/selectors';
-import { CONSTANT_KEYS } from '@src/constants';
+import { CONSTANT_COMMONS, CONSTANT_KEYS } from '@src/constants';
 import { isIOS } from '@src/utils/platform';
 import { View, KeyboardAvoidingView } from 'react-native';
 import { useSearchBox } from '@src/components/Header';
@@ -34,7 +34,13 @@ const enhance = (WrappedComp) => (props) => {
   const extAddrFilBySelPrivacy = [
     ...externalAddress.filter((item) =>
       filterBySelectedPrivacy
-        ? item?.rootNetworkName === selectedPrivacy?.rootNetworkName
+        ? item?.rootNetworkName === selectedPrivacy?.rootNetworkName ||
+          (CONSTANT_COMMONS.FACTORIES_EVM_NETWORK.includes(
+            item?.rootNetworkName,
+          ) &&
+            CONSTANT_COMMONS.FACTORIES_EVM_NETWORK.includes(
+              selectedPrivacy?.rootNetworkName,
+            ))
         : true,
     ),
   ];
@@ -45,15 +51,18 @@ const enhance = (WrappedComp) => (props) => {
     handleFilter: () => filterAddressByKey([], keySearch),
   });
 
-  const accountGroupByMasterKey = useMemo(() =>
-    groupBy(accounts, item => item.MasterKeyName),
-  [accounts]);
+  const accountGroupByMasterKey = useMemo(
+    () => groupBy(accounts, (item) => item.MasterKeyName),
+    [accounts],
+  );
 
   const receivers = [];
   forEach(accountGroupByMasterKey, (accounts, masterKeyName) => {
     const keychainsAddresses = accounts
       .filter(
-        (account) => accountService.getPaymentAddress(account) !== accountService.getPaymentAddress(defaultAccount),
+        (account) =>
+          accountService.getPaymentAddress(account) !==
+          accountService.getPaymentAddress(defaultAccount),
       )
       .map((item) => ({
         name: accountService.getAccountName(item),
@@ -82,18 +91,20 @@ const enhance = (WrappedComp) => (props) => {
     handleFilter: () => filterAddressByKey(extAddrFilBySelPrivacy, keySearch),
   });
 
-  receivers.push(...[
-    {
-      data: _incognitoAddress,
-      label: 'Incognito addresses',
-      keySave: CONSTANT_KEYS.REDUX_STATE_RECEIVERS_IN_NETWORK,
-    },
-    {
-      data: _externalAddress,
-      label: 'External addresses',
-      keySave: CONSTANT_KEYS.REDUX_STATE_RECEIVERS_OUT_NETWORK,
-    },
-  ]);
+  receivers.push(
+    ...[
+      {
+        data: _incognitoAddress,
+        label: 'Incognito addresses',
+        keySave: CONSTANT_KEYS.REDUX_STATE_RECEIVERS_IN_NETWORK,
+      },
+      {
+        data: _externalAddress,
+        label: 'External addresses',
+        keySave: CONSTANT_KEYS.REDUX_STATE_RECEIVERS_OUT_NETWORK,
+      },
+    ],
+  );
 
   useFocusEffect(
     React.useCallback(() => {

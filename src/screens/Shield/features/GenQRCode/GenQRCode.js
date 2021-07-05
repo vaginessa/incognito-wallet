@@ -84,7 +84,8 @@ const Extra = () => {
 
   const renderEstimateFee = () => {
     const isNativeToken =
-      selectedPrivacy?.externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.ETH ||
+      selectedPrivacy?.currencyType ===
+        CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.ETH ||
       selectedPrivacy?.currencyType ===
         CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BSC_BNB;
     let humanFee = convert.toNumber(

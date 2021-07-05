@@ -12,7 +12,7 @@ import {
   actionUpdateWithdrawing as updateWithdrawing,
   updateWithdrawTxs,
 } from '@screens/Node/Node.actions';
-import { getValidNodes, checkValidNode } from '@screens/Node/Node.utils';
+import { getValidNodes, checkValidNode, findAccountFromListAccounts } from '@screens/Node/Node.utils';
 import { listAllMasterKeyAccounts } from '@src/redux/selectors/masterKey';
 import { MAX_FEE_PER_TX } from '@src/components/EstimateFee/EstimateFee.utils';
 
@@ -40,11 +40,12 @@ const enhanceWithdraw = (WrappedComp) => (props) => {
   const sendWithdrawTx = async (paymentAddress, tokenIds) => {
     const _withdrawTxs = {};
     for (const tokenId of tokenIds) {
-      const account = listAccount.find(
-        (item) => item.PaymentAddress === paymentAddress,
-      );
+      const account = findAccountFromListAccounts({
+        accounts: listAccount,
+        address: paymentAddress
+      });
       const res = await accountService.createAndSendWithdrawRewardTx({
-        tokenId,
+        tokenID: tokenId,
         account,
         wallet: account.Wallet,
         fee: MAX_FEE_PER_TX,

@@ -158,7 +158,7 @@ export default class Token {
           if (pToken && pToken.symbol === 'ETH' && pToken.currencyType === 1) {
             pToken.address = '0x0000000000000000000000000000000000000000';
           }
-
+          const currencyType = pToken?.currencyType;
           return {
             ...item,
             address: pToken?.address || pToken?.contractId,
@@ -172,6 +172,7 @@ export default class Token {
               : `Incognito ${item.name}`,
             name: pToken ? pToken.name : item.name,
             isVerified: item.verified || pToken?.verified,
+            currencyType,
           };
         })
         .orderBy(

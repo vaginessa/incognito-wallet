@@ -16,6 +16,7 @@ import styles from '@screens/DexV2/components/Trade/style';
 import { useSelector } from 'react-redux';
 import { disableButton, hasHistories } from '@screens/Dex/Liquidity.selector';
 import { ArrowRightGreyIcon } from '@components/Icons';
+import { styled } from '@screens/Dex/style';
 
 const Liquidity = React.memo((props) => {
   const {
@@ -28,6 +29,7 @@ const Liquidity = React.memo((props) => {
     pair,
     onNextPress,
     onHistoriesPress,
+    outputToken,
   } = props;
 
   const disabled = useSelector(disableButton);
@@ -93,7 +95,7 @@ const Liquidity = React.memo((props) => {
   return (
     <View style={{ flex: 1, marginHorizontal: 25 }}>
       {renderHeader()}
-      <ScrollView refreshControl={(<RefreshControl refreshing={isLoading} onRefresh={onLoadData} />)}>
+      <ScrollView refreshControl={(<RefreshControl refreshing={isLoading} onRefresh={onLoadData} showsVerticalScrollIndicator={false} />)}>
         <View style={{ paddingTop: 50 }}>
           <InputView inputError={inputError} outputError={outputError} />
           <RoundCornerButton
@@ -104,6 +106,11 @@ const Liquidity = React.memo((props) => {
             }}
             disabled={disabled}
           />
+          {((liquidityTitle.title === LIQUIDITY_TITLES.CREATE_POOL.title) && !!outputToken) && (
+            <Text style={styled.warning}>
+              This pool has not been created before
+            </Text>
+          )}
           {renderContent()}
         </View>
         <View style={{ height: 70 }} />
@@ -112,6 +119,10 @@ const Liquidity = React.memo((props) => {
     </View>
   );
 });
+
+Liquidity.defaultProps = {
+  outputToken: undefined
+};
 
 Liquidity.propTypes = {
   isLoading: PropTypes.bool.isRequired,
@@ -123,7 +134,8 @@ Liquidity.propTypes = {
 
   onLoadData: PropTypes.func.isRequired,
   onNextPress: PropTypes.func.isRequired,
-  onHistoriesPress: PropTypes.func.isRequired
+  onHistoriesPress: PropTypes.func.isRequired,
+  outputToken: PropTypes.object,
 };
 
 export default compose(

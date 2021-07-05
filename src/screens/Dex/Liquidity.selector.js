@@ -251,10 +251,7 @@ export const disableButton = createSelector(
 export const hasHistories = createSelector(
   liquiditySelector,
   (liquidity) => {
-    const {
-      storageHistories,
-      apiHistories
-    } = liquidity[INPUT_FIELDS.ADD_POOL];
+    const { storageHistories, apiHistories } = liquidity[INPUT_FIELDS.ADD_POOL];
     return storageHistories.length > 0 || apiHistories.length > 0;
   }
 );

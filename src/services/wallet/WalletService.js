@@ -88,11 +88,11 @@ export async function configsWallet(wallet) {
 
 export async function initWallet(walletName = 'Wallet') {
   try {
-    const passphrase = await getPassphrase();
+    const { aesKey } = await getPassphrase();
     let wallet = new Wallet();
     await configsWallet(wallet);
-    await wallet.init(passphrase, storage, walletName, 'Anon');
-    await wallet.save(passphrase);
+    await wallet.init(aesKey, storage, walletName, 'Anon');
+    await wallet.save(aesKey);
     return wallet;
   } catch (e) {
     throw e;
@@ -100,8 +100,9 @@ export async function initWallet(walletName = 'Wallet') {
 }
 
 export async function saveWallet(wallet) {
+  const { aesKey } = await getPassphrase();
   wallet.Storage = storage;
-  wallet.save(await getPassphrase());
+  wallet.save(aesKey);
 }
 
 export function deleteWallet(wallet) {
@@ -120,7 +121,6 @@ export async function loadHistoryByAccount(wallet, accountName) {
 export async function updateStatusHistory(wallet) {
   await wallet.updateStatusHistory();
   await saveWallet(wallet);
-  // wallet.save(await getPassphrase());
 }
 
 export function clearCache(wallet) {
@@ -134,11 +134,11 @@ export async function updateHistoryStatus(wallet, txId) {
 
 export async function importWallet(mnemonic, name) {
   try {
-    const passphrase = await getPassphrase();
+    const { aesKey } = await getPassphrase();
     let wallet = new Wallet();
     await configsWallet(wallet);
-    await wallet.import(mnemonic, passphrase, name, storage);
-    await wallet.save(passphrase);
+    await wallet.import(mnemonic, aesKey, name, storage);
+    await wallet.save(aesKey);
     return wallet;
   } catch (e) {
     throw e;

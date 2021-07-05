@@ -15,19 +15,20 @@ import {
 import { PRV } from '@src/constants/common';
 import { CONSTANT_CONFIGS } from '@src/constants';
 import { selectedPrivacy } from './selectedPrivacy';
+import { burnerAddressSelector } from './account';
 
-const renderAmount = ({ amount, pDecimals, decimalDigits } = {}) => {
+const renderAmount = (params) => {
+  const { amount, pDecimals, decimalDigits } = params;
   let amountStr = '';
+  if (!amount) {
+    return amountStr;
+  }
   try {
-    new Validator('amount', amount).amount();
     new Validator('pDecimals', pDecimals).number();
     new Validator('decimalDigits', decimalDigits).boolean();
-    const amountToNumber = Number(amount) || 0;
-    if (amountToNumber) {
-      amountStr = formatUtil.amount(amount, pDecimals, true, decimalDigits);
-    }
+    amountStr = formatUtil.amount(amount, pDecimals, true, decimalDigits);
   } catch (error) {
-    console.log('renderAmount', error);
+    amountStr = '';
   }
   return amountStr;
 };
@@ -105,7 +106,7 @@ export const historyReceiverSelector = createSelector(
 export const mappingTxPTokenSelector = createSelector(
   selectedPrivacy,
   decimalDigitsSelector,
-  ({ pDecimals, symbol }, decimalDigits) => (txp) => {
+  ({ pDecimals, symbol, decimals }, decimalDigits) => (txp) => {
     const {
       status,
       currencyType,
@@ -120,6 +121,8 @@ export const mappingTxPTokenSelector = createSelector(
       isShielding,
       inchainFee,
       outchainFee,
+      receivedAmount,
+      tokenFee,
     } = txp;
     const shouldRenderQrShieldingAddress =
       isShieldTx &&
@@ -133,7 +136,22 @@ export const mappingTxPTokenSelector = createSelector(
       ? getStatusColorShield(txp)
       : getStatusColorUnshield(txp);
     const showDetail = !!statusDetail;
-
+    let receivedFundsStr =
+      isShieldTx && receivedAmount
+        ? renderAmount({
+          amount: receivedAmount,
+          pDecimals: decimals,
+          decimalDigits,
+        })
+        : '';
+    const shieldingFeeStr =
+      isShieldTx && tokenFee
+        ? renderAmount({
+          amount: tokenFee,
+          pDecimals: decimals,
+          decimalDigits,
+        })
+        : '';
     const result = {
       ...txp,
       timeStr: formatUtil.formatDateTime(time),
@@ -159,6 +177,8 @@ export const mappingTxPTokenSelector = createSelector(
         pDecimals: PRV.pDecimals,
         decimalDigits,
       }),
+      receivedFundsStr,
+      shieldingFeeStr,
     };
     return result;
   },
@@ -183,9 +203,10 @@ export const historyTxsSelector = createSelector(
     return {
       ...history,
       isEmpty: histories.length === 0 && !isFetching && isFetched,
-      refreshing: isFetching,
+      refreshing: isFetching && isFetched,
       oversize: true,
       histories: [...sort],
+      loading: isFetching && !isFetched,
     };
   },
 );
@@ -198,7 +219,8 @@ export const historyDetailSelector = createSelector(
 export const historyDetailFactoriesSelector = createSelector(
   historyDetailSelector,
   selectedPrivacy,
-  ({ tx }, selectedPrivacy) => {
+  burnerAddressSelector,
+  ({ tx }, selectedPrivacy, burnerAddress) => {
     const { txType } = tx;
     try {
       switch (txType) {
@@ -273,6 +295,9 @@ export const historyDetailFactoriesSelector = createSelector(
           erc20TokenAddress,
           canRetryExpiredShield,
           outChainTx,
+          receivedFundsStr,
+          shieldingFeeStr,
+          txReceive,
         } = tx;
         return [
           {
@@ -285,6 +310,21 @@ export const historyDetailFactoriesSelector = createSelector(
             label: 'Shield',
             value: `${amountStr} ${symbol}`,
             disabled: !amountStr,
+          },
+          {
+            label: 'Received funds',
+            value: `${receivedFundsStr} ${symbol}`,
+            disabled: !receivedFundsStr,
+          },
+          {
+            label: 'Shielding fee',
+            value: `${shieldingFeeStr} ${symbol}`,
+            disabled: !shieldingFeeStr,
+          },
+          {
+            label: 'Received tx',
+            value: `${txReceive}`,
+            disabled: !txReceive,
           },
           {
             label: 'Status',
@@ -456,7 +496,7 @@ export const historyDetailFactoriesSelector = createSelector(
           status,
           statusStr,
         } = tx;
-        return [
+        let factories = [
           {
             label: 'TxID',
             value: `#${txId}`,
@@ -508,6 +548,19 @@ export const historyDetailFactoriesSelector = createSelector(
             disabled: !txTypeStr,
           },
         ];
+        try {
+          if (receiverAddress === burnerAddress) {
+            let foundIndex = factories.findIndex(
+              (item) => item.value === receiverAddress,
+            );
+            if (foundIndex > -1) {
+              factories[foundIndex].label = 'Burn address';
+            }
+          }
+        } catch {
+          //
+        }
+        return factories;
       }
       }
     } catch (error) {

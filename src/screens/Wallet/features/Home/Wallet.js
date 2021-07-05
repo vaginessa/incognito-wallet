@@ -19,13 +19,11 @@ import Tooltip from '@src/components/Tooltip/Tooltip';
 import { COLORS } from '@src/styles';
 import isNaN from 'lodash/isNaN';
 import {
-  BottomBar,
   ScrollView,
   TouchableOpacity,
   Image,
 } from '@src/components/core';
 import useFeatureConfig from '@src/shared/hooks/featureConfig';
-import { useStreamLine } from '@src/screens/Streamline';
 import { PRV } from '@services/wallet/tokenService';
 import SelectAccountButton from '@components/SelectAccountButton';
 import PropTypes from 'prop-types';
@@ -37,6 +35,7 @@ import appConstant from '@src/constants/app';
 import { actionFree as actionFreeHistory } from '@src/redux/actions/history';
 import withDetectConvert from '@screens/Home/features/Convert/Convert.enhanceDetect';
 import { compose } from 'recompose';
+import StreamLineBottomBar from '@screens/Streamline/features/StreamLineBottomBar';
 import {
   styled,
   styledHook,
@@ -243,19 +242,6 @@ const AddToken = React.memo(() => {
   );
 });
 
-const StreamLine = React.memo(() => {
-  const { hasExceededMaxInputPRV, onNavigateStreamLine } = useStreamLine();
-  if (!hasExceededMaxInputPRV) {
-    return null;
-  }
-  return (
-    <BottomBar
-      onPress={onNavigateStreamLine}
-      text="Streamline this keychain now for efficient transactions"
-    />
-  );
-});
-
 const Extra = React.memo(() => {
   const dispatch = useDispatch();
   const showWalletBlance = useSelector(showWalletBlanceSelector);
@@ -271,7 +257,6 @@ const Extra = React.memo(() => {
       />
       <GroupButton />
       <FollowToken hideBlance={showWalletBlance} />
-      <StreamLine />
     </View>
   );
 });
@@ -308,6 +293,7 @@ const Wallet = React.memo(() => {
         onGoBack={onGoBack}
       />
       <Extra />
+      <StreamLineBottomBar />
     </View>
   );
 });

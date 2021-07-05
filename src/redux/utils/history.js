@@ -4,7 +4,7 @@ import {
   Validator,
 } from 'incognito-chain-web-js/build/wallet';
 
-const {
+export const {
   TX_STATUS,
   STATUS_CODE_SHIELD_DECENTRALIZED,
   STATUS_CODE_SHIELD_CENTRALIZED,
@@ -35,7 +35,8 @@ export const getStatusColorShield = (history) => {
       }
       break;
     }
-    case 1: {
+    case 1:
+    case 2: {
       // decetralized
       if (STATUS_CODE_SHIELD_DECENTRALIZED.COMPLETE.includes(status)) {
         statusColor = COLORS.green;
@@ -56,7 +57,9 @@ export const getStatusColorShield = (history) => {
 export const getStatusColorUnshield = (history) => {
   let statusColor = '';
   try {
-    new Validator('getStatusColorUnshield-history', history).required().object();
+    new Validator('getStatusColorUnshield-history', history)
+      .required()
+      .object();
     const { decentralized, status } = history;
     switch (decentralized) {
     case 0: {
@@ -68,7 +71,8 @@ export const getStatusColorUnshield = (history) => {
       }
       break;
     }
-    case 1: {
+    case 1:
+    case 2: {
       // decetralized
       if (STATUS_CODE_UNSHIELD_DECENTRALIZED.COMPLETE === status) {
         statusColor = COLORS.green;
