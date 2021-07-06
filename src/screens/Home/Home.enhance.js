@@ -13,14 +13,7 @@ import { ExHandler } from '@src/services/exception';
 import { BackHandler } from 'react-native';
 import AppUpdater from '@components/AppUpdater';
 import { useBackHandler } from '@src/components/UseEffect';
-import {
-  isFollowDefaultPTokensSelector,
-  actionToggleFollowDefaultPTokens,
-} from '@screens/GetStarted';
-import { followDefaultTokens } from '@src/redux/actions/account';
-import { pTokensSelector } from '@src/redux/selectors/token';
 import { withNews, actionCheckUnreadNews } from '@screens/News';
-import { CONSTANT_KEYS } from '@src/constants';
 import {
   withSyncIncognitoAddress,
   withSyncDetectNetwork,
@@ -41,11 +34,7 @@ const enhance = (WrappedComp) => (props) => {
     retryLastTxsUnshieldCentralized,
   } = props;
   const { categories, headerTitle, isFetching } = useSelector(homeSelector);
-  const pTokens = useSelector(pTokensSelector);
   const defaultAccount = useSelector(accountSelector.defaultAccountSelector);
-  const isFollowedDefaultPTokens = useSelector(isFollowDefaultPTokensSelector)(
-    CONSTANT_KEYS.IS_FOLLOW_DEFAULT_PTOKENS,
-  );
   const masterKeys = useSelector(masterKeysSelector);
   const dispatch = useDispatch();
 
@@ -77,18 +66,6 @@ const enhance = (WrappedComp) => (props) => {
       new ExHandler(e);
     }
   };
-  const followDefaultPTokens = async () => {
-    try {
-      await dispatch(followDefaultTokens(defaultAccount, pTokens));
-      await dispatch(
-        actionToggleFollowDefaultPTokens({
-          keySave: CONSTANT_KEYS.IS_FOLLOW_DEFAULT_PTOKENS,
-        }),
-      );
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
   const handleGoBack = () => BackHandler.exitApp();
 
@@ -101,12 +78,6 @@ const enhance = (WrappedComp) => (props) => {
     airdrop();
     getFollowingToken(false);
   }, []);
-
-  React.useEffect(() => {
-    if (!isFollowedDefaultPTokens && pTokens.length > 0) {
-      followDefaultPTokens();
-    }
-  }, [pTokens]);
 
   useFocusEffect(
     React.useCallback(() => {

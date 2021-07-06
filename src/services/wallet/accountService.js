@@ -359,40 +359,53 @@ export default class Account {
     return lastByte % 8;
   }
 
-  static getFollowingTokens(account, wallet) {
-    new Validator('account', account).object().required();
-    new Validator('wallet', wallet).object().required();
-    const accountWallet = this.getAccount(account, wallet);
-    const followedTokens = accountWallet
-      .listFollowingTokens()
-      ?.map(tokenModel.fromJson);
-    if (followedTokens && followedTokens.find((item) => item?.id === PRV_ID)) {
-      this.removeFollowingToken(PRV_ID, account, wallet);
-      return followedTokens.filter((item) => item?.id !== PRV_ID);
+  static async getFollowingTokens(account, wallet) {
+    try {
+      new Validator('getFollowingTokens-account', account).object().required();
+      new Validator('getFollowingTokens-wallet', wallet).object().required();
+      const accountWallet = this.getAccount(account, wallet);
+      let list = await accountWallet.getListFollowingTokens();
+      list = list.map((tokenID) => ({
+        id: tokenID,
+        amount: 0,
+        loading: false,
+      }));
+      return list;
+    } catch (error) {
+      console.log('getFollowingTokens error', error);
+      throw error;
     }
-    return followedTokens;
   }
 
   static async addFollowingTokens(tokens, account, wallet) {
-    new Validator('account', account).required();
-    new Validator('wallet', wallet).required();
-    new Validator('tokens', tokens).required();
-    const accountWallet = this.getAccount(account, wallet);
-    accountWallet.addFollowingToken(...tokens);
-    await saveWallet(wallet);
-    return wallet;
+    try {
+      new Validator('addFollowingTokens-account', account).required();
+      new Validator('addFollowingTokens-wallet', wallet).required();
+      new Validator('addFollowingTokens-tokens', tokens).required().array();
+      const accountWallet = this.getAccount(account, wallet);
+      const tokenIDs = tokens
+        .map((token) => token?.tokenID)
+        .filter((tokenID) => typeof tokenID === 'string');
+      await accountWallet.addListFollowingToken({ tokenIDs });
+    } catch (error) {
+      console.log('addFollowingTokens error', error);
+      throw error;
+    }
   }
 
-  static async removeFollowingToken(tokenId, account, wallet) {
-    new Validator('account', account).required();
-    new Validator('wallet', wallet).required();
-    new Validator('tokenId', tokenId).required().string();
-    const accountWallet = this.getAccount(account, wallet);
-    accountWallet.removeFollowingToken(tokenId);
-    await saveWallet(wallet);
-    return wallet;
+  static async removeFollowingToken(tokenID, account, wallet) {
+    try {
+      new Validator('removeFollowingToken-account', account).required();
+      new Validator('removeFollowingToken-wallet', wallet).required();
+      new Validator('removeFollowingToken-tokenID', tokenID)
+        .required()
+        .string();
+      const accountWallet = this.getAccount(account, wallet);
+      await accountWallet.removeFollowingToken({ tokenID });
+    } catch (error) {
+      throw error;
+    }
   }
-
   /**
    *
    * @param {string} tokenID
@@ -682,7 +695,13 @@ export default class Account {
       new Validator('defaultAccount', defaultAccount).object();
       const account = this.getAccount(defaultAccount, wallet);
       const keyInfo = (await account.getKeyInfo({ version })) || {};
-      let task = [account.removeStorageCoinsV1()];
+      const otaKey = account.getOTAKey();
+      const followedDefaultTokensKey = account.getKeyFollowedDefaultTokens();
+      let task = [
+        account.removeStorageCoinsV1(),
+        account.clearAccountStorage(otaKey),
+        account.clearAccountStorage(followedDefaultTokensKey),
+      ];
       clearAllCaches();
       if (keyInfo?.coinindex) {
         task = task.concat(

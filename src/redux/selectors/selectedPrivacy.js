@@ -25,31 +25,29 @@ export const getPrivacyDataByTokenID = createSelector(
   internalTokens,
   pTokens,
   tokensFollowedSelector,
-  (account, _internalTokens, _pTokens, _followed) =>
+  (account, internalTokens, pTokens, followed) =>
     memoize((tokenID) => {
       try {
         // ‘PRV’ is not a token
         const internalTokenData =
-          _internalTokens?.find(
+          internalTokens?.find(
             (t) => t?.id !== CONSTANT_COMMONS.PRV_TOKEN_ID && t?.id === tokenID,
           ) || {};
-        const pTokenData = _pTokens?.find((t) => t?.tokenId === tokenID);
-        const followedTokenData =
-          _followed.find((t) => t?.id === tokenID) || {};
+        const pTokenData = pTokens?.find((t) => t?.tokenId === tokenID);
+        const followedTokenData = followed.find((t) => t?.id === tokenID) || {};
         if (
           !internalTokenData &&
           !pTokenData &&
           tokenID !== CONSTANT_COMMONS.PRV_TOKEN_ID
         ) {
-          throw new Error(`Can not find coin with id ${tokenID}`);
+          console.log(`Can not find coin with id ${tokenID}`);
         }
-
         const token = new SelectedPrivacy(
           account,
           { ...internalTokenData, ...followedTokenData },
           pTokenData,
         );
-        const tokenUSDT = _pTokens.find(
+        const tokenUSDT = pTokens.find(
           (token) => token?.tokenId === BIG_COINS.USDT,
         );
         const price = getPrice({ token, tokenUSDT });

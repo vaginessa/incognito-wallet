@@ -14,7 +14,10 @@ import {
 // eslint-disable-next-line import/no-cycle
 import { reloadWallet } from '@src/redux/actions/wallet';
 import { getWalletAccounts } from '@services/api/masterKey';
-import { pTokensSelector } from '@src/redux/selectors/token';
+import {
+  defaultPTokensIDsSelector,
+  pTokensSelector,
+} from '@src/redux/selectors/token';
 import {
   masterKeysSelector,
   masterlessKeyChainSelector,
@@ -73,37 +76,24 @@ const initMasterKeySuccess = (data) => ({
   payload: data,
 });
 
-const followDefaultTokens = async (account, pTokenList, wallet) => {
-  try {
-    const pTokens = pTokenList;
-    const defaultTokens = [];
-    pTokens?.forEach((token) => {
-      if (token.default) {
-        defaultTokens.push(token.convertToToken());
-      }
-    });
-    if (defaultTokens.length > 0) {
-      await accountService.addFollowingTokens(defaultTokens, account, wallet);
-    }
-  } catch (e) {
-    throw e;
-  }
-};
-
 const followDefaultTokenForWallet = (wallet, accounts) => async (
   dispatch,
   getState,
 ) => {
-  const state = getState();
-  const pTokens = pTokensSelector(state);
-  let listAccount = [];
-  !accounts
-    ? (listAccount = [...wallet.MasterAccount.child])
-    : (listAccount = [...accounts]);
-  let task = listAccount.map((account) =>
-    followDefaultTokens(account, pTokens, wallet),
-  );
-  await Promise.all(task);
+  try {
+    const state = getState();
+    const defaultTokens = defaultPTokensIDsSelector(state);
+    let listAccount = [];
+    !accounts
+      ? (listAccount = [...wallet.MasterAccount.child])
+      : (listAccount = [...accounts]);
+    let task = listAccount.map((account) =>
+      accountService.addFollowingTokens(defaultTokens, account, wallet),
+    );
+    await Promise.all(task);
+  } catch (error) {
+    console.log('WALLET-followDefaultTokens error', error);
+  }
 };
 
 export const initMasterKey = (masterKeyName, mnemonic) => async (dispatch) => {

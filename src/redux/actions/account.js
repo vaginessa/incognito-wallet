@@ -15,12 +15,16 @@ import {
 import { switchMasterKey, updateMasterKey } from '@src/redux/actions/masterKey';
 import { storeWalletAccountIdsOnAPI } from '@services/wallet/WalletService';
 import { devSelector } from '@src/screens/Dev';
-import { tokenSelector, accountSelector } from '@src/redux/selectors';
+import {
+  // tokenSelector,
+  accountSelector,
+} from '@src/redux/selectors';
 import { walletSelector } from '@src/redux/selectors/wallet';
 import { PRV } from '@src/constants/common';
 import { ExHandler } from '@src/services/exception';
 import { getDefaultAccountWalletSelector } from '@src/redux/selectors/shared';
 import { burnerAddressSelector } from '@src/redux/selectors/account';
+import { defaultPTokensIDsSelector } from '@src/redux/selectors/token';
 import { getBalance as getTokenBalance, setListToken } from './token';
 
 /**
@@ -143,7 +147,7 @@ export const getBalance = (account) => async (dispatch, getState) => {
     const state = getState();
     await dispatch(getBalanceStart(account?.name));
     const wallet = walletSelector(state);
-    const isDev = devSelector(state);
+    // const isDev = devSelector(state);
     if (!wallet) {
       throw new Error('Wallet is not exist');
     }
@@ -193,63 +197,27 @@ export const reloadBalance = () => async (dispatch, getState) => {
   await dispatch(getBalance(account));
 };
 
-export const reloadAccountFollowingToken = (
-  account = throw new Error('Account object is required'),
-  { shouldLoadBalance = true } = {},
-) => async (dispatch, getState) => {
+export const followDefaultTokens = (account) => async (dispatch, getState) => {
   try {
-    const wallet = getState()?.wallet;
-
-    if (!wallet) {
-      throw new Error('Wallet is not exist');
-    }
-
-    const tokens = accountService.getFollowingTokens(account, wallet);
-    shouldLoadBalance &&
-      tokens.forEach((token) => getTokenBalance(token)(dispatch, getState));
-
-    dispatch(setListToken(tokens));
-
-    return tokens;
-  } catch (e) {
-    throw e;
-  }
-};
-
-export const followDefaultTokens = (account, pTokenList) => async (
-  dispatch,
-  getState,
-) => {
-  try {
+    const state = getState();
+    const wallet = walletSelector(state);
     if (!account) {
       throw new Error('Account object is required');
     }
-    const state = getState();
-    const wallet = state?.wallet;
-    const pTokens = pTokenList
-      ? pTokenList
-      : tokenSelector.pTokensSelector(state);
-
     if (!wallet) {
       throw new Error('Wallet is not exist');
     }
-    const defaultTokens = [];
-    pTokens?.forEach((token) => {
-      if (token.default) {
-        defaultTokens.push(token.convertToToken());
-      }
-    });
-    if (defaultTokens.length > 0) {
-      await accountService.addFollowingTokens(defaultTokens, account, wallet);
-    }
+    const defaultTokens = defaultPTokensIDsSelector(state);
+    await accountService.addFollowingTokens(defaultTokens, account, wallet);
     // update wallet object to store
     await dispatch({
       type: walletType.SET,
       data: wallet,
     });
     return defaultTokens;
-  } catch (e) {
-    throw e;
+  } catch (error) {
+    console.log('ACCOUNT-followDefaultTokens error', error);
+    throw error;
   }
 };
 
@@ -294,14 +262,25 @@ export const actionReloadFollowingToken = (shouldLoadBalance = true) => async (
     const wallet = walletSelector(state);
     const account = accountSelector.defaultAccountSelector(state);
     const accountWallet = getDefaultAccountWalletSelector(state);
-    const followed = await accountService.getFollowingTokens(account, wallet);
+    let followed = await accountService.getFollowingTokens(account, wallet);
     await accountWallet.submitOTAKey();
-    await dispatch(setListToken(followed));
     dispatch(actionFetchBurnerAddress());
     if (shouldLoadBalance) {
-      await accountWallet.getKeyInfo({
+      const keyInfo = await accountWallet.getKeyInfo({
         version: PrivacyVersion.ver2,
       });
+      const isFollowedDefaultTokens = await accountWallet.isFollowedDefaultTokens();
+      if (!isFollowedDefaultTokens) {
+        const coinIDs = keyInfo.coinindex
+          ? Object.keys(keyInfo.coinindex).map((tokenID) => tokenID)
+          : [];
+        const pTokensIDs = defaultPTokensIDsSelector(state);
+        let tokenIDs = [...pTokensIDs, ...coinIDs];
+        await accountWallet.followingDefaultTokens({
+          tokenIDs,
+        });
+        followed = await accountService.getFollowingTokens(account, wallet);
+      }
       dispatch(getBalance(account));
       followed.forEach((token) => {
         try {
@@ -311,6 +290,7 @@ export const actionReloadFollowingToken = (shouldLoadBalance = true) => async (
         }
       });
     }
+    await dispatch(setListToken(followed));
     return followed;
   } catch (error) {
     throw error;
@@ -348,6 +328,7 @@ export const actionFetchCreateAccount = ({ accountName }) => async (
   const state = getState();
   const create = accountSelector.createAccountSelector(state);
   const wallet = state?.wallet;
+  const isDev = devSelector(state);
   if (!!create || !accountName || !wallet) {
     return;
   }
@@ -362,6 +343,14 @@ export const actionFetchCreateAccount = ({ accountName }) => async (
     await dispatch(actionFetchedCreateAccount());
     await dispatch(actionSwitchAccount(serializedAccount?.name, true));
     await storeWalletAccountIdsOnAPI(wallet);
+    if (isDev) {
+      const measure = await wallet.getMeasureStorageValue();
+      await dispatch(
+        actionLogEvent({
+          desc: measure,
+        }),
+      );
+    }
     return serializedAccount;
   } catch (error) {
     await dispatch(actionFetchFailCreateAccount());
