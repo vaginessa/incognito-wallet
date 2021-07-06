@@ -122,8 +122,6 @@ export default class Account {
         },
       });
       console.log('result', result);
-      // save wallet
-      await saveWallet(wallet);
       return result;
     } catch (error) {
       throw error;
@@ -199,7 +197,6 @@ export default class Account {
       },
     });
     console.log('result', result);
-    await saveWallet(wallet);
     return result;
   }
 
@@ -253,7 +250,6 @@ export default class Account {
       },
     });
     console.log('result', result);
-    await saveWallet(wallet);
     return result;
   }
 
@@ -645,8 +641,6 @@ export default class Account {
       this.NO_OF_INPUT_PER_DEFRAGMENT_TX,
       noOfTxs,
     );
-    // save wallet
-    await saveWallet(wallet);
     await Wallet.resetProgressTx();
     return result;
   }
