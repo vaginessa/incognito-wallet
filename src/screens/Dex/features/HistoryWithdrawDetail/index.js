@@ -8,9 +8,15 @@ import { HEADER_TABS } from '@screens/Dex/Liquidity.constants';
 import { useSelector } from 'react-redux';
 import { selectedPrivacySelector } from '@src/redux/selectors';
 import formatUtil from '@utils/format';
+import linkingService from '@services/linking';
+import {CONSTANT_CONFIGS} from '@src/constants';
 
 const HistoryWithdrawDetail = React.memo(({ history, historyTab }) => {
   const getPrivacyDataByTokenID = useSelector(selectedPrivacySelector.getPrivacyDataByTokenID);
+  const handleOpenLink = (txID) => {
+    if (!txID) return;
+    linkingService.openUrl(`${CONSTANT_CONFIGS.EXPLORER_CONSTANT_CHAIN_URL}/tx/${txID}`,);
+  };
   const renderWithdrawHistories = () => {
     const { tokenId1, tokenId2, amount1, amount2, responseTx1, responseTx2, statusText, requestTx } = history;
     const token1 = getPrivacyDataByTokenID(tokenId1);
@@ -21,13 +27,19 @@ const HistoryWithdrawDetail = React.memo(({ history, historyTab }) => {
         valueText: requestTx,
         copyable: true,
         openUrl: true,
+        handleOpenLink: () => {
+          handleOpenLink(requestTx);
+        }
       },
       {
         label: 'ResponseTx1',
         valueText: responseTx1,
         copyable: true,
         openUrl: true,
-        disabled: !responseTx1
+        disabled: !responseTx1,
+        handleOpenLink: () => {
+          handleOpenLink(responseTx1);
+        }
       },
       {
         label: 'Amount1',
@@ -43,7 +55,10 @@ const HistoryWithdrawDetail = React.memo(({ history, historyTab }) => {
         valueText: responseTx2,
         copyable: true,
         openUrl: true,
-        disabled: !responseTx2
+        disabled: !responseTx2,
+        handleOpenLink: () => {
+          handleOpenLink(responseTx2);
+        }
       },
       {
         label: 'Amount2',
@@ -64,13 +79,19 @@ const HistoryWithdrawDetail = React.memo(({ history, historyTab }) => {
         valueText: requestTx,
         copyable: true,
         openUrl: true,
+        handleOpenLink: () => {
+          handleOpenLink(requestTx);
+        }
       },
       {
         label: 'RespondTx',
         valueText: respondTx,
         copyable: true,
         openUrl: true,
-        disabled: !respondTx
+        disabled: !respondTx,
+        handleOpenLink: () => {
+          handleOpenLink(respondTx);
+        }
       },
       {
         label: 'Amount',

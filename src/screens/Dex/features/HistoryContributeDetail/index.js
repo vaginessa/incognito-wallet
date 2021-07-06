@@ -13,6 +13,8 @@ import { ButtonBasic } from '@components/Button';
 import { LIQUIDITY_STATUS_MESSAGE } from '@screens/Dex/Liquidity.constants';
 import withValidate from '@screens/Dex/features/HistoryContributeDetail/enhanceValidator';
 import {compose} from 'recompose';
+import linkingService from '@services/linking';
+import {CONSTANT_CONFIGS} from '@src/constants';
 
 const HistoryContributeDetail = React.memo(({
   history,
@@ -23,6 +25,10 @@ const HistoryContributeDetail = React.memo(({
 }) => {
   const getPrivacyDataByTokenID = useSelector(selectedPrivacySelector.getPrivacyDataByTokenID);
   const { pairId, statusText } = history;
+  const handleOpenLink = (txID) => {
+    if (!txID) return;
+    linkingService.openUrl(`${CONSTANT_CONFIGS.EXPLORER_CONSTANT_CHAIN_URL}/tx/${txID}`,);
+  };
   const historyFactory = [
     {
       label: 'PairID',
@@ -45,6 +51,9 @@ const HistoryContributeDetail = React.memo(({
         valueText: requestTx,
         copyable: true,
         openUrl: true,
+        handleOpenLink: () => {
+          handleOpenLink(requestTx);
+        }
       },
       {
         label: `Status${index}`,
@@ -57,6 +66,9 @@ const HistoryContributeDetail = React.memo(({
         copyable: true,
         disabled: isEmpty(respondTx),
         openUrl: true,
+        handleOpenLink: () => {
+          handleOpenLink(respondTx);
+        }
       },
       {
         label: `Amount${index}`,
