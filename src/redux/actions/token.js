@@ -129,20 +129,20 @@ export const getBalance = (tokenId) => async (dispatch, getState) => {
       tokenID: tokenId,
       version: PrivacyVersion.ver2,
     });
-    if (isDev) {
-      const accountWallet = getDefaultAccountWalletSelector(state);
-      const coinsStorage = await accountWallet.getCoinsStorage({
-        tokenID: tokenId,
-        version: PrivacyVersion.ver2,
-      });
-      if (coinsStorage) {
-        await dispatch(
-          actionLogEvent({
-            desc: coinsStorage,
-          }),
-        );
-      }
-    }
+    // if (isDev) {
+    //   const accountWallet = getDefaultAccountWalletSelector(state);
+    //   const coinsStorage = await accountWallet.getCoinsStorage({
+    //     tokenID: tokenId,
+    //     version: PrivacyVersion.ver2,
+    //   });
+    //   if (coinsStorage) {
+    //     await dispatch(
+    //       actionLogEvent({
+    //         desc: coinsStorage,
+    //       }),
+    //     );
+    //   }
+    // }
     dispatch(
       setToken({
         ...token,
@@ -164,7 +164,9 @@ export const getBalance = (tokenId) => async (dispatch, getState) => {
   }
 };
 
-export const getPTokenList = ({ expiredTime = EXPIRED_TIME } = {}) => async (dispatch) => {
+export const getPTokenList = ({ expiredTime = EXPIRED_TIME } = {}) => async (
+  dispatch,
+) => {
   try {
     const tokens = await getTokenList({ expiredTime });
 
@@ -176,7 +178,9 @@ export const getPTokenList = ({ expiredTime = EXPIRED_TIME } = {}) => async (dis
   }
 };
 
-export const getInternalTokenList = ({ expiredTime = EXPIRED_TIME } = {}) => async (dispatch) => {
+export const getInternalTokenList = ({
+  expiredTime = EXPIRED_TIME,
+} = {}) => async (dispatch) => {
   try {
     const tokens = await tokenService.getPrivacyTokens({ expiredTime });
 
@@ -230,7 +234,10 @@ export const actionAddFollowToken = (tokenId) => async (dispatch, getState) => {
   }
 };
 
-export const actionAddFollowTokenAfterMint = (tokenId) => async (dispatch, getState) => {
+export const actionAddFollowTokenAfterMint = (tokenId) => async (
+  dispatch,
+  getState,
+) => {
   try {
     const state = getState();
     let wallet = state.wallet;
@@ -260,7 +267,6 @@ export const actionAddFollowTokenAfterMint = (tokenId) => async (dispatch, getSt
     throw Error(error);
   }
 };
-
 
 export const actionRemoveFollowToken = (tokenId) => async (
   dispatch,

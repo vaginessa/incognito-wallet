@@ -54,10 +54,15 @@ export async function loadListAccountWithBLSPubKey(wallet) {
 export async function loadWallet(passphrase, name = 'Wallet') {
   try {
     let wallet = new Wallet();
-    await configsWallet(wallet);
     wallet.Name = name;
+    // TODO: mockup;
+    // const keyMeasureStorage = wallet.getKeyMeasureStorage();
+    // await wallet.clearWalletStorage({ key: keyMeasureStorage });
+    // console.log('CLEAR MEASURE STORAGE');
+    await configsWallet(wallet);
+    console.time('wallet.loadWallet');
     await wallet.loadWallet(passphrase, name);
-    await saveWallet(wallet);
+    console.timeEnd('wallet.loadWallet');
     return wallet?.Name ? wallet : false;
   } catch (error) {
     console.log('ERROR WHEN LOAD WALLET', error);
@@ -121,10 +126,6 @@ export async function loadHistoryByAccount(wallet, accountName) {
 export async function updateStatusHistory(wallet) {
   await wallet.updateStatusHistory();
   await saveWallet(wallet);
-}
-
-export function clearCache(wallet) {
-  wallet.clearCached(storage);
 }
 
 export async function updateHistoryStatus(wallet, txId) {

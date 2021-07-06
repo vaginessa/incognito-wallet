@@ -37,6 +37,7 @@ export const getAccountWallet = (account, wallet) => {
     // accountWallet.setUseLegacyEncoding(wallet.UseLegacyEncoding);
     return accountWallet;
   } catch (error) {
+    console.log('getAccountWallet error', error);
     throw error;
   }
 };
