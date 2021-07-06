@@ -56,6 +56,7 @@ const TEST_NET_1_SERVER = {
   name: 'Testnet 1',
   coinServices: 'https://api-coinservice-staging2.incognito.org',
   pubsubServices: 'https://api-coinservice-staging2.incognito.org/txservice',
+  requestServices: 'http://51.161.119.66:6000',
   apiServices: 'https://privacyv2-api-service.incognito.org',
 };
 const DEV_TEST_SERVER = {

@@ -382,7 +382,7 @@ export default class Account {
     new Validator('wallet', wallet).required();
     new Validator('tokens', tokens).required();
     const accountWallet = this.getAccount(account, wallet);
-    await accountWallet.addFollowingToken(...tokens);
+    accountWallet.addFollowingToken(...tokens);
     await saveWallet(wallet);
     return wallet;
   }
@@ -392,7 +392,7 @@ export default class Account {
     new Validator('wallet', wallet).required();
     new Validator('tokenId', tokenId).required().string();
     const accountWallet = this.getAccount(account, wallet);
-    await accountWallet.removeFollowingToken(tokenId);
+    accountWallet.removeFollowingToken(tokenId);
     await saveWallet(wallet);
     return wallet;
   }
@@ -831,7 +831,13 @@ export default class Account {
     };
   }
 
-  static async getPDexHistories({ account, wallet, offset, limit, oldHistories }) {
+  static async getPDexHistories({
+    account,
+    wallet,
+    offset,
+    limit,
+    oldHistories,
+  }) {
     new Validator('wallet', wallet).required();
     new Validator('account', account).required();
     new Validator('offset', offset).required().number();

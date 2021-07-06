@@ -29,6 +29,8 @@ import { MAX_LIMIT_RECEIVE_HISTORY_ITEM } from '@src/redux/reducers/token';
 import { PRV_ID } from '@screens/DexV2/constants';
 import { devSelector } from '@src/screens/Dev';
 import { Validator, PrivacyVersion } from 'incognito-chain-web-js/build/wallet';
+import { EXPIRED_TIME } from '@services/cache';
+import Util from '@utils/Util';
 import { setWallet } from './wallet';
 import { getDefaultAccountWalletSelector } from '../selectors/shared';
 
@@ -127,20 +129,20 @@ export const getBalance = (tokenId) => async (dispatch, getState) => {
       tokenID: tokenId,
       version: PrivacyVersion.ver2,
     });
-    if (isDev) {
-      const accountWallet = getDefaultAccountWalletSelector(state);
-      const coinsStorage = await accountWallet.getCoinsStorage({
-        tokenID: tokenId,
-        version: PrivacyVersion.ver2,
-      });
-      if (coinsStorage) {
-        await dispatch(
-          actionLogEvent({
-            desc: coinsStorage,
-          }),
-        );
-      }
-    }
+    // if (isDev) {
+    //   const accountWallet = getDefaultAccountWalletSelector(state);
+    //   const coinsStorage = await accountWallet.getCoinsStorage({
+    //     tokenID: tokenId,
+    //     version: PrivacyVersion.ver2,
+    //   });
+    //   if (coinsStorage) {
+    //     await dispatch(
+    //       actionLogEvent({
+    //         desc: coinsStorage,
+    //       }),
+    //     );
+    //   }
+    // }
     dispatch(
       setToken({
         ...token,
@@ -162,11 +164,13 @@ export const getBalance = (tokenId) => async (dispatch, getState) => {
   }
 };
 
-export const getPTokenList = () => async (dispatch) => {
+export const getPTokenList = ({ expiredTime = EXPIRED_TIME } = {}) => async (
+  dispatch,
+) => {
   try {
-    const tokens = await getTokenList();
+    const tokens = await getTokenList({ expiredTime });
 
-    dispatch(setListPToken(tokens));
+    await dispatch(setListPToken(tokens));
 
     return tokens;
   } catch (e) {
@@ -174,11 +178,13 @@ export const getPTokenList = () => async (dispatch) => {
   }
 };
 
-export const getInternalTokenList = () => async (dispatch) => {
+export const getInternalTokenList = ({
+  expiredTime = EXPIRED_TIME,
+} = {}) => async (dispatch) => {
   try {
-    const tokens = await tokenService.getPrivacyTokens();
+    const tokens = await tokenService.getPrivacyTokens({ expiredTime });
 
-    dispatch(setListInternalToken(tokens));
+    await dispatch(setListInternalToken(tokens));
 
     return tokens;
   } catch (e) {
@@ -224,6 +230,40 @@ export const actionAddFollowToken = (tokenId) => async (dispatch, getState) => {
     dispatch(setListToken(followed));
   } catch (error) {
     dispatch(actionAddFollowTokenFail(tokenId));
+    throw Error(error);
+  }
+};
+
+export const actionAddFollowTokenAfterMint = (tokenId) => async (
+  dispatch,
+  getState,
+) => {
+  try {
+    const state = getState();
+    let wallet = state.wallet;
+    if (!tokenId || tokenId === PRV_ID) {
+      return;
+    }
+    await Util.sleep();
+    const tasks = [
+      await dispatch(getPTokenList({ expiredTime: 0 })),
+      await dispatch(getInternalTokenList({ expiredTime: 0 })),
+    ];
+    const account = accountSelector.defaultAccount(state);
+    const [pTokens, internalTokens] = await Promise.all(tasks);
+    const foundPToken = pTokens?.find((pToken) => pToken.tokenId === tokenId);
+    const foundInternalToken =
+      !foundPToken && internalTokens?.find((token) => token.id === tokenId);
+    const token =
+      (foundInternalToken && internalTokenModel.toJson(foundInternalToken)) ||
+      foundPToken?.convertToToken();
+
+    wallet = await accountService.addFollowingTokens([token], account, wallet);
+    dispatch(setWallet(wallet));
+
+    const followed = await accountService.getFollowingTokens(account, wallet);
+    dispatch(setListToken(followed));
+  } catch (error) {
     throw Error(error);
   }
 };
