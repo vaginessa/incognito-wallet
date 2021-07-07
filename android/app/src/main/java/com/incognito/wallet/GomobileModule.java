@@ -221,4 +221,15 @@ public class GomobileModule extends ReactContextBaseJavaModule {
             successCallback.invoke(e.getMessage(), null);
         }
     }
+
+    @ReactMethod
+    public void setShardCount(String data, Integer shardNum, Callback successCallback) {
+        try {
+            Log.d(TAG, "setShardCount: begin");
+            successCallback.invoke(null, Gomobile.setShardCount(data, shardNum));
+        } catch (Exception e) {
+            Log.d(TAG, "maketx: error");
+            successCallback.invoke(e.getMessage(), null);
+        }
+    }
 }

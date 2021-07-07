@@ -178,4 +178,14 @@ RCT_EXPORT_METHOD(aesDecrypt:(NSString *)data callback:(RCTResponseSenderBlock)c
   }
 }
 
+RCT_EXPORT_METHOD(setShardCount:(NSString *)data time:(NSInteger)shardNum callback:(RCTResponseSenderBlock)callback){
+  @try{
+    NSString *rs = GomobileSetShardCount(data, shardNum, nil);
+    callback(@[[NSNull null], rs]);
+  }
+  @catch(NSException *exception){
+    callback(@[exception.reason, [NSNull null]]);
+  }
+}
+
 @end
