@@ -9,15 +9,16 @@ const Shares = ({
   totalShare,
   showPercent,
 }) => {
-  if (!share) return null;
   const getPercent = () => {
-    const percent = formatUtil.toFixed(new BigNumber(share).dividedBy(totalShare).multipliedBy(100).toNumber(), 7);
-    return showPercent && totalShare ? `(${percent})%` : '';
+    const percent = formatUtil.toFixed(new BigNumber(share).dividedBy(totalShare || 1).multipliedBy(100).toNumber(), 7);
+    return showPercent ? `(${percent}%)` : '';
   };
+  const rightText = `${share} ${getPercent()}`;
+  if (rightText) return null;
   return (
     <ExtraInfo
       left="Shares"
-      right={`${share} ${getPercent()}`}
+      right={rightText}
     />
   );
 };

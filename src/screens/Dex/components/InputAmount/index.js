@@ -13,7 +13,7 @@ import styles from '@screens/DexV2/components/Trade/style';
 import { isEmpty } from 'lodash';
 import formatUtils from '@utils/format';
 
-const RightIcon = React.memo(() => <ArrowRightGreyIcon style={stylesheet.icon} />);
+export const RightIcon = React.memo(() => <ArrowRightGreyIcon style={stylesheet.icon} />);
 
 const InputAmount = ({
   token,

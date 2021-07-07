@@ -269,14 +269,13 @@ export const actionFetchHistories = () => async (dispatch) => {
   }
 };
 
-
 export const actionFilterWithdrawFeeOutput = () => async (dispatch, getState) => {
   try {
     const state = getState();
     const account = accountSelector.defaultAccount(state);
     const { wallet, liquidity } = state;
     const { pdeState, tabName, addPool, removePool, withDraw } = liquidity;
-    const { inputToken: currentInputToken, outputToken: currentOutputToken, name } = mergeInput({
+    const { inputText, inputToken: currentInputToken, outputToken: currentOutputToken, name } = mergeInput({
       tabName, addPool, removePool, withDraw
     });
     const { tokens, feePairs, pairs } = pdeState;
@@ -312,7 +311,6 @@ export const actionFilterWithdrawFeeOutput = () => async (dispatch, getState) =>
         outputList.find(({ outputToken }) => outputToken.id === currentOutputToken.id)
           ? currentOutputToken
           : outputList[0]?.outputToken;
-      outputList = outputList.filter(({ inputToken: _inputToken, outputToken: _outputToken }) => inputToken.id !== _inputToken.id && outputToken.id !== _outputToken.id);
       tasks = [
         await accountServices.getBalance({
           account,
@@ -330,7 +328,7 @@ export const actionFilterWithdrawFeeOutput = () => async (dispatch, getState) =>
       pairs.find(i => Object.keys(i).includes(outputToken.id) && Object.keys(i).includes(inputToken.id))
       : null;
     const [inputBalance, outputBalance] = await Promise.all(tasks);
-    dispatch(actionUpdateFieldValue({
+    const params = {
       name,
       outputList,
       pair,
@@ -339,7 +337,11 @@ export const actionFilterWithdrawFeeOutput = () => async (dispatch, getState) =>
       outputBalance: outputBalance || 0,
       inputBalance: inputBalance || 0,
       share,
-    }));
+    };
+    batch(() => {
+      dispatch(actionUpdateFieldValue(params));
+      dispatch(actionChangeWithdrawFeeValue({ newWithdrawFeeText: inputText }));
+    });
   } catch (error) {
     console.log('LIQUIDITY FILTER ERROR: ', error);
   } finally {

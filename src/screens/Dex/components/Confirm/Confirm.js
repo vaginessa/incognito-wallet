@@ -37,11 +37,11 @@ const Confirm = (props) => {
     loading,
     error,
     onConfirmPress,
-    withdrawFeeValue,
+    withdrawFeeText,
   } = props;
 
   const getAmountValue = () => {
-    if (tabName === HEADER_TABS.Withdraw) return withdrawFeeValue;
+    if (tabName === HEADER_TABS.Withdraw) return `${withdrawFeeText} ${inputToken.symbol}`;
     let inputText = `${formatUtil.amountFull(inputValue, inputToken.pDecimals)} ${inputToken.symbol}`;
     let outputText = ` + ${formatUtil.amountFull(outputValue, outputToken.pDecimals)} ${outputToken.symbol}`;
     return inputText + outputText;
@@ -122,7 +122,7 @@ Confirm.propTypes = {
   loading: PropTypes.bool.isRequired,
   error: PropTypes.string,
   onConfirmPress: PropTypes.func.isRequired,
-  withdrawFeeValue: PropTypes.string.isRequired,
+  withdrawFeeText: PropTypes.string.isRequired,
 };
 
 Confirm.defaultProps = {

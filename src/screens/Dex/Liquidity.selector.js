@@ -11,7 +11,7 @@ import { MESSAGES, MIN_INPUT } from '@screens/Dex/constants';
 import { isEmpty, orderBy, uniq,isNumber } from 'lodash';
 import memoize from 'memoize-one';
 import { HISTORY_STATUS } from '@src/constants/trading';
-import { TX_STATUS } from 'incognito-chain-web-js/build/wallet';
+import {PRVIDSTR, TX_STATUS} from 'incognito-chain-web-js/build/wallet';
 import { PRV_ID } from '@src/constants/common';
 import BigNumber from 'bignumber.js';
 
@@ -254,4 +254,28 @@ export const hasHistories = createSelector(
     const { storageHistories, apiHistories } = liquidity[INPUT_FIELDS.ADD_POOL];
     return storageHistories.length > 0 || apiHistories.length > 0;
   }
+);
+
+export const shareSelectorWithToken = createSelector(
+  liquiditySelector,
+  (liquidity) => memoize((inputToken, outputToken) => {
+    const { userPairs } = liquidity?.pdeState;
+    let share = 0;
+    let totalShare = 0;
+    if (inputToken && outputToken) {
+      const userPair = (userPairs || []).find(({ token1, token2 }) => {
+        const tokenIds = [inputToken.id, outputToken.id];
+        return tokenIds.includes(token1.id) && tokenIds.includes(token2.id);
+      });
+      if (userPair) {
+        const { totalShare: poolShare, share: shareValue } = userPair;
+        share = shareValue;
+        totalShare = poolShare;
+      }
+    }
+    return {
+      share,
+      totalShare
+    };
+  })
 );

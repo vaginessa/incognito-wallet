@@ -4,7 +4,6 @@ import accountServices from '@services/wallet/accountService';
 import { TRANSACTION_FEE } from '@screens/Dex/Liquidity.constants';
 import Loading from '@screens/Dex/components/Loading';
 import { ExHandler } from '@services/exception';
-import { MESSAGES } from '@screens/Dex/constants';
 import {useNavigation, useNavigationParam} from 'react-navigation-hooks';
 import { useDispatch, useSelector } from 'react-redux';
 import { accountSelector } from '@src/redux/selectors';
@@ -42,7 +41,7 @@ const withTransaction = WrappedComp => props => {
       account,
       wallet,
       tokenID: tokenId,
-      amount: isRetry ? retryAmount : TRANSACTION_FEE,
+      amount: isRetry ? retryAmount : 0,
       fee: TRANSACTION_FEE,
       pairID: pairId
     });
