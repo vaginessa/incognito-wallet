@@ -1,4 +1,4 @@
-import { Validator, PrivacyVersion } from 'incognito-chain-web-js/build/wallet';
+import { Validator, PrivacyVersion,  } from 'incognito-chain-web-js/build/wallet';
 
 export const getAccountNameByAccount = (account) => {
   new Validator('account', account).object().required();
