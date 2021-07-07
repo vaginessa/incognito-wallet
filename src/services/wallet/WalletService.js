@@ -8,6 +8,7 @@ import {
   SuccessTx as SuccessTxWallet,
   Wallet,
   PrivacyVersion,
+  setShardNumber
 } from 'incognito-chain-web-js/build/wallet';
 import { randomBytes } from 'react-native-randombytes';
 import { DEX } from '@utils/dex';
@@ -84,6 +85,9 @@ export async function configsWallet(wallet) {
     wallet.RpcRequestService = server?.requestServices;
     wallet.AuthToken = await getToken();
     wallet.RpcApiService = server?.apiServices;
+    if (typeof setShardNumber === 'function') {
+      setShardNumber(server?.shardNumber);
+    }
   } catch (error) {
     console.log('CONFIGS_WALLET_ERROR', error);
     throw error;

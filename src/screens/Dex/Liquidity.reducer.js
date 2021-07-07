@@ -61,7 +61,8 @@ const initialState = {
     ...initialHistories,
     totalShare: undefined,
     inputToken: undefined,
-    withdrawFeeValue: '1',
+    withdrawFeeValue: convertUtil.toOriginalAmount(1, PRV.pDecimals),
+    withdrawFeeText: '1',
     share: 0,
     fee: TRANSACTION_FEE,
   }

@@ -6,6 +6,7 @@ export const MAINNET_1_FULLNODE = 'http://51.83.237.20:9338';
 export const TESTNET_FULLNODE = 'https://testnet.incognito.org/fullnode';
 export const TESTNET1_FULLNODE = 'https://testnet1.incognito.org/fullnode';
 export const DEV_TEST_FULLNODE = 'http://139.162.55.124:8334';
+export const DEFAULT_SHARD_NUMBER = 8;
 
 let cachedList = null;
 
@@ -28,6 +29,7 @@ const MAIN_NET_SERVER = {
   pubsubServices: 'http://51.161.119.66:8001',
   requestServices: 'http://51.161.119.66:5000',
   apiServices: '',
+  shardNumber: DEFAULT_SHARD_NUMBER,
 };
 const TEST_NET_SERVER = {
   id: 'testnet',
@@ -38,6 +40,7 @@ const TEST_NET_SERVER = {
   name: 'Testnet',
   coinServices: 'https://api-coinservice-staging.incognito.org',
   apiServices: '',
+  shardNumber: DEFAULT_SHARD_NUMBER,
 };
 const LOCAL_SERVER = {
   id: 'local',
@@ -58,6 +61,7 @@ const TEST_NET_1_SERVER = {
   pubsubServices: 'https://api-coinservice-staging2.incognito.org/txservice',
   requestServices: 'http://51.161.119.66:6000',
   apiServices: 'https://privacyv2-api-service.incognito.org',
+  shardNumber: DEFAULT_SHARD_NUMBER,
 };
 const DEV_TEST_SERVER = {
   id: 'devtest',
@@ -70,6 +74,7 @@ const DEV_TEST_SERVER = {
   pubsubServices: 'http://51.161.119.66:8001',
   requestServices: 'http://51.161.119.66:5000',
   apiServices: 'https://privacyv2-api-service.incognito.org',
+  shardNumber: 2,
 };
 
 const DEFAULT_LIST_SERVER = [
@@ -134,6 +139,7 @@ export default class Server {
               pubsubServices: server?.pubsubServices,
               requestServices: server?.requestServices,
               apiServices: server?.apiServices,
+              shardNumber: server?.shardNumber,
             };
           }
         }

@@ -27,9 +27,9 @@ const enhance = WrappedComp => props => {
     dispatch(actionChangeOutputToken({ newInputToken, newOutputToken }));
   };
 
-  const onChangeWithdrawFeeValue = (newWithdrawFeeValue) => {
+  const onChangeWithdrawFeeValue = (newWithdrawFeeText) => {
     dispatch(actionChangeWithdrawFeeValue({
-      newWithdrawFeeValue
+      newWithdrawFeeText
     }));
   };
   React.useEffect(() => {

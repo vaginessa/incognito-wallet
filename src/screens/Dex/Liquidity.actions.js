@@ -10,6 +10,7 @@ import { uniqBy, isEmpty } from 'lodash';
 import { batch } from 'react-redux';
 import { LIMIT } from '@screens/DexV2/constants';
 import BigNumber from 'bignumber.js';
+import {PRV} from '@src/constants/common';
 
 /**
  * @param {string} tabName
@@ -79,167 +80,6 @@ export const actionUpdateFieldValue = (payload) => ({
   payload,
 });
 
-export const actionFilterWithdrawFeeOutput = () => async (dispatch, getState) => {
-  try {
-    const state = getState();
-    const account = accountSelector.defaultAccount(state);
-    const { wallet, liquidity } = state;
-    const { pdeState, tabName, addPool, removePool, withDraw } = liquidity;
-    const { inputToken: currentInputToken, outputToken: currentOutputToken, name } = mergeInput({
-      tabName, addPool, removePool, withDraw
-    });
-    const { tokens, feePairs, pairs } = pdeState;
-    let outputList = [];
-    let share;
-    let inputToken;
-    let outputToken;
-    let tasks = [];
-    feePairs.forEach((feePair) => {
-      const { token1, token2, share: shareFee } = feePair;
-      if (currentOutputToken && currentInputToken && (currentInputToken?.id === token1?.id) && (currentOutputToken?.id === token2?.id)) {
-        share = shareFee;
-      }
-      outputList.push({
-        inputToken: tokens.find(token => token.id === token1.id),
-        outputToken: tokens.find(token => token.id === token2.id),
-        shareFee,
-      });
-    });
-    if (!currentOutputToken && !currentInputToken && feePairs.length > 0) {
-      const { share: userShare } = feePairs[0];
-      share = userShare;
-    }
-
-    if (!isEmpty(outputList)) {
-      inputToken = currentInputToken && outputList.find(({ inputToken }) => inputToken.id === currentInputToken.id) ? currentInputToken : outputList[0].inputToken;
-      outputToken = currentOutputToken && outputList.find(({ outputToken }) => outputToken.id === currentOutputToken.id) ? currentOutputToken : outputList[0]?.outputToken;
-      outputList = outputList.filter(({ inputToken: _inputToken, outputToken: _outputToken }) => inputToken.id !== _inputToken.id && outputToken.id !== _outputToken.id);
-      tasks = [
-        await accountServices.getBalance({
-          account,
-          wallet,
-          tokenID: inputToken?.id,
-        }),
-        await accountServices.getBalance({
-          account, wallet,
-          tokenID: outputToken.id,
-        })
-      ];
-    }
-    const pair = inputToken && outputToken ?
-      pairs.find(i => Object.keys(i).includes(outputToken.id) && Object.keys(i).includes(inputToken.id))
-      : null;
-    const [inputBalance, outputBalance] = await Promise.all(tasks);
-    dispatch(actionUpdateFieldValue({
-      name,
-      outputList,
-      pair,
-      inputToken,
-      outputToken,
-      outputBalance: outputBalance || 0,
-      inputBalance: inputBalance || 0,
-      share,
-    }));
-  } catch (error) {
-    console.log('LIQUIDITY FILTER ERROR: ', error);
-  }
-};
-
-export const actionFilterOutput = () => async (dispatch, getState) => {
-  try {
-    dispatch(actionChangeFiltering({ isFiltering: true }));
-    const state = getState();
-    const account = accountSelector.defaultAccount(state);
-    const { wallet, liquidity } = state;
-    const { pdeState, tabName, addPool, removePool, withDraw } = liquidity;
-
-    if (tabName === HEADER_TABS.Withdraw) {
-      await dispatch(actionFilterWithdrawFeeOutput());
-      return;
-    }
-    const { inputText, inputToken, outputToken: currentOutputToken, name } = mergeInput({
-      tabName, addPool, removePool, withDraw
-    });
-    const { tokens, pairs, userPairs, feePairs } = pdeState;
-    let outputList = [];
-    let outputToken;
-    let share;
-    let totalShare;
-    if (tabName === HEADER_TABS.Add) {
-      outputList = tokens.filter(item => item.id !== inputToken?.id);
-      outputToken = currentOutputToken && outputList.find(item => item.id === currentOutputToken.id) ? currentOutputToken : outputList[0];
-    } else {
-      const pairsReward = tabName === HEADER_TABS.Remove ? userPairs : feePairs;
-      pairsReward.forEach((userPair) => {
-        const { token1, token2, totalShare: poolTotalShare, share: userShare } = userPair;
-        if (token1.id === PRVIDSTR || token2.id === PRVIDSTR) {
-          const tokenId = token1.id === PRVIDSTR ? token2.id : token1.id;
-          outputList.push(tokens.find(token => token.id === tokenId));
-        }
-        if (!!currentOutputToken && (currentOutputToken?.id === token1?.id || currentOutputToken?.id === token2?.id)) {
-          share = userShare;
-          totalShare = poolTotalShare;
-        }
-      });
-      if (!currentOutputToken && pairsReward.length > 0) {
-        const { totalShare: poolTotalShare, share: userShare } = pairsReward[0];
-        share = userShare;
-        totalShare = poolTotalShare;
-      }
-      outputToken = currentOutputToken && outputList.find(item => item.id === currentOutputToken.id) ? currentOutputToken : outputList[0];
-    }
-
-    const pair = inputToken && outputToken ?
-      pairs.find(i => Object.keys(i).includes(outputToken.id) && Object.keys(i).includes(inputToken.id))
-      : null;
-
-    let maxInputShare = 0;
-    let maxOutputShare = 0;
-    let sharePercent = 0;
-    if (pair && outputToken) {
-      const poolInputValue = pair[inputToken.id];
-      const poolOutputValue = pair[outputToken.id];
-      sharePercent = new BigNumber(share).dividedBy(totalShare).toNumber();
-      maxInputShare = Math.ceil(new BigNumber(sharePercent).multipliedBy(poolInputValue).toNumber()) || 0;
-      maxOutputShare = Math.ceil(new BigNumber(sharePercent).multipliedBy(poolOutputValue).toNumber()) || 0;
-    }
-
-    const tasks = [await accountServices.getBalance({
-      account,
-      wallet,
-      tokenID: PRVIDSTR,
-    })];
-
-    if (outputToken) {
-      tasks.push(await accountServices.getBalance({
-        account, wallet,
-        tokenID: outputToken.tokenId || outputToken.id,
-      }));
-    }
-
-    const [inputBalance, outputBalance] = await Promise.all(tasks);
-
-    dispatch(actionUpdateFieldValue({
-      name,
-      outputList,
-      pair,
-      outputToken,
-      outputBalance,
-      inputBalance,
-      share,
-      totalShare,
-      maxInputShare,
-      maxOutputShare,
-      sharePercent,
-    }));
-    dispatch(actionChangeInputText({ newInputText: inputText }));
-  } catch (error) {
-    console.log('LIQUIDITY FILTER ERROR: ', error);
-  } finally {
-    dispatch(actionChangeFiltering({ isFiltering: false }));
-  }
-};
-
 export const actionChangeInputText = ({ newInputText }) => async (dispatch, getState) => {
   try {
     new Validator('newInputText', newInputText).required().string();
@@ -308,14 +148,16 @@ export const actionChangeOutputText = ({ newOutputText }) => async (dispatch, ge
   }
 };
 
-export const actionChangeWithdrawFeeValue = ({ newWithdrawFeeValue }) => async (dispatch, getState) => {
+export const actionChangeWithdrawFeeValue = ({ newWithdrawFeeText }) => async (dispatch, getState) => {
   try {
-    new Validator('newWithdrawFeeValue', newWithdrawFeeValue).required().string();
+    new Validator('newWithdrawFeeText', newWithdrawFeeText).required().string();
     const state = getState();
+    const newWithdrawFeeValue = parseInputWithText({ text: newWithdrawFeeText, token: PRV });
     const { name } = mergeInputSelector(state);
     dispatch(actionUpdateFieldValue({
       name,
       withdrawFeeValue: newWithdrawFeeValue,
+      withdrawFeeText: newWithdrawFeeText,
     }));
   } catch (e) {
     throw e;
@@ -424,5 +266,247 @@ export const actionFetchHistories = () => async (dispatch) => {
     });
   } catch (error) {
     throw error;
+  }
+};
+
+
+export const actionFilterWithdrawFeeOutput = () => async (dispatch, getState) => {
+  try {
+    const state = getState();
+    const account = accountSelector.defaultAccount(state);
+    const { wallet, liquidity } = state;
+    const { pdeState, tabName, addPool, removePool, withDraw } = liquidity;
+    const { inputToken: currentInputToken, outputToken: currentOutputToken, name } = mergeInput({
+      tabName, addPool, removePool, withDraw
+    });
+    const { tokens, feePairs, pairs } = pdeState;
+    let outputList = [];
+    let share;
+    let inputToken;
+    let outputToken;
+    let tasks = [];
+    feePairs.forEach((feePair) => {
+      const { token1, token2, share: shareFee } = feePair;
+      if (currentOutputToken && currentInputToken && (currentInputToken?.id === token1?.id) && (currentOutputToken?.id === token2?.id)) {
+        share = shareFee;
+      }
+      outputList.push({
+        inputToken: tokens.find(token => token.id === token1.id),
+        outputToken: tokens.find(token => token.id === token2.id),
+        shareFee,
+      });
+    });
+    if (!currentOutputToken && !currentInputToken && feePairs.length > 0) {
+      const { share: userShare } = feePairs[0];
+      share = userShare;
+    }
+
+    if (!isEmpty(outputList)) {
+      inputToken =
+        currentInputToken &&
+        outputList.find(({ inputToken }) => inputToken.id === currentInputToken.id)
+          ? currentInputToken
+          : outputList[0].inputToken;
+      outputToken =
+        currentOutputToken &&
+        outputList.find(({ outputToken }) => outputToken.id === currentOutputToken.id)
+          ? currentOutputToken
+          : outputList[0]?.outputToken;
+      outputList = outputList.filter(({ inputToken: _inputToken, outputToken: _outputToken }) => inputToken.id !== _inputToken.id && outputToken.id !== _outputToken.id);
+      tasks = [
+        await accountServices.getBalance({
+          account,
+          wallet,
+          tokenID: inputToken?.id,
+        }),
+        await accountServices.getBalance({
+          account, wallet,
+          tokenID: outputToken.id,
+        })
+      ];
+    }
+
+    const pair = inputToken && outputToken ?
+      pairs.find(i => Object.keys(i).includes(outputToken.id) && Object.keys(i).includes(inputToken.id))
+      : null;
+    const [inputBalance, outputBalance] = await Promise.all(tasks);
+    dispatch(actionUpdateFieldValue({
+      name,
+      outputList,
+      pair,
+      inputToken,
+      outputToken,
+      outputBalance: outputBalance || 0,
+      inputBalance: inputBalance || 0,
+      share,
+    }));
+  } catch (error) {
+    console.log('LIQUIDITY FILTER ERROR: ', error);
+  } finally {
+    dispatch(actionChangeFiltering({ isFiltering: false }));
+  }
+};
+
+export const actionFilterRemovePoolOutput = () => async (dispatch, getState) => {
+  try {
+    dispatch(actionChangeFiltering({ isFiltering: true }));
+    const state = getState();
+    const account = accountSelector.defaultAccount(state);
+    const { wallet, liquidity } = state;
+    const { pdeState, tabName, addPool, removePool, withDraw } = liquidity;
+    const { inputText, inputToken: currentInputToken, outputToken: currentOutputToken, name } = mergeInput({
+      tabName, addPool, removePool, withDraw
+    });
+    const { tokens, pairs, userPairs } = pdeState;
+    let outputList = [];
+    let outputToken;
+    let share;
+    let totalShare;
+
+    const pairsReward = userPairs;
+    pairsReward.forEach((userPair) => {
+      const { token1, token2, totalShare: poolTotalShare, share: userShare } = userPair;
+      if (token1.id === PRVIDSTR || token2.id === PRVIDSTR) {
+        const tokenId = token1.id === PRVIDSTR ? token2.id : token1.id;
+        outputList.push(tokens.find(token => token.id === tokenId));
+      }
+      if (!!currentOutputToken && (currentOutputToken?.id === token1?.id || currentOutputToken?.id === token2?.id)) {
+        share = userShare;
+        totalShare = poolTotalShare;
+      }
+    });
+    if (!currentOutputToken && pairsReward.length > 0) {
+      const { totalShare: poolTotalShare, share: userShare } = pairsReward[0];
+      share = userShare;
+      totalShare = poolTotalShare;
+    }
+    outputToken = currentOutputToken && outputList.find(item => item.id === currentOutputToken.id) ? currentOutputToken : outputList[0];
+
+    const pair = currentInputToken && outputToken ?
+      pairs.find(i => Object.keys(i).includes(outputToken.id) && Object.keys(i).includes(currentInputToken.id))
+      : null;
+
+    let maxInputShare = 0;
+    let maxOutputShare = 0;
+    let sharePercent = 0;
+    if (pair && outputToken) {
+      const poolInputValue = pair[currentInputToken.id];
+      const poolOutputValue = pair[outputToken.id];
+      sharePercent = new BigNumber(share).dividedBy(totalShare).toNumber();
+      maxInputShare = Math.ceil(new BigNumber(sharePercent).multipliedBy(poolInputValue).toNumber()) || 0;
+      maxOutputShare = Math.ceil(new BigNumber(sharePercent).multipliedBy(poolOutputValue).toNumber()) || 0;
+    }
+
+    const tasks = [await accountServices.getBalance({
+      account,
+      wallet,
+      tokenID: PRVIDSTR,
+    })];
+
+    if (outputToken) {
+      tasks.push(await accountServices.getBalance({
+        account, wallet,
+        tokenID: outputToken.tokenId || outputToken.id,
+      }));
+    }
+
+    const [inputBalance, outputBalance] = await Promise.all(tasks);
+
+    const params = {
+      name,
+      outputList,
+      pair,
+      outputToken,
+      outputBalance,
+      inputBalance,
+      share,
+      totalShare,
+      maxInputShare,
+      maxOutputShare,
+      sharePercent,
+    };
+    batch(() => {
+      dispatch(actionUpdateFieldValue(params));
+      dispatch(actionChangeInputText({ newInputText: inputText }));
+    });
+  } catch (error) {
+    console.log('LIQUIDITY FILTER ERROR: ', error);
+  } finally {
+    dispatch(actionChangeFiltering({ isFiltering: false }));
+  }
+};
+
+export const actionFilterContributesOutput = () => async (dispatch, getState) => {
+  try {
+    dispatch(actionChangeFiltering({ isFiltering: true }));
+    const state = getState();
+    const account = accountSelector.defaultAccount(state);
+    const { wallet, liquidity } = state;
+    const { pdeState, tabName, addPool, removePool, withDraw } = liquidity;
+
+    const { inputText, inputToken: currentInputToken, outputToken: currentOutputToken, name } = mergeInput({
+      tabName, addPool, removePool, withDraw
+    });
+    const { tokens, pairs } = pdeState;
+    let outputList = [];
+    let outputToken;
+
+    outputList = tokens.filter(item => item.id !== currentInputToken?.id);
+    outputToken = currentOutputToken && outputList.find(item => item.id === currentOutputToken.id) ? currentOutputToken : outputList[0];
+    const pair = currentInputToken && outputToken ?
+      pairs.find(i => Object.keys(i).includes(outputToken.id) && Object.keys(i).includes(currentInputToken.id))
+      : null;
+
+    const tasks = [await accountServices.getBalance({
+      account,
+      wallet,
+      tokenID: PRVIDSTR,
+    })];
+
+    if (outputToken) {
+      tasks.push(await accountServices.getBalance({
+        account,
+        wallet,
+        tokenID: outputToken.tokenId || outputToken.id,
+      }));
+    }
+
+    const [inputBalance, outputBalance] = await Promise.all(tasks);
+
+    const params = {
+      name,
+      outputList,
+      pair,
+      outputToken,
+      outputBalance,
+      inputBalance,
+    };
+    batch(() => {
+      dispatch(actionUpdateFieldValue(params));
+      dispatch(actionChangeInputText({ newInputText: inputText }));
+    });
+  } catch (error) {
+    console.log('LIQUIDITY FILTER ERROR: ', error);
+  } finally {
+    dispatch(actionChangeFiltering({ isFiltering: false }));
+  }
+};
+
+export const actionFilterOutput = () => async (dispatch, getState) => {
+  dispatch(actionChangeFiltering({ isFiltering: true }));
+  const state = getState();
+  const { liquidity } = state;
+  const { tabName } = liquidity;
+
+  switch (tabName) {
+  case HEADER_TABS.Add: {
+    return dispatch(actionFilterContributesOutput());
+  }
+  case HEADER_TABS.Withdraw: {
+    return dispatch(actionFilterWithdrawFeeOutput());
+  }
+  default: {
+    return dispatch(actionFilterRemovePoolOutput());
+  }
   }
 };

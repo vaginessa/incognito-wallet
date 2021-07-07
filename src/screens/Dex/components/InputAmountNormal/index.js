@@ -70,7 +70,7 @@ const InputAmountNormal = (props) => {
     if (typeof onPressMax === 'function') {
       onPressMax();
     }
-    onChange(`${maxValue}`);
+    onChange(`${formatUtils.amountFull(maxValue, PRV.pDecimals)}`);
   };
 
   const renderButtonInfinite = () => {

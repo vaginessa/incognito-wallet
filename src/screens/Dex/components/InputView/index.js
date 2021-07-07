@@ -32,7 +32,7 @@ const InputView = ({
     outputBalance,
     share,
     maxInputShare,
-    withdrawFeeValue
+    withdrawFeeText
   } = value;
 
   const renderTwoInputView = () => {
@@ -79,7 +79,7 @@ const InputView = ({
         outputToken={outputToken}
         placeholder="0"
         disableChooseToken
-        value={withdrawFeeValue}
+        value={withdrawFeeText}
         onChange={onChangeWithdrawFeeValue}
         errorMessage={inputError}
         maxValue={share}
