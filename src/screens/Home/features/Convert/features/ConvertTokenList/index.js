@@ -32,32 +32,25 @@ const Item = React.memo(({ item, maxSize, index, loading }) => {
   }, [token, unspentCoins]);
 
   return (
-    <View>
-      <View style={[styled.container, maxSize === index && { marginBottom : 40 }]}>
-        <View style={[styled.extra, styled.extraTop]}>
-          <View style={{ flexDirection: 'row' }}>
-            <NormalText text={token?.name} style={styled.boldText} />
-            {(!!token?.isVerified) && <TokenVerifiedIcon />}
-          </View>
-          {loading ?
-            (<ActivityIndicator />) :
-            (
-              <NormalText
-                style={[styled.bottomText, styled.boldText]}
-                text={`${unspentCoins.length} UTXOS`}
-              />
-            )}
+    <View style={[styled.container, styled.extraTop, styled.row, maxSize === index && { marginBottom : 40 }]}>
+      <View style={styled.column}>
+        <View style={{ flexDirection: 'row' }}>
+          <NormalText text={token?.name} style={styled.boldText} />
+          {(!!token?.isVerified) && <TokenVerifiedIcon />}
         </View>
-        <View style={styled.extra}>
-          {
-            !loading && (
-              <Text style={[styled.rightText, balanceStyled.pSymbol, { fontFamily: FONT.NAME.medium }]}>
-                {`${formatUtils.amountFull(balance.toString(), token.pDecimals)} ${token.symbol}`}
-              </Text>
-            )
-          }
-        </View>
+        {!loading && (
+          <Text style={[balanceStyled.pSymbol, { fontFamily: FONT.NAME.medium, marginTop: 5 }]}>
+            {`${unspentCoins.length} UTXOS`}
+          </Text>
+        )}
       </View>
+      {loading ?
+        (<ActivityIndicator />) :
+        (
+          <Text style={[styled.bottomText, styled.boldText, { flex: 1, marginLeft: 20, textAlign: 'right' }]}>
+            {`${formatUtils.amountFull(balance.toString(), token.pDecimals)} ${token.symbol}`}
+          </Text>
+        )}
     </View>
   );
 });
@@ -70,12 +63,13 @@ const ConvertTokenList = React.memo(({ onNavigateToConvert, onPullRefresh }) => 
   const renderButton = () => {
     if (!hasUnspentCoins || isRefreshing) return null;
     return(
-      <View style={{ marginBottom: 20 }}>
+      <View>
         <ButtonBasic
           title="Go to convert screen"
           disabled={!hasUnspentCoins}
           onPress={onNavigateToConvert}
         />
+        <View style={{ height: 20 }} />
       </View>
     );
   };
