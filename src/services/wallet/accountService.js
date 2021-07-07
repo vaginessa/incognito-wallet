@@ -61,6 +61,9 @@ export default class Account {
         passPhrase,
       );
       imported = !!account.isImport;
+      if (imported) {
+        await saveWallet(wallet);
+      }
     } catch (e) {
       throw e;
     }
@@ -68,7 +71,14 @@ export default class Account {
   }
 
   static async removeAccount(privateKeyStr, passPhrase, wallet) {
-    return wallet.removeAccount(privateKeyStr, passPhrase);
+    try {
+      const removed = await wallet.removeAccount(privateKeyStr, passPhrase);
+      if (removed) {
+        await saveWallet(wallet);
+      }
+    } catch (error) {
+      throw error;
+    }
   }
 
   static async createAndSendNativeToken({
@@ -254,38 +264,48 @@ export default class Account {
   }
 
   static async createAccount(accountName, wallet, initShardID) {
-    new Validator('accountName', accountName).string().required();
-    new Validator('wallet', wallet).required().object();
-    new Validator('initShardID', initShardID).number();
-    const server = await Server.getDefault();
-    if (server.id === 'testnode') {
-      let lastByte = null;
-      let newAccount;
-      while (lastByte !== 0) {
-        newAccount = await wallet.createAccount(
-          accountName,
-          0,
-          wallet.deletedAccountIds || [],
-        );
-        const childKey = newAccount.key;
-        lastByte =
-          childKey.KeySet.PaymentAddress.Pk[
-            childKey.KeySet.PaymentAddress.Pk.length - 1
-          ];
+    try {
+      new Validator('createAccount-accountName', accountName)
+        .string()
+        .required();
+      new Validator('createAccount-wallet', wallet).required().object();
+      new Validator('createAccount-initShardID', initShardID).number();
+      const server = await Server.getDefault();
+      if (server.id === 'testnode') {
+        let lastByte = null;
+        let newAccount;
+        while (lastByte !== 0) {
+          newAccount = await wallet.createAccount(
+            accountName,
+            0,
+            wallet.deletedAccountIds || [],
+          );
+          const childKey = newAccount.key;
+          lastByte =
+            childKey.KeySet.PaymentAddress.Pk[
+              childKey.KeySet.PaymentAddress.Pk.length - 1
+            ];
+        }
+        wallet.MasterAccount.child.push(newAccount);
+        await saveWallet(wallet);
+        return newAccount;
       }
-      wallet.MasterAccount.child.push(newAccount);
-      await saveWallet(wallet);
-      return newAccount;
+      let shardID = _.isNumber(initShardID) ? initShardID : undefined;
+      if (shardID && parseInt(shardID) < 0) {
+        shardID = 0;
+      }
+      const account = await wallet.createNewAccount(
+        accountName,
+        shardID,
+        wallet.deletedAccountIds || [],
+      );
+      if (account) {
+        await saveWallet(wallet);
+      }
+      return account;
+    } catch (error) {
+      throw error;
     }
-    let shardID = _.isNumber(initShardID) ? initShardID : undefined;
-    if (shardID && parseInt(shardID) < 0) {
-      shardID = 0;
-    }
-    return await wallet.createNewAccount(
-      accountName,
-      shardID,
-      wallet.deletedAccountIds || [],
-    );
   }
 
   static async getProgressTx(defaultAccount, wallet) {

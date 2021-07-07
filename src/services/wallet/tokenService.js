@@ -30,7 +30,7 @@ export default class Token {
     info,
     tokenName,
     tokenSymbol,
-    tokenAmount
+    tokenAmount,
   }) {
     let response;
     try {
@@ -48,7 +48,6 @@ export default class Token {
           tokenSymbol,
         },
       });
-      await saveWallet(wallet);
     } catch (e) {
       throw e;
     }
@@ -84,7 +83,6 @@ export default class Token {
         undefined,
         txHandler,
       );
-      await saveWallet(wallet);
     } catch (e) {
       throw e;
     }
@@ -114,7 +112,6 @@ export default class Token {
         remoteAddress,
         BurningForDepositToSCRequestMeta,
       );
-      await saveWallet(wallet);
     } catch (e) {
       throw e;
     }

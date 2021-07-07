@@ -11,66 +11,69 @@ import ROUTE_NAMES from '@src/router/routeNames';
 import { ExHandler } from '@src/services/exception';
 import { COLORS } from '@src/styles';
 import { onClickView } from '@src/utils/ViewUtil';
-import dexUtils from '@src/utils/dex';
 import PropTypes from 'prop-types';
 import React from 'react';
 import Swipeout from 'react-native-swipeout';
-import { connect, useSelector } from 'react-redux';
+import { connect } from 'react-redux';
 import { useNavigation } from 'react-navigation-hooks';
 import { BtnExport } from '@src/components/Button';
 import Section, { sectionStyle } from '@screens/Setting/features/Section';
-import { settingSelector } from '@screens/Setting/Setting.selector';
 import { accountSection } from './AccountSection.styled';
 
-const createItem = (
-  account,
-  onSwitch,
-  onExport,
-  onDelete,
-  isActive,
-  lastChild = false,
-) => (
-  <Swipeout
-    style={accountSection.swipeoutButton}
-    right={[
-      ...(onDelete
-        ? [
-          {
-            text: 'Remove',
-            backgroundColor: COLORS.red,
-            onPress: () => onDelete(account),
-          },
-        ]
-        : []),
-    ]}
-  >
-    <View
-      style={[
-        sectionStyle.subItem,
-        accountSection.subItem,
-        lastChild && accountSection.lastSubItem,
+const Item = React.memo((props) => {
+  const {
+    account,
+    onSwitch,
+    onExport,
+    onDelete,
+    isActive,
+    lastChild = false,
+    removeTitle = 'Remove',
+  } = props;
+
+  return (
+    <Swipeout
+      style={accountSection.swipeoutButton}
+      right={[
+        ...(onDelete
+          ? [
+            {
+              text: removeTitle,
+              backgroundColor: COLORS.red,
+              onPress: () => onDelete(account),
+            },
+          ]
+          : []),
       ]}
     >
-      <TouchableOpacity
-        style={accountSection.name}
-        onPress={() => onSwitch(account)}
+      <View
+        style={[
+          sectionStyle.subItem,
+          accountSection.subItem,
+          lastChild && accountSection.lastSubItem,
+        ]}
       >
-        <Text
-          numberOfLines={1}
-          ellipsizeMode="middle"
-          style={[
-            sectionStyle.desc,
-            { marginTop: 0 },
-            isActive && accountSection.nameTextActive,
-          ]}
+        <TouchableOpacity
+          style={accountSection.name}
+          onPress={() => onSwitch(account)}
         >
-          {account?.name}
-        </Text>
-      </TouchableOpacity>
-      <BtnExport onPress={() => onExport(account)} />
-    </View>
-  </Swipeout>
-);
+          <Text
+            numberOfLines={1}
+            ellipsizeMode="middle"
+            style={[
+              sectionStyle.desc,
+              { marginTop: 0 },
+              isActive && accountSection.nameTextActive,
+            ]}
+          >
+            {account?.name}
+          </Text>
+        </TouchableOpacity>
+        <BtnExport onPress={() => onExport(account)} />
+      </View>
+    </Swipeout>
+  );
+});
 
 const AccountSection = ({
   defaultAccount,
@@ -80,6 +83,7 @@ const AccountSection = ({
   label,
 }) => {
   const navigation = useNavigation();
+  const [removing, setRemove] = React.useState(false);
   const onHandleSwitchAccount = onClickView(async (account) => {
     try {
       if (defaultAccount?.name === account?.name) {
@@ -99,7 +103,7 @@ const AccountSection = ({
     navigation.navigate(ROUTE_NAMES.ExportAccount, { account });
   };
 
-  const handleDelete = (account) => {
+  const handleDelete = async (account) => {
     Alert.alert(
       `Delete keychain "${account?.name}"?`,
       'Add it again using its private key or associated master key.',
@@ -112,6 +116,7 @@ const AccountSection = ({
           text: 'OK, delete it',
           onPress: async () => {
             try {
+              await setRemove(true);
               await removeAccount(account);
               Toast.showSuccess('Keychain removed.');
             } catch (e) {
@@ -119,6 +124,8 @@ const AccountSection = ({
                 e,
                 `Can not delete keychain ${account?.name}, please try again.`,
               ).showErrorToast();
+            } finally {
+              await setRemove(false);
             }
           },
         },
@@ -135,15 +142,19 @@ const AccountSection = ({
       labelStyle={accountSection.labelStyle}
       customItems={listAccount?.map((account, index) => (
         <View key={account?.PaymentAddress} style={accountSection.itemWrapper}>
-          {account?.name &&
-            createItem(
-              account,
-              onHandleSwitchAccount,
-              handleExportKey,
-              isDeletable && handleDelete,
-              account?.name === defaultAccount?.name,
-              listAccount?.length - 1 === index,
-            )}
+          {account?.name && (
+            <Item
+              {...{
+                account,
+                onSwitch: onHandleSwitchAccount,
+                onExport: handleExportKey,
+                onDelete: isDeletable && handleDelete,
+                isActive: account?.name === defaultAccount?.name,
+                lastChild: listAccount?.length - 1 === index,
+                removeTitle: `Remove${removing ? '...' : ''}`,
+              }}
+            />
+          )}
         </View>
       ))}
     />

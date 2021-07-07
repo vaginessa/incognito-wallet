@@ -84,14 +84,16 @@ export const removeAccount = (account) => async (dispatch, getState) => {
     }
     masterKey.deletedAccountIds.push(accountInfo.ID);
     wallet.deletedAccountIds = masterKey.deletedAccountIds;
-    dispatch(updateMasterKey(masterKey));
     await accountService.removeAccount(PrivateKey, aesKey, wallet);
+    await dispatch(updateMasterKey(masterKey));
     dispatch({
       type: type.REMOVE_BY_PRIVATE_KEY,
       data: PrivateKey,
     });
+    await dispatch(reloadAccountList());
     return true;
   } catch (e) {
+    console.log('REMOVE ACCOUNT ERROR', e);
     throw e;
   }
 };
@@ -353,6 +355,7 @@ export const actionFetchCreateAccount = ({ accountName }) => async (
     }
     return serializedAccount;
   } catch (error) {
+    console.log('CREATE ACCOUNT ERROR', error);
     await dispatch(actionFetchFailCreateAccount());
     throw error;
   }

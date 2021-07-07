@@ -17,9 +17,11 @@ export const defaultAccount = createSelector(
   defaultAccountName,
   (list, defaultName) => {
     let account = list?.find((account) => account?.name === defaultName);
-    if (_.isEmpty(account?.name)) {
+    if (_.isEmpty(account?.AccountName || account?.name)) {
       console.warn(
-        `Can not get account ${account?.name}, fallback to first account (default account)`,
+        `Can not get account ${account?.name ||
+          account?.accountName ||
+          defaultName}, fallback to first account (default account)`,
       );
       account = list && list[0];
     }

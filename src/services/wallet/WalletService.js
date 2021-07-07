@@ -57,13 +57,10 @@ export async function loadWallet(passphrase, name = 'Wallet') {
     let wallet = new Wallet();
     wallet.Name = name;
     // TODO: mockup;
-    // const keyMeasureStorage = wallet.getKeyMeasureStorage();
-    // await wallet.clearWalletStorage({ key: keyMeasureStorage });
-    // console.log('CLEAR MEASURE STORAGE');
+    const keyMeasureStorage = wallet.getKeyMeasureStorage();
+    await wallet.clearWalletStorage({ key: keyMeasureStorage });
     await configsWallet(wallet);
-    console.time('wallet.loadWallet');
     await wallet.loadWallet(passphrase, name);
-    console.timeEnd('wallet.loadWallet');
     return wallet?.Name ? wallet : false;
   } catch (error) {
     console.log('ERROR WHEN LOAD WALLET', error);
@@ -128,13 +125,13 @@ export async function loadHistoryByAccount(wallet, accountName) {
 }
 
 export async function updateStatusHistory(wallet) {
+  //TODO: remove
   await wallet.updateStatusHistory();
-  await saveWallet(wallet);
 }
 
 export async function updateHistoryStatus(wallet, txId) {
+  //TODO: remove
   await wallet.updateTxStatus(txId);
-  await saveWallet(wallet);
 }
 
 export async function importWallet(mnemonic, name) {
@@ -143,7 +140,6 @@ export async function importWallet(mnemonic, name) {
     let wallet = new Wallet();
     await configsWallet(wallet);
     await wallet.import(mnemonic, aesKey, name, storage);
-    await wallet.save(aesKey);
     return wallet;
   } catch (e) {
     throw e;
