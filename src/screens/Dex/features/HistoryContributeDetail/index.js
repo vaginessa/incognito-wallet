@@ -1,5 +1,5 @@
 import React from 'react';
-import {ActivityIndicator, ScrollView, View} from 'react-native';
+import { ScrollView, View } from 'react-native';
 import withHistory from '@screens/Dex/features/HistoryContributeDetail/enhance';
 import { Header } from '@src/components';
 import { Hook } from '@screens/Wallet/features/TxHistoryDetail/TxHistoryDetail';
@@ -10,11 +10,11 @@ import formatUtil from '@utils/format';
 import PropTypes from 'prop-types';
 import { styledForm as styled } from '@screens/Send/features/Form/Form.styled';
 import { ButtonBasic } from '@components/Button';
-import { LIQUIDITY_STATUS_MESSAGE } from '@screens/Dex/Liquidity.constants';
+import { LIQUIDITY_STATUS, LIQUIDITY_STATUS_MESSAGE } from '@screens/Dex/Liquidity.constants';
 import withValidate from '@screens/Dex/features/HistoryContributeDetail/enhanceValidator';
 import {compose} from 'recompose';
 import linkingService from '@services/linking';
-import {CONSTANT_CONFIGS} from '@src/constants';
+import { CONSTANT_CONFIGS } from '@src/constants';
 
 const HistoryContributeDetail = React.memo(({
   history,
@@ -84,12 +84,20 @@ const HistoryContributeDetail = React.memo(({
     return sectionFactor.map(data => <Hook key={data?.label} {...data} />);
   };
 
+  const renderContent = () => {
+    let contributes = history?.contributes;
+    if ([LIQUIDITY_STATUS_MESSAGE.SUCCESSFUL, LIQUIDITY_STATUS_MESSAGE.REFUNDED].includes(statusText)) {
+      contributes = history?.contributes.filter(({ status }) => status !== LIQUIDITY_STATUS.WAITING);
+    }
+    return contributes.map(renderSection);
+  };
+
   return (
     <View style={{ marginHorizontal: 25, flex: 1 }}>
       <Header title="Liquidity" />
       <ScrollView>
         {historyFactory.map(data => <Hook key={data?.label} {...data} />)}
-        {history?.contributes.map(renderSection)}
+        {renderContent()}
         {canRetry && (
           <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
             <ButtonBasic

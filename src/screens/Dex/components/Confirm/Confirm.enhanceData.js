@@ -33,6 +33,7 @@ const withConfirmData = WrappedComp => props => {
     maxOutputShare,
     sharePercent,
     withdrawFeeValue,
+    withdrawFeeText,
   } = useSelector(mergeInputSelector);
 
   return (
@@ -61,6 +62,7 @@ const withConfirmData = WrappedComp => props => {
           maxOutputShare,
           sharePercent,
           withdrawFeeValue,
+          withdrawFeeText,
         }}
       />
     </ErrorBoundary>

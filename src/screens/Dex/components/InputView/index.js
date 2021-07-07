@@ -9,6 +9,7 @@ import addLiquidityIcon from '@assets/images/icons/add_liquidity.png';
 import enhance from '@screens/Dex/components/InputView/enhance';
 import { HEADER_TABS, SHARE_FIELD, USER_FEES } from '@screens/Dex/Liquidity.constants';
 import InputAmountNormal from '@screens/Dex/components/InputAmountNormal';
+import isEmpty from 'lodash/isEmpty';
 
 const InputView = ({
   value,
@@ -66,7 +67,7 @@ const InputView = ({
           maxValue={tabName === HEADER_TABS.Add ? outputBalance : 0}
           disabled={isLoading}
           disableChooseToken={isLoading}
-          rightField={tabName === HEADER_TABS.Withdraw ? SHARE_FIELD.WITHDRAW_FEE_SHARE : SHARE_FIELD.WITHDRAW_SHARE}
+          rightField={tabName === HEADER_TABS.Remove ? SHARE_FIELD.WITHDRAW_SHARE : undefined}
         />
       </View>
     );
@@ -78,7 +79,7 @@ const InputView = ({
         inputToken={inputToken}
         outputToken={outputToken}
         placeholder="0"
-        disableChooseToken
+        disableChooseToken={isEmpty(outputList) || outputList.length === 1}
         value={withdrawFeeText}
         onChange={onChangeWithdrawFeeValue}
         errorMessage={inputError}

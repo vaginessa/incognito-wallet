@@ -163,11 +163,11 @@ class AddInternalToken extends Component {
           // so just let them pass this process
         });
         // update new wallet to store
-        setWallet(wallet);
+        // setWallet(wallet);
+        actionAddFollowTokenAfterMint(tokenID);
 
         this.goBack();
         // refetch internal token list
-        actionAddFollowTokenAfterMint(tokenID);
       } else {
         throw new Error('Something went wrong. Please refresh the screen.');
       }

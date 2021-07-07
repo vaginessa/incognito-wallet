@@ -2,16 +2,16 @@ import React, { memo } from 'react';
 import { View } from 'react-native';
 import PropTypes from 'prop-types';
 import stylesheet from '@screens/DexV2/components/NewInput/style';
-import {isEmpty} from 'lodash';
-import {ActivityIndicator, Text, TouchableOpacity} from '@components/core';
+import isEmpty from 'lodash/isEmpty';
+import { ActivityIndicator, Text, TouchableOpacity } from '@components/core';
 import styles from '@screens/DexV2/components/Trade/style';
 import Input from '@screens/DexV2/components/NewInput/Input';
-import {PRV} from '@src/constants/common';
+import { PRV } from '@src/constants/common';
 import formatUtils from '@utils/format';
-import convertUtil from '@utils/convert';
-import {BtnInfinite} from '@components/Button';
-import {useNavigation} from 'react-navigation-hooks';
+import { BtnInfinite } from '@components/Button';
+import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@routers/routeNames';
+import { RightIcon } from '@screens/Dex/components/InputAmount';
 
 const InputAmountNormal = (props) => {
   const {
@@ -27,7 +27,8 @@ const InputAmountNormal = (props) => {
     outputToken,
     fee,
     tokens,
-    onSelectToken
+    onSelectToken,
+    disableChooseToken,
   } = props;
   const navigation = useNavigation();
 
@@ -47,7 +48,7 @@ const InputAmountNormal = (props) => {
   };
 
   const onTokenPress = () => {
-    if (isEmpty(tokens)) return;
+    if (isEmpty(tokens) || tokens.length === 1) return;
     navigation.navigate(routeNames.TwoTokensSelect, { tokens, onSelectToken });
   };
 
@@ -62,6 +63,7 @@ const InputAmountNormal = (props) => {
             {`${inputToken.symbol}-${outputToken.symbol}`}
           </Text>
         )}
+        {!disableChooseToken && <RightIcon />}
       </View>
     </TouchableOpacity>
   );
@@ -110,7 +112,8 @@ InputAmountNormal.defaultProps = {
   inputToken: undefined,
   outputToken: undefined,
   fee: 0,
-  tokens: []
+  tokens: [],
+  disableChooseToken: true,
 };
 
 InputAmountNormal.propTypes = {
@@ -127,6 +130,7 @@ InputAmountNormal.propTypes = {
   fee: PropTypes.number,
   tokens: PropTypes.array,
   onSelectToken: PropTypes.func.isRequired,
+  disableChooseToken: PropTypes.bool,
 };
 
 export default memo(InputAmountNormal);

@@ -261,10 +261,9 @@ export const actionAddFollowTokenAfterMint = (tokenId) => async (
     const token =
       (foundInternalToken && internalTokenModel.toJson(foundInternalToken)) ||
       foundPToken?.convertToToken();
-    await accountService.addFollowingTokens([token], account, wallet);
-    const followed = await accountService.getFollowingTokens(account, wallet);
-    dispatch(setListToken(followed));
-    dispatch(setWallet(wallet));
+    if (token) {
+      dispatch(actionAddFollowToken(token.ID));
+    }
   } catch (error) {
     throw error;
   }

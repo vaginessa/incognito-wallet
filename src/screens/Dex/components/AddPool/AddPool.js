@@ -7,6 +7,9 @@ import Balance from '@screens/DexV2/components/Balance';
 import NetworkFee from '@screens/Dex/components/NetworkFee';
 import PropTypes from 'prop-types';
 import addPoolEnhance from '@screens/Dex/components/AddPool/AddPool.enhance';
+import Shares from '@screens/Dex/components/Shares';
+import { useSelector } from 'react-redux';
+import { shareSelectorWithToken } from '@screens/Dex/Liquidity.selector';
 
 const AddPool = React.memo((props) => {
   const {
@@ -20,9 +23,12 @@ const AddPool = React.memo((props) => {
     fee
   } = props;
 
+  const { share, totalShare } = useSelector(shareSelectorWithToken)(inputToken, outputToken);
+
   return (
     <View>
       <View>
+        <Shares totalShare={totalShare} share={share} />
         <Balance
           title={`${inputToken.symbol} Balance`}
           token={inputToken}

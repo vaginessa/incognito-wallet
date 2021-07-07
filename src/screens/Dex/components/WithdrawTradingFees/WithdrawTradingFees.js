@@ -25,7 +25,7 @@ const WithdrawTradingFees = (props) => {
 
   return (
     <View>
-      <Shares totalShare={totalShare} share={share} />
+      <Shares totalShare={totalShare} share={share} showPercent={false} />
       {!!inputToken && (
         <Balance
           title={`${inputToken.symbol} Balance`}
