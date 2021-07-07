@@ -33,6 +33,7 @@ const asyncMethods = [
   'estimateTxSize',
   'aesEncrypt',
   'aesDecrypt',
+  'setShardCount',
 ];
 try {
   console.log('INIT GOMOBILE');

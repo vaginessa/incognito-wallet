@@ -83,7 +83,7 @@ export async function configsWallet(wallet) {
     wallet.AuthToken = await getToken();
     wallet.RpcApiService = server?.apiServices;
     if (typeof setShardNumber === 'function') {
-      setShardNumber(server?.shardNumber);
+      await setShardNumber(server?.shardNumber);
     }
   } catch (error) {
     console.log('CONFIGS_WALLET_ERROR', error);
