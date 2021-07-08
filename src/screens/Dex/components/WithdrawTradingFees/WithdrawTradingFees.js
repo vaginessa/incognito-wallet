@@ -8,6 +8,8 @@ import PoolSize from '@screens/Dex/components/PoolSize';
 import withDrawFeeEnhance from '@screens/Dex/components/WithdrawTradingFees/WithdrawTradingFees.enhance';
 import { compose } from 'recompose';
 import NetworkFee from '@screens/Dex/components/NetworkFee';
+import {useSelector} from 'react-redux';
+import {shareSelectorWithToken} from '@screens/Dex/Liquidity.selector';
 
 const WithdrawTradingFees = (props) => {
   const {
@@ -17,11 +19,11 @@ const WithdrawTradingFees = (props) => {
     outputValue,
     pair,
     inputBalance,
-    totalShare,
-    share,
     fee,
     outputBalance,
   } = props;
+
+  const { share, totalShare } = useSelector(shareSelectorWithToken)(inputToken, outputToken);
 
   return (
     <View>
