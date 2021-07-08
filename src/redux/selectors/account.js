@@ -34,25 +34,21 @@ export const defaultAccountSelector = createSelector(
   defaultAccountNameSelector,
   walletSelector,
   (list, defaultName, wallet) => {
-    let account = list?.find((account) => account?.name === defaultName);
-    let indexAccount;
     try {
-      indexAccount = wallet.getAccountIndexByName(
-        account.name || account.AccountName,
-      );
+      if (list.length === 0 || !wallet?.Name) {
+        return {};
+      }
+      let account =
+        list?.find((account) => account?.name === defaultName) || list[0];
+      return {
+        ...account,
+        indexAccount: wallet.getAccountIndexByName(
+          defaultAccount?.accountName || '',
+        ),
+      };
     } catch (error) {
-      console.debug('ERROR', error);
+      console.log('ERROR WHEN GET DEFAULT ACCOUNT', error);
     }
-    if (_.isEmpty(account?.name)) {
-      console.warn(
-        `Can not get account ${account?.name}, fallback to first account (default account)`,
-      );
-      account = list && list[0];
-    }
-    return {
-      ...account,
-      indexAccount,
-    };
   },
 );
 
@@ -91,17 +87,17 @@ export const defaultAccountBalanceSelector = createSelector(
 
 export const switchAccountSelector = createSelector(
   (state) => state?.account,
-  (account) => account?.switch || null,
+  (account) => !!account?.switch,
 );
 
 export const createAccountSelector = createSelector(
   (state) => state?.account,
-  (account) => account?.create || null,
+  (account) => !!account?.create,
 );
 
 export const importAccountSelector = createSelector(
   (state) => state?.account,
-  (account) => account?.import || null,
+  (account) => !!account?.import,
 );
 
 export const getAccountByNameSelector = createSelector(

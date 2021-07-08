@@ -1,4 +1,4 @@
-import { Validator, PrivacyVersion,  } from 'incognito-chain-web-js/build/wallet';
+import { Validator, PrivacyVersion } from 'incognito-chain-web-js/build/wallet';
 
 export const getAccountNameByAccount = (account) => {
   new Validator('account', account).object().required();
@@ -12,9 +12,11 @@ export const getAccountWallet = (account, wallet) => {
   try {
     new Validator('account', account).object().required();
     new Validator('wallet', wallet).object().required();
-    const indexAccount = wallet.getAccountIndexByName(
-      getAccountNameByAccount(account),
-    );
+    const accountName = getAccountNameByAccount(account);
+    if (!accountName) {
+      return {};
+    }
+    const indexAccount = wallet.getAccountIndexByName(accountName);
     let accountWallet = wallet.MasterAccount.child[indexAccount];
     if (!accountWallet) {
       return {};

@@ -147,11 +147,12 @@ export default class Server {
             const server = DEFAULT_LIST_SERVER.find((item) => item?.id === id);
             return {
               ...s,
-              coinServices: server?.coinServices,
-              pubsubServices: server?.pubsubServices,
-              requestServices: server?.requestServices,
-              apiServices: server?.apiServices,
-              shardNumber: server?.shardNumber,
+              address: server?.address || '',
+              coinServices: server?.coinServices || '',
+              pubsubServices: server?.pubsubServices || '',
+              requestServices: server?.requestServices || '',
+              apiServices: server?.apiServices || '',
+              shardNumber: server?.shardNumber || '',
             };
           }
         }

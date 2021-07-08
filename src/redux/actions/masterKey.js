@@ -25,7 +25,6 @@ import { clearWalletCaches } from '@services/cache';
 import accountService from '@services/wallet/accountService';
 import { actionLogEvent } from '@src/screens/Performance';
 import { devSelector } from '@src/screens/Dev';
-import { ExHandler } from '@src/services/exception';
 
 const DEFAULT_MASTER_KEY = new MasterKeyModel({
   name: 'Wallet',
@@ -139,9 +138,7 @@ export const loadAllMasterKeys = () => async (dispatch, getState) => {
       (item) => item.name,
     ).map((item) => new MasterKeyModel(item));
     for (let key of masterKeyList) {
-      console.time('LOAD_WALLET');
       await key.loadWallet();
-      console.timeEnd('LOAD_WALLET');
       if (key.name.toLowerCase() === 'masterless') {
         continue;
       }
@@ -237,7 +234,8 @@ export const createMasterKey = (data) => async (dispatch) => {
     await dispatch(followDefaultTokenForWallet(wallet));
     await saveWallet(wallet);
     await storeWalletAccountIdsOnAPI(wallet);
-    await dispatch(reloadWallet());
+    const listAccount = await wallet.listAccount();
+    await dispatch(reloadWallet(listAccount[0]?.accountName));
     await dispatch(actionLogMeasureStorageWallet(wallet));
   } catch (error) {
     throw error;
@@ -341,7 +339,8 @@ export const importMasterKey = (data) => async (dispatch, getState) => {
     await dispatch(syncUnlinkWithNewMasterKey(newMasterKey));
     await dispatch(followDefaultTokenForWallet(wallet));
     await saveWallet(wallet);
-    await dispatch(reloadWallet());
+    const listAccount = await wallet.listAccount();
+    await dispatch(reloadWallet(listAccount[0]?.name));
     await dispatch(actionLogMeasureStorageWallet(wallet));
   } catch (error) {
     throw error;
@@ -392,7 +391,6 @@ export const loadAllMasterKeyAccounts = () => async (dispatch, getState) => {
     const masterKeyAccounts = await masterKey.getAccounts(true);
     accounts = [...accounts, ...masterKeyAccounts];
   }
-
   await dispatch(loadAllMasterKeyAccountsSuccess(accounts));
 };
 

@@ -1,5 +1,5 @@
 import type from '@src/redux/types/account';
-import _ from 'lodash';
+import _, { cloneDeep } from 'lodash';
 
 const TAG = 'reducers-account';
 const initialState = {
@@ -64,7 +64,7 @@ const reducer = (state = initialState, action) => {
   case type.SET_LIST:
     return {
       ...state,
-      list: [...action.data],
+      list: cloneDeep(action.data),
     };
   case type.REMOVE_BY_PRIVATE_KEY:
     newList = removeByPrivateKey(state.list, action.data);

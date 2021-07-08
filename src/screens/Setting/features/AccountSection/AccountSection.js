@@ -21,6 +21,7 @@ import {
   defaultAccountSelector,
   listAccountSelector,
 } from '@src/redux/selectors/account';
+import { currentMasterKeySelector } from '@src/redux/selectors/masterKey';
 import { accountSection } from './AccountSection.styled';
 
 const Item = (props) => {
@@ -81,6 +82,7 @@ const AccountSection = (props) => {
   const { label } = props;
   const defaultAccount = useSelector(defaultAccountSelector);
   const listAccount = useSelector(listAccountSelector);
+  const masterKey = useSelector(currentMasterKeySelector);
   const navigation = useNavigation();
   const [removing, setRemove] = React.useState(false);
   const dispatch = useDispatch();
@@ -103,7 +105,6 @@ const AccountSection = (props) => {
   const handleExportKey = (account) => {
     navigation.navigate(ROUTE_NAMES.ExportAccount, { account });
   };
-
   const handleDelete = async (account) => {
     Alert.alert(
       `Delete keychain "${account?.name}"?`,
@@ -134,29 +135,34 @@ const AccountSection = (props) => {
       { cancelable: false },
     );
   };
-
   const isDeletable = listAccount.length > 1;
+  const customItems = React.useMemo(() => {
+    return [...listAccount]
+      .filter((account) => !!account?.accountName)
+      .map((account, index) => (
+        <View
+          style={accountSection.itemWrapper}
+          key={account?.PrivateKey + account?.accountName}
+        >
+          <Item
+            {...{
+              account,
+              onSwitch: onHandleSwitchAccount,
+              onExport: handleExportKey,
+              onDelete: isDeletable && handleDelete,
+              isActive: account?.accountName === defaultAccount?.name,
+              lastChild: listAccount?.length - 1 === index,
+              removeTitle: `Remove${removing ? '...' : ''}`,
+            }}
+          />
+        </View>
+      ));
+  }, [listAccount, masterKey, defaultAccount]);
   return (
     <Section
       label={label}
       labelStyle={accountSection.labelStyle}
-      customItems={[...listAccount]
-        .filter((account) => !!account?.accountName)
-        .map((account, index) => (
-          <View style={accountSection.itemWrapper} key={account?.PrivateKey}>
-            <Item
-              {...{
-                account,
-                onSwitch: onHandleSwitchAccount,
-                onExport: handleExportKey,
-                onDelete: isDeletable && handleDelete,
-                isActive: account?.accountName === defaultAccount?.name,
-                lastChild: listAccount?.length - 1 === index,
-                removeTitle: `Remove${removing ? '...' : ''}`,
-              }}
-            />
-          </View>
-        ))}
+      customItems={customItems}
     />
   );
 };

@@ -29,6 +29,7 @@ import Welcome from '@screens/GetStarted/Welcome';
 import withPin from '@components/pin.enhance';
 import KeepAwake from 'react-native-keep-awake';
 import { COLORS, FONT } from '@src/styles';
+import { accountServices } from '@src/services/wallet';
 import {
   wizardSelector,
   isFollowedDefaultPTokensSelector,
@@ -106,7 +107,8 @@ const enhance = (WrappedComp) => (props) => {
 
   const getExistedWallet = async () => {
     try {
-      const wallet = await dispatch(reloadWallet());
+      const defaultAccountName = await accountServices.getDefaultAccountName();
+      const wallet = await dispatch(reloadWallet(defaultAccountName));
       if (wallet) {
         return wallet;
       }

@@ -53,7 +53,6 @@ export const setListAccount = (
   if (accounts && accounts.constructor !== Array) {
     throw new TypeError('Accounts must be an array');
   }
-
   return {
     type: type.SET_LIST,
     data: accounts,
@@ -248,7 +247,6 @@ export const actionSwitchAccount = (
     const defaultAccountName = accountSelector.defaultAccountNameSelector(
       state,
     );
-    await dispatch(actionSwitchAccountFetching());
     if (defaultAccountName !== account?.name) {
       await dispatch(setDefaultAccount(account));
     }
@@ -256,8 +254,6 @@ export const actionSwitchAccount = (
     return account;
   } catch (error) {
     throw error;
-  } finally {
-    await dispatch(actionSwitchAccountFetched());
   }
 };
 
@@ -335,7 +331,7 @@ export const actionFetchCreateAccount = ({ accountName }) => async (
 ) => {
   const state = getState();
   const create = accountSelector.createAccountSelector(state);
-  const wallet = state?.wallet;
+  let wallet = walletSelector(state);
   if (!!create || !accountName || !wallet) {
     return;
   }

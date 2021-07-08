@@ -8,7 +8,7 @@ import {
   SuccessTx as SuccessTxWallet,
   Wallet,
   PrivacyVersion,
-  setShardNumber
+  setShardNumber,
 } from 'incognito-chain-web-js/build/wallet';
 import { randomBytes } from 'react-native-randombytes';
 import { DEX } from '@utils/dex';
@@ -196,16 +196,11 @@ export async function createDefaultAccounts(wallet) {
 }
 
 export async function storeWalletAccountIdsOnAPI(wallet) {
-  const accounts = [];
-
-  for (const account of wallet.MasterAccount.child) {
-    const info = await account.getDeserializeInformation();
-    accounts.push({
-      name: info.AccountName,
-      id: info.ID,
-    });
-  }
-
+  const listAccount = await wallet.listAccount();
+  const accounts = listAccount.map((account) => ({
+    name: account.AccountName,
+    id: account.ID,
+  }));
   const masterAccountInfo = await wallet.MasterAccount.getDeserializeInformation();
   return updateWalletAccounts(masterAccountInfo.PublicKeyCheckEncode, accounts);
 }

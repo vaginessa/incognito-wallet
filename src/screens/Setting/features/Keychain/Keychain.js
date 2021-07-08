@@ -14,6 +14,11 @@ import {
 } from '@src/redux/selectors/masterKey';
 import MainLayout from '@components/MainLayout';
 import { THEME } from '@src/styles';
+import {
+  createAccountSelector,
+  importAccountSelector,
+  switchAccountSelector,
+} from '@src/redux/selectors/account';
 import withKeychain from './Keychain.enhance';
 import RightBtn from './RightBtn';
 import BtnInfo from './BtnInfo';
@@ -34,11 +39,8 @@ const Keychain = () => {
   const { devices } = useSelector(settingSelector);
   const masterKey = useSelector(currentMasterKeySelector);
   const masterlessKey = useSelector(masterlessKeyChainSelector);
-  const switchingMasterKey = useSelector(switchingMasterKeySelector);
   const isMasterless = masterKey === masterlessKey;
-
   const sectionItemFactories = [];
-
   if (!isMasterless) {
     sectionItemFactories.push({
       title: 'Create',
@@ -82,30 +84,24 @@ const Keychain = () => {
       customHeaderTitle={<BtnInfo />}
       noPadding
     >
-      {switchingMasterKey ? (
-        <LoadingContainer />
-      ) : (
-        <>
-          <AccountSection
-            devices={devices}
-            label={isMasterless ? 'Masterless keychains' : 'Your keychains'}
-          />
-          <View style={styled.extra}>
-            {sectionItemFactories.map((item) => (
-              <SectionItem data={item} key={item.title} />
-            ))}
-          </View>
-          {isMasterless && (
-            <Text style={[styled.extra, styled.warning]}>
-              􀇿 You will not be able to back up these keychains with a master
-              key phrase. Each keychain is only recoverable using its unique
-              private key, so please keep them all safe.
-              {'\n\n'}
-              Alternatively, you may wish to transfer funds to keychains that
-              are linked to a master key.
-            </Text>
-          )}
-        </>
+      <AccountSection
+        devices={devices}
+        label={isMasterless ? 'Masterless keychains' : 'Your keychains'}
+      />
+      <View style={styled.extra}>
+        {sectionItemFactories.map((item) => (
+          <SectionItem data={item} key={item.title} />
+        ))}
+      </View>
+      {isMasterless && (
+        <Text style={[styled.extra, styled.warning]}>
+          􀇿 You will not be able to back up these keychains with a master key
+          phrase. Each keychain is only recoverable using its unique private
+          key, so please keep them all safe.
+          {'\n\n'}
+          Alternatively, you may wish to transfer funds to keychains that are
+          linked to a master key.
+        </Text>
       )}
     </MainLayout>
   );
