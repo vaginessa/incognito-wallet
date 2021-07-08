@@ -66,7 +66,7 @@ const InputView = ({
           errorMessage={outputError}
           maxValue={tabName === HEADER_TABS.Add ? outputBalance : 0}
           disabled={isLoading}
-          disableChooseToken={isLoading}
+          disableChooseToken={isLoading || !outputToken}
           rightField={tabName === HEADER_TABS.Remove ? SHARE_FIELD.WITHDRAW_SHARE : undefined}
         />
       </View>

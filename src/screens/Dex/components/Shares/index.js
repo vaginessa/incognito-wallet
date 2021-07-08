@@ -7,14 +7,14 @@ import formatUtil from '@utils/format';
 const Shares = ({
   share,
   totalShare,
-  showPercent,
 }) => {
+  if(!share) return null;
   const getPercent = () => {
     const percent = formatUtil.toFixed(new BigNumber(share).dividedBy(totalShare || 1).multipliedBy(100).toNumber(), 7);
-    return showPercent ? `(${percent}%)` : '';
+    return `(${percent}%)`;
   };
   const rightText = `${share} ${getPercent()}`;
-  if (rightText) return null;
+  if (!rightText) return null;
   return (
     <ExtraInfo
       left="Shares"

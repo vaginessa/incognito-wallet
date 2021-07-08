@@ -95,7 +95,10 @@ const Liquidity = React.memo((props) => {
   return (
     <View style={{ flex: 1, marginHorizontal: 25 }}>
       {renderHeader()}
-      <ScrollView refreshControl={(<RefreshControl refreshing={isLoading} onRefresh={onLoadData} showsVerticalScrollIndicator={false} />)}>
+      <ScrollView
+        refreshControl={(<RefreshControl refreshing={isLoading} onRefresh={onLoadData} />)}
+        showsVerticalScrollIndicator={false}
+      >
         <View style={{ paddingTop: 50 }}>
           <InputView inputError={inputError} outputError={outputError} />
           <RoundCornerButton
