@@ -91,13 +91,25 @@ export const KEY = {
   DEFAULT_LIST_SERVER,
 };
 
+const combineCachedListWithDefaultList = (_cachedList) => {
+  if (!_cachedList) return DEFAULT_LIST_SERVER;
+  return DEFAULT_LIST_SERVER.map(server => {
+    const cachedServer = _cachedList.find(item => item.id === server.id);
+    return {
+      ...server,
+      default: cachedServer?.default,
+    };
+  });
+};
+
 export default class Server {
   static get() {
     if (cachedList) {
-      return Promise.resolve(cachedList);
+      const servers = combineCachedListWithDefaultList(cachedList);
+      return Promise.resolve(servers);
     }
     return storage.getItem(KEY.SERVER).then((strData) => {
-      cachedList = JSON.parse(strData) || [];
+      cachedList = combineCachedListWithDefaultList(JSON.parse(strData) || []);
       if (!cachedList || cachedList.length === 0) {
         return DEFAULT_LIST_SERVER;
       }
@@ -167,8 +179,7 @@ export default class Server {
         }
         return { ...server, default: false };
       });
-      Server.set(newServers);
-
+      await Server.set(newServers);
       return newServers;
     } catch (e) {
       throw e;
