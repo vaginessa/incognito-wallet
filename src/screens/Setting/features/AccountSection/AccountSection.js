@@ -6,7 +6,6 @@ import {
   View,
 } from '@src/components/core';
 import { removeAccount, actionSwitchAccount } from '@src/redux/actions/account';
-import { accountSelector } from '@src/redux/selectors';
 import ROUTE_NAMES from '@src/router/routeNames';
 import { ExHandler } from '@src/services/exception';
 import { COLORS } from '@src/styles';
@@ -14,13 +13,17 @@ import { onClickView } from '@src/utils/ViewUtil';
 import PropTypes from 'prop-types';
 import React from 'react';
 import Swipeout from 'react-native-swipeout';
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from 'react-navigation-hooks';
 import { BtnExport } from '@src/components/Button';
 import Section, { sectionStyle } from '@screens/Setting/features/Section';
+import {
+  defaultAccountSelector,
+  listAccountSelector,
+} from '@src/redux/selectors/account';
 import { accountSection } from './AccountSection.styled';
 
-const Item = React.memo((props) => {
+const Item = (props) => {
   const {
     account,
     onSwitch,
@@ -30,7 +33,6 @@ const Item = React.memo((props) => {
     lastChild = false,
     removeTitle = 'Remove',
   } = props;
-
   return (
     <Swipeout
       style={accountSection.swipeoutButton}
@@ -73,24 +75,24 @@ const Item = React.memo((props) => {
       </View>
     </Swipeout>
   );
-});
+};
 
-const AccountSection = ({
-  defaultAccount,
-  listAccount,
-  removeAccount,
-  switchAccount,
-  label,
-}) => {
+const AccountSection = (props) => {
+  const { label } = props;
+  const defaultAccount = useSelector(defaultAccountSelector);
+  const listAccount = useSelector(listAccountSelector);
   const navigation = useNavigation();
   const [removing, setRemove] = React.useState(false);
+  const dispatch = useDispatch();
   const onHandleSwitchAccount = onClickView(async (account) => {
     try {
       if (defaultAccount?.name === account?.name) {
         Toast.showInfo(`Your current keychain is "${account?.name}"`);
         return;
       }
-      await switchAccount(account?.name);
+      await dispatch(
+        actionSwitchAccount(account?.accountName || account?.name),
+      );
     } catch (e) {
       new ExHandler(
         e,
@@ -98,7 +100,6 @@ const AccountSection = ({
       ).showErrorToast();
     }
   });
-
   const handleExportKey = (account) => {
     navigation.navigate(ROUTE_NAMES.ExportAccount, { account });
   };
@@ -117,7 +118,7 @@ const AccountSection = ({
           onPress: async () => {
             try {
               await setRemove(true);
-              await removeAccount(account);
+              await dispatch(removeAccount(account));
               Toast.showSuccess('Keychain removed.');
             } catch (e) {
               new ExHandler(
@@ -135,48 +136,33 @@ const AccountSection = ({
   };
 
   const isDeletable = listAccount.length > 1;
-
   return (
     <Section
       label={label}
       labelStyle={accountSection.labelStyle}
-      customItems={listAccount?.map((account, index) => (
-        <View key={account?.PaymentAddress} style={accountSection.itemWrapper}>
-          {account?.name && (
+      customItems={[...listAccount]
+        .filter((account) => !!account?.accountName)
+        .map((account, index) => (
+          <View style={accountSection.itemWrapper} key={account?.PrivateKey}>
             <Item
               {...{
                 account,
                 onSwitch: onHandleSwitchAccount,
                 onExport: handleExportKey,
                 onDelete: isDeletable && handleDelete,
-                isActive: account?.name === defaultAccount?.name,
+                isActive: account?.accountName === defaultAccount?.name,
                 lastChild: listAccount?.length - 1 === index,
                 removeTitle: `Remove${removing ? '...' : ''}`,
               }}
             />
-          )}
-        </View>
-      ))}
+          </View>
+        ))}
     />
   );
 };
 
 AccountSection.propTypes = {
-  defaultAccount: PropTypes.object.isRequired,
-  listAccount: PropTypes.arrayOf(PropTypes.object).isRequired,
-  switchAccount: PropTypes.func.isRequired,
-  removeAccount: PropTypes.func.isRequired,
   label: PropTypes.string.isRequired,
 };
 
-const mapState = (state) => ({
-  defaultAccount: accountSelector.defaultAccount(state),
-  listAccount: accountSelector.listAccount(state),
-});
-
-const mapDispatch = { removeAccount, switchAccount: actionSwitchAccount };
-
-export default connect(
-  mapState,
-  mapDispatch,
-)(AccountSection);
+export default AccountSection;

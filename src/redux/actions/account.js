@@ -6,13 +6,16 @@ import accountService from '@src/services/wallet/accountService';
 import { getPassphrase } from '@src/services/wallet/passwordService';
 import { reloadAccountList } from '@src/redux/actions/wallet';
 import AccountModel from '@src/models/account';
-import { actionLogEvent } from '@src/screens/Performance';
 import {
   currentMasterKeySelector,
   masterlessKeyChainSelector,
   noMasterLessSelector,
 } from '@src/redux/selectors/masterKey';
-import { switchMasterKey, updateMasterKey } from '@src/redux/actions/masterKey';
+import {
+  actionLogMeasureStorageWallet,
+  switchMasterKey,
+  updateMasterKey,
+} from '@src/redux/actions/masterKey';
 import { storeWalletAccountIdsOnAPI } from '@services/wallet/WalletService';
 import { devSelector } from '@src/screens/Dev';
 import {
@@ -135,7 +138,7 @@ export const setDefaultAccount = (account) => async (dispatch, getState) => {
       account,
     });
     if (signPublicKeyEncode) {
-      dispatch(setSignPublicKeyEncode(signPublicKeyEncode));
+      await dispatch(setSignPublicKeyEncode(signPublicKeyEncode));
     }
   } catch (e) {
     console.debug('SET DEFAULT ACCOUNT WITH ERROR: ', e);
@@ -245,13 +248,16 @@ export const actionSwitchAccount = (
     const defaultAccountName = accountSelector.defaultAccountNameSelector(
       state,
     );
+    await dispatch(actionSwitchAccountFetching());
     if (defaultAccountName !== account?.name) {
       await dispatch(setDefaultAccount(account));
     }
     await dispatch(actionReloadFollowingToken(shouldLoadBalance));
     return account;
   } catch (error) {
-    throw Error(error);
+    throw error;
+  } finally {
+    await dispatch(actionSwitchAccountFetched());
   }
 };
 
@@ -330,7 +336,6 @@ export const actionFetchCreateAccount = ({ accountName }) => async (
   const state = getState();
   const create = accountSelector.createAccountSelector(state);
   const wallet = state?.wallet;
-  const isDev = devSelector(state);
   if (!!create || !accountName || !wallet) {
     return;
   }
@@ -345,14 +350,7 @@ export const actionFetchCreateAccount = ({ accountName }) => async (
     await dispatch(actionFetchedCreateAccount());
     await dispatch(actionSwitchAccount(serializedAccount?.name, true));
     await storeWalletAccountIdsOnAPI(wallet);
-    if (isDev) {
-      const measure = await wallet.getMeasureStorageValue();
-      await dispatch(
-        actionLogEvent({
-          desc: measure,
-        }),
-      );
-    }
+    await dispatch(actionLogMeasureStorageWallet(wallet));
     return serializedAccount;
   } catch (error) {
     console.log('CREATE ACCOUNT ERROR', error);

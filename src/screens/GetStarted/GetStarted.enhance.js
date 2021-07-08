@@ -118,6 +118,16 @@ const enhance = (WrappedComp) => (props) => {
     }
   };
 
+  const getErrorMsg = (error) => {
+    const errorMessage = new ExHandler(
+      error,
+      'Something\'s not quite right. Please make sure you\'re connected to the internet.\n' +
+        '\n' +
+        'If your connection is strong but the app still won\'t load, please contact us at go@incognito.org.\n',
+    )?.writeLog()?.message;
+    return errorMessage;
+  };
+
   const goHome = async () => {
     try {
       dispatch(initNotification());
@@ -134,9 +144,7 @@ const enhance = (WrappedComp) => (props) => {
   const initApp = async () => {
     let errorMessage = null;
     try {
-      console.debug('LOAD MASTER KEY');
       await dispatch(loadAllMasterKeyAccounts());
-      console.debug('LOADED MASTER KEY');
       await setState({ ...initialState, isInitialing: true });
       await login();
       const [servers] = await new Promise.all([
@@ -151,12 +159,7 @@ const enhance = (WrappedComp) => (props) => {
       }
       await checkWallet();
     } catch (e) {
-      errorMessage = new ExHandler(
-        e,
-        'Something\'s not quite right. Please make sure you\'re connected to the internet.\n' +
-          '\n' +
-          'If your connection is strong but the app still won\'t load, please contact us at go@incognito.org.\n',
-      )?.writeLog()?.message;
+      errorMessage = getErrorMsg(e);
     } finally {
       await setState({
         ...state,
@@ -167,16 +170,33 @@ const enhance = (WrappedComp) => (props) => {
     }
   };
 
+  const configsApp = async () => {
+    try {
+      await dispatch(loadPin());
+      await dispatch(getPTokenList());
+      await dispatch(loadAllMasterKeys());
+    } catch (error) {
+      await setState({
+        ...state,
+        errorMsg: getErrorMsg(error),
+      });
+      throw error;
+    }
+    setLoadMasterKeys(true);
+  };
+
+  const onRetry = async () => {
+    try {
+      await configsApp();
+      await initApp();
+    } catch {
+      //
+    }
+  };
+
   React.useEffect(() => {
     requestAnimationFrame(async () => {
-      try {
-        await dispatch(loadPin());
-        await dispatch(getPTokenList());
-        await dispatch(loadAllMasterKeys());
-      } catch (error) {
-        console.debug(error);
-      }
-      setLoadMasterKeys(true);
+      await configsApp();
     });
   }, []);
 
@@ -213,40 +233,42 @@ const enhance = (WrappedComp) => (props) => {
   }, [pin]);
 
   const renderMain = () => {
-    if (isMigrating || !loadMasterKeys) {
-      return (
-        <LoadingContainer
-          size="large"
-          custom={
-            isFetched && (
-              <Text
-                style={{
-                  color: COLORS.colorGreyBold,
-                  fontFamily: FONT.NAME.medium,
-                  fontSize: FONT.SIZE.medium,
-                  lineHeight: FONT.SIZE.medium + 5,
-                  textAlign: 'center',
-                  marginTop: 30,
-                }}
-              >
-                {
-                  'This may take a couple of minutes.\nPlease do not navigate away from the app.'
-                }
-              </Text>
-            )
-          }
-        />
-      );
-    }
     if (isFetching) {
       return <Wizard />;
     }
-    if (masterKeys.length === 0) {
-      return <Welcome />;
+    if (!errorMsg) {
+      if (isMigrating || !loadMasterKeys) {
+        return (
+          <LoadingContainer
+            size="large"
+            custom={
+              isFetched && (
+                <Text
+                  style={{
+                    color: COLORS.colorGreyBold,
+                    fontFamily: FONT.NAME.medium,
+                    fontSize: FONT.SIZE.medium,
+                    lineHeight: FONT.SIZE.medium + 5,
+                    textAlign: 'center',
+                    marginTop: 30,
+                  }}
+                >
+                  {
+                    'This may take a couple of minutes.\nPlease do not navigate away from the app.'
+                  }
+                </Text>
+              )
+            }
+          />
+        );
+      }
+      if (masterKeys.length === 0) {
+        return <Welcome />;
+      }
     }
     return (
       <WrappedComp
-        {...{ ...props, errorMsg, isInitialing, isCreating, onRetry: initApp }}
+        {...{ ...props, errorMsg, isInitialing, isCreating, onRetry }}
       />
     );
   };

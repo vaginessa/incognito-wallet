@@ -93,11 +93,12 @@ export const reloadWallet = (accountName) => async (dispatch, getState) => {
             (a) => a?.name === defaultAccountName,
           );
         }
-        batch(() => {
-          dispatch(setWallet(wallet));
-          dispatch(setListAccount(accounts));
-          defaultAccount && dispatch(setDefaultAccount(defaultAccount));
-        });
+        await dispatch(setWallet(wallet));
+        await dispatch(setListAccount(accounts));
+        if (defaultAccount) {
+          await dispatch(setDefaultAccount(defaultAccount));
+          await dispatch(setAccount(defaultAccount));
+        }
       } else {
         const account = accounts.find(
           (item) => accountService.getAccountName(item) === accountName,

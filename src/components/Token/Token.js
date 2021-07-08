@@ -65,7 +65,7 @@ Name.propTypes = {
 };
 
 Name.defaultProps = {
-  name: 'Sample Name',
+  name: 'Incognito Token',
   isVerified: false,
   tokenId: null,
   shouldShowFollowed: false,

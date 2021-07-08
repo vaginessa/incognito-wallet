@@ -6,6 +6,7 @@ import storage from '@services/storage';
 const initialState = {
   list: [],
   accounts: [],
+  switching: false,
 };
 
 function createMasterKey(newMasterKey, list) {
@@ -97,6 +98,12 @@ const reducer = (state = initialState, action) => {
       ...state,
       accounts: [...action.payload],
     };
+  case types.SWITCHING: {
+    return {
+      ...state,
+      switching: action.payload,
+    };
+  }
   default:
     return state;
   }
