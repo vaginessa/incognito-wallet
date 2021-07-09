@@ -31,6 +31,7 @@ AppRegistry.registerRunnable(appName, async (initParams) => {
     (_.isEmpty(serverDefault)
       ? global.isMainnet
       : serverService.isMainnet(serverDefault)) ?? true;
+  global.severDefault = serverDefault;
   const { default: App } = await import('@src/App');
   console.log('GO_BRIDGE', global.__gobridge__);
   console.debug('GLOBAL', global.isMainnet, global.homeConfig);
