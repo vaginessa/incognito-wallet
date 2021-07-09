@@ -153,38 +153,38 @@ export const getCouplePair = (payload) => {
 /** Network fee, fee minimum required to make 1 transaction */
 export const calculatorFee = (payload) => {
   try {
-    const { inputToken, outputToken, pairs } = payload;
-
-    const prvFee = MAX_DEX_FEE;
-    const prvFeeToken = COINS.PRV;
+    // const { inputToken, outputToken, pairs } = payload;
+    //
+    // const prvFee = MAX_DEX_FEE;
+    // const prvFeeToken = COINS.PRV;
 
     // Input or Output is PRV, network fee = 400 *1e9 PRV
-    if (inputToken?.id === COINS.PRV_ID || outputToken?.id !== COINS.PRV_ID) {
-      return cloneDeep(initFee);
-    }
-
-    // Check can pair with PRV
-    const prvPair = (pairs || []).find(
-      (item) =>
-        item.keys.includes(inputToken?.id) &&
-        item.keys.includes(COINS.PRV_ID) &&
-        item[COINS.PRV_ID] > 10000 * 1e9,
-    );
+    // if (inputToken?.id === COINS.PRV_ID || outputToken?.id !== COINS.PRV_ID) {
+    //   return cloneDeep(initFee);
+    // }
+    //
+    // // Check can pair with PRV
+    // const prvPair = (pairs || []).find(
+    //   (item) =>
+    //     item.keys.includes(inputToken?.id) &&
+    //     item.keys.includes(COINS.PRV_ID) &&
+    //     item[COINS.PRV_ID] > 10000 * 1e9,
+    // );
 
     // Network fee is pToken, minus to inputText
-    if (inputToken?.id !== COINS.PRV_ID && prvPair) {
-      const outputValue = Math.max(
-        calculateOutputValue(prvPair, prvFeeToken, prvFee, inputToken),
-        MAX_PDEX_TRADE_STEPS * 20,
-      );
-      return {
-        fee: outputValue,
-        feeToken: inputToken,
-        originalFee: outputValue,
-        originalFeeToken: inputToken,
-        canChooseFee: true,
-      };
-    }
+    // if (inputToken?.id !== COINS.PRV_ID && prvPair) {
+    //   const outputValue = Math.max(
+    //     calculateOutputValue(prvPair, prvFeeToken, prvFee, inputToken),
+    //     MAX_PDEX_TRADE_STEPS * 20,
+    //   );
+    //   return {
+    //     fee: outputValue,
+    //     feeToken: inputToken,
+    //     originalFee: outputValue,
+    //     originalFeeToken: inputToken,
+    //     canChooseFee: true,
+    //   };
+    // }
     return cloneDeep(initFee);
   } catch (error) {
     console.debug('TRADE ESTIMATE FEE: ', error);
