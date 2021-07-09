@@ -9,6 +9,7 @@ import { getPrivacyDataByTokenID } from '@src/redux/selectors/selectedPrivacy';
 import BigNumber from 'bignumber.js';
 import { PDexTradeHistoryModel } from '@models/pDefi';
 import { ERC20_CURRENCY_TYPE } from '@screens/DexV2/components/Trade/TradeV2/Trade.appConstant';
+import convert from '@utils/convert';
 
 export const tradeSelector = createSelector(
   (state) => state.trade,
@@ -100,6 +101,8 @@ export const maxPriceSelector = createSelector(
       const inputToken = getFn(inputId);
       const outputToken = getFn(outputId);
 
+      inputValue = convert.toNumber(inputValue, true);
+      outputValue = convert.toNumber(outputValue, true);
       const minRate = new BigNumber(inputValue)
         .dividedBy(new BigNumber(outputValue))
         .toNumber();
