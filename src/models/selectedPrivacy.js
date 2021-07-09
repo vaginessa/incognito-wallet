@@ -1,5 +1,6 @@
 import { CONSTANT_COMMONS, CONSTANT_CONFIGS } from '@src/constants';
 import { BIG_COINS } from '@src/screens/DexV2/constants';
+import { PRV_ID } from '@screens/Dex/constants';
 import PToken from './pToken';
 
 function getNetworkName() {
@@ -63,12 +64,15 @@ function getIconUrl(chainTokenImageUri) {
 }
 
 class SelectedPrivacy {
-  constructor(account = {}, token = {}, pTokenData: PToken = {}) {
+  constructor(account = {}, token = {}, pTokenData: PToken = {}, _tokenID) {
     const tokenId = pTokenData?.tokenId || token?.id;
+
+    const isUnknown = (_tokenID !== PRV_ID) && !tokenId;
+    const unknownText = 'Unknown';
     this.currencyType = pTokenData.currencyType;
     this.isToken = tokenId !== CONSTANT_COMMONS.PRV_TOKEN_ID && !!tokenId; // all kind of tokens (private tokens, incognito tokens)
     this.isMainCrypto =
-      tokenId === CONSTANT_COMMONS.PRV_TOKEN_ID || !this.isToken; // PRV
+      tokenId === PRV_ID || !this.isToken; // PRV
     this.isPrivateToken =
       pTokenData?.type === CONSTANT_COMMONS.PRIVATE_TOKEN_TYPE.TOKEN; // ERC20 tokens, BEP2 tokens
     this.isPrivateCoin =
@@ -96,13 +100,13 @@ class SelectedPrivacy {
       this,
       pTokenData?.name,
       token?.name,
-      'Privacy',
+      isUnknown ? unknownText : 'Privacy',
     );
     this.displayName = combineData.call(
       this,
       `Privacy ${pTokenData?.symbol}`,
       token?.name,
-      'Privacy',
+      isUnknown ? unknownText : 'Privacy',
     );
     this.amount = (this.isToken ? token.amount : account.value) || 0;
     this.tokenId = this.isMainCrypto ? CONSTANT_COMMONS.PRV_TOKEN_ID : tokenId;
@@ -133,7 +137,7 @@ class SelectedPrivacy {
       this,
       pTokenData?.verified,
       token?.verified,
-      true,
+      !isUnknown,
     ); // PRV always is verified
     this.iconUrl = getIconUrl.call(this, token?.image);
     this.priceUsd = pTokenData?.priceUsd || 0;
@@ -145,7 +149,7 @@ class SelectedPrivacy {
     this.rootNetworkName = rootNetworkName;
     this.isUSDT = this.tokenId === BIG_COINS.USDT;
     this.isPRV = this.tokenId === BIG_COINS.PRV;
-    this.symbol = this.externalSymbol || this.symbol;
+    this.symbol = isUnknown ? unknownText : this.externalSymbol || this.symbol;
   }
 }
 
