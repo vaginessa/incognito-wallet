@@ -1,5 +1,6 @@
 import { ceil, isNaN, floor, isNumber } from 'lodash';
 import formatUtils from '@utils/format';
+import BigNumber from 'bignumber.js';
 
 export const DEX = {
   MAIN_ACCOUNT: 'pDEX',
@@ -45,20 +46,14 @@ export default {
     if (!pair) {
       return;
     }
-
     if (!outputToken || !isNumber(inputValue) || isNaN(inputValue) || !inputValue) {
       return { outputValue: 0, outputText: '0' };
     }
-
     const inputPool = pair[inputToken.id];
     const outputPool = pair[outputToken.id];
-    // const initialPool = inputPool / outputPool;
-    // const newInputPool = inputPool + inputValue;
-    const number = (inputValue * outputPool) / inputPool;
+    const number = new BigNumber(inputValue).multipliedBy(outputPool).dividedBy(inputPool).toNumber();
     const outputValue = isInput ? floor(number) : ceil(number);
     const outputText = formatUtils.amountFull(outputValue, outputToken.pDecimals);
-    // let outputOriginal = convertUtil.toHumanAmount(outputValue, outputToken.pDecimals, true);
-    // const outputText = formatUtil.toFixed(outputOriginal, outputToken.pDecimals);
     return { outputValue, outputText, pair };
   }
 };

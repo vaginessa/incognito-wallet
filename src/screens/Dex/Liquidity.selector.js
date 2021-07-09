@@ -8,12 +8,13 @@ import {
   LIQUIDITY_STATUS_MESSAGE, LIQUIDITY_TITLES, INPUT_FIELDS
 } from '@screens/Dex/Liquidity.constants';
 import { MESSAGES, MIN_INPUT } from '@screens/Dex/constants';
-import { isEmpty, orderBy, uniq,isNumber } from 'lodash';
+import { isEmpty, orderBy, uniq, isNumber, floor, ceil } from 'lodash';
 import memoize from 'memoize-one';
 import { HISTORY_STATUS } from '@src/constants/trading';
-import {PRVIDSTR, TX_STATUS} from 'incognito-chain-web-js/build/wallet';
+import { TX_STATUS } from 'incognito-chain-web-js/build/wallet';
 import { PRV_ID } from '@src/constants/common';
 import BigNumber from 'bignumber.js';
+import formatUtils from '@utils/format';
 
 
 export const liquiditySelector = createSelector(
@@ -61,10 +62,10 @@ export const inputViewValidatorSelector =  createSelector(
         outputError = MESSAGES.GREATER_OR_EQUAL(MIN_INPUT, outputToken.pDecimals);
       }
     } else if (tabName === HEADER_TABS.Remove) {
-      if (txFee > inputBalance) {
-        inputError = MESSAGES.NOT_ENOUGH_PRV_NETWORK_FEE;
-      } else if (!share || inputValue > maxInputShare) {
+      if (!share || inputValue > maxInputShare) {
         inputError = MESSAGES.SHARE_INSUFFICIENT;
+      } else if (txFee > inputBalance) {
+        inputError = MESSAGES.NOT_ENOUGH_PRV_NETWORK_FEE;
       } else if (inputValue < MIN_INPUT) {
         inputError = MESSAGES.GREATER_OR_EQUAL(MIN_INPUT, inputToken.pDecimals);
       }
@@ -76,7 +77,9 @@ export const inputViewValidatorSelector =  createSelector(
       }
     } else {
       const _withdrawFeeValue = new BigNumber(withdrawFeeValue || 0).toNumber();
-      if (txFee > inputBalance) {
+      if (!share || _withdrawFeeValue > share) {
+        inputError = MESSAGES.EARNED_FEE_INSUFFICIENT;
+      } else if (txFee > inputBalance) {
         inputError = MESSAGES.NOT_ENOUGH_PRV_NETWORK_FEE;
       } else if (!share || _withdrawFeeValue > share) {
         inputError = MESSAGES.SHARE_INSUFFICIENT;
@@ -95,9 +98,14 @@ export const mergeHistoriesFieldSelector = createSelector(
 
 export const historiesSelector = createSelector(
   mergeHistoriesFieldSelector,
-  ({ storageHistories, apiHistories }) => memoize(() => {
-    return orderBy(storageHistories.filter(({ pairId, id }) => {
-      const isExist = apiHistories.some(apiHistory => ((apiHistory?.pairId || apiHistory?.id) === (pairId || id)));
+  ({ storageHistories, apiHistories, name }) => memoize(() => {
+    return orderBy(storageHistories.filter(({ pairId, id, requestTx }) => {
+      let isExist;
+      if (name === INPUT_FIELDS.ADD_POOL) {
+        isExist = apiHistories.some(apiHistory => ((apiHistory?.pairId || apiHistory?.id) === (pairId || id)));
+      } else {
+        isExist = apiHistories.some(apiHistory => ((apiHistory?.requestTx || apiHistory?.id) === (requestTx || id)));
+      }
       return !isExist;
     }).concat(apiHistories)
     , 'blockTime', ['desc']);
@@ -262,8 +270,9 @@ export const shareSelectorWithToken = createSelector(
     const { userPairs } = liquidity?.pdeState;
     let share = 0;
     let totalShare = 0;
+    let userPair;
     if (inputToken && outputToken) {
-      const userPair = (userPairs || []).find(({ token1, token2 }) => {
+      userPair = (userPairs || []).find(({ token1, token2 }) => {
         const tokenIds = [inputToken.id, outputToken.id];
         return tokenIds.includes(token1.id) && tokenIds.includes(token2.id);
       });
@@ -275,7 +284,37 @@ export const shareSelectorWithToken = createSelector(
     }
     return {
       share,
-      totalShare
+      totalShare,
+      userPair,
+    };
+  })
+);
+
+
+// 1: App tinh Max Token A - Max Token B user dc withdraw
+//      a: Tinh % share ( so share / total share)
+//      b: Max Token A = % share * pool_size_token_A
+//      c: Max Token B = % share * pool_size_token_B
+// 2: User nhap so Amount_Token_A muon withdraw
+// 3: App tinh so Token B user se withdraw
+//      a: Amount_Token_A * Max_Token_B/ Max_Token_A
+export const calculatorShareWithDrawSelector = createSelector(
+  liquiditySelector,
+  shareSelectorWithToken,
+  (liquidity, shareValueSelector) => memoize((inputToken, inputValue, outputToken, isInput) => {
+    if (!inputToken || !outputToken) return;
+    const { share, totalShare, userPair } = shareValueSelector(inputToken, outputToken);
+    const poolInputValue = userPair[inputToken.id];
+    const poolOutputValue = userPair[outputToken.id];
+    const sharePercent = new BigNumber(share).dividedBy(totalShare).toNumber();
+    const maxInputShare = new BigNumber(sharePercent).multipliedBy(poolInputValue).toNumber() || 0; // Max_Token_A
+    const maxOutputShare = new BigNumber(sharePercent).multipliedBy(poolOutputValue).toNumber() || 0; // Max_Token_B
+    const number = new BigNumber(inputValue).multipliedBy(maxOutputShare).dividedBy(maxInputShare).toNumber();
+    const outputValue = isInput ? floor(number) : ceil(number);
+    const outputText = formatUtils.amountFull(outputValue, outputToken.pDecimals);
+    return {
+      outputValue,
+      outputText,
     };
   })
 );

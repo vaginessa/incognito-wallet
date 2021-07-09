@@ -91,7 +91,7 @@ export const MESSAGES = {
   SOMETHING_WRONG: 'Something got stuck. Please make the withdrawal again.',
   PENDING_TRANSACTIONS: 'Please wait for your previous transaction to finish processing. Simply try again later.',
   WITHDRAW_PROCESS: 'Withdrawing your funds...\n\nThis may take a couple of minutes. Please do not navigate away from the app.',
-  SHARE_INSUFFICIENT: 'Your share is insufficient.',
+  SHARE_INSUFFICIENT: 'Your contribute is insufficient.',
   MUST_BE_INTEGER: 'Please enter a whole positive number (not a fraction).',
   NOT_ENOUGH_NETWORK_FEE_ADD: 'Please top up PRV to cover the network fee.',
   ADD_LIQUIDITY_PROCESS: 'Adding your pair...\n\nThis may take a couple of minutes. Please do not navigate away from the app.',
@@ -111,6 +111,7 @@ export const MESSAGES = {
   LIQUIDITY_ERROR: 'We seem to have hit a snag. Please initiate the liquidity again.',
   WITH_DRAW_FEE_MUST_BE_AN_INTERGER_NUMBER: 'Withdraw value must be an interger number',
   CONVERT_PROCESS: 'Converting your coins...\nThis may take a couple of minutes. Please do not navigate away from the app.',
+  EARNED_FEE_INSUFFICIENT: 'Your earned fee is insufficient.',
 };
 export const MILLISECOND = 1;
 export const SECOND = 1000 * MILLISECOND;
