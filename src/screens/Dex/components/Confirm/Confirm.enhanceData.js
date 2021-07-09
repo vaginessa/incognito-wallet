@@ -30,6 +30,7 @@ const withConfirmData = WrappedComp => props => {
     inputBalance,
     outputBalance,
     maxInputShare,
+    maxInputShareOriginal,
     maxOutputShare,
     sharePercent,
     withdrawFeeValue,
@@ -63,6 +64,7 @@ const withConfirmData = WrappedComp => props => {
           sharePercent,
           withdrawFeeValue,
           withdrawFeeText,
+          maxInputShareOriginal,
         }}
       />
     </ErrorBoundary>

@@ -1131,6 +1131,8 @@ export default class Account {
     withdrawalShareAmt,
     fee,
     version = PrivacyVersion.ver2,
+    amount1,
+    amount2,
   } = {}) {
     new Validator(
       'createAndSendWithdrawContributionTx-account',
@@ -1156,6 +1158,8 @@ export default class Account {
     new Validator('createAndSendWithdrawContributionTx-version', version)
       .required()
       .number();
+    new Validator('createAndSendWithdrawContributionTx-amount1', amount1).required().amount();
+    new Validator('createAndSendWithdrawContributionTx-amount1', amount1).required().amount();
 
     const accountWallet = getAccountWallet(account, wallet);
     let response = await accountWallet.createAndSendWithdrawContributionTx({
@@ -1166,6 +1170,8 @@ export default class Account {
         withdrawalToken1IDStr: tokenID1,
         withdrawalToken2IDStr: tokenID2,
         withdrawalShareAmt,
+        withdrawalAmount1: amount1,
+        withdrawalAmount2: amount2,
         version,
       },
     });

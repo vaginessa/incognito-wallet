@@ -1,16 +1,19 @@
 import { ACTION_NAMES } from '@screens/Dex/Liquidity.actionsName';
 import { accountSelector } from '@src/redux/selectors';
 import { accountServices } from '@services/wallet';
-import { mergeInputSelector } from '@screens/Dex/Liquidity.selector';
+import {
+  calculatorShareWithDrawSelector,
+  mergeInputSelector,
+} from '@screens/Dex/Liquidity.selector';
 import { Validator, PRVIDSTR } from 'incognito-chain-web-js/build/wallet';
-import dexUtils from '@utils/dex';
 import { mergeInput, parseInputWithText } from '@screens/Dex/Liquidity.utlis';
 import { HEADER_TABS, INPUT_FIELDS } from '@screens/Dex/Liquidity.constants';
 import { uniqBy, isEmpty } from 'lodash';
 import { batch } from 'react-redux';
 import { LIMIT } from '@screens/DexV2/constants';
 import BigNumber from 'bignumber.js';
-import {PRV} from '@src/constants/common';
+import { PRV } from '@src/constants/common';
+import dexUtils from '@utils/dex';
 
 /**
  * @param {string} tabName
@@ -93,7 +96,18 @@ export const actionChangeInputText = ({ newInputText }) => async (dispatch, getS
         inputValue,
       }));
     }
-    const { outputValue, outputText } = dexUtils.calculateValue(inputToken, inputValue, outputToken, pair, true);
+
+    let outputValue = 0;
+    let outputText = '0';
+    if (name === INPUT_FIELDS.ADD_POOL) {
+      const { outputValue: currOutputValue, outputText: currOutputText } = dexUtils.calculateValue(inputToken, inputValue, outputToken, pair, true);
+      outputValue = currOutputValue;
+      outputText = currOutputText;
+    } else if (inputToken && outputToken) {
+      const { outputValue: currOutputValue, outputText: currOutputText } = calculatorShareWithDrawSelector(state)(inputToken, inputValue, outputToken, true);
+      outputValue = currOutputValue;
+      outputText = currOutputText;
+    }
     dispatch(actionUpdateFieldValue({
       name,
       inputText: newInputText,
@@ -135,7 +149,17 @@ export const actionChangeOutputText = ({ newOutputText }) => async (dispatch, ge
         outputValue,
       }));
     }
-    const { outputValue: inputValue, outputText: inputText } = dexUtils.calculateValue(outputToken, outputValue, inputToken, pair, false);
+    let inputValue = 0;
+    let inputText = '0';
+    if (name === INPUT_FIELDS.ADD_POOL) {
+      const { outputValue: currInputValue, outputText: currInputText } = dexUtils.calculateValue(outputToken, outputValue, inputToken, pair, false);
+      inputValue = currInputValue;
+      inputText = currInputText;
+    } else if (inputToken && outputToken) {
+      const { outputValue: currInputValue, outputText: currInputText } = calculatorShareWithDrawSelector(state)(outputToken, outputValue, inputToken, false);
+      inputValue = currInputValue;
+      inputText = currInputText;
+    }
     dispatch(actionUpdateFieldValue({
       name,
       inputText,
@@ -389,13 +413,15 @@ export const actionFilterRemovePoolOutput = () => async (dispatch, getState) => 
       : null;
 
     let maxInputShare = 0;
+    let maxInputShareOriginal = 0;
     let maxOutputShare = 0;
     let sharePercent = 0;
     if (pair && outputToken) {
       const poolInputValue = pair[currentInputToken.id];
       const poolOutputValue = pair[outputToken.id];
       sharePercent = new BigNumber(share).dividedBy(totalShare).toNumber();
-      maxInputShare = Math.ceil(new BigNumber(sharePercent).multipliedBy(poolInputValue).toNumber()) || 0;
+      maxInputShareOriginal = new BigNumber(sharePercent).multipliedBy(poolInputValue).toNumber() || 0;
+      maxInputShare = Math.ceil(maxInputShareOriginal) || 0;
       maxOutputShare = Math.ceil(new BigNumber(sharePercent).multipliedBy(poolOutputValue).toNumber()) || 0;
     }
 
@@ -426,6 +452,7 @@ export const actionFilterRemovePoolOutput = () => async (dispatch, getState) => 
       maxInputShare,
       maxOutputShare,
       sharePercent,
+      maxInputShareOriginal,
     };
     batch(() => {
       dispatch(actionUpdateFieldValue(params));

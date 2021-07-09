@@ -1,10 +1,9 @@
 import React from 'react';
 import ErrorBoundary from '@src/components/ErrorBoundary';
 import accountServices from '@services/wallet/accountService';
-import {HEADER_TABS, TRANSACTION_FEE} from '@screens/Dex/Liquidity.constants';
+import { HEADER_TABS, TRANSACTION_FEE } from '@screens/Dex/Liquidity.constants';
 import Loading from '@screens/Dex/components/Loading';
-import {ExHandler} from '@services/exception';
-import {MESSAGES} from '@screens/Dex/constants';
+import { ExHandler } from '@services/exception';
 import BigNumber from 'bignumber.js';
 
 const withTransaction = WrappedComp => props => {
@@ -17,9 +16,9 @@ const withTransaction = WrappedComp => props => {
     outputToken,
     tabName,
     onSuccess,
-    maxInputShare,
     share,
     withdrawFeeValue,
+    maxInputShareOriginal,
   } = props;
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState('');
@@ -39,13 +38,18 @@ const withTransaction = WrappedComp => props => {
   };
 
   const onRemovePool = async () => {
-    const shareWithdraw = Math.floor(new BigNumber(inputValue).dividedBy(maxInputShare).multipliedBy(share).toNumber());
+    let shareWithdraw = Math.ceil(new BigNumber(inputValue).dividedBy(maxInputShareOriginal).multipliedBy(share).toNumber());
+    if (shareWithdraw > share) {
+      shareWithdraw = share;
+    }
     await accountServices.createAndSendWithdrawContributionTx({
       account,
       wallet,
       tokenID1: inputToken?.id,
       tokenID2: outputToken?.id,
       withdrawalShareAmt: shareWithdraw,
+      amount1: inputValue,
+      amount2: outputValue,
       fee: TRANSACTION_FEE
     });
   };

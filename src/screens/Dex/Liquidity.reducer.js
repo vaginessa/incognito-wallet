@@ -53,6 +53,7 @@ const initialState = {
     share: 0,
     fee: TRANSACTION_FEE,
     maxInputShare: 0,
+    maxInputShareOriginal: 0,
     maxOutputShare: 0,
     sharePercent: 0,
   },
