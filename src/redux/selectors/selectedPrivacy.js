@@ -46,6 +46,7 @@ export const getPrivacyDataByTokenID = createSelector(
           account,
           { ...internalTokenData, ...followedTokenData },
           pTokenData,
+          tokenID,
         );
         const tokenUSDT = pTokens.find(
           (token) => token?.tokenId === BIG_COINS.USDT,
