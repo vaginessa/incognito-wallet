@@ -108,7 +108,7 @@ export const historiesSelector = createSelector(
       }
       return !isExist;
     }).concat(apiHistories)
-    , 'blockTime', ['desc']);
+    , 'lockTime', ['desc']);
   }),
 );
 
