@@ -6,5 +6,6 @@ export const TYPES = {
   ACTION_CONVERTING: '[convert] action converting',
   ACTION_UPDATE_CURRENT_CONVERT_STEP: '[convert] action update current convert step',
   ACTION_CONVERTED: '[convert] action converted',
-  ACTION_UPDATE_CONVERT_MESSAGE: '[convert] action update convert message'
+  ACTION_UPDATE_CONVERT_MESSAGE: '[convert] action update convert message',
+  ACTION_UPDATE_PERCENT_CONVERT: '[convert] action update percent convert'
 };

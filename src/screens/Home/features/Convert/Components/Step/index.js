@@ -10,18 +10,21 @@ import { useDispatch, useSelector } from 'react-redux';
 import { convertCoinsDataSelector, convertGetConvertStepSelector } from '@screens/Home/features/Convert/Convert.selector';
 import { ButtonBasic } from '@components/Button';
 import { actionConvertCoins } from '@screens/Home/features/Convert/Convert.actions';
-import {MESSAGES} from '@screens/Dex/constants';
-import ExtraInfo from '@screens/DexV2/components/ExtraInfo';
+import { MESSAGES } from '@screens/Dex/constants';
+import { getDefaultAccountWalletSelector } from '@src/redux/selectors/shared';
 
 const ConvertStep = () => {
   const dispatch = useDispatch();
-  const { convertStep: currentStep, messages, isConverting, isConverted }= useSelector(convertCoinsDataSelector);
+  const { convertStep: currentStep, messages, isConverting, isConverted, percents }= useSelector(convertCoinsDataSelector);
   const steps = useSelector(convertGetConvertStepSelector);
+  const accountWallet = useSelector(getDefaultAccountWalletSelector);
   const flatListRef = React.useRef(null);
+  const [message, setMessage] = React.useState('');
 
   const renderStep = (data) => {
     const { key, name, tokenID } = data?.item;
     const status = messages.find((item) => item?.tokenID === tokenID);
+    const percent = percents[tokenID] || 0;
     let statusColor = COLORS.black;
     let error;
     if (status) {
@@ -41,8 +44,8 @@ const ConvertStep = () => {
               type="material-community"
             />
           )}
-          <Text style={[styles.stepText]}>
-            {name}
+          <Text style={styles.stepText}>
+            {`${name} (${percent}%)`}
           </Text>
         </View>
         {!!error && <Text style={styles.errorText}>{error}</Text>}
@@ -62,9 +65,22 @@ const ConvertStep = () => {
     dispatch(actionConvertCoins());
   };
 
+  const progress = async () => {
+    const message = await accountWallet.getDebugMessage();
+    setMessage(message);
+  };
+
   React.useEffect(() => {
     handleScrollStep();
   }, [currentStep, steps]);
+
+  React.useEffect(() => {
+    accountWallet.resetProgressTx();
+    const interval = setInterval(() => {
+      progress();
+    }, 100);
+    return () => clearInterval(interval);
+  }, []);
 
   return(
     <View style={{ marginTop: 30, flex: 1 }}>
@@ -76,6 +92,7 @@ const ConvertStep = () => {
           keyExtractor={(item) => item.key}
         />
       </View>
+      <Text style={styles.text}>{message}</Text>
       <ButtonBasic
         title={isConverted ? 'Converted' : isConverting ? 'Converting...' : 'Convert'}
         btnStyle={{ marginTop: 30, marginBottom: 50 }}
@@ -89,8 +106,6 @@ const ConvertStep = () => {
   );
 };
 
-ConvertStep.propTypes = {
-  loading: PropTypes.bool.isRequired,
-};
+ConvertStep.propTypes = {};
 
 export default memo(ConvertStep);

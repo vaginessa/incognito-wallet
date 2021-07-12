@@ -8,6 +8,8 @@ import {getDefaultAccountWalletSelector} from '@src/redux/selectors/shared';
 import {isEmpty} from 'lodash';
 import {convertCoinsDataSelector} from '@screens/Home/features/Convert/Convert.selector';
 import {ExHandler} from '@services/exception';
+import {actionLogEvent} from '@screens/Performance';
+import {batch} from 'react-redux';
 
 export const actionFetched = (payload) => ({
   type: TYPES.ACTION_FETCH_COINS_V1,
@@ -45,6 +47,11 @@ export const actionUpdateConvertMessages = (payload) => ({
 
 export const actionConverted = () => ({
   type: TYPES.ACTION_CONVERTED,
+});
+
+export const actionUpdatePercentConvert = (payload) => ({
+  type: TYPES.ACTION_UPDATE_PERCENT_CONVERT,
+  payload
 });
 
 export const actionFetchCoinsV1 = (isRefresh = false) => async (dispatch, getState) => {
@@ -97,11 +104,20 @@ export const actionConvertCoins = () => async (dispatch, getState) => {
     const { prvUnspent, pTokenUnspent } = convertCoinsDataSelector(state);
     const accountWallet = getDefaultAccountWalletSelector(state);
     if (!isEmpty(prvUnspent)) {
-      const { tokenID, balance } = prvUnspent;
+      const { tokenID, balance, unspentCoins } = prvUnspent;
+      const totalCoinsConvert = unspentCoins.length;
       let errorMessage = undefined;
       try {
         dispatch(actionUpdateCurrentConvertStep(tokenID));
-        await accountWallet.createAndSendConvertNativeToken({ tokenID, balance });
+        const txHandler = ({ timeCreate, remainInputCoins, tokenID, txId: txID }) => {
+          const percent = Math.ceil((1 - (remainInputCoins / totalCoinsConvert)) * 100);
+          const log = { tokenID, txID, timeCreate, remainInputCoins };
+          batch(() => {
+            dispatch(actionLogEvent({ desc: log }));
+            dispatch(actionUpdatePercentConvert({ tokenID, percent }));
+          });
+        };
+        await accountWallet.createAndSendConvertNativeToken({ tokenID, balance, txHandler });
       } catch (error) {
         errorMessage = new ExHandler(error).getMessage();
       } finally {
@@ -111,11 +127,20 @@ export const actionConvertCoins = () => async (dispatch, getState) => {
 
     if (!isEmpty(pTokenUnspent)) {
       for (const coin of pTokenUnspent) {
-        const { tokenID, balance } = coin;
+        const { tokenID, balance, unspentCoins } = coin;
+        const totalCoinsConvert = unspentCoins.length;
         let errorMessage = undefined;
         try {
+          const txHandler = ({ timeCreate, remainInputCoins, tokenID, txId: txID }) => {
+            const percent = Math.ceil((1 - (remainInputCoins / totalCoinsConvert)) * 100);
+            const log = { tokenID, txID, timeCreate, remainInputCoins };
+            batch(() => {
+              dispatch(actionLogEvent({ desc: log }));
+              dispatch(actionUpdatePercentConvert({ tokenID, percent }));
+            });
+          };
           dispatch(actionUpdateCurrentConvertStep(tokenID));
-          await accountWallet.createAndSendConvertPToken({ tokenID, balance });
+          await accountWallet.createAndSendConvertPToken({ tokenID, balance, txHandler });
         } catch (error) {
           errorMessage = new ExHandler(error).getMessage();
         } finally {

@@ -9,7 +9,7 @@ const initialClearState = {
   convertStep: undefined, // followed by tokenID
 
   messages: [], // tokenID, error message
-
+  percents: {}, // tokenID, percent convert
   data: {
     unspentCoins: [],
     address: undefined
@@ -41,7 +41,8 @@ const convertReducer = (state = initialState, action) => {
     return {
       ...state,
       ...initialClearState,
-      messages: []
+      messages: [],
+      percents: {}
     };
   }
   case TYPES.ACTION_REFRESHING_COINS_V1: {
@@ -76,6 +77,14 @@ const convertReducer = (state = initialState, action) => {
       convertStep: undefined,
       isConverting: false,
       isConverted: true,
+    };
+  }
+  case TYPES.ACTION_UPDATE_PERCENT_CONVERT: {
+    const { tokenID, percent } = action.payload;
+    const combinePercents = Object.assign(state?.percents, { [tokenID]: percent });
+    return {
+      ...state,
+      percents: combinePercents
     };
   }
   default:

@@ -92,9 +92,10 @@ const styles = StyleSheet.create({
     ...TextStyle.normalText,
     color: COLORS.black,
     fontFamily: FONT.NAME.medium,
-    fontSize: FONT.SIZE.superMedium,
+    fontSize: FONT.SIZE.regular,
     marginTop: 15,
     marginBottom: 5,
+    textAlign: 'center'
   },
   item_container_error: {
     borderBottomColor: '#E5E9EA',

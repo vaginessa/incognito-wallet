@@ -16,7 +16,7 @@ export const HISTORY_STATUS = {
   REFUND: ['refund', 'xPoolTradeRefundFee', 'xPoolTradeRefundSellingToken'],
   REJECTED: ['rejected', 'withPRVFeeRejected'],
   ACCEPTED: ['accepted', 'xPoolTradeAccepted', TX_STATUS.TXSTATUS_SUCCESS],
-  FAIL: [TX_STATUS.TXSTATUS_FAILED, TX_STATUS.TXSTATUS_UNKNOWN],
+  FAIL: [TX_STATUS.TXSTATUS_FAILED, TX_STATUS.TXSTATUS_CANCELED],
 
 };
 
