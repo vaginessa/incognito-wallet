@@ -63,13 +63,12 @@ const ConvertTokenList = React.memo(({ onNavigateToConvert, onPullRefresh }) => 
   const renderButton = () => {
     if (!hasUnspentCoins || isRefreshing) return null;
     return(
-      <View>
+      <View style={{ height: 80 }}>
         <ButtonBasic
           title="Go to convert screen"
           disabled={!hasUnspentCoins}
           onPress={onNavigateToConvert}
         />
-        <View style={{ height: 20 }} />
       </View>
     );
   };
@@ -87,7 +86,7 @@ const ConvertTokenList = React.memo(({ onNavigateToConvert, onPullRefresh }) => 
     if (isFetching && !isRefreshing) return <LoadingContainer />;
     if (isEmpty(coins)) return renderEmptyView();
     return (
-      <>
+      <View style={{ flex: 1, justifyContent: 'space-between' }}>
         <FlatList
           refreshControl={
             <RefreshControl refreshing={isRefreshing} onRefresh={onPullRefresh} />
@@ -99,16 +98,14 @@ const ConvertTokenList = React.memo(({ onNavigateToConvert, onPullRefresh }) => 
           style={{ paddingTop: 10 }}
         />
         {renderButton()}
-      </>
+      </View>
     );
   };
 
   return (
     <View style={{ flex: 1 }}>
       <Header title="Convert Coins" accountSelectable />
-      <View style={{ flex: 1 }}>
-        {renderContent()}
-      </View>
+      {renderContent()}
     </View>
   );
 });
