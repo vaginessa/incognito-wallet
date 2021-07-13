@@ -232,7 +232,7 @@ export const CONSTANTS = {
   INC_BSC_CONTRACT_ADDRESS: global.severDefault ? global.severDefault.IncBSCContractAddress : '0x43D037A562099A4C2c95b1E2120cc43054450629',
   ETH_HOST: isMainnet
     ? 'https://eth-fullnode.incognito.org'
-    : 'wss://kovan.infura.io/ws/v3/a59348d27e9c4784a877c0fc2f9b798a',
+    : 'https://kovan.infura.io/v3/8c1ae0e623704f288eab73928a9243f5',
   BSC_HOST: isMainnet
     ? 'https://bsc-dataseed1.ninicoin.io'
     : 'https://data-seed-prebsc-1-s1.binance.org:8545',

@@ -112,6 +112,7 @@ export const actionConditionConsolidate = ({ version = PrivacyVersion.ver2 } = {
     let followed = cloneDeep(tokenSelector.tokensFollowedSelector(state));
     const address = accountWallet?.getPaymentAddress();
     followed = [{ id: PRV_ID }].concat(followed);
+    await accountWallet.getCoinsInMempoolCached();
     const tasks = followed.map(async ({ id: tokenID }) => {
       const unspentCoins = (await accountWallet.getSpendingCoins({ tokenID, version })) || [];
       return {

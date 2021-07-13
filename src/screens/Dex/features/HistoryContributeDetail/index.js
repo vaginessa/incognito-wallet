@@ -86,7 +86,12 @@ const HistoryContributeDetail = React.memo(({
 
   const renderContent = () => {
     let contributes = history?.contributes;
-    if ([LIQUIDITY_STATUS_MESSAGE.SUCCESSFUL, LIQUIDITY_STATUS_MESSAGE.REFUNDED].includes(statusText)) {
+    const contributeMatched = contributes.filter(({ status }) => status === LIQUIDITY_STATUS.MATCHED);
+    const contributeWaiting = contributes.filter(({ status }) => status === LIQUIDITY_STATUS.WAITING);
+    const isCreatePool = contributeMatched.length === 1 && contributeWaiting.length === 1;
+    if (LIQUIDITY_STATUS_MESSAGE.SUCCESSFUL === statusText && isCreatePool) {
+      contributes = [...contributeWaiting, ...contributeMatched];
+    } else if ([LIQUIDITY_STATUS_MESSAGE.SUCCESSFUL, LIQUIDITY_STATUS_MESSAGE.REFUNDED].includes(statusText)) {
       contributes = history?.contributes.filter(({ status }) => status !== LIQUIDITY_STATUS.WAITING);
     }
     return contributes.map(renderSection);
