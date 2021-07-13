@@ -1,13 +1,18 @@
 import React from 'react';
 import ErrorBoundary from '@src/components/ErrorBoundary';
-import {actionClearConvertData, actionFetchCoinsV1} from '@screens/Home/features/Convert/Convert.actions';
-import { useNavigation } from 'react-navigation-hooks';
+import {
+  actionClearConvertData,
+  actionFetchCoinsV1,
+} from '@screens/Home/features/Convert/Convert.actions';
+import { useFocusEffect, useNavigation } from 'react-navigation-hooks';
 import { useDispatch, useSelector } from 'react-redux';
 import { accountSelector } from '@src/redux/selectors';
 import { ExHandler } from '@services/exception';
 import routeNames from '@routers/routeNames';
+import { actionFree as actionFreeHistory } from '@src/redux/actions/history';
+import { clearSelectedPrivacy } from '@src/redux/actions/selectedPrivacy';
 
-const enhance = WrappedComp => props => {
+const enhance = (WrappedComp) => (props) => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const account = useSelector(accountSelector.defaultAccountSelector);
@@ -31,10 +36,17 @@ const enhance = WrappedComp => props => {
   React.useEffect(() => {
     if (!account) return;
     fetchCoinsV1();
-    return() => {
+    return () => {
       dispatch(actionClearConvertData());
     };
   }, [account]);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      dispatch(actionFreeHistory());
+      dispatch(clearSelectedPrivacy());
+    }, []),
+  );
 
   return (
     <ErrorBoundary>

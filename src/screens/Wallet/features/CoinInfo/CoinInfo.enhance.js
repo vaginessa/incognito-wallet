@@ -41,16 +41,15 @@ const enhance = (WrappedComp) => (props) => {
     if (selectedPrivacy?.isBep20Token) {
       return 'BSC network (BEP20)';
     }
-    if (selectedPrivacy?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BNB) {
+    if (
+      selectedPrivacy?.currencyType ===
+      CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BNB
+    ) {
       return 'Binance network';
     }
     return `${networkName} network`;
   };
   const infosFactories = [
-    {
-      label: 'Balance',
-      value: format.amount(amount, pDecimals),
-    },
     {
       label: 'Origin',
       value: getNetworkName(),
@@ -71,8 +70,9 @@ const enhance = (WrappedComp) => (props) => {
     {
       label: 'Contract ID',
       value: contractId,
-      link: isErc20Token ? `${CONSTANT_CONFIGS.ETHERSCAN_URL}/token/${contractId}` :
-        `${CONSTANT_CONFIGS.BSCSCAN_URL}/token/${contractId}`,
+      link: isErc20Token
+        ? `${CONSTANT_CONFIGS.ETHERSCAN_URL}/token/${contractId}`
+        : `${CONSTANT_CONFIGS.BSCSCAN_URL}/token/${contractId}`,
     },
     {
       label: 'Coin supply',

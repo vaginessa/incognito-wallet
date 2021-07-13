@@ -44,7 +44,10 @@ export const actionFetchFail = () => ({
   type: ACTION_FETCH_FAIL,
 });
 
-export const actionFetch = ({ tokenID } = {}) => async (dispatch, getState) => {
+export const actionFetch = ({
+  tokenID,
+  version = PrivacyVersion.ver2,
+} = {}) => async (dispatch, getState) => {
   try {
     const state = getState();
     const history = historySelector(state);
@@ -60,7 +63,7 @@ export const actionFetch = ({ tokenID } = {}) => async (dispatch, getState) => {
     const data = await accountWallet.getTxsHistory({
       tokenID: _tokenID,
       isPToken: selectedPrivacy.isPToken,
-      version: PrivacyVersion.ver2,
+      version,
     });
     await dispatch(actionFetched(data));
   } catch (error) {

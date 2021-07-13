@@ -92,6 +92,7 @@ import ConfirmRetryLiquidity from '@screens/Dex/features/ConfirmRetry';
 import TwoTokensSelect from '@screens/Dex/features/TwoTokensSelect';
 import SelectTokenStreamline from '@screens/Streamline/features/SelectTokens';
 import ConvertTokenList from '@screens/Home/features/Convert/features/ConvertTokenList';
+import HistoryConvert from '@src/screens/Home/features/HistoryConvert';
 
 const masterKeyRoutes = [
   {
@@ -473,7 +474,11 @@ const routes = [
   {
     screen: ConvertTokenList,
     name: routeNames.ConvertTokenList,
-  }
+  },
+  {
+    screen: HistoryConvert,
+    name: routeNames.HistoryConvert,
+  },
 ];
 
 export const getRoutesNoHeader = () =>

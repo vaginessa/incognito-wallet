@@ -8,22 +8,30 @@ import { switchAccountSelector } from '@src/redux/selectors/account';
 import { walletSelector } from '@src/redux/selectors/wallet';
 import { getBalance as getTokenBalance } from '@src/redux/actions/token';
 import { useFocusEffect } from 'react-navigation-hooks';
+import { PrivacyVersion } from 'incognito-chain-web-js/build/wallet';
 
-export const useHistoryEffect = () => {
+export const useHistoryEffect = (props) => {
+  const { version } = props || {};
   const wallet = useSelector(walletSelector);
   const account = useSelector(accountSelector.defaultAccountSelector);
   const dispatch = useDispatch();
   const switchAccount = useSelector(switchAccountSelector);
   const selectedPrivacy = useSelector(selectedPrivacySelector.selectedPrivacy);
-
   const handleRefresh = async () => {
     try {
-      if (selectedPrivacy.isMainCrypto) {
-        await dispatch(getAccountBalance(account));
-      } else if (selectedPrivacy.isToken) {
-        await dispatch(getTokenBalance(selectedPrivacy.tokenId));
+      switch (version) {
+      case PrivacyVersion.ver2: {
+        if (selectedPrivacy.isMainCrypto) {
+          await dispatch(getAccountBalance(account));
+        } else if (selectedPrivacy.isToken) {
+          await dispatch(getTokenBalance(selectedPrivacy.tokenId));
+        }
+        break;
       }
-      await dispatch(actionFetchHistory());
+      default:
+        break;
+      }
+      await dispatch(actionFetchHistory({ version }));
     } catch (error) {
       new ExHandler(error).showErrorToast();
     }

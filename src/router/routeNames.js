@@ -145,5 +145,6 @@ export default {
   ConfirmRetryLiquidity: 'ConfirmRetryLiquidity',
   TwoTokensSelect: 'TwoTokensSelect',
   SelectTokenStreamline: 'SelectTokenStreamline',
-  ConvertTokenList: 'ConvertTokenList'
+  ConvertTokenList: 'ConvertTokenList',
+  HistoryConvert: 'HistoryConvert',
 };
