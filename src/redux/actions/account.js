@@ -1,10 +1,10 @@
 /* eslint-disable import/no-cycle */
-import { PrivacyVersion } from 'incognito-chain-web-js/build/wallet';
+import { PrivacyVersion, Validator } from 'incognito-chain-web-js/build/wallet';
 import type from '@src/redux/types/account';
 import walletType from '@src/redux/types/wallet';
 import accountService from '@src/services/wallet/accountService';
 import { getPassphrase } from '@src/services/wallet/passwordService';
-import { reloadAccountList } from '@src/redux/actions/wallet';
+import { reloadAccountList, reloadWallet } from '@src/redux/actions/wallet';
 import AccountModel from '@src/models/account';
 import {
   currentMasterKeySelector,
@@ -88,11 +88,11 @@ export const removeAccount = (account) => async (dispatch, getState) => {
     wallet.deletedAccountIds = masterKey.deletedAccountIds;
     await accountService.removeAccount(PrivateKey, aesKey, wallet);
     await dispatch(updateMasterKey(masterKey));
-    dispatch({
+    await dispatch({
       type: type.REMOVE_BY_PRIVATE_KEY,
       data: PrivateKey,
     });
-    await dispatch(reloadAccountList());
+    await dispatch(reloadWallet());
     return true;
   } catch (e) {
     console.log('REMOVE ACCOUNT ERROR', e);
@@ -242,6 +242,13 @@ export const actionSwitchAccount = (
   shouldLoadBalance = true,
 ) => async (dispatch, getState) => {
   try {
+    new Validator('actionSwitchAccount-accountName', accountName)
+      .required()
+      .string();
+    new Validator(
+      'actionSwitchAccount-shouldLoadBalance',
+      shouldLoadBalance,
+    ).boolean();
     const state = getState();
     const account = accountSelector.getAccountByName(state)(accountName);
     const defaultAccountName = accountSelector.defaultAccountNameSelector(
@@ -402,7 +409,6 @@ export const actionFetchImportAccount = ({ accountName, privateKey }) => async (
     );
     if (isImported) {
       await dispatch(switchMasterKey(selectedMasterKey.name));
-      await dispatch(actionFetchedImportAccount());
       const accountList = await dispatch(reloadAccountList());
       const account = accountList.find(
         (acc) => acc?.name === accountName || acc?.AccountName === accountName,
@@ -410,10 +416,13 @@ export const actionFetchImportAccount = ({ accountName, privateKey }) => async (
       if (account) {
         await dispatch(followDefaultTokens(account));
         await dispatch(actionSwitchAccount(account?.name, true));
+        await dispatch(actionFetchedImportAccount());
       }
       if (selectedMasterKey !== masterless) {
         await storeWalletAccountIdsOnAPI(wallet);
       }
+    } else {
+      throw new Error('Import keychain error');
     }
     return isImported;
   } catch (error) {

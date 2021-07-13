@@ -680,9 +680,17 @@ export default class Account {
 
   static getAccount(defaultAccount, wallet) {
     try {
-      new Validator('defaultAccount', defaultAccount).required();
-      new Validator('wallet', wallet).required();
-      return getAccountWallet(defaultAccount, wallet);
+      new Validator('getAccount-defaultAccount', defaultAccount)
+        .object()
+        .required();
+      new Validator('getAccount-wallet', wallet).object().required();
+      const account = getAccountWallet(defaultAccount, wallet);
+      new Validator('getAccount-account', account).object().required();
+      if (!account?.name) {
+        throw new Error('Can not get account wallet!');
+      } else {
+        return account;
+      }
     } catch (error) {
       throw error;
     }
@@ -714,27 +722,29 @@ export default class Account {
       new Validator('wallet', wallet).object();
       new Validator('defaultAccount', defaultAccount).object();
       const account = this.getAccount(defaultAccount, wallet);
-      const keyInfo = (await account.getKeyInfo({ version })) || {};
-      const otaKey = account.getOTAKey();
-      const followedDefaultTokensKey = account.getKeyFollowedDefaultTokens();
-      let task = [
-        account.removeStorageCoinsV1(),
-        account.clearAccountStorage(otaKey),
-        account.clearAccountStorage(followedDefaultTokensKey),
-      ];
-      clearAllCaches();
-      if (keyInfo?.coinindex) {
-        task = task.concat(
-          Object.keys(keyInfo.coinindex).map((tokenID) => {
-            const params = {
-              tokenID,
-              version,
-            };
-            return account.clearCacheStorage(params);
-          }),
-        );
+      if (account) {
+        const keyInfo = (await account.getKeyInfo({ version })) || {};
+        const otaKey = account.getOTAKey();
+        const followedDefaultTokensKey = account.getKeyFollowedDefaultTokens();
+        let task = [
+          account.removeStorageCoinsV1(),
+          account.clearAccountStorage(otaKey),
+          account.clearAccountStorage(followedDefaultTokensKey),
+        ];
+        clearAllCaches();
+        if (keyInfo?.coinindex) {
+          task = task.concat(
+            Object.keys(keyInfo.coinindex).map((tokenID) => {
+              const params = {
+                tokenID,
+                version,
+              };
+              return account.clearCacheStorage(params);
+            }),
+          );
+        }
+        await Promise.all(task);
       }
-      await Promise.all(task);
     } catch (error) {
       new ExHandler(error).showErrorToast();
     }
@@ -1158,8 +1168,12 @@ export default class Account {
     new Validator('createAndSendWithdrawContributionTx-version', version)
       .required()
       .number();
-    new Validator('createAndSendWithdrawContributionTx-amount1', amount1).required().amount();
-    new Validator('createAndSendWithdrawContributionTx-amount1', amount1).required().amount();
+    new Validator('createAndSendWithdrawContributionTx-amount1', amount1)
+      .required()
+      .amount();
+    new Validator('createAndSendWithdrawContributionTx-amount1', amount1)
+      .required()
+      .amount();
 
     const accountWallet = getAccountWallet(account, wallet);
     let response = await accountWallet.createAndSendWithdrawContributionTx({

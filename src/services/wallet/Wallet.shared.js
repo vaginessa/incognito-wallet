@@ -1,17 +1,17 @@
-import { Validator, PrivacyVersion } from 'incognito-chain-web-js/build/wallet';
+import { Validator } from 'incognito-chain-web-js/build/wallet';
 
 export const getAccountNameByAccount = (account) => {
   new Validator('account', account).object().required();
   if (account) {
-    return account.name || account.AccountName || account.accountName;
+    return account.AccountName || account.name || account.accountName;
   }
   return '';
 };
 
 export const getAccountWallet = (account, wallet) => {
   try {
-    new Validator('account', account).object().required();
-    new Validator('wallet', wallet).object().required();
+    new Validator('getAccountWallet-account', account).object().required();
+    new Validator('getAccountWallet-wallet', wallet).object().required();
     const accountName = getAccountNameByAccount(account);
     if (!accountName) {
       return {};
