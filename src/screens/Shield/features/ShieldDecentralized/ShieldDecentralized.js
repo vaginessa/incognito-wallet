@@ -23,6 +23,7 @@ import { Row, Header, SuccessModal } from '@src/components';
 import ExtraInfo from '@screens/DexV2/components/ExtraInfo';
 import styles from '@screens/PoolV2/Provide/Input/style';
 import routeNames from '@routers/routeNames';
+import {COLORS} from '@src/styles';
 
 const ShieldDecentralized = (props) => {
   const {
@@ -212,10 +213,13 @@ const ShieldDecentralized = (props) => {
           />
         )}
         {isRejected && (
-          <Text style={styled.shieldMessage}>
+          <Text style={[styled.shieldMessage, { color: COLORS.red }]}>
             {SHIELD_MESSAGE.REJECTED_MESS}
           </Text>
         )}
+        <Text style={styled.shieldMessage}>
+          {SHIELD_MESSAGE.NOTE_MESSAGE}
+        </Text>
       </View>
       <View style={{ marginTop: 15 }}>
         {isConnect && (
@@ -254,7 +258,7 @@ const ShieldDecentralized = (props) => {
       <View styles={styled.wrapConnect}>
         <ButtonBasic
           onPress={onConnectorPress}
-          customContent={
+          customContent={(
             <View style={styled.connectHook}>
               <Text
                 numberOfLines={1}
@@ -264,7 +268,7 @@ const ShieldDecentralized = (props) => {
                 {SHIELD_BUTTON_TITLE.DISCONNECT}
               </Text>
             </View>
-          }
+          )}
           btnStyle={styled.btnConnect}
         />
       </View>

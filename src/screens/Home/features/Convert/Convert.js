@@ -9,6 +9,7 @@ import { convertCoinsDataSelector } from '@screens/Home/features/Convert/Convert
 import { useNavigation, useNavigationParam } from 'react-navigation-hooks';
 import { Toast } from '@components/core';
 import { MESSAGES } from '@screens/Dex/constants';
+import KeepAwake from 'react-native-keep-awake';
 
 const Convert = () => {
   const { isFetching, isConverting, isConverted } = useSelector(convertCoinsDataSelector);
@@ -33,6 +34,7 @@ const Convert = () => {
         }}
       />
       {isFetching ? <LoadingContainer /> : renderContent()}
+      <KeepAwake />
     </View>
   );
 };
