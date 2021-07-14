@@ -11,7 +11,7 @@ import { useFocusEffect } from 'react-navigation-hooks';
 import { PrivacyVersion } from 'incognito-chain-web-js/build/wallet';
 
 export const useHistoryEffect = (props) => {
-  const { version } = props || {};
+  const { version = PrivacyVersion.ver2 } = props || {};
   const wallet = useSelector(walletSelector);
   const account = useSelector(accountSelector.defaultAccountSelector);
   const dispatch = useDispatch();
