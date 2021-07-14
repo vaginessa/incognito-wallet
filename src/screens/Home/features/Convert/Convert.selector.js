@@ -15,7 +15,7 @@ export const convertCoinsDataSelector = createSelector(
   defaultAccountSelector,
   selectedPrivacySelector.getPrivacyDataByTokenID,
   (convert, account, fnc) => {
-    const { data: convertData, isFetching } = convert;
+    const { data: convertData, isFetching, messages } = convert;
     const { unspentCoins, address } = convertData;
     let currUnspentCoins = [];
     let hasUnspentCoins = false;
@@ -50,7 +50,7 @@ export const convertCoinsDataSelector = createSelector(
 
     const loading = !existAddress || isFetching;
     const isConvert = !loading && hasUnspentCoins;
-
+    const isError = (messages || []).some(item => !!item?.errorMessage);
     return {
       ...convert,
       coins: currUnspentCoins,
@@ -59,6 +59,7 @@ export const convertCoinsDataSelector = createSelector(
       isConvert,
       prvUnspent,
       pTokenUnspent,
+      isError,
     };
   },
 );
