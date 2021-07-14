@@ -5,7 +5,7 @@ import { accountSelector, tokenSelector } from '@src/redux/selectors';
 import { actionFetchHistoryMainCrypto } from '@src/redux/actions/token';
 import { ExHandler } from '@src/services/exception';
 import { getBalance as getAccountBalance } from '@src/redux/actions/account';
-import withMainCryptoHistory from './MainCryptoHistory.enhance';
+import withMainCryptoHistory from './MainCryptoHistory.convertTokenListEnhance';
 import EmptyHistory from './MainCryptoHistory.empty';
 
 const MainCryptoHistory = () => {

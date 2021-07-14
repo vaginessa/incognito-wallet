@@ -865,13 +865,11 @@ export default class Account {
     let accountWallet = cloneDeep(
       this.getAccount(account, wallet, PrivacyVersion.ver1),
     );
-    const unspentCoins = await accountWallet.getUnspentCoinsV1({
-      fromApi,
-    });
-    return {
-      unspentCoins,
-      accountWallet,
-    };
+    const listCoins = (await accountWallet.getUnspentCoinsV1()) || [];
+    return (listCoins).map(coin => ({
+      ...coin,
+      balance: new BigNumber(coin.balance || 0).toNumber()
+    }));
   }
 
   static async getPDexHistories({

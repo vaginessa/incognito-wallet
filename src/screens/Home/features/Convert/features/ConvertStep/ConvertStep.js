@@ -1,6 +1,5 @@
 import React, { memo } from 'react';
 import { FlatList, Text, View } from 'react-native';
-import PropTypes from 'prop-types';
 import styles from '@screens/Home/features/Convert/Convert.styled';
 import { ActivityIndicator } from '@components/core';
 import { Icon } from 'react-native-elements';
