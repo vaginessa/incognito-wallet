@@ -137,10 +137,11 @@ export const loadAllMasterKeys = () => async (dispatch, getState) => {
       await LocalDatabase.getMasterKeyList(),
       (item) => item.name,
     ).map((item) => new MasterKeyModel(item));
-    for (let key of masterKeyList) {
+    let task = [];
+    task = masterKeyList.map(async (key) => {
       await key.loadWallet();
       if (key.name.toLowerCase() === 'masterless') {
-        continue;
+        return;
       }
       let wallet = key.wallet;
       await configsWallet(wallet);
@@ -177,7 +178,8 @@ export const loadAllMasterKeys = () => async (dispatch, getState) => {
         await wallet.save();
       }
       await dispatch(actionLogMeasureStorageWallet(wallet));
-    }
+    });
+    await Promise.all(task);
     await dispatch(loadAllMasterKeysSuccess(masterKeyList));
   } catch (error) {
     throw error;
