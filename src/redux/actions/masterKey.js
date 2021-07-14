@@ -268,14 +268,11 @@ const syncUnlinkWithNewMasterKey = (newMasterKey) => async (
   const state = getState();
   const masterless = masterlessKeyChainSelector(state);
   const accounts = await masterless.getAccounts();
-
   const masterLessWallet = masterless.wallet;
   const wallet = newMasterKey.wallet;
-
   for (const account of accounts) {
     const findItemWithKey = (item) =>
       item.getPrivateKey() === account.PrivateKey;
-
     const isCreated = await wallet.hasCreatedAccount(account.PrivateKey);
     if (isCreated) {
       const masterAccountIndex = wallet.MasterAccount.child.findIndex(
@@ -288,7 +285,6 @@ const syncUnlinkWithNewMasterKey = (newMasterKey) => async (
       masterLessWallet.MasterAccount.child = masterLessWallet.MasterAccount.child.filter(
         (item) => !findItemWithKey(item),
       );
-
       if (masterAccountIndex > -1) {
         const masterAccount = wallet.MasterAccount.child[masterAccountIndex];
         masterlessAccount.name = masterAccount.name;
@@ -296,7 +292,6 @@ const syncUnlinkWithNewMasterKey = (newMasterKey) => async (
       } else {
         wallet.MasterAccount.child.push(masterlessAccount);
       }
-
       // Found duplicate account name
       if (wallet.MasterAccount.child.filter(findItemWithKey).length > 1) {
         const isDuplicatedNameAccount = wallet.MasterAccount.child.find(
@@ -311,13 +306,11 @@ const syncUnlinkWithNewMasterKey = (newMasterKey) => async (
             index++;
             newName = isDuplicatedNameAccount.name + index;
           }
-
           isDuplicatedNameAccount.name = newName;
         }
       }
     }
   }
-
   await saveWallet(masterLessWallet);
   await dispatch(updateMasterKey(masterless));
 };
@@ -340,6 +333,17 @@ export const importMasterKey = (data) => async (dispatch, getState) => {
     await dispatch(followDefaultTokenForWallet(wallet));
     await saveWallet(wallet);
     const listAccount = await wallet.listAccount();
+    try {
+      const task = listAccount.map((account) => {
+        const accountWallet = accountService.getAccount(account, wallet);
+        if (!!accountWallet && accountWallet?.name) {
+          return accountWallet.submitOTAKey();
+        }
+      });
+      await Promise.all(task);
+    } catch (error) {
+      console.log('SUBMIT OTA KEY ERROR', error);
+    }
     await dispatch(reloadWallet(listAccount[0]?.name));
     await dispatch(actionLogMeasureStorageWallet(wallet));
   } catch (error) {

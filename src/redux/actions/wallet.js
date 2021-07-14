@@ -68,7 +68,6 @@ export const reloadWallet = (accountName = '') => async (
         defaultAccount,
         wallet,
       );
-
       batch(() => {
         dispatch(setWallet(wallet));
         dispatch(setListAccount(listAccount));
