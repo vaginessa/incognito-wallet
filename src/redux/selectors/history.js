@@ -325,6 +325,8 @@ export const historyDetailFactoriesSelector = createSelector(
             label: 'Received tx',
             value: `${txReceive}`,
             disabled: !txReceive,
+            openUrl: !!txReceive,
+            handleOpenUrl: () => LinkingService.openUrl(txReceive),
           },
           {
             label: 'Status',
@@ -374,7 +376,6 @@ export const historyDetailFactoriesSelector = createSelector(
           {
             label: 'Coin',
             value: symbol,
-            copyable: true,
             disabled: !symbol,
           },
         ];
@@ -477,7 +478,6 @@ export const historyDetailFactoriesSelector = createSelector(
           {
             label: 'Coin',
             value: symbol,
-            copyable: true,
             disabled: !symbol,
           },
         ];
