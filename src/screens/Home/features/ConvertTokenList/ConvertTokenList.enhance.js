@@ -1,5 +1,5 @@
 import React from 'react';
-import ErrorBoundary from '@src/components/ErrorBoundary';
+import ErrorBoundary from '@components/ErrorBoundary';
 import {
   actionClearConvertData,
   actionFetchCoinsV1,
