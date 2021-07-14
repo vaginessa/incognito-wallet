@@ -1,7 +1,6 @@
 import { walletSelector } from '@src/redux/selectors/wallet';
 import { accountSelector } from '@src/redux/selectors';
 import accountService from '@services/wallet/accountService';
-import { PRV_ID } from '@screens/Dex/constants';
 import { switchAccountSelector } from '@src/redux/selectors/account';
 import { TYPES } from '@screens/Home/features/Convert/Convert.actionsName';
 import {getDefaultAccountWalletSelector} from '@src/redux/selectors/shared';
@@ -72,24 +71,11 @@ export const actionFetchCoinsV1 = (isRefresh = false) => async (dispatch, getSta
     const wallet = walletSelector(state);
     const account = accountSelector.defaultAccountSelector(state);
     const address = account.PaymentAddress;
-    let { unspentCoins } = await accountService.getUnspentCoinsV1({
-      account,
-      wallet,
-      fromApi: true
-    });
-    unspentCoins = unspentCoins.map(coin => {
-      if ((coin.tokenID === PRV_ID && coin.balance < 100) || (coin.tokenID !== PRV_ID && coin.balance === 0)) {
-        return {
-          ...coin,
-          balance: 0,
-          unspentCoins: []
-        };
-      }
-      return coin;
-    });
+    let unspentCoins = await accountService.getUnspentCoinsV1({ account, wallet });
     data = { unspentCoins, address };
   } catch (error) {
     console.log('ACTION FETCH COINS V1 error: ', error);
+    new ExHandler(error).showErrorToast(true);
   } finally {
     dispatch(actionFetched({ data }));
   }

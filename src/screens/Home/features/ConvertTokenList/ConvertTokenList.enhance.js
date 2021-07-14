@@ -1,5 +1,5 @@
 import React from 'react';
-import ErrorBoundary from '@src/components/ErrorBoundary';
+import ErrorBoundary from '@components/ErrorBoundary';
 import {
   actionClearConvertData,
   actionFetchCoinsV1,
@@ -12,7 +12,7 @@ import routeNames from '@routers/routeNames';
 import { actionFree as actionFreeHistory } from '@src/redux/actions/history';
 import { clearSelectedPrivacy } from '@src/redux/actions/selectedPrivacy';
 
-const enhance = (WrappedComp) => (props) => {
+const convertTokenListEnhance = (WrappedComp) => (props) => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const account = useSelector(accountSelector.defaultAccountSelector);
@@ -61,4 +61,4 @@ const enhance = (WrappedComp) => (props) => {
   );
 };
 
-export default enhance;
+export default convertTokenListEnhance;

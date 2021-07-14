@@ -1,10 +1,9 @@
 import React from 'react';
 import ErrorBoundary from '@src/components/ErrorBoundary';
-import { debounce } from 'lodash';
 import {useDispatch, useSelector} from 'react-redux';
 import { accountSelector } from '@src/redux/selectors';
 import { BottomBar } from '@components/core';
-import { useFocusEffect, useNavigation } from 'react-navigation-hooks';
+import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@routers/routeNames';
 import { ExHandler } from '@services/exception';
 import { actionClearConvertData, actionFetchCoinsV1 } from '@screens/Home/features/Convert/Convert.actions';

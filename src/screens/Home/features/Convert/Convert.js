@@ -3,7 +3,7 @@ import { View } from 'react-native';
 import { Header, LoadingContainer } from '@src/components';
 import { compose } from 'recompose';
 import { withLayout_2 } from '@components/Layout';
-import ConvertStep from '@screens/Home/features/Convert/Components/Step';
+import ConvertStep from '@screens/Home/features/ConvertStep';
 import { useSelector } from 'react-redux';
 import { convertCoinsDataSelector } from '@screens/Home/features/Convert/Convert.selector';
 import { useNavigation, useNavigationParam } from 'react-navigation-hooks';

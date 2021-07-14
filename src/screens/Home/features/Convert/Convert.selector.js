@@ -3,6 +3,7 @@ import { defaultAccountSelector } from '@src/redux/selectors/account';
 import { PRV_ID } from '@screens/Dex/constants';
 import { MAX_FEE_PER_TX } from '@components/EstimateFee/EstimateFee.utils';
 import { selectedPrivacySelector } from '@src/redux/selectors';
+import orderBy from 'lodash/orderBy';
 
 export const convertCoinsSelector = createSelector(
   (state) => state.convert,
@@ -12,7 +13,8 @@ export const convertCoinsSelector = createSelector(
 export const convertCoinsDataSelector = createSelector(
   convertCoinsSelector,
   defaultAccountSelector,
-  (convert, account) => {
+  selectedPrivacySelector.getPrivacyDataByTokenID,
+  (convert, account, fnc) => {
     const { data: convertData, isFetching } = convert;
     const { unspentCoins, address } = convertData;
     let currUnspentCoins = [];
@@ -29,7 +31,19 @@ export const convertCoinsDataSelector = createSelector(
         }
         return coin.balance > 0;
       });
-
+      currUnspentCoins = currUnspentCoins.map(coin => {
+        const { tokenID } = coin;
+        const token = fnc(tokenID);
+        return {
+          ...coin,
+          ...token,
+          tokenId: tokenID,
+          name: `Convert ${token?.name}`,
+          key: tokenID,
+          tokenName: token?.name,
+        };
+      });
+      currUnspentCoins = orderBy(currUnspentCoins, item => item?.isVerified, 'desc');
       prvUnspent = currUnspentCoins.find((coin) => coin.tokenID === PRV_ID && coin.balance > MAX_FEE_PER_TX);
       pTokenUnspent = currUnspentCoins.filter((coin) => coin.tokenID !== PRV_ID && coin.balance > 0);
     }
@@ -51,21 +65,8 @@ export const convertCoinsDataSelector = createSelector(
 
 export const convertGetConvertStepSelector = createSelector(
   convertCoinsDataSelector,
-  selectedPrivacySelector.getPrivacyDataByTokenID,
-  (convert, fnc) => {
+  (convert) => {
     const { prvUnspent, pTokenUnspent } = convert;
-    const coins = [prvUnspent].concat(pTokenUnspent).filter(token => !!token);
-    return coins.map((coin) => {
-      const { tokenID } = coin;
-      const token = fnc(tokenID);
-      return {
-        ...coin,
-        ...token,
-        tokenId: tokenID,
-        name: `Convert ${token?.name}`,
-        key: tokenID,
-        tokenName: token?.name,
-      };
-    });
+    return [prvUnspent].concat(pTokenUnspent).filter(token => !!token);
   },
 );

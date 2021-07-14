@@ -2,7 +2,7 @@ import React from 'react';
 import { FlatList, RefreshControl, Text, View } from 'react-native';
 import { Header, LoadingContainer } from '@src/components';
 import { compose } from 'recompose';
-import enhance from '@screens/Home/features/Convert/features/ConvertTokenList/enhance';
+import convertTokenListEnhance from '@screens/Home/features/ConvertTokenList/ConvertTokenList.enhance';
 import { useDispatch, useSelector } from 'react-redux';
 import { convertCoinsDataSelector } from '@screens/Home/features/Convert/Convert.selector';
 import { styled } from '@components/Token/Token.styled';
@@ -21,7 +21,7 @@ import noTransaction from '@assets/images/icons/shield.png';
 import { styles } from '@screens/Wallet/features/HistoryToken/HistoryToken.empty';
 import { withLayout_2 } from '@components/Layout';
 import { useNavigation } from 'react-navigation-hooks';
-import routeNames from '@src/router/routeNames';
+import routeNames from '@routers/routeNames';
 import { setSelectedPrivacy } from '@src/redux/actions/selectedPrivacy';
 
 const Item = React.memo(({ item, maxSize, index, loading }) => {
@@ -129,12 +129,12 @@ const ConvertTokenList = React.memo(
       return (
         <View style={{ flex: 1, justifyContent: 'space-between' }}>
           <FlatList
-            refreshControl={
+            refreshControl={(
               <RefreshControl
                 refreshing={isRefreshing}
                 onRefresh={onPullRefresh}
               />
-            }
+            )}
             data={coins}
             showsVerticalScrollIndicator={false}
             renderItem={renderItem}
@@ -169,5 +169,5 @@ Item.propTypes = {
 
 export default compose(
   withLayout_2,
-  enhance,
+  convertTokenListEnhance,
 )(ConvertTokenList);
