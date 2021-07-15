@@ -61,7 +61,7 @@ const HistoryContributeDetail = React.memo(({
         disabled: isEmpty(status) || (statusText !== LIQUIDITY_STATUS_MESSAGE.WAITING),
       },
       {
-        label: `RespondTxID${index}`,
+        label: `ResponseTxID${index}`,
         valueText: respondTx,
         copyable: true,
         disabled: isEmpty(respondTx),
