@@ -1,23 +1,24 @@
 import { Validator } from 'incognito-chain-web-js/build/wallet';
 import { getTokenList } from '@services/api/token';
 import tokenService from '@services/wallet/tokenService';
-import { getAllTradingTokens } from '@services/trading';
 import _ from 'lodash';
 import { CustomError, ErrorCode, ExHandler } from '@services/exception';
 import { COINS, MESSAGES } from '@src/constants';
 import convertUtil from '@utils/convert';
 import { PRIORITY_LIST } from '@screens/Dex/constants';
+import { getAllTradingTokens } from '@services/trading';
 
-export const getPairsData = async ({ account }) => {
+export const getPairsData = async ({ accountWallet }) => {
   try {
-    new Validator('account', account).required();
+    new Validator('accountWallet', accountWallet).required();
     const now = Date.now();
-    const [pTokens, chainTokens, chainPairs, erc20Tokens] = await Promise.all([
-      getTokenList(),
-      tokenService.getPrivacyTokens(),
-      account.getPDeState(),
-      getAllTradingTokens(),
-    ]);
+    const tasks = [
+      await getTokenList(),
+      await tokenService.getPrivacyTokens(),
+      await accountWallet.getPDeStateCached(),
+      await getAllTradingTokens(),
+    ];
+    const [pTokens, chainTokens, chainPairs, erc20Tokens] = await Promise.all(tasks);
 
     let tokens = tokenService.mergeTokens(chainTokens, pTokens);
     const end = Date.now();
