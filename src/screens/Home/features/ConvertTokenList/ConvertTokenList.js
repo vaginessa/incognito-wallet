@@ -52,7 +52,7 @@ const Item = React.memo(({ item, maxSize, index, loading }) => {
       >
         <View style={styled.column}>
           <View style={{ flexDirection: 'row' }}>
-            <NormalText text={token?.name} style={styled.boldText} />
+            <NormalText text={token?.name || 'Incognito Token'} style={styled.boldText} />
             {!!token?.isVerified && <TokenVerifiedIcon />}
           </View>
           {!loading && (

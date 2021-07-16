@@ -3,7 +3,8 @@ import { createSelector } from 'reselect';
 import { MAX_FEE_PER_TX } from '@src/components/EstimateFee/EstimateFee.utils';
 import { defaultAccountSelector } from '@src/redux/selectors/account';
 import { MAX_NO_INPUT_DEFRAGMENT } from '@screens/Streamline/Streamline.constant';
-
+import BigNumber from 'bignumber.js';
+import isEmpty from 'lodash/isEmpty';
 
 export const streamlineSelector = createSelector(
   (state) => state.streamline,
@@ -23,13 +24,16 @@ export const streamlineUTXOSSelector = createSelector(
 export const streamlineConsolidateSelector = createSelector(
   defaultAccountSelector,
   streamlineUTXOSSelector,
-  (account, UTXOS) => {
+  streamlineSelector,
+  (account, UTXOS, { isFetchingUTXOS }) => {
     const address = account.PaymentAddress;
     const UTXOSFiltered = UTXOS.filter(item => item?.address === address) || [];
     const hasExceededMaxInputPRV = UTXOSFiltered.some(({ unspentCoins }) => unspentCoins.length > MAX_NO_INPUT_DEFRAGMENT);
     return {
       hasExceededMaxInputPRV,
       UTXOSFiltered,
+      isLoading: isEmpty(UTXOS),
+      isFetching: isFetchingUTXOS,
     };
   },
 );
@@ -45,8 +49,12 @@ export const streamlineDataSelector = createSelector(
     const currToken = UTXOSFiltered.find(item => item.tokenID === tokenID);
 
     let noUTXOS = 0;
+    let balance = 0;
     if (currToken) {
-      noUTXOS = currToken.unspentCoins.length;
+      noUTXOS = (currToken.unspentCoins || []).length;
+      balance = (currToken.unspentCoins || []).reduce((prev, coin) => {
+        return prev.plus(coin?.Value || 0);
+      }, new BigNumber(0)).toString();
     }
     const times = Math.ceil(noUTXOS / MAX_NO_INPUT_DEFRAGMENT);
     const totalFee = MAX_FEE_PER_TX * times;
@@ -55,6 +63,7 @@ export const streamlineDataSelector = createSelector(
       times,
       consolidated,
       noUTXOS,
+      balance
     };
   },
 );

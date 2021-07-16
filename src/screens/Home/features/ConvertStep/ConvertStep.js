@@ -44,7 +44,7 @@ const ConvertStep = () => {
             />
           )}
           <Text style={styles.stepText}>
-            {`${name} (${percent}%)`}
+            {`${name || 'Incognito Token'} (${percent}%)`}
           </Text>
         </View>
         {!!error && <Text style={styles.errorText}>{error}</Text>}

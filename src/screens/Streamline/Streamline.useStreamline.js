@@ -28,7 +28,7 @@ export const useStreamLine = ({ fetchUTXO = false } = {}) => {
   const { isFetching, isFetched, isPending, isFetchingUTXOS } = streamline;
   const streamlineStorage = useSelector(streamlineStorageSelector);
   const { data } = streamlineStorage[keySave];
-  const { totalFee, times, consolidated, noUTXOS } = useSelector(
+  const { totalFee, times, consolidated, noUTXOS, balance } = useSelector(
     streamlineDataSelector,
   );
   const account = useSelector(defaultAccountSelector);
@@ -55,7 +55,7 @@ export const useStreamLine = ({ fetchUTXO = false } = {}) => {
       array.push({
         title: 'Balance',
         desc: `${format.amount(
-          selectedPrivacy?.amount,
+          balance,
           selectedPrivacy.pDecimals,
           true,
         )} ${selectedPrivacy.symbol}`,

@@ -1,10 +1,10 @@
 import React from 'react';
-import {FlatList, Text, View} from 'react-native';
+import { FlatList, Text, View } from 'react-native';
 import PropTypes from 'prop-types';
-import {Header, LoadingContainer} from '@src/components';
-import {useDispatch, useSelector} from 'react-redux';
+import { Header, LoadingContainer } from '@src/components';
+import { useSelector } from 'react-redux';
 import { selectedPrivacySelector } from '@src/redux/selectors';
-import {streamlineConsolidateSelector, useStreamLine} from '@screens/Streamline';
+import {streamlineConsolidateSelector} from '@screens/Streamline';
 import BigNumber from 'bignumber.js';
 import {ActivityIndicator, TouchableOpacity} from '@components/core';
 import { styled } from '@components/Token/Token.styled';
@@ -14,7 +14,6 @@ import formatUtils from '@utils/format';
 import { balanceStyled } from '@screens/Wallet/features/Detail/Detail.styled';
 import { FONT } from '@src/styles';
 import { MAX_NO_INPUT_DEFRAGMENT } from '@screens/Streamline/Streamline.constant';
-import isEmpty from 'lodash/isEmpty';
 import withDetectUTXOS from '@screens/Streamline/Streamline.detectUTXOS';
 
 const Item = React.memo(({ item, maxSize, index, loading, onPress }) => {
@@ -40,7 +39,7 @@ const Item = React.memo(({ item, maxSize, index, loading, onPress }) => {
       <View style={[styled.container, maxSize === index && { marginBottom : 40 }]}>
         <View style={[styled.extra, styled.extraTop]}>
           <View style={{ flexDirection: 'row' }}>
-            <NormalText text={token?.name} style={styled.boldText} />
+            <NormalText text={token?.name || 'Incognito Token'} style={styled.boldText} />
             {(!!token?.isVerified) && <TokenVerifiedIcon />}
           </View>
           {loading ?
@@ -62,21 +61,22 @@ const Item = React.memo(({ item, maxSize, index, loading, onPress }) => {
   );
 });
 
-const SelectToken = React.memo(({ onSelectItem }) => {
-  const { UTXOSFiltered: UTXOS } = useSelector(streamlineConsolidateSelector);
-  const loading = isEmpty(UTXOS);
-  const renderItem = (data) => <Item item={data?.item} index={data?.index} maxSize={UTXOS.length - 1} loading={loading} onPress={onSelectItem} />;
+const SelectToken = React.memo(({ onSelectItem, onPullRefresh }) => {
+  const { UTXOSFiltered: UTXOS, isLoading, isFetching } = useSelector(streamlineConsolidateSelector);
+  const renderItem = (data) => <Item item={data?.item} index={data?.index} maxSize={UTXOS.length - 1} loading={isFetching} onPress={onSelectItem} />;
   return (
     <View style={{ marginHorizontal: 25, flex: 1 }}>
       <Header title="Consolidate" accountSelectable />
-      {isEmpty(UTXOS) ?
+      {(isLoading) ?
         (<LoadingContainer />) : (
           <FlatList
             data={UTXOS}
+            refreshing={isFetching}
             renderItem={renderItem}
             keyExtractor={item => item.tokenID}
             style={{ paddingTop: 30 }}
             showsVerticalScrollIndicator={false}
+            onRefresh={onPullRefresh}
           />
         )}
     </View>
@@ -85,7 +85,9 @@ const SelectToken = React.memo(({ onSelectItem }) => {
 
 SelectToken.propTypes = {
   onSelectItem: PropTypes.func.isRequired,
+  onPullRefresh: PropTypes.func.isRequired,
 };
+
 Item.propTypes = {
   item: PropTypes.object.isRequired,
   maxSize: PropTypes.number.isRequired,

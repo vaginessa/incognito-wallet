@@ -3,8 +3,8 @@ import ErrorBoundary from '@src/components/ErrorBoundary';
 import { useDispatch, useSelector } from 'react-redux';
 import { defaultAccountSelector } from '@src/redux/selectors/account';
 import { actionConditionConsolidate } from '@screens/Streamline/Streamline.actions';
-import {useNavigation} from 'react-navigation-hooks';
-import {setSelectedPrivacy} from '@src/redux/actions/selectedPrivacy';
+import { useNavigation } from 'react-navigation-hooks';
+import { setSelectedPrivacy } from '@src/redux/actions/selectedPrivacy';
 import routeNames from '@routers/routeNames';
 
 const withDetectUTXOS = WrappedComp => props => {
@@ -21,6 +21,10 @@ const withDetectUTXOS = WrappedComp => props => {
     });
   };
 
+  const onRefresh = () => {
+    checkConditionConsolidate();
+  };
+
   React.useEffect(() => {
     if (!refFirstTime.current) {
       checkConditionConsolidate();
@@ -35,6 +39,7 @@ const withDetectUTXOS = WrappedComp => props => {
           ...props,
           checkConditionConsolidate,
           onSelectItem,
+          onPullRefresh: onRefresh,
         }}
       />
     </ErrorBoundary>
