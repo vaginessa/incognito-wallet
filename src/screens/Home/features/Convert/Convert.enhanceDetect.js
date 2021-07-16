@@ -3,17 +3,19 @@ import ErrorBoundary from '@src/components/ErrorBoundary';
 import {useDispatch, useSelector} from 'react-redux';
 import { accountSelector } from '@src/redux/selectors';
 import { BottomBar } from '@components/core';
-import { useNavigation } from 'react-navigation-hooks';
+import {useFocusEffect, useNavigation} from 'react-navigation-hooks';
 import routeNames from '@routers/routeNames';
 import { ExHandler } from '@services/exception';
-import { actionClearConvertData, actionFetchCoinsV1 } from '@screens/Home/features/Convert/Convert.actions';
+import { actionFetchCoinsV1 } from '@screens/Home/features/Convert/Convert.actions';
 import { convertCoinsDataSelector } from '@screens/Home/features/Convert/Convert.selector';
+import { switchAccountSelector } from '@src/redux/selectors/account';
 
 const enhance = WrappedComp => (props) => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const account = useSelector(accountSelector.defaultAccountSelector);
   const { isConvert } = useSelector(convertCoinsDataSelector);
+  const switchingAccount = useSelector(switchAccountSelector);
 
   const fetchCoinsVersion1 = () => {
     try {
@@ -27,16 +29,12 @@ const enhance = WrappedComp => (props) => {
     navigation.navigate(routeNames.ConvertTokenList);
   };
 
-  React.useEffect(() => {
-    return () => {
-      dispatch(actionClearConvertData());
-    };
-  }, []);
-
-  React.useEffect(() => {
-    if (!account) return;
-    fetchCoinsVersion1();
-  }, [account]);
+  useFocusEffect(
+    React.useCallback(() => {
+      if (!account) return;
+      fetchCoinsVersion1();
+    }, [account]),
+  );
 
   return (
     <ErrorBoundary>
@@ -45,7 +43,7 @@ const enhance = WrappedComp => (props) => {
           ...props,
         }}
       />
-      {isConvert && (
+      {(isConvert && !switchingAccount) && (
         <BottomBar
           onPress={navigateConvert}
           text="Have unspent coins version 1"

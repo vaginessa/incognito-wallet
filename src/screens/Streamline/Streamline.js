@@ -117,7 +117,7 @@ const Streamline = (props) => {
   return (
     <View style={styled.container}>
       <Header
-        title={`Consolidate ${selectPrivacy?.symbol}`}
+        title={`Consolidate ${selectPrivacy?.symbol ? selectPrivacy?.symbol : ''}`}
         customHeaderTitle={(
           <BtnQuestionDefault
             style={styled.questionIcon}
