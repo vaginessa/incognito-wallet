@@ -20,7 +20,7 @@ const TEST_NODE_SERVER = {
 };
 const MAIN_NET_SERVER = {
   id: 'mainnet',
-  default: true,
+  default: false,
   address: MAINNET_FULLNODE,
   username: '',
   password: '',
@@ -91,6 +91,24 @@ const DEV_TEST_SERVER = {
   explorer: 'https://testnet1.incognito.org'
 };
 
+const PORTAL_LOCAL_SERVER = {
+  id: 'portallocal',
+  default: true,
+  address: 'http://192.168.85.58:9334',
+  username: '',
+  password: '',
+  name: 'Portal local server',
+  coinServices: 'http://51.161.119.66:9009',
+  pubsubServices: 'http://51.161.119.66:8001',
+  requestServices: 'http://51.161.119.66:5000',
+  apiServices: 'https://privacyv2-api-service.incognito.org',
+  shardNumber: 2,
+  IncContractAddress: '0xE0D5e7217c6C4bc475404b26d763fAD3F14D2b86',
+  IncBSCContractAddress: '0x1ce57B254DC2DBB41e1aeA296Dc7dBD6fb549241',
+  explorer: 'https://testnet1.incognito.org',
+  portalServices: 'http://192.168.85.58:8091'
+};
+
 const DEFAULT_LIST_SERVER = [
   LOCAL_SERVER,
   TEST_NET_SERVER,
@@ -98,6 +116,7 @@ const DEFAULT_LIST_SERVER = [
   MAIN_NET_SERVER,
   TEST_NET_1_SERVER,
   DEV_TEST_SERVER,
+  PORTAL_LOCAL_SERVER,
 ];
 
 export const KEY = {

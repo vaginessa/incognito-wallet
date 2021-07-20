@@ -157,12 +157,26 @@ export const actionFetch = ({ tokenId, selectedPrivacy, account }) => async (
   }
 };
 
-export const actionGetPortalMinShieldAmtAndShieldAddress = async ({ accountWallet, tokenID, incAddress}) => {
+export const actionGeneratePortalShieldAddress = async ({ accountWallet, tokenID, incAddress }) => {
   try {
+    let shieldingAddress = await accountWallet.getStoragePortalShieldAddress();
+    if (shieldingAddress) {
+      return shieldingAddress;
+    }
     const chainName = config.isMainnet ? 'mainnet' : 'testnet';
-    return accountWallet.handleGetMinShieldAmtAndGenerateShieldAddress({ tokenID, incAddress, chainName });
+    shieldingAddress = await accountWallet.handleGenerateShieldingAddress({ tokenID, incAddress, chainName });
+    await accountWallet.setStoragePortalShieldAddress({ shieldAddress: shieldingAddress });
+    return shieldingAddress;
   } catch (e) {
-    throw new Error('Can not get portal min amount to deposit and generate shield address');
+    throw new Error('Can not generate portal shield address');
+  }
+};
+
+export const actionGetPortalMinShieldAmt = async ({ accountWallet, tokenID }) => {
+  try {
+    return accountWallet.handleGetPortalMinShieldAmount({ tokenID });
+  } catch (e) {
+    throw new Error('Can not get portal min shielding amount');
   }
 };
 
@@ -192,8 +206,9 @@ export const actionPortalFetch = ({ tokenID, selectedPrivacy, account, accountWa
       return;
     }
     dispatch(actionFetching());
-    const { minShieldAmt, shieldingAddress } = await actionGetPortalMinShieldAmtAndShieldAddress({ accountWallet, tokenID, incAddress: account.paymentAddress });
 
+    const minShieldAmt = await actionGetPortalMinShieldAmt({ accountWallet, tokenID });
+    const shieldingAddress = await actionGeneratePortalShieldAddress({ accountWallet, tokenID, incAddress: account.paymentAddress });
     await actionAddPortalShieldAddress({ accountWallet, incAddress: account.paymentAddress, shieldingAddress });
 
     await dispatch(
