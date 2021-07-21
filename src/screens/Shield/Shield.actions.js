@@ -207,8 +207,11 @@ export const actionPortalFetch = ({ tokenID, selectedPrivacy, account, accountWa
     }
     dispatch(actionFetching());
 
-    const minShieldAmt = await actionGetPortalMinShieldAmt({ accountWallet, tokenID });
-    const shieldingAddress = await actionGeneratePortalShieldAddress({ accountWallet, tokenID, incAddress: account.paymentAddress });
+    const [minShieldAmt, shieldingAddress] = await Promise.all([
+      actionGetPortalMinShieldAmt({ accountWallet, tokenID }),
+      actionGeneratePortalShieldAddress({ accountWallet, tokenID, incAddress: account.paymentAddress })
+    ]);
+
     await actionAddPortalShieldAddress({ accountWallet, incAddress: account.paymentAddress, shieldingAddress });
 
     await dispatch(

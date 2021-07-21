@@ -552,10 +552,10 @@ export const historyDetailFactoriesSelector = createSelector(
           timeStr,
           amountStr,
           symbol,
-          userPaymentAddress,
           statusColor,
           inchainTx,
-          outchainTx
+          outchainTx,
+          incognitoAddress
         } = tx;
         return [
           {
@@ -576,8 +576,8 @@ export const historyDetailFactoriesSelector = createSelector(
           },
           {
             label: 'To address',
-            value: userPaymentAddress,
-            disabled: !userPaymentAddress,
+            value: incognitoAddress,
+            disabled: !incognitoAddress,
             copyable: true,
           },
           {
@@ -613,6 +613,7 @@ export const historyDetailFactoriesSelector = createSelector(
           inchainTx,
           outchainTx,
           externalAddress,
+          incognitoAddress,
           statusDetail
         } = tx;
         return [
@@ -643,6 +644,12 @@ export const historyDetailFactoriesSelector = createSelector(
             label: 'Time',
             value: timeStr,
             disabled: !timeStr,
+          },
+          {
+            label: 'From address',
+            value: incognitoAddress,
+            disabled: !incognitoAddress,
+            copyable: true,
           },
           {
             label: 'To address',
