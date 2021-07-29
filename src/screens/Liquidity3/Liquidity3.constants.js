@@ -19,7 +19,8 @@ export const MESSAGES = {
   add_favorite: 'Add favorite list +',
   swap: 'Swap',
   create_pool: 'Create new pool',
-  search_coin_input: 'Search coin pairs'
+  search_coin_input: 'Search coin pairs',
+  your_return: 'Your returns'
 };
 
 export const DEFAULT_FAVORITE_POOL_IDS = [

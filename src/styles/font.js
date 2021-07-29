@@ -58,6 +58,7 @@ const fontStyle = {
 
 const fontSizes = {
   superSmall: 12,
+  agvSmall: 13,
   small: 14,
   regular: 16,
   medium: 18,

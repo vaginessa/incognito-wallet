@@ -1,4 +1,4 @@
-import {apiGetFavoritePool, apiSearchPools} from '@screens/Liquidity3/Liquidity3.services';
+import {apiGetFavoritePool, apiGetPortfolio, apiSearchPools} from '@screens/Liquidity3/Liquidity3.services';
 import TYPES from '@screens/Liquidity3/Liquidity3.actionName';
 import {batch} from 'react-redux';
 
@@ -103,5 +103,15 @@ export const actionGetFavoritePool = () => async (dispatch, getState) => {
         favoritePool: data
       }));
     });
+  }
+};
+
+export const actionGetPortfolio = () => async (dispatch, getState) => {
+  let data = [];
+  try {
+    const state = getState();
+    data = (await apiGetPortfolio()) || [];
+  } catch (error) {
+    console.log('actionGetPortfolio error: ', error);
   }
 };
