@@ -73,3 +73,8 @@ export const getShareStr = (share, totalShare) => {
   return `${share} (${percent}%)`;
 };
 
+export const getReward = (token1, token2, token1Value, token2Value) => {
+  const token1Str = `${formatUtil.amount(token1Value, token1.pDecimals)} ${token1.symbol}`;
+  const token2Str = `${formatUtil.amount(token2Value, token2.pDecimals)} ${token2.symbol}`;
+  return `${token1Str} + ${token2Str}`;
+};

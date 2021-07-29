@@ -3,7 +3,7 @@ import memoize from 'memoize-one';
 import {selectedPrivacySelector} from '@src/redux/selectors';
 import isEmpty from 'lodash/isEmpty';
 import BigNumber from 'bignumber.js';
-import {getExchangeRate, getPrincipal, getShareStr} from '@screens/Liquidity3/Liquidity3.utils';
+import {getExchangeRate, getPrincipal, getReward, getShareStr} from '@screens/Liquidity3/Liquidity3.utils';
 
 export const liquidity3Selector = (state) => state.liquidity3;
 
@@ -63,13 +63,14 @@ export const portfolioItemDataSelector = createSelector(
   (getPrivacyDataByTokenID) =>
     memoize((data) => {
       if (!data || !data?.token1ID || !data?.token2ID) return null;
-      const { token1ID, token2ID, APY, token1PoolValue, token2PoolValue, share, totalShare } = data;
+      const { token1ID, token2ID, APY, token1PoolValue, token2PoolValue, share, totalShare, token1Reward, token2Reward } = data;
       const token1 = getPrivacyDataByTokenID(token1ID);
       const token2 = getPrivacyDataByTokenID(token2ID);
       const APYStr = `${APY}%`;
       const exchangeRateStr = getExchangeRate(token1, token2, token1PoolValue, token2PoolValue);
       const principalStr = getPrincipal(token1, token2, token1PoolValue, token2PoolValue);
       const shareStr = getShareStr(share, totalShare);
+      const rewardStr = getReward(token1, token2, token1Reward, token2Reward);
       return {
         ...data,
         token1,
@@ -78,6 +79,7 @@ export const portfolioItemDataSelector = createSelector(
         exchangeRateStr,
         principalStr,
         shareStr,
+        rewardStr,
       };
     }),
 );

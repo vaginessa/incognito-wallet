@@ -4,7 +4,6 @@ import {COLORS, FONT} from '@src/styles';
 const styled = StyleSheet.create({
   container: {
     marginBottom: 25,
-    backgroundColor: 'transparent',
   },
   wrapperHeader: {
     alignItems: 'center',
@@ -44,6 +43,23 @@ const styled = StyleSheet.create({
     fontSize: FONT.SIZE.medium,
     color: COLORS.black,
     marginRight: 5
+  },
+  extraLeft: {
+    ...FONT.STYLE.bold,
+    fontSize: FONT.SIZE.small,
+  },
+  extraRight: {
+    ...FONT.STYLE.normal,
+    fontSize: FONT.SIZE.small,
+    color: COLORS.lightGrey17,
+  },
+  wrapperReward: {
+    alignItems: 'center',
+    justifyContent: 'flex-end'
+  },
+  buttonClaim: {
+    backgroundColor: COLORS.colorBlue,
+    marginLeft: 10
   },
 });
 

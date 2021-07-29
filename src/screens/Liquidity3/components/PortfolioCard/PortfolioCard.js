@@ -8,22 +8,30 @@ import { ButtonBasic } from '@components/Button';
 import styled from '@screens/Liquidity3/components/PortfolioCard/PortfolioCard.styled';
 import ExtraInfo from '@screens/DexV2/components/ExtraInfo';
 
-const CustomExtraInfo = React.memo(({ left, right }) => {
+const CustomExtraInfo = React.memo(({ left, right, wrapperStyle }) => {
   return (
     <ExtraInfo
       left={left}
-      style={{}}
+      style={styled.extraLeft}
       right={right}
-      rightStyle={{}}
+      rightStyle={styled.extraRight}
+      wrapperStyle={wrapperStyle}
     />
   );
 });
 
 const PortfolioCard = React.memo(({ data }) => {
   const portfolio = useSelector(portfolioItemDataSelector)(data);
-  const { token1, token2, APYStr, AMP, exchangeRateStr, principalStr, shareStr } = portfolio;
+  if (!portfolio) return null;
+  const { token1, token2, APYStr, AMP, exchangeRateStr, principalStr, shareStr, rewardStr } = portfolio;
+  const renderRewardItem = () => (
+    <Row style={styled.wrapperReward}>
+      <Text style={[styled.extraRight]}>{rewardStr}</Text>
+      <ButtonBasic btnStyle={[styled.button, styled.buttonClaim]} titleStyle={styled.titleInvest} title="Claim" />
+    </Row>
+  );
   return (
-    <View>
+    <View style={styled.container}>
       <Row style={styled.wrapperHeader}>
         <Text style={styled.boldBlackText}>{`${token1?.symbol} / ${token2?.symbol}`}</Text>
         <Row>
@@ -36,12 +44,23 @@ const PortfolioCard = React.memo(({ data }) => {
       <CustomExtraInfo left="Exchange rate:" right={exchangeRateStr} />
       <CustomExtraInfo left="Principal:" right={principalStr} />
       <CustomExtraInfo left="Share:" right={shareStr} />
+      <CustomExtraInfo left="Reward:" right={renderRewardItem()} wrapperStyle={{ alignItems: 'center' }} />
     </View>
   );
 });
 
 PortfolioCard.propTypes = {
   data: PropTypes.object.isRequired
+};
+
+CustomExtraInfo.propTypes = {
+  wrapperStyle: null
+};
+
+CustomExtraInfo.propTypes = {
+  left: PropTypes.any.isRequired,
+  right: PropTypes.any.isRequired,
+  wrapperStyle: PropTypes.any,
 };
 
 export default PortfolioCard;
