@@ -41,6 +41,8 @@ const COLORS = {
   lightGrey19: '#F4F4F4',
   lightGrey20: '#D6D6D6',
   lightGrey30: '#F5F5F5',
+  lightGrey31: '#7B7B7B',
+  lightGrey32: '#B2B2B6',
   newGrey: '#8A8A8E',
   manateeGrey: '#959599',
 

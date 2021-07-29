@@ -35,7 +35,8 @@ const enhance = WrappedComp => props => {
   const navigation = useNavigation();
 
   const goToScreen = (route, params, event) => {
-    navigation.navigate(route, params);
+    navigation.navigate(routeNames.HomeLiquidity3, params);
+    // navigation.navigate(route, params);
     if (event) {
       logEvent(event);
     }

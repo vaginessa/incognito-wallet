@@ -147,4 +147,8 @@ export default {
   SelectTokenStreamline: 'SelectTokenStreamline',
   ConvertTokenList: 'ConvertTokenList',
   HistoryConvert: 'HistoryConvert',
+
+  // Liquidity3
+  HomeLiquidity3: 'HomeLiquidity3',
+  PoolListLiquidity3: 'PoolListLiquidity3',
 };

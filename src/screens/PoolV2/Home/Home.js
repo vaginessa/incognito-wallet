@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { compose } from 'recompose';
-import { View } from '@components/core';
+import {View} from '@components/core';
 import TotalReward from '@screens/PoolV2/Home/TotalReward';
 import { withLayout_2 } from '@components/Layout';
 import Actions from '@screens/PoolV2/Home/Actions';
@@ -37,6 +37,7 @@ const Home = ({
         <TotalReward
           total={displayClipTotalRewards}
           nativeToken={nativeToken}
+          subTitle="Compounding Rewards"
         />
         <Actions
           buy={!withdrawable}

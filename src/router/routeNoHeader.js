@@ -93,6 +93,7 @@ import TwoTokensSelect from '@screens/Dex/features/TwoTokensSelect';
 import SelectTokenStreamline from '@screens/Streamline/features/SelectTokens';
 import ConvertTokenList from '@screens/Home/features/ConvertTokenList';
 import HistoryConvert from '@src/screens/Home/features/HistoryConvert';
+import Liquidity3 from '@screens/Liquidity3';
 
 const masterKeyRoutes = [
   {
@@ -118,6 +119,17 @@ const masterKeyRoutes = [
   {
     screen: KeysExplained,
     name: routeNames.KeysExplained,
+  },
+];
+
+const liquidity3Routes = [
+  {
+    screen: Liquidity3.Home,
+    name: routeNames.HomeLiquidity3,
+  },
+  {
+    screen: Liquidity3.PoolList,
+    name: routeNames.PoolListLiquidity3,
   },
 ];
 
@@ -419,6 +431,7 @@ const routes = [
   },
   ...masterKeyRoutes,
   ...devRoutes,
+  ...liquidity3Routes,
   {
     screen: UpdateFirmware,
     name: routeNames.UpdateNodeFirmware,

@@ -11,7 +11,7 @@ import formatUtils from '@utils/format';
 import convert from '@utils/convert';
 import styles from './style';
 
-const TotalReward = ({ total, nativeToken }) => {
+const TotalReward = ({ total, nativeToken, title, subTitle, style, balanceStyle }) => {
   const pDecimals = nativeToken?.pDecimals || 0;
 
   const price = nativeToken?.priceUsd || 0;
@@ -26,8 +26,15 @@ const TotalReward = ({ total, nativeToken }) => {
   const displayClipTotalUSDRewards = formatUtils.amountFull(totalAmount, pDecimals, true);
 
   return (
-    <View>
-      <Row center style={[styles.rewards, { marginBottom: 0 }]}>
+    <View style={style}>
+      {!!title && (
+        <Row center style={{marginTop: 8}}>
+          <Text style={[styles.center, styles.rateStyle]}>
+            {title}
+          </Text>
+        </Row>
+      )}
+      <Row center style={[styles.rewards, { marginBottom: 0 }, balanceStyle]}>
         <Text>
           <PRVSymbol style={styles.symbol} />
           &nbsp;
@@ -46,12 +53,14 @@ const TotalReward = ({ total, nativeToken }) => {
           </Text>
         </Text>
       </Row>
-      <Row center style={{marginTop: 8}}>
-        <Text style={[styles.center, styles.rateStyle]}>
-          Compounding Rewards
-        </Text>
-        <HelpIcon screen={ROUTE_NAMES.PoolV2Help} style={styles.icon} />
-      </Row>
+      {!!subTitle && (
+        <Row center style={{marginTop: 8}}>
+          <Text style={[styles.center, styles.rateStyle]}>
+            Compounding Rewards
+          </Text>
+          <HelpIcon screen={ROUTE_NAMES.PoolV2Help} style={styles.icon} />
+        </Row>
+      )}
     </View>
   );
 };
@@ -59,9 +68,18 @@ const TotalReward = ({ total, nativeToken }) => {
 TotalReward.propTypes = {
   total: PropTypes.string.isRequired,
   nativeToken: PropTypes.any,
+  title: PropTypes.string,
+  subTitle: PropTypes.string,
+  style: PropTypes.any,
+  balanceStyle: PropTypes.any,
 };
 
 TotalReward.defaultProps = {
+  nativeToken: {},
+  title: '',
+  subTitle: '',
+  style: null,
+  balanceStyle: null
 };
 
 export default React.memo(TotalReward);
