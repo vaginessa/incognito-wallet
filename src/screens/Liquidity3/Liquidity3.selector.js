@@ -2,7 +2,6 @@ import {createSelector} from 'reselect';
 import memoize from 'memoize-one';
 import {selectedPrivacySelector} from '@src/redux/selectors';
 import isEmpty from 'lodash/isEmpty';
-import BigNumber from 'bignumber.js';
 import {getExchangeRate, getPrincipal, getReward, getShareStr} from '@screens/Liquidity3/Liquidity3.utils';
 
 export const liquidity3Selector = (state) => state.liquidity3;
@@ -30,14 +29,15 @@ export const poolListSelector = createSelector(
 export const fetchingSelector = createSelector(
   liquidity3Selector,
   memoize((liquidity3) => {
-    const { fetchingPool, refreshPool } = liquidity3;
+    const { fetchingPool, refreshPool, fetchingFavorite, fetchingPortfolio } = liquidity3;
     const isFetching = fetchingPool && !refreshPool;
     const isRefreshing = refreshPool && !fetchingPool;
-    const loadingFavorite = isFetching || isRefreshing;
+    const loadingFavorite = fetchingFavorite;
     return {
       isFetching,
       isRefreshing,
-      loadingFavorite
+      loadingFavorite,
+      fetchingPortfolio
     };
   })
 );
@@ -82,4 +82,12 @@ export const portfolioItemDataSelector = createSelector(
         rewardStr,
       };
     }),
+);
+
+export const portfolioListSelector = createSelector(
+  liquidity3Selector,
+  memoize((liquidity3) => {
+    const { portfolioList } = liquidity3;
+    return portfolioList || [];
+  })
 );

@@ -22,6 +22,11 @@ export const actionUpdateRefreshPool = (isRefresh) => ({
   payload: isRefresh,
 });
 
+export const actionFetchingFavoritePool = (isFetching) => ({
+  type: TYPES.ACTION_FETCHING_FAVORITE_POOL,
+  payload: isFetching,
+});
+
 export const actionClearPoolList = () => ({
   type: TYPES.ACTION_CLEAR_POOL_LIST,
 });
@@ -29,6 +34,11 @@ export const actionClearPoolList = () => ({
 export const actionUpdateFavoritePool = ({ poolIDs = [], favoritePool = [] }) => ({
   type: TYPES.ACTION_UPDATE_FAVORITE_POOL,
   payload: { poolIDs, favoritePool }
+});
+
+export const actionUpdateFetchingPortfolio = (isFetching) => ({
+  type: TYPES.ACTION_UPDATE_FETCHING_PORTFOLIO_DATA,
+  payload: isFetching
 });
 
 export const actionSearchPoolList = (newText, isRefresh) => async (dispatch) => {
@@ -88,7 +98,7 @@ export const actionGetFavoritePool = () => async (dispatch, getState) => {
   try {
     const state = getState();
     const { favoritePoolIDs } = state?.liquidity3;
-    dispatch(actionUpdateRefreshPool(true));
+    dispatch(actionFetchingFavoritePool(true));
 
     data = (await apiGetFavoritePool(favoritePoolIDs)) || [];
     data = data.filter(item => {
@@ -98,7 +108,7 @@ export const actionGetFavoritePool = () => async (dispatch, getState) => {
     console.log('actionGetFavoritePool error: ', error);
   } finally {
     batch(() => {
-      dispatch(actionUpdateRefreshPool(false));
+      dispatch(actionFetchingFavoritePool(false));
       dispatch(actionUpdateFavoritePool({
         favoritePool: data
       }));
@@ -106,12 +116,24 @@ export const actionGetFavoritePool = () => async (dispatch, getState) => {
   }
 };
 
-export const actionGetPortfolio = () => async (dispatch, getState) => {
+export const actionUpdatePortfolioData = (portfolioList) => ({
+  type: TYPES.ACTION_UPDATE_PORTFOLIO_DATA,
+  payload: portfolioList,
+});
+
+export const actionGetPortfolio = () => async (dispatch) => {
   let data = [];
   try {
-    const state = getState();
+    dispatch(actionUpdateFetchingPortfolio(true));
+    console.log('SANG TEST: 1');
     data = (await apiGetPortfolio()) || [];
+    console.log('SANG TEST: ', data);
   } catch (error) {
     console.log('actionGetPortfolio error: ', error);
+  } finally {
+    batch(() => {
+      dispatch(actionUpdateFetchingPortfolio(false));
+      dispatch(actionUpdatePortfolioData(data));
+    });
   }
 };

@@ -6,13 +6,18 @@ import { DEFAULT_FAVORITE_POOL_IDS } from '@screens/Liquidity3/Liquidity3.consta
 import isEmpty from 'lodash/isEmpty';
 
 const initialState = {
-  favoritePoolIDs: DEFAULT_FAVORITE_POOL_IDS,
-  favoritePool: [],
-
+  fetchingFavorite: false,
   fetchingPool: false,
   refreshPool: false,
+  fetchingPortfolio: false,
+
   searchPoolText: '',
-  poolList: []
+
+  favoritePoolIDs: DEFAULT_FAVORITE_POOL_IDS,
+
+  favoritePool: [],
+  poolList: [],
+  portfolioList: []
 };
 
 const Liquidity3Reducer = (state = initialState, action) => {
@@ -60,6 +65,24 @@ const Liquidity3Reducer = (state = initialState, action) => {
       ...state,
       favoritePoolIDs: favoritePoolIDs,
       favoritePool,
+    };
+  }
+  case TYPES.ACTION_FETCHING_FAVORITE_POOL: {
+    return {
+      ...state,
+      fetchingFavorite: action?.payload
+    };
+  }
+  case TYPES.ACTION_UPDATE_FETCHING_PORTFOLIO_DATA: {
+    return {
+      ...state,
+      fetchingPortfolio: action?.payload
+    };
+  }
+  case TYPES.ACTION_UPDATE_PORTFOLIO_DATA: {
+    return {
+      ...state,
+      portfolioList: action.payload || []
     };
   }
   default:

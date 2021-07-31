@@ -13,13 +13,7 @@ const enhance = WrappedComp => props => {
 
   const handleRemoveFavoritePool = (poolID) => dispatch(actionRemoveFavoritePool(poolID));
 
-  const getFavoritePool = () => dispatch(actionGetFavoritePool());
-
-  const handlePullRefresh = () => getFavoritePool();
-
-  React.useEffect(() => {
-    getFavoritePool();
-  }, []);
+  const handlePullRefresh = () => dispatch(actionGetFavoritePool());
 
   return (
     <ErrorBoundary>

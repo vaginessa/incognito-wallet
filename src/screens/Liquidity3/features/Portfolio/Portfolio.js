@@ -8,12 +8,14 @@ import {useSelector} from 'react-redux';
 import {selectedPrivacySelector} from '@src/redux/selectors';
 import {PRV_ID} from '@screens/DexV2/constants';
 import {RefreshControl} from '@components/core';
-import {MOCKUP_PORTFOLIO} from '@screens/Liquidity3/Liquidity3.mockup';
 import PortfolioCard from '@screens/Liquidity3/components/PortfolioCard/PortfolioCard';
+import {fetchingSelector, portfolioListSelector} from '@screens/Liquidity3/Liquidity3.selector';
 import enhance from './Portfolio.enhance';
 
 const Portfolio = React.memo(() => {
   const nativeToken = useSelector(selectedPrivacySelector.getPrivacyDataByTokenID)(PRV_ID);
+  const data = useSelector(portfolioListSelector);
+  const { fetchingPortfolio } = useSelector(fetchingSelector);
   const renderItem = (data) => <PortfolioCard data={data?.item} />;
   const renderKeyExtractor = (item) => item?.poolID;
   return (
@@ -26,13 +28,13 @@ const Portfolio = React.memo(() => {
         balanceStyle={styled.balanceStyle}
       />
       <FlatList
-        // refreshControl={(
-        //   <RefreshControl
-        //     refreshing={loadingFavorite}
-        //     onRefresh={onPullRefresh}
-        //   />
-        // )}
-        data={MOCKUP_PORTFOLIO}
+        refreshControl={(
+          <RefreshControl
+            refreshing={fetchingPortfolio}
+            onRefresh={() => {}}
+          />
+        )}
+        data={data}
         renderItem={renderItem}
         keyExtractor={renderKeyExtractor}
         showsVerticalScrollIndicator={false}
