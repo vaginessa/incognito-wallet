@@ -40,7 +40,6 @@ const ButtonBasic = (props) => {
     <TouchableOpacity
       style={[styled.container, btnStyle, disabled ? styled.disabled : null]}
       {...rest}
-      disabled={disabled}
     >
       {customContent ? (
         customContent
