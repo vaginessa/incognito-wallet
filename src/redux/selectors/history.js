@@ -357,11 +357,12 @@ export const historyDetailFactoriesSelector = createSelector(
           statusDetail,
           showDetail,
           erc20TokenAddress,
-          canRetryExpiredShield,
+          canResumeExpiredShield,
           outChainTx,
           receivedFundsStr,
           shieldingFeeStr,
           txReceive,
+          canRetryInvalidAmountShield
         } = tx;
         return [
           {
@@ -399,7 +400,8 @@ export const historyDetailFactoriesSelector = createSelector(
             valueTextStyle: { color: statusColor },
             detail: statusDetail,
             showDetail,
-            canRetryExpiredShield,
+            canResumeExpiredShield,
+            canRetryInvalidAmountShield,
           },
           {
             label: 'Time',
@@ -458,7 +460,6 @@ export const historyDetailFactoriesSelector = createSelector(
           statusDetail,
           showDetail,
           erc20TokenAddress,
-          canRetryExpiredShield,
           outChainTx,
           inchainFee,
           outchainFee,
@@ -495,7 +496,6 @@ export const historyDetailFactoriesSelector = createSelector(
             valueTextStyle: { color: statusColor },
             detail: statusDetail,
             showDetail,
-            canRetryExpiredShield,
           },
           {
             label: 'Time',
@@ -691,6 +691,7 @@ export const historyDetailFactoriesSelector = createSelector(
           timeStr,
           status,
           statusStr,
+          senderSeal,
         } = tx;
         let factories = [
           {
@@ -742,6 +743,12 @@ export const historyDetailFactoriesSelector = createSelector(
             label: 'Type',
             value: txTypeStr,
             disabled: !txTypeStr,
+          },
+          {
+            label: 'Sender seal',
+            value: senderSeal,
+            disabled: !senderSeal,
+            copyable: true,
           },
         ];
         try {

@@ -121,11 +121,15 @@ export const actionFetchTx = () => async (dispatch, getState) => {
         tokenID,
         version,
       };
-      const txt = await accountWallet.getTxHistoryByTxID(params);
+      let txt = await accountWallet.getTxHistoryByTxID(params);
       if (!txt) {
         return tx;
       }
-      tx = mappingTxTransactorSelector(state)(txt);
+      tx = mappingTxTransactorSelector(state)({
+        ...tx,
+        status: txt?.status || tx?.status,
+        statusStr: txt?.statusStr || tx?.statusStr,
+      });
       break;
     }
     }

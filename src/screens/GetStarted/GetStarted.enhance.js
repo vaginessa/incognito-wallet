@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { StyleSheet } from 'react-native';
 import { compose } from 'recompose';
 import ErrorBoundary from '@src/components/ErrorBoundary';
 import Wizard from '@screens/Wizard';
@@ -16,7 +17,7 @@ import { actionFetch as actionFetchHomeConfigs } from '@screens/Home/Home.action
 import { useNavigation, useFocusEffect } from 'react-navigation-hooks';
 import { useMigrate } from '@src/components/UseEffect/useMigrate';
 import storageService from '@src/services/storage';
-import { LoadingContainer, Text } from '@src/components/core';
+import { LoadingContainer, Text, View } from '@src/components/core';
 import { actionFetch as actionFetchProfile } from '@screens/Profile';
 import { KEYS } from '@src/constants/keys';
 import { getFunctionConfigs } from '@services/api/misc';
@@ -41,7 +42,50 @@ import {
 } from './GetStarted.actions';
 import withDetectStatusNetwork from './GetStarted.enhanceNetwork';
 
+const subStyled = StyleSheet.create({
+  mainText: {
+    color: COLORS.colorGreyBold,
+    fontFamily: FONT.NAME.medium,
+    fontSize: FONT.SIZE.medium,
+    lineHeight: FONT.SIZE.medium + 5,
+    textAlign: 'center',
+  },
+  subText: {
+    color: COLORS.colorGreyBold,
+    fontFamily: FONT.NAME.medium,
+    fontSize: FONT.SIZE.regular,
+    lineHeight: FONT.SIZE.regular + 5,
+    textAlign: 'center',
+    marginTop: 5,
+  },
+});
+
+const SubComponent = React.memo((props) => {
+  const { isFetched, statusConfigs } = props;
+  return (
+    <LoadingContainer
+      size="large"
+      custom={
+        isFetched && (
+          <View>
+            <Text style={{ ...subStyled.mainText, marginTop: 30 }}>
+              This may take a couple of minutes.
+            </Text>
+            {statusConfigs === 'Load all master keys' && (
+              <Text style={subStyled.mainText}>
+                Please do not navigate away from the app.
+              </Text>
+            )}
+            <Text style={subStyled.subText}>{`(${statusConfigs}...)`}</Text>
+          </View>
+        )
+      }
+    />
+  );
+});
+
 const enhance = (WrappedComp) => (props) => {
+  const [statusConfigs, setStatusConfigs] = React.useState('');
   const [loadMasterKeys, setLoadMasterKeys] = useState(false);
   const { isFetching, isFetched } = useSelector(wizardSelector);
   const pin = useSelector((state) => state?.pin?.pin);
@@ -171,30 +215,28 @@ const enhance = (WrappedComp) => (props) => {
           desc: 'CONFIGS_APP',
         }),
       );
+      await setStatusConfigs('Load pin');
       await dispatch(loadPin());
       await dispatch(
         actionLogEvent({
           desc: 'LOAD_PIN',
         }),
       );
+      await setStatusConfigs('Get info');
       await login();
       await dispatch(
         actionLogEvent({
           desc: 'LOGIN',
         }),
       );
-      await dispatch(actionFetchProfile());
-      await dispatch(
-        actionLogEvent({
-          desc: 'PROFILE',
-        }),
-      );
+      await setStatusConfigs('Get configs');
       const [servers] = await new Promise.all([
         serverService.get(),
         getFunctionConfigs().catch((e) => e),
         dispatch(actionFetchHomeConfigs()),
         dispatch(getPTokenList()),
         dispatch(getInternalTokenList()),
+        dispatch(actionFetchProfile()),
       ]);
       if (!servers || servers?.length === 0) {
         await serverService.setDefaultList();
@@ -204,12 +246,14 @@ const enhance = (WrappedComp) => (props) => {
           desc: 'CONFIGS',
         }),
       );
+      await setStatusConfigs('Load all master keys');
       await dispatch(loadAllMasterKeys());
       await dispatch(
         actionLogEvent({
           desc: 'LOAD_ALL_MASTER_KEYS',
         }),
       );
+      await setStatusConfigs('Load all master keys keychain');
       await dispatch(loadAllMasterKeyAccounts());
       await dispatch(
         actionLogEvent({
@@ -280,29 +324,7 @@ const enhance = (WrappedComp) => (props) => {
     }
     if (!errorMsg) {
       if (isMigrating || !loadMasterKeys) {
-        return (
-          <LoadingContainer
-            size="large"
-            custom={
-              isFetched && (
-                <Text
-                  style={{
-                    color: COLORS.colorGreyBold,
-                    fontFamily: FONT.NAME.medium,
-                    fontSize: FONT.SIZE.medium,
-                    lineHeight: FONT.SIZE.medium + 5,
-                    textAlign: 'center',
-                    marginTop: 30,
-                  }}
-                >
-                  {
-                    'This may take a couple of minutes.\nPlease do not navigate away from the app.'
-                  }
-                </Text>
-              )
-            }
-          />
-        );
+        return <SubComponent {...{ isFetched, statusConfigs }} />;
       }
       if (masterKeys.length === 0) {
         return <Welcome />;

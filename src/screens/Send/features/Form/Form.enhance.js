@@ -24,8 +24,7 @@ import { removeAllSpace, standardizedAddress } from './Form.utils';
 export const formName = 'formSend';
 
 export const enhance = (WrappedComp) => (props) => {
-  const [state, setState] = React.useState({ isSending: false });
-  const { isSending } = state;
+  const [isSending, setIsSending] = React.useState(false);
   const { handleSendAnonymously, handleUnShieldCrypto } = props;
   const isFormEstimateFeeValid = useSelector((state) =>
     isValid(formEstimateFee)(state),
@@ -126,7 +125,7 @@ export const enhance = (WrappedComp) => (props) => {
       if (disabledForm) {
         return;
       }
-      await setState({ ...state, isSending: true });
+      await setIsSending(true);
       if (isSend) {
         await handleSendAnonymously(payload);
       }
@@ -135,10 +134,15 @@ export const enhance = (WrappedComp) => (props) => {
       }
     } catch (error) {
       console.debug(error);
-    } finally {
-      await setState({ ...state, isSending: false });
     }
+    await setIsSending(false);
   };
+
+  React.useEffect(() => {
+    return () => {
+      setIsSending(false);
+    };
+  }, []);
 
   return (
     <WrappedComp
