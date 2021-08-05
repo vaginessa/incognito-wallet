@@ -1,6 +1,5 @@
 import { Dimensions, View, Text, Clipboard } from 'react-native';
 import { compose } from 'recompose';
-// import { ButtonBasic } from '@src/components/Button';
 import {
   ScrollView,
   Toast,
@@ -14,14 +13,11 @@ import {
 } from '@src/redux/selectors/history';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-// import { devSelector } from '@src/screens/Dev';
-// import { CONSTANT_CONFIGS, CONSTANT_KEYS } from '@src/constants';
 import { CopyIcon, OpenUrlIcon } from '@src/components/Icons';
-// import { selectedPrivacySelector } from '@src/redux/selectors';
 import { Header } from '@src/components';
 import { withLayout_2 } from '@src/components/Layout';
 import { QrCodeAddressDefault } from '@src/components/QrCodeAddress';
-import { BtnChevron, BtnResume } from '@src/components/Button';
+import { BtnChevron, BtnCopy } from '@src/components/Button';
 import HTML from 'react-native-render-html';
 import LinkingService from '@src/services/linking';
 import { ExHandler } from '@src/services/exception';
@@ -41,18 +37,20 @@ const Hook = React.memo((props) => {
     fullText = false,
     showDetail = false,
     detail = '',
-    canRetryExpiredShield = false,
+    canResumeExpiredShield = false,
+    canRetryInvalidAmountShield = false,
   } = props || {};
   const accountWallet = useSelector(getDefaultAccountWalletSelector);
   const { tx } = useSelector(historyDetailSelector);
   const [toggle, setToggle] = React.useState(false);
   const [resume, setResume] = React.useState(false);
+  const [retry, setRetry] = React.useState(false);
   const navigation = useNavigation();
   const handleCopyText = () => {
     Clipboard.setString(value);
     Toast.showInfo('Copied');
   };
-  const handleRetryExpiredShield = async () => {
+  const handleResumeExpiredShield = async () => {
     try {
       if (resume) {
         return;
@@ -70,6 +68,27 @@ const Hook = React.memo((props) => {
       new ExHandler(error).showErrorToast();
     } finally {
       await setResume(false);
+      navigation.goBack();
+    }
+  };
+  const handleRetryInvalidAmountShield = async () => {
+    try {
+      if (retry) {
+        return;
+      }
+      await setRetry(true);
+      const result = await accountWallet.handleRetryExpiredShield({
+        history: tx,
+      });
+      if (result) {
+        Toast.showInfo(
+          'Your request has been sent, we will process it soon. The history status will be updated',
+        );
+      }
+    } catch (error) {
+      new ExHandler(error).showErrorToast();
+    } finally {
+      await setRetry(false);
       navigation.goBack();
     }
   };
@@ -94,12 +113,25 @@ const Hook = React.memo((props) => {
           >
             {value}
           </Text>
-          {canRetryExpiredShield && (
-            <BtnResume
-              style={styled.btnResume}
-              onPress={handleRetryExpiredShield}
-              resuming={resume}
-            />
+          {canResumeExpiredShield && (
+            <TouchableOpacity
+              style={styled.btnResumeOrRetry}
+              onPress={handleResumeExpiredShield}
+            >
+              <Text style={styled.textBtnResumeOrRetry}>
+                {`Resume${resume ? '...' : ''}`}
+              </Text>
+            </TouchableOpacity>
+          )}
+          {canRetryInvalidAmountShield && (
+            <TouchableOpacity
+              style={styled.btnResumeOrRetry}
+              onPress={handleRetryInvalidAmountShield}
+            >
+              <Text style={styled.textBtnResumeOrRetry}>
+                {`Retry${retry ? '...' : ''}`}
+              </Text>
+            </TouchableOpacity>
           )}
           {copyable && (
             <TouchableOpacity
@@ -147,22 +179,23 @@ const Hook = React.memo((props) => {
 const History = () => {
   const factories = useSelector(historyDetailFactoriesSelector);
   const { tx, fetching } = useSelector(historyDetailSelector);
-  // const selectedPrivacy = useSelector(selectedPrivacySelector.selectedPrivacy);
-  // const dev = useSelector(devSelector);
   const dispatch = useDispatch();
-  // const keySave = CONSTANT_KEYS.DEV_TEST_TOGGLE_HISTORY_DETAIL;
-  // const toggleTxHistoryDetail = global.isDebug() && dev[keySave];
   if (factories.length === 0) {
     return null;
   }
   const handleRefresh = () => dispatch(actionFetchTx());
-  // const onCopyData = () => {
-  //   Clipboard.setString(JSON.stringify(tx));
-  //   Toast.showSuccess('Copied');
-  // };
+  const onCopyData = () => {
+    Clipboard.setString(JSON.stringify(tx));
+    Toast.showSuccess('Copied');
+  };
   return (
     <View style={styled.container}>
-      <Header title="Transaction detail" />
+      <Header
+        title="Transaction detail"
+        customHeaderTitle={
+          <BtnCopy style={{ marginLeft: 10 }} onPress={onCopyData} />
+        }
+      />
       <ScrollView
         refreshControl={
           <RefreshControl refreshing={fetching} onRefresh={handleRefresh} />
@@ -180,13 +213,6 @@ const History = () => {
             min={tx?.minShield}
           />
         )}
-        {/* {toggleTxHistoryDetail && (
-          <ButtonBasic
-            title="Copy"
-            btnStyle={{ marginTop: 30 }}
-            onPress={onCopyData}
-          />
-        )} */}
         <View style={{ height: 50 }} />
       </ScrollView>
     </View>
