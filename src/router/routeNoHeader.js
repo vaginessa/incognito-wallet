@@ -13,7 +13,7 @@ import WalletDetail from '@screens/Wallet/features/Detail';
 import ReceiveCrypto from '@screens/Wallet/features/ReceiveCrypto';
 import Send from '@screens/Send';
 import TokenSelectScreen from '@components/TokenSelectScreen';
-import Trade from '@screens/DexV2';
+import Trade from '@screens/PDexV3';
 import TradeConfirm from '@screens/DexV2/components/TradeConfirm';
 import TradeHistory from '@screens/DexV2/components/History';
 import TradeHistoryDetail from '@screens/DexV2/components/HistoryDetail';
@@ -93,7 +93,8 @@ import TwoTokensSelect from '@screens/Dex/features/TwoTokensSelect';
 import SelectTokenStreamline from '@screens/Streamline/features/SelectTokens';
 import ConvertTokenList from '@screens/Home/features/ConvertTokenList';
 import HistoryConvert from '@src/screens/Home/features/HistoryConvert';
-import Liquidity3 from '@screens/Liquidity3';
+import LiquidityV3 from '@screens/Liquidity3';
+import { PoolsList } from '@screens/PDexV3/features/Pools';
 
 const masterKeyRoutes = [
   {
@@ -122,16 +123,7 @@ const masterKeyRoutes = [
   },
 ];
 
-const liquidity3Routes = [
-  {
-    screen: Liquidity3.Home,
-    name: routeNames.HomeLiquidity3,
-  },
-  {
-    screen: Liquidity3.PoolList,
-    name: routeNames.PoolListLiquidity3,
-  },
-];
+const liquidity3Routes = [];
 
 const devRoutes = [
   {
@@ -145,6 +137,21 @@ const devRoutes = [
   {
     screen: RestoreAll,
     name: routeNames.RestoreAllData,
+  },
+];
+
+const pDexV3Routes = [
+  {
+    screen: Trade,
+    name: routeNames.Trade,
+  },
+  {
+    screen: PoolsList,
+    name: routeNames.PoolsList,
+  },
+  {
+    screen: LiquidityV3,
+    name: routeNames.Dex,
   },
 ];
 
@@ -208,10 +215,6 @@ const routes = [
   {
     screen: pApp,
     name: routeNames.pApp,
-  },
-  {
-    screen: Trade,
-    name: routeNames.Trade,
   },
   {
     screen: TradeConfirm,
@@ -429,9 +432,6 @@ const routes = [
     screen: Helper,
     name: routeNames.Helper,
   },
-  ...masterKeyRoutes,
-  ...devRoutes,
-  ...liquidity3Routes,
   {
     screen: UpdateFirmware,
     name: routeNames.UpdateNodeFirmware,
@@ -492,6 +492,9 @@ const routes = [
     screen: HistoryConvert,
     name: routeNames.HistoryConvert,
   },
+  ...masterKeyRoutes,
+  ...devRoutes,
+  ...pDexV3Routes,
 ];
 
 export const getRoutesNoHeader = () =>

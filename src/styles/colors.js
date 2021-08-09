@@ -61,6 +61,7 @@ const COLORS = {
   colorGreyBold: '#8A8A8E',
   colorPrimary: '#33373A',
   colorGreyLight: '#D8D8D8',
+  colorGreyLight1: '#F4F4F4',
 
   colorBlue: '#5995F0',
   green2: '#64A121',

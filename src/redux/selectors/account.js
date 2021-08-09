@@ -122,6 +122,11 @@ export const burnerAddressSelector = createSelector(
   ({ burnerAddress }) => burnerAddress,
 );
 
+export const otaKeyOfDefaultAccountSelector = createSelector(
+  defaultAccountSelector,
+  (account) => account.OTAKey,
+);
+
 export default {
   defaultAccountName,
   listAccount,
@@ -140,4 +145,5 @@ export default {
   getAccountByNameSelector,
   signPublicKeyEncodeSelector,
   burnerAddressSelector,
+  otaKeyOfDefaultAccountSelector,
 };

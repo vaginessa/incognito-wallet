@@ -33,6 +33,7 @@ const MAIN_NET_SERVER = {
   IncContractAddress: '0x43D037A562099A4C2c95b1E2120cc43054450629',
   IncBSCContractAddress: '0x43D037A562099A4C2c95b1E2120cc43054450629',
   explorer: 'https://incscan.io',
+  tradeServices: 'https://54ed4c3d-993b-4fc1-accd-7e7e72122248.mock.pstmn.io',
 };
 const BETA_SERVER = {
   id: 'beta',
@@ -49,6 +50,7 @@ const BETA_SERVER = {
   IncContractAddress: '0x43D037A562099A4C2c95b1E2120cc43054450629',
   IncBSCContractAddress: '0x43D037A562099A4C2c95b1E2120cc43054450629',
   explorer: 'https://incscan.io',
+  tradeServices: 'https://54ed4c3d-993b-4fc1-accd-7e7e72122248.mock.pstmn.io',
 };
 const TEST_NET_SERVER = {
   id: 'testnet',
@@ -66,6 +68,7 @@ const TEST_NET_SERVER = {
   IncContractAddress: '0x2f6F03F1b43Eab22f7952bd617A24AB46E970dF7',
   IncBSCContractAddress: '0x2f6F03F1b43Eab22f7952bd617A24AB46E970dF7',
   explorer: 'https://testnet.incognito.org',
+  tradeServices: 'https://54ed4c3d-993b-4fc1-accd-7e7e72122248.mock.pstmn.io',
 };
 const LOCAL_SERVER = {
   id: 'local',
@@ -91,6 +94,7 @@ const TEST_NET_1_SERVER = {
   IncContractAddress: '0xE0D5e7217c6C4bc475404b26d763fAD3F14D2b86',
   IncBSCContractAddress: '0x1ce57B254DC2DBB41e1aeA296Dc7dBD6fb549241',
   explorer: 'https://testnet1.incognito.org',
+  tradeServices: 'https://54ed4c3d-993b-4fc1-accd-7e7e72122248.mock.pstmn.io',
 };
 const DEV_TEST_SERVER = {
   id: 'devtest',
@@ -186,8 +190,9 @@ export default class Server {
               requestServices: server?.requestServices || '',
               apiServices: server?.apiServices || '',
               shardNumber: server?.shardNumber || '',
-              IncContractAddress: server?.IncContractAddress,
-              IncBSCContractAddress: server?.IncContractAddress,
+              IncContractAddress: server?.IncContractAddress || '',
+              IncBSCContractAddress: server?.IncContractAddress || '',
+              tradeServices: server?.tradeServices || '',
             };
           }
         }
@@ -222,7 +227,7 @@ export default class Server {
     }
   }
 
-  static isMainnet(network): Boolean {
+  static isMainnet(network) {
     return _.isEqual(network?.id, 'mainnet');
   }
 

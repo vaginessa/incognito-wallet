@@ -2,7 +2,12 @@ import React from 'react';
 import { StyleSheet, Text } from 'react-native';
 import PropTypes from 'prop-types';
 import { COLORS, FONT } from '@src/styles';
-import { ActivityIndicator, TouchableOpacity, View } from '@src/components/core';
+import {
+  ActivityIndicator,
+  TouchableOpacity,
+  View,
+} from '@src/components/core';
+import isArray from 'lodash/isArray';
 
 const styled = StyleSheet.create({
   container: {
@@ -35,17 +40,22 @@ const ButtonBasic = (props) => {
     loading = false,
     ...rest
   } = props;
-
+  let containerStyle = [styled.container, disabled ? styled.disabled : null];
+  isArray(btnStyle)
+    ? containerStyle.push(...btnStyle)
+    : containerStyle.push(btnStyle);
   return (
-    <TouchableOpacity
-      style={[styled.container, btnStyle, disabled ? styled.disabled : null]}
-      {...rest}
-    >
+    <TouchableOpacity style={containerStyle} {...rest}>
       {customContent ? (
         customContent
       ) : (
         <View style={{ flexDirection: 'row' }}>
-          {loading ? (<ActivityIndicator style={{ marginRight: 5 }} color={COLORS.white} />) : null}
+          {loading ? (
+            <ActivityIndicator
+              style={{ marginRight: 5 }}
+              color={COLORS.white}
+            />
+          ) : null}
           <Text style={[styled.title, titleStyle]}>{title}</Text>
         </View>
       )}

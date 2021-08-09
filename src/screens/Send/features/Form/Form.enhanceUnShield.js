@@ -315,7 +315,9 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
           tokenSymbol: externalSymbol || res?.tokenSymbol,
           keySaveAddressBook: CONSTANT_KEYS.REDUX_STATE_RECEIVERS_OUT_NETWORK,
         };
-        navigation.navigate(routeNames.Receipt, { params });
+        setTimeout(() => {
+          navigation.navigate(routeNames.Receipt, { params });
+        }, 1000);
         await dispatch(reset(formName));
       }
     } catch (e) {

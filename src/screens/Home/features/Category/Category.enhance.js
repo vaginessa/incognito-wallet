@@ -1,7 +1,7 @@
 import React from 'react';
 import ErrorBoundary from '@src/components/ErrorBoundary';
 import { BIG_COINS } from '@screens/Dex/constants';
-import {CONSTANT_CONFIGS, CONSTANT_EVENTS} from '@src/constants';
+import { CONSTANT_CONFIGS, CONSTANT_EVENTS } from '@src/constants';
 import { logEvent } from '@services/firebase';
 import { useNavigation } from 'react-navigation-hooks';
 import LinkingService from '@src/services/linking';
@@ -10,7 +10,7 @@ import { isIOS } from '@utils/platform';
 import deviceInfo from 'react-native-device-info';
 import { Dimensions, PixelRatio, Platform } from 'react-native';
 import { handleCameraPermission } from '@src/utils/PermissionUtil';
-import {ExHandler} from '@services/exception';
+import { ExHandler } from '@services/exception';
 import routeNames from '@routers/routeNames';
 
 const sendFeedback = async () => {
@@ -31,17 +31,18 @@ const sendFeedback = async () => {
   LinkingService.openUrl(`mailto:${email}?subject=${title}&body=${content}`);
 };
 
-const enhance = WrappedComp => props => {
+const enhance = (WrappedComp) => (props) => {
   const navigation = useNavigation();
 
   const goToScreen = (route, params, event) => {
-    navigation.navigate(routeNames.HomeLiquidity3, params);
-    // navigation.navigate(route, params);
+    // navigation.navigate(routeNames.HomeLiquidity3, params);
+    navigation.navigate(route, params);
     if (event) {
       logEvent(event);
     }
   };
-  const interactionById = item => {
+  const interactionById = (item) => {
+    console.log('item?.route', item?.route);
     switch (item.key) {
     case 'buy_prv':
       goToScreen(
@@ -54,24 +55,31 @@ const enhance = WrappedComp => props => {
           CONSTANT_EVENTS.CLICK_HOME_BUY,
       );
       break;
-    case 'trade':
-      goToScreen(item?.route || '', { fromTrade: true }, CONSTANT_EVENTS.CLICK_HOME_TRADE);
+    case 'trade': {
+      goToScreen(
+          item?.route || '',
+          { fromTrade: true },
+          CONSTANT_EVENTS.CLICK_HOME_TRADE,
+      );
       break;
+    }
     case 'feedback':
       sendFeedback();
       break;
     case 'explorer':
-      goToScreen('pApp', {url: item?.route});
+      goToScreen('pApp', { url: item?.route });
       break;
     case 'hunt':
       /*
-      * @hunt can be changed according to the event
-      * response API
-      * */
+         * @hunt can be changed according to the event
+         * response API
+         * */
       handleCameraPermission()
         .then((granted) => {
           if (granted) {
-            goToScreen('Event', {data: CONSTANT_CONFIGS.HOME_CONFIG_EVENT()});
+            goToScreen('Event', {
+              data: CONSTANT_CONFIGS.HOME_CONFIG_EVENT(),
+            });
           }
         })
         .catch((error) => {
