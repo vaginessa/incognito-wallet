@@ -13,17 +13,23 @@ import Portfolio, {
 import { View, RefreshControl } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { ButtonTrade } from '@src/components/Button';
+import { useNavigation } from 'react-navigation-hooks';
+import routeNames from '@src/router/routeNames';
 import withHome from './Home.enhance';
 import { styled } from './Home.styled';
-import { TAB_POOLS_ID, TAB_PORTFOLIO_ID } from './Home.constant';
-
+import { ROOT_TAB_ID, TAB_POOLS_ID, TAB_PORTFOLIO_ID } from './Home.constant';
 import { homePDexV3Selector } from './Home.selector';
 import HomeTabHeader from './Home.tabHeader';
 
 const GroupButton = React.memo(() => {
+  const navigation = useNavigation();
   return (
     <View style={styled.groupBtns}>
-      <ButtonTrade title="Trade" btnStyle={styled.tradeBtn} />
+      <ButtonTrade
+        title="Trade"
+        btnStyle={styled.tradeBtn}
+        onPress={() => navigation.navigate(routeNames.Trade)}
+      />
       <ButtonTrade title="Create new pool" btnStyle={styled.createNewPoolBtn} />
     </View>
   );
@@ -58,7 +64,7 @@ const Home = (props) => {
           />
         }
       >
-        <Tabs>
+        <Tabs rootTabID={ROOT_TAB_ID}>
           <View
             tabID={TAB_POOLS_ID}
             label="Pools"

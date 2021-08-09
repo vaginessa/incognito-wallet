@@ -36,3 +36,5 @@ export { default as DropdownMenu } from './DropdownMenu';
 export { default as Link } from './Link';
 export { default as BottomBar } from './BottomBar';
 export { default as Tabs } from './Tabs';
+export { default as TradeInputAmount } from './TradeInputAmount';
+export { default as SwapButton } from './SwapButton';

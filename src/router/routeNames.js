@@ -64,7 +64,6 @@ export default {
   UnShieldModal: 'UnShieldModal',
   TokenSelectScreen: 'TokenSelectScreen',
   PairSelectScreen: 'PairSelectScreen',
-  Trade: 'Trade',
   TradeHistory: 'TradeHistory',
   TradeHistoryDetail: 'TradeHistoryDetail',
   TradeConfirm: 'TradeConfirm',
@@ -153,5 +152,8 @@ export default {
   PoolListLiquidity3: 'PoolListLiquidity3',
 
   // PDexV3
+  HomePDexV3: 'HomePDexV3',
   PoolsList: 'PoolsList',
+  Swap: 'Swap',
+  Trade: 'Trade',
 };

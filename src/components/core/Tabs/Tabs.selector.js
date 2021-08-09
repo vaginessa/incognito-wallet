@@ -7,5 +7,5 @@ export const tabsSelector = createSelector(
 
 export const activedTabSelector = createSelector(
   tabsSelector,
-  (tabs) => tabs.active,
+  (tabs) => (rootTabID) => tabs[rootTabID],
 );

@@ -31,7 +31,7 @@ export const PoolsList = React.memo(() => {
   });
   const listPoolsIDs = _data.map((pool) => pool?.poolId);
   return (
-    <KeyboardAwareScrollView style={{ paddingTop: 27 }}>
+    <KeyboardAwareScrollView contentContainerStyle={{ paddingTop: 27 }}>
       <FlatList
         data={listPoolsIDs}
         renderItem={({ item }) => (

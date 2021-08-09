@@ -57,9 +57,10 @@ const enhance = (WrappedComp) => (props) => {
       break;
     case 'trade': {
       goToScreen(
-          item?.route || '',
-          { fromTrade: true },
-          CONSTANT_EVENTS.CLICK_HOME_TRADE,
+        // item?.route || '',
+        routeNames.HomePDexV3,
+        { fromTrade: true },
+        CONSTANT_EVENTS.CLICK_HOME_TRADE,
       );
       break;
     }

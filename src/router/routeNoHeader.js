@@ -13,7 +13,6 @@ import WalletDetail from '@screens/Wallet/features/Detail';
 import ReceiveCrypto from '@screens/Wallet/features/ReceiveCrypto';
 import Send from '@screens/Send';
 import TokenSelectScreen from '@components/TokenSelectScreen';
-import Trade from '@screens/PDexV3';
 import TradeConfirm from '@screens/DexV2/components/TradeConfirm';
 import TradeHistory from '@screens/DexV2/components/History';
 import TradeHistoryDetail from '@screens/DexV2/components/HistoryDetail';
@@ -94,7 +93,10 @@ import SelectTokenStreamline from '@screens/Streamline/features/SelectTokens';
 import ConvertTokenList from '@screens/Home/features/ConvertTokenList';
 import HistoryConvert from '@src/screens/Home/features/HistoryConvert';
 import LiquidityV3 from '@screens/Liquidity3';
+
+import HomePDexV3 from '@screens/PDexV3/features/Home';
 import { PoolsList } from '@screens/PDexV3/features/Pools';
+import Trade from '@screens/PDexV3/features/Trade';
 
 const masterKeyRoutes = [
   {
@@ -142,8 +144,8 @@ const devRoutes = [
 
 const pDexV3Routes = [
   {
-    screen: Trade,
-    name: routeNames.Trade,
+    screen: HomePDexV3,
+    name: routeNames.HomePDexV3,
   },
   {
     screen: PoolsList,
@@ -152,6 +154,10 @@ const pDexV3Routes = [
   {
     screen: LiquidityV3,
     name: routeNames.Dex,
+  },
+  {
+    screen: Trade,
+    name: routeNames.Trade,
   },
 ];
 

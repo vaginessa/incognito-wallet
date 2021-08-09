@@ -9,6 +9,7 @@ const styled = StyleSheet.create({
     flex: 1,
     width: '50%',
     maxWidth: '48%',
+    height: 44,
   },
   btnStyleEnabled: {
     shadowOffset: {
@@ -32,23 +33,44 @@ const styled = StyleSheet.create({
 });
 
 const Tab = (props) => {
-  const { activeTab, label, onClickTab, tabID } = props;
+  const {
+    activeTab,
+    label,
+    onClickTab,
+    tabID,
+    tabStyled,
+    tabStyledDisabled,
+    titleStyled,
+    titleDisabledStyled,
+  } = props;
   const onClick = () => typeof onClickTab === 'function' && onClickTab(tabID);
   const disabled = tabID !== activeTab;
   return (
     <ButtonBasic
       title={label}
       onPress={onClick}
-      btnStyle={[
-        styled.btnStyle,
-        disabled ? styled.btnStyleDisabled : styled.btnStyleEnabled,
-      ]}
-      titleStyle={[
-        styled.titleStyle,
-        disabled ? styled.titleDisabledStyle : null,
-      ]}
+      btnStyle={
+        tabStyled
+          ? [tabStyled, disabled ? tabStyledDisabled : null]
+          : [
+            styled.btnStyle,
+            disabled ? styled.btnStyleDisabled : styled.btnStyleEnabled,
+          ]
+      }
+      titleStyle={
+        titleStyled
+          ? [titleStyled, disabled ? titleDisabledStyled : null]
+          : [styled.titleStyle, disabled ? styled.titleDisabledStyle : null]
+      }
     />
   );
+};
+
+Tab.defaultProps = {
+  tabStyled: null,
+  titleStyled: null,
+  tabStyledDisabled: null,
+  titleDisabledStyled: null,
 };
 
 Tab.propTypes = {
@@ -56,6 +78,10 @@ Tab.propTypes = {
   label: PropTypes.string.isRequired,
   onClickTab: PropTypes.func.isRequired,
   tabID: PropTypes.string.isRequired,
+  tabStyled: PropTypes.any,
+  tabStyledDisabled: PropTypes.any,
+  titleStyled: PropTypes.any,
+  titleDisabledStyled: PropTypes.any,
 };
 
 export default React.memo(Tab);
