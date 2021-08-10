@@ -1,6 +1,7 @@
+import { Text } from '@src/components/core';
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import { Hook } from './Swap.extra';
+import { Hook, styled as extraStyled } from './Swap.extra';
 
 const styled = StyleSheet.create({
   container: {
@@ -16,9 +17,16 @@ const TabSimple = React.memo(() => {
     },
     {
       label: 'Max price &  impact',
-      value: '1.99 PRV/USDC (10%)',
       hasQuestionIcon: true,
       onPressQuestionIcon: () => null,
+      customValue: (
+        <Text numberOfLines={1} ellipsizeMode="tail" style={extraStyled.value}>
+          1.99 PRV/USDC{' '}
+          <Text style={[extraStyled.value, extraStyled.orangeValue]}>
+            (10%)
+          </Text>
+        </Text>
+      ),
     },
     {
       label: 'Trading fee',

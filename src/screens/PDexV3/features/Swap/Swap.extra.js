@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-unused-styles */
 import { Row } from '@src/components';
 import { Text } from '@src/components/core';
 import PropTypes from 'prop-types';
@@ -7,16 +8,18 @@ import { View, StyleSheet } from 'react-native';
 import { BtnQuestionDefault } from '@src/components/Button';
 import srcQuestionIcon from '@src/assets/images/icons/help-inline.png';
 
-const styled = StyleSheet.create({
+export const styled = StyleSheet.create({
   container: {},
   titleContainer: {
     marginBottom: 15,
+    alignItems: 'center',
   },
   title: {
     fontFamily: FONT.NAME.bold,
     fontSize: FONT.SIZE.superMedium,
     lineHeight: FONT.SIZE.superMedium + 5,
     color: COLORS.black,
+    marginRight: 10,
   },
   hook: {
     marginBottom: 15,
@@ -24,6 +27,7 @@ const styled = StyleSheet.create({
   labelContainer: {
     flex: 1,
     maxWidth: '48%',
+    alignItems: 'center',
   },
   label: {
     fontFamily: FONT.NAME.medium,
@@ -44,6 +48,13 @@ const styled = StyleSheet.create({
     color: COLORS.black,
     fontFamily: FONT.NAME.bold,
   },
+  hookCustomStyleBtnQuestion: {
+    width: 14,
+    height: 14,
+  },
+  orangeValue: {
+    color: COLORS.orange,
+  },
 });
 
 export const Hook = React.memo((props) => {
@@ -53,6 +64,7 @@ export const Hook = React.memo((props) => {
     boldLabel,
     hasQuestionIcon,
     onPressQuestionIcon,
+    customValue,
   } = props;
   return (
     <Row style={styled.hook}>
@@ -68,12 +80,17 @@ export const Hook = React.memo((props) => {
           <BtnQuestionDefault
             icon={srcQuestionIcon}
             onPress={onPressQuestionIcon}
+            customStyle={styled.hookCustomStyleBtnQuestion}
           />
         )}
       </Row>
-      <Text numberOfLines={1} ellipsizeMode="tail" style={styled.value}>
-        {value}
-      </Text>
+      {customValue ? (
+        customValue
+      ) : (
+        <Text numberOfLines={1} ellipsizeMode="tail" style={styled.value}>
+          {value}
+        </Text>
+      )}
     </Row>
   );
 });
@@ -104,6 +121,7 @@ Hook.propTypes = {
   boldLabel: PropTypes.bool,
   hasQuestionIcon: PropTypes.bool,
   onPressQuestionIcon: PropTypes.func,
+  customValue: PropTypes.any,
 };
 
 Extra.propTypes = {
