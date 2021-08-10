@@ -1,6 +1,7 @@
+import { Text } from '@src/components/core';
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import { Hook } from './Swap.extra';
+import Extra, { Hook, styled as extraStyled } from './Swap.extra';
 
 const styled = StyleSheet.create({
   container: {
@@ -14,39 +15,61 @@ const TabPro = React.memo(() => {
       title: 'Slippage tolerance',
       hasQuestionIcon: true,
       onPressQuestionIcon: () => null,
-      hooks: null,
+      hooks: [
+        {
+          label: '1',
+          value: '%',
+        },
+      ].map((hook) => <Hook {...hook} key={hook.label} />),
     },
-  ];
-  const hooksFactories = [
     {
-      label: 'Balance',
-      value: '700 USDC + 1000 PRV',
-    },
-    {
-      label: 'Max price &  impact',
-      value: '1.99 PRV/USDC (10%)',
+      title: 'Trading fee',
       hasQuestionIcon: true,
       onPressQuestionIcon: () => null,
+      hooks: [
+        {
+          label: '1',
+          value: 'USDC PRV ',
+        },
+      ].map((hook) => <Hook {...hook} key={hook.label} />),
     },
     {
-      label: 'Trading fee',
-      value: '0.3 PRV ',
-      hasQuestionIcon: true,
-      onPressQuestionIcon: () => null,
-      boldLabel: true,
-    },
-    {
-      label: 'Network fee',
-      value: '0.0000001 PRV',
-      hasQuestionIcon: true,
-      onPressQuestionIcon: () => null,
-      boldLabel: true,
+      title: 'Trade details',
+      hooks: [
+        {
+          label: 'Balance',
+          value: '700 USDC + 3000 PRV',
+        },
+        {
+          label: 'Max price &  impact',
+          hasQuestionIcon: true,
+          onPressQuestionIcon: () => null,
+          customValue: (
+            <Text
+              numberOfLines={1}
+              ellipsizeMode="tail"
+              style={extraStyled.value}
+            >
+              2 PRV/USDC{' '}
+              <Text style={[extraStyled.value, extraStyled.orangeValue]}>
+                (9.9%)
+              </Text>
+            </Text>
+          ),
+        },
+        {
+          label: 'Routing',
+          value: 'USDC > ETH > PRV',
+          hasQuestionIcon: true,
+          onPressQuestionIcon: () => null,
+        },
+      ].map((hook) => <Hook {...hook} key={hook.label} />),
     },
   ];
   return (
     <View style={styled.container}>
-      {hooksFactories.map((item) => (
-        <Hook {...item} key={item.label} />
+      {extraFactories.map((extra) => (
+        <Extra {...extra} key={extra.label} />
       ))}
     </View>
   );
