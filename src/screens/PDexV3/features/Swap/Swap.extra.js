@@ -44,7 +44,7 @@ export const styled = StyleSheet.create({
     flex: 1,
     textAlign: 'right',
   },
-  boldLabel: {
+  bold: {
     color: COLORS.black,
     fontFamily: FONT.NAME.bold,
   },
@@ -62,6 +62,7 @@ export const Hook = React.memo((props) => {
     label,
     value,
     boldLabel,
+    boldValue,
     hasQuestionIcon,
     onPressQuestionIcon,
     customValue,
@@ -70,7 +71,7 @@ export const Hook = React.memo((props) => {
     <Row style={styled.hook}>
       <Row style={styled.labelContainer}>
         <Text
-          style={[styled.label, boldLabel && styled.boldLabel]}
+          style={[styled.label, boldLabel && styled.bold]}
           numberOfLines={1}
           ellipsizeMode="tail"
         >
@@ -87,7 +88,11 @@ export const Hook = React.memo((props) => {
       {customValue ? (
         customValue
       ) : (
-        <Text numberOfLines={1} ellipsizeMode="tail" style={styled.value}>
+        <Text
+          numberOfLines={1}
+          ellipsizeMode="tail"
+          style={[styled.value, boldValue && styled.bold]}
+        >
           {value}
         </Text>
       )}
@@ -119,6 +124,7 @@ Hook.propTypes = {
   label: PropTypes.string.isRequired,
   value: PropTypes.string.isRequired,
   boldLabel: PropTypes.bool,
+  boldValue: PropTypes.bool,
   hasQuestionIcon: PropTypes.bool,
   onPressQuestionIcon: PropTypes.func,
   customValue: PropTypes.any,

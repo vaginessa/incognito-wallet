@@ -155,6 +155,7 @@ export default {
   HomePDexV3: 'HomePDexV3',
   PoolsList: 'PoolsList',
   Swap: 'Swap',
+  ReviewOrderSwap: 'ReviewOrderSwap',
   Trade: 'Trade',
   CreatePool: 'CreatePool',
   ContributePool: 'ContributePool',

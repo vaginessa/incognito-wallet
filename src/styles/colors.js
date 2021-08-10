@@ -67,6 +67,8 @@ const COLORS = {
   green2: '#64A121',
   green3: '#018775',
   green4: '#6DD400',
+
+  colorTradeBlue: '#5995F0',
 };
 
 export default {

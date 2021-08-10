@@ -99,6 +99,7 @@ import Trade from '@screens/PDexV3/features/Trade';
 import CreatePool from '@screens/PDexV3/features/CreatePool';
 import ContributePool from '@screens/PDexV3/features/ContributePool';
 import RemovePool from '@screens/PDexV3/features/RemovePool';
+import { ReviewOrderSwap } from '@src/screens/PDexV3/features/Swap';
 
 const masterKeyRoutes = [
   {
@@ -170,7 +171,11 @@ const pDexV3Routes = [
   {
     screen: RemovePool,
     name: routeNames.RemovePool,
-  }
+  },
+  {
+    screen: ReviewOrderSwap,
+    name: routeNames.ReviewOrderSwap,
+  },
 ];
 
 const routes = [

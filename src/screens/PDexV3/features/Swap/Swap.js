@@ -1,12 +1,14 @@
 import { ButtonTrade } from '@src/components/Button';
 import { SwapButton, TradeInputAmount } from '@src/components/core';
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View } from 'react-native';
+import PropTypes from 'prop-types';
 import { Tabs1 } from '@src/components/core/Tabs';
 import { styled, tabsStyled } from './Swap.styled';
 import { ROOT_TAB_ID, TAB_SIMPLE_ID, TAB_PRO_ID } from './Swap.constant';
 import TabSimple from './Swap.simpleTab';
 import TabPro from './Swap.proTab';
+import withSwap from './Swap.enhance';
 
 const SwapInputsGroup = React.memo(() => {
   return (
@@ -19,7 +21,7 @@ const SwapInputsGroup = React.memo(() => {
 });
 
 const Swap = (props) => {
-  const { handleTrade } = props;
+  const { handleReviewOrder } = props;
   const tabsFactories = [
     {
       tabID: TAB_SIMPLE_ID,
@@ -47,7 +49,7 @@ const Swap = (props) => {
       <SwapInputsGroup />
       <ButtonTrade
         btnStyle={styled.btnTrade}
-        onPress={handleTrade}
+        onPress={handleReviewOrder}
         title="Preview your order"
       />
       <Tabs1 rootTabID={ROOT_TAB_ID} styledTabList={tabsStyled.styledTabList}>
@@ -61,6 +63,8 @@ const Swap = (props) => {
   );
 };
 
-Swap.propTypes = {};
+Swap.propTypes = {
+  handleReviewOrder: PropTypes.func.isRequired,
+};
 
-export default React.memo(Swap);
+export default withSwap(React.memo(Swap));

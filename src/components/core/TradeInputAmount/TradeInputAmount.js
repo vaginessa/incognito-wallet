@@ -59,7 +59,6 @@ const TradeInputAmount = (props) => {
           numberOfLines={1}
         />
       </View>
-
       {hasInfinityIcon && (
         <TouchableOpacity
           onPress={onPressInfinityIcon}
