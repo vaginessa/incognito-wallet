@@ -17,7 +17,7 @@ import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
 import withHome from './Home.enhance';
 import { styled } from './Home.styled';
-import { ROOT_TAB_ID, TAB_POOLS_ID, TAB_PORTFOLIO_ID } from './Home.constant';
+import { ROOT_TAB_HOME, TAB_POOLS_ID, TAB_PORTFOLIO_ID } from './Home.constant';
 import { homePDexV3Selector } from './Home.selector';
 import HomeTabHeader from './Home.tabHeader';
 
@@ -68,7 +68,7 @@ const Home = (props) => {
           />
         )}
       >
-        <Tabs rootTabID={ROOT_TAB_ID}>
+        <Tabs rootTabID={ROOT_TAB_HOME}>
           <View
             tabID={TAB_POOLS_ID}
             label="Pools"

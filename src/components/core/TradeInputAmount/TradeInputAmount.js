@@ -67,11 +67,11 @@ const TradeInputAmount = (props) => {
           <InfiniteIcon />
         </TouchableOpacity>
       )}
-      {canSelectSymbol && (
+      {symbol && (
         <TouchableOpacity onPress={onPressSymbol}>
           <Row style={{ alignItems: 'center' }}>
             {symbol && <Text style={styled.symbol}>{symbol}</Text>}
-            <ArrowRightGreyIcon />
+            {canSelectSymbol && <ArrowRightGreyIcon />}
           </Row>
         </TouchableOpacity>
       )}

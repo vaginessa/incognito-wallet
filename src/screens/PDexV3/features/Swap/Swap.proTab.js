@@ -1,7 +1,10 @@
 import { Text } from '@src/components/core';
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import Extra, { Hook, styled as extraStyled } from './Swap.extra';
+import Extra, {
+  Hook,
+  styled as extraStyled,
+} from '@screens/PDexV3/features/Extra';
 
 const styled = StyleSheet.create({
   container: {

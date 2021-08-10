@@ -9,7 +9,10 @@ import { View, StyleSheet } from 'react-native';
 import { useNavigation } from 'react-navigation-hooks';
 import { useDispatch } from 'react-redux';
 import { actionToggleModal } from '@src/components/Modal';
-import { Hook } from './Swap.extra';
+import Extra, {
+  Hook,
+  styled as extraStyled,
+} from '@screens/PDexV3/features/Extra';
 import { actionFetch } from './Swap.actions';
 import SwapSuccessModal from './Swap.successModal';
 

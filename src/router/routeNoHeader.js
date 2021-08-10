@@ -100,6 +100,7 @@ import CreatePool from '@screens/PDexV3/features/CreatePool';
 import ContributePool from '@screens/PDexV3/features/ContributePool';
 import RemovePool from '@screens/PDexV3/features/RemovePool';
 import { ReviewOrderSwap } from '@src/screens/PDexV3/features/Swap';
+import OrderLimit from '@src/screens/PDexV3/features/OrderLimit';
 
 const masterKeyRoutes = [
   {
@@ -175,6 +176,10 @@ const pDexV3Routes = [
   {
     screen: ReviewOrderSwap,
     name: routeNames.ReviewOrderSwap,
+  },
+  {
+    screen: OrderLimit,
+    name: routeNames.OrderLimit,
   },
 ];
 

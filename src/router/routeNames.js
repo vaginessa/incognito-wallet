@@ -160,4 +160,5 @@ export default {
   CreatePool: 'CreatePool',
   ContributePool: 'ContributePool',
   RemovePool: 'RemovePool',
+  OrderLimit: 'OrderLimit',
 };

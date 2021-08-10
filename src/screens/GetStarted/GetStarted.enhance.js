@@ -305,7 +305,7 @@ const enhance = (WrappedComp) => (props) => {
         isFetched && //finish splash screen
         !errorMsg //no error
       ) {
-        navigation.navigate(routeNames.ReviewOrderSwap);
+        navigation.navigate(routeNames.OrderLimit);
       }
     }, [masterKeys, isInitialing, isCreating, isMigrated, isFetched, errorMsg]),
   );

@@ -3,10 +3,11 @@ import { FlatList, TouchableOpacity } from '@src/components/core';
 import React from 'react';
 import { View, Text } from 'react-native';
 import { useNavigation } from 'react-navigation-hooks';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import Pool from '@screens/PDexV3/features/Pool';
 import { listPoolsFollowingSelector } from '@screens/PDexV3/features/Pools';
 import routeNames from '@src/router/routeNames';
+import PropTypes from 'prop-types';
 import {
   styled,
   headStyled,
@@ -79,16 +80,15 @@ const PoolsListHeaderFollowing = React.memo(() => {
   );
 });
 
-export const PoolsListFollowing = React.memo(() => {
+export const PoolsListFollowing = React.memo(({ handlePressPool }) => {
   const listPoolsFollowing = useSelector(listPoolsFollowingSelector);
-  const dispatch = useDispatch();
-  const handleNavigateToPools = (poolId) =>
-    console.log('navigate to pool', poolId);
+  const onPressPool = (poolId) =>
+    typeof handlePressPool === 'function' && handlePressPool(poolId);
   return (
     <FlatList
       data={listPoolsFollowing}
       renderItem={({ item }) => (
-        <Pool poolId={item} swipable onPressPool={handleNavigateToPools} />
+        <Pool poolId={item} swipable onPressPool={onPressPool} />
       )}
       keyExtractor={(pool) => pool?.poolId}
       showsVerticalScrollIndicator={false}
@@ -99,15 +99,18 @@ export const PoolsListFollowing = React.memo(() => {
 });
 
 const Pools = (props) => {
+  const { handlePressPool } = props;
   return (
     <View style={styled.container}>
       <PoolsHeader />
       <PoolsListHeaderFollowing />
-      <PoolsListFollowing />
+      <PoolsListFollowing handlePressPool={handlePressPool} />
     </View>
   );
 };
 
-Pools.propTypes = {};
+Pools.propTypes = {
+  handlePressPool: PropTypes.func.isRequired,
+};
 
 export default React.memo(Pools);

@@ -4,7 +4,7 @@ import { withLayout_2 } from '@src/components/Layout';
 import React from 'react';
 import { View } from 'react-native';
 import TabSwap from '@screens/PDexV3/features/Swap';
-import TabOrderLimit from '@screens/PDexV3/features/OrderLimit';
+import { TabHomeOrderLimit } from '@screens/PDexV3/features/OrderLimit';
 import { ROOT_TAB_TRADE, TAB_LIMIT_ID, TAB_SWAP_ID } from './Trade.constant';
 import { styled } from './Trade.styled';
 
@@ -18,7 +18,7 @@ const Trade = () => {
             <TabSwap />
           </View>
           <View tabID={TAB_LIMIT_ID} label="Limit" onChangeTab={() => null}>
-            <TabOrderLimit />
+            <TabHomeOrderLimit />
           </View>
         </Tabs>
       </KeyboardAwareScrollView>
