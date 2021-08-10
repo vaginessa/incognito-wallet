@@ -156,4 +156,7 @@ export default {
   PoolsList: 'PoolsList',
   Swap: 'Swap',
   Trade: 'Trade',
+  CreatePool: 'CreatePool',
+  ContributePool: 'ContributePool',
+  RemovePool: 'RemovePool',
 };

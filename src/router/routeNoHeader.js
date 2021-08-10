@@ -93,10 +93,12 @@ import SelectTokenStreamline from '@screens/Streamline/features/SelectTokens';
 import ConvertTokenList from '@screens/Home/features/ConvertTokenList';
 import HistoryConvert from '@src/screens/Home/features/HistoryConvert';
 import LiquidityV3 from '@screens/Liquidity3';
-
 import HomePDexV3 from '@screens/PDexV3/features/Home';
 import { PoolsList } from '@screens/PDexV3/features/Pools';
 import Trade from '@screens/PDexV3/features/Trade';
+import CreatePool from '@screens/PDexV3/features/CreatePool';
+import ContributePool from '@screens/PDexV3/features/ContributePool';
+import RemovePool from '@screens/PDexV3/features/RemovePool';
 
 const masterKeyRoutes = [
   {
@@ -124,8 +126,6 @@ const masterKeyRoutes = [
     name: routeNames.KeysExplained,
   },
 ];
-
-const liquidity3Routes = [];
 
 const devRoutes = [
   {
@@ -159,6 +159,18 @@ const pDexV3Routes = [
     screen: Trade,
     name: routeNames.Trade,
   },
+  {
+    screen: CreatePool,
+    name: routeNames.CreatePool,
+  },
+  {
+    screen: ContributePool,
+    name: routeNames.ContributePool,
+  },
+  {
+    screen: RemovePool,
+    name: routeNames.RemovePool,
+  }
 ];
 
 const routes = [

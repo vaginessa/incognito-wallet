@@ -125,9 +125,7 @@ export const actionGetPortfolio = () => async (dispatch) => {
   let data = [];
   try {
     dispatch(actionUpdateFetchingPortfolio(true));
-    console.log('SANG TEST: 1');
     data = (await apiGetPortfolio()) || [];
-    console.log('SANG TEST: ', data);
   } catch (error) {
     console.log('actionGetPortfolio error: ', error);
   } finally {
