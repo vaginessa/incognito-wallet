@@ -25,10 +25,11 @@ export const formName = 'formSend';
 
 export const enhance = (WrappedComp) => (props) => {
   const [isSending, setIsSending] = React.useState(false);
-  const { handleSendAnonymously, handleUnShieldCrypto } = props;
   const isFormEstimateFeeValid = useSelector((state) =>
     isValid(formEstimateFee)(state),
   );
+  const { handleSendAnonymously, handleUnShieldCrypto, handleUnshieldPortal, portalData } = props;
+  const { isPortalToken } = portalData;
   const navigation = useNavigation();
   const {
     fee,
@@ -94,7 +95,7 @@ export const enhance = (WrappedComp) => (props) => {
     ) {
       return true;
     }
-    if (isUnShield) {
+    if (isUnShield && !isPortalToken) {
       if (!userFees?.isFetched) {
         return true;
       }
@@ -138,6 +139,20 @@ export const enhance = (WrappedComp) => (props) => {
     await setIsSending(false);
   };
 
+  const handlePressUnshieldPortal = async (payload) => {
+    try {
+      if (disabledForm) {
+        return;
+      }
+      await setIsSending(true);
+      await handleUnshieldPortal(payload);
+    } catch (error) {
+      console.debug(error);
+    }
+    await setIsSending(false);
+  };
+
+
   React.useEffect(() => {
     return () => {
       setIsSending(false);
@@ -156,6 +171,7 @@ export const enhance = (WrappedComp) => (props) => {
         onShowFrequentReceivers,
         disabledForm,
         handleSend,
+        handlePressUnshieldPortal,
         isSending,
         memo,
       }}

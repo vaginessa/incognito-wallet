@@ -17,10 +17,6 @@ import { reset } from 'redux-form';
 import { defaultAccountSelector } from '@src/redux/selectors/account';
 import { walletSelector } from '@src/redux/selectors/wallet';
 import accountService from '@services/wallet/accountService';
-import {
-  actionRemoveStorageDataCentralized,
-  actionAddStorageDataCentralized,
-} from '@screens/UnShield';
 import Utils from '@src/utils/Util';
 import { devSelector } from '@src/screens/Dev';
 import {
@@ -37,12 +33,10 @@ export const enhancePortalUnshield = (WrappedComp) => (props) => {
   
   const {
     tokenId,
-    currencyType,
     externalSymbol,
     paymentAddress: walletAddress,
     pDecimals,
   } = selectedPrivacy;
-  const keySave = CONSTANT_KEYS.UNSHIELD_DATA_PORTAL;
   const [state, setState] = React.useState({
     textLoadingTx: '',
   });
@@ -50,7 +44,6 @@ export const enhancePortalUnshield = (WrappedComp) => (props) => {
   const togglePortal =
     !!dev[CONSTANT_KEYS.DEV_TEST_MODE_PORTAL] &&
     (!!global.isDEV || __DEV__);
-  const { textLoadingTx } = state;
   const info = '';
   const navigation = useNavigation();
   const dispatch = useDispatch();
@@ -106,34 +99,7 @@ export const enhancePortalUnshield = (WrappedComp) => (props) => {
 
   const handleUnshield = async (payload) => {
     try {
-      const {
-        amount,
-        originalUnshieldAmount,
-        toAddress,
-      } = payload;
-      
-      const amountToNumber = convert.toNumber(amount, true);
-      const requestedAmount = format.toFixed(amountToNumber, pDecimals);
-      let data = {
-        requestedAmount,
-        originalAmount: originalUnshieldAmount,
-        toAddress,
-        walletAddress,
-        tokenId,
-        burningTxId: '',
-        currencyType,
-        externalSymbol,
-      };
-      let _tx;
-      const txHashHandler = async ({ txId }) => {
-        _tx = { ...data, burningTxId: txId };
-        await dispatch(
-          actionAddStorageDataCentralized({
-            keySave,
-            tx: _tx,
-          }),
-        );
-      };
+      const txHashHandler = null;
       const tx = await handleCreateUnshieldTx(payload, txHashHandler);
       if (togglePortal) {
         await setState({
@@ -142,12 +108,6 @@ export const enhancePortalUnshield = (WrappedComp) => (props) => {
         });
         await Utils.delay(15);
       }
-      await dispatch(
-        actionRemoveStorageDataCentralized({
-          keySave,
-          burningTxId: _tx.burningTxId,
-        }),
-      );
       return tx;
     } catch (e) {
       throw e;
@@ -157,14 +117,13 @@ export const enhancePortalUnshield = (WrappedComp) => (props) => {
   const handleUnshieldPortal = async (values) => {
     try {
       const { amount, toAddress } = values;
-      console.log('handleUnshieldPortal values', values);
       const amountToNumber = convert.toNumber(amount, true);
       const originalUnshieldAmount = floor(convert.toOriginalAmount(
         amountToNumber,
         pDecimals,
         false,
       ));
-      const networkFee = convert.toHumanAmount(incNetworkFee, CONSTANT_COMMONS.DECIMALS['PRV']);
+      const networkFee = format.amountFull(incNetworkFee, CONSTANT_COMMONS.DECIMALS['PRV']);
     
       const payload = {
         amount,
@@ -180,6 +139,7 @@ export const enhancePortalUnshield = (WrappedComp) => (props) => {
           ...res,
           originalAmount: originalUnshieldAmount,
           fee: networkFee,
+          feeUnit: CONSTANT_COMMONS.CRYPTO_SYMBOL.PRV,
           title: 'Unshield.',
           toAddress,
           pDecimals: pDecimals,

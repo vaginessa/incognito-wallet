@@ -73,7 +73,7 @@ const SendForm = (props) => {
     isExternalAddress,
     textLoadingTx,
     validateMemo,
-    handleUnshieldPortal,
+    handlePressUnshieldPortal,
     validatePortalAmount,
     validateUnshieldPortalCondition,
     portalData,
@@ -101,14 +101,14 @@ const SendForm = (props) => {
   const amountValidator = isUnshieldPortal ? validatePortalAmount : validateAmount;
   const isDisabled =
     isUnShield &&
-    ((selectedPrivacy.isCentralized && isCentralizedDisabled) ||
+    ((selectedPrivacy.isCentralized && isCentralizedDisabled && !isPortalToken) ||
       (selectedPrivacy.isDecentralized && isDecentralizedDisabled));
   const handlePressSend = isUnShield
     ? selectedPrivacy.isCentralized
       ? onCentralizedPress
       : onDecentralizedPress
     : handleSend;
-  const submitHandler = isUnshieldPortal ? handleUnshieldPortal : handlePressSend;
+  const submitHandler = isUnshieldPortal ? handlePressUnshieldPortal : handlePressSend;
 
   const renderMemo = () => {
     if (isUnShield) {
@@ -297,7 +297,7 @@ SendForm.propTypes = {
   validateMemo: PropTypes.any.isRequired,
   validatePortalAmount: PropTypes.any.isRequired,
   validateUnshieldPortalCondition: PropTypes.any.isRequired,
-  handleUnshieldPortal: PropTypes.func.isRequired,
+  handlePressUnshieldPortal: PropTypes.func.isRequired,
   portalData: PropTypes.any.isRequired,
 };
 
