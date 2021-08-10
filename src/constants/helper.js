@@ -47,6 +47,15 @@ const HELPER_CONSTANT = {
       subTitle: 'More on fees',
       content: 'By default, Incognito doesn’t charge any trading fees for normal trades. The only fee incurred is the Incognito network fee, paid to validators for verifying transactions. If you are utilizing a Uniswap or Kyber pool, cross-chain fees will also apply.'
     }]
+  },
+  AMP: {
+    title: 'AMP',
+    contents: [{
+      content: 'Here you can choose to prioritize your trade for an extra fee. Doing so will increase the speed of execution and your likelihood of getting a better rate. If you choose to prioritize your trade, you will see your updated fee under Trade details.',
+    }, {
+      subTitle: 'More on fees',
+      content: 'By default, Incognito doesn’t charge any trading fees for normal trades. The only fee incurred is the Incognito network fee, paid to validators for verifying transactions. If you are utilizing a Uniswap or Kyber pool, cross-chain fees will also apply.'
+    }]
   }
 };
 

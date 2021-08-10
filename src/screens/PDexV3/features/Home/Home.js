@@ -30,7 +30,11 @@ const GroupButton = React.memo(() => {
         btnStyle={styled.tradeBtn}
         onPress={() => navigation.navigate(routeNames.Trade)}
       />
-      <ButtonTrade title="Create new pool" btnStyle={styled.createNewPoolBtn} />
+      <ButtonTrade
+        title="Create new pool"
+        btnStyle={styled.createNewPoolBtn}
+        onPress={() => navigation.navigate(routeNames.CreatePool)}
+      />
     </View>
   );
 });
@@ -55,14 +59,14 @@ const Home = (props) => {
       <Header title="Market" accountSelectable />
       <ScrollView
         style={styled.main}
-        refreshControl={
+        refreshControl={(
           <RefreshControl
             refreshing={isFetching}
             onRefresh={() =>
               typeof handleOnRefresh === 'function' && handleOnRefresh()
             }
           />
-        }
+        )}
       >
         <Tabs rootTabID={ROOT_TAB_ID}>
           <View

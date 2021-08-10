@@ -105,6 +105,12 @@ export const getDataByShareIdSelector = createSelector(
     listShare.find((item) => item?.shareId === shareId),
 );
 
+export const getDataShareByPoolIdSelector = createSelector(
+  listShareSelector,
+  (listShare) => (poolId) =>
+    listShare.find((item) => item?.poolId === poolId),
+);
+
 export const totalShareSelector = createSelector(
   listShareSelector,
   (listShare) =>

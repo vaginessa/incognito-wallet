@@ -1,6 +1,6 @@
 import { otaKeyOfDefaultAccountSelector } from '@src/redux/selectors/account';
-import { ExHandler } from '@src/services/exception';
-import { getPDexV3Instance } from '@src/screens/PDexV3';
+import { ExHandler } from '@services/exception';
+import { getPDexV3Instance } from '@screens/PDexV3';
 import {
   ACTION_FETCHING,
   ACTION_FETCHED,
@@ -47,6 +47,7 @@ export const actionFetch = () => async (dispatch, getState) => {
           token1Reward: 10000000,
           token2Reward: 1000000,
           nfct: 'blah blah blah',
+          poolId: '111'
         },
         {
           token1IdStr:
@@ -62,6 +63,7 @@ export const actionFetch = () => async (dispatch, getState) => {
           token1Reward: 10000000,
           token2Reward: 1000000,
           nfct: 'blah blah blah',
+          poolId: '222'
         },
       ];
     // await pDexV3Inst.getListShare(otaKey);

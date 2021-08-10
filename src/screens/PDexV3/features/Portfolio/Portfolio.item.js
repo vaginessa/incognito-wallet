@@ -3,7 +3,10 @@ import { ButtonTrade, ButtonTrade1 } from '@src/components/Button';
 import { Text } from '@src/components/core';
 import React from 'react';
 import { View } from 'react-native';
-import { useSelector } from 'react-redux';
+import {batch, useDispatch, useSelector} from 'react-redux';
+import {useNavigation} from 'react-navigation-hooks';
+import routeNames from '@routers/routeNames';
+import {actionUpdateContributePoolID} from '@screens/PDexV3/features/ContributePool/Contribute.actions';
 import { getDataByShareIdSelector } from './Portfolio.selector';
 import { portfolioItemStyled as styled } from './Portfolio.styled';
 
@@ -36,8 +39,18 @@ const Hook = React.memo((props) => {
 
 const Extra = React.memo((props) => {
   const { shareId } = props;
+  const navigation = useNavigation();
+  const dispatch = useDispatch();
   const data = useSelector(getDataByShareIdSelector)(shareId);
-  const { token1, token2 } = data || {};
+  const { token1, token2, poolId } = data || {};
+  const onInvestPress = () => {
+    batch(() => {
+      dispatch(actionUpdateContributePoolID({ poolId }));
+      navigation.navigate(routeNames.ContributePool);
+    });
+  };
+  const onWithdrawPress = () => navigation.navigate(routeNames.RemovePool, { shareId });
+
   return (
     <Row style={styled.extraContainer}>
       <Text style={styled.extraLabel}>
@@ -48,11 +61,13 @@ const Extra = React.memo((props) => {
           title="Invest more"
           btnStyle={styled.btnSmall}
           titleStyle={styled.titleSmall}
+          onPress={onInvestPress}
         />
         <ButtonTrade1
           title="Withdraw"
           btnStyle={styled.btnSmall}
           titleStyle={styled.titleSmall}
+          onPress={onWithdrawPress}
         />
       </Row>
     </Row>
