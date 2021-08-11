@@ -4,7 +4,6 @@ import { ClockWiseIcon } from '@src/components/Icons';
 import { ButtonBasic } from '@src/components/Button';
 import { useSelector } from 'react-redux';
 import convert from '@src/utils/convert';
-import { feeDataSelector } from '@src/components/EstimateFee/EstimateFee.selector';
 import { MAX_FEE_PER_TX } from '@src/components/EstimateFee/EstimateFee.utils';
 import { selectedPrivacySelector } from '@src/redux/selectors';
 import { getDefaultAccountWalletSelector } from '@src/redux/selectors/shared';
@@ -20,7 +19,6 @@ const INIT_STATUS = {
 export const enhancePortalData = (WrappedComp) => (props) => {
   const selectedPrivacy = useSelector(selectedPrivacySelector.selectedPrivacy);
   const accountWallet = useSelector(getDefaultAccountWalletSelector);
-  const { isUnShield } = useSelector(feeDataSelector);
 
   const [state, setState] = React.useState({
     isPortalToken: false,
@@ -35,10 +33,8 @@ export const enhancePortalData = (WrappedComp) => (props) => {
   const [initStatus, setInitStatus] = React.useState(INIT_STATUS.INITIALIZING);
 
   React.useEffect(() => {
-    if (isUnShield) {
-      getPortalData();
-    }
-  }, [isUnShield]);
+    getPortalData();
+  }, []);
 
   const getPortalData = async () => {
     try {

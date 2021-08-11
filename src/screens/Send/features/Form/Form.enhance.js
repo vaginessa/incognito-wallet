@@ -16,9 +16,7 @@ import { enhanceInit } from './Form.enhanceInit';
 import { enhanceSend } from './Form.enhanceSend';
 import { enhanceUnshield } from './Form.enhanceUnShield';
 import { enhanceMemoValidation } from './Form.enhanceMemoValidator';
-import { enhancePortalUnshield } from './Form.enhancePortalUnShield';
-import { enhancePortalValidation } from './Form.enhancePortalValidator';
-import { enhancePortalData } from './Form.enhancePortalData';
+import { enhanceSwitchPortal } from './Form.enhanceSwitchPortal';
 import { removeAllSpace, standardizedAddress } from './Form.utils';
 
 export const formName = 'formSend';
@@ -28,8 +26,7 @@ export const enhance = (WrappedComp) => (props) => {
   const isFormEstimateFeeValid = useSelector((state) =>
     isValid(formEstimateFee)(state),
   );
-  const { handleSendAnonymously, handleUnShieldCrypto, handleUnshieldPortal, portalData } = props;
-  const { isPortalToken } = portalData;
+  const { handleSendAnonymously, handleUnShieldCrypto, handleUnshieldPortal } = props;
   const navigation = useNavigation();
   const {
     fee,
@@ -95,7 +92,7 @@ export const enhance = (WrappedComp) => (props) => {
     ) {
       return true;
     }
-    if (isUnShield && !isPortalToken) {
+    if (isUnShield) {
       if (!userFees?.isFetched) {
         return true;
       }
@@ -186,8 +183,6 @@ export default compose(
   enhanceMemoValidation,
   enhanceSend,
   enhanceUnshield,
-  enhancePortalData,
-  enhancePortalUnshield,
-  enhancePortalValidation,
   enhance,
+  enhanceSwitchPortal,
 );

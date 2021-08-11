@@ -1,27 +1,27 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text } from 'react-native';
-import { KeyboardAwareScrollView } from '@src/components/core';
+import { KeyboardAwareScrollView, Modal } from '@src/components/core';
 import { Field } from 'redux-form';
 import {
   createForm,
   InputQRField,
-  InputField,
   InputMaxValueField,
+  CheckboxField,
 } from '@components/core/reduxForm';
 import { SEND } from '@src/constants/elements';
 import { generateTestId } from '@src/utils/misc';
-import EstimateFee from '@components/EstimateFee/EstimateFee.input';
+import { EstimateFeePortal } from '@components/EstimateFeePortal';
 import PropTypes from 'prop-types';
 import { ButtonBasic } from '@src/components/Button';
 import { useSelector } from 'react-redux';
-import { feeDataSelector } from '@src/components/EstimateFee/EstimateFee.selector';
 import { selectedPrivacySelector } from '@src/redux/selectors';
+import { getDefaultAccountWalletSelector } from '@src/redux/selectors/shared';
 import LoadingTx from '@src/components/LoadingTx';
 import format from '@src/utils/format';
-import useFeatureConfig from '@src/shared/hooks/featureConfig';
-import appConstant from '@src/constants/app';
 import { styledForm as styled } from './Form.styled';
-import withSendForm, { formName } from './Form.enhance';
+import withSendForm from './Form.enhance';
+import { formName } from './Form.enhanceInit';
+import { UnshieldPortalCondition } from '../UnshieldPortalCondition';
 
 const initialFormValues = {
   amount: '',
@@ -50,105 +50,36 @@ const RightLabel = React.memo(() => {
 });
 
 const SendForm = (props) => {
+  const [isShowUnshieldPortalCondition, setShowUnshieldPortalCondition] = useState(false);
   const {
     onChangeField,
     onPressMax,
-    isFormValid,
     amount,
-    toAddress,
     onShowFrequentReceivers,
     disabledForm,
-    handleSend,
-    validateAmount,
     validateAddress,
     isSending,
-    memo,
     warningAddress,
-    isIncognitoAddress,
-    isExternalAddress,
     textLoadingTx,
-    validateMemo,
-    navigation,
+    handlePressUnshieldPortal,
+    validatePortalAmount,
+    validateUnshieldPortalCondition,
+    portalData,
   } = props;
-  const { titleBtnSubmit, isUnShield, editableInput } = useSelector(
-    feeDataSelector,
-  );
   const selectedPrivacy = useSelector(selectedPrivacySelector.selectedPrivacy);
-  const [onCentralizedPress, isCentralizedDisabled] = useFeatureConfig(
-    appConstant.DISABLED.UNSHIELD_CENTRALIZED,
-    handleSend,
-  );
-  const [onDecentralizedPress, isDecentralizedDisabled] = useFeatureConfig(
-    appConstant.DISABLED.UNSHIELD_DECENTRALIZED,
-    handleSend,
-  );
+
+
   const placeholderAddress = `Incognito${
     selectedPrivacy?.isMainCrypto || selectedPrivacy?.isIncognitoToken
       ? ' '
       : ` or ${selectedPrivacy?.rootNetworkName} `
   }address`;
-  const amountValidator = validateAmount;
-  const isDisabled =
-    isUnShield &&
-    ((selectedPrivacy.isCentralized && isCentralizedDisabled) ||
-      (selectedPrivacy.isDecentralized && isDecentralizedDisabled));
-  const handlePressSend = isUnShield
-    ? selectedPrivacy.isCentralized
-      ? onCentralizedPress
-      : onDecentralizedPress
-    : handleSend;
-  const submitHandler = handlePressSend;
+  const accountWallet = useSelector(getDefaultAccountWalletSelector);
+  const { avgUnshieldFee, incNetworkFee } = portalData;
 
-  const renderMemo = () => {
-    if (isUnShield) {
-      if (selectedPrivacy?.isBep2Token || selectedPrivacy?.currencyType === 4) {
-        return (
-          <>
-            <Field
-              component={InputQRField}
-              name="memo"
-              label="Memo"
-              placeholder="Add a note (optional)"
-              maxLength={125}
-              validate={validateMemo}
-              componentProps={{
-                editable: editableInput,
-              }}
-              autoFocus
-            />
-            <Text style={styled.warningText}>
-              For withdrawals to wallets on exchanges (e.g. Binance, etc.),
-              enter your memo to avoid loss of funds.
-            </Text>
-          </>
-        );
-      }
-      return null;
-    }
-    return (
-      <Field
-        component={InputField}
-        name="message"
-        placeholder="Add a note (optional)"
-        label="Memo"
-        maxLength={500}
-        componentProps={{
-          editable: editableInput,
-        }}
-        {...generateTestId(SEND.MEMO_INPUT)}
-      />
-    );
-  };
-  
-  React.useEffect(() => {
-    const { toAddress, amount } = navigation.state?.params || {};
-    if (toAddress) {
-      onChangeField(toAddress, 'toAddress');
-    }
-    if (amount) {
-      onChangeField(amount, 'amount');
-    }
-  }, [navigation.state?.params]);
+  const amountValidator = validatePortalAmount;
+
+  const submitHandler = handlePressUnshieldPortal;
 
   return (
     <View style={styled.container}>
@@ -169,7 +100,6 @@ const SendForm = (props) => {
                   style: {
                     marginTop: 22,
                   },
-                  editable: editableInput,
                 }}
                 validate={amountValidator}
                 {...generateTestId(SEND.AMOUNT_INPUT)}
@@ -185,29 +115,50 @@ const SendForm = (props) => {
                 showNavAddrBook
                 onOpenAddressBook={onShowFrequentReceivers}
                 shouldStandardized
-                componentProps={{
-                  editable: editableInput,
-                }}
                 {...generateTestId(SEND.ADDRESS_INPUT)}
               />
-              <EstimateFee
-                {...{
-                  amount,
-                  address: toAddress,
-                  isFormValid,
-                  memo,
-                  isIncognitoAddress,
-                  isExternalAddress,
+              <EstimateFeePortal
+                unshieldAmount={amount}
+                selectedPrivacy={selectedPrivacy}
+                networkFee={incNetworkFee}
+                accountWallet={accountWallet}
+                avgUnshieldFee={avgUnshieldFee}
+              />
+              <Field
+                component={CheckboxField}
+                name="unshieldCondition"
+                title="I agree to the unshielding conditions."
+                componentProps={{
+                  containerStyle: styled.unshieldPortalCheckbox,
+                  textStyle: styled.unshieldPortalCheckboxText
+                }}
+                validate={validateUnshieldPortalCondition}
+                onPress={(currentStatus) => {
+                  if (currentStatus === false) {
+                    setShowUnshieldPortalCondition(true);
+                  } else {
+                    onChangeField(false, 'unshieldCondition');
+                  }
                 }}
               />
-              {renderMemo()}
+              <Modal visible={isShowUnshieldPortalCondition}>
+                <UnshieldPortalCondition 
+                  onConfirm={() => {
+                    onChangeField(true, 'unshieldCondition');
+                    setShowUnshieldPortalCondition(false);
+                  }} 
+                  onGoBack={() => {
+                    setShowUnshieldPortalCondition(false);
+                  }} 
+                />
+              </Modal>
               <ButtonBasic
-                title={titleBtnSubmit}
+                title='Unshield'
                 btnStyle={[
                   styled.submitBtn,
-                  isUnShield ? styled.submitBtnUnShield : null,
+                  styled.submitBtnUnShield
                 ]}
-                disabled={disabledForm || isDisabled}
+                disabled={disabledForm}
                 onPress={handleSubmit(
                   submitHandler
                 )}
@@ -223,9 +174,6 @@ const SendForm = (props) => {
   );
 };
 
-SendForm.defaultProps = {
-  memo: '',
-};
 
 SendForm.propTypes = {
   onChangeField: PropTypes.func.isRequired,
@@ -235,17 +183,17 @@ SendForm.propTypes = {
   toAddress: PropTypes.string.isRequired,
   onShowFrequentReceivers: PropTypes.func.isRequired,
   disabledForm: PropTypes.bool.isRequired,
-  handleSend: PropTypes.func.isRequired,
   validateAmount: PropTypes.any.isRequired,
   validateAddress: PropTypes.any.isRequired,
-  isERC20: PropTypes.bool.isRequired,
   isSending: PropTypes.bool.isRequired,
-  memo: PropTypes.string,
   warningAddress: PropTypes.string.isRequired,
   isIncognitoAddress: PropTypes.bool.isRequired,
   isExternalAddress: PropTypes.bool.isRequired,
   textLoadingTx: PropTypes.string.isRequired,
-  validateMemo: PropTypes.any.isRequired,
+  validatePortalAmount: PropTypes.any.isRequired,
+  validateUnshieldPortalCondition: PropTypes.any.isRequired,
+  handlePressUnshieldPortal: PropTypes.func.isRequired,
+  portalData: PropTypes.any.isRequired,
   navigation: PropTypes.object.isRequired,
 };
 

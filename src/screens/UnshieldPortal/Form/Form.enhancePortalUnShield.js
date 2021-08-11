@@ -23,7 +23,7 @@ import {
   PortalV4UnshieldRequestMeta,
   PrivacyVersion,
 } from 'incognito-chain-web-js/build/wallet';
-import { formName } from './Form.enhance';
+import { formName } from './Form.enhanceInit';
 
 export const enhancePortalUnshield = (WrappedComp) => (props) => {
   const { portalData } = props;
@@ -34,7 +34,6 @@ export const enhancePortalUnshield = (WrappedComp) => (props) => {
   const {
     tokenId,
     externalSymbol,
-    paymentAddress: walletAddress,
     pDecimals,
   } = selectedPrivacy;
   const [state, setState] = React.useState({

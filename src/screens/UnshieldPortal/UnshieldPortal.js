@@ -6,10 +6,10 @@ import { selectedPrivacySelector } from '@src/redux/selectors';
 import { withLayout_2 } from '@src/components/Layout';
 import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
-import SendForm from './features/Form';
-import { styled } from './Send.styled';
+import SendForm from './Form';
+import { styled } from './UnshieldPortal.styled';
 
-const Send = () => {
+const UnshieldPortal = () => {
   const selectedPrivacy = useSelector(selectedPrivacySelector.selectedPrivacy);
   const navigation = useNavigation();
   const onGoBack = () => navigation.navigate(routeNames.WalletDetail);
@@ -27,6 +27,6 @@ const Send = () => {
   );
 };
 
-Send.propTypes = {};
+UnshieldPortal.propTypes = {};
 
-export default withLayout_2(Send);
+export default withLayout_2(UnshieldPortal);
