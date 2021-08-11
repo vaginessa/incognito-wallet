@@ -3,6 +3,7 @@ import routeNames from '@src/router/routeNames';
 import { useSelector } from 'react-redux';
 import { selectedPrivacySelector } from '@src/redux/selectors';
 import { getDefaultAccountWalletSelector } from '@src/redux/selectors/shared';
+import walletValidator from 'wallet-address-validator';
 import { LoadingContainer } from '@src/components/core';
 
 export const enhanceSwitchPortal = (WrappedComp) => (props) => {
@@ -35,7 +36,8 @@ export const enhanceSwitchPortal = (WrappedComp) => (props) => {
   }, []);
 
   React.useEffect(() => {
-    if (isExternalAddress && isPortalToken) {
+    const isValidAddress = toAddress && walletValidator.validate(toAddress, 'BTC', 'both');
+    if (isExternalAddress && isPortalToken && isValidAddress) {
       switchToPortal();
     }
   }, [isExternalAddress, isPortalToken, toAddress, amount]);
