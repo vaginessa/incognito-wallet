@@ -153,7 +153,7 @@ const SendForm = (props) => {
                 />
               </Modal>
               <ButtonBasic
-                title='Unshield'
+                title='Unshield my crypto'
                 btnStyle={[
                   styled.submitBtn,
                   styled.submitBtnUnShield
