@@ -11,7 +11,7 @@ const styled = StyleSheet.create({
   },
   btnContainer: {
     flex: 1,
-    marginRight: 10,
+    marginRight: 15,
   },
   percent: {
     fontSize: FONT.SIZE.small,
@@ -25,6 +25,9 @@ const styled = StyleSheet.create({
     borderRadius: 20,
     width: '100%',
     marginBottom: 10,
+  },
+  btnLastChild: {
+    marginRight: 0,
   },
 });
 
@@ -50,11 +53,15 @@ const SelectPercentAmount = (props) => {
     }
   };
   const renderMain = () => {
-    return [...Array(size)].map((item, index) => {
+    return [...Array(size)].map((item, index, arr) => {
       const percent = (((index + 1) / size) * 100).toFixed(0);
+      const lastChild = index === arr.length - 1;
       const isFilled = Number(percent) <= Number(selected);
       return (
-        <View key={percent} style={styled.btnContainer}>
+        <View
+          key={percent}
+          style={[styled.btnContainer, lastChild && styled.btnLastChild]}
+        >
           <TouchableOpacity
             style={[
               styled.percentBtn,

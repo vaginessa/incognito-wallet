@@ -32,3 +32,5 @@ export { default as BtnChevron } from './BtnChevron';
 export { default as BtnResume } from './BtnResume';
 export { default as ButtonTrade } from './ButtonTrade';
 export { default as ButtonTrade1 } from './ButtonTrade1';
+export { default as ButtonRefresh } from './BtnRefresh';
+export { default as ButtonChart } from './BtnChart';

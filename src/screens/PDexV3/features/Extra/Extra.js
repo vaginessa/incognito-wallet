@@ -9,7 +9,9 @@ import { BtnQuestionDefault } from '@src/components/Button';
 import srcQuestionIcon from '@src/assets/images/icons/help-inline.png';
 
 export const styled = StyleSheet.create({
-  container: {},
+  container: {
+    marginBottom: 30,
+  },
   titleContainer: {
     marginBottom: 15,
     alignItems: 'center',
@@ -26,7 +28,7 @@ export const styled = StyleSheet.create({
   },
   labelContainer: {
     flex: 1,
-    maxWidth: '48%',
+    maxWidth: '30%',
     alignItems: 'center',
   },
   label: {

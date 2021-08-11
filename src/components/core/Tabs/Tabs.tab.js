@@ -59,7 +59,7 @@ const Tab = (props) => {
       }
       titleStyle={
         titleStyled
-          ? [titleStyled, disabled ? titleDisabledStyled : null]
+          ? [titleStyled, disabled && titleDisabledStyled : null]
           : [styled.titleStyle, disabled ? styled.titleDisabledStyle : null]
       }
     />

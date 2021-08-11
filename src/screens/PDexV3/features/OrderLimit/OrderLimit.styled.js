@@ -8,7 +8,6 @@ export const styled = StyleSheet.create({
     marginVertical: 30,
   },
   scrollview: {
-    flex: 1,
     paddingTop: 42,
   },
   inputGroups: {
