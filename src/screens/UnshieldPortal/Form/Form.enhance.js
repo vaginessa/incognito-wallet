@@ -5,7 +5,6 @@ import routeNames from '@src/router/routeNames';
 import { compose } from 'recompose';
 import { useSelector } from 'react-redux';
 import { isValid, formValueSelector } from 'redux-form';
-import { useKeyboard } from '@src/components/UseEffect/useKeyboard';
 import { selectedPrivacySelector } from '@src/redux/selectors';
 import format from '@utils/format';
 import { enhanceAddressValidation } from './Form.enhanceAddressValidator';
@@ -14,7 +13,6 @@ import { enhancePortalUnshield } from './Form.enhancePortalUnShield';
 import { enhancePortalValidation } from './Form.enhancePortalValidator';
 import { enhancePortalData } from './Form.enhancePortalData';
 import { enhanceSwitchSend } from './Form.enhanceSwitchSend';
-
 
 export const enhance = (WrappedComp) => (props) => {
   const [isSending, setIsSending] = React.useState(false);
@@ -25,22 +23,12 @@ export const enhance = (WrappedComp) => (props) => {
   const isFormValid = useSelector((state) => isValid(formName)(state));
   const amount = useSelector((state) => selector(state, 'amount'));
   const toAddress = useSelector((state) => selector(state, 'toAddress'));
-  const [isKeyboardVisible] = useKeyboard();
+  const disabledForm = !isFormValid;
 
   const onPressMax = async () => {
     if (selectedPrivacy.amount) {
       onChangeField(format.amountFull(selectedPrivacy.amount, selectedPrivacy.pDecimals), 'amount');
     }
-  };
-
-  const shouldDisabledSubmit = () => {
-    if (
-      !isFormValid ||
-      !!isKeyboardVisible
-    ) {
-      return true;
-    }
-    return false;
   };
 
   const onShowFrequentReceivers = async () => {
@@ -58,8 +46,6 @@ export const enhance = (WrappedComp) => (props) => {
     onChangeField(info?.address, 'toAddress');
     navigation.pop();
   };
-
-  const disabledForm = shouldDisabledSubmit();
 
   const handlePressUnshieldPortal = async (payload) => {
     try {

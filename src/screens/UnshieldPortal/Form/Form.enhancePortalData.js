@@ -21,7 +21,7 @@ export const enhancePortalData = (WrappedComp) => (props) => {
   const accountWallet = useSelector(getDefaultAccountWalletSelector);
 
   const [state, setState] = React.useState({
-    isPortalToken: false,
+    isPortalToken: true,
     minUnshieldOriginalAmount: 0,     // nano
     maxUnshieldOriginalAmount: 0,     // nano
     minUnshieldAmount: 0, 
@@ -39,34 +39,29 @@ export const enhancePortalData = (WrappedComp) => (props) => {
   const getPortalData = async () => {
     try {
       setInitStatus(INIT_STATUS.INITIALIZING);
-      const isPortalToken = await accountWallet.handleCheckIsPortalToken({ tokenID: selectedPrivacy.tokenId });
-      if ( isPortalToken ){
-        // get average unshield fee
-        let [avgUnshieldFee, minUnshieldOriginalAmount] = await Promise.all([
-          accountWallet.handleGetAverageUnshieldFee(),
-          accountWallet.handleGetPortalMinUnShieldAmount({ tokenID: selectedPrivacy.tokenId })
-        ]);
+      // get average unshield fee
+      let [avgUnshieldFee, minUnshieldOriginalAmount] = await Promise.all([
+        accountWallet.handleGetAverageUnshieldFee(),
+        accountWallet.handleGetPortalMinUnShieldAmount({ tokenID: selectedPrivacy.tokenId })
+      ]);
 
-        avgUnshieldFee = Number.parseInt(avgUnshieldFee);
-        minUnshieldOriginalAmount = minUnshieldOriginalAmount < avgUnshieldFee ? avgUnshieldFee : minUnshieldOriginalAmount;
-        const maxUnshieldOriginalAmount = selectedPrivacy?.amount;
+      avgUnshieldFee = Number.parseInt(avgUnshieldFee);
+      minUnshieldOriginalAmount = minUnshieldOriginalAmount < avgUnshieldFee ? avgUnshieldFee : minUnshieldOriginalAmount;
+      const maxUnshieldOriginalAmount = selectedPrivacy?.amount;
 
-        const minUnshieldAmount = convert.toHumanAmount(minUnshieldOriginalAmount, selectedPrivacy?.pDecimals);
-        const maxUnshieldAmount = convert.toHumanAmount(maxUnshieldOriginalAmount, selectedPrivacy?.pDecimals);
+      const minUnshieldAmount = convert.toHumanAmount(minUnshieldOriginalAmount, selectedPrivacy?.pDecimals);
+      const maxUnshieldAmount = convert.toHumanAmount(maxUnshieldOriginalAmount, selectedPrivacy?.pDecimals);
 
-        const newState = {
-          ...state,
-          isPortalToken,
-          minUnshieldOriginalAmount,
-          maxUnshieldOriginalAmount,
-          minUnshieldAmount,
-          maxUnshieldAmount,
-          avgUnshieldFee,
-        };
-        console.log('getPortalData newState: ', newState);
-        setState(newState);
-        setInitStatus(INIT_STATUS.SUCCESS);
-      } 
+      const newState = {
+        ...state,
+        minUnshieldOriginalAmount,
+        maxUnshieldOriginalAmount,
+        minUnshieldAmount,
+        maxUnshieldAmount,
+        avgUnshieldFee,
+      };
+      setState(newState);
+      setInitStatus(INIT_STATUS.SUCCESS);
     } catch(e) {
       console.log(e);
       setInitStatus(INIT_STATUS.FAILED);

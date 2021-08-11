@@ -47,7 +47,7 @@ export const EstimateFeePortal = ({ unshieldAmount, networkFee, avgUnshieldFee, 
       <TextInput
         label="Received (est.)"
         canEditable={false}
-        defaultValue={formatUtils.amountFull(receivedAmount, pDecimals)}
+        defaultValue={formatUtils.amountFull(receivedAmount, pDecimals) || '0'}
         prependView={(
           <View style={[styled.spFeeItem]}>
             <Text style={[styled.symbol]}>
