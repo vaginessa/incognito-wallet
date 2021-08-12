@@ -161,4 +161,5 @@ export default {
   ContributePool: 'ContributePool',
   RemovePool: 'RemovePool',
   OrderLimit: 'OrderLimit',
+  SelectTokenTrade: 'SelectTokenTrade',
 };

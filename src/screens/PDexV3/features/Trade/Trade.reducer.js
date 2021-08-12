@@ -2,19 +2,12 @@ import {
   ACTION_FETCHING,
   ACTION_FETCHED,
   ACTION_FETCH_FAIL,
-  ACTION_SET_SELL_TOKEN,
-  ACTION_SET_BUY_TOKEN,
-  ACTION_SET_FEE_TOKEN,
-} from './Swap.constant';
+} from './Trade.constant';
 
 const initialState = {
   isFetching: true,
   isFetched: false,
-  data: {},
-  buytoken: '',
-  selltoken: '',
-  feetoken: '',
-  estimateTrade: null,
+  data: [],
 };
 
 export default (state = initialState, action) => {
@@ -30,7 +23,7 @@ export default (state = initialState, action) => {
       ...state,
       isFetching: false,
       isFetched: true,
-      data: { ...action.payload },
+      data: action.payload,
     };
   }
   case ACTION_FETCH_FAIL: {
@@ -38,24 +31,6 @@ export default (state = initialState, action) => {
       ...state,
       isFetched: false,
       isFetching: false,
-    };
-  }
-  case ACTION_SET_SELL_TOKEN: {
-    return {
-      ...state,
-      selltoken: action.payload,
-    };
-  }
-  case ACTION_SET_BUY_TOKEN: {
-    return {
-      ...state,
-      buytoken: action.payload,
-    };
-  }
-  case ACTION_SET_FEE_TOKEN: {
-    return {
-      ...state,
-      feetoken: action.payload,
     };
   }
   default:

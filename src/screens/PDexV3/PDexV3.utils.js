@@ -15,12 +15,18 @@ export const getPDexV3Instance = async ({ otaKey }) => {
   return pDexV3Inst;
 };
 
+export const getPairRate = ({ token1, token2, token1Value, token2Value }) => {
+  const rawRate = new BigNumber(token2Value)
+    .dividedBy(
+      new BigNumber(token1Value).dividedBy(Math.pow(10, token1.pDecimals || 0)),
+    )
+    .toFixed()
+    .toString();
+  return rawRate;
+};
+
 export const getExchangeRate = (token1, token2, token1Value, token2Value) => {
-  const rawRate = Math.floor(
-    new BigNumber(token2Value)
-      .dividedBy(token1Value / Math.pow(10, token1.pDecimals || 0))
-      .toString(),
-  );
+  const rawRate = getPairRate({ token1, token2, token1Value, token2Value });
   return `1 ${token1.symbol} = ${format.amount(rawRate, token2.pDecimals)} ${
     token2?.symbol
   }`;

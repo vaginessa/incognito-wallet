@@ -101,6 +101,7 @@ import ContributePool from '@screens/PDexV3/features/ContributePool';
 import RemovePool from '@screens/PDexV3/features/RemovePool';
 import { ReviewOrderSwap } from '@src/screens/PDexV3/features/Swap';
 import OrderLimit from '@src/screens/PDexV3/features/OrderLimit';
+import SelectTokenTrade from '@screens/PDexV3/features/SelectToken';
 
 const masterKeyRoutes = [
   {
@@ -180,6 +181,10 @@ const pDexV3Routes = [
   {
     screen: OrderLimit,
     name: routeNames.OrderLimit,
+  },
+  {
+    screen: SelectTokenTrade,
+    name: routeNames.SelectTokenTrade,
   },
 ];
 

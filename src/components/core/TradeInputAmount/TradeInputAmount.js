@@ -1,8 +1,4 @@
-import {
-  ArrowRightGreyIcon,
-  ArrowRightPrimaryIcon,
-  InfiniteIcon,
-} from '@src/components/Icons';
+import { ArrowRightGreyIcon, InfiniteIcon } from '@src/components/Icons';
 import Row from '@src/components/Row';
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
@@ -47,6 +43,7 @@ const TradeInputAmount = (props) => {
     canSelectSymbol,
     onPressSymbol,
     placeholder = '0',
+    ...rest
   } = props || {};
   return (
     <Row style={styled.container}>
@@ -57,6 +54,7 @@ const TradeInputAmount = (props) => {
           placeholder={placeholder}
           ellipsizeMode="tail"
           numberOfLines={1}
+          {...rest}
         />
       </View>
       {hasInfinityIcon && (

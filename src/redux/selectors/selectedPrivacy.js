@@ -4,7 +4,7 @@ import SelectedPrivacy from '@src/models/selectedPrivacy';
 import memoize from 'memoize-one';
 import { CONSTANT_COMMONS } from '@src/constants';
 import { ExHandler } from '@src/services/exception';
-import { BIG_COINS } from '@src/screens/Dex/constants';
+import { BIG_COINS, PRIORITY_LIST } from '@src/screens/Dex/constants';
 import { defaultAccount } from './account';
 // eslint-disable-next-line import/no-cycle
 import {
@@ -52,10 +52,12 @@ export const getPrivacyDataByTokenID = createSelector(
           (token) => token?.tokenId === BIG_COINS.USDT,
         );
         const price = getPrice({ token, tokenUSDT });
+        const priority = PRIORITY_LIST.indexOf(tokenID);
         let data = {
           ...token,
           ...price,
           isFollowed: followedTokenData?.id === tokenID,
+          priority,
         };
         return data;
       } catch (e) {

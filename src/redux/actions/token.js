@@ -118,7 +118,6 @@ export const getBalance = (tokenId) => async (dispatch, getState) => {
   new Validator('tokenId', tokenId).required().string();
   const state = getState();
   const wallet = state?.wallet;
-  // const isDev = devSelector(state);
   const account = accountSelector.defaultAccount(getState());
   const token = selectedPrivacySelector.findTokenFollowedByIdSelector(state)(
     tokenId,
@@ -134,20 +133,6 @@ export const getBalance = (tokenId) => async (dispatch, getState) => {
       tokenID: tokenId,
       version: PrivacyVersion.ver2,
     });
-    // if (isDev) {
-    //   const accountWallet = getDefaultAccountWalletSelector(state);
-    //   const coinsStorage = await accountWallet.getCoinsStorage({
-    //     tokenID: tokenId,
-    //     version: PrivacyVersion.ver2,
-    //   });
-    //   if (coinsStorage) {
-    //     await dispatch(
-    //       actionLogEvent({
-    //         desc: coinsStorage,
-    //       }),
-    //     );
-    //   }
-    // }
     dispatch(
       setToken({
         ...token,

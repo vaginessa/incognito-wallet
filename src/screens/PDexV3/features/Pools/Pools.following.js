@@ -91,7 +91,6 @@ export const PoolsListFollowing = React.memo(({ handlePressPool }) => {
         <Pool poolId={item} swipable onPressPool={onPressPool} />
       )}
       keyExtractor={(pool) => pool?.poolId}
-      showsVerticalScrollIndicator={false}
       ListFooterComponent={<Footer />}
       style={poolsListFollowingStyled.flatList}
     />

@@ -1,31 +1,38 @@
-import { Header } from '@src/components';
+import { Header, LoadingContainer } from '@src/components';
 import { KeyboardAwareScrollView, Tabs } from '@src/components/core';
-import { withLayout_2 } from '@src/components/Layout';
 import React from 'react';
 import { View } from 'react-native';
 import TabSwap from '@screens/PDexV3/features/Swap';
 import { TabHomeOrderLimit } from '@screens/PDexV3/features/OrderLimit';
+import { useSelector } from 'react-redux';
 import { ROOT_TAB_TRADE, TAB_LIMIT_ID, TAB_SWAP_ID } from './Trade.constant';
 import { styled } from './Trade.styled';
+import withTrade from './Trade.enhance';
+import { tradePDexV3Selector } from './Trade.selector';
 
 const Trade = () => {
+  const { isFetching } = useSelector(tradePDexV3Selector);
   return (
     <View style={styled.container}>
       <Header title="pDex" accountSelectable />
-      <KeyboardAwareScrollView contentContainerStyle={styled.main}>
-        <Tabs rootTabID={ROOT_TAB_TRADE} styledTabs={styled.styledTabs}>
-          <View tabID={TAB_SWAP_ID} label="Swap" onChangeTab={() => null} tab>
-            <TabSwap />
-          </View>
-          <View tabID={TAB_LIMIT_ID} label="Limit" onChangeTab={() => null}>
-            <TabHomeOrderLimit />
-          </View>
-        </Tabs>
-      </KeyboardAwareScrollView>
+      {isFetching ? (
+        <LoadingContainer />
+      ) : (
+        <KeyboardAwareScrollView contentContainerStyle={styled.main}>
+          <Tabs rootTabID={ROOT_TAB_TRADE} styledTabs={styled.styledTabs}>
+            <View tabID={TAB_SWAP_ID} label="Swap" onChangeTab={() => null} tab>
+              <TabSwap />
+            </View>
+            <View tabID={TAB_LIMIT_ID} label="Limit" onChangeTab={() => null}>
+              <TabHomeOrderLimit />
+            </View>
+          </Tabs>
+        </KeyboardAwareScrollView>
+      )}
     </View>
   );
 };
 
 Trade.propTypes = {};
 
-export default withLayout_2(React.memo(Trade));
+export default withTrade(React.memo(Trade));

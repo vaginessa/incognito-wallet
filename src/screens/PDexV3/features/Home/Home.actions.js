@@ -12,7 +12,7 @@ import {
   ACTION_FETCHED,
   ACTION_FETCH_FAIL,
   ACTION_FREE_HOME_PDEX_V3,
-  ROOT_TAB_ID,
+  ROOT_TAB_HOME,
 } from './Home.constant';
 import { homePDexV3Selector } from './Home.selector';
 
@@ -40,7 +40,7 @@ export const actionRefresh = () => async (dispatch, getState) => {
       return;
     }
     await dispatch(actionFetching());
-    const activedTab = activedTabSelector(state)(ROOT_TAB_ID);
+    const activedTab = activedTabSelector(state)(ROOT_TAB_HOME);
     let task = [];
     switch (activedTab) {
     case TAB_POOLS_ID: {
