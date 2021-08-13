@@ -11,7 +11,6 @@ export const enhancePortalValidation = (WrappedComp) => (props) => {
   const { 
     minUnshieldAmount,
     maxUnshieldAmount,
-    incNetworkFee,
   } = portalData;
 
   const initialState = {
@@ -22,38 +21,30 @@ export const enhancePortalValidation = (WrappedComp) => (props) => {
   const [state, setState] = React.useState({ ...initialState });
   const { maxAmountValidator, minAmountValidator, balancePRVValidator } = state;
 
-  const setFormValidator = debounce(async () => {
-    let currentState = { ...state };
-    if (Number.isFinite(maxUnshieldAmount)) {
-      currentState = {
-        ...state,
+  const setFormValidator = debounce(() => {
+    setState({
+      ...state,
+      ...Number.isFinite(maxUnshieldAmount) ? {
         maxAmountValidator: validator.maxValue(maxUnshieldAmount, {
           message:
           maxUnshieldAmount > 0
             ? `Max amount you can withdraw is ${maxUnshieldAmount} ${selectedPrivacy?.externalSymbol ||
                   selectedPrivacy?.symbol}`
             : 'Your balance is insufficient.',
-        }),
-      };
-      await setState(currentState);
-    }
-    if (Number.isFinite(minUnshieldAmount)) {
-      await setState({
-        ...currentState,
+        })
+      } : {},
+      ...Number.isFinite(minUnshieldAmount) ? {
         minAmountValidator: validator.minValue(minUnshieldAmount, {
           message: `Amount must be larger than ${minUnshieldAmount} ${selectedPrivacy?.externalSymbol ||
             selectedPrivacy?.symbol}`,
         }),
-      });
-    }
-    if (Number.isFinite(balancePRV)) {
-      await setState({
-        ...currentState,
+      } : {},
+      ...Number.isFinite(balancePRV) ? {
         balancePRVValidator: validator.maxValue(balancePRV, {
           message: 'Your balance is insufficient.',
         }),
-      });
-    }
+      } : {}
+    });
   }, 200);
 
   const getAmountValidator = () => {
