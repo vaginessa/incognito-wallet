@@ -34,6 +34,7 @@ const MAIN_NET_SERVER = {
   IncBSCContractAddress: '0x43D037A562099A4C2c95b1E2120cc43054450629',
   explorer: 'https://incscan.io',
   tradeServices: 'https://54ed4c3d-993b-4fc1-accd-7e7e72122248.mock.pstmn.io',
+  portalServices:  'http://139.162.55.124:8010',
 };
 const BETA_SERVER = {
   id: 'beta',
@@ -51,6 +52,7 @@ const BETA_SERVER = {
   IncBSCContractAddress: '0x43D037A562099A4C2c95b1E2120cc43054450629',
   explorer: 'https://incscan.io',
   tradeServices: 'https://54ed4c3d-993b-4fc1-accd-7e7e72122248.mock.pstmn.io',
+  portalServices:  'http://139.162.55.124:8010',
 };
 const TEST_NET_SERVER = {
   id: 'testnet',
@@ -69,6 +71,7 @@ const TEST_NET_SERVER = {
   IncBSCContractAddress: '0x2f6F03F1b43Eab22f7952bd617A24AB46E970dF7',
   explorer: 'https://testnet.incognito.org',
   tradeServices: 'https://54ed4c3d-993b-4fc1-accd-7e7e72122248.mock.pstmn.io',
+  portalServices:  'http://139.162.55.124:8010',
 };
 const LOCAL_SERVER = {
   id: 'local',
@@ -77,6 +80,7 @@ const LOCAL_SERVER = {
   username: '',
   password: '',
   name: 'Local',
+  portalServices:  'http://139.162.55.124:8010',
 };
 const TEST_NET_1_SERVER = {
   id: 'testnet1',
@@ -87,14 +91,14 @@ const TEST_NET_1_SERVER = {
   name: 'Testnet 1',
   coinServices: 'https://api-coinservice-staging2.incognito.org',
   pubsubServices: 'https://api-coinservice-staging2.incognito.org/txservice',
-  requestServices:
-    'https://api-coinservice-staging2.incognito.org/airdrop-service',
+  requestServices:'https://api-coinservice-staging2.incognito.org/airdrop-service',
   apiServices: 'https://privacyv2-api-service.incognito.org',
   shardNumber: DEFAULT_SHARD_NUMBER,
   IncContractAddress: '0xE0D5e7217c6C4bc475404b26d763fAD3F14D2b86',
   IncBSCContractAddress: '0x1ce57B254DC2DBB41e1aeA296Dc7dBD6fb549241',
   explorer: 'https://testnet1.incognito.org',
   tradeServices: 'https://54ed4c3d-993b-4fc1-accd-7e7e72122248.mock.pstmn.io',
+  portalServices:  'http://139.162.55.124:8010',
 };
 const DEV_TEST_SERVER = {
   id: 'devtest',
@@ -111,6 +115,7 @@ const DEV_TEST_SERVER = {
   IncContractAddress: '0xE0D5e7217c6C4bc475404b26d763fAD3F14D2b86',
   IncBSCContractAddress: '0x1ce57B254DC2DBB41e1aeA296Dc7dBD6fb549241',
   explorer: 'https://testnet1.incognito.org',
+  portalServices:  'http://139.162.55.124:8010',
 };
 
 const DEFAULT_LIST_SERVER = [

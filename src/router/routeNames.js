@@ -110,6 +110,7 @@ export default {
   TxHistoryReceive: 'TxHistoryReceive',
   Event: 'Event',
   Helper: 'Helper',
+  UnshieldPortal: 'UnshieldPortal',
 
   // Master keys
   MasterKeys: 'MasterKeys',

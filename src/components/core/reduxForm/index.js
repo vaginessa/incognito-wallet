@@ -10,3 +10,4 @@ export { default as validator } from './validator';
 export {
   default as ReduxFormTradeInputAmount,
 } from './fields/ReduxFormTradeInputAmount';
+export { default as CheckboxField } from './fields/checkbox';
