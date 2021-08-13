@@ -1,7 +1,6 @@
 import React from 'react';
 import { View, StyleSheet, TouchableWithoutFeedback } from 'react-native';
 import PropTypes from 'prop-types';
-import NodeFullDisk from '@src/screens/Node/components/NodeFullDisk';
 import { Text } from '@src/components/core';
 import { Row } from '@src/components';
 import { COLORS, FONT } from '@src/styles';

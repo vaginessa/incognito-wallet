@@ -1,32 +1,14 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
-import { BaseTextInput, Text } from '@src/components/core';
-import { Row } from '@src/components';
-import { COLORS, FONT } from '@src/styles';
-import SelectFee from '@screens/PDexV3/features/SelectFee';
 import Extra, {
   Hook,
   styled as extraStyled,
 } from '@screens/PDexV3/features/Extra';
+import { SelectFeeInput } from '@src/components/core/SelectFee';
 
 const styled = StyleSheet.create({
   container: {},
-  ctRateInput: {
-    fontFamily: FONT.NAME.bold,
-    fontSize: FONT.SIZE.superMedium,
-    lineHeight: FONT.SIZE.superMedium + 5,
-    color: COLORS.black,
-  },
-  ctRateInputContainer: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  crRateInputWrapper: {
-    flex: 1,
-    maxWidth: '50%',
-  },
 });
 
 const SubInfo = (props) => {
@@ -39,30 +21,19 @@ const SubInfo = (props) => {
       hasQuestionIcon: true,
       onPressQuestionIcon: () => null,
       hooks: (
-        <Row style={styled.ctRateInputContainer}>
-          <View style={styled.crRateInputWrapper}>
-            <BaseTextInput
-              style={styled.ctRateInput}
-              keyboardType="decimal-pad"
-              placeholder="0.5"
-              ellipsizeMode="tail"
-              numberOfLines={1}
-            />
-          </View>
-          <SelectFee
-            types={[
-              {
-                tokenId: '004',
-                symbol: 'PRV',
-              },
-              {
-                tokenId: '378',
-                symbol: 'XMR',
-              },
-            ]}
-            onChangeTypeFee={onChangeTypeFee}
-          />
-        </Row>
+        <SelectFeeInput
+          types={[
+            {
+              tokenId: '004',
+              symbol: 'PRV',
+            },
+            {
+              tokenId: '378',
+              symbol: 'XMR',
+            },
+          ]}
+          onChangeTypeFee={onChangeTypeFee}
+        />
       ),
     },
     {

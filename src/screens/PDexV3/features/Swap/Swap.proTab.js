@@ -18,23 +18,13 @@ const TabPro = React.memo(() => {
       title: 'Slippage tolerance',
       hasQuestionIcon: true,
       onPressQuestionIcon: () => null,
-      hooks: [
-        {
-          label: '1',
-          value: '%',
-        },
-      ].map((hook) => <Hook {...hook} key={hook.label} />),
+      hooks: null,
     },
     {
       title: 'Trading fee',
       hasQuestionIcon: true,
       onPressQuestionIcon: () => null,
-      hooks: [
-        {
-          label: '1',
-          value: 'USDC PRV ',
-        },
-      ].map((hook) => <Hook {...hook} key={hook.label} />),
+      hooks: null,
     },
     {
       title: 'Trade details',

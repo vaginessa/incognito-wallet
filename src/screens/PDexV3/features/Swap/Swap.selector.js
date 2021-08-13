@@ -4,7 +4,9 @@ import { getPrivacyDataByTokenID as getPrivacyDataByTokenIDSelector } from '@src
 import { allTokensIDsSelector } from '@src/redux/selectors/token';
 import format from '@src/utils/format';
 import includes from 'lodash/includes';
-import { formValueSelector } from 'redux-form';
+import { formValueSelector, focus, formValues } from 'redux-form';
+import convert from '@src/utils/convert';
+import SelectedPrivacy from '@src/models/selectedPrivacy';
 import { formConfigs } from './Swap.constant';
 import { getPairRate } from '../../PDexV3.utils';
 
@@ -46,18 +48,33 @@ export const defaultPairSelector = createSelector(
   (pairs) => pairs[0] || null,
 );
 
-export const selltokenSelector = createSelector(
+export const inpuTokenSelector = createSelector(
   getPrivacyDataByTokenIDSelector,
   swapSelector,
-  (getPrivacyDataByTokenID, { selltoken }) =>
-    selltoken && getPrivacyDataByTokenID(selltoken),
+  (getPrivacyDataByTokenID, swap) => (field) => {
+    try {
+      console.log('inpuTokenSelector-field', field);
+      const tokenId = swap[field];
+      console.log('inpuTokenSelector-tokenId', tokenId);
+      if (!tokenId) {
+        return {};
+      }
+      const token = getPrivacyDataByTokenID(swap[field]);
+      return token;
+    } catch (error) {
+      console.log('inpuTokenSelector-error', error);
+    }
+  },
+);
+
+export const selltokenSelector = createSelector(
+  inpuTokenSelector,
+  (getInputToken) => getInputToken(formConfigs.selltoken),
 );
 
 export const buytokenSelector = createSelector(
-  getPrivacyDataByTokenIDSelector,
-  swapSelector,
-  (getPrivacyDataByTokenID, { buytoken }) =>
-    buytoken && getPrivacyDataByTokenID(buytoken),
+  inpuTokenSelector,
+  (getInputToken) => getInputToken(formConfigs.buytoken),
 );
 
 export const swapInfoSelector = createSelector(
@@ -66,7 +83,7 @@ export const swapInfoSelector = createSelector(
   listPairsSelector,
   (selltoken, buytoken, pairs) => {
     const selltokenId = selltoken.tokenId;
-    const buytokenId = buytoken.token;
+    const buytokenId = buytoken.tokenId;
     const pair =
       pairs.find(({ poolid }) => {
         return poolid.includes(selltokenId) && poolid.includes(buytokenId);
@@ -97,28 +114,55 @@ export const swapInfoSelector = createSelector(
   },
 );
 
-export const swapInputsAmountSelector = createSelector(
+export const inputAmountSelector = createSelector(
+  (state) => state,
+  inpuTokenSelector,
+  (state, getInputToken) => (field) => {
+    try {
+      const token: SelectedPrivacy = getInputToken(field);
+      if (!token.tokenId) {
+        return {
+          amount: '',
+          originalAmount: 0,
+          isFocus: false,
+        };
+      }
+      const selector = formValueSelector(formConfigs.formName);
+      const amount = selector(state, field);
+      console.log('amount', amount);
+      const originalAmount = convert.toOriginalAmount(amount, token.pDecimals);
+      console.log('originalAmount', originalAmount);
+      const isFocus = focus(formConfigs.formName, field);
+      return {
+        amount,
+        originalAmount,
+        isFocus,
+      };
+    } catch (error) {
+      console.log('inputAmountSelector error', error);
+    }
+  },
+);
+
+export const feeSelectedSelector = createSelector(
+  swapSelector,
+  ({ feetoken }) => feetoken,
+);
+
+export const feeTypesSelector = createSelector(
   selltokenSelector,
   buytokenSelector,
-  formValueSelector,
-  (state) => state,
-  (selltoken, buytoken, getFormValue, state) => {
-    let selltokenAmount = '0';
-    let buyttokenAmount = '0';
-    try {
-      const selector = formValueSelector(formConfigs.formName);
-      const values = selector(
-        state,
-        formConfigs.selltoken,
-        formConfigs.buytoken,
-      );
-      console.log('values', values);
-    } catch {
-      //
-    }
-    return {
-      selltokenAmount,
-      buyttokenAmount,
-    };
-  },
+  (selltoken, buytoken) =>
+    selltoken?.tokenId && buytoken?.tokenId
+      ? [
+        {
+          tokenId: selltoken.tokenId,
+          symbol: selltoken.symbol,
+        },
+        {
+          tokenId: buytoken.tokenId,
+          symbol: buytoken.symbol,
+        },
+      ]
+      : [],
 );

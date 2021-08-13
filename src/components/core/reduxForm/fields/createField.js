@@ -11,7 +11,6 @@ const customField = (field, render) => {
   const shouldShowError = (meta?.visited || meta?.touched) && meta?.error;
   const shouldShowWarning =
     (meta?.visited || meta?.touched) && warning && !meta?.error;
-
   return (
     <View style={[styleSheet.container, style]}>
       <View style={styleSheet.field}>{render(renderProps)}</View>

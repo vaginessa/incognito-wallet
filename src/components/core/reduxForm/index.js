@@ -7,7 +7,6 @@ export { default as InputMaxValueField } from './fields/inputMaxValue';
 export { default as ImagePickerField } from './fields/imagePicker';
 export { default as SwitchField } from './fields/switch';
 export { default as validator } from './validator';
-export {
-  default as ReduxFormTradeInputAmount,
-} from './fields/ReduxFormTradeInputAmount';
 export { default as CheckboxField } from './fields/checkbox';
+export { default as RFTradeInputAmount } from './fields/RFTradeInputAmount';
+export { default as RFSelectFeeInput } from './fields/RFSelectFeeInput';

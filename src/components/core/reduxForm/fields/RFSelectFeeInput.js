@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { StyleSheet } from 'react-native';
-import TradeInputAmount from '@src/components/core/TradeInputAmount';
+import { SelectFeeInput } from '@src/components/core/SelectFee';
 import createField from './createField';
 
 const styled = StyleSheet.create({});
@@ -10,14 +10,14 @@ const renderCustomField = (props) => {
   const { input, ...rest } = props;
   const { onChange, ...restInput } = input;
   return (
-    <TradeInputAmount
+    <SelectFeeInput
       {...{ ...rest, ...restInput, onChangeText: (text) => onChange(text) }}
     />
   );
 };
 
-const InputTradeAmount = createField({
-  fieldName: 'InputTradeAmount',
+const RFSelectFeeInput = createField({
+  fieldName: 'RFSelectFeeInput',
   render: renderCustomField,
 });
 
@@ -25,4 +25,4 @@ renderCustomField.defaultProps = {};
 
 renderCustomField.propTypes = {};
 
-export default React.memo(InputTradeAmount);
+export default React.memo(RFSelectFeeInput);
