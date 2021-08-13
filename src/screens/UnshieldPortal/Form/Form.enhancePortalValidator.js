@@ -7,18 +7,21 @@ import { detectToken } from '@src/utils/misc';
 
 export const enhancePortalValidation = (WrappedComp) => (props) => {
   const selectedPrivacy = useSelector(selectedPrivacySelector.selectedPrivacy);
-  const { portalData } = props;
+  const { portalData, balancePRV } = props;
   const { 
     minUnshieldAmount,
     maxUnshieldAmount,
+    incNetworkFee,
   } = portalData;
 
   const initialState = {
     maxAmountValidator: undefined,
     minAmountValidator: undefined,
+    balancePRVValidator: undefined,
   };
   const [state, setState] = React.useState({ ...initialState });
-  const { maxAmountValidator, minAmountValidator } = state;
+  const { maxAmountValidator, minAmountValidator, balancePRVValidator } = state;
+
   const setFormValidator = debounce(async () => {
     let currentState = { ...state };
     if (Number.isFinite(maxUnshieldAmount)) {
@@ -43,6 +46,14 @@ export const enhancePortalValidation = (WrappedComp) => (props) => {
         }),
       });
     }
+    if (Number.isFinite(balancePRV)) {
+      await setState({
+        ...currentState,
+        balancePRVValidator: validator.maxValue(balancePRV, {
+          message: 'Your balance is insufficient.',
+        }),
+      });
+    }
   }, 200);
 
   const getAmountValidator = () => {
@@ -62,11 +73,13 @@ export const enhancePortalValidation = (WrappedComp) => (props) => {
 
   React.useEffect(() => {
     setFormValidator();
-  }, [selectedPrivacy?.tokenId, maxUnshieldAmount, minUnshieldAmount]);
+  }, [selectedPrivacy?.tokenId, maxUnshieldAmount, minUnshieldAmount, balancePRV]);
 
   const validatePortalAmount = getAmountValidator();
 
   const validateUnshieldPortalCondition = validator.equal('true', { message: 'Required' });
+
+  const validateBalancePRV = balancePRVValidator;
 
   return (
     <WrappedComp
@@ -76,6 +89,7 @@ export const enhancePortalValidation = (WrappedComp) => (props) => {
         minAmountValidator,
         maxAmountValidator,
         validateUnshieldPortalCondition,
+        validateBalancePRV,
       }}
     />
   );
