@@ -25,14 +25,14 @@ const styled = StyleSheet.create({
 });
 
 const SelectFeeInput = (props) => {
-  const { types, onChangeTypeFee, ...rest } = props;
+  const { types, onChangeTypeFee, placeholder, ...rest } = props;
   return (
     <Row style={styled.inputContainer}>
       <View style={styled.inputWrapper}>
         <BaseTextInput
           style={styled.input}
           keyboardType="decimal-pad"
-          placeholder="0.5"
+          placeholder={placeholder}
           ellipsizeMode="tail"
           numberOfLines={1}
           {...rest}
@@ -49,6 +49,7 @@ SelectFeeInput.propTypes = {
     PropTypes.shape({
       tokenId: PropTypes.string.isRequired,
       symbol: PropTypes.string.isRequired,
+      actived: PropTypes.bool.isRequired,
     }),
   ).isRequired,
 };

@@ -4,11 +4,12 @@ import { getPrivacyDataByTokenID as getPrivacyDataByTokenIDSelector } from '@src
 import { allTokensIDsSelector } from '@src/redux/selectors/token';
 import format from '@src/utils/format';
 import includes from 'lodash/includes';
-import { formValueSelector, focus, formValues } from 'redux-form';
+import floor from 'lodash/floor';
+import { formValueSelector } from 'redux-form';
 import convert from '@src/utils/convert';
 import SelectedPrivacy from '@src/models/selectedPrivacy';
+import { PRV } from '@src/constants/common';
 import { formConfigs } from './Swap.constant';
-import { getPairRate } from '../../PDexV3.utils';
 
 export const swapSelector = createSelector(
   (state) => state.pDexV3,
@@ -53,9 +54,7 @@ export const inpuTokenSelector = createSelector(
   swapSelector,
   (getPrivacyDataByTokenID, swap) => (field) => {
     try {
-      console.log('inpuTokenSelector-field', field);
       const tokenId = swap[field];
-      console.log('inpuTokenSelector-tokenId', tokenId);
       if (!tokenId) {
         return {};
       }
@@ -77,47 +76,78 @@ export const buytokenSelector = createSelector(
   (getInputToken) => getInputToken(formConfigs.buytoken),
 );
 
+export const feeSelectedSelector = createSelector(
+  swapSelector,
+  ({ feetoken }) => feetoken || '',
+);
+
 export const swapInfoSelector = createSelector(
+  swapSelector,
+  feeSelectedSelector,
+  getPrivacyDataByTokenIDSelector,
   selltokenSelector,
   buytokenSelector,
   listPairsSelector,
-  (selltoken, buytoken, pairs) => {
-    const selltokenId = selltoken.tokenId;
-    const buytokenId = buytoken.tokenId;
-    const pair =
-      pairs.find(({ poolid }) => {
-        return poolid.includes(selltokenId) && poolid.includes(buytokenId);
-      }) || {};
-    const { token1IdStr, token1PoolValue, token2PoolValue } = pair;
-    let rate = getPairRate({
-      token1: selltoken,
-      token2: buytoken,
-      token1Value:
-        selltoken === token1IdStr ? token1PoolValue : token2PoolValue,
-      token2Value: buytoken === token1IdStr ? token1PoolValue : token2PoolValue,
-    });
-    const selltokenBalance = format.amount(
-      selltoken.amount,
-      selltoken.pDecimals,
-      false,
-    );
-    const buytokenBalance = format.amount(
-      buytoken.amount,
-      buytoken.pDecimals,
-      false,
-    );
-    return {
-      balanceStr: `${selltokenBalance} ${selltoken.symbol} + ${buytokenBalance} ${buytoken.symbol}`,
-      routing: '',
-      rate,
-    };
+  (
+    { data, networkfee },
+    feetoken,
+    getPrivacyDataByTokenID,
+    selltoken: SelectedPrivacy,
+    buytoken: SelectedPrivacy,
+  ) => {
+    try {
+      const selltokenBalance = format.amount(
+        selltoken.amount,
+        selltoken.pDecimals,
+        false,
+      );
+      const buytokenBalance = format.amount(
+        buytoken.amount,
+        buytoken.pDecimals,
+        false,
+      );
+      const feeTokenData = getPrivacyDataByTokenID(feetoken);
+      const { fee, route: routing, sizeimpact, maxPriceStr } = data;
+      const minFeeAmount = format.toFixed(
+        convert.toHumanAmount(fee, feeTokenData.pDecimals),
+        feeTokenData.pDecimals,
+      );
+      const minFeeAmountStr = `${minFeeAmount} ${feeTokenData.symbol}`;
+      const networkfeeAmount = format.toFixed(
+        convert.toHumanAmount(networkfee, PRV.pDecimals),
+        PRV.pDecimals,
+      );
+      const networkfeeAmountStr = `${networkfeeAmount} ${PRV.symbol}`;
+      const sizeimpactStr = format.toFixed(
+        convert.toHumanAmount(floor(sizeimpact * 100), 0),
+        0,
+      );
+      return {
+        balanceStr: `${selltokenBalance} ${selltoken.symbol} + ${buytokenBalance} ${buytoken.symbol}`,
+        routing,
+        minFeeAmount,
+        minFeeAmountStr,
+        networkfeeAmountStr,
+        maxPriceStr,
+        sizeimpactStr,
+      };
+    } catch (error) {
+      //
+      console.log('swapInfoSelector-error', error);
+    }
   },
+);
+
+export const focustokenSelector = createSelector(
+  swapSelector,
+  ({ focustoken }) => focustoken,
 );
 
 export const inputAmountSelector = createSelector(
   (state) => state,
   inpuTokenSelector,
-  (state, getInputToken) => (field) => {
+  focustokenSelector,
+  (state, getInputToken, focustoken) => (field) => {
     try {
       const token: SelectedPrivacy = getInputToken(field);
       if (!token.tokenId) {
@@ -129,14 +159,15 @@ export const inputAmountSelector = createSelector(
       }
       const selector = formValueSelector(formConfigs.formName);
       const amount = selector(state, field);
-      console.log('amount', amount);
       const originalAmount = convert.toOriginalAmount(amount, token.pDecimals);
-      console.log('originalAmount', originalAmount);
-      const isFocus = focus(formConfigs.formName, field);
+      const focus = token.tokenId === focustoken;
       return {
         amount,
         originalAmount,
-        isFocus,
+        focus,
+        tokenId: token.tokenId,
+        symbol: token.symbol,
+        pDecimals: token.pDecimals,
       };
     } catch (error) {
       console.log('inputAmountSelector error', error);
@@ -144,24 +175,31 @@ export const inputAmountSelector = createSelector(
   },
 );
 
-export const feeSelectedSelector = createSelector(
-  swapSelector,
-  ({ feetoken }) => feetoken,
+export const slippagetoleranceSelector = createSelector(
+  (state) => state,
+  (state) => {
+    const selector = formValueSelector(formConfigs.formName);
+    const slippagetolerance = selector(state, formConfigs.slippagetolerance);
+    return slippagetolerance || 1;
+  },
 );
 
 export const feeTypesSelector = createSelector(
   selltokenSelector,
   buytokenSelector,
-  (selltoken, buytoken) =>
+  feeSelectedSelector,
+  (selltoken: SelectedPrivacy, buytoken: SelectedPrivacy, feetoken) =>
     selltoken?.tokenId && buytoken?.tokenId
       ? [
         {
           tokenId: selltoken.tokenId,
           symbol: selltoken.symbol,
+          actived: feetoken == selltoken?.tokenId,
         },
         {
           tokenId: buytoken.tokenId,
           symbol: buytoken.symbol,
+          actived: feetoken == buytoken?.tokenId,
         },
       ]
       : [],

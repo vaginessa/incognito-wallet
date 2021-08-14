@@ -8,10 +8,16 @@ const styled = StyleSheet.create({});
 
 const renderCustomField = (props) => {
   const { input, ...rest } = props;
-  const { onChange, ...restInput } = input;
+  const { onChange, onFocus, onBlur, ...restInput } = input;
   return (
     <TradeInputAmount
-      {...{ ...rest, ...restInput, onChangeText: (text) => onChange(text) }}
+      {...{
+        ...rest,
+        ...restInput,
+        onChangeText: (text) => onChange(text),
+        onFocus: (event) => onFocus(event),
+        onBlur: (event) => onBlur(event),
+      }}
     />
   );
 };

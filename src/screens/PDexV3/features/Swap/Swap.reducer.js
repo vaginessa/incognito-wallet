@@ -5,6 +5,7 @@ import {
   ACTION_SET_SELL_TOKEN,
   ACTION_SET_BUY_TOKEN,
   ACTION_SET_FEE_TOKEN,
+  ACTION_SET_FOCUS_TOKEN
 } from './Swap.constant';
 
 const initialState = {
@@ -15,6 +16,8 @@ const initialState = {
   selltoken: '',
   feetoken: '',
   estimateTrade: null,
+  focustoken: '',
+  networkfee: 100,
 };
 
 export default (state = initialState, action) => {
@@ -56,6 +59,12 @@ export default (state = initialState, action) => {
     return {
       ...state,
       feetoken: action.payload,
+    };
+  }
+  case ACTION_SET_FOCUS_TOKEN: {
+    return {
+      ...state,
+      focustoken: action.payload,
     };
   }
   default:

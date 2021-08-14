@@ -4,17 +4,19 @@ import { TextInput } from 'react-native';
 import { COLORS } from '@src/styles';
 import styles from './styles';
 
-const BaseTextInput = ({ style, ...rest }) => (
-  <TextInput
-    placeholderTextColor={COLORS.colorGreyMedium}
-    returnKeyType="done"
-    autoCorrect={false}
-    spellCheck={false}
-    autoCompleteType="off"
-    style={[styles.input, style]}
-    {...rest}
-  />
-);
+const BaseTextInput = ({ style, ...rest }) => {
+  return (
+    <TextInput
+      placeholderTextColor={COLORS.colorGreyMedium}
+      returnKeyType="done"
+      autoCorrect={false}
+      spellCheck={false}
+      autoCompleteType="off"
+      style={[styles.input, style]}
+      {...rest}
+    />
+  );
+};
 
 BaseTextInput.propTypes = {
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),

@@ -19,7 +19,7 @@ import SwapInputsGroup from './Swap.inputsGroup';
 const initialFormValues = {
   selltoken: '',
   buytoken: '',
-  slippageTolerance: '',
+  slippagetolerance: '',
 };
 
 const Form = createForm(formConfigs.formName, {

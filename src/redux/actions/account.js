@@ -147,7 +147,6 @@ export const getBalance = (account) => async (dispatch, getState) => {
     const state = getState();
     await dispatch(getBalanceStart(account?.name));
     const wallet = walletSelector(state);
-    // const isDev = devSelector(state);
     if (!wallet) {
       throw new Error('Wallet is not exist');
     }
@@ -157,20 +156,6 @@ export const getBalance = (account) => async (dispatch, getState) => {
       tokenID: PRV.id,
       version: PrivacyVersion.ver2,
     });
-    // if (isDev) {
-    //   const accountWallet = getDefaultAccountWalletSelector(state);
-    //   const coinsStorage = await accountWallet.getCoinsStorage({
-    //     tokenID: PRV.id,
-    //     version: PrivacyVersion.ver2,
-    //   });
-    //   if (coinsStorage) {
-    //     await dispatch(
-    //       actionLogEvent({
-    //         desc: coinsStorage,
-    //       }),
-    //     );
-    //   }
-    // }
     const accountMerge = {
       ...account,
       value: balance,

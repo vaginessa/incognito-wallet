@@ -1,7 +1,9 @@
-import { Text } from '@src/components/core';
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import { Hook, styled as extraStyled } from '@screens/PDexV3/features/Extra';
+import { Hook } from '@screens/PDexV3/features/Extra';
+import { useDispatch, useSelector } from 'react-redux';
+import { swapInfoSelector } from './Swap.selector';
+import { MaxPriceAndImpact } from './Swap.shared';
 
 const styled = StyleSheet.create({
   container: {
@@ -10,34 +12,28 @@ const styled = StyleSheet.create({
 });
 
 const TabSimple = React.memo(() => {
+  const swapInfo = useSelector(swapInfoSelector);
   const hooksFactories = [
     {
       label: 'Balance',
-      value: '700 USDC + 1000 PRV',
+      value: swapInfo?.balanceStr ?? '',
     },
     {
       label: 'Max price &  impact',
       hasQuestionIcon: true,
       onPressQuestionIcon: () => null,
-      customValue: (
-        <Text numberOfLines={1} ellipsizeMode="tail" style={extraStyled.value}>
-          1.99 PRV/USDC{' '}
-          <Text style={[extraStyled.value, extraStyled.orangeValue]}>
-            (10%)
-          </Text>
-        </Text>
-      ),
+      customValue: <MaxPriceAndImpact />,
     },
     {
       label: 'Trading fee',
-      value: '0.3 PRV ',
+      value: swapInfo?.minFeeAmountStr ?? '',
       hasQuestionIcon: true,
       onPressQuestionIcon: () => null,
       boldLabel: true,
     },
     {
       label: 'Network fee',
-      value: '0.0000001 PRV',
+      value: swapInfo?.networkfeeAmountStr ?? '',
       hasQuestionIcon: true,
       onPressQuestionIcon: () => null,
       boldLabel: true,

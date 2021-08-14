@@ -1,3 +1,4 @@
+/* eslint-disable no-unreachable */
 /* eslint-disable import/no-cycle */
 import type from '@src/redux/types/token';
 import {
@@ -119,15 +120,10 @@ export const getBalance = (tokenId) => async (dispatch, getState) => {
   const state = getState();
   const wallet = state?.wallet;
   const account = accountSelector.defaultAccount(getState());
-  const token = selectedPrivacySelector.findTokenFollowedByIdSelector(state)(
-    tokenId,
-  );
-  if (!token) {
-    return;
-  }
+  let balance = 0;
   try {
     await dispatch(getBalanceStart(tokenId));
-    const balance = await accountService.getBalance({
+    balance = await accountService.getBalance({
       account,
       wallet,
       tokenID: tokenId,
@@ -135,23 +131,24 @@ export const getBalance = (tokenId) => async (dispatch, getState) => {
     });
     dispatch(
       setToken({
-        ...token,
+        id: tokenId,
         amount: balance,
         loading: false,
       }),
     );
-    return balance;
+    balance;
   } catch (e) {
     dispatch(
       setToken({
-        ...token,
-        amount: null,
+        id: tokenId,
+        amount: 0,
       }),
     );
     throw e;
   } finally {
     dispatch(getBalanceFinish(tokenId));
   }
+  return balance ?? 0;
 };
 
 export const getPTokenList = ({ expiredTime = EXPIRED_TIME } = {}) => async (

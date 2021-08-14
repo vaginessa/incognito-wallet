@@ -2,7 +2,7 @@ import React from 'react';
 import { View } from 'react-native';
 import { RFTradeInputAmount as TradeInputAmount } from '@components/core/reduxForm';
 import { Field } from 'redux-form';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
 import { SwapButton } from '@src/components/core';
@@ -12,10 +12,14 @@ import {
   buyTokenPairsSwapSelector,
   selltokenSelector,
   buytokenSelector,
+  swapSelector,
 } from './Swap.selector';
+import { actionEstimateTrade, actionSetFocusToken } from './Swap.actions';
 
 const SwapInputsGroup = React.memo(() => {
   const navigation = useNavigation();
+  const dispatch = useDispatch();
+  const swap = useSelector(swapSelector);
   const pairsSell = useSelector(sellTokenPairsSwapSelector);
   const pairsBuy = useSelector(buyTokenPairsSwapSelector);
   const selltoken = useSelector(selltokenSelector);
@@ -26,6 +30,8 @@ const SwapInputsGroup = React.memo(() => {
   const onSelectBuyToken = () => {
     navigation.navigate(routeNames.SelectTokenTrade, { data: pairsBuy });
   };
+  const onFocusToken = (e, field) => dispatch(actionSetFocusToken(swap[field]));
+  const onEndEditing = () => dispatch(actionEstimateTrade());
   return (
     <View>
       <Field
@@ -35,6 +41,8 @@ const SwapInputsGroup = React.memo(() => {
         canSelectSymbol
         symbol={selltoken?.symbol}
         onPressSymbol={onSelectSellToken}
+        onFocus={(e) => onFocusToken(e, formConfigs.selltoken)}
+        onEndEditing={onEndEditing}
       />
       <SwapButton />
       <Field
@@ -43,6 +51,8 @@ const SwapInputsGroup = React.memo(() => {
         canSelectSymbol
         symbol={buytoken?.symbol}
         onPressSymbol={onSelectBuyToken}
+        onFocus={(e) => onFocusToken(e, formConfigs.buytoken)}
+        onEndEditing={onEndEditing}
       />
     </View>
   );

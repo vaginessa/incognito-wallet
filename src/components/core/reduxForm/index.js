@@ -10,3 +10,4 @@ export { default as validator } from './validator';
 export { default as CheckboxField } from './fields/checkbox';
 export { default as RFTradeInputAmount } from './fields/RFTradeInputAmount';
 export { default as RFSelectFeeInput } from './fields/RFSelectFeeInput';
+export { default as RFBaseInput } from './fields/RFBaseInput';

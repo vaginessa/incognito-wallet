@@ -46,20 +46,15 @@ const SelectFeeItem = (props) => {
 
 const SelectFee = (props) => {
   const { types = [], onChangeTypeFee } = props;
-  const [actived, setActived] = React.useState(null);
   const onChangeFee = (type) => {
-    const { tokenId, symbol } = type;
-    if (tokenId === actived) {
+    const { actived } = type;
+    if (actived) {
       return;
     }
-    setActived(tokenId);
     if (typeof onChangeTypeFee === 'function') {
       onChangeTypeFee(type);
     }
   };
-  React.useEffect(() => {
-    setActived(types[0]?.tokenId);
-  }, []);
   return (
     <Row style={styled.container}>
       {types.map((type, index) => (
@@ -67,7 +62,7 @@ const SelectFee = (props) => {
           key={type?.tokenId}
           {...{
             ...type,
-            isActived: actived === type?.tokenId,
+            isActived: type?.actived,
             tail: index === types.length - 1,
             onPress: () => onChangeFee(type),
           }}
@@ -83,6 +78,7 @@ SelectFee.propTypes = {
     PropTypes.shape({
       tokenId: PropTypes.string.isRequired,
       symbol: PropTypes.string.isRequired,
+      actived: PropTypes.bool.isRequired,
     }),
   ).isRequired,
 };
