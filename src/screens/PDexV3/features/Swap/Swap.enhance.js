@@ -4,12 +4,14 @@ import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
 import { useDispatch, useSelector } from 'react-redux';
 import { actionInitSwapForm } from './Swap.actions';
-import { defaultPairSelector } from './Swap.selector';
+import { swapInfoSelector } from './Swap.selector';
 
 const enhance = (WrappedComp) => (props) => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
+  const swapInfo = useSelector(swapInfoSelector);
   const handleReviewOrder = () =>
+    !swapInfo?.disabledBtnSwap &&
     navigation.navigate(routeNames.ReviewOrderSwap);
   const initSwapForm = React.useCallback(() => {
     dispatch(actionInitSwapForm());

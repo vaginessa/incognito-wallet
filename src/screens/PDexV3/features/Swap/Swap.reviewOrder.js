@@ -7,14 +7,14 @@ import { COLORS, FONT } from '@src/styles';
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { useNavigation } from 'react-navigation-hooks';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { actionToggleModal } from '@src/components/Modal';
 import Extra, {
   Hook,
   styled as extraStyled,
 } from '@screens/PDexV3/features/Extra';
-import { actionFetch } from './Swap.actions';
 import SwapSuccessModal from './Swap.successModal';
+import { slippagetoleranceSelector, swapInfoSelector } from './Swap.selector';
 
 const styled = StyleSheet.create({
   container: { flex: 1 },
@@ -37,6 +37,8 @@ const styled = StyleSheet.create({
 const ReviewOrder = (props) => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
+  const swapInfo = useSelector(swapInfoSelector);
+  const slippagetolerance = useSelector(slippagetoleranceSelector);
   const handleConfirmSwap = async () => {
     try {
       //   const tradeSuccess = await dispatch(actionFetch());
@@ -53,38 +55,40 @@ const ReviewOrder = (props) => {
   const hooksFactories = [
     {
       label: 'Pay with',
-      value: '100.00 USDC',
+      value: swapInfo?.sellInputAmountStr || '',
       boldLabel: true,
       boldValue: true,
     },
     {
-      label: 'Rate',
-      value: '1 USDC = 1.98 PRV',
+      label: 'Routing',
+      value: swapInfo?.routing || '',
       hasQuestionIcon: true,
       onPressQuestionIcon: () => null,
     },
     {
-      label: 'Purchase',
-      value: '99.97 USDC',
+      label: 'Slippage tolerance',
+      value: slippagetolerance || '',
       hasQuestionIcon: true,
       onPressQuestionIcon: () => null,
     },
     {
       label: 'Trading fee',
-      value: '0.03 USDC',
+      value: swapInfo?.tradingFeeStr || '',
       hasQuestionIcon: true,
       onPressQuestionIcon: () => null,
     },
     {
       label: 'Network fee',
-      value: '0.01 PRV',
+      value: swapInfo?.networkfeeAmountStr || '',
     },
   ];
   return (
     <View style={styled.container}>
       <Header title="Order preview" />
       <ScrollView style={styled.scrollview}>
-        <Text style={styled.title}>Buy at least 198 PRV</Text>
+        <Text style={styled.title}>
+          Buy at least {swapInfo?.buyInputAmountStr || ''}
+        </Text>
         {hooksFactories.map((hook) => (
           <Hook key={hook.label} {...hook} />
         ))}

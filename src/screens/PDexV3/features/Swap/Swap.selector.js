@@ -5,12 +5,10 @@ import { allTokensIDsSelector } from '@src/redux/selectors/token';
 import format from '@src/utils/format';
 import includes from 'lodash/includes';
 import floor from 'lodash/floor';
-import { formValueSelector } from 'redux-form';
+import { formValueSelector, isValid } from 'redux-form';
 import convert from '@src/utils/convert';
 import SelectedPrivacy from '@src/models/selectedPrivacy';
 import { PRV } from '@src/constants/common';
-import { decimalDigitsSelector } from '@src/screens/Setting';
-import BigNumber from 'bignumber.js';
 import { sharedSelector } from '@src/redux/selectors';
 import { formConfigs } from './Swap.constant';
 import { getInputAmount } from './Swap.utils';
@@ -89,21 +87,22 @@ export const feetokenDataSelector = createSelector(
       const feeAmountText = fee;
       const origininalFeeAmount = convert.toOriginalAmount(
         feeAmount,
-        feeTokenData.pDecimals,
+        feeTokenData?.pDecimals,
         false,
       );
       const minFeeAmount = convert.toHumanAmount(
         minFeeOriginal,
-        feeTokenData.pDecimals,
+        feeTokenData?.pDecimals,
       );
       const minFeeAmountText = format.toFixed(
         minFeeAmount,
-        feeTokenData.pDecimals,
+        feeTokenData?.pDecimals,
       );
-      const minFeeAmountStr = `${minFeeAmountText} ${feeTokenData.symbol}`;
+      const minFeeAmountStr = `${minFeeAmountText} ${feeTokenData?.symbol}`;
       return {
         feetoken,
-        symbol: feeTokenData.symbol,
+        symbol: feeTokenData?.symbol,
+        pDecimals: feeTokenData?.pDecimals,
 
         feeAmount,
         feeAmountText,
@@ -116,63 +115,6 @@ export const feetokenDataSelector = createSelector(
       };
     } catch (error) {
       console.log('feetokenDataSelector-error', error);
-    }
-  },
-);
-
-export const swapInfoSelector = createSelector(
-  swapSelector,
-  feeSelectedSelector,
-  getPrivacyDataByTokenIDSelector,
-  selltokenSelector,
-  buytokenSelector,
-  listPairsSelector,
-  (
-    { data, networkfee },
-    feetoken,
-    getPrivacyDataByTokenID,
-    selltoken: SelectedPrivacy,
-    buytoken: SelectedPrivacy,
-  ) => {
-    try {
-      const selltokenBalance = format.amountFull(
-        selltoken.amount,
-        selltoken.pDecimals,
-        false,
-      );
-      const buytokenBalance = format.amountFull(
-        buytoken.amount,
-        buytoken.pDecimals,
-        false,
-      );
-      const feeTokenData = getPrivacyDataByTokenID(feetoken);
-      const { fee, route: routing, sizeimpact, maxPriceStr } = data;
-      const minFeeAmount = format.toFixed(
-        convert.toHumanAmount(fee, feeTokenData.pDecimals),
-        feeTokenData.pDecimals,
-      );
-      const minFeeAmountStr = `${minFeeAmount} ${feeTokenData.symbol}`;
-      const networkfeeAmount = format.toFixed(
-        convert.toHumanAmount(networkfee, PRV.pDecimals),
-        PRV.pDecimals,
-      );
-      const networkfeeAmountStr = `${networkfeeAmount} ${PRV.symbol}`;
-      const sizeimpactStr = format.toFixed(
-        convert.toHumanAmount(floor(sizeimpact * 100), 0),
-        0,
-      );
-      return {
-        balanceStr: `${selltokenBalance} ${selltoken.symbol} + ${buytokenBalance} ${buytoken.symbol}`,
-        routing,
-        minFeeAmount,
-        minFeeAmountStr,
-        networkfeeAmountStr,
-        maxPriceStr,
-        sizeimpactStr,
-      };
-    } catch (error) {
-      //
-      console.log('swapInfoSelector-error', error);
     }
   },
 );
@@ -192,12 +134,82 @@ export const inputAmountSelector = createSelector(
   getInputAmount,
 );
 
+export const swapInfoSelector = createSelector(
+  swapSelector,
+  feetokenDataSelector,
+  inputAmountSelector,
+  (state) => state,
+  (
+    { data, networkfee, swaping, initing, selecting, isFetching, isFetched },
+    feeTokenData,
+    getInputAmount,
+    state,
+  ) => {
+    try {
+      const sellInputAmount = getInputAmount(formConfigs.selltoken);
+      const buyInputAmount = getInputAmount(formConfigs.buytoken);
+      const { fee, route: routing, sizeimpact, maxPriceStr } = data;
+      const minFeeAmount = format.toFixed(
+        convert.toHumanAmount(fee, feeTokenData?.pDecimals),
+        feeTokenData?.pDecimals,
+      );
+      const minFeeAmountStr = `${minFeeAmount} ${feeTokenData?.symbol}`;
+
+      const networkfeeAmount = format.toFixed(
+        convert.toHumanAmount(networkfee, PRV.pDecimals),
+        PRV.pDecimals,
+      );
+      const networkfeeAmountStr = `${networkfeeAmount} ${PRV.symbol}`;
+      const sizeimpactStr = format.toFixed(
+        convert.toHumanAmount(floor(sizeimpact * 100), 0),
+        0,
+      );
+      const editableInput =
+        !swaping && !initing && !selecting && isFetched && !isFetching;
+      let btnSwapText = 'Preview your order';
+      const calculating = swaping || initing || selecting || isFetching;
+      const disabledBtnSwap =
+        calculating ||
+        (!isFetched && !isFetching) ||
+        !isValid(formConfigs.formName)(state);
+      if (calculating) {
+        btnSwapText = 'Calculating...';
+      }
+      const tradingFeeStr = `${feeTokenData?.feeAmountText} ${feeTokenData?.symbol}`;
+      const sellInputBalanceStr = `${sellInputAmount?.balanceStr} ${sellInputAmount?.symbol}`;
+      const buyInputBalanceStr = `${buyInputAmount?.balanceStr} ${buyInputAmount?.symbol}`;
+      const sellInputAmountStr = `${sellInputAmount?.amountText} ${sellInputAmount?.symbol}`;
+      const buyInputAmountStr = `${buyInputAmount.amountText} ${buyInputAmount?.symbol}`;
+      return {
+        balanceStr: `${sellInputBalanceStr} + ${buyInputBalanceStr}`,
+        routing,
+        minFeeAmount,
+        minFeeAmountStr,
+        networkfeeAmountStr,
+        maxPriceStr,
+        sizeimpactStr,
+        editableInput,
+        btnSwapText,
+        disabledBtnSwap,
+        tradingFeeStr,
+        sellInputBalanceStr,
+        buyInputBalanceStr,
+        sellInputAmountStr,
+        buyInputAmountStr,
+      };
+    } catch (error) {
+      //
+      console.log('swapInfoSelector-error', error);
+    }
+  },
+);
+
 export const slippagetoleranceSelector = createSelector(
   (state) => state,
   (state) => {
     const selector = formValueSelector(formConfigs.formName);
     const slippagetolerance = selector(state, formConfigs.slippagetolerance);
-    return slippagetolerance || 1;
+    return Number(slippagetolerance) || 1;
   },
 );
 

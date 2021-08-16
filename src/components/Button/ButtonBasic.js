@@ -40,10 +40,13 @@ const ButtonBasic = (props) => {
     loading = false,
     ...rest
   } = props;
-  let containerStyle = [styled.container, disabled ? styled.disabled : null];
+  let containerStyle = [styled.container];
   isArray(btnStyle)
     ? containerStyle.push(...btnStyle)
     : containerStyle.push(btnStyle);
+  if (disabled) {
+    containerStyle.push(styled.disabled);
+  }
   return (
     <TouchableOpacity style={containerStyle} {...rest}>
       {customContent ? (

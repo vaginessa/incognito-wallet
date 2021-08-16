@@ -17,6 +17,7 @@ import {
   buytokenSelector,
   swapSelector,
   inputAmountSelector,
+  swapInfoSelector,
 } from './Swap.selector';
 import {
   actionEstimateTrade,
@@ -28,6 +29,7 @@ import {
 const SwapInputsGroup = React.memo(() => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
+  const swapInfo = useSelector(swapInfoSelector);
   const swap = useSelector(swapSelector);
   const pairsToken = useSelector(pairsTokenSelector);
   const selltoken = useSelector(selltokenSelector);
@@ -61,8 +63,7 @@ const SwapInputsGroup = React.memo(() => {
       sellInputAmount?.symbol,
     ],
   );
-  console.log('availableAmountText', sellInputAmount.availableAmountText);
-  const onPressInfinityIcon = () =>
+  const onPressInfinityIcon = () => {
     dispatch(
       change(
         formConfigs.formName,
@@ -70,6 +71,9 @@ const SwapInputsGroup = React.memo(() => {
         sellInputAmount.availableAmountText,
       ),
     );
+    dispatch(actionEstimateTrade());
+  };
+
   return (
     <View>
       <Field
@@ -86,7 +90,8 @@ const SwapInputsGroup = React.memo(() => {
           ...validator.combinedAmount,
           _maxAmountValidatorForSellInput,
         ]}
-        loadingBalance={!!sellInputAmount.loadingBalance}
+        loadingBalance={!!sellInputAmount?.loadingBalance}
+        editableInput={!!swapInfo?.editableInput}
       />
       <SwapButton onSwapButtons={onSwapButtons} />
       <Field
@@ -98,7 +103,8 @@ const SwapInputsGroup = React.memo(() => {
         onFocus={(e) => onFocusToken(e, formConfigs.buytoken)}
         onEndEditing={onEndEditing}
         validate={[...validator.combinedAmount]}
-        loadingBalance={!!buyInputAmount.loadingBalance}
+        loadingBalance={!!buyInputAmount?.loadingBalance}
+        editableInput={!!swapInfo?.editableInput}
       />
     </View>
   );

@@ -151,6 +151,9 @@ export const getInputAmount = (
 
       usingFee,
       loadingBalance: isGettingBalance.includes(token.tokenId),
+
+      balance: token.amount,
+      balanceStr: format.amountFull(token.amount, token.pDecimals, false),
     };
   } catch (error) {
     console.log('inputAmountSelector error', error);

@@ -49,6 +49,7 @@ const TradeInputAmount = (props) => {
     onPressSymbol,
     placeholder = '0',
     loadingBalance,
+    editableInput,
     ...rest
   } = props || {};
   const renderSub = () => {
@@ -72,11 +73,15 @@ const TradeInputAmount = (props) => {
     <Row style={styled.container}>
       <View style={styled.inputContainer}>
         <BaseTextInput
-          style={styled.input}
+          style={{
+            ...styled.input,
+            ...(editableInput ? {} : { color: COLORS.newGrey }),
+          }}
           keyboardType="decimal-pad"
           placeholder={placeholder}
           ellipsizeMode="tail"
           numberOfLines={1}
+          editable={editableInput}
           {...rest}
         />
       </View>
@@ -100,6 +105,7 @@ TradeInputAmount.propTypes = {
   canSelectSymbol: PropTypes.bool,
   onPressSymbol: PropTypes.func,
   loadingBalance: PropTypes.bool,
+  editableInput: PropTypes.bool,
 };
 
 export default React.memo(TradeInputAmount);

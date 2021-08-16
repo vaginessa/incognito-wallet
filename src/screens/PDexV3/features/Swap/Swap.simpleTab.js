@@ -2,7 +2,7 @@ import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Hook } from '@screens/PDexV3/features/Extra';
 import { useDispatch, useSelector } from 'react-redux';
-import { swapInfoSelector } from './Swap.selector';
+import { feetokenDataSelector, swapInfoSelector } from './Swap.selector';
 import { MaxPriceAndImpact } from './Swap.shared';
 
 const styled = StyleSheet.create({
@@ -13,6 +13,7 @@ const styled = StyleSheet.create({
 
 const TabSimple = React.memo(() => {
   const swapInfo = useSelector(swapInfoSelector);
+  const feeTokenData = useSelector(feetokenDataSelector);
   const hooksFactories = [
     {
       label: 'Balance',
@@ -26,7 +27,7 @@ const TabSimple = React.memo(() => {
     },
     {
       label: 'Trading fee',
-      value: swapInfo?.minFeeAmountStr ?? '',
+      value: feeTokenData?.feeAmountText ?? '',
       hasQuestionIcon: true,
       onPressQuestionIcon: () => null,
       boldLabel: true,

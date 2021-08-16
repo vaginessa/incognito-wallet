@@ -7,7 +7,6 @@ import convert from '@src/utils/convert';
 import format from '@src/utils/format';
 import BigNumber from 'bignumber.js';
 import { change, focus } from 'redux-form';
-import { getPDexV3Instance } from '@screens/PDexV3';
 import { delay } from '@src/utils/delay';
 import isEmpty from 'lodash/isEmpty';
 import SelectedPrivacy from '@src/models/selectedPrivacy';
@@ -30,9 +29,11 @@ import {
   buytokenSelector,
   defaultPairSelector,
   feeSelectedSelector,
+  feetokenDataSelector,
   inputAmountSelector,
   selltokenSelector,
   slippagetoleranceSelector,
+  swapSelector,
 } from './Swap.selector';
 
 export const actionSetSellTokenFetched = (payload) => ({
@@ -122,6 +123,9 @@ export const actionEstimateTrade = () => async (dispatch, getState) => {
       inputtoken = formConfigs.buytoken;
       inputtokenDecimals = pDecimals2;
     }
+    if (!selltoken || !buytoken || !amount) {
+      return;
+    }
     // const payload = {
     //   selltoken,
     //   buytoken,
@@ -136,9 +140,9 @@ export const actionEstimateTrade = () => async (dispatch, getState) => {
     // const pDexV3Inst = await getPDexV3Instance({ otaKey });
     await delay(2000);
     const data = {
-      maxGet: random(1e9, 1e12),
-      // fee: random(1e2, 1e3),
-      fee: 12e9,
+      maxGet: 2e9,
+      fee: 1e9,
+      // fee: 12e9,
       route: `${sellsymbol}->${buysymbol}`,
       sizeimpact: random(0, 0.99, true),
     };
@@ -167,10 +171,14 @@ export const actionSetSellToken = (selltoken) => async (dispatch, getState) => {
       return;
     }
     const state = getState();
+    const { initing } = swapSelector(state);
     const token = getPrivacyDataByTokenID(state)(selltoken);
-    const { pDecimals } = token;
+    const { pDecimals, symbol } = token;
     const balance = await dispatch(getBalance(selltoken));
-    const minimum = convert.toOriginalAmount(1, token.pDecimals);
+    if (!balance) {
+      return;
+    }
+    const minimum = convert.toOriginalAmount(1, pDecimals);
     const bnBalance = new BigNumber(balance);
     const bnMinumum = new BigNumber(minimum);
     let sellOriginalAmount = '';
@@ -179,13 +187,57 @@ export const actionSetSellToken = (selltoken) => async (dispatch, getState) => {
     } else {
       sellOriginalAmount = balance;
     }
-    const sellamount = format.toFixed(
-      convert.toHumanAmount(sellOriginalAmount, pDecimals),
-      pDecimals,
-    );
+    let sellamount = '';
     dispatch(actionSetSellTokenFetched(selltoken));
-    dispatch(change(formConfigs.formName, formConfigs.selltoken, sellamount));
-    dispatch(focus(formConfigs.formName, formConfigs.selltoken));
+    if (initing) {
+      const buytoken: SelectedPrivacy = buytokenSelector(state);
+      const feeTokenData = feetokenDataSelector(state);
+      // const slippagetolerance = slippagetoleranceSelector(state);
+      // const payload = {
+      //   selltoken,
+      //   buytoken,
+      //   feetoken,
+      //   amount: sellOriginalAmount,
+      //   slippagetolerance,
+      // };
+      // const otaKey = otaKeyOfDefaultAccountSelector(state);
+      // const pDexV3Inst = await getPDexV3Instance({ otaKey });
+      // await pDexV3Inst.getEstimateTrade(payload);
+      await delay(2000);
+      const data = {
+        maxGet: 2e9,
+        fee: 1e9,
+        route: `${symbol}->${buytoken?.symbol}`,
+        sizeimpact: random(0, 0.99, true),
+      };
+      sellamount = format.toFixed(
+        convert.toHumanAmount(sellOriginalAmount, token.pDecimals),
+        token.pDecimals,
+      );
+      const buyInputAmount = format.toFixed(
+        convert.toHumanAmount(data.maxGet, buytoken.pDecimals),
+        buytoken.pDecimals,
+      );
+      const amountFee = format.toFixed(
+        convert.toHumanAmount(data.fee, feeTokenData.pDecimals),
+        feeTokenData.pDecimals,
+      );
+      dispatch(
+        change(formConfigs.formName, formConfigs.buytoken, buyInputAmount),
+      );
+      dispatch(change(formConfigs.formName, formConfigs.feetoken, amountFee));
+      dispatch(change(formConfigs.formName, formConfigs.selltoken, sellamount));
+      dispatch(focus(formConfigs.formName, formConfigs.selltoken));
+      const maxPriceStr = `1 ${symbol} / ${buyInputAmount} ${buytoken.symbol}`;
+      await dispatch(actionFetched({ ...data, maxPriceStr }));
+    } else {
+      sellamount = format.toFixed(
+        convert.toHumanAmount(sellOriginalAmount, token.pDecimals),
+        token.pDecimals,
+      );
+      dispatch(change(formConfigs.formName, formConfigs.selltoken, sellamount));
+      dispatch(focus(formConfigs.formName, formConfigs.selltoken));
+    }
   } catch (error) {
     new ExHandler(error).showErrorToast();
   }
@@ -223,7 +275,6 @@ export const actionInitSwapForm = () => async (dispatch, getState) => {
       dispatch(actionSetBuyToken(defaultPair.token2IdStr));
     });
     await dispatch(actionSetSellToken(defaultPair.token1IdStr));
-    await dispatch(actionEstimateTrade());
   } catch (error) {
     new ExHandler(error).showErrorToast;
   } finally {

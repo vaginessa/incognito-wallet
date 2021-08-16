@@ -4,6 +4,7 @@ import { View } from 'react-native';
 import PropTypes from 'prop-types';
 import { Tabs1 } from '@src/components/core/Tabs';
 import { createForm } from '@components/core/reduxForm';
+import { useSelector } from 'react-redux';
 import { styled, tabsStyled } from './Swap.styled';
 import {
   ROOT_TAB_ID,
@@ -15,6 +16,7 @@ import TabSimple from './Swap.simpleTab';
 import TabPro from './Swap.proTab';
 import withSwap from './Swap.enhance';
 import SwapInputsGroup from './Swap.inputsGroup';
+import { swapInfoSelector } from './Swap.selector';
 
 const initialFormValues = {
   selltoken: '',
@@ -30,6 +32,7 @@ const Form = createForm(formConfigs.formName, {
 
 const Swap = (props) => {
   const { handleReviewOrder } = props;
+  const swapInfo = useSelector(swapInfoSelector);
   const tabsFactories = [
     {
       tabID: TAB_SIMPLE_ID,
@@ -62,7 +65,8 @@ const Swap = (props) => {
             <ButtonTrade
               btnStyle={styled.btnTrade}
               onPress={handleReviewOrder}
-              title="Preview your order"
+              title={swapInfo?.btnSwapText || ''}
+              disabled={!!swapInfo?.disabledBtnSwap}
             />
             <Tabs1
               rootTabID={ROOT_TAB_ID}
