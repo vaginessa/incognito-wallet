@@ -9,7 +9,11 @@ import { formValueSelector } from 'redux-form';
 import convert from '@src/utils/convert';
 import SelectedPrivacy from '@src/models/selectedPrivacy';
 import { PRV } from '@src/constants/common';
+import { decimalDigitsSelector } from '@src/screens/Setting';
+import BigNumber from 'bignumber.js';
+import { sharedSelector } from '@src/redux/selectors';
 import { formConfigs } from './Swap.constant';
+import { getInputAmount } from './Swap.utils';
 
 export const swapSelector = createSelector(
   (state) => state.pDexV3,
@@ -28,20 +32,9 @@ export const listTokenHasPairSelector = createSelector(
       .map((tokenId) => getPrivacyDataByTokenID(tokenId)),
 );
 
-export const sellTokenPairsSwapSelector = createSelector(
-  swapSelector,
+export const pairsTokenSelector = createSelector(
   listTokenHasPairSelector,
-  ({ buytoken, selltoken }, tokens) => {
-    return tokens.filter((token) => token?.tokenId !== selltoken) || [];
-  },
-);
-
-export const buyTokenPairsSwapSelector = createSelector(
-  swapSelector,
-  listTokenHasPairSelector,
-  ({ buytoken, selltoken }, tokens) => {
-    return tokens.filter((token) => token?.tokenId !== buytoken) || [];
-  },
+  (tokens) => tokens,
 );
 
 export const defaultPairSelector = createSelector(
@@ -81,6 +74,52 @@ export const feeSelectedSelector = createSelector(
   ({ feetoken }) => feetoken || '',
 );
 
+export const feetokenDataSelector = createSelector(
+  (state) => state,
+  swapSelector,
+  feeSelectedSelector,
+  getPrivacyDataByTokenIDSelector,
+  (state, { data }, feetoken, getPrivacyDataByTokenID) => {
+    try {
+      const feeTokenData: SelectedPrivacy = getPrivacyDataByTokenID(feetoken);
+      const selector = formValueSelector(formConfigs.formName);
+      const fee = selector(state, formConfigs.feetoken);
+      const { fee: minFeeOriginal = 0 } = data;
+      const feeAmount = convert.toNumber(fee, true) || 0;
+      const feeAmountText = fee;
+      const origininalFeeAmount = convert.toOriginalAmount(
+        feeAmount,
+        feeTokenData.pDecimals,
+        false,
+      );
+      const minFeeAmount = convert.toHumanAmount(
+        minFeeOriginal,
+        feeTokenData.pDecimals,
+      );
+      const minFeeAmountText = format.toFixed(
+        minFeeAmount,
+        feeTokenData.pDecimals,
+      );
+      const minFeeAmountStr = `${minFeeAmountText} ${feeTokenData.symbol}`;
+      return {
+        feetoken,
+        symbol: feeTokenData.symbol,
+
+        feeAmount,
+        feeAmountText,
+        origininalFeeAmount,
+
+        minFeeOriginal,
+        minFeeAmount,
+        minFeeAmountStr,
+        minFeeAmountText,
+      };
+    } catch (error) {
+      console.log('feetokenDataSelector-error', error);
+    }
+  },
+);
+
 export const swapInfoSelector = createSelector(
   swapSelector,
   feeSelectedSelector,
@@ -96,12 +135,12 @@ export const swapInfoSelector = createSelector(
     buytoken: SelectedPrivacy,
   ) => {
     try {
-      const selltokenBalance = format.amount(
+      const selltokenBalance = format.amountFull(
         selltoken.amount,
         selltoken.pDecimals,
         false,
       );
-      const buytokenBalance = format.amount(
+      const buytokenBalance = format.amountFull(
         buytoken.amount,
         buytoken.pDecimals,
         false,
@@ -147,32 +186,10 @@ export const inputAmountSelector = createSelector(
   (state) => state,
   inpuTokenSelector,
   focustokenSelector,
-  (state, getInputToken, focustoken) => (field) => {
-    try {
-      const token: SelectedPrivacy = getInputToken(field);
-      if (!token.tokenId) {
-        return {
-          amount: '',
-          originalAmount: 0,
-          isFocus: false,
-        };
-      }
-      const selector = formValueSelector(formConfigs.formName);
-      const amount = selector(state, field);
-      const originalAmount = convert.toOriginalAmount(amount, token.pDecimals);
-      const focus = token.tokenId === focustoken;
-      return {
-        amount,
-        originalAmount,
-        focus,
-        tokenId: token.tokenId,
-        symbol: token.symbol,
-        pDecimals: token.pDecimals,
-      };
-    } catch (error) {
-      console.log('inputAmountSelector error', error);
-    }
-  },
+  feetokenDataSelector,
+  swapSelector,
+  sharedSelector.isGettingBalance,
+  getInputAmount,
 );
 
 export const slippagetoleranceSelector = createSelector(

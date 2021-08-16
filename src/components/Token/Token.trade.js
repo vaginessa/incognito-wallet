@@ -7,9 +7,9 @@ import withToken from './Token.enhance';
 import { styled } from './Token.styled';
 
 const TokenTrade = (props) => {
-  const { onPress, style } = props;
+  const { style, ...rest } = props;
   return (
-    <TouchableOpacity onPress={onPress}>
+    <TouchableOpacity {...rest}>
       <View style={[styled.container, style]}>
         <View style={[styled.extra, styled.extraTop]}>
           <Name {...props} />

@@ -80,7 +80,7 @@ const maxValue = (max, { message } = {}) => (value) =>
     : undefined;
 
 const largerThan = (min, { message } = {}) => (value) =>
-  value && value <= min
+  value && value < min
     ? messageHanlder(message, value, min) ??
       `Must be larger than ${formatUtils.number(min)}`
     : undefined;
@@ -350,6 +350,8 @@ const combinedNanoAmount = [
   minValue(1, { message: 'Please enter an amount greater than 1.' }),
 ];
 
+const combinedNumber = [required(), number(), minValue(0)];
+
 const combinedIncognitoAddress = [required(), incognitoAddress()];
 const combinedETHAddress = [required(), ethAddress()];
 const combinedTOMOAddress = [required(), tomoAddress()];
@@ -494,4 +496,5 @@ export default {
   isBNBAddress,
   isZILAddress,
   invalidAddress,
+  combinedNumber,
 };

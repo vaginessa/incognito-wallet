@@ -7,15 +7,26 @@ import Extra, {
 } from '@screens/PDexV3/features/Extra';
 import { useDispatch, useSelector } from 'react-redux';
 import { Field } from 'redux-form';
-import { RFBaseInput, RFSelectFeeInput } from '@src/components/core/reduxForm';
 import {
+  RFBaseInput,
+  RFSelectFeeInput,
+  validator,
+} from '@src/components/core/reduxForm';
+import {
+  feetokenDataSelector,
   feeTypesSelector,
+  inputAmountSelector,
   slippagetoleranceSelector,
   swapInfoSelector,
 } from './Swap.selector';
 import { actionEstimateTrade, actionSetFeeToken } from './Swap.actions';
 import { formConfigs } from './Swap.constant';
 import { MaxPriceAndImpact } from './Swap.shared';
+import {
+  minFeeValidator,
+  avaliablePayFeeByBuyTokenValidator,
+  maxAmountValidatorForSlippageTolerance,
+} from './Swap.utils';
 
 const styled = StyleSheet.create({
   container: {
@@ -27,6 +38,9 @@ const TabPro = React.memo(() => {
   const swapInfo = useSelector(swapInfoSelector);
   const feeTypes = useSelector(feeTypesSelector);
   const slippagetolerance = useSelector(slippagetoleranceSelector);
+  const feetokenData = useSelector(feetokenDataSelector);
+  const inputAmount = useSelector(inputAmountSelector);
+  const buyinputAmount = inputAmount(formConfigs.buytoken);
   const dispatch = useDispatch();
   const onChangeTypeFee = async (type) => {
     const { tokenId } = type;
@@ -39,6 +53,27 @@ const TabPro = React.memo(() => {
     }
     dispatch(actionEstimateTrade());
   };
+  let _minFeeValidator = React.useCallback(
+    () => minFeeValidator(feetokenData),
+    [
+      feetokenData?.origininalFeeAmount,
+      feetokenData?.minFeeOriginal,
+      feetokenData?.symbol,
+      feetokenData?.minFeeAmountText,
+    ],
+  );
+  let _avaliablePayFeeByBuyTokenValidator = React.useCallback(
+    () => avaliablePayFeeByBuyTokenValidator(buyinputAmount),
+    [
+      buyinputAmount?.usingFee,
+      buyinputAmount?.availableOriginalAmount,
+      buyinputAmount?.symbol,
+    ],
+  );
+  let _maxAmountValidatorForSlippageTolerance = React.useCallback(
+    () => maxAmountValidatorForSlippageTolerance(slippagetolerance),
+    [slippagetolerance],
+  );
   const extraFactories = [
     {
       title: 'Slippage tolerance',
@@ -54,6 +89,10 @@ const TabPro = React.memo(() => {
           ellipsizeMode="tail"
           numberOfLines={1}
           onEndEditing={onEndEditing}
+          validate={[
+            ...validator.combinedNumber,
+            _maxAmountValidatorForSlippageTolerance,
+          ]}
         />
       ),
     },
@@ -68,6 +107,11 @@ const TabPro = React.memo(() => {
           onChangeTypeFee={onChangeTypeFee}
           name={formConfigs.feetoken}
           placeholder="0"
+          validate={[
+            ...validator.combinedAmount,
+            _minFeeValidator,
+            _avaliablePayFeeByBuyTokenValidator,
+          ]}
         />
       ),
     },

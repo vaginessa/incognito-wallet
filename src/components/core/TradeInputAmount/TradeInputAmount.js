@@ -1,4 +1,5 @@
 import { ArrowRightGreyIcon, InfiniteIcon } from '@src/components/Icons';
+import PropTypes from 'prop-types';
 import Row from '@src/components/Row';
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
@@ -6,6 +7,7 @@ import { Text } from '@src/components/core';
 import { COLORS, FONT } from '@src/styles';
 import BaseTextInput from '../BaseTextInput';
 import TouchableOpacity from '../TouchableOpacity';
+import ActivityIndicator from '../ActivityIndicator';
 
 const styled = StyleSheet.create({
   container: {
@@ -33,6 +35,9 @@ const styled = StyleSheet.create({
   infinityIcon: {
     marginRight: 10,
   },
+  loadingIcon: {
+    marginRight: 10,
+  },
 });
 
 const TradeInputAmount = (props) => {
@@ -43,8 +48,26 @@ const TradeInputAmount = (props) => {
     canSelectSymbol,
     onPressSymbol,
     placeholder = '0',
+    loadingBalance,
     ...rest
   } = props || {};
+  const renderSub = () => {
+    if (loadingBalance) {
+      return <ActivityIndicator style={styled.loadingIcon} size="small" />;
+    }
+    if (hasInfinityIcon) {
+      return (
+        <TouchableOpacity
+          onPress={() =>
+            typeof onPressInfinityIcon === 'function' && onPressInfinityIcon()
+          }
+          style={styled.infinityIcon}
+        >
+          <InfiniteIcon />
+        </TouchableOpacity>
+      );
+    }
+  };
   return (
     <Row style={styled.container}>
       <View style={styled.inputContainer}>
@@ -57,14 +80,7 @@ const TradeInputAmount = (props) => {
           {...rest}
         />
       </View>
-      {hasInfinityIcon && (
-        <TouchableOpacity
-          onPress={onPressInfinityIcon}
-          style={styled.infinityIcon}
-        >
-          <InfiniteIcon />
-        </TouchableOpacity>
-      )}
+      {renderSub()}
       {symbol && (
         <TouchableOpacity onPress={onPressSymbol}>
           <Row style={{ alignItems: 'center' }}>
@@ -77,6 +93,13 @@ const TradeInputAmount = (props) => {
   );
 };
 
-TradeInputAmount.propTypes = {};
+TradeInputAmount.propTypes = {
+  hasInfinityIcon: PropTypes.bool,
+  onPressInfinityIcon: PropTypes.func,
+  symbol: PropTypes.string,
+  canSelectSymbol: PropTypes.bool,
+  onPressSymbol: PropTypes.func,
+  loadingBalance: PropTypes.bool,
+};
 
 export default React.memo(TradeInputAmount);

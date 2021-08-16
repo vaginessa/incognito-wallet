@@ -11,7 +11,6 @@ const enhance = (WrappedComp) => (props) => {
   const dispatch = useDispatch();
   const handleReviewOrder = () =>
     navigation.navigate(routeNames.ReviewOrderSwap);
-  const defaultPair = useSelector(defaultPairSelector);
   const initSwapForm = React.useCallback(() => {
     dispatch(actionInitSwapForm());
   }, []);

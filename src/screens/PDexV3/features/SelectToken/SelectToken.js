@@ -16,11 +16,12 @@ const styled = StyleSheet.create({
 });
 
 const SelectToken = (props) => {
-  const { onSelectToken } = props;
   const data = props?.data || useNavigationParam('data') || [];
-  const onPress = () => {
-    if (typeof onSelectToken === 'function') {
-      onSelectToken();
+  const _onSelectToken =
+    props?.onSelectToken || useNavigationParam('onSelectToken');
+  const onPress = (item) => {
+    if (typeof _onSelectToken === 'function') {
+      _onSelectToken(item);
     }
   };
   return (
@@ -30,7 +31,7 @@ const SelectToken = (props) => {
         visible
         data={data}
         renderItem={({ item }) => (
-          <TokenTrade onPress={onPress} tokenId={item?.tokenId} />
+          <TokenTrade onPress={() => onPress(item)} tokenId={item?.tokenId} />
         )}
         styledListToken={styled.styledListToken}
       />

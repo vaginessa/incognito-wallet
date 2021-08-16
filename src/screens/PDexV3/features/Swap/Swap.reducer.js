@@ -1,3 +1,4 @@
+import { ACCOUNT_CONSTANT } from 'incognito-chain-web-js/build/wallet';
 import {
   ACTION_FETCHING,
   ACTION_FETCHED,
@@ -5,7 +6,10 @@ import {
   ACTION_SET_SELL_TOKEN,
   ACTION_SET_BUY_TOKEN,
   ACTION_SET_FEE_TOKEN,
-  ACTION_SET_FOCUS_TOKEN
+  ACTION_SET_FOCUS_TOKEN,
+  ACTION_SET_SELECTING_TOKEN,
+  ACTION_SET_SWAPING_TOKEN,
+  ACTION_SET_INITIING_SWAP,
 } from './Swap.constant';
 
 const initialState = {
@@ -17,7 +21,10 @@ const initialState = {
   feetoken: '',
   estimateTrade: null,
   focustoken: '',
-  networkfee: 100,
+  networkfee: ACCOUNT_CONSTANT.MAX_FEE_PER_TX,
+  swaping: false,
+  selecting: false,
+  initing: false,
 };
 
 export default (state = initialState, action) => {
@@ -65,6 +72,24 @@ export default (state = initialState, action) => {
     return {
       ...state,
       focustoken: action.payload,
+    };
+  }
+  case ACTION_SET_SELECTING_TOKEN: {
+    return {
+      ...state,
+      selecting: action.payload,
+    };
+  }
+  case ACTION_SET_SWAPING_TOKEN: {
+    return {
+      ...state,
+      swaping: action.payload,
+    };
+  }
+  case ACTION_SET_INITIING_SWAP: {
+    return {
+      ...state,
+      initing: action.payload,
     };
   }
   default:

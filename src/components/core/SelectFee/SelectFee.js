@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { Text } from '@src/components/core';
 import { Row } from '@src/components';
 import { COLORS, FONT } from '@src/styles';
+import { v4 } from 'uuid';
 
 const styled = StyleSheet.create({
   container: {
@@ -59,7 +60,7 @@ const SelectFee = (props) => {
     <Row style={styled.container}>
       {types.map((type, index) => (
         <SelectFeeItem
-          key={type?.tokenId}
+          key={`${v4()}-${type.symbol}-${type?.tokenId}-${index}`}
           {...{
             ...type,
             isActived: type?.actived,

@@ -30,6 +30,7 @@ export const styled = StyleSheet.create({
     flex: 1,
     maxWidth: '30%',
     alignItems: 'center',
+    marginRight: 15,
   },
   label: {
     fontFamily: FONT.NAME.medium,
