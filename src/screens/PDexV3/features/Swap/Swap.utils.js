@@ -1,3 +1,4 @@
+import { PRV } from '@src/constants/common';
 import SelectedPrivacy from '@src/models/selectedPrivacy';
 import convert from '@src/utils/convert';
 import format from '@src/utils/format';
@@ -29,19 +30,24 @@ export const minFeeValidator = (feetokenData) => {
   return undefined;
 };
 
-export const avaliablePayFeeByBuyTokenValidator = (buyinputAmount) => {
-  if (!buyinputAmount) {
+export const availablePayFeeByPRVValidator = ({
+  origininalFeeAmount,
+  prvBalance = 0,
+  usingFeeBySellToken,
+  networkfee,
+} = {}) => {
+  if (usingFeeBySellToken) {
     return undefined;
   }
   try {
-    const { usingFee, availableOriginalAmount, symbol } = buyinputAmount || {};
-    if (usingFee) {
-      if (new BigNumber(availableOriginalAmount).isLessThan(0)) {
-        return `Your ${symbol} balance is insufficient.`;
-      }
+    let availablePRVBalance = new BigNumber(prvBalance)
+      .minus(origininalFeeAmount)
+      .minus(networkfee);
+    if (availablePRVBalance.isLessThan(0)) {
+      return `Your ${PRV.symbol} balance is insufficient.`;
     }
   } catch (error) {
-    console.log('avaliablePayFeeByBuyTokenValidator-error', error);
+    console.log('availablePayFeeByPRVValidator-error', error);
   }
   return undefined;
 };
@@ -113,7 +119,8 @@ export const getInputAmount = (
     let availableOriginalAmount = token.amount || 0;
     let availableAmountNumber = 0;
     let availableAmountText = '';
-    const usingFee = token.tokenId === feeData.feetoken;
+    const usingFee =
+      token.tokenId === feeData.feetoken && field === formConfigs.selltoken;
     if (usingFee) {
       availableOriginalAmount = new BigNumber(availableOriginalAmount)
         .minus(new BigNumber(feeData.origininalFeeAmount))
@@ -140,6 +147,7 @@ export const getInputAmount = (
       tokenId: token.tokenId,
       symbol: token.symbol,
       pDecimals: token.pDecimals,
+      isMainCrypto: token.isMainCrypto,
 
       amount,
       originalAmount,

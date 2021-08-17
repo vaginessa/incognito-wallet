@@ -12,6 +12,9 @@ import {
   RFSelectFeeInput,
   validator,
 } from '@src/components/core/reduxForm';
+import SelectedPrivacy from '@src/models/selectedPrivacy';
+import { getPrivacyDataByTokenID } from '@src/redux/selectors/selectedPrivacy';
+import { PRV } from '@src/constants/common';
 import {
   feetokenDataSelector,
   feeTypesSelector,
@@ -24,7 +27,7 @@ import { formConfigs } from './Swap.constant';
 import { MaxPriceAndImpact } from './Swap.shared';
 import {
   minFeeValidator,
-  avaliablePayFeeByBuyTokenValidator,
+  availablePayFeeByPRVValidator,
   maxAmountValidatorForSlippageTolerance,
 } from './Swap.utils';
 
@@ -41,6 +44,8 @@ const TabPro = React.memo(() => {
   const feetokenData = useSelector(feetokenDataSelector);
   const inputAmount = useSelector(inputAmountSelector);
   const buyinputAmount = inputAmount(formConfigs.buytoken);
+  const sellinputAmount = inputAmount(formConfigs.selltoken);
+  const prv: SelectedPrivacy = useSelector(getPrivacyDataByTokenID)(PRV.id);
   const dispatch = useDispatch();
   const onChangeTypeFee = async (type) => {
     const { tokenId } = type;
@@ -62,19 +67,26 @@ const TabPro = React.memo(() => {
       feetokenData?.minFeeAmountText,
     ],
   );
-  let _avaliablePayFeeByBuyTokenValidator = React.useCallback(
-    () => avaliablePayFeeByBuyTokenValidator(buyinputAmount),
+  let _availablePayFeeByPRVValidator = React.useCallback(
+    () =>
+      availablePayFeeByPRVValidator({
+        prvBalance: prv?.amount || 0,
+        usingFeeBySellToken: sellinputAmount?.usingFee,
+        origininalFeeAmount: feetokenData?.origininalFeeAmount,
+        networkfee: swapInfo?.networkfee,
+      }),
     [
-      buyinputAmount?.usingFee,
-      buyinputAmount?.availableOriginalAmount,
-      buyinputAmount?.symbol,
+      sellinputAmount?.usingFee,
+      prv?.amount,
+      feetokenData?.origininalFeeAmount,
+      swapInfo?.networkfee,
     ],
   );
   let _maxAmountValidatorForSlippageTolerance = React.useCallback(
     () => maxAmountValidatorForSlippageTolerance(slippagetolerance),
     [slippagetolerance],
   );
-  const extraFactories = [
+  let extraFactories = [
     {
       title: 'Slippage tolerance',
       hasQuestionIcon: true,
@@ -110,12 +122,14 @@ const TabPro = React.memo(() => {
           validate={[
             ...validator.combinedAmount,
             _minFeeValidator,
-            _avaliablePayFeeByBuyTokenValidator,
+            _availablePayFeeByPRVValidator,
           ]}
         />
       ),
     },
-    {
+  ];
+  let subSwapInfoFactories = React.useMemo(() => {
+    let result = {
       title: 'Trade details',
       hooks: [
         {
@@ -134,9 +148,27 @@ const TabPro = React.memo(() => {
           hasQuestionIcon: true,
           onPressQuestionIcon: () => null,
         },
-      ].map((hook) => <Hook {...hook} key={hook.label} />),
-    },
-  ];
+        {
+          label: 'Network fee',
+          value: swapInfo?.networkfeeAmountStr ?? '',
+          hasQuestionIcon: true,
+          onPressQuestionIcon: () => null,
+          boldLabel: true,
+        },
+      ],
+    };
+    if (swapInfo?.showPRVBalance) {
+      result.hooks.push({
+        label: 'PRV Balance',
+        value: swapInfo?.prvBalanceStr ?? '',
+      });
+    }
+    result.hooks = result.hooks.map((hook) => (
+      <Hook {...hook} key={hook.label} />
+    ));
+    return result;
+  }, [swapInfo]);
+  extraFactories.push(subSwapInfoFactories);
   return (
     <View style={styled.container}>
       {extraFactories.map((extra) => (

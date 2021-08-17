@@ -14,32 +14,42 @@ const styled = StyleSheet.create({
 const TabSimple = React.memo(() => {
   const swapInfo = useSelector(swapInfoSelector);
   const feeTokenData = useSelector(feetokenDataSelector);
-  const hooksFactories = [
-    {
-      label: 'Balance',
-      value: swapInfo?.balanceStr ?? '',
-    },
-    {
-      label: 'Max price &  impact',
-      hasQuestionIcon: true,
-      onPressQuestionIcon: () => null,
-      customValue: <MaxPriceAndImpact />,
-    },
-    {
-      label: 'Trading fee',
-      value: feeTokenData?.feeAmountText ?? '',
-      hasQuestionIcon: true,
-      onPressQuestionIcon: () => null,
-      boldLabel: true,
-    },
-    {
-      label: 'Network fee',
-      value: swapInfo?.networkfeeAmountStr ?? '',
-      hasQuestionIcon: true,
-      onPressQuestionIcon: () => null,
-      boldLabel: true,
-    },
-  ];
+  const hooksFactories = React.useMemo(() => {
+    let result = [
+      {
+        label: 'Balance',
+        value: swapInfo?.balanceStr ?? '',
+      },
+      {
+        label: 'Max price &  impact',
+        hasQuestionIcon: true,
+        onPressQuestionIcon: () => null,
+        customValue: <MaxPriceAndImpact />,
+      },
+      {
+        label: 'Trading fee',
+        value: feeTokenData?.feeAmountText ?? '',
+        hasQuestionIcon: true,
+        onPressQuestionIcon: () => null,
+        boldLabel: true,
+      },
+      {
+        label: 'Network fee',
+        value: swapInfo?.networkfeeAmountStr ?? '',
+        hasQuestionIcon: true,
+        onPressQuestionIcon: () => null,
+        boldLabel: true,
+      },
+    ];
+    if (swapInfo?.showPRVBalance) {
+      result.push({
+        label: 'PRV Balance',
+        value: swapInfo?.prvBalanceStr ?? '',
+        boldLabel: true,
+      });
+    }
+    return result;
+  }, [swapInfo]);
   return (
     <View style={styled.container}>
       {hooksFactories.map((item) => (

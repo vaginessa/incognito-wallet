@@ -12,6 +12,7 @@ import isEmpty from 'lodash/isEmpty';
 import SelectedPrivacy from '@src/models/selectedPrivacy';
 import { batch } from 'react-redux';
 import { decimalDigitsSelector } from '@src/screens/Setting';
+import { PRV } from '@src/constants/common';
 import {
   ACTION_FETCHING,
   ACTION_FETCHED,
@@ -77,12 +78,7 @@ export const actionEstimateTrade = () => async (dispatch, getState) => {
     const input2Amount = inputAmount(formConfigs.buytoken);
     const feetoken = feeSelectedSelector(state);
     const slippagetolerance = slippagetoleranceSelector(state);
-    if (
-      isEmpty(input1Amount) ||
-      isEmpty(input2Amount) ||
-      isEmpty(feetoken) ||
-      isEmpty(slippagetolerance)
-    ) {
+    if (isEmpty(input1Amount) || isEmpty(input2Amount) || isEmpty(feetoken)) {
       return;
     }
     const {
@@ -140,8 +136,8 @@ export const actionEstimateTrade = () => async (dispatch, getState) => {
     // const pDexV3Inst = await getPDexV3Instance({ otaKey });
     await delay(2000);
     const data = {
-      maxGet: 2e9,
-      fee: 1e9,
+      maxGet: random(1e2, 1e9),
+      fee: random(1e2, 1e6),
       // fee: 12e9,
       route: `${sellsymbol}->${buysymbol}`,
       sizeimpact: random(0, 0.99, true),
@@ -162,6 +158,9 @@ export const actionEstimateTrade = () => async (dispatch, getState) => {
   } catch (error) {
     console.log('ERROR', error);
     await dispatch(actionFetchFail());
+    new ExHandler(error).showErrorToast();
+  } finally {
+    dispatch(actionSetFocusToken(''));
   }
 };
 
@@ -170,6 +169,7 @@ export const actionSetSellToken = (selltoken) => async (dispatch, getState) => {
     if (!selltoken) {
       return;
     }
+    dispatch(actionSetSellTokenFetched(selltoken));
     const state = getState();
     const { initing } = swapSelector(state);
     const token = getPrivacyDataByTokenID(state)(selltoken);
@@ -188,7 +188,6 @@ export const actionSetSellToken = (selltoken) => async (dispatch, getState) => {
       sellOriginalAmount = balance;
     }
     let sellamount = '';
-    dispatch(actionSetSellTokenFetched(selltoken));
     if (initing) {
       const buytoken: SelectedPrivacy = buytokenSelector(state);
       const feeTokenData = feetokenDataSelector(state);
@@ -206,7 +205,7 @@ export const actionSetSellToken = (selltoken) => async (dispatch, getState) => {
       await delay(2000);
       const data = {
         maxGet: 2e9,
-        fee: 1e9,
+        fee: random(1e2, 1e6),
         route: `${symbol}->${buytoken?.symbol}`,
         sizeimpact: random(0, 0.99, true),
       };
@@ -245,8 +244,8 @@ export const actionSetSellToken = (selltoken) => async (dispatch, getState) => {
 
 export const actionSetBuyToken = (buytoken) => async (dispatch, getState) => {
   try {
-    dispatch(getBalance(buytoken));
     dispatch(actionSetBuyTokenFetched(buytoken));
+    await dispatch(getBalance(buytoken));
   } catch (error) {
     new ExHandler(error).showErrorToast();
   }
@@ -257,6 +256,27 @@ export const actionInitingSwapForm = (payload) => ({
   payload,
 });
 
+export const actionSetInputToken = ({ selltoken, buytoken }) => async (
+  dispatch,
+  getState,
+) => {
+  if (!selltoken || !buytoken) {
+    return;
+  }
+  try {
+    let task = [
+      dispatch(actionSetSellToken(selltoken)),
+      dispatch(actionSetBuyToken(buytoken)),
+    ];
+    if (selltoken !== PRV.id && buytoken !== PRV.id) {
+      task.push(dispatch(getBalance(PRV.id)));
+    }
+    await Promise.all(task);
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const actionInitSwapForm = () => async (dispatch, getState) => {
   try {
     const state = getState();
@@ -265,16 +285,16 @@ export const actionInitSwapForm = () => async (dispatch, getState) => {
       return;
     }
     await dispatch(actionInitingSwapForm(true));
+    const { token1IdStr: selltoken, token2IdStr: buytoken } = defaultPair;
     batch(() => {
-      dispatch(actionSetSellTokenFetched(defaultPair.token1IdStr));
-      dispatch(actionSetBuyTokenFetched(defaultPair.token2IdStr));
+      dispatch(actionSetSellTokenFetched(selltoken));
+      dispatch(actionSetBuyTokenFetched(buytoken));
       dispatch(
         change(formConfigs.formName, formConfigs.slippagetolerance, '1'),
       );
-      dispatch(actionSetFeeToken(defaultPair.token1IdStr));
-      dispatch(actionSetBuyToken(defaultPair.token2IdStr));
+      dispatch(actionSetFeeToken(PRV.id));
     });
-    await dispatch(actionSetSellToken(defaultPair.token1IdStr));
+    await dispatch(actionSetInputToken({ selltoken, buytoken }));
   } catch (error) {
     new ExHandler(error).showErrorToast;
   } finally {
@@ -306,10 +326,14 @@ export const actionSwapToken = () => async (dispatch, getState) => {
       dispatch(change(formConfigs.formName, formConfigs.buytoken, ''));
       dispatch(actionSetSellTokenFetched(_selltoken.tokenId));
       dispatch(actionSetBuyTokenFetched(_buytoken.tokenId));
-      dispatch(actionSetBuyToken(_buytoken.tokenId));
-      dispatch(actionSetFeeToken(_selltoken.tokenId));
+      dispatch(actionSetFeeToken(PRV.id));
     });
-    await dispatch(actionSetSellToken(_selltoken.tokenId));
+    await dispatch(
+      actionSetInputToken({
+        selltoken: _selltoken.tokenId,
+        buytoken: _buytoken.tokenId,
+      }),
+    );
     await dispatch(actionEstimateTrade());
   } catch (error) {
     console.log('actionSwapToken-error', error);
@@ -350,9 +374,14 @@ export const actionSelectToken = (token: SelectedPrivacy, field) => async (
           dispatch(change(formConfigs.formName, formConfigs.feetoken, ''));
           dispatch(actionSetSellTokenFetched(token.tokenId));
           dispatch(actionSetFocusToken(''));
-          dispatch(actionSetFeeToken(token.tokenId));
+          dispatch(actionSetFeeToken(PRV.id));
         });
-        await dispatch(actionSetSellToken(token.tokenId));
+        await dispatch(
+          actionSetInputToken({
+            selltoken: token.tokenId,
+            buytoken: buytoken.tokenId,
+          }),
+        );
         await dispatch(actionEstimateTrade());
       }
       break;
@@ -370,8 +399,14 @@ export const actionSelectToken = (token: SelectedPrivacy, field) => async (
           dispatch(actionSetBuyTokenFetched(token.tokenId));
           dispatch(actionSetBuyToken(token.tokenId));
           dispatch(actionSetFocusToken(''));
-          dispatch(actionSetFeeToken(selltoken.tokenId));
+          dispatch(actionSetFeeToken(PRV.id));
         });
+        await dispatch(
+          actionSetInputToken({
+            selltoken: selltoken.tokenId,
+            buytoken: token.tokenId,
+          }),
+        );
         await dispatch(actionEstimateTrade());
       }
       break;

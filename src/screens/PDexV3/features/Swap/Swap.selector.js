@@ -139,11 +139,13 @@ export const swapInfoSelector = createSelector(
   feetokenDataSelector,
   inputAmountSelector,
   (state) => state,
+  getPrivacyDataByTokenIDSelector,
   (
     { data, networkfee, swaping, initing, selecting, isFetching, isFetched },
     feeTokenData,
     getInputAmount,
     state,
+    getPrivacyDataByTokenID,
   ) => {
     try {
       const sellInputAmount = getInputAmount(formConfigs.selltoken);
@@ -179,7 +181,12 @@ export const swapInfoSelector = createSelector(
       const sellInputBalanceStr = `${sellInputAmount?.balanceStr} ${sellInputAmount?.symbol}`;
       const buyInputBalanceStr = `${buyInputAmount?.balanceStr} ${buyInputAmount?.symbol}`;
       const sellInputAmountStr = `${sellInputAmount?.amountText} ${sellInputAmount?.symbol}`;
-      const buyInputAmountStr = `${buyInputAmount.amountText} ${buyInputAmount?.symbol}`;
+      const buyInputAmountStr = `${buyInputAmount?.amountText} ${buyInputAmount?.symbol}`;
+      const prv: SelectedPrivacy = getPrivacyDataByTokenID(PRV.id);
+      const showPRVBalance =
+        !sellInputAmount.isMainCrypto && !sellInputAmount.isMainCrypto;
+      const prvBalance = format.amountFull(prv.amount, PRV.pDecimals, false);
+      const prvBalanceStr = `${prvBalance} ${PRV.symbol}`;
       return {
         balanceStr: `${sellInputBalanceStr} + ${buyInputBalanceStr}`,
         routing,
@@ -196,9 +203,11 @@ export const swapInfoSelector = createSelector(
         buyInputBalanceStr,
         sellInputAmountStr,
         buyInputAmountStr,
+        networkfee,
+        showPRVBalance,
+        prvBalanceStr,
       };
     } catch (error) {
-      //
       console.log('swapInfoSelector-error', error);
     }
   },
@@ -215,21 +224,22 @@ export const slippagetoleranceSelector = createSelector(
 
 export const feeTypesSelector = createSelector(
   selltokenSelector,
-  buytokenSelector,
   feeSelectedSelector,
-  (selltoken: SelectedPrivacy, buytoken: SelectedPrivacy, feetoken) =>
-    selltoken?.tokenId && buytoken?.tokenId
-      ? [
-        {
-          tokenId: selltoken.tokenId,
-          symbol: selltoken.symbol,
-          actived: feetoken == selltoken?.tokenId,
-        },
-        {
-          tokenId: buytoken.tokenId,
-          symbol: buytoken.symbol,
-          actived: feetoken == buytoken?.tokenId,
-        },
-      ]
-      : [],
+  (selltoken: SelectedPrivacy, feetoken) => {
+    let types = [
+      {
+        tokenId: PRV.id,
+        symbol: PRV.symbol,
+        actived: feetoken == PRV.id,
+      },
+    ];
+    if (selltoken?.tokenId && !selltoken.isMainCrypto) {
+      types.push({
+        tokenId: selltoken.tokenId,
+        symbol: selltoken.symbol,
+        actived: feetoken == selltoken.tokenId,
+      });
+    }
+    return types;
+  },
 );
