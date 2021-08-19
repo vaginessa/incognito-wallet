@@ -1,10 +1,18 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
-import { BaseTextInput, Text } from '@src/components/core';
+import { Text } from '@src/components/core';
 import { Row } from '@src/components';
 import { COLORS, FONT } from '@src/styles';
+import { change, Field, getFormSyncErrors } from 'redux-form';
+import { RFBaseInput, validator } from '@src/components/core/reduxForm';
+import { useDispatch, useSelector } from 'react-redux';
+import { RFError } from '@src/components/core/reduxForm/fields/createField';
+import format from '@src/utils/format';
+import BigNumber from 'bignumber.js';
 import { Hook } from '../Extra';
+import { formConfigs } from './OrderLimit.constant';
+import { inputAmountSelector, rateDataSelector } from './OrderLimit.selector';
 
 const styled = StyleSheet.create({
   container: {},
@@ -17,21 +25,10 @@ const styled = StyleSheet.create({
     fontSize: FONT.SIZE.superMedium,
     lineHeight: FONT.SIZE.superMedium + 5,
     color: COLORS.newGrey,
-    flex: 1,
-    maxWidth: '30%',
   },
   ctRateInput: {
-    fontFamily: FONT.NAME.bold,
-    fontSize: FONT.SIZE.superMedium,
-    lineHeight: FONT.SIZE.superMedium + 5,
-    color: COLORS.black,
-    width: '100%',
     textAlign: 'right',
-  },
-  ctRateInputContainer: {
-    alignItems: 'center',
-    maxWidth: '60%',
-    justifyContent: 'space-between',
+    maxWidth: 150,
   },
   ctRateInputUnit: {
     fontFamily: FONT.NAME.bold,
@@ -40,17 +37,20 @@ const styled = StyleSheet.create({
     color: COLORS.black,
     textAlign: 'right',
   },
-  crRateInputWrapper: {
-    flex: 1,
-    marginRight: 10,
+  rightCustom: {
+    marginLeft: 15,
+  },
+  ctRateWrapper: {
+    minHeight: 55,
   },
 });
 
 const Rate = React.memo(() => {
+  const rateData = useSelector(rateDataSelector);
   return (
     <Hook
       label="Rate"
-      value="1 PRV = 0.5 XMR"
+      value={rateData.rateStr}
       hasQuestionIcon
       onPressQuestionIcon={() => null}
       boldLabel
@@ -59,24 +59,79 @@ const Rate = React.memo(() => {
 });
 
 const CustomRate = React.memo(() => {
+  const inputAmount = useSelector(inputAmountSelector);
+  const rateData = useSelector(rateDataSelector);
+  const sellinputAmount = inputAmount(formConfigs.selltoken);
+  const buyinputAmount = inputAmount(formConfigs.buytoken);
+  const formSyncErrors = useSelector((state) =>
+    getFormSyncErrors(formConfigs.formName)(state),
+  );
+  const rateError = formSyncErrors[formConfigs.rate];
+  const dispatch = useDispatch();
+  const changeBuyAmountByRate = (rate) => {
+    const buyFormatAmount = format.toFixed(
+      new BigNumber(sellinputAmount.amount)
+        .multipliedBy(new BigNumber(rate || 0))
+        .toNumber(),
+      buyinputAmount?.pDecimals,
+    );
+    dispatch(
+      change(formConfigs.formName, formConfigs.buytoken, buyFormatAmount),
+    );
+  };
+  const onEndEditing = () => changeBuyAmountByRate(rateData?.customRate);
+  const onChange = async (rate) => {
+    try {
+      dispatch(change(formConfigs.formName, formConfigs.rate, rate));
+      if (typeof validator.number()(rate) !== 'undefined') {
+        dispatch(change(formConfigs.formName, formConfigs.buytoken, ''));
+        return;
+      }
+      changeBuyAmountByRate(rate);
+    } catch (error) {
+      console.log('onChange-error', error);
+    }
+  };
+  console.log('rateError', rateError);
   return (
-    <Row style={styled.ctRateContainer}>
-      <Text style={styled.ctRateLabel} numberOfLines={1} ellipsizeMode="tail">
-        1 PRV =
-      </Text>
-      <Row style={styled.ctRateInputContainer}>
-        <View style={styled.crRateInputWrapper}>
-          <BaseTextInput
-            style={styled.ctRateInput}
+    <View style={styled.ctRateWrapper}>
+      <Row style={styled.ctRateContainer}>
+        <View style={styled.label}>
+          <Text
+            style={styled.ctRateLabel}
+            numberOfLines={1}
+            ellipsizeMode="tail"
+          >
+            1 {sellinputAmount?.symbol || ''} =
+          </Text>
+        </View>
+        <View>
+          <Field
+            component={RFBaseInput}
+            name={formConfigs.rate}
             keyboardType="decimal-pad"
-            placeholder="0.5"
+            placeholder="0"
             ellipsizeMode="tail"
             numberOfLines={1}
+            onEndEditing={onEndEditing}
+            inputStyle={styled.ctRateInput}
+            rightCustom={
+              <View style={styled.rightCustom}>
+                <Text style={styled.ctRateInputUnit}>
+                  {buyinputAmount?.symbol || ''}
+                </Text>
+              </View>
+            }
+            onChange={onChange}
+            validate={[...validator.combinedAmount]}
+            isCustomizeRenderError
           />
         </View>
-        <Text style={styled.ctRateInputUnit}>XMR</Text>
       </Row>
-    </Row>
+      {!!rateError && (
+        <RFError errMsg={rateError} style={{ textAlign: 'right' }} />
+      )}
+    </View>
   );
 });
 

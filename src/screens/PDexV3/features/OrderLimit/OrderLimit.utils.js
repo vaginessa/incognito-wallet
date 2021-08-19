@@ -1,11 +1,120 @@
+import isNaN from 'lodash/isNaN';
 import { PRV } from '@src/constants/common';
 import SelectedPrivacy from '@src/models/selectedPrivacy';
-import isNaN from 'lodash/isNaN';
 import convert from '@src/utils/convert';
 import format from '@src/utils/format';
 import BigNumber from 'bignumber.js';
 import { formValueSelector } from 'redux-form';
-import { formConfigs } from './Swap.constant';
+import { formConfigs } from './OrderLimit.constant';
+
+export const maxAmountValidatorForSellInput = (sellInputAmount) => {
+  try {
+    if (!sellInputAmount) {
+      return undefined;
+    }
+    const {
+      originalAmount,
+      availableOriginalAmount,
+      symbol,
+      availableAmountText,
+    } = sellInputAmount || {};
+    if (
+      new BigNumber(originalAmount).gt(new BigNumber(availableOriginalAmount))
+    ) {
+      return new BigNumber(availableOriginalAmount).gt(0)
+        ? `Max amount you can swap is ${availableAmountText} ${symbol}`
+        : `Your ${symbol} balance is insufficient.`;
+    }
+  } catch (error) {
+    console.log('maxAmountValidatorForSellInput-error', error);
+  }
+
+  return undefined;
+};
+
+export const getInputAmount = (
+  state,
+  feeData,
+  orderLimit,
+  isGettingBalance,
+  getPrivacyDataByTokenID,
+  pool,
+) => (field) => {
+  try {
+    const { networkfee } = orderLimit;
+    const token: SelectedPrivacy = getPrivacyDataByTokenID(orderLimit[field]);
+    if (!token.tokenId) {
+      return {
+        amount: '',
+        originalAmount: 0,
+        isFocus: false,
+      };
+    }
+    const selector = formValueSelector(formConfigs.formName);
+    const amountText = selector(state, field);
+    let amount = convert.toNumber(amountText, true) || 0;
+    const originalAmount = convert.toOriginalAmount(amount, token.pDecimals);
+    amount = convert.toHumanAmount(originalAmount, token.pDecimals);
+    let availableOriginalAmount = token.amount || 0;
+    let availableAmountNumber = 0;
+    let availableAmountText = '';
+    const usingFee =
+      token.tokenId === feeData.feetoken && field === formConfigs.selltoken;
+    if (usingFee) {
+      availableOriginalAmount = new BigNumber(availableOriginalAmount)
+        .minus(new BigNumber(feeData.origininalFeeAmount))
+        .toNumber();
+    }
+    if (usingFee && token.isMainCrypto) {
+      availableOriginalAmount = new BigNumber(availableOriginalAmount)
+        .minus(networkfee)
+        .toNumber();
+    }
+    if (new BigNumber(availableOriginalAmount).isGreaterThan(0)) {
+      availableAmountNumber = convert.toHumanAmount(
+        availableOriginalAmount,
+        token.pDecimals,
+      );
+      availableAmountText = format.toFixed(
+        availableAmountNumber,
+        token.pDecimals,
+      );
+    }
+    let poolValue = 0;
+    if (token.tokenId === pool?.token1Id) {
+      poolValue = pool?.token1Value;
+    } else if (token.tokenId === pool?.token2Id) {
+      poolValue = pool?.token2Value;
+    }
+    let poolValueStr = format.amountFull(poolValue, token.pDecimals, false);
+    const data = {
+      tokenId: token.tokenId,
+      symbol: token.symbol,
+      pDecimals: token.pDecimals,
+      isMainCrypto: token.isMainCrypto,
+
+      amount,
+      originalAmount,
+      amountText,
+
+      availableOriginalAmount,
+      availableAmountText,
+      availableAmountNumber,
+
+      usingFee,
+      loadingBalance: isGettingBalance.includes(token.tokenId),
+
+      balance: token.amount,
+      balanceStr: format.amountFull(token.amount, token.pDecimals, false),
+
+      poolValue,
+      poolValueStr,
+    };
+    return data;
+  } catch (error) {
+    console.log('inputAmountSelector error', error);
+  }
+};
 
 export const minFeeValidator = (feetokenData) => {
   if (!feetokenData) {
@@ -51,123 +160,4 @@ export const availablePayFeeByPRVValidator = ({
     console.log('availablePayFeeByPRVValidator-error', error);
   }
   return undefined;
-};
-
-export const maxAmountValidatorForSellInput = (sellInputAmount) => {
-  try {
-    if (!sellInputAmount) {
-      return undefined;
-    }
-    const {
-      originalAmount,
-      availableOriginalAmount,
-      symbol,
-      availableAmountText,
-    } = sellInputAmount || {};
-    if (
-      new BigNumber(originalAmount).gt(new BigNumber(availableOriginalAmount))
-    ) {
-      return new BigNumber(availableOriginalAmount).gt(0)
-        ? `Max amount you can swap is ${availableAmountText} ${symbol}`
-        : `Your ${symbol} balance is insufficient.`;
-    }
-  } catch (error) {
-    console.log('maxAmountValidatorForSellInput-error', error);
-  }
-
-  return undefined;
-};
-
-export const maxAmountValidatorForSlippageTolerance = (slippagetolerance) => {
-  try {
-    if (!slippagetolerance) {
-      return undefined;
-    }
-    let slippagetoleranceAmount = convert.toNumber(slippagetolerance, true);
-    if (isNaN(slippagetoleranceAmount) || !slippagetoleranceAmount) {
-      return 'Must be a number';
-    }
-    if (slippagetoleranceAmount >= 100) {
-      return `Enter a number from 0 to ${format.number(99.99)} `;
-    }
-  } catch (error) {
-    console.log('maxAmountValidatorForSlippageTolerance-error', error);
-  }
-
-  return undefined;
-};
-
-export const getInputAmount = (
-  state,
-  getInputToken,
-  focustoken,
-  feeData,
-  { networkfee },
-  isGettingBalance,
-) => (field) => {
-  try {
-    const token: SelectedPrivacy = getInputToken(field);
-    if (!token.tokenId) {
-      return {
-        amount: '',
-        originalAmount: 0,
-        isFocus: false,
-      };
-    }
-    const selector = formValueSelector(formConfigs.formName);
-
-    const amountText = selector(state, field);
-    let amount = convert.toNumber(amountText, true) || 0;
-    const originalAmount = convert.toOriginalAmount(amount, token.pDecimals);
-
-    let availableOriginalAmount = token.amount || 0;
-    let availableAmountNumber = 0;
-    let availableAmountText = '';
-    const usingFee =
-      token.tokenId === feeData.feetoken && field === formConfigs.selltoken;
-    if (usingFee) {
-      availableOriginalAmount = new BigNumber(availableOriginalAmount)
-        .minus(new BigNumber(feeData.origininalFeeAmount))
-        .toNumber();
-    }
-    if (usingFee && token.isMainCrypto) {
-      availableOriginalAmount = new BigNumber(availableOriginalAmount)
-        .minus(networkfee)
-        .toNumber();
-    }
-    if (new BigNumber(availableOriginalAmount).isGreaterThan(0)) {
-      availableAmountNumber = convert.toHumanAmount(
-        availableOriginalAmount,
-        token.pDecimals,
-      );
-      availableAmountText = format.toFixed(
-        availableAmountNumber,
-        token.pDecimals,
-      );
-    }
-    const focus = token.tokenId === focustoken;
-    return {
-      focus,
-      tokenId: token.tokenId,
-      symbol: token.symbol,
-      pDecimals: token.pDecimals,
-      isMainCrypto: token.isMainCrypto,
-
-      amount,
-      originalAmount,
-      amountText,
-
-      availableOriginalAmount,
-      availableAmountText,
-      availableAmountNumber,
-
-      usingFee,
-      loadingBalance: isGettingBalance.includes(token.tokenId),
-
-      balance: token.amount,
-      balanceStr: format.amountFull(token.amount, token.pDecimals, false),
-    };
-  } catch (error) {
-    console.log('inputAmountSelector error', error);
-  }
 };

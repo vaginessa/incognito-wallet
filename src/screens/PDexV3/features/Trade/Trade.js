@@ -20,7 +20,7 @@ const Trade = () => {
       ) : (
         <KeyboardAwareScrollView contentContainerStyle={styled.main}>
           <Tabs rootTabID={ROOT_TAB_TRADE} styledTabs={styled.styledTabs}>
-            <View tabID={TAB_SWAP_ID} label="Swap" onChangeTab={() => null} tab>
+            <View tabID={TAB_SWAP_ID} label="Swap" onChangeTab={() => null}>
               <TabSwap />
             </View>
             <View tabID={TAB_LIMIT_ID} label="Limit" onChangeTab={() => null}>

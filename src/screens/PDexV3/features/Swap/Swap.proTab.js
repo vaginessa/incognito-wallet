@@ -105,6 +105,9 @@ const TabPro = React.memo(() => {
             ...validator.combinedNumber,
             _maxAmountValidatorForSlippageTolerance,
           ]}
+          inputStyle={{
+            maxWidth: 100,
+          }}
         />
       ),
     },

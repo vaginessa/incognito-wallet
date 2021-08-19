@@ -23,6 +23,7 @@ import {
   getAccountWallet,
 } from '@src/services/wallet/Wallet.shared';
 import { cachePromise, clearAllCaches } from '@src/services/cache';
+import { getPDexV3Instance } from '@src/screens/PDexV3';
 import { CustomError, ErrorCode, ExHandler } from '../exception';
 import { loadListAccountWithBLSPubKey, saveWallet } from './WalletService';
 
@@ -717,11 +718,16 @@ export default class Account {
       if (account) {
         const keyInfo = (await account.getKeyInfo({ version })) || {};
         const otaKey = account.getOTAKey();
+        const pDexV3Inst = await getPDexV3Instance({ otaKey });
+        const keyFollowPoolsDefault = pDexV3Inst.getKeyFollowedDefaultPools();
+        const keyFollowedDefaultPools = pDexV3Inst.getKeyFollowedDefaultPools();
         const followedDefaultTokensKey = account.getKeyFollowedDefaultTokens();
         let task = [
           account.removeStorageCoinsV1(),
           account.clearAccountStorage(otaKey),
           account.clearAccountStorage(followedDefaultTokensKey),
+          pDexV3Inst.clearStorage(keyFollowPoolsDefault),
+          pDexV3Inst.clearStorage(keyFollowedDefaultPools),
         ];
         clearAllCaches();
         if (keyInfo?.coinindex) {

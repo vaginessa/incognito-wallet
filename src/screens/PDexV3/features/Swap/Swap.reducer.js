@@ -10,6 +10,7 @@ import {
   ACTION_SET_SELECTING_TOKEN,
   ACTION_SET_SWAPING_TOKEN,
   ACTION_SET_INITIING_SWAP,
+  ACTION_RESET,
 } from './Swap.constant';
 
 const initialState = {
@@ -29,6 +30,9 @@ const initialState = {
 
 export default (state = initialState, action) => {
   switch (action.type) {
+  case ACTION_RESET: {
+    return initialState;
+  }
   case ACTION_FETCHING: {
     return {
       ...state,
@@ -48,6 +52,12 @@ export default (state = initialState, action) => {
       ...state,
       isFetched: false,
       isFetching: false,
+    };
+  }
+  case ACTION_SET_INITIING_SWAP: {
+    return {
+      ...state,
+      initing: action.payload,
     };
   }
   case ACTION_SET_SELL_TOKEN: {
@@ -86,12 +96,7 @@ export default (state = initialState, action) => {
       swaping: action.payload,
     };
   }
-  case ACTION_SET_INITIING_SWAP: {
-    return {
-      ...state,
-      initing: action.payload,
-    };
-  }
+
   default:
     return state;
   }

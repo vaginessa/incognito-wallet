@@ -83,7 +83,7 @@ export const feetokenDataSelector = createSelector(
       const selector = formValueSelector(formConfigs.formName);
       const fee = selector(state, formConfigs.feetoken);
       const { fee: minFeeOriginal = 0 } = data;
-      const feeAmount = convert.toNumber(fee, true) || 0;
+      let feeAmount = convert.toNumber(fee, true) || 0;
       const feeAmountText = fee;
       const origininalFeeAmount = convert.toOriginalAmount(
         feeAmount,

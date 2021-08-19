@@ -5,15 +5,16 @@ import {
   TradeInputAmount,
 } from '@src/components/core';
 import Tabs from '@src/components/core/Tabs';
-import { withLayout_2 } from '@src/components/Layout';
 import SelectPercentAmount from '@src/components/SelectPercentAmount';
 import React from 'react';
 import { View } from 'react-native';
 import { useSelector } from 'react-redux';
 import { COLORS } from '@src/styles';
+import { createForm } from '@src/components/core/reduxForm';
 import GroupActions from './OrderLimit.groupActions';
 import GroupRate from './OrderLimit.groupRate';
 import {
+  formConfigs,
   ROOT_TAB_ORDER_LIMIT,
   TAB_BUY_ID,
   TAB_SELL_ID,
@@ -22,15 +23,20 @@ import { styled } from './OrderLimit.styled';
 import { orderLimitDataSelector } from './OrderLimit.selector';
 import SubInfo from './OrderLimit.subInfo';
 import OpenOrders from './OrderLimit.openOrders';
+import withOrderLimit from './OrderLimit.enhance';
+import OrderLimitInputsGroup from './OrderLimit.inputsGroup';
 
-const OrderLimitInputsGroup = React.memo(() => {
-  return (
-    <View style={styled.inputGroups}>
-      <TradeInputAmount hasInfinityIcon symbol="PRV" />
-      <Divider dividerStyled={styled.dividerStyled} />
-      <TradeInputAmount symbol="USDT" />
-    </View>
-  );
+const initialFormValues = {
+  selltoken: '',
+  buytoken: '',
+  feetoken: '',
+  rate: '',
+};
+
+const Form = createForm(formConfigs.formName, {
+  initialValues: initialFormValues,
+  destroyOnUnmount: true,
+  enableReinitialize: true,
 });
 
 const OrderLimit = (props) => {
@@ -60,22 +66,28 @@ const OrderLimit = (props) => {
     <View style={styled.container}>
       <Header title="PRV/XMR" />
       <KeyboardAwareScrollView contentContainerStyle={styled.scrollview}>
-        <Tabs rootTabID={ROOT_TAB_ORDER_LIMIT}>
-          {tabsFactories.map((tab) => (
-            <View key={tab.tabID} {...tab} />
-          ))}
-        </Tabs>
-        <OrderLimitInputsGroup />
-        <GroupRate />
-        <SelectPercentAmount
-          size={4}
-          handleSelectPercent={handleSelectPercent}
-          containerStyled={styled.selectPercentAmountContainer}
-          percentBtnColor={mainColor}
-        />
-        <GroupActions />
-        <SubInfo />
-        <OpenOrders />
+        <Form>
+          {({ handleSubmit }) => (
+            <>
+              <Tabs rootTabID={ROOT_TAB_ORDER_LIMIT}>
+                {tabsFactories.map((tab) => (
+                  <View key={tab.tabID} {...tab} />
+                ))}
+              </Tabs>
+              <OrderLimitInputsGroup />
+              <GroupRate />
+              <SelectPercentAmount
+                size={4}
+                handleSelectPercent={handleSelectPercent}
+                containerStyled={styled.selectPercentAmountContainer}
+                percentBtnColor={mainColor}
+              />
+              <GroupActions />
+              <SubInfo />
+              <OpenOrders />
+            </>
+          )}
+        </Form>
       </KeyboardAwareScrollView>
     </View>
   );
@@ -83,4 +95,4 @@ const OrderLimit = (props) => {
 
 OrderLimit.propTypes = {};
 
-export default withLayout_2(React.memo(OrderLimit));
+export default withOrderLimit(React.memo(OrderLimit));

@@ -3,7 +3,7 @@ import ErrorBoundary from '@src/components/ErrorBoundary';
 import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
 import { useDispatch, useSelector } from 'react-redux';
-import { actionInitSwapForm } from './Swap.actions';
+import { actionInitSwapForm, actionReset } from './Swap.actions';
 import { swapInfoSelector } from './Swap.selector';
 
 const enhance = (WrappedComp) => (props) => {
@@ -18,6 +18,9 @@ const enhance = (WrappedComp) => (props) => {
   }, []);
   React.useEffect(() => {
     initSwapForm();
+    return () => {
+      dispatch(actionReset());
+    };
   }, []);
   return (
     <ErrorBoundary>

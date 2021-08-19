@@ -86,10 +86,10 @@ const TradeInputAmount = (props) => {
         />
       </View>
       {renderSub()}
-      {symbol && (
+      {!!symbol && (
         <TouchableOpacity onPress={onPressSymbol}>
           <Row style={{ alignItems: 'center' }}>
-            {symbol && <Text style={styled.symbol}>{symbol}</Text>}
+            {!!symbol && <Text style={styled.symbol}>{symbol}</Text>}
             {canSelectSymbol && <ArrowRightGreyIcon />}
           </Row>
         </TouchableOpacity>

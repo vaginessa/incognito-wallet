@@ -22,6 +22,7 @@ const initialFormValues = {
   selltoken: '',
   buytoken: '',
   slippagetolerance: '',
+  feetoken: '',
 };
 
 const Form = createForm(formConfigs.formName, {

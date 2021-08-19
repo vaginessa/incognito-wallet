@@ -3,7 +3,7 @@ import { FlatList, TouchableOpacity } from '@src/components/core';
 import React from 'react';
 import { View, Text } from 'react-native';
 import { useNavigation } from 'react-navigation-hooks';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Pool from '@screens/PDexV3/features/Pool';
 import { listPoolsFollowingSelector } from '@screens/PDexV3/features/Pools';
 import routeNames from '@src/router/routeNames';
@@ -82,6 +82,7 @@ const PoolsListHeaderFollowing = React.memo(() => {
 
 export const PoolsListFollowing = React.memo(({ handlePressPool }) => {
   const listPoolsFollowing = useSelector(listPoolsFollowingSelector);
+  const dispatch = useDispatch();
   const onPressPool = (poolId) =>
     typeof handlePressPool === 'function' && handlePressPool(poolId);
   return (

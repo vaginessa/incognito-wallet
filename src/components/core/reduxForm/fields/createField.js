@@ -1,22 +1,40 @@
 import React from 'react';
+import isEmpty from 'lodash/isEmpty';
 import { View, Text } from '@src/components/core';
 import styleSheet from './style';
 
+export const RFError = React.memo(({ errMsg, style }) => {
+  if (isEmpty(errMsg)) {
+    return null;
+  }
+  return <Text style={[styleSheet.errorText, style]}>{errMsg}</Text>;
+});
+
 const customField = (field, render) => {
-  const { style, componentProps, meta, warning, ...fieldProps } = field;
+  const {
+    style,
+    componentProps,
+    meta,
+    warning,
+    isCustomizeRenderError = false,
+    isCustomizeRenderWarning = false,
+    ...fieldProps
+  } = field;
   const renderProps = {
     ...fieldProps,
     ...(typeof componentProps === 'object' ? componentProps : {}),
   };
-  const shouldShowError = (meta?.visited || meta?.touched) && meta?.error;
+  const shouldShowError =
+    !isCustomizeRenderError && (meta?.visited || meta?.touched) && meta?.error;
   const shouldShowWarning =
-    (meta?.visited || meta?.touched) && warning && !meta?.error;
+    !isCustomizeRenderWarning &&
+    (meta?.visited || meta?.touched) &&
+    warning &&
+    !meta?.error;
   return (
     <View style={[styleSheet.container, style]}>
       <View style={styleSheet.field}>{render(renderProps)}</View>
-      {shouldShowError && (
-        <Text style={styleSheet.errorText}>{meta.error}</Text>
-      )}
+      {shouldShowError && <RFError errMsg={meta.error} />}
       {shouldShowWarning && (
         <Text style={styleSheet.warningText}>{warning}</Text>
       )}

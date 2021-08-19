@@ -1,6 +1,8 @@
 import { otaKeyOfDefaultAccountSelector } from '@src/redux/selectors/account';
 import { ExHandler } from '@src/services/exception';
 import { getPDexV3Instance } from '@screens/PDexV3';
+import { v4 } from 'uuid';
+import { PRV } from '@src/constants/common';
 import {
   ACTION_FETCHING,
   ACTION_FETCHED,
@@ -87,7 +89,7 @@ export const actionFetchListPools = () => async (dispatch, getState) => {
     const pDexV3Inst = await getPDexV3Instance({ otaKey });
     let listPools = [];
     // await pDexV3Inst.getListPools();
-    const poolsIDs = listPools.map((pool) => pool.poolId);
+
     let listPoolsDetail =
       // await pDexV3Inst.getListPoolsDetail(poolsIDs);
       [
@@ -125,14 +127,6 @@ export const actionFetchListPools = () => async (dispatch, getState) => {
           verified: false,
           priceChange: 24424,
         },
-      ];
-    // await pDexV3Inst.getListPoolsDetail(poolsIDs);
-    listPoolsDetail = listPoolsDetail.filter(
-      (pool) => !!pool?.poolId && !!pool?.token1Id && !!pool?.token2Id,
-    );
-    dispatch(
-      actionFetchedListPools([
-        ...listPoolsDetail,
         {
           '24H': 69,
           amp: 2,
@@ -150,12 +144,34 @@ export const actionFetchListPools = () => async (dispatch, getState) => {
           verified: true,
           volume: 132130,
         },
-      ]),
+        {
+          '24H': 24,
+          amp: 2,
+          apy: 60,
+          poolId: '1116',
+          price: 10,
+          priceChange: 12123,
+          share: 152323,
+          token1Id: PRV.id,
+          token1Value: 805233000e9,
+          token2Id:
+            'fdd928bc86c82bd2a7c54082a68332ebb5f2cde842b1c2e0fa430ededb6e369e',
+          token2Value: 1598796000000e6,
+          verified: true,
+          volume: 132130,
+        },
+      ];
+    // await pDexV3Inst.getListPoolsDetail(poolsIDs);
+    listPoolsDetail = listPoolsDetail.filter(
+      (pool) => !!pool?.poolId && !!pool?.token1Id && !!pool?.token2Id,
     );
-    const isFollowedDefaultListPools = await pDexV3Inst.isFollowedDefaultPools();
-    if (!isFollowedDefaultListPools) {
-      await pDexV3Inst.followingDefaultPools({ poolsIDs });
-    }
+    dispatch(actionFetchedListPools([...listPoolsDetail]));
+    const poolsIDs = listPoolsDetail.map((pool) => pool.poolId);
+    await pDexV3Inst.addListFollowingPool({ poolsIDs });
+    // const isFollowedDefaultListPools = await pDexV3Inst.isFollowedDefaultPools();
+    // if (!isFollowedDefaultListPools) {
+    //   await pDexV3Inst.followingDefaultPools({ poolsIDs });
+    // }
   } catch (error) {
     throw error;
   }
@@ -170,7 +186,7 @@ export const actionFetchListFollowingPools = () => async (
     const otaKey = otaKeyOfDefaultAccountSelector(state);
     const pDexV3Inst = await getPDexV3Instance({ otaKey });
     const listPoolsFollowing = await pDexV3Inst.getListFollowingPools();
-    dispatch(actionFetchedListPoolsFollowing(listPoolsFollowing));
+    await dispatch(actionFetchedListPoolsFollowing(listPoolsFollowing));
   } catch (error) {
     new ExHandler(error).showErrorToast();
   }

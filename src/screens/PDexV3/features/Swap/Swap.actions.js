@@ -25,6 +25,7 @@ import {
   ACTION_SET_SELECTING_TOKEN,
   ACTION_SET_SWAPING_TOKEN,
   ACTION_SET_INITIING_SWAP,
+  ACTION_RESET,
 } from './Swap.constant';
 import {
   buytokenSelector,
@@ -68,6 +69,11 @@ export const actionFetched = (payload) => ({
 
 export const actionFetchFail = () => ({
   type: ACTION_FETCH_FAIL,
+});
+
+export const actionReset = (payload) => ({
+  type: ACTION_RESET,
+  payload,
 });
 
 export const actionEstimateTrade = () => async (dispatch, getState) => {

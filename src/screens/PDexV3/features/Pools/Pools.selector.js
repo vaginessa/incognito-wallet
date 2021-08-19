@@ -57,5 +57,6 @@ export const listPoolsSelector = createSelector(
 
 export const getDataByPoolIdSelector = createSelector(
   listPoolsSelector,
-  (listPools) => (poolId) => listPools.find((pool) => pool?.poolId === poolId),
+  (listPools) => (poolId) =>
+    poolId && listPools.find((pool) => pool?.poolId === poolId),
 );

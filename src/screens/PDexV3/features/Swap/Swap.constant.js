@@ -11,6 +11,8 @@ export const ACTION_SET_SELECTING_TOKEN = '[pDexV3][swap] Set selecting token';
 export const ACTION_SET_SWAPING_TOKEN = '[pDexV3][swap] Set swaping token';
 export const ACTION_SET_INITIING_SWAP = '[pDexV3][swap] Set initing token';
 
+export const ACTION_RESET = '[pDexV3][swap] Reset';
+
 export const TAB_SIMPLE_ID = 'simple';
 export const TAB_PRO_ID = 'pro';
 export const ROOT_TAB_ID = '[swap] Root tab swap';

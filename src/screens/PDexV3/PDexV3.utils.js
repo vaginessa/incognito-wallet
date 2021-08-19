@@ -1,3 +1,4 @@
+/* eslint-disable import/no-cycle */
 import Server from '@src/services/wallet/Server';
 import storage from '@src/services/storage';
 import { PDexV3, Validator } from 'incognito-chain-web-js/build/wallet';
@@ -16,20 +17,31 @@ export const getPDexV3Instance = async ({ otaKey }) => {
 };
 
 export const getPairRate = ({ token1, token2, token1Value, token2Value }) => {
-  const rawRate = new BigNumber(token2Value)
-    .dividedBy(
-      new BigNumber(token1Value).dividedBy(Math.pow(10, token1.pDecimals || 0)),
-    )
-    .toFixed()
-    .toString();
-  return rawRate;
+  try {
+    const rawRate = new BigNumber(token2Value).dividedBy(
+      new BigNumber(token1Value),
+    );
+    let rawRateNumber = rawRate.toNumber();
+    let rawRateFixed = format.toFixed(rawRateNumber, token2?.pDecimals);
+    let rawRateStr = rawRate.toString();
+    if (!rawRateFixed || rawRateFixed === '0') {
+      return rawRateStr;
+    }
+    return rawRateFixed;
+  } catch (error) {
+    console.log('getPairRate-error', error);
+  }
 };
 
 export const getExchangeRate = (token1, token2, token1Value, token2Value) => {
-  const rawRate = getPairRate({ token1, token2, token1Value, token2Value });
-  return `1 ${token1.symbol} = ${format.amount(rawRate, token2.pDecimals)} ${
-    token2?.symbol
-  }`;
+  try {
+    const rawRate = getPairRate({ token1, token2, token1Value, token2Value });
+    return `1 ${token1.symbol} = ${format.amountFull(rawRate, 0, false)} ${
+      token2?.symbol
+    }`;
+  } catch (error) {
+    console.log('getExchangeRate-error', error);
+  }
 };
 
 export const getPrincipal = (token1, token2, token1Value, token2Value) => {

@@ -12,16 +12,11 @@ const styled = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  inputWrapper: {
-    flex: 1,
-    maxWidth: '50%',
-  },
   input: {
     fontFamily: FONT.NAME.bold,
     fontSize: FONT.SIZE.superMedium,
     lineHeight: FONT.SIZE.superMedium + 5,
     color: COLORS.black,
-    width: '100%',
   },
 });
 
@@ -30,21 +25,19 @@ const renderCustomField = (props) => {
   const { onChange, onFocus, onBlur, ...restInput } = input;
   return (
     <Row style={styled.container}>
-      <View style={styled.inputWrapper}>
-        <BaseTextInput
-          {...{
-            ...rest,
-            ...restInput,
-            style: {
-              ...styled.input,
-              ...inputStyle,
-            },
-            onChangeText: (text) => onChange(text),
-            onFocus: (event) => onFocus(event),
-            onBlur: (event) => onBlur(event),
-          }}
-        />
-      </View>
+      <BaseTextInput
+        {...{
+          ...rest,
+          ...restInput,
+          style: {
+            ...styled.input,
+            ...inputStyle,
+          },
+          onChangeText: (text) => onChange(text),
+          onFocus: (event) => onFocus(event),
+          onBlur: (event) => onBlur(event),
+        }}
+      />
       {rightCustom && rightCustom}
     </Row>
   );
