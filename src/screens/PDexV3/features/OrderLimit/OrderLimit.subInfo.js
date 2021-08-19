@@ -1,9 +1,10 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
+import isEmpty from 'lodash/isEmpty';
 import Extra, { Hook } from '@screens/PDexV3/features/Extra';
 import { RFSelectFeeInput, validator } from '@src/components/core/reduxForm';
 import { Field } from 'redux-form';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { getPrivacyDataByTokenID } from '@src/redux/selectors/selectedPrivacy';
 import { PRV } from '@src/constants/common';
 import SelectedPrivacy from '@src/models/selectedPrivacy';
@@ -18,20 +19,24 @@ import {
   availablePayFeeByPRVValidator,
   minFeeValidator,
 } from './OrderLimit.utils';
+import { actionEstimateTrade, actionSetFeeToken } from './OrderLimit.actions';
 
 const styled = StyleSheet.create({
   container: {},
 });
 
-const SubInfo = (props) => {
+const SubInfo = () => {
+  const dispatch = useDispatch();
   const orderLimitData = useSelector(orderLimitDataSelector);
   const inputAmount = useSelector(inputAmountSelector);
   const sellinputAmount = inputAmount(formConfigs.selltoken);
   const feetokenData = useSelector(feetokenDataSelector);
   const feeTypes = useSelector(feeTypesSelector);
   const prv: SelectedPrivacy = useSelector(getPrivacyDataByTokenID)(PRV.id);
-  const onChangeTypeFee = (feeType) => {
-    console.log('onChangeTypeFee', feeType);
+  const onChangeTypeFee = async (type) => {
+    const { tokenId } = type;
+    await dispatch(actionSetFeeToken(tokenId));
+    dispatch(actionEstimateTrade());
   };
   let _minFeeValidator = React.useCallback(
     () => minFeeValidator(feetokenData),
@@ -74,6 +79,7 @@ const SubInfo = (props) => {
             _minFeeValidator,
             _availablePayFeeByPRVValidator,
           ]}
+          editableInput={!!orderLimitData?.editableInput}
         />
       ),
     },
@@ -82,24 +88,28 @@ const SubInfo = (props) => {
       hooks: [
         {
           label: 'Balance',
-          value: '1000 PRV',
+          value: orderLimitData?.balanceStr ?? '',
         },
-        {
-          label: 'Balance',
-          value: '2000 XMR',
-        },
+        orderLimitData?.showPRVBalance
+          ? {
+            label: 'PRV Balance',
+            value: orderLimitData?.prvBalanceStr ?? '',
+          }
+          : {},
         {
           label: 'Network fee',
-          value: '0.000001 PRV',
+          value: orderLimitData?.networkfeeAmountStr ?? '',
         },
         {
           label: 'Incognito',
-          value: '1984981 USDC + 9849141 PRV',
+          value: orderLimitData?.poolSizeStr ?? '',
           boldLabel: true,
           hasQuestionIcon: true,
           onPressQuestionIcon: () => null,
         },
-      ].map((hook, index) => <Hook {...hook} key={hook.label + index} />),
+      ]
+        .filter((hook) => !isEmpty(hook))
+        .map((hook, index) => <Hook {...hook} key={hook.label + index} />),
     },
   ];
   return (

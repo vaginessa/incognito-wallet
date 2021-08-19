@@ -160,6 +160,23 @@ export const actionFetchListPools = () => async (dispatch, getState) => {
           verified: true,
           volume: 132130,
         },
+        {
+          '24H': 12,
+          amp: 2,
+          apy: 60,
+          poolId: '1117',
+          price: 10,
+          priceChange: 12123,
+          share: 152323,
+          token1Id:
+            'a61df4d870c17a7dc62d7e4c16c6f4f847994403842aaaf21c994d1a0024b032',
+          token1Value: 805233000e9,
+          token2Id:
+            'fdd928bc86c82bd2a7c54082a68332ebb5f2cde842b1c2e0fa430ededb6e369e',
+          token2Value: 1598796000000e6,
+          verified: true,
+          volume: 132130,
+        },
       ];
     // await pDexV3Inst.getListPoolsDetail(poolsIDs);
     listPoolsDetail = listPoolsDetail.filter(

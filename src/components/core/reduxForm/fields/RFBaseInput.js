@@ -36,6 +36,7 @@ const renderCustomField = (props) => {
           onChangeText: (text) => onChange(text),
           onFocus: (event) => onFocus(event),
           onBlur: (event) => onBlur(event),
+          editable: rest?.editableInput,
         }}
       />
       {rightCustom && rightCustom}

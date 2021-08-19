@@ -1,11 +1,6 @@
 import { Header } from '@src/components';
-import {
-  Divider,
-  KeyboardAwareScrollView,
-  TradeInputAmount,
-} from '@src/components/core';
+import { KeyboardAwareScrollView } from '@src/components/core';
 import Tabs from '@src/components/core/Tabs';
-import SelectPercentAmount from '@src/components/SelectPercentAmount';
 import React from 'react';
 import { View } from 'react-native';
 import { useSelector } from 'react-redux';
@@ -76,12 +71,6 @@ const OrderLimit = (props) => {
               </Tabs>
               <OrderLimitInputsGroup />
               <GroupRate />
-              <SelectPercentAmount
-                size={4}
-                handleSelectPercent={handleSelectPercent}
-                containerStyled={styled.selectPercentAmountContainer}
-                percentBtnColor={mainColor}
-              />
               <GroupActions />
               <SubInfo />
               <OpenOrders />

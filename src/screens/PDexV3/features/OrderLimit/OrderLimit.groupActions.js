@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   ButtonBasic,
   ButtonRefresh,
@@ -9,6 +9,7 @@ import {
 } from '@src/components/Button';
 import { Row } from '@src/components';
 import { orderLimitDataSelector } from './OrderLimit.selector';
+import { actionInit } from './OrderLimit.actions';
 
 const styled = StyleSheet.create({
   container: {},
@@ -23,15 +24,20 @@ const styled = StyleSheet.create({
 });
 
 const GroupActions = (props) => {
-  const { mainColor, btnActionTitle } = useSelector(orderLimitDataSelector);
+  const { mainColor, btnActionTitle, disabledBtn } = useSelector(
+    orderLimitDataSelector,
+  );
+  const dispatch = useDispatch();
+  const onPressRefresh = () => dispatch(actionInit());
   return (
     <View style={styled.container}>
       <ButtonBasic
         btnStyle={{ backgroundColor: mainColor }}
         title={btnActionTitle}
+        disabled={disabledBtn}
       />
       <Row style={styled.subActions}>
-        <ButtonRefresh style={styled.refreshBtn} />
+        <ButtonRefresh style={styled.refreshBtn} onPress={onPressRefresh} />
         <ButtonChart />
       </Row>
     </View>

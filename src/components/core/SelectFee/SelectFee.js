@@ -27,7 +27,7 @@ const styled = StyleSheet.create({
 });
 
 const SelectFeeItem = (props) => {
-  const { symbol, tokenId, isActived, tail, ...rest } = props;
+  const { symbol, tokenId, isActived, tail, canSelected, ...rest } = props;
   return (
     <TouchableWithoutFeedback {...rest}>
       <View style={[styled.feeItem, tail ? styled.tail : null]}>
@@ -36,6 +36,7 @@ const SelectFeeItem = (props) => {
             styled.symbol,
             tail && styled.tail,
             isActived ? styled.isActived : null,
+            !canSelected ? { color: COLORS.newGrey } : null,
           ]}
         >
           {symbol}
@@ -46,8 +47,11 @@ const SelectFeeItem = (props) => {
 };
 
 const SelectFee = (props) => {
-  const { types = [], onChangeTypeFee } = props;
+  const { types = [], onChangeTypeFee, canSelected } = props;
   const onChangeFee = (type) => {
+    if (!canSelected) {
+      return;
+    }
     const { actived } = type;
     if (actived) {
       return;
@@ -66,6 +70,7 @@ const SelectFee = (props) => {
             isActived: type?.actived,
             tail: index === types.length - 1,
             onPress: () => onChangeFee(type),
+            canSelected,
           }}
         />
       ))}
@@ -82,6 +87,7 @@ SelectFee.propTypes = {
       actived: PropTypes.bool.isRequired,
     }),
   ).isRequired,
+  canSelected: PropTypes.bool,
 };
 
 export default React.memo(SelectFee);

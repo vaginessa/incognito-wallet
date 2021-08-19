@@ -1,5 +1,6 @@
-import { Text } from '@src/components/core';
 import React from 'react';
+import { Text } from '@src/components/core';
+import isEmpty from 'lodash/isEmpty';
 import { View, StyleSheet } from 'react-native';
 import Extra, {
   Hook,
@@ -108,6 +109,7 @@ const TabPro = React.memo(() => {
           inputStyle={{
             maxWidth: 100,
           }}
+          editableInput={!!swapInfo?.editableInput}
         />
       ),
     },
@@ -127,18 +129,23 @@ const TabPro = React.memo(() => {
             _minFeeValidator,
             _availablePayFeeByPRVValidator,
           ]}
+          editableInput={!!swapInfo?.editableInput}
         />
       ),
     },
-  ];
-  let subSwapInfoFactories = React.useMemo(() => {
-    let result = {
+    {
       title: 'Trade details',
       hooks: [
         {
           label: 'Balance',
           value: swapInfo?.balanceStr ?? '',
         },
+        swapInfo?.showPRVBalance
+          ? {
+            label: 'PRV Balance',
+            value: swapInfo?.prvBalanceStr ?? '',
+          }
+          : {},
         {
           label: 'Max price &  impact',
           hasQuestionIcon: true,
@@ -158,20 +165,11 @@ const TabPro = React.memo(() => {
           onPressQuestionIcon: () => null,
           boldLabel: true,
         },
-      ],
-    };
-    if (swapInfo?.showPRVBalance) {
-      result.hooks.push({
-        label: 'PRV Balance',
-        value: swapInfo?.prvBalanceStr ?? '',
-      });
-    }
-    result.hooks = result.hooks.map((hook) => (
-      <Hook {...hook} key={hook.label} />
-    ));
-    return result;
-  }, [swapInfo]);
-  extraFactories.push(subSwapInfoFactories);
+      ]
+        .filter((hook) => !isEmpty(hook))
+        .map((hook) => <Hook {...hook} key={hook.label} />),
+    },
+  ];
   return (
     <View style={styled.container}>
       {extraFactories.map((extra) => (

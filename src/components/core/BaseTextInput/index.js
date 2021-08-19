@@ -12,7 +12,11 @@ const BaseTextInput = ({ style, ...rest }) => {
       autoCorrect={false}
       spellCheck={false}
       autoCompleteType="off"
-      style={[styles.input, style]}
+      style={[
+        styles.input,
+        style,
+        !rest?.editable ? { color: COLORS.newGrey } : null,
+      ]}
       {...rest}
     />
   );

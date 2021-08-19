@@ -10,9 +10,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RFError } from '@src/components/core/reduxForm/fields/createField';
 import format from '@src/utils/format';
 import BigNumber from 'bignumber.js';
-import { Hook } from '../Extra';
+import { Hook } from '@screens/PDexV3/features/Extra';
 import { formConfigs } from './OrderLimit.constant';
-import { inputAmountSelector, rateDataSelector } from './OrderLimit.selector';
+import {
+  inputAmountSelector,
+  rateDataSelector,
+  orderLimitDataSelector,
+} from './OrderLimit.selector';
 
 const styled = StyleSheet.create({
   container: {},
@@ -59,6 +63,7 @@ const Rate = React.memo(() => {
 });
 
 const CustomRate = React.memo(() => {
+  const orderlimitData = useSelector(orderLimitDataSelector);
   const inputAmount = useSelector(inputAmountSelector);
   const rateData = useSelector(rateDataSelector);
   const sellinputAmount = inputAmount(formConfigs.selltoken);
@@ -92,7 +97,6 @@ const CustomRate = React.memo(() => {
       console.log('onChange-error', error);
     }
   };
-  console.log('rateError', rateError);
   return (
     <View style={styled.ctRateWrapper}>
       <Row style={styled.ctRateContainer}>
@@ -125,6 +129,7 @@ const CustomRate = React.memo(() => {
             onChange={onChange}
             validate={[...validator.combinedAmount]}
             isCustomizeRenderError
+            editableInput={!!orderlimitData?.editableInput}
           />
         </View>
       </Row>

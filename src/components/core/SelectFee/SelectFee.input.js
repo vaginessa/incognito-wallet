@@ -25,20 +25,27 @@ const styled = StyleSheet.create({
 });
 
 const SelectFeeInput = (props) => {
-  const { types, onChangeTypeFee, placeholder, ...rest } = props;
+  const { types, onChangeTypeFee, placeholder, editableInput, ...rest } = props;
   return (
     <Row style={styled.inputContainer}>
       <View style={styled.inputWrapper}>
         <BaseTextInput
-          style={styled.input}
+          style={{
+            ...styled.input,
+          }}
           keyboardType="decimal-pad"
           placeholder={placeholder}
           ellipsizeMode="tail"
           numberOfLines={1}
+          editable={editableInput}
           {...rest}
         />
       </View>
-      <SelectFee types={types} onChangeTypeFee={onChangeTypeFee} />
+      <SelectFee
+        types={types}
+        onChangeTypeFee={onChangeTypeFee}
+        canSelected={editableInput}
+      />
     </Row>
   );
 };
@@ -52,6 +59,7 @@ SelectFeeInput.propTypes = {
       actived: PropTypes.bool.isRequired,
     }),
   ).isRequired,
+  editableInput: PropTypes.bool,
 };
 
 export default React.memo(SelectFeeInput);

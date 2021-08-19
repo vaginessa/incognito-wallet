@@ -75,7 +75,6 @@ const TradeInputAmount = (props) => {
         <BaseTextInput
           style={{
             ...styled.input,
-            ...(editableInput ? {} : { color: COLORS.newGrey }),
           }}
           keyboardType="decimal-pad"
           placeholder={placeholder}

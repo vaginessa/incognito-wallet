@@ -13,7 +13,4 @@ export const styled = StyleSheet.create({
   inputGroups: {
     marginVertical: 30,
   },
-  selectPercentAmountContainer: {
-    marginVertical: 30,
-  },
 });
