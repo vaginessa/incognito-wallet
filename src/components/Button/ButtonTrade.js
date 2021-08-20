@@ -15,8 +15,8 @@ const styled = StyleSheet.create({
 const ButtonTrade = React.memo(({ btnStyle, titleStyle, ...rest }) => {
   return (
     <ButtonBasic
-      btnStyle={[btnStyle, styled.btnStyle]}
-      titleStyle={[titleStyle, styled.titleStyle]}
+      btnStyle={[styled.btnStyle, btnStyle]}
+      titleStyle={[styled.titleStyle, titleStyle]}
       {...rest}
     />
   );

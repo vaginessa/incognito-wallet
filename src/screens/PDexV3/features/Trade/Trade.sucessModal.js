@@ -1,14 +1,14 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { StyleSheet } from 'react-native';
 import { Text } from '@src/components/core';
 import { ButtonTrade } from '@src/components/Button';
 import { COLORS, FONT } from '@src/styles';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { actionToggleModal } from '@src/components/Modal';
 import { PureModalContent } from '@src/components/Modal/features/PureModal';
 import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
-import { swapInfoSelector } from './Swap.selector';
 
 const styled = StyleSheet.create({
   title: {
@@ -37,10 +37,10 @@ const styled = StyleSheet.create({
   },
 });
 
-const SwapSucessModal = () => {
+const TradeSucessModal = (props) => {
+  const { desc, btnColor = COLORS.colorTradeBlue } = props;
   const dispatch = useDispatch();
   const navigation = useNavigation();
-  const swapInfo = useSelector(swapInfoSelector);
   const handleKeepTrading = () => {
     dispatch(actionToggleModal({ visible: false, data: null }));
     navigation.navigate(routeNames.Trade);
@@ -48,20 +48,23 @@ const SwapSucessModal = () => {
   return (
     <PureModalContent>
       <Text style={styled.title}>Trade initiated!</Text>
-      <Text style={styled.desc}>
-        {`You placed an order to sell 
-        ${swapInfo?.sellInputAmountStr ||
-          ''} for ${swapInfo?.buyInputAmountStr || ''}.`}
-      </Text>
+      <Text style={styled.desc}>{desc}</Text>
       <Text style={styled.sub}>
         Your balance will update in a couple of minutes after the trade is
         finalized.
       </Text>
-      <ButtonTrade title="Keep trading" onPress={handleKeepTrading} />
+      <ButtonTrade
+        btnStyle={{ backgroundColor: btnColor }}
+        title="Keep trading"
+        onPress={handleKeepTrading}
+      />
     </PureModalContent>
   );
 };
 
-SwapSucessModal.propTypes = {};
+TradeSucessModal.propTypes = {
+  desc: PropTypes.string.isRequired,
+  btnColor: PropTypes.string.isRequired,
+};
 
-export default React.memo(SwapSucessModal);
+export default React.memo(TradeSucessModal);

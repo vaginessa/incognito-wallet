@@ -36,7 +36,6 @@ const SelectFeeItem = (props) => {
             styled.symbol,
             tail && styled.tail,
             isActived ? styled.isActived : null,
-            !canSelected ? { color: COLORS.newGrey } : null,
           ]}
         >
           {symbol}

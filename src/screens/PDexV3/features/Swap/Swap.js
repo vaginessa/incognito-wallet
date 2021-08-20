@@ -56,7 +56,6 @@ const Swap = (props) => {
       tab: <TabPro />,
     },
   ];
-  console.log('RE-RENDER SWAP');
   return (
     <View style={styled.container}>
       <Form>

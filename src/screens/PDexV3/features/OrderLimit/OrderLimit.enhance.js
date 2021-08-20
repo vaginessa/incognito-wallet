@@ -8,7 +8,6 @@ import { actionInit, actionReset } from './OrderLimit.actions';
 const enhance = (WrappedComp) => (props) => {
   const dispatch = useDispatch();
   React.useEffect(() => {
-    console.log('init');
     dispatch(actionInit());
     return () => {
       dispatch(actionReset());

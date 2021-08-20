@@ -17,7 +17,7 @@ import {
   orderLimitDataSelector,
   rateDataSelector,
 } from './OrderLimit.selector';
-import { actionEstimateTrade } from './OrderLimit.actions';
+import { actionEstimateTrade, actionSetPercent } from './OrderLimit.actions';
 import { TAB_BUY_ID, TAB_SELL_ID, formConfigs } from './OrderLimit.constant';
 
 const styled = StyleSheet.create({
@@ -160,15 +160,23 @@ const BuyInput = React.memo(() => {
   );
 });
 
-const InputsGroup = React.memo(() => {
-  const { activedTab, mainColor } = useSelector(orderLimitDataSelector);
+const SelectPercentAmountInput = React.memo(() => {
   const dispatch = useDispatch();
   const inputAmount = useSelector(inputAmountSelector);
   const sellInputAmount = inputAmount(formConfigs.selltoken);
   const buyInputAmount = inputAmount(formConfigs.buytoken);
   const { customRate } = useSelector(rateDataSelector);
-  const handleSelectPercent = (percent) => {
-    let _percent = percent / 100;
+  const { mainColor, percent: selected } = useSelector(orderLimitDataSelector);
+  const onPressPercent = (percent) => {
+    let _percent;
+    if (percent === selected) {
+      _percent = 0;
+      dispatch(actionSetPercent(0));
+    } else {
+      _percent = percent;
+      dispatch(actionSetPercent(percent));
+    }
+    _percent = _percent / 100;
     let amount =
       convert.toNumber(sellInputAmount?.availableAmountText, true) || 0;
     let originalAmount = convert.toOriginalAmount(
@@ -185,6 +193,19 @@ const InputsGroup = React.memo(() => {
     dispatch(change(formConfigs.formName, formConfigs.selltoken, amounText));
     dispatch(actionEstimateTrade());
   };
+  return (
+    <SelectPercentAmount
+      size={4}
+      containerStyled={styled.selectPercentAmountContainer}
+      percentBtnColor={mainColor}
+      selected={selected}
+      onPressPercent={onPressPercent}
+    />
+  );
+});
+
+const InputsGroup = React.memo(() => {
+  const { activedTab } = useSelector(orderLimitDataSelector);
   const renderMain = () => {
     switch (activedTab) {
     case TAB_SELL_ID: {
@@ -212,12 +233,7 @@ const InputsGroup = React.memo(() => {
   return (
     <View style={styled.container}>
       {renderMain()}
-      <SelectPercentAmount
-        size={4}
-        handleSelectPercent={handleSelectPercent}
-        containerStyled={styled.selectPercentAmountContainer}
-        percentBtnColor={mainColor}
-      />
+      <SelectPercentAmountInput />
     </View>
   );
 });

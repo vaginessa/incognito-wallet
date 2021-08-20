@@ -28,7 +28,7 @@ export const styled = StyleSheet.create({
   },
   labelContainer: {
     flex: 1,
-    maxWidth: '30%',
+    maxWidth: '35%',
     alignItems: 'center',
     marginRight: 15,
   },
@@ -57,6 +57,20 @@ export const styled = StyleSheet.create({
   },
   orangeValue: {
     color: COLORS.orange,
+  },
+  specialTitle: {
+    fontSize: FONT.SIZE.superLarge,
+    lineHeight: FONT.SIZE.superLarge + 5,
+    color: COLORS.colorTradeBlue,
+    fontFamily: FONT.NAME.bold,
+    marginBottom: 30,
+  },
+  specialDesc: {
+    fontSize: FONT.SIZE.small,
+    lineHeight: FONT.SIZE.small + 5,
+    marginRight: 5,
+    color: COLORS.black,
+    fontFamily: FONT.NAME.bold,
   },
 });
 

@@ -27,6 +27,7 @@ import {
   TAB_BUY_ID,
   TAB_SELL_ID,
   formConfigs,
+  ACTION_SET_PERCENT,
 } from './OrderLimit.constant';
 import {
   buytokenSelector,
@@ -36,6 +37,11 @@ import {
   poolSelectedDataSelector,
   rateDataSelector,
 } from './OrderLimit.selector';
+
+export const actionSetPercent = (payload) => ({
+  type: ACTION_SET_PERCENT,
+  payload,
+});
 
 export const actionFetching = () => ({
   type: ACTION_FETCHING,
@@ -134,7 +140,7 @@ export const actionSetSellToken = (selltokenId) => async (
       // const otaKey = otaKeyOfDefaultAccountSelector(state);
       // const pDexV3Inst = await getPDexV3Instance({ otaKey });
       // await pDexV3Inst.getEstimateTrade(payload);
-      await delay(2000);
+      await delay(200);
       const data = {
         fee: random(1e2, 1e6),
       };
@@ -205,6 +211,7 @@ export const actionInit = () => async (dispatch, getState) => {
   try {
     let state = getState();
     const pool = poolSelectedDataSelector(state);
+    await dispatch(actionSetPercent(0));
     if (isEmpty(pool)) {
       return;
     }
@@ -276,7 +283,7 @@ export const actionEstimateTrade = () => async (dispatch, getState) => {
     await dispatch(actionFetching());
     const otaKey = otaKeyOfDefaultAccountSelector(state);
     // const pDexV3Inst = await getPDexV3Instance({ otaKey });
-    await delay(2000);
+    await delay(200);
     const data = {
       fee: random(1e2, 1e6),
     };

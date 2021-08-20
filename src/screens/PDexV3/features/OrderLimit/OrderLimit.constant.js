@@ -12,6 +12,7 @@ export const ACTION_SET_FEE_TOKEN = '[pDexV3][orderLimit] Set fee token';
 export const ACTION_SET_SELL_TOKEN = '[pDexV3][orderLimit] Set sell token';
 export const ACTION_SET_BUY_TOKEN = '[pDexV3][orderLimit] Set buy token';
 export const ACTION_RESET = '[pDexV3][orderLimit] Reset';
+export const ACTION_SET_PERCENT = '[pDexV3][orderLimit] Set percent';
 
 export const formConfigs = {
   formName: 'FORM_ORDER_LIMIT',

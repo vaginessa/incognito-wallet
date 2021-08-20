@@ -96,11 +96,10 @@ import HistoryConvert from '@src/screens/Home/features/HistoryConvert';
 import LiquidityV3 from '@screens/Liquidity3';
 import HomePDexV3 from '@screens/PDexV3/features/Home';
 import { PoolsList } from '@screens/PDexV3/features/Pools';
-import Trade from '@screens/PDexV3/features/Trade';
+import Trade, { ReviewOrder } from '@screens/PDexV3/features/Trade';
 import CreatePool from '@screens/PDexV3/features/CreatePool';
 import ContributePool from '@screens/PDexV3/features/ContributePool';
 import RemovePool from '@screens/PDexV3/features/RemovePool';
-import { ReviewOrderSwap } from '@src/screens/PDexV3/features/Swap';
 import OrderLimit from '@src/screens/PDexV3/features/OrderLimit';
 import SelectTokenTrade from '@screens/PDexV3/features/SelectToken';
 
@@ -176,8 +175,8 @@ const pDexV3Routes = [
     name: routeNames.RemovePool,
   },
   {
-    screen: ReviewOrderSwap,
-    name: routeNames.ReviewOrderSwap,
+    screen: ReviewOrder,
+    name: routeNames.ReviewOrder,
   },
   {
     screen: OrderLimit,

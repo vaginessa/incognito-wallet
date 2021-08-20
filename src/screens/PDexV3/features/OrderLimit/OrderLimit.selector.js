@@ -98,81 +98,6 @@ export const inputAmountSelector = createSelector(
   getInputAmount,
 );
 
-export const orderLimitDataSelector = createSelector(
-  (state) => state,
-  orderLimitSelector,
-  activedTabSelector,
-  getPrivacyDataByTokenIDSelector,
-  inputAmountSelector,
-  (
-    state,
-    { networkfee, initing, isFetching, isFetched },
-    getActivedTab,
-    getPrivacyDataByTokenID,
-    getInputAmount,
-  ) => {
-    const sellInputAmount = getInputAmount(formConfigs.selltoken);
-    const buyInputAmount = getInputAmount(formConfigs.buytoken);
-    const activedTab = getActivedTab(ROOT_TAB_ORDER_LIMIT);
-    let btnActionTitle;
-    const buyColor = COLORS.green;
-    const sellColor = COLORS.red;
-    let mainColor;
-    switch (activedTab) {
-    case TAB_SELL_ID: {
-      mainColor = sellColor;
-      btnActionTitle = `Sell ${sellInputAmount?.symbol}`;
-      break;
-    }
-    case TAB_BUY_ID: {
-      mainColor = buyColor;
-      btnActionTitle = `Buy ${buyInputAmount?.symbol}`;
-      break;
-    }
-    default:
-      break;
-    }
-    const networkfeeAmount = format.toFixed(
-      convert.toHumanAmount(networkfee, PRV.pDecimals),
-      PRV.pDecimals,
-    );
-    const networkfeeAmountStr = `${networkfeeAmount} ${PRV.symbol}`;
-    const prv: SelectedPrivacy = getPrivacyDataByTokenID(PRV.id);
-    const showPRVBalance =
-      !sellInputAmount.isMainCrypto && !buyInputAmount.isMainCrypto;
-    const prvBalance = format.amountFull(prv.amount, PRV.pDecimals, false);
-    const prvBalanceStr = `${prvBalance} ${PRV.symbol}`;
-    const balanceStr = `${sellInputAmount?.balanceStr} ${sellInputAmount?.symbol} + ${buyInputAmount?.balanceStr} ${buyInputAmount?.symbol}`;
-    const poolSizeStr = `${sellInputAmount?.poolValueStr} ${sellInputAmount?.symbol} + ${buyInputAmount?.poolValueStr} ${buyInputAmount?.symbol}`;
-    const editableInput = !initing && isFetched && !isFetching;
-    const calculating = initing || isFetching;
-    const disabledBtn =
-      calculating ||
-      (!isFetched && !isFetching) ||
-      !isValid(formConfigs.formName)(state);
-    if (calculating) {
-      btnActionTitle = 'Calculating...';
-    }
-    return {
-      mainColor,
-      buyColor,
-      sellColor,
-      btnActionTitle,
-      activedTab,
-      editableInput,
-      networkfeeAmount,
-      networkfeeAmountStr,
-      networkfee,
-      showPRVBalance,
-      prvBalance,
-      prvBalanceStr,
-      balanceStr,
-      poolSizeStr,
-      disabledBtn,
-    };
-  },
-);
-
 export const inpuTokenSelector = createSelector(
   getPrivacyDataByTokenIDSelector,
   orderLimitSelector,
@@ -264,6 +189,107 @@ export const rateDataSelector = createSelector(
       rateStr,
       rateText,
       customRate: customRate || rate,
+    };
+  },
+);
+
+export const orderLimitDataSelector = createSelector(
+  (state) => state,
+  orderLimitSelector,
+  activedTabSelector,
+  getPrivacyDataByTokenIDSelector,
+  inputAmountSelector,
+  feetokenDataSelector,
+  rateDataSelector,
+  (
+    state,
+    { networkfee, initing, isFetching, isFetched, percent },
+    getActivedTab,
+    getPrivacyDataByTokenID,
+    getInputAmount,
+    feeTokenData,
+    rateData,
+  ) => {
+    const sellInputAmount = getInputAmount(formConfigs.selltoken);
+    const buyInputAmount = getInputAmount(formConfigs.buytoken);
+    const activedTab = getActivedTab(ROOT_TAB_ORDER_LIMIT);
+    let btnActionTitle;
+    const buyColor = COLORS.green;
+    const sellColor = COLORS.red;
+    let reviewOrderTitle = '';
+    let mainColor;
+    let reviewOrderDesc = '';
+    let reviewOrderDescValue = '';
+    let cfmTitle = '';
+    switch (activedTab) {
+    case TAB_SELL_ID: {
+      mainColor = sellColor;
+      btnActionTitle = `Sell ${sellInputAmount?.symbol}`;
+      reviewOrderTitle = `Sell ${sellInputAmount?.amountText} ${sellInputAmount?.symbol}`;
+      reviewOrderDesc = 'Receive at least';
+      reviewOrderDescValue = `${buyInputAmount?.amountText} ${buyInputAmount?.symbol}`;
+      cfmTitle = `You placed an order to buy ${reviewOrderDescValue} for ${sellInputAmount?.amountText} ${sellInputAmount?.symbol}`;
+      break;
+    }
+    case TAB_BUY_ID: {
+      mainColor = buyColor;
+      btnActionTitle = `Buy ${buyInputAmount?.symbol}`;
+      reviewOrderTitle = `Buy ${buyInputAmount?.amountText} ${buyInputAmount?.symbol}`;
+      reviewOrderDesc = 'Pay with';
+      reviewOrderDescValue = `${sellInputAmount?.amountText} ${sellInputAmount?.symbol}`;
+      cfmTitle = `You placed an order to sell ${reviewOrderDescValue} for $${buyInputAmount?.amountText} ${buyInputAmount?.symbol}`;
+      break;
+    }
+    default:
+      break;
+    }
+    const networkfeeAmount = format.toFixed(
+      convert.toHumanAmount(networkfee, PRV.pDecimals),
+      PRV.pDecimals,
+    );
+    const networkfeeAmountStr = `${networkfeeAmount} ${PRV.symbol}`;
+    const prv: SelectedPrivacy = getPrivacyDataByTokenID(PRV.id);
+    const showPRVBalance =
+      !sellInputAmount.isMainCrypto && !buyInputAmount.isMainCrypto;
+    const prvBalance = format.amountFull(prv.amount, PRV.pDecimals, false);
+    const prvBalanceStr = `${prvBalance} ${PRV.symbol}`;
+    const balanceStr = `${sellInputAmount?.balanceStr} ${sellInputAmount?.symbol} + ${buyInputAmount?.balanceStr} ${buyInputAmount?.symbol}`;
+    const poolSizeStr = `${sellInputAmount?.poolValueStr} ${sellInputAmount?.symbol} + ${buyInputAmount?.poolValueStr} ${buyInputAmount?.symbol}`;
+    const editableInput = !initing && isFetched && !isFetching;
+    const calculating = initing || isFetching;
+    const disabledBtn =
+      calculating ||
+      (!isFetched && !isFetching) ||
+      !isValid(formConfigs.formName)(state);
+    if (calculating) {
+      btnActionTitle = 'Calculating...';
+    }
+    const tradingFeeStr = `${feeTokenData?.feeAmountText} ${feeTokenData?.symbol}`;
+    const rateStr = `1 ${sellInputAmount?.symbol} = ${rateData.customRate} ${buyInputAmount?.symbol}`;
+
+    return {
+      mainColor,
+      buyColor,
+      sellColor,
+      btnActionTitle,
+      activedTab,
+      editableInput,
+      networkfeeAmount,
+      networkfeeAmountStr,
+      networkfee,
+      showPRVBalance,
+      prvBalance,
+      prvBalanceStr,
+      balanceStr,
+      poolSizeStr,
+      disabledBtn,
+      percent,
+      tradingFeeStr,
+      rateStr,
+      reviewOrderTitle,
+      reviewOrderDesc,
+      reviewOrderDescValue,
+      cfmTitle
     };
   },
 );

@@ -10,6 +10,7 @@ import {
   ACTION_SET_BUY_TOKEN,
   ACTION_SET_FEE_TOKEN,
   ACTION_RESET,
+  ACTION_SET_PERCENT,
 } from './OrderLimit.constant';
 
 const initialState = {
@@ -27,6 +28,7 @@ const initialState = {
   selecting: false,
   initing: false,
   rate: '',
+  percent: 0,
 };
 
 export default (state = initialState, action) => {
@@ -90,6 +92,12 @@ export default (state = initialState, action) => {
   }
   case ACTION_RESET: {
     return initialState;
+  }
+  case ACTION_SET_PERCENT: {
+    return {
+      ...state,
+      percent: action.payload,
+    };
   }
   default:
     return state;

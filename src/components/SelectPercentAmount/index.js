@@ -2,8 +2,8 @@ import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
 import { COLORS, FONT } from '@src/styles';
-import Row from '../Row';
-import { Text, TouchableOpacity } from '../core';
+import Row from '@src/components/Row';
+import { Text, TouchableOpacity } from '@src/components/core';
 
 const styled = StyleSheet.create({
   container: {
@@ -32,26 +32,12 @@ const styled = StyleSheet.create({
 });
 
 const SelectPercentAmount = (props) => {
-  const [selected, setSelected] = React.useState(0);
+  const { selected, onPressPercent } = props;
   const {
     size = 4,
     percentBtnColor = COLORS.colorTradeBlue,
-    handleSelectPercent,
     containerStyled,
   } = props;
-  const onPressPercent = (percent) => {
-    let _percent;
-    if (percent === selected) {
-      _percent = 0;
-      setSelected(0);
-    } else {
-      _percent = percent;
-      setSelected(percent);
-    }
-    if (typeof handleSelectPercent === 'function') {
-      handleSelectPercent(_percent);
-    }
-  };
   const renderMain = () => {
     return [...Array(size)].map((item, index, arr) => {
       const percent = (((index + 1) / size) * 100).toFixed(0);
@@ -84,8 +70,9 @@ const SelectPercentAmount = (props) => {
 SelectPercentAmount.propTypes = {
   size: PropTypes.number.isRequired,
   percentBtnColor: PropTypes.string.isRequired,
-  handleSelectPercent: PropTypes.func.isRequired,
   containerStyled: PropTypes.any,
+  selected: PropTypes.number.isRequired,
+  onPressPercent: PropTypes.func.isRequired,
 };
 
 export default React.memo(SelectPercentAmount);
