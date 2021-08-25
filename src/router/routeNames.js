@@ -152,4 +152,5 @@ export default {
   // Liquidity3
   HomeLiquidity3: 'HomeLiquidity3',
   PoolListLiquidity3: 'PoolListLiquidity3',
+  Standby: 'Standby',
 };

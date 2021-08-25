@@ -24,6 +24,7 @@ import TxHistoryDetail from '@screens/Wallet/features/History';
 import ImportAccount from '@src/screens/Account/features/ImportAccount';
 import CreateAccount from '@src/screens/Account/features/CreateAccount';
 import BackupKeys from '@src/screens/BackupKeys';
+import Standby from '@screens/Keychain/features/Standby';
 import Setting from '@screens/Setting';
 import ExportAccount from '@src/screens/Account/features/ExportAccount';
 import NetworkSetting from '@src/screens/NetworkSetting';
@@ -496,6 +497,10 @@ const routes = [
   {
     screen: HistoryConvert,
     name: routeNames.HistoryConvert,
+  },
+  {
+    screen: Standby,
+    name: routeNames.Standby,
   },
 ];
 
