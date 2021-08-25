@@ -34,7 +34,7 @@ const MAIN_NET_SERVER = {
   IncBSCContractAddress: '0x43D037A562099A4C2c95b1E2120cc43054450629',
   explorer: 'https://incscan.io',
   tradeServices: 'https://54ed4c3d-993b-4fc1-accd-7e7e72122248.mock.pstmn.io',
-  portalServices:  'http://139.162.55.124:8010',
+  portalServices: 'https://api-portalv4.incognito.org',
 };
 const BETA_SERVER = {
   id: 'beta',

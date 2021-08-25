@@ -163,4 +163,5 @@ export default {
   RemovePool: 'RemovePool',
   OrderLimit: 'OrderLimit',
   SelectTokenTrade: 'SelectTokenTrade',
+  Standby: 'Standby',
 };
