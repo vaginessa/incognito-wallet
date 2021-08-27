@@ -44,7 +44,7 @@ const ShieldError = React.memo(({ handleShield }) => {
         title="Try again"
       />
       <Text style={styled.errorText}>
-        {'If that doesn’t work,\n please come back in 60 minutes.'}
+        {'If that doesn’t work,\ncheck the bulletin board for scheduled maintenance.\n\nIf there is none,\nplease come back in an hour.'}
       </Text>
     </View>
   );
@@ -247,7 +247,8 @@ const Content = () => {
 };
 
 const GenQRCode = (props) => {
-  const { handleShield, isFetching, isFetchFailed } = props;
+  const { handleShield, isFetching, isFetchFailed, data: shieldData } = props;
+  const { address } = shieldData || {};
   const [toggle, setToggle] = React.useState(true);
   React.useEffect(() => {
     if (toggle) {
@@ -260,7 +261,7 @@ const GenQRCode = (props) => {
     }
   }, [toggle]);
   const renderComponent = () => {
-    if (isFetching) {
+    if (isFetching || !address) {
       return <LoadingContainer />;
     }
     if (isFetchFailed) {
@@ -299,6 +300,7 @@ Extra.propTypes = {};
 
 GenQRCode.propTypes = {
   hasError: PropTypes.bool.isRequired,
+  data: PropTypes.object.isRequired,
   handleShield: PropTypes.func.isRequired,
   isFetching: PropTypes.bool.isRequired,
   isFetchFailed: PropTypes.bool.isRequired,
