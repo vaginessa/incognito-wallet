@@ -11,10 +11,13 @@ import {
   ACTION_SET_FEE_TOKEN,
   ACTION_RESET,
   ACTION_SET_PERCENT,
+  ACTION_FETCHED_OPEN_ORDERS,
+  ACTION_CANCELING_ORDER,
+  ACTION_FETCHED_CANCELING_ORDER_TXS,
 } from './OrderLimit.constant';
 
 const initialState = {
-  isFetching: true,
+  isFetching: false,
   isFetched: false,
   data: {},
   poolId: '',
@@ -29,10 +32,36 @@ const initialState = {
   initing: false,
   rate: '',
   percent: 0,
+  orders: [],
+  cancelingOrder: [],
+  cancelingOrderTxs: [],
 };
 
 export default (state = initialState, action) => {
   switch (action.type) {
+  case ACTION_FETCHED_CANCELING_ORDER_TXS: {
+    return {
+      ...state,
+      cancelingOrderTxs: [...action.payload],
+    };
+  }
+  case ACTION_CANCELING_ORDER: {
+    const { cancelingOrder } = state;
+    const requesttx = action.payload;
+    const isExited = cancelingOrder.includes(requesttx);
+    return {
+      ...state,
+      cancelingOrder: isExited
+        ? [...cancelingOrder].filter((txId) => txId !== requesttx)
+        : [requesttx, ...cancelingOrder],
+    };
+  }
+  case ACTION_FETCHED_OPEN_ORDERS: {
+    return {
+      ...state,
+      orders: [...action.payload],
+    };
+  }
   case ACTION_FETCHING: {
     return {
       ...state,

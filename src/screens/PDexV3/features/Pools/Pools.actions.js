@@ -1,4 +1,7 @@
-import { otaKeyOfDefaultAccountSelector } from '@src/redux/selectors/account';
+import {
+  defaultAccountSelector,
+  otaKeyOfDefaultAccountSelector,
+} from '@src/redux/selectors/account';
 import { ExHandler } from '@src/services/exception';
 import { getPDexV3Instance } from '@screens/PDexV3';
 import { v4 } from 'uuid';
@@ -37,8 +40,8 @@ export const actionFetchedListPoolsFollowing = (payload) => ({
 export const actionFetchTradingVolume24h = () => async (dispatch, getState) => {
   try {
     const state = getState();
-    const otaKey = otaKeyOfDefaultAccountSelector(state);
-    const pDexV3Inst = await getPDexV3Instance({ otaKey });
+    // const account = defaultAccountSelector(state);
+    // const pDexV3Inst = await getPDexV3Instance({ account });
     const tradingVolume24h = 1e9;
     // await pDexV3Inst.getTradingVolume24h('all');
     dispatch(actionFetchedTradingVolume24h(tradingVolume24h));
@@ -85,8 +88,8 @@ export const actionToggleFollowingPool = (poolId) => async (
 export const actionFetchListPools = () => async (dispatch, getState) => {
   try {
     const state = getState();
-    const otaKey = otaKeyOfDefaultAccountSelector(state);
-    const pDexV3Inst = await getPDexV3Instance({ otaKey });
+    const account = defaultAccountSelector(state);
+    const pDexV3Inst = await getPDexV3Instance({ account });
     let listPools = [];
     // await pDexV3Inst.getListPools();
 
@@ -200,8 +203,8 @@ export const actionFetchListFollowingPools = () => async (
 ) => {
   try {
     const state = getState();
-    const otaKey = otaKeyOfDefaultAccountSelector(state);
-    const pDexV3Inst = await getPDexV3Instance({ otaKey });
+    const account = defaultAccountSelector(state);
+    const pDexV3Inst = await getPDexV3Instance({ account });
     const listPoolsFollowing = await pDexV3Inst.getListFollowingPools();
     await dispatch(actionFetchedListPoolsFollowing(listPoolsFollowing));
   } catch (error) {

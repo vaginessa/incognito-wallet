@@ -2,7 +2,7 @@ import { Header } from '@src/components';
 import { KeyboardAwareScrollView } from '@src/components/core';
 import Tabs from '@src/components/core/Tabs';
 import React from 'react';
-import { View } from 'react-native';
+import { View, RefreshControl } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { COLORS } from '@src/styles';
 import { createForm } from '@src/components/core/reduxForm';
@@ -38,7 +38,9 @@ const Form = createForm(formConfigs.formName, {
 const OrderLimit = () => {
   const dispatch = useDispatch();
   const actionChangeTab = () => dispatch(actionInit());
-  const { sellColor, buyColor } = useSelector(orderLimitDataSelector);
+  const { sellColor, buyColor, poolTitle } = useSelector(
+    orderLimitDataSelector,
+  );
   const tabsFactories = [
     {
       tabID: TAB_BUY_ID,
@@ -57,8 +59,13 @@ const OrderLimit = () => {
   ];
   return (
     <View style={styled.container}>
-      <Header title="PRV/XMR" />
-      <KeyboardAwareScrollView contentContainerStyle={styled.scrollview}>
+      <Header title={poolTitle} />
+      <KeyboardAwareScrollView
+        contentContainerStyle={styled.scrollview}
+        // refreshControl={
+        //   <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        // }
+      >
         <Form>
           {({ handleSubmit }) => (
             <>

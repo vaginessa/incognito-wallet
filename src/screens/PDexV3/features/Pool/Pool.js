@@ -30,6 +30,7 @@ export const PoolItem = React.memo((props) => {
     perChange24hToStr,
     perChange24hColor,
     isFollowed,
+    poolTitle,
   } = data || {};
   return (
     <TouchableOpacity
@@ -42,7 +43,7 @@ export const PoolItem = React.memo((props) => {
             <Text
               style={[styled.name, isFollowed ? styled.nameFollowed : null]}
             >
-              {`${token1?.symbol} / ${token2?.symbol}`}
+              {poolTitle}
             </Text>
             {!!verified && <TokenVerifiedIcon />}
           </Row>

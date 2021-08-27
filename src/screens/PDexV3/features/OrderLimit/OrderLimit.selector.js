@@ -1,9 +1,11 @@
 import { PRV } from '@src/constants/common';
 import { sharedSelector } from '@src/redux/selectors';
+import { ACCOUNT_CONSTANT } from 'incognito-chain-web-js/build/wallet';
 import { getPrivacyDataByTokenID as getPrivacyDataByTokenIDSelector } from '@src/redux/selectors/selectedPrivacy';
 import { COLORS } from '@src/styles';
 import convert from '@src/utils/convert';
 import format from '@src/utils/format';
+import floor from 'lodash/floor';
 import { formValueSelector, isValid } from 'redux-form';
 import isEmpty from 'lodash/isEmpty';
 import { createSelector } from 'reselect';
@@ -11,6 +13,8 @@ import SelectedPrivacy from '@src/models/selectedPrivacy';
 import { getExchangeRate, getPairRate } from '@screens/PDexV3';
 import { getDataByPoolIdSelector } from '@screens/PDexV3/features/Pools';
 import { activedTabSelector } from '@src/components/core/Tabs/Tabs.selector';
+import BigNumber from 'bignumber.js';
+import isEqual from 'lodash/isEqual';
 import {
   formConfigs,
   ROOT_TAB_ORDER_LIMIT,
@@ -201,6 +205,7 @@ export const orderLimitDataSelector = createSelector(
   inputAmountSelector,
   feetokenDataSelector,
   rateDataSelector,
+  poolSelectedDataSelector,
   (
     state,
     { networkfee, initing, isFetching, isFetched, percent },
@@ -209,6 +214,7 @@ export const orderLimitDataSelector = createSelector(
     getInputAmount,
     feeTokenData,
     rateData,
+    pool,
   ) => {
     const sellInputAmount = getInputAmount(formConfigs.selltoken);
     const buyInputAmount = getInputAmount(formConfigs.buytoken);
@@ -266,7 +272,6 @@ export const orderLimitDataSelector = createSelector(
     }
     const tradingFeeStr = `${feeTokenData?.feeAmountText} ${feeTokenData?.symbol}`;
     const rateStr = `1 ${sellInputAmount?.symbol} = ${rateData.customRate} ${buyInputAmount?.symbol}`;
-
     return {
       mainColor,
       buyColor,
@@ -289,7 +294,108 @@ export const orderLimitDataSelector = createSelector(
       reviewOrderTitle,
       reviewOrderDesc,
       reviewOrderDescValue,
-      cfmTitle
+      cfmTitle,
+      poolTitle: pool?.poolTitle || '',
     };
   },
+);
+
+const BTN_CANCEL_ORDER = {
+  [ACCOUNT_CONSTANT.TX_STATUS.PROCESSING]: 'Cancel pending',
+  [ACCOUNT_CONSTANT.TX_STATUS.TXSTATUS_PENDING]: 'Cancel pending',
+  [ACCOUNT_CONSTANT.TX_STATUS.TXSTATUS_SUCCESS]: 'Cancel success',
+};
+
+export const openOrdersSelector = createSelector(
+  orderLimitSelector,
+  poolSelectedDataSelector,
+  ({ orders, cancelingOrder, cancelingOrderTxs }, pool) => {
+    try {
+      if (!pool || !orders) {
+        return [];
+      }
+      const token1: SelectedPrivacy = pool?.token1;
+      const token2: SelectedPrivacy = pool?.token2;
+      return orders.map((order) => {
+        const {
+          selltoken,
+          requesttime,
+          matched,
+          amount,
+          price,
+          requesttx,
+          cancel,
+        } = order;
+        let type,
+          mainColor,
+          pDecimals,
+          infoStr,
+          amountStr,
+          priceStr,
+          btnCancel,
+          cancelTx;
+        cancelTx =
+          cancelingOrderTxs.find((tx) => isEqual(tx?.requesttx, requesttx)) ||
+          {};
+        const visibleBtnCanceling = cancelingOrder.includes(requesttx);
+        const { status: cancelTxStatus, cancelTxId } = cancelTx || {};
+        const fullMatched = new BigNumber(matched).isEqualTo(
+          new BigNumber(amount),
+        );
+        let visibleBtnCancel =
+          !fullMatched && !cancelTxId && (cancel.length === 0 || !cancel);
+        btnCancel = BTN_CANCEL_ORDER[cancelTxStatus] || '';
+        if (selltoken === token1.tokenId) {
+          type = 'sell';
+          mainColor = COLORS.red;
+          pDecimals = token1.pDecimals;
+          amountStr = format.amountFull(amount, pDecimals, false);
+          priceStr = format.amountFull(price, token2.pDecimals, false);
+          infoStr = `Sell ${amountStr} ${token1.symbol}\nPrice ${priceStr} ${token2.symbol}`;
+        }
+        if (selltoken === token2.tokenId) {
+          type = 'buy';
+          mainColor = COLORS.green;
+          pDecimals = token2.pDecimals;
+          amountStr = format.amountFull(amount, pDecimals, false);
+          priceStr = format.amountFull(price, token1.pDecimals, false);
+          infoStr = `Buy ${amountStr} ${token2.symbol}\nPrice ${priceStr} ${token1.symbol}`;
+        }
+        const percent = floor(
+          new BigNumber(matched)
+            .dividedBy(new BigNumber(amount))
+            .multipliedBy(100)
+            .toNumber(),
+        );
+        const percentStr = `Filled ${percent}%`;
+        const timeStr = format.formatDateTime(requesttime);
+        const result = {
+          ...order,
+          type,
+          mainColor,
+          timeStr,
+          percent,
+          percentStr,
+          infoStr,
+          btnCancel,
+          visibleBtnCancel,
+          visibleBtnCanceling,
+        };
+        // console.log('result', result);
+        return result;
+      });
+    } catch (error) {
+      console.log('openOrdersSelector-error', error);
+    }
+  },
+);
+
+export const orderCancelingSelector = createSelector(
+  orderLimitSelector,
+  ({ orderCanceling }) => orderCanceling || [],
+);
+
+export const isOrderCancelingSelector = createSelector(
+  orderCancelingSelector,
+  (orderCanceling) => (id) => id && orderCanceling?.includes(id),
 );

@@ -41,16 +41,19 @@ export const listPoolsSelector = createSelector(
       } else if (perChange24h < 0) {
         perChange24hColor = COLORS.green;
       }
+      const token1 = getPrivacyDataByTokenID(pool.token1Id);
+      const token2 = getPrivacyDataByTokenID(pool.token2Id);
       return {
         ...pool,
-        token1: getPrivacyDataByTokenID(pool.token1Id),
-        token2: getPrivacyDataByTokenID(pool.token2Id),
+        token1,
+        token2,
         volumeToAmount,
         priceChangeToAmount,
         perChange24hToStr,
         perChange24hColor,
         isFollowed:
           listPoolsFollowing.findIndex((_poolId) => poolId === _poolId) > -1,
+        poolTitle: `${token1?.symbol} / ${token2?.symbol}`,
       };
     }),
 );

@@ -1,4 +1,4 @@
-import { otaKeyOfDefaultAccountSelector } from '@src/redux/selectors/account';
+import { defaultAccountSelector } from '@src/redux/selectors/account';
 import { getPDexV3Instance } from '@screens/PDexV3';
 import { getInternalTokenList, getPTokenList } from '@src/redux/actions/token';
 import {
@@ -29,8 +29,8 @@ export const actionFetch = () => async (dispatch, getState) => {
       return;
     }
     await dispatch(actionFetching());
-    const otaKey = otaKeyOfDefaultAccountSelector(state);
-    const pDexV3Inst = await getPDexV3Instance({ otaKey });
+    // const account = defaultAccountSelector(state);
+    // const pDexV3Inst = await getPDexV3Instance({ account });
     const task = [
       //   pDexV3Inst.getListState(),
       dispatch(getPTokenList()),
