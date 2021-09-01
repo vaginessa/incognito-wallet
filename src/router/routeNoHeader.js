@@ -103,6 +103,7 @@ import ContributePool from '@screens/PDexV3/features/ContributePool';
 import RemovePool from '@screens/PDexV3/features/RemovePool';
 import OrderLimit from '@src/screens/PDexV3/features/OrderLimit';
 import SelectTokenTrade from '@screens/PDexV3/features/SelectToken';
+import Chart from '@screens/PDexV3/features/Chart';
 
 const masterKeyRoutes = [
   {
@@ -186,6 +187,10 @@ const pDexV3Routes = [
   {
     screen: SelectTokenTrade,
     name: routeNames.SelectTokenTrade,
+  },
+  {
+    screen: Chart,
+    name: routeNames.Chart,
   },
 ];
 

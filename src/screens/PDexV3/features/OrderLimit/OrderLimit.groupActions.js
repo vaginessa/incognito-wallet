@@ -103,6 +103,9 @@ const GroupActions = (props) => {
         },
       });
   };
+  const onPressChart = () => {
+    navigation.navigate(routeNames.Chart);
+  };
   return (
     <View style={styled.container}>
       <ButtonBasic
@@ -113,7 +116,7 @@ const GroupActions = (props) => {
       />
       <Row style={styled.subActions}>
         <ButtonRefresh style={styled.refreshBtn} onPress={onPressRefresh} />
-        <ButtonChart />
+        <ButtonChart onPress={onPressChart} />
       </Row>
     </View>
   );

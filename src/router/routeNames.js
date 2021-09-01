@@ -164,4 +164,5 @@ export default {
   OrderLimit: 'OrderLimit',
   SelectTokenTrade: 'SelectTokenTrade',
   Standby: 'Standby',
+  Chart: 'Chart',
 };
