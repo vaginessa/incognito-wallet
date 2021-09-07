@@ -5,7 +5,10 @@ import { View, Text } from 'react-native';
 import { useNavigation } from 'react-navigation-hooks';
 import { useDispatch, useSelector } from 'react-redux';
 import Pool from '@screens/PDexV3/features/Pool';
-import { listPoolsFollowingSelector } from '@screens/PDexV3/features/Pools';
+import {
+  actionToggleFollowingPool,
+  listPoolsFollowingSelector,
+} from '@screens/PDexV3/features/Pools';
 import routeNames from '@src/router/routeNames';
 import PropTypes from 'prop-types';
 import {
@@ -18,12 +21,19 @@ import {
 
 const PoolsHeader = React.memo(() => {
   const navigate = useNavigation();
+  const onPressPool = (poolId) => {};
   return (
     <View style={headStyled.headContainer}>
       <Text style={headStyled.titleText}>Market List</Text>
       <TouchableOpacity
         style={headStyled.btnSearch}
-        onPress={() => navigate.navigate()}
+        onPress={() =>
+          navigate.navigate(routeNames.PoolsList, {
+            params: {
+              onPressPool,
+            },
+          })
+        }
       >
         <Text style={headStyled.searchText}>Search coin</Text>
       </TouchableOpacity>
@@ -33,10 +43,19 @@ const PoolsHeader = React.memo(() => {
 
 const Footer = React.memo(() => {
   const navigate = useNavigation();
+  const dispatch = useDispatch();
+  const onPressPool = (poolId) => dispatch(actionToggleFollowingPool(poolId));
   return (
     <TouchableOpacity
       style={styled.wrapFooter}
-      onPress={() => navigate.navigate(routeNames.PoolsList)}
+      onPress={() =>
+        navigate.navigate(routeNames.PoolsList, {
+          params: {
+            headerTitle: 'Search coins pair',
+            onPressPool,
+          },
+        })
+      }
     >
       <Text style={footerStyled.text}>Add favorite list +</Text>
     </TouchableOpacity>

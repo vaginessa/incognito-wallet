@@ -68,8 +68,8 @@ export const actionToggleFollowingPool = (poolId) => async (
 ) => {
   try {
     const state = getState();
-    const otaKey = otaKeyOfDefaultAccountSelector(state);
-    const pDexV3Inst = await getPDexV3Instance({ otaKey });
+    const account = defaultAccountSelector(state);
+    const pDexV3Inst = await getPDexV3Instance({ account });
     const listPoolsFollowing = listPoolsFollowingSelector(state);
     const isFollowed =
       listPoolsFollowing.findIndex((_poolId) => _poolId === poolId) > -1;

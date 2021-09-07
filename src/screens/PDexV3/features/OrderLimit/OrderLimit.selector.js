@@ -296,6 +296,7 @@ export const orderLimitDataSelector = createSelector(
       reviewOrderDescValue,
       cfmTitle,
       poolTitle: pool?.poolTitle || '',
+      poolId: pool?.poolId,
     };
   },
 );

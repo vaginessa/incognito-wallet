@@ -83,6 +83,7 @@ export const Hook = React.memo((props) => {
     hasQuestionIcon,
     onPressQuestionIcon,
     customValue,
+    customStyledValue,
   } = props;
   return (
     <Row style={styled.hook}>
@@ -108,7 +109,7 @@ export const Hook = React.memo((props) => {
         <Text
           numberOfLines={1}
           ellipsizeMode="tail"
-          style={[styled.value, boldValue && styled.bold]}
+          style={[styled.value, boldValue && styled.bold, customStyledValue]}
         >
           {value}
         </Text>

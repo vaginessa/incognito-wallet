@@ -16,6 +16,7 @@ import { TradeSuccessModal } from '@screens/PDexV3/features/Trade';
 import { actionToggleModal } from '@src/components/Modal';
 import { orderLimitDataSelector } from './OrderLimit.selector';
 import { actionInit } from './OrderLimit.actions';
+import { actionSetSelectedPool } from '../Chart/Chart.actions';
 
 const styled = StyleSheet.create({
   container: {},
@@ -42,6 +43,7 @@ const GroupActions = (props) => {
     reviewOrderDesc,
     reviewOrderDescValue,
     cfmTitle,
+    poolId,
   } = useSelector(orderLimitDataSelector);
   const dispatch = useDispatch();
   const onPressRefresh = () => dispatch(actionInit());
@@ -104,7 +106,10 @@ const GroupActions = (props) => {
       });
   };
   const onPressChart = () => {
-    navigation.navigate(routeNames.Chart);
+    console.log('POOL ID HERE', poolId);
+    navigation.navigate(routeNames.Chart, {
+      poolId,
+    });
   };
   return (
     <View style={styled.container}>

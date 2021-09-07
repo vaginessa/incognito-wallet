@@ -54,7 +54,15 @@ export const PoolItem = React.memo((props) => {
           <Text style={[styled.subText, styled.apy]}>{`${apy}%`}</Text>
         </View>
         <View style={styled.wrapperThirdSection}>
-          <Text style={[styled.subText, styled.rightText]}>
+          <Text
+            style={[
+              styled.subText,
+              styled.rightText,
+              {
+                color: perChange24hColor,
+              },
+            ]}
+          >
             {`$${priceChangeToAmount}`}
           </Text>
           <Text

@@ -6,6 +6,7 @@ import { swapReducer as swap } from './features/Swap';
 import { orderLimitReducer as orderLimit } from './features/OrderLimit';
 import { contributeReducer as contribute } from './features/ContributePool';
 import { tradeReducer as trade } from './features/Trade';
+import { chartReducer as chart } from './features/Chart';
 
 const pDexV3Reducer = combineReducers({
   home,
@@ -15,6 +16,7 @@ const pDexV3Reducer = combineReducers({
   orderLimit,
   contribute,
   trade,
+  chart,
 });
 
 export default pDexV3Reducer;

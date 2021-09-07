@@ -10,6 +10,7 @@ import {
 } from '@screens/PDexV3/features/Pools';
 import Pool from '@screens/PDexV3/features/Pool';
 import { useSearchBox } from '@src/components/Header';
+import { useNavigationParam } from 'react-navigation-hooks';
 import { styled as generalStyled } from './Pools.styled';
 import { handleFilterPoolByKeySeach } from './Pools.utils';
 
@@ -19,11 +20,8 @@ const styled = StyleSheet.create({
   },
 });
 
-export const PoolsList = React.memo(() => {
+export const PoolsList = React.memo(({ onPressPool }) => {
   const data = useSelector(listPoolsSelector);
-  const dispatch = useDispatch();
-  const handleTogglePool = (poolId) =>
-    dispatch(actionToggleFollowingPool(poolId));
   const [_data, keySearch] = useSearchBox({
     data,
     shouldCleanSearch: false,
@@ -34,8 +32,8 @@ export const PoolsList = React.memo(() => {
     <KeyboardAwareScrollView contentContainerStyle={{ paddingTop: 27 }}>
       <FlatList
         data={listPoolsIDs}
-        renderItem={({ item }) => (
-          <Pool poolId={item} onPressPool={handleTogglePool} />
+        renderItem={({ item: poolId }) => (
+          <Pool poolId={poolId} onPressPool={() => onPressPool(poolId)} />
         )}
         keyExtractor={(pool) => pool?.poolId}
         showsVerticalScrollIndicator={false}
@@ -45,11 +43,13 @@ export const PoolsList = React.memo(() => {
   );
 });
 
-const PoolsListContainer = () => {
+const PoolsListContainer = (props) => {
+  const params = useNavigationParam('params');
+  const { headerTitle = 'Search coins pair', onPressPool } = params || props;
   return (
     <View style={styled.container}>
-      <Header title="Search coins pair" canSearch />
-      <PoolsList />
+      <Header title={headerTitle} canSearch />
+      <PoolsList onPressPool={onPressPool} />
     </View>
   );
 };
