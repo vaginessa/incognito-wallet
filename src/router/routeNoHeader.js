@@ -104,6 +104,7 @@ import RemovePool from '@screens/PDexV3/features/RemovePool';
 import OrderLimit from '@src/screens/PDexV3/features/OrderLimit';
 import SelectTokenTrade from '@screens/PDexV3/features/SelectToken';
 import Chart from '@screens/PDexV3/features/Chart';
+import WebView from '@screens/WebView';
 
 const masterKeyRoutes = [
   {
@@ -538,6 +539,10 @@ const routes = [
   {
     screen: Standby,
     name: routeNames.Standby,
+  },
+  {
+    screen: WebView,
+    name: routeNames.WebView,
   },
   ...masterKeyRoutes,
   ...devRoutes,

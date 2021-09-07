@@ -165,4 +165,5 @@ export default {
   SelectTokenTrade: 'SelectTokenTrade',
   Standby: 'Standby',
   Chart: 'Chart',
+  WebView: 'WebView',
 };
