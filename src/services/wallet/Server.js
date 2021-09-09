@@ -68,7 +68,7 @@ const TEST_NET_SERVER = {
   IncContractAddress: '0x2f6F03F1b43Eab22f7952bd617A24AB46E970dF7',
   IncBSCContractAddress: '0x2f6F03F1b43Eab22f7952bd617A24AB46E970dF7',
   explorer: 'https://testnet.incognito.org',
-  portalServices: 'http://139.162.55.124:8020',
+  portalServices: 'https://api-portalv4-staging.incognito.org',
 };
 const LOCAL_SERVER = {
   id: 'local',
