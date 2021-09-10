@@ -453,10 +453,7 @@ export const actionCancelingOrder = (payload) => ({
   payload,
 });
 
-export const actionCancelOrder = (requesttx) => async (
-  dispatch,
-  getState,
-) => {
+export const actionCancelOrder = (requesttx) => async (dispatch, getState) => {
   try {
     const state = getState();
     const account = defaultAccountSelector(state);
@@ -484,5 +481,13 @@ export const actionCancelOrder = (requesttx) => async (
     new ExHandler(error).showErrorToast();
   } finally {
     await dispatch(actionCancelingOrder(requesttx));
+  }
+};
+
+export const actionBookOrder = () => async (dispatch, getState) => {
+  try {
+    //
+  } catch (error) {
+    throw error;
   }
 };

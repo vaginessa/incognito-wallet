@@ -1,6 +1,7 @@
 import { defaultAccountSelector } from '@src/redux/selectors/account';
 import { getPDexV3Instance } from '@screens/PDexV3';
 import { getInternalTokenList, getPTokenList } from '@src/redux/actions/token';
+import { actionSetNFTTokenData } from '@src/redux/actions/account';
 import {
   ACTION_FETCHING,
   ACTION_FETCHED,
@@ -35,6 +36,7 @@ export const actionFetch = () => async (dispatch, getState) => {
       //   pDexV3Inst.getListState(),
       dispatch(getPTokenList()),
       dispatch(getInternalTokenList()),
+      dispatch(actionSetNFTTokenData()),
     ];
     await Promise.all(task);
     // const [data] = task;

@@ -127,6 +127,17 @@ export const otaKeyOfDefaultAccountSelector = createSelector(
   (account) => account.OTAKey,
 );
 
+export const nftTokenDataSelector = createSelector(
+  accountSelector,
+  ({ nft }) => {
+    const { initNFTToken, nftToken } = nft;
+    return {
+      ...nft,
+      invalidNFTToken: !initNFTToken || !nftToken,
+    };
+  },
+);
+
 export default {
   defaultAccountName,
   listAccount,
@@ -146,4 +157,5 @@ export default {
   signPublicKeyEncodeSelector,
   burnerAddressSelector,
   otaKeyOfDefaultAccountSelector,
+  nftTokenDataSelector,
 };

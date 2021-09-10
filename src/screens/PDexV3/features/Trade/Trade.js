@@ -4,6 +4,7 @@ import React from 'react';
 import { View } from 'react-native';
 import TabSwap from '@screens/PDexV3/features/Swap';
 import { TabHomeOrderLimit } from '@screens/PDexV3/features/OrderLimit';
+import { NFTTokenBottomBar } from '@screens/PDexV3/features/NFTToken';
 import { useSelector } from 'react-redux';
 import { ROOT_TAB_TRADE, TAB_LIMIT_ID, TAB_SWAP_ID } from './Trade.constant';
 import { styled } from './Trade.styled';
@@ -18,16 +19,19 @@ const Trade = () => {
       {isFetching ? (
         <LoadingContainer />
       ) : (
-        <KeyboardAwareScrollView contentContainerStyle={styled.main}>
-          <Tabs rootTabID={ROOT_TAB_TRADE} styledTabs={styled.styledTabs}>
-            <View tabID={TAB_SWAP_ID} label="Swap" onChangeTab={() => null}>
-              <TabSwap />
-            </View>
-            <View tabID={TAB_LIMIT_ID} label="Limit" onChangeTab={() => null}>
-              <TabHomeOrderLimit />
-            </View>
-          </Tabs>
-        </KeyboardAwareScrollView>
+        <>
+          <KeyboardAwareScrollView contentContainerStyle={styled.main}>
+            <Tabs rootTabID={ROOT_TAB_TRADE} styledTabs={styled.styledTabs}>
+              <View tabID={TAB_SWAP_ID} label="Swap" onChangeTab={() => null}>
+                <TabSwap />
+              </View>
+              <View tabID={TAB_LIMIT_ID} label="Limit" onChangeTab={() => null}>
+                <TabHomeOrderLimit />
+              </View>
+            </Tabs>
+          </KeyboardAwareScrollView>
+          <NFTTokenBottomBar />
+        </>
       )}
     </View>
   );

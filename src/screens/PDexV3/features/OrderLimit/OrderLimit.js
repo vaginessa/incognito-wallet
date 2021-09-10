@@ -6,6 +6,7 @@ import { View, RefreshControl } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { COLORS } from '@src/styles';
 import { createForm } from '@src/components/core/reduxForm';
+import { NFTTokenBottomBar } from '@screens/PDexV3/features/NFTToken';
 import GroupActions from './OrderLimit.groupActions';
 import GroupRate from './OrderLimit.groupRate';
 import {
@@ -83,6 +84,7 @@ const OrderLimit = () => {
           )}
         </Form>
       </KeyboardAwareScrollView>
+      <NFTTokenBottomBar />
     </View>
   );
 };

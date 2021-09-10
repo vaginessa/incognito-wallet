@@ -22,9 +22,7 @@ const enhance = (WrappedComp) => (props) => {
   const hasNotch = ios && DeviceInfo.hasNotch();
   return (
     <ErrorBoundary>
-      <SafeAreaView
-        style={[styled.container, ios, hasNotch, props?.containerStyled]}
-      >
+      <SafeAreaView style={[styled.container, props?.containerStyled]}>
         <View style={[styled.wrapper, props?.wrapperStyled]}>
           <WrappedComp {...props} />
         </View>

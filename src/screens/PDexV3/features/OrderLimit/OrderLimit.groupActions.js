@@ -73,17 +73,17 @@ const GroupActions = (props) => {
       value: networkfeeAmountStr || '',
     },
   ];
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
     try {
-      //   const tradeSuccess = await dispatch(actionFetch());
+      // const tradeData = await dispatch(action());
       dispatch(
         actionToggleModal({
           data: <TradeSuccessModal desc={cfmTitle} btnColor={mainColor} />,
           visible: true,
         }),
       );
-    } catch {
-      //
+    } catch (error) {
+      console.log('error');
     }
   };
   const handleReviewOrder = () => {

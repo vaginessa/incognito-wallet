@@ -166,4 +166,6 @@ export default {
   Standby: 'Standby',
   Chart: 'Chart',
   WebView: 'WebView',
+  NFTToken: 'NFTToken',
+  MintNFTToken: 'MintNFTToken',
 };

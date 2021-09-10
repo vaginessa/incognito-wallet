@@ -18,8 +18,8 @@ const styled = StyleSheet.create({
   },
   text: {
     color: COLORS.white,
-    fontSize: 13,
-    lineHeight: 15,
+    fontSize: FONT.SIZE.small,
+    lineHeight: FONT.SIZE.small + 3,
     fontFamily: FONT.NAME.medium,
   },
 });

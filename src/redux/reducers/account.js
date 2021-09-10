@@ -11,6 +11,11 @@ const initialState = {
   import: false,
   signPublicKeyEncode: '',
   burnerAddress: '',
+  nft: {
+    nftToken: '',
+    initNFTToken: false,
+    list: [],
+  },
 };
 
 const setAccount = (list, account) => {
@@ -158,6 +163,12 @@ const reducer = (state = initialState, action) => {
     return {
       ...state,
       burnerAddress: action.payload,
+    };
+  }
+  case type.ACTION_FETCHED_NFT: {
+    return {
+      ...state,
+      nft: { ...action.payload },
     };
   }
   default:

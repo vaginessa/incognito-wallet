@@ -13,6 +13,7 @@ import SelectedPrivacy from '@src/models/selectedPrivacy';
 import { getExchangeRate, getPairRate } from '@screens/PDexV3';
 import { getDataByPoolIdSelector } from '@screens/PDexV3/features/Pools';
 import { activedTabSelector } from '@src/components/core/Tabs/Tabs.selector';
+import { nftTokenDataSelector } from '@src/redux/selectors/account';
 import BigNumber from 'bignumber.js';
 import isEqual from 'lodash/isEqual';
 import {
@@ -206,6 +207,7 @@ export const orderLimitDataSelector = createSelector(
   feetokenDataSelector,
   rateDataSelector,
   poolSelectedDataSelector,
+  nftTokenDataSelector,
   (
     state,
     { networkfee, initing, isFetching, isFetched, percent },
@@ -215,6 +217,7 @@ export const orderLimitDataSelector = createSelector(
     feeTokenData,
     rateData,
     pool,
+    { invalidNFTToken, nftToken },
   ) => {
     const sellInputAmount = getInputAmount(formConfigs.selltoken);
     const buyInputAmount = getInputAmount(formConfigs.buytoken);
@@ -266,7 +269,11 @@ export const orderLimitDataSelector = createSelector(
     const disabledBtn =
       calculating ||
       (!isFetched && !isFetching) ||
-      !isValid(formConfigs.formName)(state);
+      !isValid(formConfigs.formName)(state) ||
+      invalidNFTToken;
+    if (!nftToken) {
+      btnActionTitle = 'Need a NFT token to book an order';
+    }
     if (calculating) {
       btnActionTitle = 'Calculating...';
     }

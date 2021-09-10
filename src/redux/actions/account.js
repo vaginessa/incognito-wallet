@@ -22,7 +22,10 @@ import { walletSelector } from '@src/redux/selectors/wallet';
 import { PRV } from '@src/constants/common';
 import { ExHandler } from '@src/services/exception';
 import { getDefaultAccountWalletSelector } from '@src/redux/selectors/shared';
-import { burnerAddressSelector } from '@src/redux/selectors/account';
+import {
+  burnerAddressSelector,
+  defaultAccountSelector,
+} from '@src/redux/selectors/account';
 import { defaultPTokensIDsSelector } from '@src/redux/selectors/token';
 import { getBalance as getTokenBalance, setListToken } from './token';
 
@@ -123,20 +126,58 @@ const updateDefaultAccount = (account) => {
   };
 };
 
-export const setDefaultAccount = (account) => async (dispatch, getState) => {
+export const actionSetSignPublicKeyEncode = (defaultAccount) => async (
+  dispatch,
+  getState,
+) => {
   try {
-    await dispatch(updateDefaultAccount(account));
     const state = getState();
     const wallet = walletSelector(state);
+    const account = defaultAccount || defaultAccountSelector(state);
     const signPublicKeyEncode = await accountService.getSignPublicKeyEncode({
       wallet,
       account,
     });
+    console.log('signPublicKeyEncode', signPublicKeyEncode);
     if (signPublicKeyEncode) {
-      await dispatch(setSignPublicKeyEncode(signPublicKeyEncode));
+      dispatch(setSignPublicKeyEncode(signPublicKeyEncode));
     }
+  } catch (error) {
+    new ExHandler(error).showErrorToast();
+  }
+};
+
+export const actionSetNFTTokenData = (defaultAccount) => async (
+  dispatch,
+  getState,
+) => {
+  try {
+    const state = getState();
+    const wallet = walletSelector(state);
+    const account = defaultAccount || defaultAccountSelector(state);
+    const nftPayload = await accountService.getNFTTokenData({
+      wallet,
+      account,
+    });
+    console.log('nftPayload', nftPayload);
+    if (nftPayload) {
+      dispatch(actionFetchedNFT(nftPayload));
+    }
+  } catch (error) {
+    new ExHandler(error).showErrorToast();
+  }
+};
+
+export const setDefaultAccount = (account) => async (dispatch) => {
+  try {
+    await dispatch(updateDefaultAccount(account));
+    let task = [
+      dispatch(actionSetSignPublicKeyEncode(account)),
+      dispatch(actionSetNFTTokenData(account)),
+    ];
+    await Promise.all(task);
   } catch (e) {
-    console.debug('SET DEFAULT ACCOUNT WITH ERROR: ', e);
+    new ExHandler(e).showErrorToast();
   }
 };
 
@@ -428,3 +469,8 @@ export const actionFetchBurnerAddress = () => async (dispatch, getState) => {
     new ExHandler(error).showErrorToast();
   }
 };
+
+export const actionFetchedNFT = (payload) => ({
+  type: type.ACTION_FETCHED_NFT,
+  payload,
+});

@@ -24,6 +24,9 @@ import {
 } from '@src/services/wallet/Wallet.shared';
 import { cachePromise, clearAllCaches } from '@src/services/cache';
 import { getPDexV3Instance } from '@src/screens/PDexV3';
+import { delay } from '@src/utils/delay';
+import { v4 } from 'uuid';
+import random from 'lodash/random';
 import { CustomError, ErrorCode, ExHandler } from '../exception';
 import { loadListAccountWithBLSPubKey, saveWallet } from './WalletService';
 
@@ -1056,6 +1059,30 @@ export default class Account {
       new Validator('getSignPublicKeyEncode-wallet', wallet).required();
       const accountWallet = getAccountWallet(account, wallet);
       return accountWallet.getSignPublicKeyEncode();
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  static async getNFTTokenData({ account, wallet }) {
+    try {
+      new Validator('getNFTTokenData-account', account).required();
+      new Validator('getNFTTokenData-wallet', wallet).required();
+      const accountWallet = getAccountWallet(account, wallet);
+      // return accountWallet.getNFTTokenData({ version: PrivacyVersion.ver2 });
+      const list = [...Array(5)].map((item) => ({
+        nftToken: v4(),
+        amount: random(0, 1),
+      }));
+      await delay(1000);
+      const result = {
+        nftToken: list.find((i) => i.amount === 1),
+        // nftToken: '',
+        initNFTToken: true,
+        list,
+      };
+      console.log('result', result);
+      return result;
     } catch (error) {
       throw error;
     }

@@ -98,6 +98,7 @@ import LiquidityV3 from '@screens/Liquidity3';
 import HomePDexV3 from '@screens/PDexV3/features/Home';
 import { PoolsList } from '@screens/PDexV3/features/Pools';
 import Trade, { ReviewOrder } from '@screens/PDexV3/features/Trade';
+import NFTToken, { MintNFTToken } from '@screens/PDexV3/features/NFTToken';
 import CreatePool from '@screens/PDexV3/features/CreatePool';
 import ContributePool from '@screens/PDexV3/features/ContributePool';
 import RemovePool from '@screens/PDexV3/features/RemovePool';
@@ -192,6 +193,14 @@ const pDexV3Routes = [
   {
     screen: Chart,
     name: routeNames.Chart,
+  },
+  {
+    screen: NFTToken,
+    name: routeNames.NFTToken,
+  },
+  {
+    screen: MintNFTToken,
+    name: routeNames.MintNFTToken,
   },
 ];
 
