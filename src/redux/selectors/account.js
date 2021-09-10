@@ -1,5 +1,6 @@
 import _, { memoize } from 'lodash';
 import { createSelector } from 'reselect';
+import { getAccountWallet } from '@src/services/wallet/Wallet.shared';
 import { walletSelector } from './wallet';
 
 export const accountSelector = createSelector(
@@ -138,6 +139,13 @@ export const nftTokenDataSelector = createSelector(
   },
 );
 
+export const defaultAccountWalletSelector = createSelector(
+  defaultAccountSelector,
+  walletSelector,
+  (defaultAccount, wallet) =>
+    defaultAccount && wallet && getAccountWallet(defaultAccount, wallet),
+);
+
 export default {
   defaultAccountName,
   listAccount,
@@ -158,4 +166,5 @@ export default {
   burnerAddressSelector,
   otaKeyOfDefaultAccountSelector,
   nftTokenDataSelector,
+  defaultAccountWalletSelector,
 };

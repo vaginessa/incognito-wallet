@@ -1,4 +1,4 @@
-import { defaultAccountSelector } from '@src/redux/selectors/account';
+import { defaultAccountWalletSelector } from '@src/redux/selectors/account';
 import { ExHandler } from '@services/exception';
 import { getPDexV3Instance } from '@screens/PDexV3';
 import {
@@ -29,7 +29,7 @@ export const actionFetch = () => async (dispatch, getState) => {
       return;
     }
     await dispatch(actionFetching());
-    const account = defaultAccountSelector(state);
+    const account = defaultAccountWalletSelector(state);
     // const pDexV3Inst = await getPDexV3Instance({ account });
     const listShare = [
       {

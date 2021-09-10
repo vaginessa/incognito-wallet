@@ -3,7 +3,7 @@ import max from 'lodash/max';
 import min from 'lodash/min';
 import { ExHandler } from '@src/services/exception';
 import { getPDexV3Instance } from '@screens/PDexV3';
-import { defaultAccountSelector } from '@src/redux/selectors/account';
+import { defaultAccountWalletSelector } from '@src/redux/selectors/account';
 import {
   ACTION_FETCHING,
   ACTION_FETCHED,
@@ -47,7 +47,7 @@ export const actionChangeDataPoint = (payload) => ({
 export const actionFetchPriceHistory = () => async (dispatch, getState) => {
   try {
     const state = getState();
-    const account = defaultAccountSelector(state);
+    const account = defaultAccountWalletSelector(state);
     const pdexV3Inst = getPDexV3Instance({ account });
     const { period, datapoint } = priceHistorySelector(state);
     const now = new Date();
@@ -106,7 +106,7 @@ export const actionFetchOrderBook = () => async (dispatch, getState) => {
   let data = [];
   try {
     const state = getState();
-    const account = defaultAccountSelector(state);
+    const account = defaultAccountWalletSelector(state);
     const pdexV3Inst = getPDexV3Instance({ account });
     const { decimal } = orderBookSelector(state);
     data = {

@@ -1,4 +1,4 @@
-import { defaultAccountSelector } from '@src/redux/selectors/account';
+import { defaultAccountWalletSelector } from '@src/redux/selectors/account';
 import { getPDexV3Instance } from '@screens/PDexV3';
 import { getInternalTokenList, getPTokenList } from '@src/redux/actions/token';
 import { actionSetNFTTokenData } from '@src/redux/actions/account';
@@ -30,7 +30,7 @@ export const actionFetch = () => async (dispatch, getState) => {
       return;
     }
     await dispatch(actionFetching());
-    // const account = defaultAccountSelector(state);
+    // const account = defaultAccountWalletSelector(state);
     // const pDexV3Inst = await getPDexV3Instance({ account });
     const task = [
       //   pDexV3Inst.getListState(),

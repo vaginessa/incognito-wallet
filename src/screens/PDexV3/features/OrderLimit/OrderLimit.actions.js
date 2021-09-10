@@ -4,7 +4,7 @@ import { PRV } from '@src/constants/common';
 import SelectedPrivacy from '@src/models/selectedPrivacy';
 import { getBalance } from '@src/redux/actions/token';
 import {
-  defaultAccountSelector,
+  defaultAccountWalletSelector,
   otaKeyOfDefaultAccountSelector,
 } from '@src/redux/selectors/account';
 import { getPrivacyDataByTokenID } from '@src/redux/selectors/selectedPrivacy';
@@ -19,6 +19,7 @@ import random from 'lodash/random';
 import { batch } from 'react-redux';
 import { change, focus } from 'redux-form';
 import { v4 } from 'uuid';
+import { getPDexV3Instance } from '@screens/PDexV3';
 import {
   ACTION_FETCHING,
   ACTION_FETCHED,
@@ -46,7 +47,6 @@ import {
   poolSelectedDataSelector,
   rateDataSelector,
 } from './OrderLimit.selector';
-import { getPDexV3Instance } from '../../PDexV3.utils';
 
 export const actionSetPercent = (payload) => ({
   type: ACTION_SET_PERCENT,
@@ -328,7 +328,7 @@ export const actionFetchCancelingOrderTxs = () => async (
   let cancelingTxs = [];
   try {
     const state = getState();
-    const account = defaultAccountSelector(state);
+    const account = defaultAccountWalletSelector(state);
     const pDexV3Inst = await getPDexV3Instance({ account });
     const pool = poolSelectedDataSelector(state);
     if (!pool?.poolId) {
@@ -351,7 +351,7 @@ export const actionFetchOpenOrders = () => async (dispatch, getState) => {
   let orders = [];
   try {
     const state = getState();
-    // const account = defaultAccountSelector(state);
+    // const account = defaultAccountWalletSelector(state);
     // const pDexV3Inst = await getPDexV3Instance({ otaKey });
     // orders =  await pDexV3Inst.getHistory({poolid});
     const pool = poolSelectedDataSelector(state);
@@ -456,7 +456,7 @@ export const actionCancelingOrder = (payload) => ({
 export const actionCancelOrder = (requesttx) => async (dispatch, getState) => {
   try {
     const state = getState();
-    const account = defaultAccountSelector(state);
+    const account = defaultAccountWalletSelector(state);
     const pDexV3Inst = await getPDexV3Instance({ account });
     const pool = poolSelectedDataSelector(state);
     if (!requesttx || !pool?.poolId) {
