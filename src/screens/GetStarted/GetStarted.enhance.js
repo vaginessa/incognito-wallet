@@ -3,7 +3,7 @@ import { StyleSheet } from 'react-native';
 import { compose } from 'recompose';
 import ErrorBoundary from '@src/components/ErrorBoundary';
 import Wizard from '@screens/Wizard';
-import { useSelector, useDispatch } from 'react-redux';
+import {useSelector, useDispatch} from 'react-redux';
 import { login } from '@src/services/auth';
 import { ANALYTICS, CONSTANT_KEYS } from '@src/constants';
 import { reloadWallet } from '@src/redux/actions/wallet';

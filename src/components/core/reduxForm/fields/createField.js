@@ -1,6 +1,7 @@
 import React from 'react';
 import isEmpty from 'lodash/isEmpty';
 import { View, Text } from '@src/components/core';
+import {useError} from '@components/UseEffect/useError';
 import styleSheet from './style';
 
 export const RFError = React.memo(({ errMsg, style }) => {
@@ -26,16 +27,17 @@ const customField = (field, render) => {
   };
   const shouldShowError =
     !isCustomizeRenderError && (meta?.visited || meta?.touched) && meta?.error;
-  const shouldShowWarning =
+  let shouldShowWarning =
     !isCustomizeRenderWarning &&
     (meta?.visited || meta?.touched) &&
     warning &&
     !meta?.error;
+  const error = useError(shouldShowError ? meta.error : '');
   return (
     <View style={[styleSheet.container, style]}>
       <View style={styleSheet.field}>{render(renderProps)}</View>
-      {shouldShowError && <RFError errMsg={meta.error} />}
-      {shouldShowWarning && (
+      {!!shouldShowError && <RFError errMsg={error} />}
+      {!!shouldShowWarning && (
         <Text style={styleSheet.warningText}>{warning}</Text>
       )}
     </View>

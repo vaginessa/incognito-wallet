@@ -6,8 +6,8 @@ import { View } from 'react-native';
 import {batch, useDispatch, useSelector} from 'react-redux';
 import {useNavigation} from 'react-navigation-hooks';
 import routeNames from '@routers/routeNames';
-import {actionUpdateContributePoolID} from '@screens/PDexV3/features/ContributePool/Contribute.actions';
-import { getDataByShareIdSelector } from './Portfolio.selector';
+import {liquidityActions} from '@screens/PDexV3/features/Liquidity';
+import {getDataByShareIdSelector} from './Portfolio.selector';
 import { portfolioItemStyled as styled } from './Portfolio.styled';
 
 const Hook = React.memo((props) => {
@@ -45,11 +45,17 @@ const Extra = React.memo((props) => {
   const { token1, token2, poolId } = data || {};
   const onInvestPress = () => {
     batch(() => {
-      dispatch(actionUpdateContributePoolID({ poolId }));
+      dispatch(liquidityActions.actionSetContributePoolID({ poolId }));
       navigation.navigate(routeNames.ContributePool);
     });
   };
-  const onWithdrawPress = () => navigation.navigate(routeNames.RemovePool, { shareId });
+  const onWithdrawPress = () => {
+    batch(() => {
+      dispatch(liquidityActions.actionSetRemovePoolToken({ inputToken: token1.tokenId, outputToken: token2.tokenId }));
+      dispatch(liquidityActions.actionSetRemovePoolID(poolId));
+      navigation.navigate(routeNames.RemovePool);
+    });
+  };
 
   return (
     <Row style={styled.extraContainer}>

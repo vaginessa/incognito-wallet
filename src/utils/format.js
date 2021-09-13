@@ -2,10 +2,12 @@ import moment from 'moment';
 import _ from 'lodash';
 import { CONSTANT_COMMONS } from '@src/constants';
 import { BigNumber } from 'bignumber.js';
+// eslint-disable-next-line import/no-cycle
 import {
   getDecimalSeparator,
   getGroupSeparator,
 } from '@src/resources/separator';
+// eslint-disable-next-line import/no-cycle
 import convertUtil from '@utils/convert';
 
 export const SHORT_DATE_TIME_FORMAT = 'DD MMM hh:mm A';

@@ -94,19 +94,36 @@ import TwoTokensSelect from '@screens/Dex/features/TwoTokensSelect';
 import SelectTokenStreamline from '@screens/Streamline/features/SelectTokens';
 import ConvertTokenList from '@screens/Home/features/ConvertTokenList';
 import HistoryConvert from '@src/screens/Home/features/HistoryConvert';
-import LiquidityV3 from '@screens/Liquidity3';
 import HomePDexV3 from '@screens/PDexV3/features/Home';
 import { PoolsList } from '@screens/PDexV3/features/Pools';
 import { ReviewOrderSwap } from '@screens/PDexV3/features/Swap';
 import Trade, { ReviewOrder } from '@screens/PDexV3/features/Trade';
 import NFTToken, { MintNFTToken } from '@screens/PDexV3/features/NFTToken';
-import CreatePool from '@screens/PDexV3/features/CreatePool';
-import ContributePool from '@screens/PDexV3/features/ContributePool';
-import RemovePool from '@screens/PDexV3/features/RemovePool';
 import OrderLimit from '@src/screens/PDexV3/features/OrderLimit';
 import SelectTokenTrade from '@screens/PDexV3/features/SelectToken';
 import Chart from '@screens/PDexV3/features/Chart';
 import WebView from '@screens/WebView';
+import HomeLiquidityHistories from '@screens/PDexV3/features/HomeLiquidityHistories';
+import ContributeHistoryDetail from '@screens/PDexV3/features/ContributeHistoryDetail';
+import RemovePoolHistoriesDetail from '@screens/PDexV3/features/RemovePoolHistoriesDetail';
+import WithdrawRewardHistoriesDetail from '@screens/PDexV3/features/WithdrawRewardHistoriesDetail';
+import {
+  Staking,
+  StakingMoreCoins,
+  StakingMoreInput,
+  StakingMoreConfirm,
+  StakingWithdrawCoins,
+  StakingWithdrawInvest,
+  StakingWithdrawReward,
+  StakingHistories,
+  StakingHistoryDetail,
+} from '@screens/PDexV3/features/Staking';
+
+import {
+  Contribute,
+  CreatePool,
+  RemovePool,
+} from '@screens/PDexV3/features/Liquidity';
 
 const masterKeyRoutes = [
   {
@@ -160,10 +177,6 @@ const pDexV3Routes = [
     name: routeNames.PoolsList,
   },
   {
-    screen: LiquidityV3,
-    name: routeNames.Dex,
-  },
-  {
     screen: Trade,
     name: routeNames.Trade,
   },
@@ -172,7 +185,7 @@ const pDexV3Routes = [
     name: routeNames.CreatePool,
   },
   {
-    screen: ContributePool,
+    screen: Contribute,
     name: routeNames.ContributePool,
   },
   {
@@ -207,6 +220,58 @@ const pDexV3Routes = [
     screen: ReviewOrderSwap,
     name: routeNames.ReviewOrderSwap,
   },
+  {
+    screen: HomeLiquidityHistories,
+    name: routeNames.HomeLiquidityHistories,
+  },
+  {
+    screen: ContributeHistoryDetail,
+    name: routeNames.ContributeHistoryDetail,
+  },
+  {
+    screen: RemovePoolHistoriesDetail,
+    name: routeNames.RemovePoolHistoriesDetail,
+  },
+  {
+    screen: WithdrawRewardHistoriesDetail,
+    name: routeNames.WithdrawRewardHistoriesDetail,
+  },
+  {
+    screen: Staking,
+    name: routeNames.Staking,
+  },
+  {
+    screen: StakingMoreCoins,
+    name: routeNames.StakingMoreCoins,
+  },
+  {
+    screen: StakingMoreInput,
+    name: routeNames.StakingMoreInput,
+  },
+  {
+    screen: StakingMoreConfirm,
+    name: routeNames.StakingMoreConfirm,
+  },
+  {
+    screen: StakingWithdrawCoins,
+    name: routeNames.StakingWithdrawCoins,
+  },
+  {
+    screen: StakingWithdrawInvest,
+    name: routeNames.StakingWithdrawInvest,
+  },
+  {
+    screen: StakingWithdrawReward,
+    name: routeNames.StakingWithdrawReward,
+  },
+  {
+    screen: StakingHistories,
+    name: routeNames.StakingHistories,
+  },
+  {
+    screen: StakingHistoryDetail,
+    name: routeNames.StakingHistoryDetail,
+  }
 ];
 
 const routes = [
