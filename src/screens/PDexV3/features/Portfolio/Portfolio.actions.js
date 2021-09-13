@@ -63,7 +63,6 @@ export const actionFetch = () => async (dispatch, getState) => {
         nfct: 'blah blah blah',
       },
     ];
-    // await pDexV3Inst.getListShare(otaKey);
     await dispatch(actionFetched(listShare));
   } catch (error) {
     new ExHandler(error).showErrorToast();
