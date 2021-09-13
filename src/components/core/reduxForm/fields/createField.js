@@ -32,11 +32,11 @@ const customField = (field, render) => {
     (meta?.visited || meta?.touched) &&
     warning &&
     !meta?.error;
-  shouldShowWarning = useError(shouldShowWarning);
+  const error = useError(shouldShowError ? meta.error : '');
   return (
     <View style={[styleSheet.container, style]}>
       <View style={styleSheet.field}>{render(renderProps)}</View>
-      {!!shouldShowError && <RFError errMsg={meta.error} />}
+      {!!shouldShowError && <RFError errMsg={error} />}
       {!!shouldShowWarning && (
         <Text style={styleSheet.warningText}>{warning}</Text>
       )}
