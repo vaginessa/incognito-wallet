@@ -10,6 +10,7 @@ import {
 import { getPrivacyDataByTokenID } from '@src/redux/selectors/selectedPrivacy';
 import { ExHandler } from '@src/services/exception';
 import { camelCaseKeys } from '@src/utils';
+import { actionFetchPools } from '@screens/PDexV3/features/Pools';
 import convert from '@src/utils/convert';
 import { delay } from '@src/utils/delay';
 import format from '@src/utils/format';
@@ -219,6 +220,7 @@ export const actionSetInputToken = ({ selltoken, buytoken }) => async (
 
 export const actionInit = () => async (dispatch, getState) => {
   try {
+    await dispatch(actionFetchPools());
     let state = getState();
     const pool = poolSelectedDataSelector(state);
     await dispatch(actionSetPercent(0));
@@ -361,7 +363,6 @@ export const actionFetchOpenOrders = () => async (dispatch, getState) => {
     const token1: SelectedPrivacy = pool?.token1;
     const token2: SelectedPrivacy = pool?.token2;
     await delay(1000);
-
     orders = [
       {
         requesttx: 'requestTxId-1',

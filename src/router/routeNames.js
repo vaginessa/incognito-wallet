@@ -157,6 +157,8 @@ export default {
   PoolsList: 'PoolsList',
   Swap: 'Swap',
   ReviewOrder: 'ReviewOrder',
+  ReviewOrderSwap: 'ReviewOrderSwap',
+  ReviewOrderLimit: 'ReviewOrderLimit',
   Trade: 'Trade',
   CreatePool: 'CreatePool',
   ContributePool: 'ContributePool',

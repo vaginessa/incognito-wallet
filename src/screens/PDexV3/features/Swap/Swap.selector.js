@@ -1,5 +1,4 @@
 import { createSelector } from 'reselect';
-import { listPairsSelector } from '@screens/PDexV3/features/Trade';
 import { getPrivacyDataByTokenID as getPrivacyDataByTokenIDSelector } from '@src/redux/selectors/selectedPrivacy';
 import { allTokensIDsSelector } from '@src/redux/selectors/token';
 import format from '@src/utils/format';
@@ -8,14 +7,77 @@ import floor from 'lodash/floor';
 import { formValueSelector, isValid } from 'redux-form';
 import convert from '@src/utils/convert';
 import SelectedPrivacy from '@src/models/selectedPrivacy';
-import { PRV } from '@src/constants/common';
+import { PRV, PRV_ID } from '@src/constants/common';
 import { sharedSelector } from '@src/redux/selectors';
+import BigNumber from 'bignumber.js';
+import orderBy from 'lodash/orderBy';
 import { formConfigs } from './Swap.constant';
 import { getInputAmount } from './Swap.utils';
+
 
 export const swapSelector = createSelector(
   (state) => state.pDexV3,
   ({ swap }) => swap,
+);
+
+export const listPairsSelector = createSelector(
+  allTokensIDsSelector,
+  getPrivacyDataByTokenIDSelector,
+  swapSelector,
+  (tokensIDs, getPrivacyDataByTokenID, { pairs }) => {
+    if (!tokensIDs || !pairs) {
+      return [];
+    }
+    let pairTokens = pairs
+      .map((pair) => {
+        const { token1IdStr, token2IdStr } = pair;
+        return {
+          ...pair,
+          pairId: `${token1IdStr}-${token2IdStr}`,
+        };
+      })
+      .filter(
+        ({ token1IdStr, token2IdStr, poolid }) =>
+          tokensIDs.includes(token1IdStr) ||
+          tokensIDs.includes(token2IdStr) ||
+          !!poolid,
+      ) // remove if it not existed list tokens
+      .filter(({ poolid }) => includes(poolid, PRV_ID))
+      .map((pair) => {
+        const {
+          token1IdStr,
+          token2IdStr,
+          token1PoolValue,
+          token2PoolValue,
+        } = pair;
+        const token1 = getPrivacyDataByTokenID(token1IdStr);
+        const token2 = getPrivacyDataByTokenID(token2IdStr);
+        const token1PoolAmount = convert.toHumanAmount(
+          token1PoolValue,
+          token1.pDecimals,
+        );
+        const token2PoolAmount = convert.toHumanAmount(
+          token2PoolValue,
+          token2.pDecimals,
+        );
+        const totalPool = new BigNumber(token1PoolAmount).plus(
+          token2PoolAmount,
+        );
+        const validPool = totalPool.gt(0);
+        return {
+          ...pair,
+          token1,
+          token2,
+          token1PoolAmount,
+          token2PoolAmount,
+          totalPool: totalPool.toNumber(),
+          validPool,
+        };
+      })
+      .filter((pair) => pair.validPool);
+    pairTokens = orderBy(pairTokens, ['total'], ['desc']);
+    return pairTokens || [];
+  },
 );
 
 export const listTokenHasPairSelector = createSelector(
@@ -103,11 +165,9 @@ export const feetokenDataSelector = createSelector(
         feetoken,
         symbol: feeTokenData?.symbol,
         pDecimals: feeTokenData?.pDecimals,
-
         feeAmount,
         feeAmountText,
         origininalFeeAmount,
-
         minFeeOriginal,
         minFeeAmount,
         minFeeAmountStr,
@@ -141,7 +201,17 @@ export const swapInfoSelector = createSelector(
   (state) => state,
   getPrivacyDataByTokenIDSelector,
   (
-    { data, networkfee, swaping, initing, selecting, isFetching, isFetched },
+    {
+      data,
+      networkfee,
+      swapingToken,
+      initing,
+      selecting,
+      isFetching,
+      isFetched,
+      percent,
+      swaping,
+    },
     feeTokenData,
     getInputAmount,
     state,
@@ -156,7 +226,6 @@ export const swapInfoSelector = createSelector(
         feeTokenData?.pDecimals,
       );
       const minFeeAmountStr = `${minFeeAmount} ${feeTokenData?.symbol}`;
-
       const networkfeeAmount = format.toFixed(
         convert.toHumanAmount(networkfee, PRV.pDecimals),
         PRV.pDecimals,
@@ -167,9 +236,9 @@ export const swapInfoSelector = createSelector(
         0,
       );
       const editableInput =
-        !swaping && !initing && !selecting && isFetched && !isFetching;
+        !swapingToken && !initing && !selecting && isFetched && !isFetching;
       let btnSwapText = 'Preview your order';
-      const calculating = swaping || initing || selecting || isFetching;
+      const calculating = swapingToken || initing || selecting || isFetching;
       const disabledBtnSwap =
         calculating ||
         (!isFetched && !isFetching) ||
@@ -206,6 +275,8 @@ export const swapInfoSelector = createSelector(
         networkfee,
         showPRVBalance,
         prvBalanceStr,
+        percent,
+        swaping,
       };
     } catch (error) {
       console.log('swapInfoSelector-error', error);

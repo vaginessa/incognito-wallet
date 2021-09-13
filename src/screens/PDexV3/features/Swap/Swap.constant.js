@@ -8,10 +8,14 @@ export const ACTION_SET_FEE_TOKEN = '[pDexV3][swap] Set fee token';
 export const ACTION_SET_FOCUS_TOKEN = '[pDexV3][swap] Set focus token';
 
 export const ACTION_SET_SELECTING_TOKEN = '[pDexV3][swap] Set selecting token';
-export const ACTION_SET_SWAPING_TOKEN = '[pDexV3][swap] Set swaping token';
+export const ACTION_SET_SWAPING_TOKEN = '[pDexV3][swap] Set swapingToken token';
 export const ACTION_SET_INITIING_SWAP = '[pDexV3][swap] Set initing token';
 
+export const ACTION_SET_PERCENT = '[pDexV3][swap] Set percent';
+
 export const ACTION_RESET = '[pDexV3][swap] Reset';
+export const ACTION_FETCH_SWAP = '[pDexV3][swap] Fetching swap';
+export const ACTION_FETCHED_LIST_PAIRS = '[pDexV3][swap] Fetched list pairs';
 
 export const TAB_SIMPLE_ID = 'simple';
 export const TAB_PRO_ID = 'pro';

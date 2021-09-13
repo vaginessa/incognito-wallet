@@ -27,7 +27,7 @@ const initialState = {
   estimateTrade: null,
   focustoken: '',
   networkfee: ACCOUNT_CONSTANT.MAX_FEE_PER_TX,
-  swaping: false,
+  swapingToken: false,
   selecting: false,
   initing: false,
   rate: '',

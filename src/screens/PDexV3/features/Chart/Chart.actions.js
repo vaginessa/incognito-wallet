@@ -48,7 +48,7 @@ export const actionFetchPriceHistory = () => async (dispatch, getState) => {
   try {
     const state = getState();
     const account = defaultAccountWalletSelector(state);
-    const pdexV3Inst = getPDexV3Instance({ account });
+    const pdexV3Inst = await getPDexV3Instance({ account });
     const { period, datapoint } = priceHistorySelector(state);
     const now = new Date();
     const data = [...Array(datapoint)].map((item, index, arr) => {
@@ -107,7 +107,7 @@ export const actionFetchOrderBook = () => async (dispatch, getState) => {
   try {
     const state = getState();
     const account = defaultAccountWalletSelector(state);
-    const pdexV3Inst = getPDexV3Instance({ account });
+    const pdexV3Inst = await getPDexV3Instance({ account });
     const { decimal } = orderBookSelector(state);
     data = {
       buy: [...Array(20)].map((item) => ({

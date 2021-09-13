@@ -11,6 +11,9 @@ import {
   ACTION_SET_SWAPING_TOKEN,
   ACTION_SET_INITIING_SWAP,
   ACTION_RESET,
+  ACTION_SET_PERCENT,
+  ACTION_FETCH_SWAP,
+  ACTION_FETCHED_LIST_PAIRS,
 } from './Swap.constant';
 
 const initialState = {
@@ -23,13 +26,34 @@ const initialState = {
   estimateTrade: null,
   focustoken: '',
   networkfee: ACCOUNT_CONSTANT.MAX_FEE_PER_TX,
-  swaping: false,
+  swapingToken: false,
   selecting: false,
   initing: false,
+  percent: 0,
+  swaping: false,
+  pairs: [],
 };
 
 export default (state = initialState, action) => {
   switch (action.type) {
+  case ACTION_FETCHED_LIST_PAIRS: {
+    return {
+      ...state,
+      pairs: action.payload,
+    };
+  }
+  case ACTION_FETCH_SWAP: {
+    return {
+      ...state,
+      swaping: action.payload,
+    };
+  }
+  case ACTION_SET_PERCENT: {
+    return {
+      ...state,
+      percent: action.payload,
+    };
+  }
   case ACTION_RESET: {
     return initialState;
   }
@@ -93,7 +117,7 @@ export default (state = initialState, action) => {
   case ACTION_SET_SWAPING_TOKEN: {
     return {
       ...state,
-      swaping: action.payload,
+      swapingToken: action.payload,
     };
   }
 

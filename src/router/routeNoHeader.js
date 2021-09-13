@@ -97,6 +97,7 @@ import HistoryConvert from '@src/screens/Home/features/HistoryConvert';
 import LiquidityV3 from '@screens/Liquidity3';
 import HomePDexV3 from '@screens/PDexV3/features/Home';
 import { PoolsList } from '@screens/PDexV3/features/Pools';
+import { ReviewOrderSwap } from '@screens/PDexV3/features/Swap';
 import Trade, { ReviewOrder } from '@screens/PDexV3/features/Trade';
 import NFTToken, { MintNFTToken } from '@screens/PDexV3/features/NFTToken';
 import CreatePool from '@screens/PDexV3/features/CreatePool';
@@ -201,6 +202,10 @@ const pDexV3Routes = [
   {
     screen: MintNFTToken,
     name: routeNames.MintNFTToken,
+  },
+  {
+    screen: ReviewOrderSwap,
+    name: routeNames.ReviewOrderSwap,
   },
 ];
 

@@ -4,7 +4,6 @@ import { StyleSheet } from 'react-native';
 export const styled = StyleSheet.create({
   container: {},
   btnTrade: {
-    marginTop: 56,
     marginBottom: 30,
   },
 });
@@ -31,5 +30,11 @@ export const tabsStyled = StyleSheet.create({
   },
   styledTabList: {
     maxWidth: 144,
+  },
+});
+
+export const inputGroupStyled = StyleSheet.create({
+  selectPercentAmountContainer: {
+    marginVertical: 30,
   },
 });

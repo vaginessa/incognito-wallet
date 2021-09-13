@@ -2,10 +2,11 @@ import { Header } from '@src/components';
 import { ButtonTrade } from '@src/components/Button';
 import { ScrollView } from '@src/components/core';
 import { withLayout_2 } from '@src/components/Layout';
+import PropTypes from 'prop-types';
 import { COLORS, FONT } from '@src/styles';
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import { useNavigationParam } from 'react-navigation-hooks';
+import LoadingTx from '@src/components/LoadingTx';
 
 const styled = StyleSheet.create({
   container: { flex: 1 },
@@ -18,9 +19,13 @@ const styled = StyleSheet.create({
   },
 });
 
-const ReviewOrder = () => {
-  const data = useNavigationParam('data') || {};
-  const { extra, handleConfirm, btnColor = COLORS.colorTradeBlue } = data;
+const ReviewOrder = (props) => {
+  const {
+    extra,
+    handleConfirm,
+    btnColor = COLORS.colorTradeBlue,
+    loadingTx,
+  } = props;
   return (
     <View style={styled.container}>
       <Header title="Order preview" />
@@ -32,10 +37,13 @@ const ReviewOrder = () => {
           onPress={handleConfirm}
         />
       </ScrollView>
+      {loadingTx && <LoadingTx />}
     </View>
   );
 };
 
-ReviewOrder.propTypes = {};
+ReviewOrder.propTypes = {
+  data: PropTypes.object.isRequired,
+};
 
 export default withLayout_2(React.memo(ReviewOrder));

@@ -1,6 +1,10 @@
 import random from 'lodash/random';
 import { getBalance } from '@src/redux/actions/token';
-import { otaKeyOfDefaultAccountSelector } from '@src/redux/selectors/account';
+import {
+  ACCOUNT_CONSTANT,
+  PrivacyVersion,
+} from 'incognito-chain-web-js/build/wallet';
+import { defaultAccountWalletSelector } from '@src/redux/selectors/account';
 import { getPrivacyDataByTokenID } from '@src/redux/selectors/selectedPrivacy';
 import { ExHandler } from '@src/services/exception';
 import convert from '@src/utils/convert';
@@ -12,7 +16,8 @@ import isEmpty from 'lodash/isEmpty';
 import SelectedPrivacy from '@src/models/selectedPrivacy';
 import { batch } from 'react-redux';
 import { decimalDigitsSelector } from '@src/screens/Setting';
-import { PRV } from '@src/constants/common';
+import { PRV, PRV_ID } from '@src/constants/common';
+import { getPDexV3Instance } from '@screens/PDexV3';
 import {
   ACTION_FETCHING,
   ACTION_FETCHED,
@@ -26,6 +31,9 @@ import {
   ACTION_SET_SWAPING_TOKEN,
   ACTION_SET_INITIING_SWAP,
   ACTION_RESET,
+  ACTION_SET_PERCENT,
+  ACTION_FETCH_SWAP,
+  ACTION_FETCHED_LIST_PAIRS,
 } from './Swap.constant';
 import {
   buytokenSelector,
@@ -36,7 +44,13 @@ import {
   selltokenSelector,
   slippagetoleranceSelector,
   swapSelector,
+  swapInfoSelector,
 } from './Swap.selector';
+
+export const actionSetPercent = (payload) => ({
+  type: ACTION_SET_PERCENT,
+  payload,
+});
 
 export const actionSetSellTokenFetched = (payload) => ({
   type: ACTION_SET_SELL_TOKEN,
@@ -128,27 +142,19 @@ export const actionEstimateTrade = () => async (dispatch, getState) => {
     if (!selltoken || !buytoken || !amount) {
       return;
     }
-    // const payload = {
-    //   selltoken,
-    //   buytoken,
-    //   feetoken,
-    //   amount,
-    //   slippagetolerance: Number(slippagetolerance),
-    // };
-    const feeTokenData = getPrivacyDataByTokenID(state)(feetoken);
-    const decimalDigits = decimalDigitsSelector(state);
-    await dispatch(actionFetching());
-    const otaKey = otaKeyOfDefaultAccountSelector(state);
-    // const pDexV3Inst = await getPDexV3Instance({ otaKey });
-    await delay(2000);
-    const data = {
-      maxGet: random(1e2, 1e9),
-      fee: random(1e2, 1e6),
-      // fee: 12e9,
-      route: `${sellsymbol}->${buysymbol}`,
-      sizeimpact: random(0, 0.99, true),
+    const payload = {
+      selltoken,
+      buytoken,
+      feetoken,
+      amount,
+      slippagetolerance: Number(slippagetolerance),
     };
-    // await pDexV3Inst.getEstimateTrade(payload);
+    const feeTokenData = getPrivacyDataByTokenID(state)(feetoken);
+    await dispatch(actionFetching());
+    const account = defaultAccountWalletSelector(state);
+    const pDexV3Inst = await getPDexV3Instance({ account });
+    const data = await pDexV3Inst.getEstimateTrade(payload);
+    console.log('inputToken', inputtoken);
     const amountInput = format.toFixed(
       convert.toHumanAmount(data.maxGet, inputtokenDecimals),
       inputtokenDecimals,
@@ -196,35 +202,29 @@ export const actionSetSellToken = (selltoken) => async (dispatch, getState) => {
     let sellamount = '';
     if (initing) {
       const buytoken: SelectedPrivacy = buytokenSelector(state);
+      const selltoken: SelectedPrivacy = selltokenSelector(state);
       const feeTokenData = feetokenDataSelector(state);
-      // const slippagetolerance = slippagetoleranceSelector(state);
-      // const payload = {
-      //   selltoken,
-      //   buytoken,
-      //   feetoken,
-      //   amount: sellOriginalAmount,
-      //   slippagetolerance,
-      // };
-      // const otaKey = otaKeyOfDefaultAccountSelector(state);
-      // const pDexV3Inst = await getPDexV3Instance({ otaKey });
-      // await pDexV3Inst.getEstimateTrade(payload);
-      await delay(2000);
-      const data = {
-        maxGet: 2e9,
-        fee: random(1e2, 1e6),
-        route: `${symbol}->${buytoken?.symbol}`,
-        sizeimpact: random(0, 0.99, true),
+      const slippagetolerance = slippagetoleranceSelector(state);
+      const payload = {
+        selltoken: selltoken.tokenId,
+        buytoken: buytoken.tokenId,
+        feetoken: feeTokenData.feetoken,
+        amount: sellOriginalAmount,
+        slippagetolerance,
       };
+      const account = defaultAccountWalletSelector(state);
+      const pDexV3Inst = await getPDexV3Instance({ account });
+      const data = await pDexV3Inst.getEstimateTrade(payload);
       sellamount = format.toFixed(
         convert.toHumanAmount(sellOriginalAmount, token.pDecimals),
         token.pDecimals,
       );
       const buyInputAmount = format.toFixed(
-        convert.toHumanAmount(data.maxGet, buytoken.pDecimals),
+        convert.toHumanAmount(data?.maxGet || 0, buytoken.pDecimals),
         buytoken.pDecimals,
       );
       const amountFee = format.toFixed(
-        convert.toHumanAmount(data.fee, feeTokenData.pDecimals),
+        convert.toHumanAmount(data?.fee || 0, feeTokenData.pDecimals),
         feeTokenData.pDecimals,
       );
       dispatch(
@@ -283,14 +283,35 @@ export const actionSetInputToken = ({ selltoken, buytoken }) => async (
   }
 };
 
+export const actionFetchedPairs = (payload) => ({
+  payload,
+  type: ACTION_FETCHED_LIST_PAIRS,
+});
+
+export const actionFetchPairs = () => async (dispatch, getState) => {
+  let pairs = [];
+  try {
+    let state = getState();
+    const account = defaultAccountWalletSelector(state);
+    const pDexV3Inst = await getPDexV3Instance({ account });
+    pairs = (await pDexV3Inst.getListPair()) || [];
+  } catch (error) {
+    new ExHandler(error).showErrorToast();
+  }
+  await dispatch(actionFetchedPairs(pairs));
+};
+
 export const actionInitSwapForm = () => async (dispatch, getState) => {
   try {
+    await dispatch(actionInitingSwapForm(true));
+    await dispatch(actionFetchPairs());
     const state = getState();
+    const account = defaultAccountWalletSelector(state);
+    const pDexV3Inst = await getPDexV3Instance({ account });
     const defaultPair = defaultPairSelector(state);
     if (isEmpty(defaultPair)) {
       return;
     }
-    await dispatch(actionInitingSwapForm(true));
     const { token1IdStr: selltoken, token2IdStr: buytoken } = defaultPair;
     batch(() => {
       dispatch(actionSetSellTokenFetched(selltoken));
@@ -426,4 +447,60 @@ export const actionSelectToken = (token: SelectedPrivacy, field) => async (
   } finally {
     await dispatch(actionSetSelectingToken(false));
   }
+};
+
+export const actionFetchingSwap = (payload) => ({
+  type: ACTION_FETCH_SWAP,
+  payload,
+});
+
+export const actionFetchSwap = () => async (dispatch, getState) => {
+  let tx;
+  try {
+    const state = getState();
+    const { disabledBtnSwap, routing: tradePath } = swapInfoSelector(state);
+    if (disabledBtnSwap) {
+      return;
+    }
+    await dispatch(actionFetchingSwap(true));
+    const account = defaultAccountWalletSelector(state);
+    const sellInputAmount = inputAmountSelector(state)(formConfigs.selltoken);
+    const buyInputAmount = inputAmountSelector(state)(formConfigs.buytoken);
+    const feetokenData = feetokenDataSelector(state);
+    if (!sellInputAmount || !buyInputAmount || !feetokenData) {
+      return;
+    }
+    await delay(2000);
+    const pDexV3 = await getPDexV3Instance({ account });
+    const {
+      tokenId: tokenIDToSell,
+      originalAmount: sellAmount,
+    } = sellInputAmount;
+    const { tokenId: tokenIDToBuy } = buyInputAmount;
+    const { origininalFeeAmount: tradingFee, feetoken } = feetokenData;
+    const isTradingFeeInPRV = feetoken === PRV_ID;
+    const params = {
+      transfer: { fee: ACCOUNT_CONSTANT.MAX_FEE_PER_TX },
+      extra: {
+        tokenIDToSell,
+        sellAmount,
+        tokenIDToBuy,
+        tradingFee,
+        tradePath,
+        isTradingFeeInPRV,
+        version: PrivacyVersion.ver2,
+      },
+    };
+    console.log('params', params);
+    const tx = await pDexV3.createAndSendSwapRequestTx(params);
+    console.log('tx', tx);
+    if (!tx) {
+      console.log('error');
+    }
+  } catch (error) {
+    new ExHandler(error).showErrorToast();
+  } finally {
+    await dispatch(actionFetchingSwap(false));
+  }
+  return tx;
 };

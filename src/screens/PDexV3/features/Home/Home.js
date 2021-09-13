@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import {
   FollowingPools,
   tradingVolume24hSelector,
-  actionFetch as actionFetchPools,
+  actionFetchPools,
 } from '@src/screens/PDexV3/features/Pools';
 import Portfolio, {
   actionFetch as actionFetchListShare,
@@ -59,14 +59,14 @@ const Home = (props) => {
       <Header title="Market" accountSelectable />
       <ScrollView
         style={styled.main}
-        refreshControl={(
+        refreshControl={
           <RefreshControl
             refreshing={isFetching}
             onRefresh={() =>
               typeof handleOnRefresh === 'function' && handleOnRefresh()
             }
           />
-        )}
+        }
       >
         <Tabs rootTabID={ROOT_TAB_HOME}>
           <View

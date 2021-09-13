@@ -38,10 +38,11 @@ export const listPoolsSelector = createSelector(
         token2Value,
         apy,
         amp,
+        priceChange24H
       } = pool;
       const volumeToAmount = format.amount(volume, 0);
       const priceChangeToAmount = format.amount(priceChange, 0);
-      const perChange24h = pool['24H'];
+      const perChange24h = priceChange24H;
       const perChangeSign = perChange24h > 0 ? '+' : '';
       const perChange24hToStr = `${perChangeSign}${perChange24h}%`;
       let perChange24hColor = COLORS.newGrey;

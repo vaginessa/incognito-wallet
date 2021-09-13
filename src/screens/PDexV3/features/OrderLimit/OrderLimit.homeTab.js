@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import {
-  actionFetch as actionFetchPools,
+  actionFetchPools,
   FollowingPools,
 } from '@screens/PDexV3/features/Pools';
 import { useNavigation } from 'react-navigation-hooks';
