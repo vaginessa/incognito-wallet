@@ -13,7 +13,6 @@ import { currencySelector, decimalDigitsSelector } from '@screens/Setting';
 import { formatAmount } from '@components/Token';
 import { PRV } from '@services/wallet/tokenService';
 import { getAccountWallet } from '@src/services/wallet/Wallet.shared';
-import {getPDexV3Instance} from '@screens/PDexV3';
 import {
   defaultAccountName,
   defaultAccountBalanceSelector,
@@ -152,20 +151,7 @@ export const getDefaultAccountWalletSelector = createSelector(
   (account, wallet) => getAccountWallet(account, wallet),
 );
 
-export const getPDex3InstanceSelector = createSelector(
-  defaultAccountSelector,
-  (account) => {
-    const { OTAKey, PaymentAddress } = account;
-    const pdex3Instance = getPDexV3Instance({
-      otaKey: OTAKey, address: PaymentAddress
-    });
-    return pdex3Instance;
-  },
-);
-
-
 export default {
   isGettingBalance,
   getDefaultAccountWalletSelector,
-  getPDex3InstanceSelector,
 };
