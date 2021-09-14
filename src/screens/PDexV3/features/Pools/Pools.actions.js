@@ -81,12 +81,12 @@ export const actionToggleFollowingPool = (poolId) => async (
   }
 };
 
-export const actionFetchListPools = () => async (dispatch, getState) => {
+export const actionFetchListPools = (pairId) => async (dispatch, getState) => {
   try {
     const state = getState();
     const account = defaultAccountWalletSelector(state);
     const pDexV3Inst = await getPDexV3Instance({ account });
-    const listPools = await pDexV3Inst.getListPools();
+    const listPools = await pDexV3Inst.getListPools(pairId);
     let poolsIDs = listPools.map((pool) => pool.poolId);
     console.log('poolsIDs', poolsIDs);
     let listPoolsDetail = await pDexV3Inst.getListPoolsDetail(poolsIDs);

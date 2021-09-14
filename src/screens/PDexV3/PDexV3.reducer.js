@@ -11,6 +11,7 @@ import { removePoolHistoriesReducer as removePoolHistories } from './features/Re
 import { withdrawRewardHistoriesReducer as withdrawRewardHistories } from './features/WithdrawRewardHistories';
 import { stakingReducer as staking } from './features/Staking';
 import { liquidityReducer as liquidity } from './features/Liquidity';
+import { pairsReducer as pairs } from './features/PairList';
 
 const pDexV3Reducer = combineReducers({
   home,
@@ -25,6 +26,7 @@ const pDexV3Reducer = combineReducers({
   withdrawRewardHistories,
   staking,
   liquidity,
+  pairs,
 });
 
 export default pDexV3Reducer;

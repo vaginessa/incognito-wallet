@@ -28,7 +28,7 @@ const PoolsHeader = React.memo(() => {
       <TouchableOpacity
         style={headStyled.btnSearch}
         onPress={() =>
-          navigate.navigate(routeNames.PoolsList, {
+          navigate.navigate(routeNames.PairList, {
             params: {
               onPressPool,
             },
@@ -128,6 +128,10 @@ const Pools = (props) => {
 };
 
 Pools.propTypes = {
+  handlePressPool: PropTypes.func.isRequired,
+};
+
+PoolsListFollowing.propTypes = {
   handlePressPool: PropTypes.func.isRequired,
 };
 

@@ -11,6 +11,8 @@ import {Field} from 'redux-form';
 import withLiquidity from '@screens/PDexV3/features/Liquidity/Liquidity.enhance';
 import {createPoolSelector, liquidityActions} from '@screens/PDexV3/features/Liquidity';
 import styled from '@screens/PDexV3/features/Liquidity/Liquidity.styled';
+import {useNavigation} from 'react-navigation-hooks';
+import routeNames from '@routers/routeNames';
 
 const initialFormValues = {
   inputToken: '',
@@ -25,8 +27,11 @@ const Form = createForm(formConfigsCreatePool.formName, {
 });
 
 const InputsGroup = () => {
+  const navigation = useNavigation();
   const dispatch = useDispatch();
   const inputAmount = useSelector(createPoolSelector.inputAmountSelector);
+  const inputTokens = useSelector(createPoolSelector.inputTokensListSelector);
+  const outputTokens = useSelector(createPoolSelector.outputTokensListSelector);
   const inputToken = inputAmount(formConfigsCreatePool.formName, formConfigsCreatePool.inputToken);
   const outputToken = inputAmount(formConfigsCreatePool.formName, formConfigsCreatePool.outputToken);
   const onChangeText = ({ text, field }) => {
@@ -53,7 +58,9 @@ const InputsGroup = () => {
         }}
         editableInput={!inputToken.loadingBalance}
         loadingBalance={inputToken.loadingBalance}
-        // onPressSymbol={onPressInputSymbol}
+        onPressSymbol={() => navigation.navigate(routeNames.SelectTokenTrade, {
+          data: inputTokens,
+        })}
       />
       <AddBreakLine />
       <Field
@@ -72,7 +79,9 @@ const InputsGroup = () => {
         }}
         editableInput={!outputToken.loadingBalance}
         loadingBalance={outputToken.loadingBalance}
-        // onPressSymbol={onPressOutputSymbol}
+        onPressSymbol={() => navigation.navigate(routeNames.SelectTokenTrade, {
+          data: outputTokens,
+        })}
       />
     </View>
   );

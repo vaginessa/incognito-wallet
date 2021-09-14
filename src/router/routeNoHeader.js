@@ -37,12 +37,6 @@ import FrequentReceivers, {
   FrequentReceiversForm,
   SelectNetworkName,
 } from '@screens/FrequentReceivers';
-import {
-  PoolV2,
-  PoolV2History,
-  PoolV2Provide,
-  PoolV2Withdraw,
-} from '@src/screens/PoolV2';
 import Profile from '@src/screens/Profile';
 import Receipt from '@src/components/Receipt';
 import NodeItemsHelp from '@screens/NodeItemsHelp';
@@ -127,6 +121,7 @@ import {
   CreatePool,
   RemovePool,
 } from '@screens/PDexV3/features/Liquidity';
+import PairList from '@screens/PDexV3/features/PairList';
 
 const masterKeyRoutes = [
   {
@@ -279,6 +274,10 @@ const pDexV3Routes = [
     screen: TradeOrderHistory,
     name: routeNames.TradeOrderHistory,
   },
+  {
+    screen: PairList,
+    name: routeNames.PairList,
+  }
 ];
 
 const routes = [
@@ -417,46 +416,6 @@ const routes = [
   {
     screen: FrequentReceiversForm,
     name: routeNames.FrequentReceiversForm,
-  },
-  {
-    screen: PoolV2.Home,
-    name: routeNames.PoolV2,
-  },
-  {
-    screen: PoolV2.Help,
-    name: routeNames.PoolV2Help,
-  },
-  {
-    screen: PoolV2Provide.SelectCoin,
-    name: routeNames.PoolV2ProvideSelectCoin,
-  },
-  {
-    screen: PoolV2Provide.Input,
-    name: routeNames.PoolV2ProvideInput,
-  },
-  {
-    screen: PoolV2Provide.Confirm,
-    name: routeNames.PoolV2ProvideConfirm,
-  },
-  {
-    screen: PoolV2Withdraw.SelectCoin,
-    name: routeNames.PoolV2WithdrawSelectCoin,
-  },
-  {
-    screen: PoolV2Withdraw.Rewards,
-    name: routeNames.PoolV2WithdrawRewards,
-  },
-  {
-    screen: PoolV2Withdraw.Provision,
-    name: routeNames.PoolV2WithdrawProvision,
-  },
-  {
-    screen: PoolV2History.HistoryList,
-    name: routeNames.PoolV2History,
-  },
-  {
-    screen: PoolV2History.HistoryDetail,
-    name: routeNames.PoolV2HistoryDetail,
   },
   {
     name: routeNames.News,

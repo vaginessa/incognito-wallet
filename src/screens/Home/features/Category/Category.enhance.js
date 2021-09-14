@@ -37,14 +37,14 @@ const enhance = (WrappedComp) => (props) => {
   const navigation = useNavigation();
   const account = useSelector(accountSelector.defaultAccount);
   const goToScreen = (route, params, event) => {
-    // navigation.navigate(routeNames.HomeLiquidity3, params);
     navigation.navigate(route, params);
     if (event) {
       logEvent(event);
     }
   };
   const interactionById = (item) => {
-    console.log('item?.route', item?.route);
+    console.log('item?.route', item.route);
+    console.log('item?.key', item?.key);
     switch (item.key) {
     case 'buy_prv':
       goToScreen(
@@ -96,6 +96,10 @@ const enhance = (WrappedComp) => (props) => {
         url: CONSTANT_CONFIGS.FAUCET_URL + `address=${account.paymentAddress}`
       });
       break;
+    case 'invest': {
+      goToScreen(routeNames.HomePDexV3);
+      break;
+    }
     default:
       goToScreen(item?.route || '');
       break;

@@ -72,7 +72,6 @@ export default {
   CoinInfo: 'CoinInfo',
   Keychain: 'Keychain',
   CoinInfoVerify: 'CoinInfoVerify',
-  PoolV2: 'Stake',
   PoolV2Help: 'PoolV2Help',
   PoolV2ProvideSelectCoin: 'PoolV2ProvideSelectCoin',
   PoolV2ProvideInput: 'PoolV2ProvideInput',
@@ -174,7 +173,7 @@ export default {
   ContributeHistoryDetail: 'ContributeHistoryDetail',
   RemovePoolHistoriesDetail: 'RemovePoolHistoriesDetail',
   WithdrawRewardHistoriesDetail: 'WithdrawRewardHistoriesDetail',
-  Staking: 'Staking',
+  Staking: 'Stake',
   StakingMoreCoins: 'StakingMoreCoins',
   StakingMoreInput: 'StakingMoreInput',
   StakingMoreConfirm: 'StakingMoreConfirm',
@@ -184,4 +183,5 @@ export default {
   StakingHistories: 'StakingHistories',
   StakingHistoryDetail: 'StakingHistoryDetail',
   TradeOrderHistory: 'TradeOrderHistory',
+  PairList: 'PairList',
 };
