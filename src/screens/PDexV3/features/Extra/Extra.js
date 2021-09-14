@@ -25,6 +25,7 @@ export const styled = StyleSheet.create({
   },
   hook: {
     marginBottom: 15,
+    alignItems: 'flex-start',
   },
   labelContainer: {
     flex: 1,

@@ -61,13 +61,12 @@ export const getPrivacyDataByTokenID = createSelector(
         };
         return data;
       } catch (e) {
-        new ExHandler(e);
+        console.log('e');
       }
     }),
 );
 
 export const getPrivacyDataBaseOnAccount = createSelector(
-  // defaultAccount,
   internalTokens,
   pTokens,
   tokensFollowedSelector,

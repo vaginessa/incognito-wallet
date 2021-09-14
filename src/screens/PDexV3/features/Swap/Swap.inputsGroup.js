@@ -1,10 +1,11 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View } from 'react-native';
 import {
   RFTradeInputAmount as TradeInputAmount,
   validator,
 } from '@components/core/reduxForm';
 import { change, Field } from 'redux-form';
+import SelectedPrivacy from '@src/models/selectedPrivacy';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
@@ -16,7 +17,7 @@ import convert from '@src/utils/convert';
 import { maxAmountValidatorForSellInput } from './Swap.utils';
 import { formConfigs } from './Swap.constant';
 import {
-  pairsTokenSelector,
+  listPairsSelector,
   selltokenSelector,
   buytokenSelector,
   swapSelector,
@@ -74,9 +75,9 @@ const SwapInputsGroup = React.memo(() => {
   const dispatch = useDispatch();
   const swapInfo = useSelector(swapInfoSelector);
   const swap = useSelector(swapSelector);
-  const pairsToken = useSelector(pairsTokenSelector);
-  const selltoken = useSelector(selltokenSelector);
-  const buytoken = useSelector(buytokenSelector);
+  const pairsToken = useSelector(listPairsSelector);
+  const selltoken: SelectedPrivacy = useSelector(selltokenSelector);
+  const buytoken: SelectedPrivacy = useSelector(buytokenSelector);
   const inputAmount = useSelector(inputAmountSelector);
   const sellInputAmount = inputAmount(formConfigs.selltoken);
   const buyInputAmount = inputAmount(formConfigs.buytoken);
@@ -86,12 +87,16 @@ const SwapInputsGroup = React.memo(() => {
   };
   const onSelectSellToken = () =>
     navigation.navigate(routeNames.SelectTokenTrade, {
-      data: pairsToken,
+      data: pairsToken.filter(
+        (token: SelectedPrivacy) => token?.tokenId !== selltoken?.tokenId,
+      ),
       onSelectToken: (token) => onSelectToken(token, formConfigs.selltoken),
     });
   const onSelectBuyToken = () =>
     navigation.navigate(routeNames.SelectTokenTrade, {
-      data: pairsToken,
+      data: pairsToken.filter(
+        (token: SelectedPrivacy) => token?.tokenId !== buytoken?.tokenId,
+      ),
       onSelectToken: (token) => onSelectToken(token, formConfigs.buytoken),
     });
   const onFocusToken = (e, field) => dispatch(actionSetFocusToken(swap[field]));

@@ -101,7 +101,6 @@ const PoolsListHeaderFollowing = React.memo(() => {
 
 export const PoolsListFollowing = React.memo(({ handlePressPool }) => {
   const listPoolsFollowing = useSelector(listPoolsFollowingSelector);
-  const dispatch = useDispatch();
   const onPressPool = (poolId) =>
     typeof handlePressPool === 'function' && handlePressPool(poolId);
   return (

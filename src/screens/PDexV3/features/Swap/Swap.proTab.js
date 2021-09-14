@@ -25,12 +25,12 @@ import {
 } from './Swap.selector';
 import { actionEstimateTrade, actionSetFeeToken } from './Swap.actions';
 import { formConfigs } from './Swap.constant';
-import { MaxPriceAndImpact } from './Swap.shared';
 import {
   minFeeValidator,
   availablePayFeeByPRVValidator,
   maxAmountValidatorForSlippageTolerance,
 } from './Swap.utils';
+import { useTabFactories } from './Swap.simpleTab';
 
 const styled = StyleSheet.create({
   container: {
@@ -44,9 +44,9 @@ const TabPro = React.memo(() => {
   const slippagetolerance = useSelector(slippagetoleranceSelector);
   const feetokenData = useSelector(feetokenDataSelector);
   const inputAmount = useSelector(inputAmountSelector);
-  const buyinputAmount = inputAmount(formConfigs.buytoken);
   const sellinputAmount = inputAmount(formConfigs.selltoken);
   const prv: SelectedPrivacy = useSelector(getPrivacyDataByTokenID)(PRV.id);
+  const { hooksFactories } = useTabFactories();
   const dispatch = useDispatch();
   const onChangeTypeFee = async (type) => {
     const { tokenId } = type;
@@ -107,9 +107,10 @@ const TabPro = React.memo(() => {
             _maxAmountValidatorForSlippageTolerance,
           ]}
           inputStyle={{
-            maxWidth: 100,
+            flex: 1,
           }}
           editableInput={!!swapInfo?.editableInput}
+          autoFocus
         />
       ),
     },
@@ -135,37 +136,7 @@ const TabPro = React.memo(() => {
     },
     {
       title: 'Trade details',
-      hooks: [
-        {
-          label: 'Balance',
-          value: swapInfo?.balanceStr ?? '',
-        },
-        swapInfo?.showPRVBalance
-          ? {
-            label: 'PRV Balance',
-            value: swapInfo?.prvBalanceStr ?? '',
-          }
-          : {},
-        {
-          label: 'Max price &  impact',
-          hasQuestionIcon: true,
-          onPressQuestionIcon: () => null,
-          customValue: <MaxPriceAndImpact />,
-        },
-        {
-          label: 'Routing',
-          value: swapInfo?.routing ?? '',
-          hasQuestionIcon: true,
-          onPressQuestionIcon: () => null,
-        },
-        {
-          label: 'Network fee',
-          value: swapInfo?.networkfeeAmountStr ?? '',
-          hasQuestionIcon: true,
-          onPressQuestionIcon: () => null,
-          boldLabel: true,
-        },
-      ]
+      hooks: hooksFactories
         .filter((hook) => !isEmpty(hook))
         .map((hook) => <Hook {...hook} key={hook.label} />),
     },

@@ -97,7 +97,10 @@ import HistoryConvert from '@src/screens/Home/features/HistoryConvert';
 import HomePDexV3 from '@screens/PDexV3/features/Home';
 import { PoolsList } from '@screens/PDexV3/features/Pools';
 import { ReviewOrderSwap } from '@screens/PDexV3/features/Swap';
-import Trade, { ReviewOrder } from '@screens/PDexV3/features/Trade';
+import Trade, {
+  ReviewOrder,
+  TradeOrderHistory,
+} from '@screens/PDexV3/features/Trade';
 import NFTToken, { MintNFTToken } from '@screens/PDexV3/features/NFTToken';
 import OrderLimit from '@src/screens/PDexV3/features/OrderLimit';
 import SelectTokenTrade from '@screens/PDexV3/features/SelectToken';
@@ -271,7 +274,11 @@ const pDexV3Routes = [
   {
     screen: StakingHistoryDetail,
     name: routeNames.StakingHistoryDetail,
-  }
+  },
+  {
+    screen: TradeOrderHistory,
+    name: routeNames.TradeOrderHistory,
+  },
 ];
 
 const routes = [

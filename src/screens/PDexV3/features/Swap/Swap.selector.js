@@ -1,19 +1,17 @@
 import { createSelector } from 'reselect';
 import { getPrivacyDataByTokenID as getPrivacyDataByTokenIDSelector } from '@src/redux/selectors/selectedPrivacy';
-import { allTokensIDsSelector } from '@src/redux/selectors/token';
 import format from '@src/utils/format';
-import includes from 'lodash/includes';
 import floor from 'lodash/floor';
 import { formValueSelector, isValid } from 'redux-form';
 import convert from '@src/utils/convert';
 import SelectedPrivacy from '@src/models/selectedPrivacy';
-import { PRV, PRV_ID } from '@src/constants/common';
+import { PRV } from '@src/constants/common';
 import { sharedSelector } from '@src/redux/selectors';
-import BigNumber from 'bignumber.js';
 import orderBy from 'lodash/orderBy';
+import { getPoolSize } from '@screens/PDexV3';
+import { PRIORITY_LIST } from '@screens/Dex/constants';
 import { formConfigs } from './Swap.constant';
 import { getInputAmount } from './Swap.utils';
-
 
 export const swapSelector = createSelector(
   (state) => state.pDexV3,
@@ -21,85 +19,25 @@ export const swapSelector = createSelector(
 );
 
 export const listPairsSelector = createSelector(
-  allTokensIDsSelector,
-  getPrivacyDataByTokenIDSelector,
   swapSelector,
-  (tokensIDs, getPrivacyDataByTokenID, { pairs }) => {
-    if (!tokensIDs || !pairs) {
+  getPrivacyDataByTokenIDSelector,
+  ({ pairs }, getPrivacyDataByTokenID) => {
+    if (!pairs) {
       return [];
     }
-    let pairTokens = pairs
-      .map((pair) => {
-        const { token1IdStr, token2IdStr } = pair;
-        return {
-          ...pair,
-          pairId: `${token1IdStr}-${token2IdStr}`,
-        };
-      })
-      .filter(
-        ({ token1IdStr, token2IdStr, poolid }) =>
-          tokensIDs.includes(token1IdStr) ||
-          tokensIDs.includes(token2IdStr) ||
-          !!poolid,
-      ) // remove if it not existed list tokens
-      .filter(({ poolid }) => includes(poolid, PRV_ID))
-      .map((pair) => {
-        const {
-          token1IdStr,
-          token2IdStr,
-          token1PoolValue,
-          token2PoolValue,
-        } = pair;
-        const token1 = getPrivacyDataByTokenID(token1IdStr);
-        const token2 = getPrivacyDataByTokenID(token2IdStr);
-        const token1PoolAmount = convert.toHumanAmount(
-          token1PoolValue,
-          token1.pDecimals,
-        );
-        const token2PoolAmount = convert.toHumanAmount(
-          token2PoolValue,
-          token2.pDecimals,
-        );
-        const totalPool = new BigNumber(token1PoolAmount).plus(
-          token2PoolAmount,
-        );
-        const validPool = totalPool.gt(0);
-        return {
-          ...pair,
-          token1,
-          token2,
-          token1PoolAmount,
-          token2PoolAmount,
-          totalPool: totalPool.toNumber(),
-          validPool,
-        };
-      })
-      .filter((pair) => pair.validPool);
-    pairTokens = orderBy(pairTokens, ['total'], ['desc']);
-    return pairTokens || [];
+    let list = pairs
+      .map((tokenID) => getPrivacyDataByTokenID(tokenID))
+      .map((token) => {
+        let priority = PRIORITY_LIST.indexOf(token?.id);
+        priority > -1 ? priority : PRIORITY_LIST.length + 1;
+        return { ...token, priority };
+      });
+    return orderBy(
+      list,
+      ['priority', 'hasIcon', 'verified'],
+      ['asc', 'desc', 'desc'],
+    );
   },
-);
-
-export const listTokenHasPairSelector = createSelector(
-  allTokensIDsSelector,
-  listPairsSelector,
-  getPrivacyDataByTokenIDSelector,
-  (tokenIDs, pairs, getPrivacyDataByTokenID) =>
-    tokenIDs
-      .filter((tokenId) =>
-        pairs.find(({ poolid }) => includes(poolid, tokenId)),
-      )
-      .map((tokenId) => getPrivacyDataByTokenID(tokenId)),
-);
-
-export const pairsTokenSelector = createSelector(
-  listTokenHasPairSelector,
-  (tokens) => tokens,
-);
-
-export const defaultPairSelector = createSelector(
-  listPairsSelector,
-  (pairs) => pairs[0] || null,
 );
 
 export const inpuTokenSelector = createSelector(
@@ -220,7 +158,30 @@ export const swapInfoSelector = createSelector(
     try {
       const sellInputAmount = getInputAmount(formConfigs.selltoken);
       const buyInputAmount = getInputAmount(formConfigs.buytoken);
-      const { fee, route: routing, sizeimpact, maxPriceStr } = data;
+      const {
+        fee,
+        route: routing,
+        sizeimpact,
+        maxPriceStr,
+        poolDetails,
+      } = data;
+      let allPoolSize = [];
+      try {
+        allPoolSize = Object.entries(poolDetails).map(([, value]) => {
+          const { token1Value, token2Value, token1Id, token2Id } = value;
+          const token1 = getPrivacyDataByTokenID(token1Id);
+          const token2 = getPrivacyDataByTokenID(token2Id);
+          const poolSize = getPoolSize(
+            token1,
+            token2,
+            token1Value,
+            token2Value,
+          );
+          return poolSize;
+        });
+      } catch {
+        //
+      }
       const minFeeAmount = format.toFixed(
         convert.toHumanAmount(fee, feeTokenData?.pDecimals),
         feeTokenData?.pDecimals,
@@ -247,8 +208,12 @@ export const swapInfoSelector = createSelector(
         btnSwapText = 'Calculating...';
       }
       const tradingFeeStr = `${feeTokenData?.feeAmountText} ${feeTokenData?.symbol}`;
-      const sellInputBalanceStr = `${sellInputAmount?.balanceStr} ${sellInputAmount?.symbol}`;
-      const buyInputBalanceStr = `${buyInputAmount?.balanceStr} ${buyInputAmount?.symbol}`;
+      const sellInputBalanceStr = `${sellInputAmount?.balanceStr || ''} ${
+        sellInputAmount?.symbol
+      }`;
+      const buyInputBalanceStr = `${buyInputAmount?.balanceStr || ''} ${
+        buyInputAmount?.symbol
+      }`;
       const sellInputAmountStr = `${sellInputAmount?.amountText} ${sellInputAmount?.symbol}`;
       const buyInputAmountStr = `${buyInputAmount?.amountText} ${buyInputAmount?.symbol}`;
       const prv: SelectedPrivacy = getPrivacyDataByTokenID(PRV.id);
@@ -277,6 +242,7 @@ export const swapInfoSelector = createSelector(
         prvBalanceStr,
         percent,
         swaping,
+        allPoolSize,
       };
     } catch (error) {
       console.log('swapInfoSelector-error', error);

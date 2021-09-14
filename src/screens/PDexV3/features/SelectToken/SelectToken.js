@@ -1,18 +1,24 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
-import { ListToken, TokenTrade } from '@src/components/Token';
+import {
+  TokenTrade,
+  withTokenVerified,
+  ListAllToken,
+} from '@src/components/Token';
 import { Header } from '@src/components';
 import { withLayout_2 } from '@src/components/Layout';
 import { useNavigationParam } from 'react-navigation-hooks';
+import { useSearchBox } from '@src/components/Header';
 
 const styled = StyleSheet.create({
   container: {
     flex: 1,
   },
-  styledListToken: {
-    paddingTop: 27,
-  },
+});
+
+const ListAllTokenSelectable = withTokenVerified((props) => {
+  return <ListAllToken {...props} />;
 });
 
 const SelectToken = (props) => {
@@ -27,13 +33,11 @@ const SelectToken = (props) => {
   return (
     <View style={styled.container}>
       <Header canSearch title="Search coins" />
-      <ListToken
-        visible
-        data={data}
+      <ListAllTokenSelectable
+        availableTokens={data}
         renderItem={({ item }) => (
           <TokenTrade onPress={() => onPress(item)} tokenId={item?.tokenId} />
         )}
-        styledListToken={styled.styledListToken}
       />
     </View>
   );

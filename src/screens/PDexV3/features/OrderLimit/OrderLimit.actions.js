@@ -338,7 +338,6 @@ export const actionFetchCancelingOrderTxs = () => async (
     }
     const poolid = pool?.poolId;
     await delay(1000);
-    console.log('poolId', poolid);
     cancelingTxs = await pDexV3Inst.getCancelingOrderTxs({
       poolid,
     });

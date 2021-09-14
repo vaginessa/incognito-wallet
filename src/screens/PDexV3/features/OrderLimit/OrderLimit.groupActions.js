@@ -106,7 +106,6 @@ const GroupActions = (props) => {
       });
   };
   const onPressChart = () => {
-    console.log('POOL ID HERE', poolId);
     navigation.navigate(routeNames.Chart, {
       poolId,
     });

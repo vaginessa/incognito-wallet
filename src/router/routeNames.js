@@ -183,4 +183,5 @@ export default {
   StakingWithdrawReward: 'StakingWithdrawReward',
   StakingHistories: 'StakingHistories',
   StakingHistoryDetail: 'StakingHistoryDetail',
+  TradeOrderHistory: 'TradeOrderHistory',
 };

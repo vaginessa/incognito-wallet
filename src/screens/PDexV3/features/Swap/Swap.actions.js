@@ -15,9 +15,10 @@ import { delay } from '@src/utils/delay';
 import isEmpty from 'lodash/isEmpty';
 import SelectedPrivacy from '@src/models/selectedPrivacy';
 import { batch } from 'react-redux';
-import { decimalDigitsSelector } from '@src/screens/Setting';
+import { BIG_COINS } from '@src/screens/Dex/constants';
 import { PRV, PRV_ID } from '@src/constants/common';
-import { getPDexV3Instance } from '@screens/PDexV3';
+import { getPDexV3Instance, getPoolSize } from '@screens/PDexV3';
+import uniq from 'lodash/uniq';
 import {
   ACTION_FETCHING,
   ACTION_FETCHED,
@@ -37,7 +38,6 @@ import {
 } from './Swap.constant';
 import {
   buytokenSelector,
-  defaultPairSelector,
   feeSelectedSelector,
   feetokenDataSelector,
   inputAmountSelector,
@@ -45,6 +45,7 @@ import {
   slippagetoleranceSelector,
   swapSelector,
   swapInfoSelector,
+  listPairsSelector,
 } from './Swap.selector';
 
 export const actionSetPercent = (payload) => ({
@@ -154,9 +155,8 @@ export const actionEstimateTrade = () => async (dispatch, getState) => {
     const account = defaultAccountWalletSelector(state);
     const pDexV3Inst = await getPDexV3Instance({ account });
     const data = await pDexV3Inst.getEstimateTrade(payload);
-    console.log('inputToken', inputtoken);
     const amountInput = format.toFixed(
-      convert.toHumanAmount(data.maxGet, inputtokenDecimals),
+      convert.toHumanAmount(data.minGet, inputtokenDecimals),
       inputtokenDecimals,
     );
     const amountFee = format.toFixed(
@@ -220,7 +220,7 @@ export const actionSetSellToken = (selltoken) => async (dispatch, getState) => {
         token.pDecimals,
       );
       const buyInputAmount = format.toFixed(
-        convert.toHumanAmount(data?.maxGet || 0, buytoken.pDecimals),
+        convert.toHumanAmount(data?.minGet || 0, buytoken.pDecimals),
         buytoken.pDecimals,
       );
       const amountFee = format.toFixed(
@@ -295,24 +295,29 @@ export const actionFetchPairs = () => async (dispatch, getState) => {
     const account = defaultAccountWalletSelector(state);
     const pDexV3Inst = await getPDexV3Instance({ account });
     pairs = (await pDexV3Inst.getListPair()) || [];
+    pairs = uniq(
+      pairs.reduce(
+        (prev, current) =>
+          (prev = prev.concat([current.tokenid1, current.tokenid2])),
+        [],
+      ),
+    );
   } catch (error) {
     new ExHandler(error).showErrorToast();
   }
   await dispatch(actionFetchedPairs(pairs));
+  return pairs;
 };
 
 export const actionInitSwapForm = () => async (dispatch, getState) => {
   try {
     await dispatch(actionInitingSwapForm(true));
-    await dispatch(actionFetchPairs());
-    const state = getState();
-    const account = defaultAccountWalletSelector(state);
-    const pDexV3Inst = await getPDexV3Instance({ account });
-    const defaultPair = defaultPairSelector(state);
-    if (isEmpty(defaultPair)) {
-      return;
-    }
-    const { token1IdStr: selltoken, token2IdStr: buytoken } = defaultPair;
+    const pairs = await dispatch(actionFetchPairs());
+    const defaultPair = {
+      selltoken: pairs[0] || PRV_ID,
+      buytoken: pairs[1] || BIG_COINS.USDT,
+    };
+    const { selltoken, buytoken } = defaultPair;
     batch(() => {
       dispatch(actionSetSellTokenFetched(selltoken));
       dispatch(actionSetBuyTokenFetched(buytoken));
@@ -492,7 +497,7 @@ export const actionFetchSwap = () => async (dispatch, getState) => {
       },
     };
     console.log('params', params);
-    const tx = await pDexV3.createAndSendSwapRequestTx(params);
+    tx = await pDexV3.createAndSendSwapRequestTx(params);
     console.log('tx', tx);
     if (!tx) {
       console.log('error');

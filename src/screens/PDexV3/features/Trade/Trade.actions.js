@@ -5,7 +5,6 @@ import {
   ACTION_FETCHED,
   ACTION_FETCH_FAIL,
 } from './Trade.constant';
-import { tradePDexV3Selector } from './Trade.selector';
 
 export const actionFetching = () => ({
   type: ACTION_FETCHING,
@@ -20,13 +19,8 @@ export const actionFetchFail = () => ({
   type: ACTION_FETCH_FAIL,
 });
 
-export const actionFetch = () => async (dispatch, getState) => {
+export const actionFetch = () => async (dispatch) => {
   try {
-    const state = getState();
-    const { isFeching } = tradePDexV3Selector(state);
-    if (isFeching) {
-      return;
-    }
     await dispatch(actionFetching());
     const task = [
       dispatch(getPTokenList()),

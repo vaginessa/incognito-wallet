@@ -1,11 +1,13 @@
 /* eslint-disable import/no-cycle */
 import Server from '@src/services/wallet/Server';
 import storage from '@src/services/storage';
-import {PDexV3, Validator} from 'incognito-chain-web-js/build/wallet';
+import { PDexV3, Validator } from 'incognito-chain-web-js/build/wallet';
 import BigNumber from 'bignumber.js';
 import format from '@src/utils/format';
 import convertUtil from '@utils/convert';
-import {isNaN, isNumber} from 'lodash';
+import isNumber from 'lodash/isNumber';
+import isNaN from 'lodash/isNaN';
+import SelectedPrivacy from '@src/models/selectedPrivacy';
 
 export const getPDexV3Instance = async ({ account }) => {
   try {
@@ -80,39 +82,67 @@ export const getReward = (token1, token2, token1Value, token2Value) => {
   return `${token1Str} + ${token2Str}`;
 };
 
-export const getPoolSize = (token1, token2, token1PoolValue, token2PoolValue) => {
-  const formattedToken1Pool = format.amount(
+export const getPoolSize = (
+  token1: SelectedPrivacy,
+  token2: SelectedPrivacy,
+  token1PoolValue = 0,
+  token2PoolValue = 0,
+) => {
+  const formattedToken1Pool = format.amountFull(
     token1PoolValue,
     token1?.pDecimals,
-    true,
+    false,
   );
-  const formattedToken2Pool = format.amount(
+  const formattedToken2Pool = format.amountFull(
     token2PoolValue,
     token2?.pDecimals,
-    true,
+    false,
   );
   return `${formattedToken1Pool} ${token1?.symbol} + ${formattedToken2Pool} ${token2?.symbol}`;
 };
 
 export const parseInputWithText = ({ text, token }) => {
   let number = convertUtil.toNumber(text, true);
-  number = convertUtil.toOriginalAmount(number, token.pDecimals, token.pDecimals !== 0);
+  number = convertUtil.toOriginalAmount(
+    number,
+    token.pDecimals,
+    token.pDecimals !== 0,
+  );
   return number;
 };
 
-export const calculateContributeValue = ({ inputValue, outputToken, inputPool, outputPool }) => {
+export const calculateContributeValue = ({
+  inputValue,
+  outputToken,
+  inputPool,
+  outputPool,
+}) => {
   if (!inputPool || !outputPool) return;
-  if (!outputToken || !isNumber(inputValue) || isNaN(inputValue) || !inputValue) {
+  if (
+    !outputToken ||
+    !isNumber(inputValue) ||
+    isNaN(inputValue) ||
+    !inputValue
+  ) {
     return '';
   }
-  const rate = format.toFixed(new BigNumber(outputPool).dividedBy(inputPool).toNumber(), outputToken.pDecimals);
+  const rate = format.toFixed(
+    new BigNumber(outputPool).dividedBy(inputPool).toNumber(),
+    outputToken.pDecimals,
+  );
   const number = new BigNumber(inputValue).multipliedBy(rate).toNumber();
   const amount = convertUtil.toHumanAmount(number, outputToken.pDecimals);
   return format.toFixed(amount, outputToken.pDecimals);
 };
 
 export const formatBalance = (token1, token2, token1Value, token2Value) => {
-  if (!token1 || !token2 || token1Value === undefined || token2Value === undefined) return '';
+  if (
+    !token1 ||
+    !token2 ||
+    token1Value === undefined ||
+    token2Value === undefined
+  )
+    return '';
   const token1Str = `${format.amount(token1Value, token1.pDecimals)} ${
     token1.symbol
   }`;

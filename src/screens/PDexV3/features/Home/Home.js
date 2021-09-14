@@ -4,23 +4,22 @@ import { ScrollView, Tabs } from '@src/components/core';
 import PropTypes from 'prop-types';
 import {
   FollowingPools,
-  tradingVolume24hSelector,
   actionFetchPools,
 } from '@src/screens/PDexV3/features/Pools';
 import Portfolio, {
   actionFetch as actionFetchListShare,
 } from '@src/screens/PDexV3/features/Portfolio';
 import { View, RefreshControl } from 'react-native';
-import {batch, useDispatch, useSelector} from 'react-redux';
+import { batch, useDispatch, useSelector } from 'react-redux';
 import { ButtonTrade } from '@src/components/Button';
 import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
-import {liquidityActions} from '@screens/PDexV3/features/Liquidity';
+import { TradingVol24h } from '@screens/PDexV3/features/Share';
+import { liquidityActions } from '@screens/PDexV3/features/Liquidity';
 import withHome from './Home.enhance';
 import { styled } from './Home.styled';
 import { ROOT_TAB_HOME, TAB_POOLS_ID, TAB_PORTFOLIO_ID } from './Home.constant';
 import { homePDexV3Selector } from './Home.selector';
-import HomeTabHeader from './Home.tabHeader';
 
 const GroupButton = React.memo(() => {
   const navigation = useNavigation();
@@ -41,7 +40,6 @@ const GroupButton = React.memo(() => {
 });
 
 const TabPools = React.memo(() => {
-  const tradingVolume24h = useSelector(tradingVolume24hSelector);
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const onNavigateContribute = (poolId) => {
@@ -52,7 +50,7 @@ const TabPools = React.memo(() => {
   };
   return (
     <>
-      <HomeTabHeader title="Trading Volume 24h" desc={tradingVolume24h} />
+      <TradingVol24h />
       <GroupButton />
       <FollowingPools handlePressPool={onNavigateContribute} />
     </>

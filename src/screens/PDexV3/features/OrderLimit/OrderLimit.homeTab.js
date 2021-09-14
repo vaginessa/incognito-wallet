@@ -6,6 +6,7 @@ import {
 } from '@screens/PDexV3/features/Pools';
 import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
+import { TradingVol24h } from '@screens/PDexV3/features/Share';
 import { useDispatch } from 'react-redux';
 import { actionSetPoolSelected } from './OrderLimit.actions';
 
@@ -27,6 +28,7 @@ const TabOrderLimit = () => {
   }, []);
   return (
     <View style={styled.container}>
+      <TradingVol24h />
       <FollowingPools handlePressPool={handlePressPool} />
     </View>
   );

@@ -34,3 +34,4 @@ export { default as ButtonTrade } from './ButtonTrade';
 export { default as ButtonTrade1 } from './ButtonTrade1';
 export { default as ButtonRefresh } from './BtnRefresh';
 export { default as ButtonChart } from './BtnChart';
+export { default as BtnOrderHistory } from './BtnOrderHistory';

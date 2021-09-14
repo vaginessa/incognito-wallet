@@ -10,4 +10,10 @@ export const styled = StyleSheet.create({
   styledTabs: {
     marginBottom: 30,
   },
+  btnOrderHistory: {
+    marginRight: 15,
+  },
+  rightHeader: {
+    alignItems: 'center',
+  },
 });

@@ -64,7 +64,6 @@ const Item = React.memo((props) => {
 const OrderBook = (props) => {
   const orderBook = useSelector(orderBookSelector);
   const { buy, sell } = orderBook;
-  console.log('buy', buy[0]);
   return (
     <View style={styled.container}>
       <Text style={styled.title}>Order Book</Text>
