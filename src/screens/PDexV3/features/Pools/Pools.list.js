@@ -2,17 +2,17 @@ import { Header } from '@src/components';
 import { FlatList, KeyboardAwareScrollView } from '@src/components/core';
 import { withLayout_2 } from '@src/components/Layout';
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
-import { useDispatch, useSelector } from 'react-redux';
+import {ActivityIndicator, StyleSheet, View} from 'react-native';
+import {useDispatch, useSelector} from 'react-redux';
 import {
-  actionToggleFollowingPool,
-  listPoolsSelector,
+  actionFreeListPools,
+  isFetchingSelector,
+  poolPairIdsSelector,
 } from '@screens/PDexV3/features/Pools';
 import Pool from '@screens/PDexV3/features/Pool';
-import { useSearchBox } from '@src/components/Header';
 import { useNavigationParam } from 'react-navigation-hooks';
+import PropTypes from 'prop-types';
 import { styled as generalStyled } from './Pools.styled';
-import { handleFilterPoolByKeySeach } from './Pools.utils';
 
 const styled = StyleSheet.create({
   container: {
@@ -21,17 +21,13 @@ const styled = StyleSheet.create({
 });
 
 export const PoolsList = React.memo(({ onPressPool }) => {
-  const data = useSelector(listPoolsSelector);
-  const [_data, keySearch] = useSearchBox({
-    data,
-    shouldCleanSearch: false,
-    handleFilter: () => handleFilterPoolByKeySeach({ data, keySearch }),
-  });
-  const listPoolsIDs = _data.map((pool) => pool?.poolId);
+  const poolIds = useSelector(poolPairIdsSelector);
+  const isFetching = useSelector(isFetchingSelector);
   return (
     <KeyboardAwareScrollView contentContainerStyle={{ paddingTop: 27 }}>
+      {isFetching && (<ActivityIndicator style={{ marginBottom: 30 }} />)}
       <FlatList
-        data={listPoolsIDs}
+        data={poolIds}
         renderItem={({ item: poolId }) => (
           <Pool poolId={poolId} onPressPool={() => onPressPool(poolId)} />
         )}
@@ -44,16 +40,22 @@ export const PoolsList = React.memo(({ onPressPool }) => {
 });
 
 const PoolsListContainer = (props) => {
+  const dispatch = useDispatch();
   const params = useNavigationParam('params');
-  const { headerTitle = 'Search coins pair', onPressPool } = params || props;
+  const { headerTitle = 'Pools', onPressPool } = params || props;
+  React.useEffect(() => {
+    return () => dispatch(actionFreeListPools());
+  }, []);
   return (
     <View style={styled.container}>
-      <Header title={headerTitle} canSearch />
+      <Header title={headerTitle} />
       <PoolsList onPressPool={onPressPool} />
     </View>
   );
 };
 
-PoolsListContainer.propTypes = {};
+PoolsList.propTypes = {
+  onPressPool: PropTypes.func.isRequired,
+};
 
 export default withLayout_2(React.memo(PoolsListContainer));

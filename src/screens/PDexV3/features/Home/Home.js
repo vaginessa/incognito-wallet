@@ -66,14 +66,14 @@ const Home = (props) => {
       <Header title="Market" accountSelectable />
       <ScrollView
         style={styled.main}
-        refreshControl={
+        refreshControl={(
           <RefreshControl
             refreshing={isFetching}
             onRefresh={() =>
               typeof handleOnRefresh === 'function' && handleOnRefresh()
             }
           />
-        }
+        )}
       >
         <Tabs rootTabID={ROOT_TAB_HOME}>
           <View

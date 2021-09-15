@@ -3,6 +3,7 @@ import format from '@src/utils/format';
 import { getPrivacyDataByTokenID as getPrivacyDataByTokenIDSelector } from '@src/redux/selectors/selectedPrivacy';
 import { COLORS } from '@src/styles';
 import { getExchangeRate } from '@screens/PDexV3';
+import uniqBy from 'lodash/uniqBy';
 
 export const poolsSelector = createSelector(
   (state) => state.pDexV3,
@@ -19,17 +20,35 @@ export const listPoolsIDsSelector = createSelector(
   ({ listPools }) => listPools.map((pool) => pool.poolId),
 );
 
-export const listPoolsFollowingSelector = createSelector(
+const followSelector = createSelector(
   poolsSelector,
-  ({ listPoolsFollowing }) => listPoolsFollowing,
+  ({ follow }) => follow,
 );
 
+export const listPoolsFollowingSelector = createSelector(
+  followSelector,
+  ({ pools }) => pools,
+);
+
+export const followPoolIdsSelector = createSelector(
+  followSelector,
+  ({ pools }) => pools.map(pool => pool.poolId),
+);
+
+/*** Pools with current pairID select */
+export const poolPairIdsSelector = createSelector(
+  poolsSelector,
+  ({ listPools }) => listPools.map(pool => pool.poolId),
+);
+
+/*** Pools with current pairID merge with followPools  select */
 export const listPoolsSelector = createSelector(
   poolsSelector,
   listPoolsFollowingSelector,
   getPrivacyDataByTokenIDSelector,
-  ({ listPools }, listPoolsFollowing, getPrivacyDataByTokenID) =>
-    listPools.map((pool) => {
+  ({ listPools }, followPools, getPrivacyDataByTokenID) => {
+    const pools = uniqBy([...listPools, ...followPools], 'poolId');
+    return pools.map((pool) => {
       const {
         volume,
         priceChange,
@@ -72,8 +91,7 @@ export const listPoolsSelector = createSelector(
         priceChangeToAmount,
         perChange24hToStr,
         perChange24hColor,
-        isFollowed:
-          listPoolsFollowing.findIndex((_poolId) => poolId === _poolId) > -1,
+        isFollowed: followPools.findIndex((followPool) => poolId === followPool.poolId) > -1,
         poolTitle: `${token1?.symbol} / ${token2?.symbol}`,
         poolSizeStr,
         exchangeRateStr: getExchangeRate(
@@ -87,11 +105,17 @@ export const listPoolsSelector = createSelector(
         apyStr: `${apy}%`,
         priceChangeToAmountStr: `$${priceChangeToAmount}`
       };
-    }),
+    });
+  }
 );
 
 export const getDataByPoolIdSelector = createSelector(
   listPoolsSelector,
   (listPools) => (poolId) =>
     poolId && listPools.find((pool) => pool?.poolId === poolId),
+);
+
+export const isFetchingSelector = createSelector(
+  poolsSelector,
+  ({ isFetching }) => isFetching
 );

@@ -2,8 +2,7 @@ import { activedTabSelector } from '@src/components/core/Tabs/Tabs.selector';
 import { ExHandler } from '@src/services/exception';
 import { actionFetch as actionFetchListShare } from '@screens/PDexV3/features/Portfolio';
 import {
-  actionFetchTradingVolume24h,
-  actionFetchListPools,
+  actionFetchPools,
 } from '@screens/PDexV3/features/Pools';
 import {
   TAB_POOLS_ID,
@@ -45,8 +44,7 @@ export const actionRefresh = () => async (dispatch, getState) => {
     switch (activedTab) {
     case TAB_POOLS_ID: {
       task = [
-        dispatch(actionFetchTradingVolume24h()),
-        dispatch(actionFetchListPools()),
+        dispatch(actionFetchPools()),
         dispatch(actionFetchListShare()),
       ];
       break;
@@ -57,8 +55,7 @@ export const actionRefresh = () => async (dispatch, getState) => {
     }
     default:
       task = [
-        dispatch(actionFetchTradingVolume24h()),
-        dispatch(actionFetchListPools()),
+        dispatch(actionFetchPools()),
         dispatch(actionFetchListShare()),
       ];
       break;
