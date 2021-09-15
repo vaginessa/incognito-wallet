@@ -1,9 +1,9 @@
 import { Row } from '@src/components';
-import { FlatList, TouchableOpacity } from '@src/components/core';
+import { TouchableOpacity } from '@src/components/core';
 import React from 'react';
 import { View, Text } from 'react-native';
 import { useNavigation } from 'react-navigation-hooks';
-import { useDispatch, useSelector } from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import Pool from '@screens/PDexV3/features/Pool';
 import {
   actionToggleFollowingPool,
@@ -15,25 +15,22 @@ import {
   styled,
   headStyled,
   poolsListHeaderFollowingStyled,
-  poolsListFollowingStyled,
   footerStyled,
 } from './Pools.styled';
 
-const PoolsHeader = React.memo(() => {
+const PoolsHeader = React.memo(({ handlePressPool }) => {
   const navigate = useNavigation();
-  const onPressPool = (poolId) => {};
+  const onSearchPress = () => {
+    navigate.navigate(routeNames.PairList, {
+      params: { onPressPool: handlePressPool },
+    });
+  };
   return (
     <View style={headStyled.headContainer}>
       <Text style={headStyled.titleText}>Market List</Text>
       <TouchableOpacity
         style={headStyled.btnSearch}
-        onPress={() =>
-          navigate.navigate(routeNames.PairList, {
-            params: {
-              onPressPool,
-            },
-          })
-        }
+        onPress={onSearchPress}
       >
         <Text style={headStyled.searchText}>Search coin</Text>
       </TouchableOpacity>
@@ -44,15 +41,17 @@ const PoolsHeader = React.memo(() => {
 const Footer = React.memo(() => {
   const navigate = useNavigation();
   const dispatch = useDispatch();
-  const onPressPool = (poolId) => dispatch(actionToggleFollowingPool(poolId));
+  const _onPressPool = (poolId) => {
+    if (!poolId) return;
+    dispatch(actionToggleFollowingPool(poolId));
+  };
   return (
     <TouchableOpacity
       style={styled.wrapFooter}
       onPress={() =>
-        navigate.navigate(routeNames.PoolsList, {
+        navigate.navigate(routeNames.PairList, {
           params: {
-            headerTitle: 'Search coins pair',
-            onPressPool,
+            onPressPool: _onPressPool,
           },
         })
       }
@@ -100,19 +99,24 @@ const PoolsListHeaderFollowing = React.memo(() => {
 });
 
 export const PoolsListFollowing = React.memo(({ handlePressPool }) => {
-  const listPoolsFollowing = useSelector(listPoolsFollowingSelector);
+  const followPools = useSelector(listPoolsFollowingSelector) || [];
   const onPressPool = (poolId) =>
     typeof handlePressPool === 'function' && handlePressPool(poolId);
-  return (
-    <FlatList
-      data={listPoolsFollowing}
-      renderItem={({ item }) => (
-        <Pool poolId={item} swipable onPressPool={onPressPool} />
-      )}
-      keyExtractor={(pool) => pool?.poolId}
-      ListFooterComponent={<Footer />}
-      style={poolsListFollowingStyled.flatList}
+  const renderItem = (item) => (
+    <Pool
+      key={item.poolId}
+      poolId={item.poolId}
+      swipable={followPools.length > 1}
+      onPressPool={onPressPool}
+      checkFollow={false}
     />
+  );
+  return (
+    <>
+      {followPools.map(renderItem)}
+      <Footer />
+    </>
+
   );
 });
 
@@ -120,7 +124,7 @@ const Pools = (props) => {
   const { handlePressPool } = props;
   return (
     <View style={styled.container}>
-      <PoolsHeader />
+      <PoolsHeader handlePressPool={handlePressPool} />
       <PoolsListHeaderFollowing />
       <PoolsListFollowing handlePressPool={handlePressPool} />
     </View>
@@ -134,5 +138,10 @@ Pools.propTypes = {
 PoolsListFollowing.propTypes = {
   handlePressPool: PropTypes.func.isRequired,
 };
+
+PoolsHeader.propTypes = {
+  handlePressPool: PropTypes.func.isRequired,
+};
+
 
 export default React.memo(Pools);

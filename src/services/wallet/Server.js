@@ -57,7 +57,8 @@ const BETA_SERVER = {
 const TEST_NET_SERVER = {
   id: 'testnet',
   default: false,
-  address: TESTNET_FULLNODE,
+  // address: TESTNET_FULLNODE,
+  address: 'http://139.162.55.124:18334',
   username: '',
   password: '',
   name: 'Testnet',

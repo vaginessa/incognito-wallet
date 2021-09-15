@@ -6,22 +6,28 @@ import {
   ACTION_FETCHED_LIST_POOLS,
   ACTION_FETCHED_LIST_POOLS_DETAIL,
   ACTION_FETCHED_LIST_POOLS_FOLLOWING,
+  ACTION_FREE_LIST_POOL,
 } from './Pools.constant';
 
 const initialState = {
   isFetching: true,
   isFetched: false,
   tradingVolume24h: 0,
+  pairID: undefined,
   listPools: [],
   listPoolsFollowing: [],
+  follow: {
+    pools: [],
+  }
 };
 
 export default (state = initialState, action) => {
   switch (action.type) {
   case ACTION_FETCHING: {
+    const { isFetching } = action.payload;
     return {
       ...state,
-      isFetching: true,
+      isFetching,
     };
   }
   case ACTION_FETCHED: {
@@ -50,6 +56,12 @@ export default (state = initialState, action) => {
       listPools: action.payload,
     };
   }
+  case ACTION_FREE_LIST_POOL: {
+    return {
+      ...state,
+      listPools: []
+    };
+  }
   case ACTION_FETCHED_LIST_POOLS_DETAIL: {
     return {
       ...state,
@@ -57,9 +69,13 @@ export default (state = initialState, action) => {
     };
   }
   case ACTION_FETCHED_LIST_POOLS_FOLLOWING: {
+    const { followPools } = action.payload;
     return {
       ...state,
-      listPoolsFollowing: action.payload,
+      follow: {
+        ...state.follow,
+        pools: followPools,
+      },
     };
   }
   default:

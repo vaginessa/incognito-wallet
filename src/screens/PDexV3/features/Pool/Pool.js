@@ -14,14 +14,12 @@ import { TouchableOpacity } from '@src/components/core';
 import { styled } from './Pool.styled';
 
 export const PoolItem = React.memo((props) => {
-  const { poolId, onPressPool } = props;
+  const { poolId, onPressPool, checkFollow } = props;
   const data = useSelector(getDataByPoolIdSelector)(poolId);
   if (!data) {
     return null;
   }
   const {
-    token1,
-    token2,
     verified,
     amp,
     apy,
@@ -41,7 +39,7 @@ export const PoolItem = React.memo((props) => {
         <View style={styled.wrapperFirstSection}>
           <Row style={styled.rowName}>
             <Text
-              style={[styled.name, isFollowed ? styled.nameFollowed : null]}
+              style={[styled.name, (!checkFollow || isFollowed) ? styled.nameFollowed : null]}
             >
               {poolTitle}
             </Text>
@@ -83,7 +81,7 @@ export const PoolItem = React.memo((props) => {
 });
 
 const Pool = (props) => {
-  const { poolId, swipable, onPressPool } = props;
+  const { poolId, swipable, onPressPool, checkFollow } = props;
   const dispatch = useDispatch();
   if (!poolId) {
     return null;
@@ -101,17 +99,34 @@ const Pool = (props) => {
           },
         ]}
       >
-        <PoolItem poolId={poolId} onPressPool={onPressPool} />
+        <PoolItem poolId={poolId} onPressPool={onPressPool} checkFollow={checkFollow} />
       </Swipeout>
     );
   }
   return <PoolItem poolId={poolId} onPressPool={onPressPool} />;
 };
 
+Pool.defaultProps = {
+  onPressPool: null,
+  checkFollow: true,
+};
+
 Pool.propTypes = {
   poolId: PropTypes.string.isRequired,
   swipable: PropTypes.bool.isRequired,
   onPressPool: PropTypes.func,
+  checkFollow: PropTypes.bool,
+};
+
+PoolItem.defaultProps = {
+  onPressPool: null,
+  checkFollow: true,
+};
+
+PoolItem.propTypes = {
+  poolId: PropTypes.string.isRequired,
+  onPressPool: PropTypes.func,
+  checkFollow: PropTypes.bool,
 };
 
 export default React.memo(Pool);
