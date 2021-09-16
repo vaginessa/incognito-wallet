@@ -3,8 +3,7 @@ import {liquiditySelector} from '@screens/PDexV3/features/Liquidity/Liquidity.se
 import {getPrivacyDataByTokenID as getPrivacyDataByTokenIDSelector} from '@src/redux/selectors/selectedPrivacy';
 import {getDataByShareIdSelector} from '@screens/PDexV3/features/Portfolio/Portfolio.selector';
 import {sharedSelector} from '@src/redux/selectors';
-import {getExchangeRate} from '@screens/Liquidity3/Liquidity3.utils';
-import {formatBalance, getPoolSize} from '@screens/PDexV3';
+import {formatBalance, getExchangeRate, getPoolSize} from '@screens/PDexV3';
 import helper from '@src/constants/helper';
 import {getInputAmount} from '@screens/PDexV3/features/Liquidity/Liquidity.utils';
 
