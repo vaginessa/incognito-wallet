@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { compose } from 'recompose';
 import {View} from '@components/core';
-import TotalReward from '@screens/PoolV2/Home/TotalReward';
 import { withLayout_2 } from '@components/Layout';
 import Actions from '@screens/PoolV2/Home/Actions';
 import CoinList from '@screens/PoolV2/Home/CoinList';
@@ -11,6 +10,7 @@ import withDefaultAccount from '@components/Hoc/withDefaultAccount';
 import { Header, LoadingContainer } from '@src/components/';
 import withHistories from '@screens/PoolV2/Home/histories.enhance';
 import withRetry from '@screens/PoolV2/Home/retry.enhance';
+import TotalReward from '@components/core/TotalReward';
 import styles from './style';
 
 const Home = ({
