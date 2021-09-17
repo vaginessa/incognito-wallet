@@ -12,13 +12,14 @@ import {getBalance} from '@src/redux/actions/token';
 import {ExHandler} from '@services/exception';
 import uniq from 'lodash/uniq';
 import {mappingDataSelector} from '@screens/PDexV3/features/Liquidity/Liquidity.contributeSelector';
-import {calculateContributeValue, parseInputWithText} from '@screens/PDexV3';
+import {calculateContributeValue, getPDexV3Instance, parseInputWithText} from '@screens/PDexV3';
 import {change} from 'redux-form';
 import {allTokensIDsSelector} from '@src/redux/selectors/token';
 import {actionFetch as actionFetchPortfolio} from '@screens/PDexV3/features/Portfolio';
 import BigNumber from 'bignumber.js';
 import format from '@utils/format';
 import convertUtil from '@utils/convert';
+import {defaultAccountWalletSelector} from '@src/redux/selectors/account';
 
 /***
  *================================================================
@@ -58,26 +59,11 @@ const actionInitContribute = () => async (dispatch, getState) => {
     if (isFetching) return;
     dispatch(actionFetchingContribute({ isFetching: true }));
     const poolID = contributeSelector.poolIDSelector(state);
-    await Util.sleep(3000);
-    const pools = [{
-      poolId: poolID,
-      token1Value: 100000,
-      token2Value: 10000,
-      token1Id:
-        '4584d5e9b2fc0337dfb17f4b5bb025e5b82c38cfa4f54e8a3d4fcdd03954ff82',
-      token2Id:
-        '0000000000000000000000000000000000000000000000000000000000000004',
-      share: 152323,
-      volume: 132130,
-      '24H': 5,
-      price: 10,
-      amp: 2,
-      apy: 60,
-      verified: true,
-      priceChange: 12123,
-    }];
-    if (pools.length > 0) {
-      const contributePool = pools.find(pool => pool.poolId === poolID);
+    const account = defaultAccountWalletSelector(state);
+    const pDexV3Inst = await getPDexV3Instance({ account });
+    const poolDetails = (await pDexV3Inst.getListPoolsDetail([poolID])) || [];
+    if (poolDetails.length > 0) {
+      const contributePool = poolDetails[0];
       if (!contributePool) return;
       const { token1Id, token2Id } = contributePool;
       batch(() => {

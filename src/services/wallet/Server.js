@@ -113,7 +113,7 @@ const DEV_TEST_SERVER = {
   coinServices: 'http://51.161.119.66:7001',
   pubsubServices: 'http://51.161.119.66:7003',
   requestServices: 'http://51.161.119.66:5000',
-  apiServices: 'https://privacyv2-api-service.incognito.org',
+  apiServices: 'https://privacyv2-api-service.incognito.org/',
   shardNumber: 2,
   IncContractAddress: '0xE0D5e7217c6C4bc475404b26d763fAD3F14D2b86',
   IncBSCContractAddress: '0x1ce57B254DC2DBB41e1aeA296Dc7dBD6fb549241',
@@ -209,6 +209,7 @@ export default class Server {
       if (result && result.length) {
         for (const s of result) {
           if (s.default) {
+            console.log('server: ', s);
             const id = s?.id;
             const server = DEFAULT_LIST_SERVER.find((item) => item?.id === id);
             return {

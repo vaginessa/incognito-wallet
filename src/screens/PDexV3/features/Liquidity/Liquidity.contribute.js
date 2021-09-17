@@ -29,35 +29,47 @@ const InputsGroup = () => {
   const { inputToken, outputToken } = useSelector(contributeSelector.mappingDataSelector);
   const onChangeInput = (newText) => dispatch(liquidityActions.actionChangeInputContribute(newText));
   const onChangeOutput = (newText) => dispatch(liquidityActions.actionChangeOutputContribute(newText));
+  const onMaxInput = (newText) => dispatch(liquidityActions.actionChangeInputContribute(newText));
+  const onMaxOutput = (newText) => dispatch(liquidityActions.actionChangeOutputContribute(newText));
   const amountSelector = useSelector(contributeSelector.inputAmountSelector);
   const inputAmount = amountSelector(formConfigsContribute.formName, formConfigsContribute.inputToken);
   const outputAmount = amountSelector(formConfigsContribute.formName, formConfigsContribute.outputToken);
+  const _validateInput = React.useCallback(() => {
+    return inputAmount.error;
+  }, [inputAmount.error]);
+  const _validateOutput = React.useCallback(() => {
+    return outputAmount.error;
+  }, [outputAmount.error]);
   return (
     <View style={styled.wrapInput}>
       <Field
         component={TradeInputAmount}
         name={formConfigsContribute.inputToken}
-        hasInfinityIcon
+        hasInfinityIcon={inputAmount.maxOriginalAmount}
         symbol={inputToken && inputToken?.symbol}
         validate={[
+          _validateInput,
           ...validator.combinedAmount,
         ]}
         onChange={onChangeInput}
         editableInput={!inputAmount.loadingBalance}
         loadingBalance={inputAmount.loadingBalance}
+        onPressInfinityIcon={() => onMaxInput(inputAmount.maxOriginalAmountText)}
       />
       <AddBreakLine />
       <Field
         component={TradeInputAmount}
         name={formConfigsContribute.outputToken}
-        hasInfinityIcon
+        hasInfinityIcon={outputAmount.maxOriginalAmount}
         symbol={outputToken && outputToken?.symbol}
         validate={[
+          _validateOutput,
           ...validator.combinedAmount,
         ]}
         onChange={onChangeOutput}
         editableInput={!outputAmount.loadingBalance}
         loadingBalance={outputAmount.loadingBalance}
+        onPressInfinityIcon={() => onMaxOutput(outputAmount.maxOriginalAmountText)}
       />
     </View>
   );
@@ -78,6 +90,7 @@ const Extra = React.memo(() => {
 
 const Contribute = ({ onInitContribute }) => {
   const isFetching = useSelector(contributeSelector.statusSelector);
+  const disableContribute = useSelector(contributeSelector.disableContribute);
   React.useEffect(() => {
     if (typeof onInitContribute === 'function') onInitContribute();
   }, []);
@@ -92,7 +105,7 @@ const Contribute = ({ onInitContribute }) => {
               <ButtonTrade
                 btnStyle={mainStyle.button}
                 title={LIQUIDITY_MESSAGES.addLiquidity}
-                disabled={isFetching}
+                disabled={disableContribute}
               />
               <Extra />
             </>

@@ -6,7 +6,21 @@ import isNumber from 'lodash/isNumber';
 import isNaN from 'lodash/isNaN';
 import SelectedPrivacy from '@src/models/selectedPrivacy';
 
-export const getPairRate = ({ token1, token2, token1Value, token2Value }) => {
+export const getPDexV3Instance = async ({ account }) => {
+  try {
+    const server = await Server.getDefault();
+    new Validator('getPDexV3Instance-account', account).required().object();
+    let pDexV3Inst = new PDexV3();
+    pDexV3Inst.setRPCTradeService(server.tradeServices);
+    pDexV3Inst.setStorageServices(storage);
+    pDexV3Inst.setAccount(account);
+    return pDexV3Inst;
+  } catch (error) {
+    console.log('getPDexV3Instance-error', error);
+  }
+};
+
+export const getPairRate = ({ token2, token1Value, token2Value }) => {
   try {
     const rawRate = new BigNumber(token2Value).dividedBy(
       new BigNumber(token1Value),
@@ -109,10 +123,12 @@ export const calculateContributeValue = ({
   ) {
     return '';
   }
-  const rate = format.toFixed(
-    new BigNumber(outputPool).dividedBy(inputPool).toNumber(),
-    outputToken.pDecimals,
-  );
+  // const rate = format.toFixed((new BigNumber(outputPool).dividedBy(inputPool).toNumber()), outputToken.pDecimals);
+  const rate = getPairRate({
+    token2: outputToken,
+    token1Value: inputPool,
+    token2Value: outputPool,
+  });
   const number = new BigNumber(inputValue).multipliedBy(rate).toNumber();
   const amount = convertUtil.toHumanAmount(number, outputToken.pDecimals);
   return format.toFixed(amount, outputToken.pDecimals);
