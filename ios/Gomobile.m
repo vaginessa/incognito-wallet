@@ -178,4 +178,14 @@ RCT_EXPORT_METHOD(generateBTCMultisigAddress:(NSString *)data callback:(RCTRespo
   }
 }
 
+RCT_EXPORT_METHOD(createOTAReceiver:(NSString *)data callback:(RCTResponseSenderBlock)callback){
+  @try{
+    NSString *rs = GomobileCreateOTAReceiver(data, nil);
+    callback(@[[NSNull null], rs]);
+  }
+  @catch(NSException *exception){
+    callback(@[exception.reason, [NSNull null]]);
+  }
+}
+
 @end
