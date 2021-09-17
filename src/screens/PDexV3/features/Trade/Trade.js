@@ -41,28 +41,22 @@ const Trade = (props) => {
   return (
     <View style={styled.container}>
       <Header title="pDex" rightHeader={<RightHeader />} />
-      {isFetching && !isFetched ? (
-        <LoadingContainer />
-      ) : (
-        <>
-          <KeyboardAwareScrollView
-            contentContainerStyle={styled.main}
-            refreshControl={
-              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-            }
-          >
-            <Tabs rootTabID={ROOT_TAB_TRADE} styledTabs={styled.styledTabs}>
-              <View tabID={TAB_SWAP_ID} label="Swap" onChangeTab={() => null}>
-                <TabSwap />
-              </View>
-              <View tabID={TAB_LIMIT_ID} label="Limit" onChangeTab={() => null}>
-                <TabHomeOrderLimit />
-              </View>
-            </Tabs>
-          </KeyboardAwareScrollView>
-          <NFTTokenBottomBar />
-        </>
-      )}
+      <KeyboardAwareScrollView
+        contentContainerStyle={styled.main}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+      >
+        <Tabs rootTabID={ROOT_TAB_TRADE} styledTabs={styled.styledTabs}>
+          <View tabID={TAB_SWAP_ID} label="Swap" onChangeTab={() => null}>
+            <TabSwap />
+          </View>
+          <View tabID={TAB_LIMIT_ID} label="Limit" onChangeTab={() => null}>
+            <TabHomeOrderLimit />
+          </View>
+        </Tabs>
+      </KeyboardAwareScrollView>
+      <NFTTokenBottomBar />
     </View>
   );
 };

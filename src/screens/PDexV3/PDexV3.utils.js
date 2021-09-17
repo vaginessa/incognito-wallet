@@ -1,7 +1,4 @@
 /* eslint-disable import/no-cycle */
-import Server from '@src/services/wallet/Server';
-import storage from '@src/services/storage';
-import { PDexV3, Validator } from 'incognito-chain-web-js/build/wallet';
 import BigNumber from 'bignumber.js';
 import format from '@src/utils/format';
 import convertUtil from '@utils/convert';

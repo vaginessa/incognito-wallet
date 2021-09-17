@@ -31,10 +31,9 @@ const asyncMethods = [
   'hybridEncryptionASM',
   'hybridDecryptionASM',
   'estimateTxSize',
-  'aesEncrypt',
-  'aesDecrypt',
   'setShardCount',
   'generateBTCMultisigAddress',
+  'createOTAReceiver',
 ];
 try {
   console.log('INIT GOMOBILE');

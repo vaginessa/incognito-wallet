@@ -57,15 +57,12 @@ const BETA_SERVER = {
 const TEST_NET_SERVER = {
   id: 'testnet',
   default: false,
-  // address: TESTNET_FULLNODE,
-  address: 'http://139.162.55.124:18334',
+  address: TESTNET_FULLNODE,
   username: '',
   password: '',
   name: 'Testnet',
-  // coinServices: 'https://api-coinservice-staging.incognito.org',
-  // pubsubServices: 'https://api-coinservice-staging.incognito.org/txservice',
-  coinServices: 'http://51.161.119.66:7001',
-  pubsubServices: 'http://51.161.119.66:7003',
+  coinServices: 'https://api-coinservice-staging.incognito.org',
+  pubsubServices: 'https://api-coinservice-staging.incognito.org/txservice',
   requestServices:
     'https://api-coinservice-staging.incognito.org/airdrop-service',
   apiServices: 'https://staging-api-service.incognito.org',
@@ -73,10 +70,10 @@ const TEST_NET_SERVER = {
   IncContractAddress: '0x2f6F03F1b43Eab22f7952bd617A24AB46E970dF7',
   IncBSCContractAddress: '0x2f6F03F1b43Eab22f7952bd617A24AB46E970dF7',
   explorer: 'https://testnet.incognito.org',
-  // tradeServices: 'https://54ed4c3d-993b-4fc1-accd-7e7e72122248.mock.pstmn.io',
   tradeServices: 'http://51.161.119.66:7001',
   portalServices: 'http://139.162.55.124:8010',
 };
+
 const LOCAL_SERVER = {
   id: 'local',
   default: false,
@@ -105,6 +102,7 @@ const TEST_NET_1_SERVER = {
   tradeServices: 'https://54ed4c3d-993b-4fc1-accd-7e7e72122248.mock.pstmn.io',
   portalServices: 'http://139.162.55.124:8010',
 };
+
 const DEV_TEST_SERVER = {
   id: 'devtest',
   default: false,
