@@ -1,13 +1,19 @@
 import {formValueSelector} from 'redux-form';
 import convert from '@utils/convert';
 import format from '@utils/format';
-import {PRV_ID} from '@src/constants/common';
+import {MESSAGES} from '@screens/Dex/constants';
+import BigNumber from 'bignumber.js';
+
+const convertAmount = ({ originalNum, pDecimals }) => {
+  const humanAmount = convert.toHumanAmount(originalNum, pDecimals);
+  return format.toFixed(humanAmount, pDecimals);
+};
 
 export const getInputAmount = (
   state,
   isGettingBalance,
   tokens,
-  feeAmount
+  { feeAmount, feeToken }
 ) => (formName, field) => {
   try {
     const token = tokens[field];
@@ -21,30 +27,48 @@ export const getInputAmount = (
 
     const selector = formValueSelector(formName);
 
-    const amountText = selector(state, field);
-    let amount = convert.toNumber(amountText, true) || 0;
-    const originalAmount = convert.toOriginalAmount(amount, token.pDecimals);
-
-    let availableOriginalAmount = token.amount || 0;
-    let availableAmountText = '';
-    if (token.tokenId === PRV_ID && availableOriginalAmount > feeAmount) {
-      availableOriginalAmount = availableOriginalAmount - feeAmount;
-      availableAmountText = format.amountFull(convert.toInput(availableOriginalAmount), token?.pDecimals);
+    const inputAmountStr = selector(state, field);
+    let amount = convert.toNumber(inputAmountStr, true) || 0;
+    const originalInputAmount = convert.toOriginalAmount(amount, token.pDecimals);
+    let maxOriginalAmount = token.amount || 0;
+    let maxOriginalAmountText = convertAmount({
+      originalNum: maxOriginalAmount,
+      pDecimals: token.pDecimals
+    });
+    if ((token.tokenId === feeToken) && (maxOriginalAmount - feeAmount) > 0) {
+      maxOriginalAmount = maxOriginalAmount - feeAmount;
+      maxOriginalAmountText = convertAmount({
+        originalNum: maxOriginalAmount,
+        pDecimals: token.pDecimals
+      });
     }
+    let error = undefined;
+    if ((feeToken === token.tokenId) && (new BigNumber(feeAmount).gt(new BigNumber(maxOriginalAmount)))) {
+      error = MESSAGES.NOT_ENOUGH_NETWORK_FEE;
+    }
+    if (new BigNumber(originalInputAmount).gt(new BigNumber(maxOriginalAmount))) {
+      error = MESSAGES.BALANCE_INSUFFICIENT;
+    }
+
+    if (!originalInputAmount) {
+      error = MESSAGES.NEGATIVE_NUMBER;
+    }
+
     return {
       tokenId: token.tokenId,
       symbol: token.symbol,
       pDecimals: token.pDecimals,
 
-      originalAmount,
-      amountText,
+      originalInputAmount,
+      inputAmountStr,
 
-      availableOriginalAmount,
-      availableAmountText,
+      maxOriginalAmount,
+      maxOriginalAmountText,
 
       loadingBalance: isGettingBalance.includes(token.tokenId),
       balance: token.amount,
       balanceStr: format.amountFull(token.amount, token.pDecimals, false),
+      error,
     };
   } catch (error) {
     console.log('inputAmountSelector error', error);

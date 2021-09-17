@@ -23,7 +23,7 @@ export const getPDexV3Instance = async ({ account }) => {
   }
 };
 
-export const getPairRate = ({ token1, token2, token1Value, token2Value }) => {
+export const getPairRate = ({ token2, token1Value, token2Value }) => {
   try {
     const rawRate = new BigNumber(token2Value).dividedBy(
       new BigNumber(token1Value),
@@ -126,10 +126,12 @@ export const calculateContributeValue = ({
   ) {
     return '';
   }
-  const rate = format.toFixed(
-    new BigNumber(outputPool).dividedBy(inputPool).toNumber(),
-    outputToken.pDecimals,
-  );
+  // const rate = format.toFixed((new BigNumber(outputPool).dividedBy(inputPool).toNumber()), outputToken.pDecimals);
+  const rate = getPairRate({
+    token2: outputToken,
+    token1Value: inputPool,
+    token2Value: outputPool,
+  });
   const number = new BigNumber(inputValue).multipliedBy(rate).toNumber();
   const amount = convertUtil.toHumanAmount(number, outputToken.pDecimals);
   return format.toFixed(amount, outputToken.pDecimals);

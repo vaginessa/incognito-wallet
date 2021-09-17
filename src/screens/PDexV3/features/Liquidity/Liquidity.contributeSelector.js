@@ -6,6 +6,11 @@ import {sharedSelector} from '@src/redux/selectors';
 import {formatBalance, getExchangeRate, getPoolSize} from '@screens/PDexV3';
 import helper from '@src/constants/helper';
 import {getInputAmount} from '@screens/PDexV3/features/Liquidity/Liquidity.utils';
+import uniqBy from 'lodash/uniqBy';
+import format from '@utils/format';
+import {MESSAGES} from '@screens/Dex/constants';
+import {investCoinSelector, stakingFeeSelector} from '@screens/PDexV3/features/Staking';
+import {formConfigsContribute} from '@screens/PDexV3/features/Liquidity/Liquidity.constant';
 
 const contributeSelector = createSelector(
   liquiditySelector,
@@ -43,7 +48,9 @@ const tokenSelector = createSelector(
 
 export const feeAmountSelector = createSelector(
   contributeSelector,
-  ({ feeAmount }) => feeAmount,
+  getPrivacyDataByTokenIDSelector,
+  ({ feeAmount, feeToken }, getPrivacyDataByTokenID) =>
+    ({ feeAmount, feeToken, token: getPrivacyDataByTokenID(feeToken) }),
 );
 
 export const mappingDataSelector = createSelector(
@@ -52,31 +59,38 @@ export const mappingDataSelector = createSelector(
   getDataByShareIdSelector,
   tokenSelector,
   sharedSelector.isGettingBalance,
+  feeAmountSelector,
   (
     poolData,
     getPrivacyDataByTokenID,
     getDataShareByPoolId,
     { inputToken, outputToken },
     isGettingBalance,
+    { feeToken: feeTokenId }
   ) => {
     if (!poolData || !inputToken || !outputToken) return {};
     const { poolId, amp, token1Value: token1PoolValue, token2Value: token2PoolValue } = poolData;
     const shareStr = getDataShareByPoolId(poolId)?.shareStr || '0 (0%)';
     const exchangeRateStr = getExchangeRate(inputToken, outputToken, token1PoolValue, token2PoolValue);
     const poolSize = getPoolSize(inputToken, outputToken, token1PoolValue, token2PoolValue);
-    const balanceStr = formatBalance(inputToken, outputToken, inputToken.amount, outputToken?.amount);
-    const isLoadingBalance = isGettingBalance.includes(inputToken?.tokenId) || isGettingBalance.includes(outputToken?.tokenId);
+    const isLoadingBalance =
+      isGettingBalance.includes(inputToken?.tokenId)
+      || isGettingBalance.includes(outputToken?.tokenId)
+      || isGettingBalance.includes(feeToken?.tokenId);
+    const feeToken = getPrivacyDataByTokenID(feeTokenId);
+    const tokens = uniqBy([inputToken, outputToken, feeToken], (token) => token.tokenId);
+    const hookBalances = tokens.map((token) => ({
+      label: 'Balance',
+      value: `${format.amount(token.amount, token.pDecimals)} ${token.symbol}`,
+      loading: isGettingBalance.includes(token?.tokenId)
+    }));
     const hookFactories = [
       {
         label: 'AMP',
         value: amp,
         info: helper.HELPER_CONSTANT.AMP
       },
-      {
-        label: 'Balance',
-        value: balanceStr,
-        loading: isLoadingBalance
-      },
+      ...hookBalances,
       {
         label: 'Share',
         value: shareStr,
@@ -97,6 +111,7 @@ export const mappingDataSelector = createSelector(
       outputToken,
       token1PoolValue,
       token2PoolValue,
+      isLoadingBalance,
     };
   }
 );
@@ -109,6 +124,16 @@ export const inputAmountSelector = createSelector(
   getInputAmount
 );
 
+export const disableContribute = createSelector(
+  statusSelector,
+  inputAmountSelector,
+  ( isFetching, inputAmount ) => {
+    const { error: inputError } = inputAmount(formConfigsContribute.formName, formConfigsContribute.inputToken);
+    const { error: outputError } = inputAmount(formConfigsContribute.formName, formConfigsContribute.outputToken);
+    return isFetching || !!inputError || !!outputError;
+  }
+);
+
 export default ({
   contributeSelector,
   poolIDSelector,
@@ -118,4 +143,5 @@ export default ({
   feeAmountSelector,
   mappingDataSelector,
   inputAmountSelector,
+  disableContribute,
 });

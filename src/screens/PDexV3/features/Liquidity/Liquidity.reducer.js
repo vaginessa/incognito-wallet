@@ -1,5 +1,5 @@
 import {TYPES} from '@screens/PDexV3/features/Liquidity';
-import {ACCOUNT_CONSTANT} from 'incognito-chain-web-js/build/wallet';
+import {ACCOUNT_CONSTANT, PRVIDSTR} from 'incognito-chain-web-js/build/wallet';
 
 const contributeState = {
   isFetching: false,
@@ -8,12 +8,14 @@ const contributeState = {
   inputToken: undefined,
   outputToken: undefined,
   feeAmount: ACCOUNT_CONSTANT.MAX_FEE_PER_TX * 2,
+  feeToken: PRVIDSTR,
 };
 
 const createPoolState = {
   inputToken: undefined,
   outputToken: undefined,
   feeAmount: ACCOUNT_CONSTANT.MAX_FEE_PER_TX,
+  feeToken: PRVIDSTR,
 };
 
 const removePoolState = {
@@ -23,6 +25,7 @@ const removePoolState = {
   inputToken: undefined,
   outputToken: undefined,
   feeAmount: ACCOUNT_CONSTANT.MAX_FEE_PER_TX,
+  feeToken: PRVIDSTR,
 };
 
 const initialState = {

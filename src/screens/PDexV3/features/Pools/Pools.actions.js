@@ -139,10 +139,10 @@ export const actionToggleFollowingPool = (poolId) => async (
     const isFollowed = followPoolIds.findIndex((_poolId) => _poolId === poolId) > -1;
     if (isFollowed) {
       await pDexV3Inst.removeFollowingPool({ poolId });
-      Toast.showSuccess('Add favorite pool successfully');
+      Toast.showSuccess('Remove favorite pool successfully');
     } else {
       await pDexV3Inst.addFollowingPool({ poolId });
-      Toast.showSuccess('Remove favorite pool successfully');
+      Toast.showSuccess('Add favorite pool successfully');
     }
     await dispatch(actionFetchPools());
   } catch (error) {

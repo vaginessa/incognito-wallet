@@ -24,9 +24,10 @@ import { ExHandler } from '@src/services/exception';
 import { getDefaultAccountWalletSelector } from '@src/redux/selectors/shared';
 import {
   burnerAddressSelector,
-  defaultAccountSelector,
+  defaultAccountSelector, defaultAccountWalletSelector,
 } from '@src/redux/selectors/account';
 import { defaultPTokensIDsSelector } from '@src/redux/selectors/token';
+import {getPDexV3Instance} from '@screens/PDexV3';
 import { getBalance as getTokenBalance, setListToken } from './token';
 
 /**
@@ -155,13 +156,16 @@ export const actionSetNFTTokenData = (defaultAccount) => async (
     const state = getState();
     const wallet = walletSelector(state);
     const account = defaultAccount || defaultAccountSelector(state);
-    const nftPayload = await accountService.getNFTTokenData({
-      wallet,
-      account,
-    });
-    console.log('nftPayload', nftPayload);
-    if (nftPayload) {
-      dispatch(actionFetchedNFT(nftPayload));
+    const accountWallet = defaultAccountWalletSelector(state);
+    if (account.name === accountWallet.name) {
+      const pDexV3Inst = await getPDexV3Instance({ account: accountWallet });
+      const nftPayload = await pDexV3Inst.getNFTTokenData({
+        version: PrivacyVersion.ver2,
+      });
+      console.log('nftPayload', nftPayload);
+      if (nftPayload) {
+        dispatch(actionFetchedNFT(nftPayload));
+      }
     }
   } catch (error) {
     new ExHandler(error).showErrorToast();
