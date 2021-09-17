@@ -721,16 +721,17 @@ export default class Account {
       if (account) {
         const keyInfo = (await account.getKeyInfo({ version })) || {};
         const otaKey = account.getOTAKey();
-        const pDexV3Inst = await getPDexV3Instance({ otaKey });
+        console.log('account', typeof account);
+        const pDexV3Inst = await getPDexV3Instance({ account });
         const keyFollowPoolsDefault = pDexV3Inst.getKeyFollowedDefaultPools();
-        const keyFollowedDefaultPools = pDexV3Inst.getKeyFollowedDefaultPools();
+        const keyFollowPools = pDexV3Inst.getKeyFollowPools();
         const followedDefaultTokensKey = account.getKeyFollowedDefaultTokens();
         let task = [
           account.removeStorageCoinsV1(),
           account.clearAccountStorage(otaKey),
           account.clearAccountStorage(followedDefaultTokensKey),
           pDexV3Inst.clearStorage(keyFollowPoolsDefault),
-          pDexV3Inst.clearStorage(keyFollowedDefaultPools),
+          pDexV3Inst.clearStorage(keyFollowPools),
         ];
         clearAllCaches();
         if (keyInfo?.coinindex) {

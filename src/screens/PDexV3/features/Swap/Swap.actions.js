@@ -1,5 +1,5 @@
-import random from 'lodash/random';
 import { getBalance } from '@src/redux/actions/token';
+import { actionGetPDexV3Inst , getPDexV3Instance, getPoolSize } from '@screens/PDexV3';
 import {
   ACCOUNT_CONSTANT,
   PrivacyVersion,
@@ -17,7 +17,7 @@ import SelectedPrivacy from '@src/models/selectedPrivacy';
 import { batch } from 'react-redux';
 import { BIG_COINS } from '@src/screens/Dex/constants';
 import { PRV, PRV_ID } from '@src/constants/common';
-import { getPDexV3Instance, getPoolSize } from '@screens/PDexV3';
+
 import uniq from 'lodash/uniq';
 import {
   ACTION_FETCHING,
@@ -508,4 +508,14 @@ export const actionFetchSwap = () => async (dispatch, getState) => {
     await dispatch(actionFetchingSwap(false));
   }
   return tx;
+};
+
+export const actionFetchHistory = () => async (dispatch, getState) => {
+  let history = [];
+  try {
+    const pDexV3 = await dispatch(actionGetPDexV3Inst());
+    history = await pDexV3.getOrderSwapHistory();
+  } catch (error) {
+    new ExHandler(error).showErrorToast();
+  }
 };

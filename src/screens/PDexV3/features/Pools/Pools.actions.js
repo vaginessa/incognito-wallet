@@ -1,7 +1,7 @@
 import { defaultAccountWalletSelector } from '@src/redux/selectors/account';
 import { ExHandler } from '@src/services/exception';
 import { getPDexV3Instance } from '@screens/PDexV3';
-import {Toast} from '@components/core';
+import { Toast } from '@components/core';
 import {
   ACTION_FETCHING,
   ACTION_FETCHED,
@@ -12,7 +12,7 @@ import {
   ACTION_FETCHED_LIST_POOLS_FOLLOWING,
   ACTION_FREE_LIST_POOL,
 } from './Pools.constant';
-import {followPoolIdsSelector} from './Pools.selector';
+import { followPoolIdsSelector } from './Pools.selector';
 
 export const actionFetchedTradingVolume24h = (payload) => ({
   type: ACTION_FETCHED_TRADING_VOLUME_24H,
@@ -61,10 +61,13 @@ export const actionFetchFail = () => ({
 });
 
 export const actionFreeListPools = () => ({
-  type: ACTION_FREE_LIST_POOL
+  type: ACTION_FREE_LIST_POOL,
 });
 
-export const actionFetchListPools = ({ pairId }) => async (dispatch, getState) => {
+export const actionFetchListPools = ({ pairId }) => async (
+  dispatch,
+  getState,
+) => {
   try {
     const state = getState();
     await dispatch(actionSetFetching({ isFetching: true }));
@@ -106,7 +109,8 @@ export const actionFetchListFollowingPools = () => async (
     const pDexV3Inst = await getPDexV3Instance({ account });
     const followPoolIds = await pDexV3Inst.getListFollowingPools();
     if (followPoolIds.length === 0) return;
-    const followPools = (await pDexV3Inst.getListPoolsDetail(followPoolIds)) || [];
+    const followPools =
+      (await pDexV3Inst.getListPoolsDetail(followPoolIds)) || [];
     await dispatch(actionFetchedListPoolsFollowing({ followPools }));
   } catch (error) {
     new ExHandler(error).showErrorToast();
@@ -136,7 +140,8 @@ export const actionToggleFollowingPool = (poolId) => async (
     const account = defaultAccountWalletSelector(state);
     const pDexV3Inst = await getPDexV3Instance({ account });
     const followPoolIds = followPoolIdsSelector(state);
-    const isFollowed = followPoolIds.findIndex((_poolId) => _poolId === poolId) > -1;
+    const isFollowed =
+      followPoolIds.findIndex((_poolId) => _poolId === poolId) > -1;
     if (isFollowed) {
       await pDexV3Inst.removeFollowingPool({ poolId });
       Toast.showSuccess('Add favorite pool successfully');

@@ -1,27 +1,10 @@
 /* eslint-disable import/no-cycle */
-import Server from '@src/services/wallet/Server';
-import storage from '@src/services/storage';
-import { PDexV3, Validator } from 'incognito-chain-web-js/build/wallet';
 import BigNumber from 'bignumber.js';
 import format from '@src/utils/format';
 import convertUtil from '@utils/convert';
 import isNumber from 'lodash/isNumber';
 import isNaN from 'lodash/isNaN';
 import SelectedPrivacy from '@src/models/selectedPrivacy';
-
-export const getPDexV3Instance = async ({ account }) => {
-  try {
-    const server = await Server.getDefault();
-    new Validator('getPDexV3Instance-account', account).required().object();
-    let pDexV3Inst = new PDexV3();
-    pDexV3Inst.setRPCTradeService(server.tradeServices);
-    pDexV3Inst.setStorageServices(storage);
-    pDexV3Inst.setAccount(account);
-    return pDexV3Inst;
-  } catch (error) {
-    console.log('getPDexV3Instance-error', error);
-  }
-};
 
 export const getPairRate = ({ token1, token2, token1Value, token2Value }) => {
   try {

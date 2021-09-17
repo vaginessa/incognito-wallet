@@ -1,26 +1,19 @@
-import { ACCOUNT_CONSTANT } from 'incognito-chain-web-js/build/wallet';
 import { activedTabSelector } from '@src/components/core/Tabs/Tabs.selector';
 import { PRV } from '@src/constants/common';
 import SelectedPrivacy from '@src/models/selectedPrivacy';
 import { getBalance } from '@src/redux/actions/token';
-import {
-  defaultAccountWalletSelector,
-  otaKeyOfDefaultAccountSelector,
-} from '@src/redux/selectors/account';
 import { getPrivacyDataByTokenID } from '@src/redux/selectors/selectedPrivacy';
 import { ExHandler } from '@src/services/exception';
-import { camelCaseKeys } from '@src/utils';
 import { actionFetchPools } from '@screens/PDexV3/features/Pools';
 import convert from '@src/utils/convert';
 import { delay } from '@src/utils/delay';
 import format from '@src/utils/format';
 import BigNumber from 'bignumber.js';
 import isEmpty from 'lodash/isEmpty';
-import random from 'lodash/random';
 import { batch } from 'react-redux';
 import { change, focus } from 'redux-form';
 import { v4 } from 'uuid';
-import { getPDexV3Instance } from '@screens/PDexV3';
+import { actionGetPDexV3Inst } from '@screens/PDexV3';
 import {
   ACTION_FETCHING,
   ACTION_FETCHED,
@@ -140,21 +133,14 @@ export const actionSetSellToken = (selltokenId) => async (
       const buytoken: SelectedPrivacy = buytokenSelector(state);
       const feeTokenData = feetokenDataSelector(state);
       const rateData = rateDataSelector(state);
-      // const slippagetolerance = slippagetoleranceSelector(state);
-      // const payload = {
-      //   selltoken,
-      //   buytoken,
-      //   feetoken,
-      //   amount: sellOriginalAmount,
-      //   slippagetolerance,
-      // };
-      // const otaKey = otaKeyOfDefaultAccountSelector(state);
-      // const pDexV3Inst = await getPDexV3Instance({ otaKey });
-      // await pDexV3Inst.getEstimateTrade(payload);
-      await delay(200);
-      const data = {
-        fee: random(1e2, 1e6),
+      const payload = {
+        selltoken,
+        buytoken,
+        feetoken: feeTokenData.feetoken,
+        amount: sellOriginalAmount,
       };
+      // const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
+      // const data = await pDexV3Inst.getEstimateTrade(payload);
       const humanSellAmount = convert.toHumanAmount(
         sellOriginalAmount,
         pDecimals,
@@ -166,15 +152,15 @@ export const actionSetSellToken = (selltokenId) => async (
           .toNumber(),
         buytoken?.pDecimals,
       );
-      const amountFee = format.toFixed(
-        convert.toHumanAmount(data.fee, feeTokenData?.pDecimals),
-        feeTokenData.pDecimals,
-      );
+      // const amountFee = format.toFixed(
+      //   convert.toHumanAmount(data.fee, feeTokenData?.pDecimals),
+      //   feeTokenData.pDecimals,
+      // );
       dispatch(
         change(formConfigs.formName, formConfigs.buytoken, buyInputAmount),
       );
-      dispatch(change(formConfigs.formName, formConfigs.feetoken, amountFee));
-      await dispatch(actionFetched({ ...data }));
+      // dispatch(change(formConfigs.formName, formConfigs.feetoken, amountFee));
+      // await dispatch(actionFetched({ ...data }));
     } else {
       sellamount = format.toFixed(
         convert.toHumanAmount(sellOriginalAmount, pDecimals),
@@ -265,52 +251,45 @@ export const actionInit = () => async (dispatch, getState) => {
 };
 
 export const actionEstimateTrade = () => async (dispatch, getState) => {
-  try {
-    const state = getState();
-    const inputAmount = inputAmountSelector(state);
-    const sellInputAmount = inputAmount(formConfigs.selltoken);
-    const buyInputAmount = inputAmount(formConfigs.buytoken);
-    const feetokenData = feetokenDataSelector(state);
-    if (
-      isEmpty(sellInputAmount) ||
-      isEmpty(buyInputAmount) ||
-      isEmpty(feetokenData)
-    ) {
-      return;
-    }
-    const selltoken = sellInputAmount.tokenId;
-    const buytoken = buyInputAmount.tokenId;
-    const sellsymbol = sellInputAmount.symbol;
-    const buysymbol = buyInputAmount.symbol;
-    const amount = sellInputAmount.originalAmount;
-    if (!selltoken || !buytoken || !amount) {
-      return;
-    }
-    // const payload = {
-    //   selltoken,
-    //   buytoken,
-    //   feetoken,
-    //   amount,
-    // };
-    await dispatch(actionFetching());
-    const otaKey = otaKeyOfDefaultAccountSelector(state);
-    // const pDexV3Inst = await getPDexV3Instance({ otaKey });
-    await delay(200);
-    const data = {
-      fee: random(1e2, 1e6),
-    };
-    // await pDexV3Inst.getEstimateTrade(payload);
-    const amountFee = format.toFixed(
-      convert.toHumanAmount(data.fee, feetokenData.pDecimals),
-      feetokenData.pDecimals,
-    );
-    dispatch(change(formConfigs.formName, formConfigs.feetoken, amountFee));
-    await dispatch(actionFetched({ ...data }));
-  } catch (error) {
-    console.log('actionEstimateTrade-ERROR', error);
-    await dispatch(actionFetchFail());
-    new ExHandler(error).showErrorToast();
-  }
+  return;
+  // try {
+  //   const state = getState();
+  //   const inputAmount = inputAmountSelector(state);
+  //   const sellInputAmount = inputAmount(formConfigs.selltoken);
+  //   const buyInputAmount = inputAmount(formConfigs.buytoken);
+  //   const feetokenData = feetokenDataSelector(state);
+  //   if (
+  //     isEmpty(sellInputAmount) ||
+  //     isEmpty(buyInputAmount) ||
+  //     isEmpty(feetokenData)
+  //   ) {
+  //     return;
+  //   }
+  //   const selltoken = sellInputAmount.tokenId;
+  //   const buytoken = buyInputAmount.tokenId;
+  //   const amount = sellInputAmount.originalAmount;
+  //   if (!selltoken || !buytoken || !amount) {
+  //     return;
+  //   }
+  //   const payload = {
+  //     selltoken,
+  //     buytoken,
+  //     feetoken: feetokenData.feetoken,
+  //     amount,
+  //   };
+  //   await dispatch(actionFetching());
+  //   const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
+  //   const data = await pDexV3Inst.getEstimateTrade(payload);
+  //   const amountFee = format.toFixed(
+  //     convert.toHumanAmount(data.fee, feetokenData.pDecimals),
+  //     feetokenData.pDecimals,
+  //   );
+  //   dispatch(change(formConfigs.formName, formConfigs.feetoken, amountFee));
+  //   await dispatch(actionFetched({ ...data }));
+  // } catch (error) {
+  //   await dispatch(actionFetchFail());
+  //   new ExHandler(error).showErrorToast();
+  // }
 };
 
 export const actionFetchedOpenOrders = (payload) => ({
@@ -330,8 +309,7 @@ export const actionFetchCancelingOrderTxs = () => async (
   let cancelingTxs = [];
   try {
     const state = getState();
-    const account = defaultAccountWalletSelector(state);
-    const pDexV3Inst = await getPDexV3Instance({ account });
+    const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
     const pool = poolSelectedDataSelector(state);
     if (!pool?.poolId) {
       return [];
@@ -352,95 +330,12 @@ export const actionFetchOpenOrders = () => async (dispatch, getState) => {
   let orders = [];
   try {
     const state = getState();
-    // const account = defaultAccountWalletSelector(state);
-    // const pDexV3Inst = await getPDexV3Instance({ otaKey });
-    // orders =  await pDexV3Inst.getHistory({poolid});
+    const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
     const pool = poolSelectedDataSelector(state);
     if (!pool) {
       return;
     }
-    const token1: SelectedPrivacy = pool?.token1;
-    const token2: SelectedPrivacy = pool?.token2;
-    await delay(1000);
-    orders = [
-      {
-        requesttx: 'requestTxId-1',
-        respondtx: [v4()],
-        cancel: [], //tx cancel hash
-        status: 'xPoolTradeAccepted',
-        buytoken: token2.tokenId,
-        selltoken: token1.tokenId,
-        receive: {
-          '3c7e39ee8c5148aac96e5e5bf6d37a85ddb86f31d5df0128be70f6d123a81f8b': 1e9,
-        },
-        amount: 10 * Math.pow(10, token1.pDecimals),
-        price: 2 * Math.pow(10, token2.pDecimals),
-        matched: 7 * Math.pow(10, token1.pDecimals),
-        fee: 1000000,
-        feetoken: token1.tokenId,
-        requesttime: new Date().getTime(),
-      },
-      {
-        requesttx: 'requestTxId-2',
-        respondtx: [v4()],
-        cancel: [v4()], //tx cancel hash
-        status: 'Trade accepted',
-        buytoken: token2.tokenId,
-        selltoken: token1.tokenId,
-        receive: {
-          '3c7e39ee8c5148aac96e5e5bf6d37a85ddb86f31d5df0128be70f6d123a81f8b': 1e9,
-        },
-        amount: 10 * Math.pow(10, token1.pDecimals),
-        price: 5 * Math.pow(10, token2.pDecimals),
-        matched: 3 * Math.pow(10, token1.pDecimals),
-        fee: 1000000,
-        feetoken: token1.tokenId,
-        requesttime: new Date().getTime(),
-      },
-
-      {
-        requesttx: 'requestTxId-3',
-        respondtx: [v4()],
-        cancel: [],
-        status: 'Trade confirm',
-        buytoken: token1.tokenId,
-        selltoken: token2.tokenId,
-        receive: {
-          '3c7e39ee8c5148aac96e5e5bf6d37a85ddb86f31d5df0128be70f6d123a81f8b': 1e9,
-        },
-        amount: 10 * Math.pow(10, token2.pDecimals),
-        price: 2 * Math.pow(10, token1.pDecimals),
-        matched: 4 * Math.pow(10, token2.pDecimals),
-        fee: 1000000,
-        feetoken: token1.tokenId,
-        requesttime: new Date().getTime(),
-      },
-      {
-        requesttx: 'requestTxId-4',
-        respondtx: [v4()],
-        cancel: ['cancelTxId-4'], //tx cancel hash
-        status: 'Trade canceling',
-        buytoken: token1.tokenId,
-        selltoken: token2.tokenId,
-        receive: {
-          '3c7e39ee8c5148aac96e5e5bf6d37a85ddb86f31d5df0128be70f6d123a81f8b': 1e9,
-        },
-        amount: 10 * Math.pow(10, token2.pDecimals),
-        price: 1 * Math.pow(10, token1.pDecimals),
-        matched: 10 * Math.pow(10, token2.pDecimals),
-        fee: 1000000,
-        feetoken: token1.tokenId,
-        requesttime: new Date().getTime(),
-      },
-    ];
-
-    orders = orders.map((order) => {
-      let result = camelCaseKeys(order);
-      return {
-        ...result,
-        // cancelTx,
-      };
-    });
+    orders = await pDexV3Inst.getHistory({ poolid: pool?.poolId });
   } catch (error) {
     new ExHandler(error).showErrorToast();
   } finally {
@@ -456,8 +351,7 @@ export const actionCancelingOrder = (payload) => ({
 export const actionCancelOrder = (requesttx) => async (dispatch, getState) => {
   try {
     const state = getState();
-    const account = defaultAccountWalletSelector(state);
-    const pDexV3Inst = await getPDexV3Instance({ account });
+    const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
     const pool = poolSelectedDataSelector(state);
     if (!requesttx || !pool?.poolId) {
       return;
