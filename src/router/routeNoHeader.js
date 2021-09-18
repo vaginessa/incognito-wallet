@@ -96,7 +96,9 @@ import Trade, {
   TradeOrderHistory,
 } from '@screens/PDexV3/features/Trade';
 import NFTToken, { MintNFTToken } from '@screens/PDexV3/features/NFTToken';
-import OrderLimit from '@src/screens/PDexV3/features/OrderLimit';
+import OrderLimit, {
+  ReviewOrderLimit,
+} from '@src/screens/PDexV3/features/OrderLimit';
 import SelectTokenTrade from '@screens/PDexV3/features/SelectToken';
 import Chart from '@screens/PDexV3/features/Chart';
 import WebView from '@screens/WebView';
@@ -277,7 +279,11 @@ const pDexV3Routes = [
   {
     screen: PairList,
     name: routeNames.PairList,
-  }
+  },
+  {
+    screen: ReviewOrderLimit,
+    name: routeNames.ReviewOrderLimit,
+  },
 ];
 
 const routes = [

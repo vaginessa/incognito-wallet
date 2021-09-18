@@ -42,6 +42,7 @@ const OrderLimit = () => {
   const { sellColor, buyColor, poolTitle } = useSelector(
     orderLimitDataSelector,
   );
+  const onRefresh = () => dispatch(actionInit());
   const tabsFactories = [
     {
       tabID: TAB_BUY_ID,
@@ -63,9 +64,7 @@ const OrderLimit = () => {
       <Header title={poolTitle} />
       <KeyboardAwareScrollView
         contentContainerStyle={styled.scrollview}
-        // refreshControl={
-        //   <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        // }
+        refreshControl={<RefreshControl onRefresh={onRefresh} />}
       >
         <Form>
           {({ handleSubmit }) => (

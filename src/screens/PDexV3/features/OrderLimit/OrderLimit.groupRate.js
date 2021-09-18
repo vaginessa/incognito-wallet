@@ -130,6 +130,7 @@ const CustomRate = React.memo(() => {
             validate={[...validator.combinedAmount]}
             isCustomizeRenderError
             editableInput={!!orderlimitData?.editableInput}
+            autoFocus={false}
           />
         </View>
       </Row>

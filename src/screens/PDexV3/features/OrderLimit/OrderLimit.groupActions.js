@@ -1,6 +1,5 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   ButtonBasic,
@@ -10,13 +9,8 @@ import {
 import { Row } from '@src/components';
 import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
-import { Text } from '@src/components/core';
-import { Hook, styled as extraStyled } from '@screens/PDexV3/features/Extra';
-import { TradeSuccessModal } from '@screens/PDexV3/features/Trade';
-import { actionToggleModal } from '@src/components/Modal';
 import { orderLimitDataSelector } from './OrderLimit.selector';
 import { actionInit } from './OrderLimit.actions';
-import { actionSetSelectedPool } from '../Chart/Chart.actions';
 
 const styled = StyleSheet.create({
   container: {},
@@ -30,80 +24,15 @@ const styled = StyleSheet.create({
   },
 });
 
-const GroupActions = (props) => {
+const GroupActions = () => {
   const navigation = useNavigation();
-  const {
-    mainColor,
-    btnActionTitle,
-    disabledBtn,
-    tradingFeeStr,
-    networkfeeAmountStr,
-    rateStr,
-    reviewOrderTitle,
-    reviewOrderDesc,
-    reviewOrderDescValue,
-    cfmTitle,
-    poolId,
-  } = useSelector(orderLimitDataSelector);
+  const { mainColor, btnActionTitle, disabledBtn, poolId } = useSelector(
+    orderLimitDataSelector,
+  );
   const dispatch = useDispatch();
   const onPressRefresh = () => dispatch(actionInit());
-  const hooksFactories = [
-    {
-      label: reviewOrderDesc,
-      value: reviewOrderDescValue || '',
-      hasQuestionIcon: true,
-      onPressQuestionIcon: () => null,
-      boldLabel: true,
-      boldValue: true,
-    },
-    {
-      label: 'Rate',
-      value: rateStr || '',
-      hasQuestionIcon: true,
-      onPressQuestionIcon: () => null,
-    },
-    {
-      label: 'Trading fee',
-      value: tradingFeeStr || '',
-      hasQuestionIcon: true,
-      onPressQuestionIcon: () => null,
-    },
-    {
-      label: 'Network fee',
-      value: networkfeeAmountStr || '',
-    },
-  ];
-  const handleConfirm = async () => {
-    try {
-      // const tradeData = await dispatch(action());
-      dispatch(
-        actionToggleModal({
-          data: <TradeSuccessModal desc={cfmTitle} btnColor={mainColor} />,
-          visible: true,
-        }),
-      );
-    } catch (error) {
-      console.log('error');
-    }
-  };
   const handleReviewOrder = () => {
-    !disabledBtn &&
-      navigation.navigate(routeNames.ReviewOrder, {
-        data: {
-          extra: (
-            <>
-              <Text style={{ ...extraStyled.specialTitle, color: mainColor }}>
-                {reviewOrderTitle}
-              </Text>
-              {hooksFactories.map((hook) => (
-                <Hook key={hook.label} {...hook} />
-              ))}
-            </>
-          ),
-          handleConfirm,
-          btnColor: mainColor,
-        },
-      });
+    !disabledBtn && navigation.navigate(routeNames.ReviewOrderLimit);
   };
   const onPressChart = () => {
     navigation.navigate(routeNames.Chart, {

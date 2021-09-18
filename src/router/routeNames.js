@@ -157,7 +157,6 @@ export default {
   Swap: 'Swap',
   ReviewOrder: 'ReviewOrder',
   ReviewOrderSwap: 'ReviewOrderSwap',
-  ReviewOrderLimit: 'ReviewOrderLimit',
   Trade: 'Trade',
   CreatePool: 'CreatePool',
   ContributePool: 'ContributePool',
@@ -184,4 +183,5 @@ export default {
   StakingHistoryDetail: 'StakingHistoryDetail',
   TradeOrderHistory: 'TradeOrderHistory',
   PairList: 'PairList',
+  ReviewOrderLimit: 'ReviewOrderLimit',
 };

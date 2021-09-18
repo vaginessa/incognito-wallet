@@ -158,7 +158,6 @@ export const rateDataSelector = createSelector(
   (state, getInputAmount) => {
     let rate = '';
     let rateStr = '';
-    let rateText = '';
     let customRate = '';
     try {
       const sellInputAmount = getInputAmount(formConfigs.selltoken);
@@ -167,7 +166,6 @@ export const rateDataSelector = createSelector(
         return {
           rate,
           rateStr,
-          rateText,
           customRate,
         };
       }
@@ -177,22 +175,20 @@ export const rateDataSelector = createSelector(
         token1Value: sellInputAmount.poolValue,
         token2Value: buyInputAmount.poolValue,
       });
-      rateStr = getExchangeRate(
-        sellInputAmount,
-        buyInputAmount,
-        sellInputAmount.poolValue,
-        buyInputAmount.poolValue,
-      );
-      rateText = format.amountFull(rate, 0, false);
       const selector = formValueSelector(formConfigs.formName);
       customRate = selector(state, formConfigs.rate);
+      customRate = customRate || rate;
+      rateStr = `1 ${sellInputAmount?.symbol || ''} = ${format.amountFull(
+        customRate,
+        0,
+        false,
+      )} ${buyInputAmount?.symbol || ''}`;
     } catch (error) {
       console.log('rateSelector-error', error);
     }
     return {
       rate,
       rateStr,
-      rateText,
       customRate: customRate || rate,
     };
   },
@@ -210,7 +206,7 @@ export const orderLimitDataSelector = createSelector(
   nftTokenDataSelector,
   (
     state,
-    { networkfee, initing, isFetching, isFetched, percent },
+    { networkfee, initing, percent },
     getActivedTab,
     getPrivacyDataByTokenID,
     getInputAmount,
@@ -235,7 +231,7 @@ export const orderLimitDataSelector = createSelector(
       mainColor = sellColor;
       btnActionTitle = `Sell ${sellInputAmount?.symbol}`;
       reviewOrderTitle = `Sell ${sellInputAmount?.amountText} ${sellInputAmount?.symbol}`;
-      reviewOrderDesc = 'Receive at least';
+      reviewOrderDesc = 'Receive';
       reviewOrderDescValue = `${buyInputAmount?.amountText} ${buyInputAmount?.symbol}`;
       cfmTitle = `You placed an order to buy ${reviewOrderDescValue} for ${sellInputAmount?.amountText} ${sellInputAmount?.symbol}`;
       break;
@@ -264,13 +260,10 @@ export const orderLimitDataSelector = createSelector(
     const prvBalanceStr = `${prvBalance} ${PRV.symbol}`;
     const balanceStr = `${sellInputAmount?.balanceStr} ${sellInputAmount?.symbol} + ${buyInputAmount?.balanceStr} ${buyInputAmount?.symbol}`;
     const poolSizeStr = `${sellInputAmount?.poolValueStr} ${sellInputAmount?.symbol} + ${buyInputAmount?.poolValueStr} ${buyInputAmount?.symbol}`;
-    const editableInput = !initing && isFetched && !isFetching;
-    const calculating = initing || isFetching;
+    const editableInput = !initing;
+    const calculating = initing;
     const disabledBtn =
-      calculating ||
-      (!isFetched && !isFetching) ||
-      !isValid(formConfigs.formName)(state) ||
-      invalidNFTToken;
+      calculating || !isValid(formConfigs.formName)(state) || invalidNFTToken;
     if (!nftToken) {
       btnActionTitle = 'Need a NFT token to book an order';
     }

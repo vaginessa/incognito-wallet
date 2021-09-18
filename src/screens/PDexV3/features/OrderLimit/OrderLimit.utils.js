@@ -1,4 +1,4 @@
-import isNaN from 'lodash/isNaN';
+import floor from 'lodash/floor';
 import { PRV } from '@src/constants/common';
 import SelectedPrivacy from '@src/models/selectedPrivacy';
 import convert from '@src/utils/convert';
@@ -160,4 +160,30 @@ export const availablePayFeeByPRVValidator = ({
     console.log('availablePayFeeByPRVValidator-error', error);
   }
   return undefined;
+};
+
+export const calDefaultPairOrderLimit = ({ pool, x0 }) => {
+  let y0 = new BigNumber(0);
+  let rate;
+  try {
+    if (pool) {
+      const { virtual1Value, virtual2Value } = pool;
+      const x_v = new BigNumber(virtual1Value);
+      const y_v = new BigNumber(virtual2Value);
+      const L = x_v.multipliedBy(y_v);
+      y0 = y_v.minus(L.dividedBy(x_v.plus(x0)));
+      if (y0.isNaN()) {
+        y0 = 0;
+      } else {
+        y0 = y0.toNumber();
+        y0 = floor(y0);
+      }
+    }
+  } catch (error) {
+    console.log('error', error);
+  }
+  return {
+    y0,
+    rate,
+  };
 };

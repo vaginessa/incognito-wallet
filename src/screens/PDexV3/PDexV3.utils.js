@@ -6,32 +6,16 @@ import isNumber from 'lodash/isNumber';
 import isNaN from 'lodash/isNaN';
 import SelectedPrivacy from '@src/models/selectedPrivacy';
 
-export const getPDexV3Instance = async ({ account }) => {
-  try {
-    const server = await Server.getDefault();
-    new Validator('getPDexV3Instance-account', account).required().object();
-    let pDexV3Inst = new PDexV3();
-    pDexV3Inst.setRPCTradeService(server.tradeServices);
-    pDexV3Inst.setStorageServices(storage);
-    pDexV3Inst.setAccount(account);
-    return pDexV3Inst;
-  } catch (error) {
-    console.log('getPDexV3Instance-error', error);
-  }
-};
-
 export const getPairRate = ({ token2, token1Value, token2Value }) => {
   try {
-    const rawRate = new BigNumber(token2Value).dividedBy(
-      new BigNumber(token1Value),
-    );
-    let rawRateNumber = rawRate.toNumber();
-    let rawRateFixed = format.toFixed(rawRateNumber, token2?.pDecimals);
-    let rawRateStr = rawRate.toString();
-    if (!rawRateFixed || rawRateFixed === '0') {
-      return rawRateStr;
+    const rate = new BigNumber(token2Value)
+      .dividedBy(new BigNumber(token1Value))
+      .toNumber();
+    const rateFixed = format.toFixed(rate, token2?.pDecimals || 0);
+    if (!rateFixed || rateFixed === '0') {
+      return '';
     }
-    return rawRateFixed;
+    return rateFixed;
   } catch (error) {
     console.log('getPairRate-error', error);
   }

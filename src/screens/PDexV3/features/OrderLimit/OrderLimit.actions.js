@@ -1,10 +1,14 @@
+import { PrivacyVersion } from 'incognito-chain-web-js/build/wallet';
 import { activedTabSelector } from '@src/components/core/Tabs/Tabs.selector';
 import { PRV } from '@src/constants/common';
 import SelectedPrivacy from '@src/models/selectedPrivacy';
 import { getBalance } from '@src/redux/actions/token';
 import { getPrivacyDataByTokenID } from '@src/redux/selectors/selectedPrivacy';
 import { ExHandler } from '@src/services/exception';
-import { actionFetchPools } from '@screens/PDexV3/features/Pools';
+import {
+  actionFetchListFollowingPools,
+  // actionFetchPools,
+} from '@screens/PDexV3/features/Pools';
 import convert from '@src/utils/convert';
 import { delay } from '@src/utils/delay';
 import format from '@src/utils/format';
@@ -32,11 +36,12 @@ import {
   ACTION_FETCHED_OPEN_ORDERS,
   ACTION_CANCELING_ORDER,
   ACTION_FETCHED_CANCELING_ORDER_TXS,
+  ACTION_FETCH_ORDERING,
 } from './OrderLimit.constant';
 import {
   buytokenSelector,
-  feetokenDataSelector,
-  inputAmountSelector,
+  // feetokenDataSelector,
+  // inputAmountSelector,
   orderLimitSelector,
   poolSelectedDataSelector,
   rateDataSelector,
@@ -59,16 +64,6 @@ export const actionFetched = (payload) => ({
 export const actionFetchFail = () => ({
   type: ACTION_FETCH_FAIL,
 });
-
-// export const actionFetch = () => async (dispatch, getState) => {
-//   try {
-//     await dispatch(actionFetching());
-//     const { data } = await api();
-//     await dispatch(actionFetched(data));
-//   } catch (error) {
-//     await dispatch(actionFetchFail());
-//   }
-// };
 
 export const actionReset = (payload) => ({
   type: ACTION_RESET,
@@ -110,15 +105,11 @@ export const actionSetSellToken = (selltokenId) => async (
     }
     dispatch(actionSetSellTokenFetched(selltokenId));
     const state = getState();
-    const { initing } = orderLimitSelector(state);
     const selltoken: SelectedPrivacy = getPrivacyDataByTokenID(state)(
       selltokenId,
     );
-    const { pDecimals, symbol } = selltoken;
+    const { pDecimals } = selltoken;
     const balance = await dispatch(getBalance(selltokenId));
-    if (!balance) {
-      return;
-    }
     const minimum = convert.toOriginalAmount(1, pDecimals);
     const bnBalance = new BigNumber(balance);
     const bnMinumum = new BigNumber(minimum);
@@ -129,44 +120,10 @@ export const actionSetSellToken = (selltokenId) => async (
       sellOriginalAmount = balance;
     }
     let sellamount = '';
-    if (initing) {
-      const buytoken: SelectedPrivacy = buytokenSelector(state);
-      const feeTokenData = feetokenDataSelector(state);
-      const rateData = rateDataSelector(state);
-      const payload = {
-        selltoken,
-        buytoken,
-        feetoken: feeTokenData.feetoken,
-        amount: sellOriginalAmount,
-      };
-      // const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
-      // const data = await pDexV3Inst.getEstimateTrade(payload);
-      const humanSellAmount = convert.toHumanAmount(
-        sellOriginalAmount,
-        pDecimals,
-      );
-      sellamount = format.toFixed(humanSellAmount, pDecimals);
-      const buyInputAmount = format.toFixed(
-        new BigNumber(humanSellAmount)
-          .multipliedBy(new BigNumber(rateData?.rate || 0))
-          .toNumber(),
-        buytoken?.pDecimals,
-      );
-      // const amountFee = format.toFixed(
-      //   convert.toHumanAmount(data.fee, feeTokenData?.pDecimals),
-      //   feeTokenData.pDecimals,
-      // );
-      dispatch(
-        change(formConfigs.formName, formConfigs.buytoken, buyInputAmount),
-      );
-      // dispatch(change(formConfigs.formName, formConfigs.feetoken, amountFee));
-      // await dispatch(actionFetched({ ...data }));
-    } else {
-      sellamount = format.toFixed(
-        convert.toHumanAmount(sellOriginalAmount, pDecimals),
-        pDecimals,
-      );
-    }
+    sellamount = format.toFixed(
+      convert.toHumanAmount(sellOriginalAmount, pDecimals),
+      pDecimals,
+    );
     dispatch(change(formConfigs.formName, formConfigs.selltoken, sellamount));
     dispatch(focus(formConfigs.formName, formConfigs.selltoken));
   } catch (error) {
@@ -191,14 +148,11 @@ export const actionSetInputToken = ({ selltoken, buytoken }) => async (
     return;
   }
   try {
-    let task = [
-      dispatch(actionSetSellToken(selltoken)),
-      dispatch(actionSetBuyToken(buytoken)),
-    ];
+    await dispatch(actionSetSellToken(selltoken));
+    await dispatch(actionSetBuyToken(buytoken));
     if (selltoken !== PRV.id && buytoken !== PRV.id) {
-      task.push(dispatch(getBalance(PRV.id)));
+      dispatch(getBalance(PRV.id));
     }
-    await Promise.all(task);
   } catch (error) {
     throw error;
   }
@@ -206,14 +160,14 @@ export const actionSetInputToken = ({ selltoken, buytoken }) => async (
 
 export const actionInit = () => async (dispatch, getState) => {
   try {
-    await dispatch(actionFetchPools());
+    await dispatch(actionIniting(true));
+    await dispatch(actionFetchListFollowingPools());
     let state = getState();
     const pool = poolSelectedDataSelector(state);
     await dispatch(actionSetPercent(0));
     if (isEmpty(pool)) {
       return;
     }
-    await dispatch(actionIniting(true));
     const activedTab = activedTabSelector(state)(ROOT_TAB_ORDER_LIMIT);
     const token1: SelectedPrivacy = pool?.token1;
     const token2: SelectedPrivacy = pool?.token2;
@@ -232,64 +186,22 @@ export const actionInit = () => async (dispatch, getState) => {
     default:
       break;
     }
-    batch(() => {
-      dispatch(actionSetSellTokenFetched(selltoken));
-      dispatch(actionSetBuyTokenFetched(buytoken));
-      dispatch(actionSetFeeToken(PRV.id));
-    });
-    state = getState();
-    const rateData = rateDataSelector(state);
-    dispatch(
-      change(formConfigs.formName, formConfigs.rate, rateData?.rateText || ''),
-    );
+    await dispatch(actionSetSellToken(selltoken));
+
     await dispatch(actionSetInputToken({ selltoken, buytoken }));
+    // const rateData = rateDataSelector(state);
+    // dispatch(
+    //   change(
+    //     formConfigs.formName,
+    //     formConfigs.rate,
+    //     rateData?.customRate || '',
+    //   ),
+    // );
   } catch (error) {
     new ExHandler(error).showErrorToast;
   } finally {
     await dispatch(actionIniting(false));
   }
-};
-
-export const actionEstimateTrade = () => async (dispatch, getState) => {
-  return;
-  // try {
-  //   const state = getState();
-  //   const inputAmount = inputAmountSelector(state);
-  //   const sellInputAmount = inputAmount(formConfigs.selltoken);
-  //   const buyInputAmount = inputAmount(formConfigs.buytoken);
-  //   const feetokenData = feetokenDataSelector(state);
-  //   if (
-  //     isEmpty(sellInputAmount) ||
-  //     isEmpty(buyInputAmount) ||
-  //     isEmpty(feetokenData)
-  //   ) {
-  //     return;
-  //   }
-  //   const selltoken = sellInputAmount.tokenId;
-  //   const buytoken = buyInputAmount.tokenId;
-  //   const amount = sellInputAmount.originalAmount;
-  //   if (!selltoken || !buytoken || !amount) {
-  //     return;
-  //   }
-  //   const payload = {
-  //     selltoken,
-  //     buytoken,
-  //     feetoken: feetokenData.feetoken,
-  //     amount,
-  //   };
-  //   await dispatch(actionFetching());
-  //   const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
-  //   const data = await pDexV3Inst.getEstimateTrade(payload);
-  //   const amountFee = format.toFixed(
-  //     convert.toHumanAmount(data.fee, feetokenData.pDecimals),
-  //     feetokenData.pDecimals,
-  //   );
-  //   dispatch(change(formConfigs.formName, formConfigs.feetoken, amountFee));
-  //   await dispatch(actionFetched({ ...data }));
-  // } catch (error) {
-  //   await dispatch(actionFetchFail());
-  //   new ExHandler(error).showErrorToast();
-  // }
 };
 
 export const actionFetchedOpenOrders = (payload) => ({
@@ -335,7 +247,10 @@ export const actionFetchOpenOrders = () => async (dispatch, getState) => {
     if (!pool) {
       return;
     }
-    orders = await pDexV3Inst.getHistory({ poolid: pool?.poolId });
+    orders = await pDexV3Inst.getOrderLimitHistory({
+      poolid: pool?.poolId,
+      version: PrivacyVersion.ver2,
+    });
   } catch (error) {
     new ExHandler(error).showErrorToast();
   } finally {
@@ -378,10 +293,41 @@ export const actionCancelOrder = (requesttx) => async (dispatch, getState) => {
   }
 };
 
+export const actionFetchingBookOrder = (payload) => ({
+  type: ACTION_FETCH_ORDERING,
+  payload,
+});
+
 export const actionBookOrder = () => async (dispatch, getState) => {
+  await dispatch(actionFetchingBookOrder(true));
   try {
     //
   } catch (error) {
     throw error;
+  } finally {
+    await dispatch(actionFetchingBookOrder(false));
   }
 };
+
+/**
+  {
+    PoolID: "0000000000000000000000000000000000000000000000000000000000000004-6133dbf8e3d71a8f8e406ebd459492d34180622ba572b2d8f0fc8484b09ddd47-1437fbee7030f8e0d52ddb157edb2d4f61d4ca851a161f5f716d754951e57337",
+    Token1ID: "0000000000000000000000000000000000000000000000000000000000000004",
+    Token2ID: "6133dbf8e3d71a8f8e406ebd459492d34180622ba572b2d8f0fc8484b09ddd47",
+    // Token1Value: 1000,
+    // Token2Value: 2000,
+    VirtualToken1Value: x_v,
+    VirtualToken2Value: y_v,
+    Share: 0,
+    AMP: 20000,
+    Price: 0,
+    Volume: 0,
+    PriceChange24h: 0,
+    APY: 0
+  }
+
+  x0: 1e9
+  y0 = y_v - (x_v * y_x) / (x0 + x_v) 
+
+
+ */

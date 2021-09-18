@@ -32,13 +32,13 @@ export const listPoolsFollowingSelector = createSelector(
 
 export const followPoolIdsSelector = createSelector(
   followSelector,
-  ({ pools }) => pools.map(pool => pool.poolId),
+  ({ pools }) => pools.map((pool) => pool.poolId),
 );
 
 /*** Pools with current pairID select */
 export const poolPairIdsSelector = createSelector(
   poolsSelector,
-  ({ listPools }) => listPools.map(pool => pool.poolId),
+  ({ listPools }) => listPools.map((pool) => pool.poolId),
 );
 
 /*** Pools with current pairID merge with followPools  select */
@@ -57,7 +57,7 @@ export const listPoolsSelector = createSelector(
         token2Value,
         apy,
         amp,
-        priceChange24H
+        priceChange24H,
       } = pool;
       const volumeToAmount = format.amount(volume, 0);
       const priceChangeToAmount = format.amount(priceChange, 0);
@@ -91,7 +91,9 @@ export const listPoolsSelector = createSelector(
         priceChangeToAmount,
         perChange24hToStr,
         perChange24hColor,
-        isFollowed: followPools.findIndex((followPool) => poolId === followPool.poolId) > -1,
+        isFollowed:
+          followPools.findIndex((followPool) => poolId === followPool.poolId) >
+          -1,
         poolTitle: `${token1?.symbol} / ${token2?.symbol}`,
         poolSizeStr,
         exchangeRateStr: getExchangeRate(
@@ -103,10 +105,10 @@ export const listPoolsSelector = createSelector(
         volumeToAmountStr: `${volumeToAmount}$`,
         ampStr: `${amp}`,
         apyStr: `${apy}%`,
-        priceChangeToAmountStr: `$${priceChangeToAmount}`
+        priceChangeToAmountStr: `$${priceChangeToAmount}`,
       };
     });
-  }
+  },
 );
 
 export const getDataByPoolIdSelector = createSelector(
@@ -117,5 +119,5 @@ export const getDataByPoolIdSelector = createSelector(
 
 export const isFetchingSelector = createSelector(
   poolsSelector,
-  ({ isFetching }) => isFetching
+  ({ isFetching }) => isFetching,
 );

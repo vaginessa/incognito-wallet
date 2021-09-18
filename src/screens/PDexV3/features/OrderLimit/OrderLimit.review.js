@@ -5,36 +5,46 @@ import { useDispatch, useSelector } from 'react-redux';
 import { actionToggleModal } from '@src/components/Modal';
 import { Hook, styled as extraStyled } from '@screens/PDexV3/features/Extra';
 import { Text } from '@src/components/core';
-import { actionFetchSwap } from './Swap.actions';
-import { swapInfoSelector } from './Swap.selector';
-import { useTabFactories } from './Swap.simpleTab';
+import { orderLimitDataSelector } from './OrderLimit.selector';
+import { actionBookOrder } from './OrderLimit.actions';
+import { useSubInfo } from './OrderLimit.subInfo';
 
 const Review = () => {
   const dispatch = useDispatch();
-  const swapInfo = useSelector(swapInfoSelector);
-  const { hooksFactories: factories } = useTabFactories();
+  const {
+    mainColor,
+    ordering,
+    rateStr,
+    reviewOrderTitle,
+    reviewOrderDesc,
+    reviewOrderDescValue,
+    cfmTitle,
+  } = useSelector(orderLimitDataSelector);
+  const [subInfoFactories] = useSubInfo();
   const hooksFactories = [
     {
-      label: 'Pay with',
-      value: swapInfo?.sellInputAmountStr || '',
+      label: reviewOrderDesc,
+      value: reviewOrderDescValue || '',
+      hasQuestionIcon: true,
+      onPressQuestionIcon: () => null,
       boldLabel: true,
       boldValue: true,
     },
-    ...factories,
+    {
+      label: 'Rate',
+      value: rateStr || '',
+      hasQuestionIcon: true,
+      onPressQuestionIcon: () => null,
+    },
+    ...subInfoFactories,
   ];
   const handleConfirm = async () => {
     try {
-      const tx = await dispatch(actionFetchSwap());
+      const tx = await dispatch(actionBookOrder());
       if (tx) {
         dispatch(
           actionToggleModal({
-            data: (
-              <TradeSuccessModal
-                desc={`You placed an order to sell 
-                ${swapInfo?.sellInputAmountStr ||
-                  ''} for ${swapInfo?.buyInputAmountStr || ''}.`}
-              />
-            ),
+            data: <TradeSuccessModal desc={cfmTitle} />,
             visible: true,
           }),
         );
@@ -43,13 +53,12 @@ const Review = () => {
       //
     }
   };
-
   return (
     <ReviewOrder
       extra={
         <View>
-          <Text style={extraStyled.specialTitle}>
-            Buy at least {swapInfo?.buyInputAmountStr || ''}
+          <Text style={{ ...extraStyled.specialTitle, color: mainColor }}>
+            {reviewOrderTitle}
           </Text>
           {hooksFactories.map((hook) => (
             <Hook key={hook.label} {...hook} />
@@ -57,6 +66,8 @@ const Review = () => {
         </View>
       }
       handleConfirm={handleConfirm}
+      loading={ordering}
+      btnColor={mainColor}
     />
   );
 };

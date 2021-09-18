@@ -18,7 +18,7 @@ export const ACTION_FETCHED_OPEN_ORDERS =
 export const ACTION_CANCELING_ORDER = '[pDexV3][orderLimit] Cancel order';
 export const ACTION_FETCHED_CANCELING_ORDER_TXS =
   '[pDexV3][orderLimit] Fetched canceling order txs';
-
+export const ACTION_FETCH_ORDERING = '[pDexV3][orderLimit] Fetch ordering';
 export const formConfigs = {
   formName: 'FORM_ORDER_LIMIT',
   selltoken: 'selltoken',

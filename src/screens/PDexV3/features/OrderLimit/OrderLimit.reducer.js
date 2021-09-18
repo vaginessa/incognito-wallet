@@ -14,6 +14,7 @@ import {
   ACTION_FETCHED_OPEN_ORDERS,
   ACTION_CANCELING_ORDER,
   ACTION_FETCHED_CANCELING_ORDER_TXS,
+  ACTION_FETCH_ORDERING,
 } from './OrderLimit.constant';
 
 const initialState = {
@@ -35,10 +36,17 @@ const initialState = {
   orders: [],
   cancelingOrder: [],
   cancelingOrderTxs: [],
+  ordering: false,
 };
 
 export default (state = initialState, action) => {
   switch (action.type) {
+  case ACTION_FETCH_ORDERING: {
+    return {
+      ...state,
+      ordering: action.payload,
+    };
+  }
   case ACTION_FETCHED_CANCELING_ORDER_TXS: {
     return {
       ...state,

@@ -1,3 +1,4 @@
+/* eslint-disable import/no-cycle */
 import { CONSTANT_COMMONS, CONSTANT_CONFIGS } from '@src/constants';
 import { BIG_COINS } from '@src/screens/DexV2/constants';
 import { PRV_ID } from '@screens/Dex/constants';
@@ -67,7 +68,7 @@ class SelectedPrivacy {
   constructor(account = {}, token = {}, pTokenData: PToken = {}, _tokenID) {
     const tokenId = pTokenData?.tokenId || token?.id;
 
-    const isUnknown = (_tokenID !== PRV_ID) && !tokenId;
+    const isUnknown = _tokenID !== PRV_ID && !tokenId;
     const unknownText = 'Incognito Token';
 
     this.currencyType = pTokenData.currencyType;
@@ -109,14 +110,18 @@ class SelectedPrivacy {
       isUnknown ? unknownText : 'Privacy',
     );
     this.amount = (this.isToken ? token.amount : account.value) || 0;
-    this.tokenId = _tokenID ? _tokenID : (this.isMainCrypto ? CONSTANT_COMMONS.PRV_TOKEN_ID : tokenId);
+    this.tokenId = _tokenID
+      ? _tokenID
+      : this.isMainCrypto
+        ? CONSTANT_COMMONS.PRV_TOKEN_ID
+        : tokenId;
     this.contractId = pTokenData.contractId;
     this.decimals = this.isMainCrypto
       ? CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY
       : pTokenData.decimals;
     this.pDecimals = this.isMainCrypto
       ? CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY
-      : pTokenData.pDecimals;
+      : pTokenData.pDecimals || 0;
     this.externalSymbol = pTokenData.symbol;
     this.paymentAddress = account.PaymentAddress;
     this.isWithdrawable = this.isPToken;
