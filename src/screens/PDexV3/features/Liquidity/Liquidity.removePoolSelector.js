@@ -144,9 +144,9 @@ export const inputAmountSelector = createSelector(
 export const disableRemovePool = createSelector(
   inputAmountSelector,
   ( inputAmount ) => {
-    const { error: inputError } = inputAmount(formConfigsRemovePool.formName, formConfigsRemovePool.inputToken);
-    const { error: outputError } = inputAmount(formConfigsRemovePool.formName, formConfigsRemovePool.outputToken);
-    return !!inputError || !!outputError;
+    const { error: inputError, originalInputAmount: amount1 } = inputAmount(formConfigsRemovePool.formName, formConfigsRemovePool.inputToken);
+    const { error: outputError, originalInputAmount: amount2 } = inputAmount(formConfigsRemovePool.formName, formConfigsRemovePool.outputToken);
+    return !!inputError || !!outputError || !amount1 || !amount2;
   }
 );
 

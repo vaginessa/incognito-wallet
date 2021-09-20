@@ -118,7 +118,7 @@ export const getInputShareAmount = (
       originalInputAmount,
       inputAmountStr,
       inputAmountSymbolStr: `${inputAmountStr} ${token.symbol}`,
-
+      withdraw,
       loadingBalance: isGettingBalance.includes(token.tokenId),
       balance: token.amount,
       balanceStr: format.amountFull(token.amount, token.pDecimals, false),

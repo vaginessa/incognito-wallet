@@ -8,6 +8,7 @@ import {
   getShareStr,
 } from '@screens/PDexV3';
 import format from '@src/utils/format';
+import convert from '@utils/convert';
 
 export const portfolioSelector = createSelector(
   (state) => state.pDexV3,
@@ -43,10 +44,10 @@ export const listShareSelector = createSelector(
         poolId,
       } = item;
       const poolDetail = shareDetails.find((share) => poolId === share.poolId);
-      const { amp, apy, token1Value: token1PoolValue, token2Value: token2PoolValue } = poolDetail || {};
+      const { amp, apy, token1Value: token1PoolValue, token2Value: token2PoolValue, withdrawing, withdrawable } = poolDetail || {};
       const token1 = getPrivacyDataByTokenID(tokenId1);
       const token2 = getPrivacyDataByTokenID(tokenId2);
-      const shareId = `${item?.token1IdStr}-${item?.token2IdStr}`;
+      const shareId = `${item?.tokenId1}-${item?.tokenId2}`;
       const exchangeRateStr = getExchangeRate(
         token1,
         token2,
@@ -86,6 +87,8 @@ export const listShareSelector = createSelector(
           label: 'Reward',
           value: rewardStr,
           isClaimReward: true,
+          withdrawing,
+          withdrawable,
           shareId,
         },
       ];
@@ -127,14 +130,14 @@ export const getDataShareByPoolIdSelector = createSelector(
 
 export const totalShareSelector = createSelector(
   listShareSelector,
-  (listShare) =>
-    format.amount(
-      listShare
-        .reduce(
-          (prev, cur) => prev.plus(new BigNumber(cur?.share)),
-          new BigNumber('0'),
-        )
-        .toString(),
-      0,
-    ),
+  (listShare) => {
+    const rewardUSD = listShare.reduce((prev, cur) => {
+      const { token1, token2, token2Reward } = cur;
+      const token1Reward = 2;
+      const _reward1USD = convert.toOriginalAmount(new BigNumber(token1Reward).multipliedBy(token1.priceUsd ?? 0).toNumber(), token1.pDecimals);
+      const _reward2USD = convert.toOriginalAmount(new BigNumber(token2Reward).multipliedBy(token2.priceUsd ?? 0).toNumber(), token2.pDecimals);
+      return prev.plus(_reward1USD).plus(_reward2USD);
+    }, new BigNumber('0')).toNumber();
+    return format.amountFull(rewardUSD, 9, true);
+  }
 );

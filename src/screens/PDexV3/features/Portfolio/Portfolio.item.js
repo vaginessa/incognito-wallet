@@ -11,7 +11,7 @@ import {getDataByShareIdSelector} from './Portfolio.selector';
 import { portfolioItemStyled as styled } from './Portfolio.styled';
 
 const Hook = React.memo((props) => {
-  const { label, value, isClaimReward } = props;
+  const { label, value, isClaimReward, withdrawable, withdrawing } = props;
   if (!isClaimReward) {
     return (
       <Row style={styled.hookContainer}>
@@ -25,10 +25,10 @@ const Hook = React.memo((props) => {
       <Text style={styled.hookLabel}>{`${label}:`}</Text>
       <Row style={[styled.hookContainer, { marginBottom: 0 }]}>
         <Text style={styled.hookValue}>{value}</Text>
-        {isClaimReward && (
+        {(isClaimReward && withdrawable) && (
           <ButtonTrade
-            title="Claim"
-            btnStyle={[styled.btnSmall, { width: 50 }]}
+            title={`${withdrawing ? 'Withdrawing' : 'Claim'}`}
+            btnStyle={[styled.btnSmall, { width: withdrawing ? 85 : 50 }]}
             titleStyle={styled.titleSmall}
           />
         )}

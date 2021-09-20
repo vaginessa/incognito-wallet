@@ -48,6 +48,20 @@ const withTransaction = WrappedComp => props => {
       setLoading(false);
     }
   };
+  const onRemoveContribute = async ({ fee, poolTokenIDs, poolPairID, shareAmount }) => {
+    if (loading) return;
+    try {
+      setLoading(true);
+      const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
+      await pDexV3Inst.createAndSendWithdrawContributeRequestTx({
+        fee, poolTokenIDs, poolPairID, shareAmount
+      });
+    } catch (error) {
+      setError(new ExHandler(error).getMessage(error?.message));
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <ErrorBoundary>
@@ -56,6 +70,7 @@ const withTransaction = WrappedComp => props => {
           ...props,
           onCreateContributes,
           onCreateNewPool,
+          onRemoveContribute,
           loading,
           error,
         }}

@@ -19,6 +19,7 @@ import BigNumber from 'bignumber.js';
 import format from '@utils/format';
 import convertUtil from '@utils/convert';
 import {defaultAccountWalletSelector} from '@src/redux/selectors/account';
+import {actionRefresh} from '@screens/PDexV3/features/Home';
 
 /***
  *================================================================

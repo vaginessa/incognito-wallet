@@ -13,6 +13,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {liquidityActions, removePoolSelector} from '@screens/PDexV3/features/Liquidity/index';
 import {ButtonTrade} from '@components/Button';
 import {useNavigation} from 'react-navigation-hooks';
+import routeNames from '@routers/routeNames';
 
 const initialFormValues = {
   inputToken: '',
@@ -71,7 +72,7 @@ const InputsGroup = () => {
   );
 };
 
-const Extra = React.memo(() => {
+export const Extra = React.memo(() => {
   const data = useSelector(removePoolSelector.shareDataSelector);
   const renderHooks = () => {
     if (!data) return;
@@ -100,7 +101,7 @@ const RemovePool = ({ onInitRemovePool }) => {
                 btnStyle={mainStyle.button}
                 title={LIQUIDITY_MESSAGES.removePool}
                 disabled={disabled}
-                onPress={() => navigation}
+                onPress={() => navigation.navigate(routeNames.RemovePoolConfirm)}
               />
               <Extra />
             </>

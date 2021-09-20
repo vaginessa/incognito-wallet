@@ -14,6 +14,8 @@ import {contributeSelector, liquidityActions} from '@screens/PDexV3/features/Liq
 import {ButtonTrade} from '@components/Button';
 import {useNavigation} from 'react-navigation-hooks';
 import routeNames from '@routers/routeNames';
+import {NFTTokenBottomBar} from '@screens/PDexV3/features/NFTToken';
+import {switchAccountSelector} from '@src/redux/selectors/account';
 
 const initialFormValues = {
   inputToken: '',
@@ -94,30 +96,34 @@ const Contribute = ({ onInitContribute }) => {
   const navigation = useNavigation();
   const isFetching = useSelector(contributeSelector.statusSelector);
   const disableContribute = useSelector(contributeSelector.disableContribute);
+  const switching = useSelector(switchAccountSelector);
   const navigateConfirm = () => navigation.navigate(routeNames.ContributeConfirm);
   React.useEffect(() => {
-    if (typeof onInitContribute === 'function') onInitContribute();
-  }, []);
+    if (typeof onInitContribute === 'function' && !switching) onInitContribute();
+  }, [switching]);
   return (
-    <View style={mainStyle.container}>
-      <Header title={LIQUIDITY_MESSAGES.addLiquidity} accountSelectable />
-      <ScrollView refreshControl={(<RefreshControl refreshing={isFetching} onRefresh={onInitContribute} />)}>
-        <Form>
-          {({ handleSubmit }) => (
-            <>
-              <InputsGroup />
-              <ButtonTrade
-                btnStyle={mainStyle.button}
-                title={LIQUIDITY_MESSAGES.addLiquidity}
-                disabled={disableContribute}
-                onPress={navigateConfirm}
-              />
-              <Extra />
-            </>
-          )}
-        </Form>
-      </ScrollView>
-    </View>
+    <>
+      <View style={mainStyle.container}>
+        <Header title={LIQUIDITY_MESSAGES.addLiquidity} accountSelectable />
+        <ScrollView refreshControl={(<RefreshControl refreshing={isFetching} onRefresh={onInitContribute} />)}>
+          <Form>
+            {({ handleSubmit }) => (
+              <>
+                <InputsGroup />
+                <ButtonTrade
+                  btnStyle={mainStyle.button}
+                  title={LIQUIDITY_MESSAGES.addLiquidity}
+                  disabled={disableContribute}
+                  onPress={navigateConfirm}
+                />
+                <Extra />
+              </>
+            )}
+          </Form>
+        </ScrollView>
+      </View>
+      <NFTTokenBottomBar />
+    </>
   );
 };
 
