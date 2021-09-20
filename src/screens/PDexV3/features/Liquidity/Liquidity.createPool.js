@@ -5,7 +5,7 @@ import {styled as mainStyle} from '@screens/PDexV3/PDexV3.styled';
 import {Header, RowSpaceText} from '@src/components';
 import {LIQUIDITY_MESSAGES,formConfigsCreatePool} from '@screens/PDexV3/features/Liquidity/Liquidity.constant';
 import {createForm, RFTradeInputAmount as TradeInputAmount, validator} from '@components/core/reduxForm';
-import {AddBreakLine, RoundCornerButton, Text} from '@components/core';
+import {AddBreakLine, Text} from '@components/core';
 import {useDispatch, useSelector} from 'react-redux';
 import {Field} from 'redux-form';
 import withLiquidity from '@screens/PDexV3/features/Liquidity/Liquidity.enhance';
@@ -13,6 +13,8 @@ import {createPoolSelector, liquidityActions} from '@screens/PDexV3/features/Liq
 import styled from '@screens/PDexV3/features/Liquidity/Liquidity.styled';
 import {useNavigation} from 'react-navigation-hooks';
 import routeNames from '@routers/routeNames';
+import {disableCreatePool} from '@screens/PDexV3/features/Liquidity/Liquidity.createPoolSelector';
+import {ButtonTrade} from '@components/Button';
 
 const initialFormValues = {
   inputToken: '',
@@ -34,6 +36,12 @@ const InputsGroup = () => {
   const outputTokens = useSelector(createPoolSelector.outputTokensListSelector);
   const inputToken = inputAmount(formConfigsCreatePool.formName, formConfigsCreatePool.inputToken);
   const outputToken = inputAmount(formConfigsCreatePool.formName, formConfigsCreatePool.outputToken);
+  const _validateInput = React.useCallback(() => {
+    return inputToken.error;
+  }, [inputToken.error]);
+  const _validateOutput = React.useCallback(() => {
+    return outputToken.error;
+  }, [outputToken.error]);
   const onChangeText = ({ text, field }) => {
     dispatch(liquidityActions.actionSetCreatePoolText({
       text,
@@ -49,6 +57,7 @@ const InputsGroup = () => {
         canSelectSymbol
         symbol={inputToken && inputToken?.symbol}
         validate={[
+          _validateInput,
           ...validator.combinedAmount,
         ]}
         onChange={(text) => {
@@ -70,6 +79,7 @@ const InputsGroup = () => {
         canSelectSymbol
         symbol={outputToken && outputToken?.symbol}
         validate={[
+          _validateOutput,
           ...validator.combinedAmount,
         ]}
         onChange={(text) => {
@@ -87,7 +97,7 @@ const InputsGroup = () => {
   );
 };
 
-const Extra = React.memo(() => {
+export const Extra = React.memo(() => {
   const hooks = useSelector(createPoolSelector.hookFactoriesSelector);
   const renderHooks = () => {
     return hooks.map(item => <RowSpaceText {...item} key={item?.label} />);
@@ -114,7 +124,11 @@ const AMP = React.memo(() => (
 ));
 
 const CreatePool = ({ onInitCreatePool }) => {
-  React.useEffect(() => { onInitCreatePool(); }, []);
+  const disabled = useSelector(disableCreatePool);
+  const navigation = useNavigation();
+  React.useEffect(() => {
+    setTimeout(() => { onInitCreatePool(); }, 500);
+  }, []);
   return (
     <View style={mainStyle.container}>
       <Header title={LIQUIDITY_MESSAGES.createPool} />
@@ -123,9 +137,11 @@ const CreatePool = ({ onInitCreatePool }) => {
           {({ handleSubmit }) => (
             <>
               <InputsGroup />
-              <RoundCornerButton
-                style={mainStyle.button}
+              <ButtonTrade
+                btnStyle={mainStyle.button}
                 title={LIQUIDITY_MESSAGES.createPool}
+                disabled={disabled}
+                onPress={() => navigation.navigate(routeNames.CreatePoolConfirm)}
               />
               <AMP />
               <Extra />

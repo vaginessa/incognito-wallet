@@ -12,7 +12,7 @@ export const TYPES = {
 
 export const LIQUIDITY_MESSAGES = {
   addLiquidity: 'Add Liquidity',
-  createPool : 'Create Pool',
+  createPool : 'Create Liquidity',
   removePool : 'Remove Liquidity'
 };
 

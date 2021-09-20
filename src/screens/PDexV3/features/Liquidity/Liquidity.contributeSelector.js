@@ -3,13 +3,11 @@ import {liquiditySelector} from '@screens/PDexV3/features/Liquidity/Liquidity.se
 import {getPrivacyDataByTokenID as getPrivacyDataByTokenIDSelector} from '@src/redux/selectors/selectedPrivacy';
 import {getDataByShareIdSelector} from '@screens/PDexV3/features/Portfolio/Portfolio.selector';
 import {sharedSelector} from '@src/redux/selectors';
-import {formatBalance, getExchangeRate, getPoolSize} from '@screens/PDexV3';
+import {getExchangeRate, getPoolSize} from '@screens/PDexV3';
 import helper from '@src/constants/helper';
 import {getInputAmount} from '@screens/PDexV3/features/Liquidity/Liquidity.utils';
 import uniqBy from 'lodash/uniqBy';
 import format from '@utils/format';
-import {MESSAGES} from '@screens/Dex/constants';
-import {investCoinSelector, stakingFeeSelector} from '@screens/PDexV3/features/Staking';
 import {formConfigsContribute} from '@screens/PDexV3/features/Liquidity/Liquidity.constant';
 
 const contributeSelector = createSelector(
@@ -66,7 +64,7 @@ export const mappingDataSelector = createSelector(
     getDataShareByPoolId,
     { inputToken, outputToken },
     isGettingBalance,
-    { feeToken: feeTokenId }
+    { token: feeToken }
   ) => {
     if (!poolData || !inputToken || !outputToken) return {};
     const { poolId, amp, token1Value: token1PoolValue, token2Value: token2PoolValue } = poolData;
@@ -77,7 +75,6 @@ export const mappingDataSelector = createSelector(
       isGettingBalance.includes(inputToken?.tokenId)
       || isGettingBalance.includes(outputToken?.tokenId)
       || isGettingBalance.includes(feeToken?.tokenId);
-    const feeToken = getPrivacyDataByTokenID(feeTokenId);
     const tokens = uniqBy([inputToken, outputToken, feeToken], (token) => token.tokenId);
     const hookBalances = tokens.map((token) => ({
       label: 'Balance',

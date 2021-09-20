@@ -8,9 +8,11 @@ import withLiquidity from '@screens/PDexV3/features/Liquidity/Liquidity.enhance'
 import {createForm, RFTradeInputAmount as TradeInputAmount, validator} from '@components/core/reduxForm';
 import styled from '@screens/PDexV3/features/Liquidity/Liquidity.styled';
 import {Field} from 'redux-form';
-import {AddBreakLine, RoundCornerButton} from '@components/core';
+import {AddBreakLine} from '@components/core';
 import {useDispatch, useSelector} from 'react-redux';
 import {liquidityActions, removePoolSelector} from '@screens/PDexV3/features/Liquidity/index';
+import {ButtonTrade} from '@components/Button';
+import {useNavigation} from 'react-navigation-hooks';
 
 const initialFormValues = {
   inputToken: '',
@@ -30,29 +32,40 @@ const InputsGroup = () => {
   const outputToken = inputAmount(formConfigsRemovePool.formName, formConfigsRemovePool.outputToken);
   const onChangeInput = (text) => dispatch(liquidityActions.actionChangeInputRemovePool(text));
   const onChangeOutput = (text) => dispatch(liquidityActions.actionChangeOutputRemovePool(text));
+  const onMaxPress = () => dispatch(liquidityActions.actionMaxRemovePool());
+  const _validateInput = React.useCallback(() => {
+    return inputToken.error;
+  }, [inputToken.error]);
+  const _validateOutput = React.useCallback(() => {
+    return outputToken.error;
+  }, [outputToken.error]);
   return (
     <View style={styled.wrapInput}>
       <Field
         component={TradeInputAmount}
         name={formConfigsRemovePool.inputToken}
         validate={[
+          _validateInput,
           ...validator.combinedAmount,
         ]}
         hasInfinityIcon
         editableInput={!inputToken.loadingBalance}
         symbol={inputToken && inputToken?.symbol}
         onChange={onChangeInput}
+        onPressInfinityIcon={onMaxPress}
       />
       <AddBreakLine />
       <Field
         component={TradeInputAmount}
         name={formConfigsRemovePool.outputToken}
         validate={[
+          _validateOutput,
           ...validator.combinedAmount,
         ]}
         symbol={outputToken && outputToken?.symbol}
         editableInput={!outputToken.loadingBalance}
         onChange={onChangeOutput}
+        onPressInfinityIcon={onMaxPress}
       />
     </View>
   );
@@ -72,6 +85,8 @@ const Extra = React.memo(() => {
 });
 
 const RemovePool = ({ onInitRemovePool }) => {
+  const disabled = useSelector(removePoolSelector.disableRemovePool);
+  const navigation = useNavigation();
   React.useEffect(() => { onInitRemovePool(); }, []);
   return (
     <View style={mainStyle.container}>
@@ -81,9 +96,11 @@ const RemovePool = ({ onInitRemovePool }) => {
           {({ handleSubmit }) => (
             <>
               <InputsGroup />
-              <RoundCornerButton
-                style={mainStyle.button}
+              <ButtonTrade
+                btnStyle={mainStyle.button}
                 title={LIQUIDITY_MESSAGES.removePool}
+                disabled={disabled}
+                onPress={() => navigation}
               />
               <Extra />
             </>

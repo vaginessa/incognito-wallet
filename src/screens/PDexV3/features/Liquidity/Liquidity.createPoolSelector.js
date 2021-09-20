@@ -2,11 +2,14 @@ import {createSelector} from 'reselect';
 import {liquiditySelector} from '@screens/PDexV3/features/Liquidity/Liquidity.selector';
 import {getPrivacyDataByTokenID as getPrivacyDataByTokenIDSelector} from '@src/redux/selectors/selectedPrivacy';
 import {sharedSelector} from '@src/redux/selectors';
-import {formatBalance} from '@screens/PDexV3';
+import {getExchangeRate} from '@screens/PDexV3';
 import {allTokensIDsSelector} from '@src/redux/selectors/token';
 import {getInputAmount} from '@screens/PDexV3/features/Liquidity/Liquidity.utils';
 import {formValueSelector} from 'redux-form';
 import {formConfigsCreatePool} from '@screens/PDexV3/features/Liquidity/Liquidity.constant';
+import uniqBy from 'lodash/uniqBy';
+import format from '@utils/format';
+import convert from '@utils/convert';
 
 const createPoolSelector = createSelector(
   liquiditySelector,
@@ -29,24 +32,40 @@ export const tokenSelector = createSelector(
 
 export const feeAmountSelector = createSelector(
   createPoolSelector,
-  ({ feeAmount }) => feeAmount,
+  getPrivacyDataByTokenIDSelector,
+  ({ feeAmount, feeToken }, getPrivacyDataByTokenID) =>
+    ({ feeAmount, feeToken, token: getPrivacyDataByTokenID(feeToken) }),
+);
+
+export const inputAmountSelector = createSelector(
+  (state) => state,
+  sharedSelector.isGettingBalance,
+  tokenSelector,
+  feeAmountSelector,
+  getInputAmount,
 );
 
 export const hookFactoriesSelector = createSelector(
   tokenSelector,
   sharedSelector.isGettingBalance,
-  ({ inputToken, outputToken }, isGettingBalance) => {
-    let balanceStr = '';
-    let isLoadingBalance = true;
-    if (inputToken || outputToken) {
-      balanceStr = formatBalance(inputToken, outputToken, inputToken.amount, outputToken?.amount);
-      isLoadingBalance = isGettingBalance.includes(inputToken?.tokenId) || isGettingBalance.includes(outputToken?.tokenId);
-    }
+  feeAmountSelector,
+  inputAmountSelector,
+  ({ inputToken, outputToken }, isGettingBalance, { token: feeToken }, inputAmount) => {
+    if (!inputToken || !outputToken || !feeToken) return [];
+    const tokens = uniqBy([inputToken, outputToken, feeToken], (token) => token.tokenId);
+    const input = inputAmount(formConfigsCreatePool.formName, formConfigsCreatePool.inputToken);
+    const output = inputAmount(formConfigsCreatePool.formName, formConfigsCreatePool.outputToken);
+    const hookBalances = tokens.map((token) => ({
+      label: 'Balance',
+      value: `${format.amountFull(token.amount, token.pDecimals)} ${token.symbol}`,
+      loading: isGettingBalance.includes(token?.tokenId)
+    }));
+    const exchangeRateStr = getExchangeRate(inputToken, outputToken, input.originalInputAmount, output.originalInputAmount);
     return [
+      ...hookBalances,
       {
-        label: 'Balance',
-        value: balanceStr,
-        loading: isLoadingBalance
+        label: 'Exchange rate',
+        value: exchangeRateStr,
       },
     ];
   }
@@ -72,19 +91,24 @@ export const outputTokensListSelector = createSelector(
   }
 );
 
-export const inputAmountSelector = createSelector(
-  (state) => state,
-  sharedSelector.isGettingBalance,
-  tokenSelector,
-  feeAmountSelector,
-  getInputAmount,
-);
-
 export const ampValueSelector = createSelector(
   (state) => state,
   (state) => {
     const selector = formValueSelector(formConfigsCreatePool.formName);
-    return selector(state, formConfigsCreatePool.amp);
+    const ampStr = selector(state, formConfigsCreatePool.amp);
+    const amp = convert.toNumber(ampStr, true);
+    const isValid = !isNaN(amp) && amp > 0;
+    return { ampStr, amp, isValid };
+  }
+);
+
+export const disableCreatePool = createSelector(
+  inputAmountSelector,
+  ampValueSelector,
+  ( inputAmount, { isValidAMP } ) => {
+    const { error: inputError } = inputAmount(formConfigsCreatePool.formName, formConfigsCreatePool.inputToken);
+    const { error: outputError } = inputAmount(formConfigsCreatePool.formName, formConfigsCreatePool.outputToken);
+    return !!inputError || !!outputError || !isValidAMP;
   }
 );
 
@@ -97,4 +121,5 @@ export default ({
   outputTokensListSelector,
   inputAmountSelector,
   ampValueSelector,
+  disableCreatePool,
 });

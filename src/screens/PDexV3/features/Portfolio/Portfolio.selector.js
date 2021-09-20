@@ -16,26 +16,36 @@ export const portfolioSelector = createSelector(
   },
 );
 
+export const shareDetailsSelector = createSelector(
+  portfolioSelector,
+  ({ shareDetails }) => shareDetails
+);
+
+export const isFetchingSelector = createSelector(
+  portfolioSelector,
+  ({ isFetching }) => isFetching
+);
+
 export const listShareSelector = createSelector(
   portfolioSelector,
+  shareDetailsSelector,
   getPrivacyDataByTokenIDSelector,
-  (portfolio, getPrivacyDataByTokenID) => {
+  (portfolio, shareDetails, getPrivacyDataByTokenID) => {
     const { data } = portfolio;
     return data.map((item) => {
       const {
-        token1IdStr,
-        token2IdStr,
-        token1PoolValue,
-        token2PoolValue,
+        tokenId1,
+        tokenId2,
         share,
         totalShare,
         token1Reward,
         token2Reward,
-        apy,
-        amp,
+        poolId,
       } = item;
-      const token1 = getPrivacyDataByTokenID(token1IdStr);
-      const token2 = getPrivacyDataByTokenID(token2IdStr);
+      const poolDetail = shareDetails.find((share) => poolId === share.poolId);
+      const { amp, apy, token1Value: token1PoolValue, token2Value: token2PoolValue } = poolDetail || {};
+      const token1 = getPrivacyDataByTokenID(tokenId1);
+      const token2 = getPrivacyDataByTokenID(tokenId2);
       const shareId = `${item?.token1IdStr}-${item?.token2IdStr}`;
       const exchangeRateStr = getExchangeRate(
         token1,
@@ -89,6 +99,10 @@ export const listShareSelector = createSelector(
         shareStr,
         rewardStr,
         hookFactories,
+        amp,
+        apy,
+        token1PoolValue,
+        token2PoolValue,
       };
     });
   },

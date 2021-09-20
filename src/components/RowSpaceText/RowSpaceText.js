@@ -10,7 +10,7 @@ const RowSpaceText = (props) => {
   return (
     <Row style={[styled.hookContainer, style]}>
       <Text style={styled.hookLabel}>{`${label}:`}</Text>
-      <Row style={[styled.hookContainer, { marginBottom: 0 }]}>
+      <Row>
         {
           loading ? (
             <ActivityIndicator size="small" />

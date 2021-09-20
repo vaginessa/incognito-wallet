@@ -122,6 +122,9 @@ import {
   Contribute,
   CreatePool,
   RemovePool,
+  ContributeConfirm,
+  CreatePoolConfirm,
+  RemovePoolConfirm
 } from '@screens/PDexV3/features/Liquidity';
 import PairList from '@screens/PDexV3/features/PairList';
 
@@ -284,6 +287,18 @@ const pDexV3Routes = [
     screen: ReviewOrderLimit,
     name: routeNames.ReviewOrderLimit,
   },
+  {
+    screen: ContributeConfirm,
+    name: routeNames.ContributeConfirm,
+  },
+  {
+    screen: CreatePoolConfirm,
+    name: routeNames.CreatePoolConfirm,
+  },
+  {
+    screen: RemovePoolConfirm,
+    name: routeNames.RemovePoolConfirm,
+  }
 ];
 
 const routes = [

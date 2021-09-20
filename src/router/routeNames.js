@@ -184,4 +184,7 @@ export default {
   TradeOrderHistory: 'TradeOrderHistory',
   PairList: 'PairList',
   ReviewOrderLimit: 'ReviewOrderLimit',
+  ContributeConfirm: 'ContributeConfirm',
+  CreatePoolConfirm: 'CreatePoolConfirm',
+  RemovePoolConfirm: 'RemovePoolConfirm'
 };

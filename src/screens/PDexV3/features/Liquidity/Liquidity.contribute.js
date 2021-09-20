@@ -12,6 +12,8 @@ import {AddBreakLine} from '@components/core';
 import withLiquidity from '@screens/PDexV3/features/Liquidity/Liquidity.enhance';
 import {contributeSelector, liquidityActions} from '@screens/PDexV3/features/Liquidity';
 import {ButtonTrade} from '@components/Button';
+import {useNavigation} from 'react-navigation-hooks';
+import routeNames from '@routers/routeNames';
 
 const initialFormValues = {
   inputToken: '',
@@ -75,7 +77,7 @@ const InputsGroup = () => {
   );
 };
 
-const Extra = React.memo(() => {
+export const Extra = React.memo(() => {
   const data = useSelector(contributeSelector.mappingDataSelector);
   const renderHooks = () => {
     if (!data) return;
@@ -89,8 +91,10 @@ const Extra = React.memo(() => {
 });
 
 const Contribute = ({ onInitContribute }) => {
+  const navigation = useNavigation();
   const isFetching = useSelector(contributeSelector.statusSelector);
   const disableContribute = useSelector(contributeSelector.disableContribute);
+  const navigateConfirm = () => navigation.navigate(routeNames.ContributeConfirm);
   React.useEffect(() => {
     if (typeof onInitContribute === 'function') onInitContribute();
   }, []);
@@ -106,6 +110,7 @@ const Contribute = ({ onInitContribute }) => {
                 btnStyle={mainStyle.button}
                 title={LIQUIDITY_MESSAGES.addLiquidity}
                 disabled={disableContribute}
+                onPress={navigateConfirm}
               />
               <Extra />
             </>

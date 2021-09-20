@@ -6,7 +6,6 @@ import {
   removePoolSelector,
   formConfigsRemovePool
 } from '@screens/PDexV3/features/Liquidity';
-import Util from '@utils/Util';
 import {batch} from 'react-redux';
 import {getBalance} from '@src/redux/actions/token';
 import {ExHandler} from '@services/exception';
@@ -241,6 +240,23 @@ const actionChangeOutputRemovePool = (newText) => async (dispatch, getState) => 
   }
 };
 
+const actionMaxRemovePool = () => async (dispatch, getState) => {
+  try {
+    const state = getState();
+    const maxShareData = removePoolSelector.maxShareAmountSelector(state);
+    const {
+      maxInputShareStr,
+      maxOutputShareStr,
+    } = maxShareData;
+    batch(() => {
+      dispatch(change(formConfigsRemovePool.formName, formConfigsRemovePool.inputToken, maxInputShareStr));
+      dispatch(change(formConfigsRemovePool.formName, formConfigsRemovePool.outputToken, maxOutputShareStr));
+    });
+  } catch (error) {
+    new ExHandler(error).showErrorToast();
+  }
+};
+
 export default ({
   actionSetContributePoolID,
   actionInitContribute,
@@ -254,5 +270,6 @@ export default ({
   actionSetRemovePoolToken,
   actionInitRemovePool,
   actionChangeInputRemovePool,
-  actionChangeOutputRemovePool
+  actionChangeOutputRemovePool,
+  actionMaxRemovePool,
 });
