@@ -4,7 +4,7 @@ import {
   formConfigsContribute,
   formConfigsCreatePool,
   removePoolSelector,
-  formConfigsRemovePool
+  formConfigsRemovePool, createPoolSelector
 } from '@screens/PDexV3/features/Liquidity';
 import {batch} from 'react-redux';
 import {getBalance} from '@src/redux/actions/token';
@@ -140,6 +140,48 @@ const actionSetCreatePoolText = ({ text, field }) => async (dispatch) => {
   }
 };
 
+const actionUpdateCreatePoolInputToken = (tokenId) => async (dispatch, getState) => {
+  try {
+    const state = getState();
+    const { inputToken, outputToken } = createPoolSelector.tokenSelector(state);
+    const newInputToken = tokenId;
+    let newOutputToken = outputToken.tokenId;
+    if (newInputToken === outputToken.tokenId) {
+      newOutputToken = inputToken.tokenId;
+    }
+    batch(() => {
+      dispatch(actionSetCreatePoolToken({
+        inputToken: newInputToken,
+        outputToken: newOutputToken,
+      }));
+      dispatch(actionGetBalance([newInputToken, newOutputToken]));
+    });
+  } catch (error) {
+    new ExHandler(error).showErrorToast();
+  }
+};
+
+const actionUpdateCreatePoolOutputToken = (tokenId) => async (dispatch, getState) => {
+  try {
+    const state = getState();
+    const { inputToken, outputToken } = createPoolSelector.tokenSelector(state);
+    const newOutputToken = tokenId;
+    let newInputToken = inputToken.tokenId;
+    if (newInputToken === outputToken.tokenId) {
+      newInputToken = outputToken.tokenId;
+    }
+    batch(() => {
+      dispatch(actionSetCreatePoolToken({
+        inputToken: newInputToken,
+        outputToken: newOutputToken,
+      }));
+      dispatch(actionGetBalance([newInputToken, newOutputToken]));
+    });
+  } catch (error) {
+    new ExHandler(error).showErrorToast();
+  }
+};
+
 const actionInitCreatePool = () => (dispatch, getState) => {
   try {
     const state = getState();
@@ -259,11 +301,15 @@ const actionMaxRemovePool = () => async (dispatch, getState) => {
 };
 
 export default ({
+  actionGetBalance,
   actionSetContributePoolID,
   actionInitContribute,
   actionChangeInputContribute,
   actionChangeOutputContribute,
 
+  actionSetCreatePoolToken,
+  actionUpdateCreatePoolInputToken,
+  actionUpdateCreatePoolOutputToken,
   actionInitCreatePool,
   actionSetCreatePoolText,
 

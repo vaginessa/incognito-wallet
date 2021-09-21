@@ -1,17 +1,17 @@
 import React, {memo} from 'react';
 import {FlatList, Text, TouchableOpacity, View} from 'react-native';
-// import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 import {useSelector} from 'react-redux';
 import {liquidityHistorySelector} from '@screens/PDexV3/features/LiquidityHistories/index';
-// import {useNavigation} from 'react-navigation-hooks';
-// import routeNames from '@routers/routeNames';
+import {useNavigation} from 'react-navigation-hooks';
+import routeNames from '@routers/routeNames';
 import styled from '@screens/PDexV3/features/LiquidityHistories/LiquidityHistories.styled';
 
 const Item = React.memo(({ history, isLast }) => {
-  // const navigation = useNavigation();
-  // const onNextPress = () => navigation.navigate(routeNames.ContributeHistoryDetail);
+  const navigation = useNavigation();
+  const onNextPress = () => navigation.navigate(routeNames.ContributeHistoryDetail, { history });
   return (
-    <TouchableOpacity style={[styled.wrapperItem, isLast && { marginBottom: 20 }]}>
+    <TouchableOpacity style={[styled.wrapperItem, isLast && { marginBottom: 20 }]} onPress={onNextPress}>
       <View style={styled.topRow}>
         <Text style={styled.title}>Contribute</Text>
         <Text style={styled.status}>{history?.statusStr}</Text>
@@ -44,6 +44,9 @@ const Contribute = () => {
   );
 };
 
-Contribute.propTypes = {};
+Item.propTypes = {
+  history: PropTypes.object.isRequired,
+  isLast: PropTypes.bool.isRequired
+};
 
 export default memo(Contribute);

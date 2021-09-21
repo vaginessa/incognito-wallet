@@ -58,7 +58,7 @@ export const shareDataSelector = createSelector(
   (poolId, removePool, { inputToken, outputToken }, getDataShareByPoolID, isGettingBalance, { token: feeToken }) => {
     const shareData = getDataShareByPoolID(poolId);
     if (!shareData) return {};
-    const { shareStr, token1PoolValue, token2PoolValue , amp} = shareData;
+    const { shareStr, token1PoolValue, token2PoolValue , amp, nftId} = shareData;
     const exchangeRateStr = getExchangeRate(inputToken, outputToken, token1PoolValue, token2PoolValue);
     const poolSize = getPoolSize(inputToken, outputToken, token1PoolValue, token2PoolValue);
     const tokens = uniqBy([inputToken, outputToken, feeToken], (token) => token.tokenId);
@@ -90,6 +90,7 @@ export const shareDataSelector = createSelector(
     return {
       ...shareData,
       hookFactories,
+      nftId,
     };
   }
 );
@@ -114,7 +115,6 @@ export const maxShareAmountSelector = createSelector(
     const maxInputShare = new BigNumber(sharePercent).multipliedBy(token1PoolValue).toNumber() || 0;
     const maxOutputShare = new BigNumber(sharePercent).multipliedBy(token2PoolValue).toNumber() || 0;
     const maxInputHuman = convert.toHumanAmount(maxInputShare, inputToken.pDecimals);
-    console.log('maxInputHuman', maxInputHuman);
     const maxInputShareStr = format.toFixed(maxInputHuman, inputToken.pDecimals);
     const maxOutputHuman = convert.toHumanAmount(maxOutputShare, outputToken.pDecimals);
     const maxOutputShareStr = format.toFixed(maxOutputHuman, outputToken.pDecimals);

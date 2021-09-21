@@ -16,7 +16,7 @@ const Confirm = React.memo(({ onCreateContributes, error }) => {
   const outputAmount = amountSelector(formConfigsContribute.formName, formConfigsContribute.outputToken);
   const { feeAmount } = useSelector(contributeSelector.feeAmountSelector);
   const poolId = useSelector(contributeSelector.poolIDSelector);
-
+  const { amp, nftId } = useSelector(contributeSelector.mappingDataSelector);
   const createContributes = async () => {
     if (typeof onCreateContributes !== 'function') return;
     onCreateContributes({
@@ -26,6 +26,8 @@ const Confirm = React.memo(({ onCreateContributes, error }) => {
       amount1: inputAmount.originalInputAmount,
       amount2: outputAmount.originalInputAmount,
       poolPairID: poolId,
+      amp,
+      nftId,
     });
   };
 

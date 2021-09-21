@@ -81,7 +81,6 @@ import ShieldDecentralizeDescription from '@screens/Shield/features/ShieldDecent
 import Convert from '@screens/Home/features/Convert';
 import ConfirmLiquidity from '@screens/Dex/components/Confirm';
 import HistoriesLiquidity from '@screens/Dex/features/Histories';
-import HistoryContributeDetail from '@screens/Dex/features/HistoryContributeDetail';
 import HistoryWithdrawDetail from '@screens/Dex/features/HistoryWithdrawDetail';
 import ConfirmRetryLiquidity from '@screens/Dex/features/ConfirmRetry';
 import TwoTokensSelect from '@screens/Dex/features/TwoTokensSelect';
@@ -102,8 +101,10 @@ import OrderLimit, {
 import SelectTokenTrade from '@screens/PDexV3/features/SelectToken';
 import Chart from '@screens/PDexV3/features/Chart';
 import WebView from '@screens/WebView';
-import LiquidityHistories from '@screens/PDexV3/features/LiquidityHistories';
-import ContributeHistoryDetail from '@screens/PDexV3/features/ContributeHistoryDetail';
+import {
+  LiquidityHistories,
+  ContributeHistoryDetail
+} from '@screens/PDexV3/features/LiquidityHistories';
 import RemovePoolHistoriesDetail from '@screens/PDexV3/features/RemovePoolHistoriesDetail';
 import WithdrawRewardHistoriesDetail from '@screens/PDexV3/features/WithdrawRewardHistoriesDetail';
 import {
@@ -573,10 +574,6 @@ const routes = [
   {
     screen: HistoriesLiquidity,
     name: routeNames.HistoriesLiquidity,
-  },
-  {
-    screen: HistoryContributeDetail,
-    name: routeNames.HistoryContributeDetail,
   },
   {
     screen: HistoryWithdrawDetail,

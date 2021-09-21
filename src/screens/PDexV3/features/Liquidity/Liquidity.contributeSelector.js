@@ -68,7 +68,7 @@ export const mappingDataSelector = createSelector(
   ) => {
     if (!poolData || !inputToken || !outputToken) return {};
     const { poolId, amp, token1Value: token1PoolValue, token2Value: token2PoolValue } = poolData;
-    const shareStr = getDataShareByPoolId(poolId)?.shareStr || '0 (0%)';
+    const { shareStr, nftId } = getDataShareByPoolId(poolId) || {};
     const exchangeRateStr = getExchangeRate(inputToken, outputToken, token1PoolValue, token2PoolValue);
     const poolSize = getPoolSize(inputToken, outputToken, token1PoolValue, token2PoolValue);
     const isLoadingBalance =
@@ -90,7 +90,7 @@ export const mappingDataSelector = createSelector(
       ...hookBalances,
       {
         label: 'Share',
-        value: shareStr,
+        value: shareStr || '0 (0%)',
       },
       {
         label: 'Exchange rate',
@@ -109,6 +109,7 @@ export const mappingDataSelector = createSelector(
       token1PoolValue,
       token2PoolValue,
       isLoadingBalance,
+      nftId,
     };
   }
 );

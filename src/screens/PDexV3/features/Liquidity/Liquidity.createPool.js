@@ -6,7 +6,7 @@ import {Header, RowSpaceText} from '@src/components';
 import {LIQUIDITY_MESSAGES,formConfigsCreatePool} from '@screens/PDexV3/features/Liquidity/Liquidity.constant';
 import {createForm, RFTradeInputAmount as TradeInputAmount, validator} from '@components/core/reduxForm';
 import {AddBreakLine, Text} from '@components/core';
-import {useDispatch, useSelector} from 'react-redux';
+import {batch, useDispatch, useSelector} from 'react-redux';
 import {Field} from 'redux-form';
 import withLiquidity from '@screens/PDexV3/features/Liquidity/Liquidity.enhance';
 import {createPoolSelector, liquidityActions} from '@screens/PDexV3/features/Liquidity';
@@ -15,6 +15,7 @@ import {useNavigation} from 'react-navigation-hooks';
 import routeNames from '@routers/routeNames';
 import {disableCreatePool} from '@screens/PDexV3/features/Liquidity/Liquidity.createPoolSelector';
 import {ButtonTrade} from '@components/Button';
+import {formConfigs} from '@screens/PDexV3/features/Swap/Swap.constant';
 
 const initialFormValues = {
   inputToken: '',
@@ -69,6 +70,12 @@ const InputsGroup = () => {
         loadingBalance={inputToken.loadingBalance}
         onPressSymbol={() => navigation.navigate(routeNames.SelectTokenTrade, {
           data: inputTokens,
+          onSelectToken: ((token) => {
+            batch(() => {
+              dispatch(liquidityActions.actionUpdateCreatePoolInputToken(token.tokenId));
+              navigation.navigate(routeNames.CreatePool);
+            });
+          }),
         })}
       />
       <AddBreakLine />
@@ -91,6 +98,12 @@ const InputsGroup = () => {
         loadingBalance={outputToken.loadingBalance}
         onPressSymbol={() => navigation.navigate(routeNames.SelectTokenTrade, {
           data: outputTokens,
+          onSelectToken: ((token) => {
+            batch(() => {
+              dispatch(liquidityActions.actionUpdateCreatePoolOutputToken(token.tokenId));
+              navigation.navigate(routeNames.CreatePool);
+            });
+          }),
         })}
       />
     </View>

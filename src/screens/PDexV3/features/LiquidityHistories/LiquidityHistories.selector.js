@@ -27,7 +27,7 @@ const mapContributeData = createSelector(
   selectedPrivacySelector.getPrivacyDataByTokenID,
   (histories, getPrivacyDataByTokenID) => {
     const _histories = (histories || []).map((history) => {
-      const refund = (history.returnTokens || []).map((tokenId, index) => {
+      const returnValue = (history.returnTokens || []).map((tokenId, index) => {
         const token = getPrivacyDataByTokenID(tokenId);
         const returnAmount = history.returnAmount[index];
         const returnAmountStr = format.amountFull(returnAmount, token.pDecimals, true);
@@ -42,28 +42,44 @@ const mapContributeData = createSelector(
       const contributes = (history['contributeTokens'] || []).map((tokenId, index) => {
         const token = getPrivacyDataByTokenID(tokenId);
         const contributeAmount = history['contributeAmount'][index];
+        const requestTx = history['requestTxs'][index];
         const contributeAmountStr = format.amountFull(contributeAmount, token.pDecimals, true);
         const contributeAmountSymbolStr = `${contributeAmountStr} ${token.symbol}`;
         return {
           token,
           contributeAmount,
           contributeAmountStr,
-          contributeAmountSymbolStr
+          contributeAmountSymbolStr,
+          requestTx,
         };
       });
       const key = (history.requestTxs || []).join('-');
       const timeStr = format.formatDateTime(history.requesttime);
       const contributeAmountDesc = contributes.map(item => item.contributeAmountSymbolStr).join(' + ');
-      console.log('SANG TEST: ', contributes);
-      const statusStr = 'Completed';
+
+      const storageValue = (history['storageContribute'] || []).map((item) => {
+        const token = getPrivacyDataByTokenID(item.tokenId);
+        const contributeAmount = item['contributeAmount'];
+        const requestTx = item['requestTx'];
+        const contributeAmountStr = format.amountFull(contributeAmount, token.pDecimals, true);
+        const contributeAmountSymbolStr = `${contributeAmountStr} ${token.symbol}`;
+        return {
+          token,
+          contributeAmount,
+          contributeAmountStr,
+          contributeAmountSymbolStr,
+          requestTx,
+        };
+      });
+
       return {
         ...history,
         key,
         contributes,
-        refund,
+        returnValue,
         timeStr,
-        statusStr,
         contributeAmountDesc,
+        storageValue,
       };
     });
     return _histories;

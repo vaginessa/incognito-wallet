@@ -1,16 +1,18 @@
 import React from 'react';
 import ErrorBoundary from '@src/components/ErrorBoundary';
 import {actionGetPDexV3Inst} from '@screens/PDexV3';
-import {useDispatch} from 'react-redux';
+import {batch, useDispatch} from 'react-redux';
 import {ExHandler} from '@services/exception';
 import Loading from '@screens/Dex/components/Loading';
+import {liquidityHistoryActions} from '@screens/PDexV3/features/LiquidityHistories';
+import {liquidityActions} from '@screens/PDexV3/features/Liquidity/index';
 
 const withTransaction = WrappedComp => props => {
   const dispatch = useDispatch();
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState('');
 
-  const onCreateContributes = async ({ fee, tokenId1, tokenId2, amount1, amount2, poolPairID }) => {
+  const onCreateContributes = async ({ fee, tokenId1, tokenId2, amount1, amount2, poolPairID, amp, nftId }) => {
     if (loading) return;
     try {
       setLoading(true);
@@ -22,6 +24,12 @@ const withTransaction = WrappedComp => props => {
         amount1,
         amount2,
         poolPairID,
+        amp,
+        nftId,
+      });
+      batch(() => {
+        dispatch(liquidityHistoryActions.actionGetContributeHistories());
+        dispatch(liquidityActions.actionInitContribute());
       });
     } catch (error) {
       setError(new ExHandler(error).getMessage(error?.message));
@@ -48,13 +56,13 @@ const withTransaction = WrappedComp => props => {
       setLoading(false);
     }
   };
-  const onRemoveContribute = async ({ fee, poolTokenIDs, poolPairID, shareAmount }) => {
+  const onRemoveContribute = async ({ fee, poolTokenIDs, poolPairID, shareAmount, nftID }) => {
     if (loading) return;
     try {
       setLoading(true);
       const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
       await pDexV3Inst.createAndSendWithdrawContributeRequestTx({
-        fee, poolTokenIDs, poolPairID, shareAmount
+        fee, poolTokenIDs, poolPairID, shareAmount, nftID
       });
     } catch (error) {
       setError(new ExHandler(error).getMessage(error?.message));

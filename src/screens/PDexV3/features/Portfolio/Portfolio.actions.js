@@ -39,6 +39,7 @@ export const actionFetch = () => async (dispatch, getState) => {
     const account = defaultAccountWalletSelector(state);
     const pDexV3Inst = await getPDexV3Instance({ account });
     let listShare = await pDexV3Inst.getListShare();
+    console.log('listShare: ', listShare);
     const poolIds = (listShare || []).map(({ poolId }) => poolId);
     let poolDetails = [];
     if (poolIds.length > 0) {
