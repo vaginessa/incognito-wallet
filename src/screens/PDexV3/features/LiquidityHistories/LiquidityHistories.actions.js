@@ -40,6 +40,9 @@ const actionGetContributeHistories = () => async (dispatch, getState) => {
     if (isFetching) return;
     dispatch(actionFetchingContribute({ isFetching: true }));
     const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
+    // const data = await pDexV3Inst.getStoragePairHash();
+    // const key = pDexV3Inst.getKeyStoragePairHash();
+    // await pDexV3Inst.setStorage(key, []);
     const histories = await pDexV3Inst.getContributeHistories();
     dispatch(actionSetContribute({ histories }));
   } catch (error) {

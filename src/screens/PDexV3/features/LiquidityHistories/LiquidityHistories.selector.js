@@ -1,5 +1,4 @@
 import {createSelector} from 'reselect';
-import uniq from 'lodash/uniq';
 import selectedPrivacySelector from '@src/redux/selectors/selectedPrivacy';
 import format from '@utils/format';
 
@@ -27,7 +26,7 @@ const mapContributeData = createSelector(
   contributePureData,
   selectedPrivacySelector.getPrivacyDataByTokenID,
   (histories, getPrivacyDataByTokenID) => {
-    const _histories = histories.map(history => {
+    const _histories = (histories || []).map((history) => {
       const refund = (history.returnTokens || []).map((tokenId, index) => {
         const token = getPrivacyDataByTokenID(tokenId);
         const returnAmount = history.returnAmount[index];
@@ -40,15 +39,31 @@ const mapContributeData = createSelector(
           returnAmountSymbolStr,
         };
       });
-      const timeStr = format.formatDateTime(history.requesttime);
-      const statusStr = 'Completed';
+      const contributes = (history['contributeTokens'] || []).map((tokenId, index) => {
+        const token = getPrivacyDataByTokenID(tokenId);
+        const contributeAmount = history['contributeAmount'][index];
+        const contributeAmountStr = format.amountFull(contributeAmount, token.pDecimals, true);
+        const contributeAmountSymbolStr = `${contributeAmountStr} ${token.symbol}`;
+        return {
+          token,
+          contributeAmount,
+          contributeAmountStr,
+          contributeAmountSymbolStr
+        };
+      });
       const key = (history.requestTxs || []).join('-');
+      const timeStr = format.formatDateTime(history.requesttime);
+      const contributeAmountDesc = contributes.map(item => item.contributeAmountSymbolStr).join(' + ');
+      console.log('SANG TEST: ', contributes);
+      const statusStr = 'Completed';
       return {
         ...history,
+        key,
+        contributes,
         refund,
         timeStr,
         statusStr,
-        key,
+        contributeAmountDesc,
       };
     });
     return _histories;

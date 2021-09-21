@@ -11,13 +11,13 @@ const Item = React.memo(({ history, isLast }) => {
   // const navigation = useNavigation();
   // const onNextPress = () => navigation.navigate(routeNames.ContributeHistoryDetail);
   return (
-    <TouchableOpacity style={styled.wrapperItem}>
-      <View style={[styled.topRow, isLast && { marginBottom: 20 }]}>
+    <TouchableOpacity style={[styled.wrapperItem, isLast && { marginBottom: 20 }]}>
+      <View style={styled.topRow}>
         <Text style={styled.title}>Contribute</Text>
         <Text style={styled.status}>{history?.statusStr}</Text>
       </View>
       <View style={styled.bottomRow}>
-        <Text style={styled.desc}>{history?.subTextStr}</Text>
+        <Text style={styled.desc}>{history?.contributeAmountDesc}</Text>
       </View>
     </TouchableOpacity>
   );
