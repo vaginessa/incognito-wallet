@@ -1,5 +1,5 @@
 import React from 'react';
-import { Header } from '@src/components';
+import {Header, Row} from '@src/components';
 import { ScrollView, Tabs } from '@src/components/core';
 import PropTypes from 'prop-types';
 import {
@@ -11,11 +11,12 @@ import Portfolio, {
 } from '@src/screens/PDexV3/features/Portfolio';
 import { View, RefreshControl } from 'react-native';
 import { batch, useDispatch, useSelector } from 'react-redux';
-import { ButtonTrade } from '@src/components/Button';
+import {BtnOrderHistory, ButtonTrade} from '@src/components/Button';
 import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
 import { TradingVol24h } from '@screens/PDexV3/features/Share';
 import { liquidityActions } from '@screens/PDexV3/features/Liquidity';
+import SelectAccountButton from '@components/SelectAccountButton';
 import withHome from './Home.enhance';
 import { styled } from './Home.styled';
 import { ROOT_TAB_HOME, TAB_POOLS_ID, TAB_PORTFOLIO_ID } from './Home.constant';
@@ -57,13 +58,29 @@ const TabPools = React.memo(() => {
   );
 });
 
+const RightHeader = React.memo(() => {
+  const navigation = useNavigation();
+  const handleNavOrderHistory = () => {
+    navigation.navigate(routeNames.LiquidityHistories);
+  };
+  return (
+    <Row style={styled.rightHeader}>
+      <BtnOrderHistory
+        style={styled.btnOrderHistory}
+        onPress={handleNavOrderHistory}
+      />
+      <SelectAccountButton />
+    </Row>
+  );
+});
+
 const Home = (props) => {
   const dispatch = useDispatch();
   const { isFetching } = useSelector(homePDexV3Selector);
   const { handleOnRefresh } = props;
   return (
     <View style={styled.container}>
-      <Header title="Market" accountSelectable />
+      <Header title="Market" rightHeader={<RightHeader />} />
       <ScrollView
         style={styled.main}
         refreshControl={(

@@ -16,4 +16,5 @@ export { default as removePoolSelector } from './Liquidity.removePoolSelector';
 export { default as ContributeConfirm } from './Liquidity.contributeConfirm';
 // eslint-disable-next-line import/no-cycle
 export { default as CreatePoolConfirm } from './Liquidity.createPoolConfirm';
+// eslint-disable-next-line import/no-cycle
 export { default as RemovePoolConfirm } from './Liquidity.removePoolConfirm';

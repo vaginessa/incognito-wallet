@@ -186,5 +186,6 @@ export default {
   ReviewOrderLimit: 'ReviewOrderLimit',
   ContributeConfirm: 'ContributeConfirm',
   CreatePoolConfirm: 'CreatePoolConfirm',
-  RemovePoolConfirm: 'RemovePoolConfirm'
+  RemovePoolConfirm: 'RemovePoolConfirm',
+  LiquidityHistories: 'LiquidityHistories',
 };

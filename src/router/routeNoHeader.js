@@ -102,7 +102,7 @@ import OrderLimit, {
 import SelectTokenTrade from '@screens/PDexV3/features/SelectToken';
 import Chart from '@screens/PDexV3/features/Chart';
 import WebView from '@screens/WebView';
-import HomeLiquidityHistories from '@screens/PDexV3/features/HomeLiquidityHistories';
+import LiquidityHistories from '@screens/PDexV3/features/LiquidityHistories';
 import ContributeHistoryDetail from '@screens/PDexV3/features/ContributeHistoryDetail';
 import RemovePoolHistoriesDetail from '@screens/PDexV3/features/RemovePoolHistoriesDetail';
 import WithdrawRewardHistoriesDetail from '@screens/PDexV3/features/WithdrawRewardHistoriesDetail';
@@ -224,8 +224,8 @@ const pDexV3Routes = [
     name: routeNames.ReviewOrderSwap,
   },
   {
-    screen: HomeLiquidityHistories,
-    name: routeNames.HomeLiquidityHistories,
+    screen: LiquidityHistories,
+    name: routeNames.LiquidityHistories,
   },
   {
     screen: ContributeHistoryDetail,

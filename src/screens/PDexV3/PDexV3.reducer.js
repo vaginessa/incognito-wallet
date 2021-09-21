@@ -12,6 +12,7 @@ import { withdrawRewardHistoriesReducer as withdrawRewardHistories } from './fea
 import { stakingReducer as staking } from './features/Staking';
 import { liquidityReducer as liquidity } from './features/Liquidity';
 import { pairsReducer as pairs } from './features/PairList';
+import { liquidityHistoryReducer as liquidityHistory } from './features/LiquidityHistories';
 
 const pDexV3Reducer = combineReducers({
   home,
@@ -26,6 +27,7 @@ const pDexV3Reducer = combineReducers({
   withdrawRewardHistories,
   staking,
   liquidity,
+  liquidityHistory,
   pairs,
 });
 
