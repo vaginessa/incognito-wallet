@@ -155,11 +155,12 @@ export const getPortalStatusDetail = (history) => {
       statusDetail = PORTAL_SHIELD_STATUS_DETAIL[status];
       if (status === STATUS_CODE_SHIELD_PORTAL.PROCESSING) {
         const { confirmations } = history;
-        statusDetail = statusDetail + confirmations?.toString(); 
-        if ( confirmations === 1 ) {
-          statusDetail = statusDetail + ' block.';
+        if ( confirmations === undefined ) {
+          statusDetail = '';
+        } else if ( confirmations === 1 ) {
+          statusDetail = statusDetail + confirmations.toString() + ' block.';
         } else {
-          statusDetail = statusDetail + ' blocks.';
+          statusDetail = statusDetail + confirmations.toString() + ' blocks.';
         }
       }
       break;
