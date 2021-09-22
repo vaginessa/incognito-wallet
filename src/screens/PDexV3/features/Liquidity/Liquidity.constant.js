@@ -11,9 +11,9 @@ export const TYPES = {
 };
 
 export const LIQUIDITY_MESSAGES = {
-  addLiquidity: 'Add Liquidity',
-  createPool : 'Create Liquidity',
-  removePool : 'Remove Liquidity'
+  addLiquidity: 'Add liquidity',
+  createPool : 'Create liquidity',
+  removePool : 'Remove liquidity'
 };
 
 export const formConfigsContribute = {
@@ -35,3 +35,23 @@ export const formConfigsRemovePool = {
   outputToken: 'outputToken',
 };
 
+export const SUCCESS_MODAL = {
+  ADD_POOL: {
+    title: 'Liquidity added',
+    desc: 'Please wait a few minutes for your\n' +
+  'added liquidity to display.\n' +
+  'Thanks for providing privacy.',
+  },
+  CREATE_POOL: {
+    title: 'Liquidity added',
+    desc: 'Please wait a few minutes for your\n' +
+  'added liquidity to display.\n' +
+  'Thanks for providing privacy.',
+  },
+  REMOVE_POOL: {
+    title: 'Remove added',
+    desc: 'Please wait a few minutes for your\n' +
+      'added remove pool to display.\n' +
+      'Thanks for providing privacy.',
+  }
+};

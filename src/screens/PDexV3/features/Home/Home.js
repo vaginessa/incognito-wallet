@@ -4,11 +4,8 @@ import { ScrollView, Tabs } from '@src/components/core';
 import PropTypes from 'prop-types';
 import {
   FollowingPools,
-  actionFetchPools,
 } from '@src/screens/PDexV3/features/Pools';
-import Portfolio, {
-  actionFetch as actionFetchListShare,
-} from '@src/screens/PDexV3/features/Portfolio';
+import Portfolio from '@src/screens/PDexV3/features/Portfolio';
 import { View, RefreshControl } from 'react-native';
 import { batch, useDispatch, useSelector } from 'react-redux';
 import {BtnOrderHistory, ButtonTrade} from '@src/components/Button';
@@ -21,16 +18,12 @@ import withHome from './Home.enhance';
 import { styled } from './Home.styled';
 import { ROOT_TAB_HOME, TAB_POOLS_ID, TAB_PORTFOLIO_ID } from './Home.constant';
 import { homePDexV3Selector } from './Home.selector';
+import { styled as tradeStyled } from '../Trade/Trade.styled';
 
 const GroupButton = React.memo(() => {
   const navigation = useNavigation();
   return (
     <View style={styled.groupBtns}>
-      <ButtonTrade
-        title="Trade"
-        btnStyle={styled.tradeBtn}
-        onPress={() => navigation.navigate(routeNames.Trade)}
-      />
       <ButtonTrade
         title="Create new pool"
         btnStyle={styled.createNewPoolBtn}
@@ -64,9 +57,9 @@ const RightHeader = React.memo(() => {
     navigation.navigate(routeNames.LiquidityHistories);
   };
   return (
-    <Row style={styled.rightHeader}>
+    <Row style={tradeStyled.rightHeader}>
       <BtnOrderHistory
-        style={styled.btnOrderHistory}
+        style={tradeStyled.btnOrderHistory}
         onPress={handleNavOrderHistory}
       />
       <SelectAccountButton />
@@ -75,7 +68,6 @@ const RightHeader = React.memo(() => {
 });
 
 const Home = (props) => {
-  const dispatch = useDispatch();
   const { isFetching } = useSelector(homePDexV3Selector);
   const { handleOnRefresh } = props;
   return (
@@ -96,14 +88,12 @@ const Home = (props) => {
           <View
             tabID={TAB_POOLS_ID}
             label="Pools"
-            onChangeTab={() => dispatch(actionFetchPools())}
           >
             <TabPools />
           </View>
           <View
             tabID={TAB_PORTFOLIO_ID}
             label="Your portfolio"
-            onChangeTab={() => dispatch(actionFetchListShare())}
           >
             <Portfolio />
           </View>

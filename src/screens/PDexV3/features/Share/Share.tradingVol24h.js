@@ -5,5 +5,5 @@ import { tradingVolume24hSelector } from '@src/screens/PDexV3/features/Pools';
 
 export default React.memo(() => {
   const tradingVolume24h = useSelector(tradingVolume24hSelector);
-  return <HomeTabHeader title="Trading Volume 24h" desc={tradingVolume24h} />;
+  return <HomeTabHeader title="24h Trading Volume" desc={`$${tradingVolume24h}`} />;
 });

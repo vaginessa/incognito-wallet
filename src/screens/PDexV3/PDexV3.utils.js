@@ -23,8 +23,8 @@ export const getPairRate = ({ token2, token1Value, token2Value }) => {
 
 export const getExchangeRate = (token1, token2, token1Value, token2Value) => {
   try {
-    const rawRate = getPairRate({ token1, token2, token1Value, token2Value });
-    return `1 ${token1.symbol} = ${format.amountFull(rawRate, 0, false)} ${
+    const rawRate = new BigNumber(token2Value).dividedBy(token1Value / Math.pow(10, token1.pDecimals || 0)).toNumber();
+    return `1 ${token1.symbol} = ${format.toFixed(rawRate, token2.pDecimals)} ${
       token2?.symbol
     }`;
   } catch (error) {
@@ -69,15 +69,13 @@ export const getPoolSize = (
   token1PoolValue = 0,
   token2PoolValue = 0,
 ) => {
-  const formattedToken1Pool = format.amountFull(
+  const formattedToken1Pool = format.amount(
     token1PoolValue,
     token1?.pDecimals,
-    false,
   );
-  const formattedToken2Pool = format.amountFull(
+  const formattedToken2Pool = format.amount(
     token2PoolValue,
     token2?.pDecimals,
-    false,
   );
   return `${formattedToken1Pool} ${token1?.symbol} + ${formattedToken2Pool} ${token2?.symbol}`;
 };
@@ -107,13 +105,7 @@ export const calculateContributeValue = ({
   ) {
     return '';
   }
-  // const rate = format.toFixed((new BigNumber(outputPool).dividedBy(inputPool).toNumber()), outputToken.pDecimals);
-  const rate = getPairRate({
-    token2: outputToken,
-    token1Value: inputPool,
-    token2Value: outputPool,
-  });
-  const number = new BigNumber(inputValue).multipliedBy(rate).toNumber();
+  const number = new BigNumber(inputValue).multipliedBy(outputPool).dividedBy(inputPool).toNumber();
   const amount = convertUtil.toHumanAmount(number, outputToken.pDecimals);
   return format.toFixed(amount, outputToken.pDecimals);
 };

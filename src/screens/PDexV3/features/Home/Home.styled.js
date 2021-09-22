@@ -18,7 +18,6 @@ export const styled = StyleSheet.create({
     maxWidth: '48%',
   },
   createNewPoolBtn: {
-    width: 177,
-    maxWidth: '48%%',
+    width: '100%',
   },
 });

@@ -139,6 +139,15 @@ const AMP = React.memo(() => (
 const CreatePool = ({ onInitCreatePool }) => {
   const disabled = useSelector(disableCreatePool);
   const navigation = useNavigation();
+  const onSuccess = () => {
+    batch(() => {
+      onInitCreatePool();
+      navigation.navigate(routeNames.CreatePool);
+    });
+  };
+  const onSubmit = () => {
+    navigation.navigate(routeNames.CreatePoolConfirm, { onSuccess });
+  };
   React.useEffect(() => {
     setTimeout(() => { onInitCreatePool(); }, 500);
   }, []);
@@ -154,7 +163,7 @@ const CreatePool = ({ onInitCreatePool }) => {
                 btnStyle={mainStyle.button}
                 title={LIQUIDITY_MESSAGES.createPool}
                 disabled={disabled}
-                onPress={() => navigation.navigate(routeNames.CreatePoolConfirm)}
+                onPress={onSubmit}
               />
               <AMP />
               <Extra />

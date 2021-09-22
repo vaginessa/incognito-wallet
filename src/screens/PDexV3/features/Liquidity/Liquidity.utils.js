@@ -102,14 +102,16 @@ export const getInputShareAmount = (
     if (field !== formConfigsRemovePool.inputToken) {
       maxWithdrawHuman = maxOutputShareNumb ?? 0;
     }
-    let withdraw = new BigNumber(amount).dividedBy(maxWithdrawHuman).multipliedBy(share).toNumber();
+    let withdrawAmount = new BigNumber(amount).dividedBy(maxWithdrawHuman).multipliedBy(share).toNumber();
     const feeBalance = feeToken.amount ?? 0;
     let error;
-    if (withdraw > share) {
+    if (withdrawAmount > share) {
       error = MESSAGES.BALANCE_INSUFFICIENT;
     } else if (feeBalance < feeAmount) {
       error = MESSAGES.NOT_ENOUGH_NETWORK_FEE;
     }
+    let withdraw = Math.ceil(withdrawAmount);
+    if (withdrawAmount > share) withdraw = share;
     return {
       tokenId: token.tokenId,
       symbol: token.symbol,

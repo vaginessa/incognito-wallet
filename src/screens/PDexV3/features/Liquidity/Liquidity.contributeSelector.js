@@ -69,7 +69,9 @@ export const mappingDataSelector = createSelector(
     if (!poolData || !inputToken || !outputToken) return {};
     const { poolId, amp, token1Value: token1PoolValue, token2Value: token2PoolValue } = poolData;
     const { shareStr, nftId } = getDataShareByPoolId(poolId) || {};
+    console.log('SANG TEST: 1111');
     const exchangeRateStr = getExchangeRate(inputToken, outputToken, token1PoolValue, token2PoolValue);
+    console.log('SANG TEST: 1111', exchangeRateStr);
     const poolSize = getPoolSize(inputToken, outputToken, token1PoolValue, token2PoolValue);
     const isLoadingBalance =
       isGettingBalance.includes(inputToken?.tokenId)

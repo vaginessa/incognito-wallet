@@ -307,7 +307,7 @@ const enhance = (WrappedComp) => (props) => {
         isFetched && //finish splash screen
         !errorMsg //no error
       ) {
-        navigation.navigate(routeNames.LiquidityHistories);
+        navigation.navigate(routeNames.HomePDexV3);
       }
     }, [masterKeys, isInitialing, isCreating, isMigrated, isFetched, errorMsg]),
   );

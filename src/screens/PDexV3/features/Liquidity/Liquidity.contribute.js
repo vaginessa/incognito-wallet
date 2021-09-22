@@ -5,7 +5,7 @@ import {styled as mainStyle} from '@screens/PDexV3/PDexV3.styled';
 import {Header, RowSpaceText} from '@src/components';
 import {LIQUIDITY_MESSAGES, formConfigsContribute} from '@screens/PDexV3/features/Liquidity/Liquidity.constant';
 import {createForm, RFTradeInputAmount as TradeInputAmount, validator} from '@components/core/reduxForm';
-import {useDispatch, useSelector} from 'react-redux';
+import {batch, useDispatch, useSelector} from 'react-redux';
 import styled from '@screens/PDexV3/features/Liquidity/Liquidity.styled';
 import {Field} from 'redux-form';
 import {AddBreakLine} from '@components/core';
@@ -97,7 +97,15 @@ const Contribute = ({ onInitContribute }) => {
   const isFetching = useSelector(contributeSelector.statusSelector);
   const disableContribute = useSelector(contributeSelector.disableContribute);
   const switching = useSelector(switchAccountSelector);
-  const navigateConfirm = () => navigation.navigate(routeNames.ContributeConfirm);
+  const onSuccess = () => {
+    batch(() => {
+      onInitContribute();
+      navigation.navigate(routeNames.ContributePool);
+    });
+  };
+  const onSubmit = () => {
+    navigation.navigate(routeNames.ContributeConfirm, { onSuccess });
+  };
   React.useEffect(() => {
     if (typeof onInitContribute === 'function' && !switching) onInitContribute();
   }, [switching]);
@@ -114,7 +122,7 @@ const Contribute = ({ onInitContribute }) => {
                   btnStyle={mainStyle.button}
                   title={LIQUIDITY_MESSAGES.addLiquidity}
                   disabled={disableContribute}
-                  onPress={navigateConfirm}
+                  onPress={onSubmit}
                 />
                 <Extra />
               </>

@@ -132,8 +132,7 @@ export const totalShareSelector = createSelector(
   listShareSelector,
   (listShare) => {
     const rewardUSD = listShare.reduce((prev, cur) => {
-      const { token1, token2, token2Reward } = cur;
-      const token1Reward = 2;
+      const { token1, token2, token1Reward, token2Reward } = cur;
       const _reward1USD = convert.toOriginalAmount(new BigNumber(token1Reward).multipliedBy(token1.priceUsd ?? 0).toNumber(), token1.pDecimals);
       const _reward2USD = convert.toOriginalAmount(new BigNumber(token2Reward).multipliedBy(token2.priceUsd ?? 0).toNumber(), token2.pDecimals);
       return prev.plus(_reward1USD).plus(_reward2USD);

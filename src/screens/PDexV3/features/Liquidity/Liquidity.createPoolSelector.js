@@ -105,7 +105,7 @@ export const ampValueSelector = createSelector(
 export const disableCreatePool = createSelector(
   inputAmountSelector,
   ampValueSelector,
-  ( inputAmount, { isValidAMP } ) => {
+  ( inputAmount, { isValid: isValidAMP } ) => {
     const { error: inputError } = inputAmount(formConfigsCreatePool.formName, formConfigsCreatePool.inputToken);
     const { error: outputError } = inputAmount(formConfigsCreatePool.formName, formConfigsCreatePool.outputToken);
     return !!inputError || !!outputError || !isValidAMP;

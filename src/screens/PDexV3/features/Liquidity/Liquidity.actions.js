@@ -19,7 +19,6 @@ import BigNumber from 'bignumber.js';
 import format from '@utils/format';
 import convertUtil from '@utils/convert';
 import {defaultAccountWalletSelector} from '@src/redux/selectors/account';
-import {actionRefresh} from '@screens/PDexV3/features/Home';
 
 /***
  *================================================================
@@ -90,6 +89,7 @@ const actionChangeInputContribute = (newInput) => async (dispatch, getState) => 
     const outputText = calculateContributeValue({
       inputValue,
       outputToken,
+      inputToken,
       inputPool: token1PoolValue,
       outputPool: token2PoolValue,
     });
@@ -110,6 +110,7 @@ const actionChangeOutputContribute = (newOutput) => async (dispatch, getState) =
     const inputText = calculateContributeValue({
       inputValue: outputValue,
       outputToken: inputToken,
+      inputToken: outputToken,
       inputPool: token2PoolValue,
       outputPool: token1PoolValue,
     });
@@ -186,8 +187,15 @@ const actionInitCreatePool = () => (dispatch, getState) => {
   try {
     const state = getState();
     const tokenIDs = allTokensIDsSelector(state);
-    const newInputToken = tokenIDs[0];
-    const newOutputToken = tokenIDs[1];
+    const { inputToken, outputToken } = createPoolSelector.tokenSelector(state);
+    let newInputToken, newOutputToken;
+    if (!inputToken && !outputToken) {
+      newInputToken = tokenIDs[0];
+      newOutputToken = tokenIDs[1];
+    } else {
+      newInputToken = inputToken.tokenId;
+      newOutputToken = outputToken.tokenId;
+    }
     batch(() => {
       dispatch(actionSetCreatePoolToken({
         inputToken: newInputToken,
