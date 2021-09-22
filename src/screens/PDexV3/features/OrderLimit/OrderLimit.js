@@ -1,5 +1,5 @@
 import { Header } from '@src/components';
-import { KeyboardAwareScrollView } from '@src/components/core';
+import { KeyboardAwareScrollView, ScrollView } from '@src/components/core';
 import Tabs from '@src/components/core/Tabs';
 import React from 'react';
 import { View, RefreshControl } from 'react-native';
@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { COLORS } from '@src/styles';
 import { createForm } from '@src/components/core/reduxForm';
 import { NFTTokenBottomBar } from '@screens/PDexV3/features/NFTToken';
+import { RightHeader } from '@screens/PDexV3/features/Trade/Trade';
 import GroupActions from './OrderLimit.groupActions';
 import GroupRate from './OrderLimit.groupRate';
 import {
@@ -39,10 +40,10 @@ const Form = createForm(formConfigs.formName, {
 const OrderLimit = () => {
   const dispatch = useDispatch();
   const actionChangeTab = () => dispatch(actionInit());
-  const { sellColor, buyColor, poolTitle } = useSelector(
+  const { sellColor, buyColor, poolTitle, refreshing } = useSelector(
     orderLimitDataSelector,
   );
-  const onRefresh = () => dispatch(actionInit());
+  const onRefresh = () => dispatch(actionInit(true));
   const tabsFactories = [
     {
       tabID: TAB_BUY_ID,
@@ -61,13 +62,24 @@ const OrderLimit = () => {
   ];
   return (
     <View style={styled.container}>
-      <Header title={poolTitle} />
+      <Header
+        title={poolTitle}
+        rightHeader={
+          <RightHeader
+            callback={onRefresh}
+            visibleBtnHistory
+            selectAccountable={false}
+          />
+        }
+      />
       <KeyboardAwareScrollView
         contentContainerStyle={styled.scrollview}
-        refreshControl={<RefreshControl onRefresh={onRefresh} />}
+        refreshControl={
+          <RefreshControl onRefresh={onRefresh} refreshing={refreshing} />
+        }
       >
         <Form>
-          {({ handleSubmit }) => (
+          {() => (
             <>
               <Tabs rootTabID={ROOT_TAB_ORDER_LIMIT}>
                 {tabsFactories.map((tab) => (

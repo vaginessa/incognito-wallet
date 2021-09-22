@@ -58,6 +58,10 @@ export const listPoolsSelector = createSelector(
         apy,
         amp,
         priceChange24H,
+        token1Id,
+        token2Id,
+        virtual1Value,
+        virtual2Value,
       } = pool;
       const volumeToAmount = format.amount(volume, 0);
       const priceChangeToAmount = format.amount(priceChange, 0);
@@ -70,8 +74,8 @@ export const listPoolsSelector = createSelector(
       } else if (perChange24h < 0) {
         perChange24hColor = COLORS.red;
       }
-      const token1 = getPrivacyDataByTokenID(pool.token1Id);
-      const token2 = getPrivacyDataByTokenID(pool.token2Id);
+      const token1 = getPrivacyDataByTokenID(token1Id);
+      const token2 = getPrivacyDataByTokenID(token2Id);
       let pool1ValueStr = format.amountFull(
         token1Value,
         token1.pDecimals,
@@ -106,6 +110,10 @@ export const listPoolsSelector = createSelector(
         ampStr: `${amp}`,
         apyStr: `${apy}%`,
         priceChangeToAmountStr: `$${priceChangeToAmount}`,
+        virtualValue: {
+          [token1Id]: virtual1Value,
+          [token2Id]: virtual2Value,
+        },
       };
     });
   },

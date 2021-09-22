@@ -5,19 +5,15 @@ import SelectedPrivacy from '@src/models/selectedPrivacy';
 import { getBalance } from '@src/redux/actions/token';
 import { getPrivacyDataByTokenID } from '@src/redux/selectors/selectedPrivacy';
 import { ExHandler } from '@src/services/exception';
-import {
-  actionFetchListFollowingPools,
-  // actionFetchPools,
-} from '@screens/PDexV3/features/Pools';
+import { actionFetchListFollowingPools } from '@screens/PDexV3/features/Pools';
 import convert from '@src/utils/convert';
-import { delay } from '@src/utils/delay';
+import { actionSetNFTTokenData } from '@src/redux/actions/account';
 import format from '@src/utils/format';
 import BigNumber from 'bignumber.js';
 import isEmpty from 'lodash/isEmpty';
-import { batch } from 'react-redux';
 import { change, focus } from 'redux-form';
-import { v4 } from 'uuid';
 import { actionGetPDexV3Inst } from '@screens/PDexV3';
+import { batch } from 'react-redux';
 import {
   ACTION_FETCHING,
   ACTION_FETCHED,
@@ -34,18 +30,19 @@ import {
   formConfigs,
   ACTION_SET_PERCENT,
   ACTION_FETCHED_OPEN_ORDERS,
-  ACTION_CANCELING_ORDER,
-  ACTION_FETCHED_CANCELING_ORDER_TXS,
+  ACTION_WITHDRAWING_ORDER,
+  ACTION_FETCHED_WITHDRAWING_ORDER_TXS,
+  ACTION_FETCHING_ORDERS_HISTORY,
   ACTION_FETCH_ORDERING,
+  ACTION_FETCHED_ORDERS_HISTORY,
+  ACTION_FETCH_FAIL_ORDERS_HISTORY,
 } from './OrderLimit.constant';
 import {
-  buytokenSelector,
-  // feetokenDataSelector,
-  // inputAmountSelector,
-  orderLimitSelector,
   poolSelectedDataSelector,
-  rateDataSelector,
+  inputAmountSelector,
+  orderLimitDataSelector,
 } from './OrderLimit.selector';
+import { calDefaultPairOrderLimit } from './OrderLimit.utils';
 
 export const actionSetPercent = (payload) => ({
   type: ACTION_SET_PERCENT,
@@ -158,45 +155,61 @@ export const actionSetInputToken = ({ selltoken, buytoken }) => async (
   }
 };
 
-export const actionInit = () => async (dispatch, getState) => {
+export const actionInit = (refresh = false) => async (dispatch, getState) => {
   try {
     await dispatch(actionIniting(true));
-    await dispatch(actionFetchListFollowingPools());
+    if (refresh) {
+      await dispatch(actionFetchListFollowingPools());
+    }
     let state = getState();
     const pool = poolSelectedDataSelector(state);
-    await dispatch(actionSetPercent(0));
     if (isEmpty(pool)) {
       return;
     }
+    dispatch(actionSetPercent(0));
     const activedTab = activedTabSelector(state)(ROOT_TAB_ORDER_LIMIT);
     const token1: SelectedPrivacy = pool?.token1;
     const token2: SelectedPrivacy = pool?.token2;
-    let selltoken, buytoken;
+    let selltokenId, buytokenId, x, y;
     switch (activedTab) {
     case TAB_BUY_ID: {
-      selltoken = token2.tokenId;
-      buytoken = token1.tokenId;
+      selltokenId = token2.tokenId;
+      x = token2;
+      buytokenId = token1.tokenId;
+      y = token1;
       break;
     }
     case TAB_SELL_ID: {
-      selltoken = token1.tokenId;
-      buytoken = token2.tokenId;
+      selltokenId = token1.tokenId;
+      x = token1;
+      buytokenId = token2.tokenId;
+      y = token2;
       break;
     }
     default:
       break;
     }
-    await dispatch(actionSetSellToken(selltoken));
-
-    await dispatch(actionSetInputToken({ selltoken, buytoken }));
-    // const rateData = rateDataSelector(state);
-    // dispatch(
-    //   change(
-    //     formConfigs.formName,
-    //     formConfigs.rate,
-    //     rateData?.customRate || '',
-    //   ),
-    // );
+    await dispatch(
+      actionSetInputToken({ selltoken: selltokenId, buytoken: buytokenId }),
+    );
+    state = getState();
+    const sellInputAmount = inputAmountSelector(state)(formConfigs.selltoken);
+    const { originalAmount: x0 } = sellInputAmount;
+    const { rate, y0Fixed: buyAmount } = calDefaultPairOrderLimit({
+      pool,
+      x,
+      y,
+      x0,
+    });
+    batch(() => {
+      dispatch(change(formConfigs.formName, formConfigs.buytoken, buyAmount));
+      dispatch(change(formConfigs.formName, formConfigs.rate, rate));
+    });
+    await Promise.all([
+      dispatch(actionFetchOrdersHistory()),
+      dispatch(actionFetchWithdrawOrderTxs()),
+      dispatch(actionSetNFTTokenData()),
+    ]);
   } catch (error) {
     new ExHandler(error).showErrorToast;
   } finally {
@@ -209,16 +222,13 @@ export const actionFetchedOpenOrders = (payload) => ({
   payload,
 });
 
-export const actionFetchedCancelingOrderTxs = (payload) => ({
-  type: ACTION_FETCHED_CANCELING_ORDER_TXS,
+export const actionFetchedWithdrawingOrderTxs = (payload) => ({
+  type: ACTION_FETCHED_WITHDRAWING_ORDER_TXS,
   payload,
 });
 
-export const actionFetchCancelingOrderTxs = () => async (
-  dispatch,
-  getState,
-) => {
-  let cancelingTxs = [];
+export const actionFetchWithdrawOrderTxs = () => async (dispatch, getState) => {
+  let withdrawTxs = [];
   try {
     const state = getState();
     const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
@@ -227,69 +237,83 @@ export const actionFetchCancelingOrderTxs = () => async (
       return [];
     }
     const poolid = pool?.poolId;
-    await delay(1000);
-    cancelingTxs = await pDexV3Inst.getCancelingOrderTxs({
+    withdrawTxs = await pDexV3Inst.getWithdrawOrderTxs({
       poolid,
     });
   } catch (error) {
     new ExHandler(error).showErrorToast();
   } finally {
-    await dispatch(actionFetchedCancelingOrderTxs(cancelingTxs));
+    await dispatch(actionFetchedWithdrawingOrderTxs(withdrawTxs));
   }
 };
 
-export const actionFetchOpenOrders = () => async (dispatch, getState) => {
-  let orders = [];
+export const actionFetchingOrdersHistory = () => ({
+  type: ACTION_FETCHING_ORDERS_HISTORY,
+});
+
+export const actionFetchedOrdersHistory = (payload) => ({
+  type: ACTION_FETCHED_ORDERS_HISTORY,
+  payload,
+});
+
+export const actionFetchFailOrderHistory = () => ({
+  type: ACTION_FETCH_FAIL_ORDERS_HISTORY,
+});
+
+export const actionFetchOrdersHistory = () => async (dispatch, getState) => {
   try {
+    await dispatch(actionFetchingOrdersHistory());
     const state = getState();
     const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
     const pool = poolSelectedDataSelector(state);
     if (!pool) {
       return;
     }
-    orders = await pDexV3Inst.getOrderLimitHistory({
-      poolid: pool?.poolId,
-      version: PrivacyVersion.ver2,
-    });
+    const orders =
+      (await pDexV3Inst.getOrderLimitHistory({
+        poolid: pool?.poolId,
+        version: PrivacyVersion.ver2,
+      })) || [];
+    await dispatch(actionFetchedOrdersHistory(orders));
   } catch (error) {
+    await dispatch(actionFetchFailOrderHistory());
     new ExHandler(error).showErrorToast();
-  } finally {
-    dispatch(actionFetchedOpenOrders(orders));
   }
 };
 
-export const actionCancelingOrder = (payload) => ({
-  type: ACTION_CANCELING_ORDER,
+export const actionWithdrawingOrder = (payload) => ({
+  type: ACTION_WITHDRAWING_ORDER,
   payload,
 });
 
-export const actionCancelOrder = (requesttx) => async (dispatch, getState) => {
+export const actionWithdrawOrder = ({ requestTx, txType }) => async (
+  dispatch,
+  getState,
+) => {
   try {
     const state = getState();
     const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
     const pool = poolSelectedDataSelector(state);
-    if (!requesttx || !pool?.poolId) {
+    const { sellTokenId, buyTokenId } = orderLimitDataSelector(state);
+    if (!requestTx || !pool?.poolId) {
       return;
     }
-    await dispatch(actionCancelingOrder(requesttx));
+    await dispatch(actionWithdrawingOrder(requestTx));
     const poolid = pool?.poolId;
-    await delay(1000);
-    // create tx to cancel order => cancelOrderTxId
-    const txCancel = {
-      cancelTxId: v4(),
-      status: -1,
-      requesttx,
+    const data = {
+      withdrawTokenIDs: [sellTokenId, buyTokenId],
+      poolPairID: poolid,
+      orderID: requestTx,
+      amount: 0,
+      version: PrivacyVersion.ver2,
+      txType,
     };
-    console.log('txCancel', txCancel);
-    await pDexV3Inst.setCancelingOrderTx({
-      txCancel,
-      poolid,
-    });
-    await dispatch(actionFetchCancelingOrderTxs());
+    await pDexV3Inst.createAndSendWithdrawOrderRequestTx({ extra: data });
+    await dispatch(actionFetchWithdrawOrderTxs());
   } catch (error) {
     new ExHandler(error).showErrorToast();
   } finally {
-    await dispatch(actionCancelingOrder(requesttx));
+    await dispatch(actionWithdrawingOrder(requestTx));
   }
 };
 
@@ -301,33 +325,28 @@ export const actionFetchingBookOrder = (payload) => ({
 export const actionBookOrder = () => async (dispatch, getState) => {
   await dispatch(actionFetchingBookOrder(true));
   try {
-    //
+    const state = getState();
+    const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
+    const { poolId: poolPairID } = poolSelectedDataSelector(state);
+    const {
+      tokenId: tokenIDToSell,
+      originalAmount: sellAmount,
+    } = inputAmountSelector(state)(formConfigs.selltoken);
+    const { originalAmount: minAcceptableAmount } = inputAmountSelector(state)(
+      formConfigs.buytoken,
+    );
+    const extra = {
+      tokenIDToSell,
+      poolPairID,
+      sellAmount,
+      version: PrivacyVersion.ver2,
+      minAcceptableAmount,
+    };
+    const tx = await pDexV3Inst.createAndSendOrderRequestTx({ extra });
+    return tx;
   } catch (error) {
-    throw error;
+    new ExHandler(error).showErrorToast();
   } finally {
     await dispatch(actionFetchingBookOrder(false));
   }
 };
-
-/**
-  {
-    PoolID: "0000000000000000000000000000000000000000000000000000000000000004-6133dbf8e3d71a8f8e406ebd459492d34180622ba572b2d8f0fc8484b09ddd47-1437fbee7030f8e0d52ddb157edb2d4f61d4ca851a161f5f716d754951e57337",
-    Token1ID: "0000000000000000000000000000000000000000000000000000000000000004",
-    Token2ID: "6133dbf8e3d71a8f8e406ebd459492d34180622ba572b2d8f0fc8484b09ddd47",
-    // Token1Value: 1000,
-    // Token2Value: 2000,
-    VirtualToken1Value: x_v,
-    VirtualToken2Value: y_v,
-    Share: 0,
-    AMP: 20000,
-    Price: 0,
-    Volume: 0,
-    PriceChange24h: 0,
-    APY: 0
-  }
-
-  x0: 1e9
-  y0 = y_v - (x_v * y_x) / (x0 + x_v) 
-
-
- */

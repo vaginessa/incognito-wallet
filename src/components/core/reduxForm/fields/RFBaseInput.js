@@ -15,7 +15,6 @@ const styled = StyleSheet.create({
   input: {
     fontFamily: FONT.NAME.bold,
     fontSize: FONT.SIZE.superMedium,
-    lineHeight: FONT.SIZE.superMedium + 5,
     color: COLORS.black,
   },
 });

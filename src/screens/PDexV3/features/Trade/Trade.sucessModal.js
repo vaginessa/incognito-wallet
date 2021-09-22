@@ -37,25 +37,35 @@ const styled = StyleSheet.create({
   },
 });
 
+// = 'Your balance will update in a couple of minutes after the trade is finalized.',
+//  = 'Trade initiated!'
 const TradeSucessModal = (props) => {
-  const { desc, btnColor = COLORS.colorTradeBlue } = props;
+  const {
+    title,
+    desc,
+    btnColor = COLORS.colorTradeBlue,
+    sub,
+    btnTitle = 'Keep trading',
+    handleTradeSucesss,
+  } = props;
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const handleKeepTrading = () => {
     dispatch(actionToggleModal({ visible: false, data: null }));
-    navigation.navigate(routeNames.Trade);
+    if (typeof handleTradeSucesss === 'function') {
+      handleTradeSucesss();
+    } else {
+      navigation.navigate(routeNames.Trade);
+    }
   };
   return (
     <PureModalContent>
-      <Text style={styled.title}>Trade initiated!</Text>
+      <Text style={styled.title}>{title}</Text>
       <Text style={styled.desc}>{desc}</Text>
-      <Text style={styled.sub}>
-        Your balance will update in a couple of minutes after the trade is
-        finalized.
-      </Text>
+      {sub && <Text style={styled.sub}>{sub}</Text>}
       <ButtonTrade
         btnStyle={{ backgroundColor: btnColor }}
-        title="Keep trading"
+        title={btnTitle}
         onPress={handleKeepTrading}
       />
     </PureModalContent>

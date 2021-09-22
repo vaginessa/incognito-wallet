@@ -15,9 +15,9 @@ export const ACTION_RESET = '[pDexV3][orderLimit] Reset';
 export const ACTION_SET_PERCENT = '[pDexV3][orderLimit] Set percent';
 export const ACTION_FETCHED_OPEN_ORDERS =
   '[pDexV3][orderLimit] Fetched open orders';
-export const ACTION_CANCELING_ORDER = '[pDexV3][orderLimit] Cancel order';
-export const ACTION_FETCHED_CANCELING_ORDER_TXS =
-  '[pDexV3][orderLimit] Fetched canceling order txs';
+export const ACTION_WITHDRAWING_ORDER = '[pDexV3][orderLimit] Cancel order';
+export const ACTION_FETCHED_WITHDRAWING_ORDER_TXS =
+  '[pDexV3][orderLimit] Fetched withdrawing order txs';
 export const ACTION_FETCH_ORDERING = '[pDexV3][orderLimit] Fetch ordering';
 export const formConfigs = {
   formName: 'FORM_ORDER_LIMIT',
@@ -26,3 +26,12 @@ export const formConfigs = {
   feetoken: 'feetoken',
   rate: 'rate',
 };
+
+export const ACTION_FETCHING_ORDERS_HISTORY =
+  '[pDexV3][orderLimit] Fetching history order';
+
+export const ACTION_FETCHED_ORDERS_HISTORY =
+  '[pDexV3][orderLimit] Fetched history order';
+
+export const ACTION_FETCH_FAIL_ORDERS_HISTORY =
+  '[pDexV3][orderLimit] Fetch fail history order';

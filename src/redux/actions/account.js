@@ -149,24 +149,13 @@ export const actionSetSignPublicKeyEncode = (defaultAccount) => async (
   }
 };
 
-export const actionSetNFTTokenData = (defaultAccount) => async (
-  dispatch,
-  getState,
-) => {
+export const actionSetNFTTokenData = () => async (dispatch, getState) => {
   try {
-    const state = getState();
-    const wallet = walletSelector(state);
-    const account = defaultAccount || defaultAccountSelector(state);
-    const accountWallet = defaultAccountWalletSelector(state);
     const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
-    if (account.name === accountWallet.name) {
-      const nftPayload = await pDexV3Inst.getNFTTokenData({
-        version: PrivacyVersion.ver2,
-      });
-      if (nftPayload) {
-        dispatch(actionFetchedNFT(nftPayload));
-      }
-    }
+    const nftPayload = await pDexV3Inst.getNFTTokenData({
+      version: PrivacyVersion.ver2,
+    });
+    dispatch(actionFetchedNFT(nftPayload));
   } catch (error) {
     new ExHandler(error).showErrorToast();
   }

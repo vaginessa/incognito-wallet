@@ -320,6 +320,13 @@ export default class Account {
     return account.getProgressTx();
   }
 
+  static async resetProgressTx(defaultAccount, wallet) {
+    new Validator('defaultAccount', defaultAccount).required();
+    new Validator('wallet', wallet).required();
+    const account = this.getAccount(defaultAccount, wallet);
+    return account.resetProgressTx();
+  }
+
   static async getDebugMessage(defaultAccount, wallet) {
     new Validator('defaultAccount', defaultAccount).required();
     new Validator('wallet', wallet).required();

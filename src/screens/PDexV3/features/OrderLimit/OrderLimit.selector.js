@@ -22,7 +22,7 @@ import {
   TAB_BUY_ID,
   TAB_SELL_ID,
 } from './OrderLimit.constant';
-import { getInputAmount } from './OrderLimit.utils';
+import { getInputAmount as getInputTokenAmount } from './OrderLimit.utils';
 
 export const orderLimitSelector = createSelector(
   (state) => state.pDexV3.orderLimit,
@@ -100,7 +100,7 @@ export const inputAmountSelector = createSelector(
   sharedSelector.isGettingBalance,
   getPrivacyDataByTokenIDSelector,
   poolSelectedDataSelector,
-  getInputAmount,
+  getInputTokenAmount,
 );
 
 export const inpuTokenSelector = createSelector(
@@ -206,14 +206,14 @@ export const orderLimitDataSelector = createSelector(
   nftTokenDataSelector,
   (
     state,
-    { networkfee, initing, percent },
+    { networkfee, initing, percent, ordering },
     getActivedTab,
     getPrivacyDataByTokenID,
     getInputAmount,
     feeTokenData,
     rateData,
     pool,
-    { invalidNFTToken, nftToken },
+    { nftTokenAvailable },
   ) => {
     const sellInputAmount = getInputAmount(formConfigs.selltoken);
     const buyInputAmount = getInputAmount(formConfigs.buytoken);
@@ -263,15 +263,18 @@ export const orderLimitDataSelector = createSelector(
     const editableInput = !initing;
     const calculating = initing;
     const disabledBtn =
-      calculating || !isValid(formConfigs.formName)(state) || invalidNFTToken;
-    if (!nftToken) {
-      btnActionTitle = 'Need a NFT token to book an order';
+      calculating ||
+      !isValid(formConfigs.formName)(state) ||
+      !nftTokenAvailable;
+    if (!nftTokenAvailable) {
+      btnActionTitle = 'Not enough NFT token to book an order';
     }
     if (calculating) {
       btnActionTitle = 'Calculating...';
     }
     const tradingFeeStr = `${feeTokenData?.feeAmountText} ${feeTokenData?.symbol}`;
     const rateStr = `1 ${sellInputAmount?.symbol} = ${rateData.customRate} ${buyInputAmount?.symbol}`;
+    const refreshing = initing;
     return {
       mainColor,
       buyColor,
@@ -297,97 +300,169 @@ export const orderLimitDataSelector = createSelector(
       cfmTitle,
       poolTitle: pool?.poolTitle || '',
       poolId: pool?.poolId,
+      ordering,
+      refreshing,
+      sellTokenId: sellInputAmount?.tokenId,
+      buyTokenId: buyInputAmount?.tokenId,
     };
   },
 );
 
-const BTN_CANCEL_ORDER = {
-  [ACCOUNT_CONSTANT.TX_STATUS.PROCESSING]: 'Cancel pending',
-  [ACCOUNT_CONSTANT.TX_STATUS.TXSTATUS_PENDING]: 'Cancel pending',
-  [ACCOUNT_CONSTANT.TX_STATUS.TXSTATUS_SUCCESS]: 'Cancel success',
+const BTN_WITHDRAW_ORDER = {
+  [ACCOUNT_CONSTANT.TX_STATUS.PROCESSING]: 'ing',
+  [ACCOUNT_CONSTANT.TX_STATUS.TXSTATUS_PENDING]: 'ing',
+  [ACCOUNT_CONSTANT.TX_STATUS.TXSTATUS_SUCCESS]: 'ed',
 };
 
-export const openOrdersSelector = createSelector(
+export const orderHistorySelector = createSelector(
   orderLimitSelector,
   poolSelectedDataSelector,
-  ({ orders, cancelingOrder, cancelingOrderTxs }, pool) => {
+  nftTokenDataSelector,
+  (
+    { ordersHistory, withdrawingOrderTxs, withdrawOrderTxs },
+    pool,
+    { nftTokenAvailable },
+  ) => {
+    let history = [];
+    const { isFetching, isFetched, data } = ordersHistory;
     try {
-      if (!pool || !orders) {
-        return [];
+      if (!pool || !data || data.length === 0) {
+        return history;
       }
       const token1: SelectedPrivacy = pool?.token1;
       const token2: SelectedPrivacy = pool?.token2;
-      return orders.map((order) => {
-        const {
-          selltoken,
-          requesttime,
-          matched,
-          amount,
-          price,
-          requesttx,
-          cancel,
-        } = order;
-        let type,
-          mainColor,
-          pDecimals,
-          infoStr,
-          amountStr,
-          priceStr,
-          btnCancel,
-          cancelTx;
-        cancelTx =
-          cancelingOrderTxs.find((tx) => isEqual(tx?.requesttx, requesttx)) ||
-          {};
-        const visibleBtnCanceling = cancelingOrder.includes(requesttx);
-        const { status: cancelTxStatus, cancelTxId } = cancelTx || {};
-        const fullMatched = new BigNumber(matched).isEqualTo(
-          new BigNumber(amount),
-        );
-        let visibleBtnCancel =
-          !fullMatched && !cancelTxId && (cancel.length === 0 || !cancel);
-        btnCancel = BTN_CANCEL_ORDER[cancelTxStatus] || '';
-        if (selltoken === token1.tokenId) {
-          type = 'sell';
-          mainColor = COLORS.red;
-          pDecimals = token1.pDecimals;
-          amountStr = format.amountFull(amount, pDecimals, false);
-          priceStr = format.amountFull(price, token2.pDecimals, false);
-          infoStr = `Sell ${amountStr} ${token1.symbol}\nPrice ${priceStr} ${token2.symbol}`;
+      history = data.map((order) => {
+        try {
+          let {
+            sellTokenId,
+            requestime,
+            matched,
+            amount,
+            minAccept: price,
+            requestTx,
+            isCompleted,
+            status,
+            statusCode,
+          } = order;
+          let type, mainColor, pDecimals, infoStr, amountStr, priceStr;
+          const sellTokenBalance = new BigNumber(order?.sellTokenBalance);
+          const buyTokenBalance = new BigNumber(order?.buyTokenBalance);
+          const sellTokenWithdrawed = new BigNumber(order?.sellTokenWithdrawed);
+          let statusStr = status;
+          let visibleBtnCancel = false;
+          let visibleBtnClaim = false;
+          const isWithdrawing = statusCode === 3 || status === 'withdrawing';
+          if (isCompleted) {
+            if (sellTokenWithdrawed.isGreaterThan(0)) {
+              statusStr = 'Canceled';
+            } else {
+              statusStr = 'Claimed';
+            }
+          } else {
+            if (
+              sellTokenBalance.isEqualTo(0) &&
+              buyTokenBalance.isGreaterThan(0)
+            ) {
+              if (isWithdrawing) {
+                statusStr = 'Claiming';
+              } else {
+                statusStr = 'Claim';
+                visibleBtnClaim = true;
+              }
+            } else if (sellTokenBalance.isGreaterThan(0)) {
+              if (isWithdrawing) {
+                statusStr = 'Canceling';
+              } else {
+                statusStr = 'Cancel';
+                visibleBtnCancel = true;
+              }
+            }
+          }
+          const withdrawTx =
+            withdrawOrderTxs.find((tx) => isEqual(tx?.requestTx, requestTx)) ||
+            {};
+          let cancelTx, claimTx;
+          if (withdrawTx?.requestTx) {
+            switch (withdrawTx?.txType) {
+            case ACCOUNT_CONSTANT.TX_TYPE.CANCEL_ORDER_LIMIT:
+              cancelTx = withdrawTx;
+              break;
+            case ACCOUNT_CONSTANT.TX_TYPE.CLAIM_ORDER_LIMIT:
+              claimTx = withdrawTx;
+              break;
+            default:
+              break;
+            }
+          }
+          const btnTitleClaim = 'Claim';
+          const btnTitleCancel = 'Cancel';
+          const { status: cancelTxStatus, withdrawTxId: cancelTxId } =
+            cancelTx || {};
+          const { status: claimTxStatus, withdrawTxId: claimTxId } =
+            claimTx || {};
+          visibleBtnCancel =
+            visibleBtnCancel && !cancelTxId && !!nftTokenAvailable;
+          visibleBtnClaim =
+            visibleBtnClaim && !claimTxId && !!nftTokenAvailable;
+          let btnCancel = BTN_WITHDRAW_ORDER[cancelTxStatus]
+            ? `${btnTitleCancel}${BTN_WITHDRAW_ORDER[cancelTxStatus]}`
+            : '';
+          let btnClaim = BTN_WITHDRAW_ORDER[claimTxStatus]
+            ? `${btnTitleClaim}${BTN_WITHDRAW_ORDER[claimTxStatus]}`
+            : '';
+          if (sellTokenId === token1.tokenId) {
+            type = 'sell';
+            mainColor = COLORS.red;
+            pDecimals = token1.pDecimals;
+            amountStr = format.amountFull(amount, pDecimals, false);
+            priceStr = format.amountFull(price, token2.pDecimals, false);
+            infoStr = `Sell ${amountStr} ${token1.symbol}\nPrice ${priceStr} ${token2.symbol}`;
+          }
+          if (sellTokenId === token2.tokenId) {
+            type = 'buy';
+            mainColor = COLORS.green;
+            pDecimals = token2.pDecimals;
+            amountStr = format.amountFull(amount, pDecimals, false);
+            priceStr = format.amountFull(price, token1.pDecimals, false);
+            infoStr = `Buy ${amountStr} ${token2.symbol}\nPrice ${priceStr} ${token1.symbol}`;
+          }
+          const percent = floor(
+            new BigNumber(matched)
+              .dividedBy(new BigNumber(amount))
+              .multipliedBy(100)
+              .toNumber(),
+          );
+          const percentStr = `Filled ${percent}%`;
+          const timeStr = format.formatDateTime(
+            new Date(requestime * 1000).getTime(),
+          );
+          const withdrawing = withdrawingOrderTxs.includes(requestTx);
+          const result = {
+            ...order,
+            type,
+            mainColor,
+            timeStr,
+            percent,
+            percentStr,
+            infoStr,
+            visibleBtnCancel,
+            btnClaim,
+            visibleBtnClaim,
+            btnTitleCancel,
+            btnTitleClaim,
+            btnCancel,
+            withdrawing,
+            statusStr,
+          };
+          return result;
+        } catch (error) {
+          console.log('error mapping history', error);
         }
-        if (selltoken === token2.tokenId) {
-          type = 'buy';
-          mainColor = COLORS.green;
-          pDecimals = token2.pDecimals;
-          amountStr = format.amountFull(amount, pDecimals, false);
-          priceStr = format.amountFull(price, token1.pDecimals, false);
-          infoStr = `Buy ${amountStr} ${token2.symbol}\nPrice ${priceStr} ${token1.symbol}`;
-        }
-        const percent = floor(
-          new BigNumber(matched)
-            .dividedBy(new BigNumber(amount))
-            .multipliedBy(100)
-            .toNumber(),
-        );
-        const percentStr = `Filled ${percent}%`;
-        const timeStr = format.formatDateTime(requesttime);
-        const result = {
-          ...order,
-          type,
-          mainColor,
-          timeStr,
-          percent,
-          percentStr,
-          infoStr,
-          btnCancel,
-          visibleBtnCancel,
-          visibleBtnCanceling,
-        };
-        // console.log('result', result);
-        return result;
       });
     } catch (error) {
-      console.log('openOrdersSelector-error', error);
+      console.log('openordersHistorySelector-error', error);
     }
+    return { history, isFetching, isFetched };
   },
 );
 

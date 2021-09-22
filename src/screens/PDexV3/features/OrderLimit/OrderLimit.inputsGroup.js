@@ -17,7 +17,7 @@ import {
   orderLimitDataSelector,
   rateDataSelector,
 } from './OrderLimit.selector';
-import { actionEstimateTrade, actionSetPercent } from './OrderLimit.actions';
+import { actionSetPercent } from './OrderLimit.actions';
 import { TAB_BUY_ID, TAB_SELL_ID, formConfigs } from './OrderLimit.constant';
 
 const styled = StyleSheet.create({
@@ -53,7 +53,6 @@ const SellInput = React.memo(() => {
   };
   const onEndEditing = () => {
     changeBuyAmount(sellInputAmount.amount);
-    dispatch(actionEstimateTrade());
   };
   const { customRate } = useSelector(rateDataSelector);
   const onChange = (sellamount) => {
@@ -77,7 +76,6 @@ const SellInput = React.memo(() => {
       ),
     );
     changeBuyAmount(sellInputAmount?.availableAmountText);
-    dispatch(actionEstimateTrade());
   };
   let _maxAmountValidatorForSellInput = React.useCallback(
     () => maxAmountValidatorForSellInput(sellInputAmount),
@@ -129,7 +127,6 @@ const BuyInput = React.memo(() => {
   };
   const onEndEditing = () => {
     changeSellAmount(buyInputAmount.amount);
-    dispatch(actionEstimateTrade());
   };
   const onChange = (buyamount) => {
     try {
@@ -191,7 +188,6 @@ const SelectPercentAmountInput = React.memo(() => {
     );
     dispatch(change(formConfigs.formName, formConfigs.buytoken, buyAmount));
     dispatch(change(formConfigs.formName, formConfigs.selltoken, amounText));
-    dispatch(actionEstimateTrade());
   };
   return (
     <SelectPercentAmount

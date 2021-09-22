@@ -37,7 +37,7 @@ const styled = StyleSheet.create({
   },
 });
 
-const SelectAccountButton = ({ ignoredAccounts, disabled }) => {
+const SelectAccountButton = ({ ignoredAccounts, disabled, callback }) => {
   const account = useSelector(accountSelector.defaultAccountSelector);
   const accounts = useSelector(listAllMasterKeyAccounts);
   const navigation = useNavigation();
@@ -51,10 +51,20 @@ const SelectAccountButton = ({ ignoredAccounts, disabled }) => {
 
   const checkAccount = async () => {
     if (ignoredAccounts.includes(account.name.toLowerCase())) {
-      const accountNames = accounts.map(item => item.accountName);
-      const validAccounts = accountNames.filter(name => !ignoredAccounts.includes(name.toLowerCase()));
+      const accountNames = accounts.map((item) => item.accountName);
+      const validAccounts = accountNames.filter(
+        (name) => !ignoredAccounts.includes(name.toLowerCase()),
+      );
       if (validAccounts && validAccounts.length) {
-        await dispatch(switchMasterKey(validAccounts[0].MasterKeyName, accountService.getAccountName(validAccounts[0])));
+        await dispatch(
+          switchMasterKey(
+            validAccounts[0].MasterKeyName,
+            accountService.getAccountName(validAccounts[0]),
+          ),
+        );
+        if (typeof callback === 'function') {
+          callback();
+        }
       }
     }
   };
@@ -68,14 +78,14 @@ const SelectAccountButton = ({ ignoredAccounts, disabled }) => {
       <ButtonBasic
         disabled={disabled}
         onPress={onNavSelectAccount}
-        customContent={(
+        customContent={
           <View style={styled.hook}>
             <Text numberOfLines={1} style={styled.name} ellipsizeMode="tail">
               {account?.accountName}
             </Text>
             <Ionicons name="ios-arrow-down" color={COLORS.black} size={13} />
           </View>
-        )}
+        }
         btnStyle={styled.btnStyle}
       />
     </View>
@@ -89,7 +99,7 @@ SelectAccountButton.propTypes = {
 
 SelectAccountButton.defaultProps = {
   ignoredAccounts: [],
-  disabled: false
+  disabled: false,
 };
 
 export default SelectAccountButton;

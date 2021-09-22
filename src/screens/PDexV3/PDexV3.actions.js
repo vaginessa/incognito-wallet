@@ -11,6 +11,7 @@ export const getPDexV3Instance = async ({ account }) => {
     pDexV3Inst.setRPCTradeService(server.tradeServices);
     pDexV3Inst.setStorageServices(storage);
     pDexV3Inst.setAccount(account);
+    pDexV3Inst.setRPCTxServices(server.pubsubServices);
     return pDexV3Inst;
   } catch (error) {
     console.log('getPDexV3Instance-error', error);

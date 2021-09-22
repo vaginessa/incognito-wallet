@@ -1,4 +1,4 @@
-import { Header, LoadingContainer, Row } from '@src/components';
+import { Header, Row } from '@src/components';
 import PropTypes from 'prop-types';
 import {
   KeyboardAwareScrollView,
@@ -15,32 +15,44 @@ import { BtnOrderHistory } from '@src/components/Button';
 import SelectAccountButton from '@src/components/SelectAccountButton';
 import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
+import { activedTabSelector } from '@src/components/core/Tabs';
 import { ROOT_TAB_TRADE, TAB_LIMIT_ID, TAB_SWAP_ID } from './Trade.constant';
 import { styled } from './Trade.styled';
 import withTrade from './Trade.enhance';
-import { tradePDexV3Selector } from './Trade.selector';
 
-const RightHeader = React.memo(() => {
-  const navigation = useNavigation();
-  const handleNavOrderHistory = () =>
-    navigation.navigate(routeNames.TradeOrderHistory);
-  return (
-    <Row style={styled.rightHeader}>
-      <BtnOrderHistory
-        style={styled.btnOrderHistory}
-        onPress={handleNavOrderHistory}
-      />
-      <SelectAccountButton />
-    </Row>
-  );
-});
+export const RightHeader = React.memo(
+  ({ callback, visibleBtnHistory, selectAccountable = true } = {}) => {
+    const navigation = useNavigation();
+    const handleNavOrderHistory = () =>
+      navigation.navigate(routeNames.TradeOrderHistory);
+    return (
+      <Row style={styled.rightHeader}>
+        {visibleBtnHistory && (
+          <BtnOrderHistory
+            style={styled.btnOrderHistory}
+            onPress={handleNavOrderHistory}
+          />
+        )}
+        {selectAccountable && <SelectAccountButton callback={callback} />}
+      </Row>
+    );
+  },
+);
 
 const Trade = (props) => {
   const { refreshing, onRefresh } = props;
-  const { isFetching, isFetched } = useSelector(tradePDexV3Selector);
+  const activedTab = useSelector(activedTabSelector)(ROOT_TAB_TRADE);
   return (
     <View style={styled.container}>
-      <Header title="pDex" rightHeader={<RightHeader />} />
+      <Header
+        title="pDex"
+        rightHeader={
+          <RightHeader
+            callback={onRefresh}
+            visibleBtnHistory={activedTab === TAB_SWAP_ID}
+          />
+        }
+      />
       <KeyboardAwareScrollView
         contentContainerStyle={styled.main}
         refreshControl={

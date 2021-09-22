@@ -12,9 +12,12 @@ import {
   ACTION_RESET,
   ACTION_SET_PERCENT,
   ACTION_FETCHED_OPEN_ORDERS,
-  ACTION_CANCELING_ORDER,
-  ACTION_FETCHED_CANCELING_ORDER_TXS,
+  ACTION_WITHDRAWING_ORDER,
+  ACTION_FETCHED_WITHDRAWING_ORDER_TXS,
   ACTION_FETCH_ORDERING,
+  ACTION_FETCHING_ORDERS_HISTORY,
+  ACTION_FETCHED_ORDERS_HISTORY,
+  ACTION_FETCH_FAIL_ORDERS_HISTORY,
 } from './OrderLimit.constant';
 
 const initialState = {
@@ -33,35 +36,69 @@ const initialState = {
   initing: false,
   rate: '',
   percent: 0,
-  orders: [],
-  cancelingOrder: [],
-  cancelingOrderTxs: [],
+  ordersHistory: {
+    isFetching: false,
+    isFetched: false,
+    data: [],
+  },
+  withdrawingOrderTxs: [],
+  withdrawOrderTxs: [],
   ordering: false,
 };
 
 export default (state = initialState, action) => {
   switch (action.type) {
+  case ACTION_FETCHING_ORDERS_HISTORY: {
+    const { ordersHistory } = state;
+    return {
+      ...state,
+      ordersHistory: { ...ordersHistory, isFetching: true },
+    };
+  }
+  case ACTION_FETCHED_ORDERS_HISTORY: {
+    const { ordersHistory } = state;
+    return {
+      ...state,
+      ordersHistory: {
+        ...ordersHistory,
+        isFetching: false,
+        isFetched: true,
+        data: [...action.payload],
+      },
+    };
+  }
+  case ACTION_FETCH_FAIL_ORDERS_HISTORY: {
+    const { ordersHistory } = state;
+    return {
+      ...state,
+      ordersHistory: {
+        ...ordersHistory,
+        isFetched: false,
+        isFetching: false,
+      },
+    };
+  }
   case ACTION_FETCH_ORDERING: {
     return {
       ...state,
       ordering: action.payload,
     };
   }
-  case ACTION_FETCHED_CANCELING_ORDER_TXS: {
+  case ACTION_FETCHED_WITHDRAWING_ORDER_TXS: {
     return {
       ...state,
-      cancelingOrderTxs: [...action.payload],
+      withdrawOrderTxs: [...action.payload],
     };
   }
-  case ACTION_CANCELING_ORDER: {
-    const { cancelingOrder } = state;
+  case ACTION_WITHDRAWING_ORDER: {
+    const { withdrawingOrderTxs } = state;
     const requesttx = action.payload;
-    const isExited = cancelingOrder.includes(requesttx);
+    const isExited = withdrawingOrderTxs.includes(requesttx);
     return {
       ...state,
-      cancelingOrder: isExited
-        ? [...cancelingOrder].filter((txId) => txId !== requesttx)
-        : [requesttx, ...cancelingOrder],
+      withdrawingOrderTxs: isExited
+        ? [...withdrawingOrderTxs].filter((txId) => txId !== requesttx)
+        : [requesttx, ...withdrawingOrderTxs],
     };
   }
   case ACTION_FETCHED_OPEN_ORDERS: {

@@ -5,8 +5,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { actionToggleModal } from '@src/components/Modal';
 import { Hook, styled as extraStyled } from '@screens/PDexV3/features/Extra';
 import { Text } from '@src/components/core';
+import { useNavigation } from 'react-navigation-hooks';
+import routeNames from '@src/router/routeNames';
 import { orderLimitDataSelector } from './OrderLimit.selector';
-import { actionBookOrder } from './OrderLimit.actions';
+import { actionBookOrder, actionInit } from './OrderLimit.actions';
 import { useSubInfo } from './OrderLimit.subInfo';
 
 const Review = () => {
@@ -20,6 +22,7 @@ const Review = () => {
     reviewOrderDescValue,
     cfmTitle,
   } = useSelector(orderLimitDataSelector);
+  const navigation = useNavigation();
   const [subInfoFactories] = useSubInfo();
   const hooksFactories = [
     {
@@ -44,7 +47,17 @@ const Review = () => {
       if (tx) {
         dispatch(
           actionToggleModal({
-            data: <TradeSuccessModal desc={cfmTitle} />,
+            data: (
+              <TradeSuccessModal
+                title="Order initialed"
+                desc={cfmTitle}
+                btnColor={mainColor}
+                handleTradeSucesss={() => {
+                  navigation.navigate(routeNames.OrderLimit);
+                  dispatch(actionInit(true));
+                }}
+              />
+            ),
             visible: true,
           }),
         );
@@ -66,7 +79,7 @@ const Review = () => {
         </View>
       }
       handleConfirm={handleConfirm}
-      loading={ordering}
+      loadingTx={ordering}
       btnColor={mainColor}
     />
   );

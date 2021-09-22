@@ -1,6 +1,8 @@
 import floor from 'lodash/floor';
+import ceil from 'lodash/ceil';
 import { PRV } from '@src/constants/common';
 import SelectedPrivacy from '@src/models/selectedPrivacy';
+import { getPairRate } from '@screens/PDexV3';
 import convert from '@src/utils/convert';
 import format from '@src/utils/format';
 import BigNumber from 'bignumber.js';
@@ -162,21 +164,30 @@ export const availablePayFeeByPRVValidator = ({
   return undefined;
 };
 
-export const calDefaultPairOrderLimit = ({ pool, x0 }) => {
+export const calDefaultPairOrderLimit = ({ pool, x, y, x0 }) => {
   let y0 = new BigNumber(0);
-  let rate;
+  let rate = '';
+  let y0Fixed = '';
   try {
     if (pool) {
-      const { virtual1Value, virtual2Value } = pool;
-      const x_v = new BigNumber(virtual1Value);
-      const y_v = new BigNumber(virtual2Value);
+      const { virtualValue } = pool;
+      const x_v = new BigNumber(virtualValue[(x?.tokenId)]);
+      const y_v = new BigNumber(virtualValue[(y?.tokenId)]);
       const L = x_v.multipliedBy(y_v);
       y0 = y_v.minus(L.dividedBy(x_v.plus(x0)));
       if (y0.isNaN()) {
         y0 = 0;
       } else {
-        y0 = y0.toNumber();
-        y0 = floor(y0);
+        const y0ToHumanAmount = new BigNumber(
+          convert.toHumanAmount(y0, y?.pDecimals),
+        );
+        y0Fixed = format.toFixed(y0ToHumanAmount.toNumber(), y?.pDecimals);
+        const x0ToHumanAmount = new BigNumber(
+          convert.toHumanAmount(x0, x?.pDecimals),
+        );
+        let rawRate = y0ToHumanAmount.dividedBy(x0ToHumanAmount);
+        rawRate = rawRate.isNaN() ? 0 : rawRate.toNumber();
+        rate = format.toFixed(rawRate, y?.pDecimals);
       }
     }
   } catch (error) {
@@ -185,5 +196,6 @@ export const calDefaultPairOrderLimit = ({ pool, x0 }) => {
   return {
     y0,
     rate,
+    y0Fixed,
   };
 };

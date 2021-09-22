@@ -103,7 +103,7 @@ const TEST_NET_1_SERVER = {
   portalServices: 'http://139.162.55.124:8010',
 };
 
-const DEV_TEST_SERVER = {
+export const DEV_TEST_SERVER = {
   id: 'devtest',
   default: false,
   address: DEV_TEST_FULLNODE,

@@ -1,17 +1,17 @@
 import React from 'react';
-import { View, StyleSheet, ActivityIndicator } from 'react-native';
+import isEmpty from 'lodash/isEmpty';
+import ButtonBasic from '@src/components/Button/ButtonBasic';
+import { View, StyleSheet } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
+import { ACCOUNT_CONSTANT } from 'incognito-chain-web-js/build/wallet';
 import { Row } from '@src/components';
-import { Divider, Text } from '@src/components/core';
+import { Divider, LoadingContainer, Text } from '@src/components/core';
 import { COLORS, FONT } from '@src/styles';
-import { ButtonBasic } from '@src/components/Button';
-import {
-  actionFetchCancelingOrderTxs,
-  actionCancelOrder,
-  actionFetchOpenOrders,
-} from './OrderLimit.actions';
-import Extra, { Hook } from '../Extra';
-import { openOrdersSelector } from './OrderLimit.selector';
+import LoadingTx from '@src/components/LoadingTx';
+import Extra from '@screens/PDexV3/features/Extra';
+import RemoveSuccessDialog from '@src/screens/Setting/features/RemoveStorage/RemoveStorage.Dialog';
+import { actionWithdrawOrder, actionInit } from './OrderLimit.actions';
+import { orderHistorySelector } from './OrderLimit.selector';
 
 const styled = StyleSheet.create({
   container: {},
@@ -32,13 +32,13 @@ const styled = StyleSheet.create({
     flex: 1,
     maxWidth: '30%',
   },
-  btnCancel: {
+  btnWithdraw: {
     width: 80,
     height: 20,
     backgroundColor: COLORS.lightGrey19,
     marginTop: 10,
   },
-  btnTitleCancel: {
+  btnTitleWithdraw: {
     fontSize: FONT.SIZE.small,
     lineHeight: FONT.SIZE.small + 5,
     fontFamily: FONT.NAME.medium,
@@ -52,6 +52,21 @@ const OrderValue = React.memo(({ style, value }) => {
 
 const Order = React.memo(({ data }) => {
   const dispatch = useDispatch();
+  const [visible, setVisible] = React.useState(false);
+  const [withdrawData, setWithdrawData] = React.useState({});
+  const onPressWithdrawOrder = async (data) => {
+    await setWithdrawData(data);
+    await setVisible(true);
+  };
+  const onWithdrawOrder = async (data) => {
+    const isCancelOrder = !isEmpty(withdrawData);
+    let task = [dispatch(actionWithdrawOrder(data || withdrawData))];
+    if (isCancelOrder) {
+      task.push(setVisible(false));
+    }
+    await Promise.all(task);
+    await dispatch(actionInit(true));
+  };
   if (!data) {
     return null;
   }
@@ -61,22 +76,45 @@ const Order = React.memo(({ data }) => {
     timeStr,
     mainColor,
     visibleBtnCancel,
-    visibleBtnCanceling,
+    statusStr,
+    btnTitleCancel,
+    requestTx,
+    btnClaim,
+    visibleBtnClaim,
+    btnTitleClaim,
     btnCancel,
-    requesttx,
+    withdrawing,
   } = data;
-  const onCancelOrder = () => dispatch(actionCancelOrder(requesttx));
   const renderHook = () => {
     let comp = null;
-    if (visibleBtnCanceling) {
-      comp = <ActivityIndicator size="small" style={{ marginTop: 10 }} />;
-    } else if (visibleBtnCancel) {
+    if (visibleBtnCancel) {
       comp = (
         <ButtonBasic
-          btnStyle={styled.btnCancel}
-          titleStyle={styled.btnTitleCancel}
-          title="Cancel"
-          onPress={onCancelOrder}
+          btnStyle={styled.btnWithdraw}
+          title={btnTitleCancel}
+          titleStyle={styled.btnTitleWithdraw}
+          onPress={() =>
+            onPressWithdrawOrder({
+              requestTx,
+              txType: ACCOUNT_CONSTANT.TX_TYPE.CANCEL_ORDER_LIMIT,
+              subTitle:
+                'This will cancel your order. Are your sure to continute?',
+            })
+          }
+        />
+      );
+    } else if (visibleBtnClaim) {
+      comp = (
+        <ButtonBasic
+          btnStyle={styled.btnWithdraw}
+          titleStyle={styled.btnTitleWithdraw}
+          title={btnTitleClaim}
+          onPress={() =>
+            onWithdrawOrder({
+              requestTx,
+              txType: ACCOUNT_CONSTANT.TX_TYPE.CLAIM_ORDER_LIMIT,
+            })
+          }
         />
       );
     } else if (btnCancel) {
@@ -86,8 +124,20 @@ const Order = React.memo(({ data }) => {
           value={btnCancel}
         />
       );
+    } else if (btnClaim) {
+      comp = (
+        <OrderValue
+          style={{ ...styled.orderValue, color: mainColor }}
+          value={btnClaim}
+        />
+      );
     } else {
-      return null;
+      comp = (
+        <OrderValue
+          style={{ ...styled.orderValue, color: mainColor }}
+          value={statusStr}
+        />
+      );
     }
     return (
       <View
@@ -126,44 +176,51 @@ const Order = React.memo(({ data }) => {
     },
   ];
   return (
-    <Row style={styled.orderWrapper}>
-      {factories.map((item) => (
-        <View style={styled.orderItem}>
-          <OrderValue
-            style={{ ...styled.orderValue, ...item.style, color: mainColor }}
-            value={item?.value}
-          />
+    <React.Fragment>
+      <Row style={styled.orderWrapper}>
+        <RemoveSuccessDialog
+          visible={visible}
+          onPressCancel={() => setVisible(false)}
+          onPressAccept={onWithdrawOrder}
+          title="Cancel order"
+          subTitle={withdrawData?.subTitle || ''}
+          acceptStr="OK"
+        />
+        {factories.map((item) => (
+          <View style={styled.orderItem}>
+            <OrderValue
+              style={{ ...styled.orderValue, ...item.style, color: mainColor }}
+              value={item?.value}
+            />
 
-          {item?.hook && item.hook}
-        </View>
-      ))}
-    </Row>
+            {item?.hook && item.hook}
+          </View>
+        ))}
+      </Row>
+      {withdrawing && <LoadingTx />}
+    </React.Fragment>
   );
 });
 
-const OpenOrders = (props) => {
-  const orders = useSelector(openOrdersSelector);
-  const dispatch = useDispatch();
-  const handleFetch = async () => {
-    await Promise.all(
-      dispatch(actionFetchOpenOrders()),
-      dispatch(actionFetchCancelingOrderTxs()),
-    );
-  };
-  React.useEffect(() => {
-    handleFetch();
-  }, []);
+const OpenOrders = () => {
+  const { history = [], isFetching, isFetched } = useSelector(
+    orderHistorySelector,
+  );
   return (
     <View style={styled.container}>
       <Extra title="Open orders" />
-      {orders.map((order, index, arr) => (
-        <>
-          <Order key={order?.txhash} data={order} />
-          {index !== arr.length - 1 && (
-            <Divider dividerStyled={styled.dividerStyled} />
-          )}
-        </>
-      ))}
+      {isFetching && !isFetched ? (
+        <LoadingContainer />
+      ) : (
+        history?.map((order, index, arr) => (
+          <>
+            <Order key={order?.requestTx} data={order} />
+            {index !== arr.length - 1 && (
+              <Divider dividerStyled={styled.dividerStyled} />
+            )}
+          </>
+        ))
+      )}
     </View>
   );
 };
