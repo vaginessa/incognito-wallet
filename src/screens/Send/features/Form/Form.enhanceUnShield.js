@@ -149,6 +149,8 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
       const { originalAmount, feeForBurn, paymentAddress, isBSC } = payload;
       const { FeeAddress: masterAddress } = userFeesData;
 
+      console.log('handleBurningPegPRV info: ', info);
+
       const res = await accountService.createBurningPegPRVRequest({
         wallet,
         account,
@@ -214,7 +216,7 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
         );
       };
       let tx;
-      if (tokenId === PRVIDSTR) {
+      if (isUnshieldPegPRV) {
         tx = await handleBurningPegPRV(payload, txHashHandler);
       } else {
         tx = await handleBurningToken(payload, txHashHandler);
