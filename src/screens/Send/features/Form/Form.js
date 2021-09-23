@@ -177,7 +177,7 @@ const SendForm = (props) => {
           component={SelectOptionField}
           items={platforms}
           name="currencyType"
-          label="Currency type"
+          label="Network type"
         />
       );
     }

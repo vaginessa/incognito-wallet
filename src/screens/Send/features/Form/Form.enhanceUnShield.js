@@ -150,7 +150,6 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
       const { FeeAddress: masterAddress } = userFeesData;
 
       console.log('handleBurningPegPRV info: ', info);
-
       const res = await accountService.createBurningPegPRVRequest({
         wallet,
         account,
@@ -335,6 +334,7 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
   const handleUnShieldCrypto = async (values) => {
     try {
       const { amount, toAddress, memo } = values;
+      console.log('handleUnShieldCrypto memo: ', memo);
       const amountToNumber = convert.toNumber(amount, true);
       const originalAmount = convert.toOriginalAmount(
         amountToNumber,
