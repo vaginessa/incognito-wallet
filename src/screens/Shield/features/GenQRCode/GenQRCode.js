@@ -326,13 +326,16 @@ const GenQRCode = (props) => {
       return <LoadingContainer />;
     }
     return (
-      <Extra
-        {...{
-          ...props,
-          selectedPrivacy,
-          defaultFee,
-        }}
-      />
+      <>
+        {isPRV && renderOptionsPRV()}
+        <Extra
+          {...{
+            ...props,
+            selectedPrivacy,
+            defaultFee,
+          }}
+        />
+      </>
     );
   };
 
@@ -416,7 +419,6 @@ const GenQRCode = (props) => {
           }}
         />
       )}
-      {isPRV && renderOptionsPRV()}
       {renderComponent()}
     </View>
   );
