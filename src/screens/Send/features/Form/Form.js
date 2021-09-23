@@ -1,16 +1,14 @@
 import React, { useState } from 'react';
 import { View, Text } from 'react-native';
-import { KeyboardAwareScrollView, TouchableOpacity, Image } from '@src/components/core';
+import { KeyboardAwareScrollView } from '@src/components/core';
 import { Field } from 'redux-form';
 import {
   createForm,
   InputQRField,
   InputField,
   InputMaxValueField,
-  SelectPickerField,
+  SelectOptionField,
 } from '@components/core/reduxForm';
-import ic_radio from '@src/assets/images/icons/ic_radio.png';
-import ic_radio_check from '@src/assets/images/icons/ic_radio_check.png';
 import { SEND } from '@src/constants/elements';
 import { generateTestId } from '@src/utils/misc';
 import EstimateFee from '@components/EstimateFee/EstimateFee.input';
@@ -25,6 +23,7 @@ import LoadingTx from '@src/components/LoadingTx';
 import format from '@src/utils/format';
 import useFeatureConfig from '@src/shared/hooks/featureConfig';
 import appConstant from '@src/constants/app';
+import { CONSTANT_COMMONS } from '@src/constants';
 import { styledForm as styled } from './Form.styled';
 import withSendForm, { formName } from './Form.enhance';
 
@@ -151,21 +150,22 @@ const SendForm = (props) => {
 
   const renderNetworkType = () => {
     if (isUnshieldPegPRV) {
-      let OPTIONS = [];
-      if (selectedPrivacy.listChildToken instanceof Array) {
-        selectedPrivacy.listChildToken.map(item => {
-          OPTIONS.push({
-            label: item.name,
-            value: item.name,
-          });
-        });
-      }
+      const platforms = [
+        {
+          label: 'ETH',
+          value: CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.ERC20
+        },
+        {
+          label: 'BSC',
+          value: CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BSC_BEP20
+        },
+      ];
 
       return (
         <Field
           onChange={(value) => {
             onChangeField(value, 'currencyType');
-            const childToken = selectedPrivacy.listChildToken.find(item => item.name === value);
+            const childToken = selectedPrivacy.listChildToken.find(item => item.currencyType === value);
             const childSelectedPrivacy = new SelectedPrivacy(
               account,
               null,
@@ -174,9 +174,8 @@ const SendForm = (props) => {
             );
             setChildSelectedPrivacy(childSelectedPrivacy);
           }}
-          placeholder={{ label: 'Select', value: null }}
-          component={SelectPickerField}
-          items={OPTIONS}
+          component={SelectOptionField}
+          items={platforms}
           name="currencyType"
           label="Currency type"
         />

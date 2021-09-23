@@ -61,7 +61,7 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
 
   React.useEffect(() => {
     if (isUnshieldPegPRV) {
-      const childToken = selectedPrivacy.listChildToken.find(item => item.name === currencyTypeName);
+      const childToken = selectedPrivacy.listChildToken.find(item => item.currencyType === currencyTypeName);
       const childSelectedPrivacy = new SelectedPrivacy(
         account,
         null,

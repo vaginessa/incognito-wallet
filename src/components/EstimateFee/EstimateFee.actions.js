@@ -426,7 +426,7 @@ export const actionValAddr = (address = '', childSelectedPrivacy = null) => asyn
   const state = getState();
   const selectedPrivacy = childSelectedPrivacy ? childSelectedPrivacy : selectedPrivacySelector.selectedPrivacy(state);
   const { isUnShield } = feeDataSelector(state);
-  if (!isUnShield) {
+  if (!isUnShield || (childSelectedPrivacy === null & selectedPrivacy?.isMainCrypto)) {
     return;
   }
   try {
