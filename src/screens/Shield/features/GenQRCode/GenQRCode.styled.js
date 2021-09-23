@@ -159,37 +159,34 @@ export const styled = StyleSheet.create({
     fontFamily: FONT.NAME.bold,
     textAlign: 'center'
   },
-  selectedButton: {
-    flex: 1,
-    width: 100,
-    height: 50,
-    padding: 7,
-    borderRadius: 8,
-    borderWidth: 0,
-    marginBottom: 6,
+  selectedBtn: {
     backgroundColor: '#EFEFEF',
   },
-  unSelectedButon: {
-    flex: 2,
-    width: 100,
-    height: 50,
-    padding: 7,
-    borderRadius: 8,
-    borderWidth: 1,
+  unSelectBtn: {
     borderColor: COLORS.colorGreyLight,
-    marginBottom: 6
+  },
+  optionBtn: {
+    flex: 1,
+    height: 45,
+    paddingHorizontal: 15,
+    borderRadius: 8,
+    borderWidth: 0,
+    justifyContent: 'center'
+  },
+  optionContent: {
+    flexDirection: 'row',
+    alignItems: 'center'
   },
   selectBox: {
     justifyContent: 'space-between',
-    height: 100,
-    width: '100%',
-    backgroundColor: 'red',
     flexDirection: 'row',
+    alignItems: 'center'
   },
   textSelectBox: {
     color: COLORS.colorGreyBold,
     fontFamily: FONT.NAME.specialMedium,
     fontSize: FONT.SIZE.regular,
     lineHeight: FONT.SIZE.medium + 4,
+    marginLeft: 10,
   },
 });

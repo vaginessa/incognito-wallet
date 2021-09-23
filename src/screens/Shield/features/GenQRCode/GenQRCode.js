@@ -311,6 +311,26 @@ const GenQRCode = (props) => {
     }
     return <Extra {...props} />;
   };
+
+  const renderOptionsPRV = () => (
+    <View style={styled.selectBox}>
+      {platforms.map((item, index) => {
+        const isSelected = index === selectedPlatform;
+        return (
+          <TouchableOpacity
+            style={[styled.optionBtn, isSelected ? styled.selectedBtn : styled.unSelectBtn]}
+            key={`key-${index}`}
+            // onPress={() => handlePress(index)}
+          >
+            <View style={styled.optionContent}>
+              <Image style={styled.icon} source={isSelected ? ic_radio_check : ic_radio} />
+              <Text style={[styled.textSelectBox, { color: isSelected ? COLORS.black : COLORS.colorGreyBold }]}>{item}</Text>
+            </View>
+          </TouchableOpacity>
+        );
+      })}
+    </View>
+  );
   return (
     <View style={styled.container}>
       {toggle && (
@@ -329,24 +349,8 @@ const GenQRCode = (props) => {
           }}
         />
       )}
+      {renderOptionsPRV()}
       {renderComponent()}
-      <View style={styled.selectBox}>F
-        { platforms.map((item, index) => {
-          return (
-            <TouchableOpacity
-              // style={index === selectedPlatform ? styled.selectedButton : styled.unSelectedButon}
-              style={{flex :1, blackgroundColor : 'blue'}}
-              key={`key-${index}`}
-              // onPress={() => handlePress(index)}
-            >
-              <View style={styled.contentView}>
-                <Image style={styled.icon} source={index === selectedPlatform ? ic_radio_check : ic_radio} />
-                <Text style={[styled.textSelectBox, { marginRight: 20, color: index === selectedPlatform ? COLORS.black : COLORS.colorGreyBold }]}>{item}</Text>
-              </View>
-            </TouchableOpacity>
-          );
-        })}
-      </View>
     </View>
   );
 };
