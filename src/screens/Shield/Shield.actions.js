@@ -19,6 +19,7 @@ import {
   ACTION_RESET,
 } from './Shield.constant';
 import { shieldSelector } from './Shield.selector';
+import { PRV_ID } from '../DexV2/constants';
 
 export const actionReset = () => ({
   type: ACTION_RESET,
@@ -50,12 +51,15 @@ export const actionGetAddressToShield = async ({
   selectedPrivacy,
   account,
   signPublicKeyEncode,
+  isETH,
 }) => {
   try {
     let generateResult = {};
     if (!selectedPrivacy?.isPToken) {
       return null;
     }
+    console.log('got here 2');
+    console.log({isETH});
     if (
       selectedPrivacy?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.ETH
     ) {
@@ -66,19 +70,31 @@ export const actionGetAddressToShield = async ({
         currencyType: selectedPrivacy?.currencyType,
         signPublicKeyEncode,
       });
-    } else if (selectedPrivacy?.isErc20Token) {
+    } else if (selectedPrivacy?.isErc20Token || (selectedPrivacy?.tokenId === PRV_ID && isETH)) {
+      let currencyType_ = selectedPrivacy?.currencyType;
+      let tokenContractID_ = selectedPrivacy?.contractId;
+      if (selectedPrivacy?.tokenId === PRV_ID) {
+        console.log({selectedPrivacy});
+        if (selectedPrivacy?.listChildToken) {
+          const tokenChild = selectedPrivacy?.listChildToken.find(x => x.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.ERC20);
+          currencyType_ = tokenChild?.currencyType;
+          tokenContractID_ = tokenChild?.contractId;
+        }
+      }
+
       generateResult = await genERC20DepositAddress({
         paymentAddress: account.PaymentAddress,
         walletAddress: account.PaymentAddress,
         tokenId: selectedPrivacy?.tokenId,
-        tokenContractID: selectedPrivacy?.contractId,
-        currencyType: selectedPrivacy?.currencyType,
+        tokenContractID: tokenContractID_,
+        currencyType: currencyType_,
         signPublicKeyEncode,
       });
     } else if (
       selectedPrivacy?.isBep20Token ||
       selectedPrivacy?.currencyType ===
-        CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BSC_BNB
+        CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BSC_BNB ||
+      selectedPrivacy?.tokenId === PRV_ID
     ) {
       generateResult = await genBSCDepositAddress({
         paymentAddress: account.PaymentAddress,
@@ -113,7 +129,7 @@ export const actionGetAddressToShield = async ({
   }
 };
 
-export const actionFetch = ({ tokenId, selectedPrivacy, account }) => async (
+export const actionFetch = ({ tokenId, selectedPrivacy, account, isETH = true }) => async (
   dispatch,
   getState,
 ) => {
@@ -121,16 +137,19 @@ export const actionFetch = ({ tokenId, selectedPrivacy, account }) => async (
     const state = getState();
     const { isFetching } = shieldSelector(state);
     const signPublicKeyEncode = signPublicKeyEncodeSelector(state);
+    console.log('got here 0');
     if (!selectedPrivacy || isFetching) {
       return;
     }
     dispatch(actionFetching());
+    console.log('got here');
     const [dataMinMax, addressShield] = await Promise.all([
       actionGetMinMaxShield({ tokenId }),
       actionGetAddressToShield({
         selectedPrivacy,
         account,
         signPublicKeyEncode,
+        isETH,
       }),
     ]);
 

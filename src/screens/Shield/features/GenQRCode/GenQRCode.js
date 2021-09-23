@@ -1,6 +1,6 @@
 import React from 'react';
-import { View, Text } from 'react-native';
-import { useSelector } from 'react-redux';
+import { View, Text, TouchableOpacity, Image } from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
 import { selectedPrivacySelector } from '@src/redux/selectors';
 import { shieldDataSelector } from '@screens/Shield/Shield.selector';
 import QrCodeGenerate from '@src/components/QrCodeGenerate';
@@ -17,6 +17,11 @@ import { useNavigation } from 'react-navigation-hooks';
 import { CONSTANT_COMMONS } from '@src/constants';
 import convert from '@utils/convert';
 import routeNames from '@routers/routeNames';
+import { defaultAccountSelector } from '@src/redux/selectors/account';
+import { actionFetch as fetchDataShield } from '@screens/Shield/Shield.actions';
+import ic_radio from '@src/assets/images/icons/ic_radio.png';
+import ic_radio_check from '@src/assets/images/icons/ic_radio_check.png';
+import { PRV_ID } from '@src/screens/DexV2/constants';
 import withGenQRCode from './GenQRCode.enhance';
 import { styled } from './GenQRCode.styled';
 
@@ -43,20 +48,19 @@ const ShieldError = React.memo(({ handleShield, isPortalCompatible }) => {
         onPress={handleShield}
         title="Try again"
       />
-      { 
-        isPortalCompatible ? 
-          (
-            <Text style={styled.errorText}>
-              {'If that doesn’t work,\ncheck the bulletin board for scheduled maintenance.\n\nIf there is none,\nplease come back in an hour.'}
-            </Text>
-          )
-          :
-          (
-            <Text style={styled.errorText}>
-              {'If that doesn’t work,\nplease make sure your app version is the latest.'}
-            </Text>
-          )
-      }
+      {isPortalCompatible ? (
+        <Text style={styled.errorText}>
+          {
+            'If that doesn’t work,\ncheck the bulletin board for scheduled maintenance.\n\nIf there is none,\nplease come back in an hour.'
+          }
+        </Text>
+      ) : (
+        <Text style={styled.errorText}>
+          {
+            'If that doesn’t work,\nplease make sure your app version is the latest.'
+          }
+        </Text>
+      )}
     </View>
   );
 });
@@ -73,6 +77,11 @@ const Extra = () => {
   } = useSelector(shieldDataSelector);
   const selectedPrivacy = useSelector(selectedPrivacySelector.selectedPrivacy);
   const navigation = useNavigation();
+  const [selectedPlatform, setPlatform] = React.useState(0);
+  const platforms = ['ETH', 'BSC'];
+  const account = useSelector(defaultAccountSelector);
+  const dispatch = useDispatch();
+
   const renderMinShieldAmount = () => {
     let minComp;
     if (min) {
@@ -101,9 +110,7 @@ const Extra = () => {
       minComp = (
         <>
           <NormalText text="Minimum: ">
-            <Text style={[styled.boldText]}>
-              {`${min} ${symbol}`}
-            </Text>
+            <Text style={[styled.boldText]}>{`${min} ${symbol}`}</Text>
           </NormalText>
           <NormalText
             text={'Smaller amounts will be rejected\nby the network and lost.'}
@@ -113,6 +120,22 @@ const Extra = () => {
       );
     }
     return minComp;
+  };
+
+  const handlePress = (index) => {
+    console.log({ index });
+    console.log({ selectedPlatform });
+    if (index !== selectedPlatform) {
+      setPlatform(index);
+      dispatch(
+        fetchDataShield(
+          selectedPrivacy?.tokenId,
+          selectedPrivacy,
+          account,
+          platforms[index] === 'ETH',
+        ),
+      );
+    }
   };
 
   const renderEstimateFee = () => {
@@ -218,14 +241,13 @@ const Extra = () => {
   const renderShieldPortalAddress = () => (
     <>
       <NormalText style={styled.title}>
-        {`Send only ${selectedPrivacy?.externalSymbol || selectedPrivacy?.symbol} \nto this shielding address.`}
+        {`Send only ${selectedPrivacy?.externalSymbol ||
+          selectedPrivacy?.symbol} \nto this shielding address.`}
       </NormalText>
       <View style={styled.qrCode}>
         <QrCodeGenerate value={address} size={175} />
       </View>
-      <View style={styled.hook}>
-        {renderMinPortalShieldAmount()}
-      </View>
+      <View style={styled.hook}>{renderMinPortalShieldAmount()}</View>
       <CopiableText data={address} />
     </>
   );
@@ -233,15 +255,11 @@ const Extra = () => {
   return (
     <ScrollView style={styled.scrollview}>
       <View style={styled.extra}>
-        {
-          isPortal
-            ? renderShieldPortalAddress()
-            : (
-              decentralized === 2 || decentralized === 3
-                ? renderShieldUserAddress()
-                : renderShieldIncAddress()
-            )
-        }
+        {isPortal
+          ? renderShieldPortalAddress()
+          : decentralized === 2 || decentralized === 3
+            ? renderShieldUserAddress()
+            : renderShieldIncAddress()}
       </View>
     </ScrollView>
   );
@@ -258,9 +276,17 @@ const Content = () => {
 };
 
 const GenQRCode = (props) => {
-  const { handleShield, isFetching, isFetchFailed, isPortalCompatible, data: shieldData } = props;
+  const {
+    handleShield,
+    isFetching,
+    isFetchFailed,
+    isPortalCompatible,
+    data: shieldData,
+  } = props;
   const { address } = shieldData || {};
   const [toggle, setToggle] = React.useState(true);
+  const platforms = ['ETH', 'BSC'];
+  const selectedPlatform = 0;
   React.useEffect(() => {
     if (toggle) {
       const timeout = setTimeout(() => {
@@ -273,7 +299,12 @@ const GenQRCode = (props) => {
   }, [toggle]);
   const renderComponent = () => {
     if (isFetchFailed) {
-      return <ShieldError handleShield={handleShield} isPortalCompatible={isPortalCompatible} />;
+      return (
+        <ShieldError
+          handleShield={handleShield}
+          isPortalCompatible={isPortalCompatible}
+        />
+      );
     }
     if (isFetching || !address) {
       return <LoadingContainer />;
@@ -299,6 +330,23 @@ const GenQRCode = (props) => {
         />
       )}
       {renderComponent()}
+      <View style={styled.selectBox}>F
+        { platforms.map((item, index) => {
+          return (
+            <TouchableOpacity
+              // style={index === selectedPlatform ? styled.selectedButton : styled.unSelectedButon}
+              style={{flex :1, blackgroundColor : 'blue'}}
+              key={`key-${index}`}
+              // onPress={() => handlePress(index)}
+            >
+              <View style={styled.contentView}>
+                <Image style={styled.icon} source={index === selectedPlatform ? ic_radio_check : ic_radio} />
+                <Text style={[styled.textSelectBox, { marginRight: 20, color: index === selectedPlatform ? COLORS.black : COLORS.colorGreyBold }]}>{item}</Text>
+              </View>
+            </TouchableOpacity>
+          );
+        })}
+      </View>
     </View>
   );
 };

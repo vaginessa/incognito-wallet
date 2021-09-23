@@ -158,5 +158,38 @@ export const styled = StyleSheet.create({
     color: COLORS.orange,
     fontFamily: FONT.NAME.bold,
     textAlign: 'center'
-  }
+  },
+  selectedButton: {
+    flex: 1,
+    width: 100,
+    height: 50,
+    padding: 7,
+    borderRadius: 8,
+    borderWidth: 0,
+    marginBottom: 6,
+    backgroundColor: '#EFEFEF',
+  },
+  unSelectedButon: {
+    flex: 2,
+    width: 100,
+    height: 50,
+    padding: 7,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: COLORS.colorGreyLight,
+    marginBottom: 6
+  },
+  selectBox: {
+    justifyContent: 'space-between',
+    height: 100,
+    width: '100%',
+    backgroundColor: 'red',
+    flexDirection: 'row',
+  },
+  textSelectBox: {
+    color: COLORS.colorGreyBold,
+    fontFamily: FONT.NAME.specialMedium,
+    fontSize: FONT.SIZE.regular,
+    lineHeight: FONT.SIZE.medium + 4,
+  },
 });
