@@ -72,7 +72,7 @@ const Home = (props) => {
   const { handleOnRefresh } = props;
   return (
     <View style={styled.container}>
-      <Header title="Market" rightHeader={<RightHeader />} />
+      <Header title="Pools" rightHeader={<RightHeader />} />
       <ScrollView
         style={styled.main}
         refreshControl={(

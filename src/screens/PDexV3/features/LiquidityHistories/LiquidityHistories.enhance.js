@@ -5,13 +5,13 @@ import {liquidityHistoryActions} from '@screens/PDexV3/features/LiquidityHistori
 
 const withHistories = WrappedComp => props => {
   const dispatch = useDispatch();
-  const onLoadData = () => dispatch(liquidityHistoryActions.actionGetHistories());
-  React.useEffect(() => { onLoadData(); }, []);
+  const onRefresh = () => dispatch(liquidityHistoryActions.actionGetHistories());
   return (
     <ErrorBoundary>
       <WrappedComp
         {...{
           ...props,
+          onRefresh,
         }}
       />
     </ErrorBoundary>

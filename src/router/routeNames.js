@@ -169,9 +169,6 @@ export default {
   NFTToken: 'NFTToken',
   MintNFTToken: 'MintNFTToken',
   HomeLiquidityHistories: 'HomeLiquidityHistories',
-  ContributeHistoryDetail: 'ContributeHistoryDetail',
-  RemovePoolHistoriesDetail: 'RemovePoolHistoriesDetail',
-  WithdrawRewardHistoriesDetail: 'WithdrawRewardHistoriesDetail',
   Staking: 'Stake',
   StakingMoreCoins: 'StakingMoreCoins',
   StakingMoreInput: 'StakingMoreInput',
@@ -188,4 +185,7 @@ export default {
   CreatePoolConfirm: 'CreatePoolConfirm',
   RemovePoolConfirm: 'RemovePoolConfirm',
   LiquidityHistories: 'LiquidityHistories',
+  ContributeHistoryDetail: 'ContributeHistoryDetail',
+  RemoveLPDetail: 'RemoveLPDetail',
+  WithdrawFeeLPDetail: 'WithdrawFeeLPDetail',
 };

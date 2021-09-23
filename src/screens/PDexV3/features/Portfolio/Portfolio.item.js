@@ -1,17 +1,21 @@
 import { Row } from '@src/components';
 import { ButtonTrade, ButtonTrade1 } from '@src/components/Button';
-import { Text } from '@src/components/core';
+import {Text, Toast} from '@src/components/core';
 import React from 'react';
 import { View } from 'react-native';
 import {batch, useDispatch, useSelector} from 'react-redux';
 import {useNavigation} from 'react-navigation-hooks';
 import routeNames from '@routers/routeNames';
 import {liquidityActions} from '@screens/PDexV3/features/Liquidity';
+import PropTypes from 'prop-types';
 import {getDataByShareIdSelector} from './Portfolio.selector';
 import { portfolioItemStyled as styled } from './Portfolio.styled';
 
 const Hook = React.memo((props) => {
   const { label, value, isClaimReward, withdrawable, withdrawing } = props;
+  const onWithdrawLPFee = () => {
+    if (withdrawing) return Toast.showSuccess('Please wait previous transaction success.');
+  };
   if (!isClaimReward) {
     return (
       <Row style={styled.hookContainer}>
@@ -28,8 +32,9 @@ const Hook = React.memo((props) => {
         {(isClaimReward && withdrawable) && (
           <ButtonTrade
             title={`${withdrawing ? 'Withdrawing' : 'Claim'}`}
-            btnStyle={[styled.btnSmall, { width: withdrawing ? 85 : 50 }]}
+            btnStyle={withdrawing ? styled.withdrawing : styled.withdrawBtn}
             titleStyle={styled.titleSmall}
+            onPress={onWithdrawLPFee}
           />
         )}
       </Row>
@@ -97,6 +102,20 @@ const PortfolioItem = (props) => {
   );
 };
 
-PortfolioItem.propTypes = {};
+PortfolioItem.propTypes = {
+  shareId: PropTypes.string.isRequired
+};
+
+Extra.propTypes = {
+  shareId: PropTypes.string.isRequired
+};
+
+Hook.propTypes = {
+  label: PropTypes.string.isRequired,
+  value: PropTypes.string.isRequired,
+  isClaimReward: PropTypes.bool.isRequired,
+  withdrawable: PropTypes.bool.isRequired,
+  withdrawing: PropTypes.bool.isRequired,
+};
 
 export default React.memo(PortfolioItem);

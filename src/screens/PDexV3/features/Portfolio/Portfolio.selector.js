@@ -42,9 +42,11 @@ export const listShareSelector = createSelector(
         token1Reward,
         token2Reward,
         poolId,
+        withdrawing,
+        withdrawable
       } = item;
       const poolDetail = shareDetails.find((share) => poolId === share.poolId);
-      const { amp, apy, token1Value: token1PoolValue, token2Value: token2PoolValue, withdrawing, withdrawable } = poolDetail || {};
+      const { amp, apy, token1Value: token1PoolValue, token2Value: token2PoolValue } = poolDetail || {};
       const token1 = getPrivacyDataByTokenID(tokenId1);
       const token2 = getPrivacyDataByTokenID(tokenId2);
       const shareId = `${item?.tokenId1}-${item?.tokenId2}`;

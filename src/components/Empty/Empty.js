@@ -7,10 +7,11 @@ const styled = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    marginTop: 20
   },
   image: {
-    width: 60,
-    height: 60
+    width: 100,
+    height: 85
   }
 });
 

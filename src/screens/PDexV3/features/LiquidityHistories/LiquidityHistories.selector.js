@@ -1,6 +1,6 @@
 import {createSelector} from 'reselect';
-import selectedPrivacySelector from '@src/redux/selectors/selectedPrivacy';
 import format from '@utils/format';
+import {selectedPrivacySelector as selectedPrivacy} from '@src/redux/selectors';
 
 const liquidityHistoriesSelector = createSelector(
   (state) => state.pDexV3,
@@ -24,7 +24,7 @@ const contributePureData = createSelector(
 
 const mapContributeData = createSelector(
   contributePureData,
-  selectedPrivacySelector.getPrivacyDataByTokenID,
+  selectedPrivacy.getPrivacyDataByTokenID,
   (histories, getPrivacyDataByTokenID) => {
     const _histories = (histories || []).map((history) => {
       const returnValue = (history.returnTokens || []).map((tokenId, index) => {
@@ -86,9 +86,123 @@ const mapContributeData = createSelector(
   },
 );
 
+const removeLP = createSelector(
+  liquidityHistoriesSelector,
+  ({ removeLP }) => removeLP,
+);
+
+const isFetchingRemoveLP = createSelector(
+  removeLP,
+  ({ isFetching }) => isFetching,
+);
+
+const removeLPPureData = createSelector(
+  removeLP,
+  ({ histories }) => histories,
+);
+
+const mapRemoveLPData = createSelector(
+  removeLPPureData,
+  selectedPrivacy.getPrivacyDataByTokenID,
+  (histories, getPrivacyDataByTokenID) => {
+    const _histories = histories.map(history => {
+      const { requesttime, tokenId1, tokenId2, amount1, amount2 } = history;
+      const timeStr = format.formatDateTime(requesttime);
+      const tokenIds = [tokenId1, tokenId2];
+      const amounts = [amount1, amount2];
+      const removeData = tokenIds.map((tokenId, index) => {
+        const token = getPrivacyDataByTokenID(tokenId);
+        const removeAmount = amounts[index] || 0;
+        const removeAmountStr = format.amountFull(removeAmount, token.pDecimals, true);
+        const removeAmountSymbolStr = `${removeAmountStr} ${token.symbol}`;
+        return {
+          token,
+          removeAmount,
+          removeAmountStr,
+          removeAmountSymbolStr,
+        };
+      });
+      const removeLPAmountDesc = removeData.map(item => item.removeAmountSymbolStr).join(' + ');
+      return {
+        ...history,
+        timeStr,
+        removeData,
+        removeLPAmountDesc,
+      };
+    });
+    return _histories;
+  },
+);
+
+const withdrawFeeLP = createSelector(
+  liquidityHistoriesSelector,
+  ({ withdrawFeeLP }) => withdrawFeeLP,
+);
+
+const isFetchingWithdrawFeeLP = createSelector(
+  withdrawFeeLP,
+  ({ isFetching }) => isFetching,
+);
+
+const withdrawFeeLPPureData = createSelector(
+  withdrawFeeLP,
+  ({ histories }) => histories,
+);
+
+const mapWithdrawFeeLPData = createSelector(
+  withdrawFeeLPPureData,
+  selectedPrivacy.getPrivacyDataByTokenID,
+  (histories, getPrivacyDataByTokenID) => {
+    const _histories = histories.map(history => {
+      const { requesttime, tokenId1, tokenId2, amount1, amount2 } = history;
+      const timeStr = format.formatDateTime(requesttime);
+      const tokenIds = [tokenId1, tokenId2];
+      const amounts = [amount1, amount2];
+      const withdrawData = tokenIds.map((tokenId, index) => {
+        const token = getPrivacyDataByTokenID(tokenId);
+        const withdrawAmount = amounts[index] || 0;
+        const withdrawAmountStr = format.amountFull(withdrawAmount, token.pDecimals, true);
+        const withdrawAmountSymbolStr = `${withdrawAmountStr} ${token.symbol}`;
+        return {
+          token,
+          withdrawAmount,
+          withdrawAmountStr,
+          withdrawAmountSymbolStr,
+        };
+      });
+      const withdrawLPAmountDesc = withdrawData.map(item => item.withdrawAmountSymbolStr).join(' + ');
+      return {
+        ...history,
+        timeStr,
+        withdrawData,
+        withdrawLPAmountDesc,
+      };
+    });
+    return _histories;
+  },
+);
+
+const isFetching = createSelector(
+  isFetchingContribute,
+  isFetchingRemoveLP,
+  isFetchingWithdrawFeeLP,
+  (fetchingContribute, fetchingRemoveLP, fetchingWithdrawFeeLP) => (fetchingContribute || fetchingRemoveLP || fetchingWithdrawFeeLP),
+);
+
+
 export default ({
   contribute,
   isFetchingContribute,
   contributePureData,
   mapContributeData,
+
+  isFetchingRemoveLP,
+  removeLPPureData,
+  mapRemoveLPData,
+
+  isFetchingWithdrawFeeLP,
+  withdrawFeeLPPureData,
+  mapWithdrawFeeLPData,
+
+  isFetching,
 });

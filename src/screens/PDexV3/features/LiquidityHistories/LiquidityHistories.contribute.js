@@ -6,6 +6,8 @@ import {liquidityHistorySelector} from '@screens/PDexV3/features/LiquidityHistor
 import {useNavigation} from 'react-navigation-hooks';
 import routeNames from '@routers/routeNames';
 import styled from '@screens/PDexV3/features/LiquidityHistories/LiquidityHistories.styled';
+import isEmpty from 'lodash/isEmpty';
+import {ActivityIndicator} from '@components/core';
 
 const Item = React.memo(({ history, isLast }) => {
   const navigation = useNavigation();
@@ -25,8 +27,10 @@ const Item = React.memo(({ history, isLast }) => {
 
 const Contribute = () => {
   const histories = useSelector(liquidityHistorySelector.mapContributeData);
+  const isFetching = useSelector(liquidityHistorySelector.isFetchingContribute);
   const renderItem = (data) => <Item history={data.item} isLast={data.index === (histories.length - 1)} />;
   const renderContent = () => {
+    if (isEmpty(histories) && isFetching) return <View style={{ marginTop: 25 }}><ActivityIndicator /></View>;
     return (
       <View style={{ paddingTop: 20 }}>
         <FlatList

@@ -10,7 +10,7 @@ import withHistories from './RemovePoolHistories.enhance';
 const RemovePoolHook = React.memo(({ pairID }) => {
   const navigation = useNavigation();
   const history = useSelector(getHistoryByPairID)(pairID);
-  const onNextPress = () => navigation.navigate(routeNames.RemovePoolHistoriesDetail, { pairID });
+  const onNextPress = () => navigation.navigate(routeNames.RemoveLPDetail, { pairID });
   return (
     <TouchableOpacity style={styled.wrapperItem} onPress={onNextPress}>
       <View style={styled.topRow}>

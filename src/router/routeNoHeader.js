@@ -103,10 +103,10 @@ import Chart from '@screens/PDexV3/features/Chart';
 import WebView from '@screens/WebView';
 import {
   LiquidityHistories,
-  ContributeHistoryDetail
+  ContributeHistoryDetail,
+  RemoveLPDetail,
+  WithdrawFeeLPDetail
 } from '@screens/PDexV3/features/LiquidityHistories';
-import RemovePoolHistoriesDetail from '@screens/PDexV3/features/RemovePoolHistoriesDetail';
-import WithdrawRewardHistoriesDetail from '@screens/PDexV3/features/WithdrawRewardHistoriesDetail';
 import {
   Staking,
   StakingMoreCoins,
@@ -233,12 +233,12 @@ const pDexV3Routes = [
     name: routeNames.ContributeHistoryDetail,
   },
   {
-    screen: RemovePoolHistoriesDetail,
-    name: routeNames.RemovePoolHistoriesDetail,
+    screen: RemoveLPDetail,
+    name: routeNames.RemoveLPDetail,
   },
   {
-    screen: WithdrawRewardHistoriesDetail,
-    name: routeNames.WithdrawRewardHistoriesDetail,
+    screen: WithdrawFeeLPDetail,
+    name: routeNames.WithdrawFeeLPDetail,
   },
   {
     screen: Staking,
