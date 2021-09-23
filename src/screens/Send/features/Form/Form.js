@@ -88,11 +88,14 @@ const SendForm = (props) => {
     appConstant.DISABLED.UNSHIELD_DECENTRALIZED,
     handleSend,
   );
-  const placeholderAddress = `Incognito${
-    selectedPrivacy?.isMainCrypto || selectedPrivacy?.isIncognitoToken
-      ? ' '
-      : ` or ${selectedPrivacy?.rootNetworkName} `
-  }address`;
+  let placeholderAddress = selectedPrivacy?.isMainCrypto 
+    ? 'Incognito or ETH/BSC address' 
+    : `Incognito${
+      selectedPrivacy?.isIncognitoToken
+        ? ' '
+        : ` or ${selectedPrivacy?.rootNetworkName} `
+    }address`;
+
   const amountValidator = validateAmount;
   const isDisabled =
     isUnShield &&

@@ -41,7 +41,6 @@ const enhance = (WrappedComp) => (props) => {
       if (isPortalToken && screen === 'UnShield') {
         return;
       }
-      console.log('handleChangeForm: childSelectedPrivacy: ', childSelectedPrivacy);
     
       await dispatch(
         actionFetchFee({
