@@ -1,13 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text } from 'react-native';
-import { KeyboardAwareScrollView } from '@src/components/core';
+import { KeyboardAwareScrollView, TouchableOpacity, Image } from '@src/components/core';
 import { Field } from 'redux-form';
 import {
   createForm,
   InputQRField,
   InputField,
   InputMaxValueField,
+  SelectPickerField,
 } from '@components/core/reduxForm';
+import ic_radio from '@src/assets/images/icons/ic_radio.png';
+import ic_radio_check from '@src/assets/images/icons/ic_radio_check.png';
 import { SEND } from '@src/constants/elements';
 import { generateTestId } from '@src/utils/misc';
 import EstimateFee from '@components/EstimateFee/EstimateFee.input';
@@ -16,6 +19,8 @@ import { ButtonBasic } from '@src/components/Button';
 import { useSelector } from 'react-redux';
 import { feeDataSelector } from '@src/components/EstimateFee/EstimateFee.selector';
 import { selectedPrivacySelector } from '@src/redux/selectors';
+import SelectedPrivacy from '@src/models/selectedPrivacy';
+import { defaultAccountSelector } from '@src/redux/selectors/account';
 import LoadingTx from '@src/components/LoadingTx';
 import format from '@src/utils/format';
 import useFeatureConfig from '@src/shared/hooks/featureConfig';
@@ -70,6 +75,7 @@ const SendForm = (props) => {
     validateMemo,
     navigation,
     isPortalToken,
+    isUnshieldPegPRV,
   } = props;
   const { titleBtnSubmit, isUnShield, editableInput } = useSelector(
     feeDataSelector,
@@ -99,6 +105,8 @@ const SendForm = (props) => {
       : onDecentralizedPress
     : handleSend;
   const submitHandler = handlePressSend;
+  const [ childSelectedPrivacy, setChildSelectedPrivacy] = useState(null);
+  const account = useSelector(defaultAccountSelector);
 
   const renderMemo = () => {
     if (isUnShield) {
@@ -139,6 +147,42 @@ const SendForm = (props) => {
         {...generateTestId(SEND.MEMO_INPUT)}
       />
     );
+  };
+
+  const renderNetworkType = () => {
+    if (isUnshieldPegPRV) {
+      let OPTIONS = [];
+      if (selectedPrivacy.listChildToken instanceof Array) {
+        selectedPrivacy.listChildToken.map(item => {
+          OPTIONS.push({
+            label: item.name,
+            value: item.name,
+          });
+        });
+      }
+
+      return (
+        <Field
+          onChange={(value) => {
+            onChangeField(value, 'currencyType');
+            const childToken = selectedPrivacy.listChildToken.find(item => item.name === value);
+            const childSelectedPrivacy = new SelectedPrivacy(
+              account,
+              null,
+              childToken,
+              selectedPrivacy.tokenId,
+            );
+            setChildSelectedPrivacy(childSelectedPrivacy);
+          }}
+          placeholder={{ label: 'Select', value: null }}
+          component={SelectPickerField}
+          items={OPTIONS}
+          name="currencyType"
+          label="Currency type"
+        />
+      );
+    }
+    return null;
   };
   
   React.useEffect(() => {
@@ -191,6 +235,7 @@ const SendForm = (props) => {
                 }}
                 {...generateTestId(SEND.ADDRESS_INPUT)}
               />
+              {renderNetworkType()}
               <EstimateFee
                 {...{
                   amount,
@@ -200,6 +245,7 @@ const SendForm = (props) => {
                   isIncognitoAddress,
                   isExternalAddress,
                   isPortalToken,
+                  childSelectedPrivacy,
                 }}
               />
               {renderMemo()}
@@ -249,6 +295,7 @@ SendForm.propTypes = {
   textLoadingTx: PropTypes.string.isRequired,
   validateMemo: PropTypes.any.isRequired,
   navigation: PropTypes.object.isRequired,
+  isUnshieldPegPRV: PropTypes.bool.isRequired,
 };
 
 export default withSendForm(SendForm);
