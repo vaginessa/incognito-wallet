@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, TouchableOpacity, Image } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectedPrivacySelector } from '@src/redux/selectors';
-import { shieldDataSelector } from '@screens/Shield/Shield.selector';
+import { shieldDataSelector, shieldDataBscSelector } from '@screens/Shield/Shield.selector';
 import QrCodeGenerate from '@src/components/QrCodeGenerate';
 import PropTypes from 'prop-types';
 import { CopiableTextDefault as CopiableText } from '@src/components/CopiableText';
@@ -18,10 +18,13 @@ import { CONSTANT_COMMONS } from '@src/constants';
 import convert from '@utils/convert';
 import routeNames from '@routers/routeNames';
 import { defaultAccountSelector } from '@src/redux/selectors/account';
-import { actionFetch as fetchDataShield } from '@screens/Shield/Shield.actions';
+import {
+  actionGetPRVBep20FeeToShield,
+} from '@screens/Shield/Shield.actions';
 import ic_radio from '@src/assets/images/icons/ic_radio.png';
 import ic_radio_check from '@src/assets/images/icons/ic_radio_check.png';
 import { PRV_ID } from '@src/screens/DexV2/constants';
+import { ExHandler } from '@src/services/exception';
 import withGenQRCode from './GenQRCode.enhance';
 import { styled } from './GenQRCode.styled';
 
@@ -65,22 +68,12 @@ const ShieldError = React.memo(({ handleShield, isPortalCompatible }) => {
   );
 });
 
-const Extra = () => {
-  const {
-    address,
-    min,
-    expiredAt,
-    decentralized,
-    estimateFee,
-    tokenFee,
-    isPortal,
-  } = useSelector(shieldDataSelector);
-  const selectedPrivacy = useSelector(selectedPrivacySelector.selectedPrivacy);
+const Extra = (props) => {
+  const { address, min, expiredAt, decentralized, isPortal } = useSelector(
+    shieldDataSelector,
+  );
+  const { selectedPrivacy, defaultFee } = props;
   const navigation = useNavigation();
-  const [selectedPlatform, setPlatform] = React.useState(0);
-  const platforms = ['ETH', 'BSC'];
-  const account = useSelector(defaultAccountSelector);
-  const dispatch = useDispatch();
 
   const renderMinShieldAmount = () => {
     let minComp;
@@ -122,22 +115,6 @@ const Extra = () => {
     return minComp;
   };
 
-  const handlePress = (index) => {
-    console.log({ index });
-    console.log({ selectedPlatform });
-    if (index !== selectedPlatform) {
-      setPlatform(index);
-      dispatch(
-        fetchDataShield(
-          selectedPrivacy?.tokenId,
-          selectedPrivacy,
-          account,
-          platforms[index] === 'ETH',
-        ),
-      );
-    }
-  };
-
   const renderEstimateFee = () => {
     const isNativeToken =
       selectedPrivacy?.currencyType ===
@@ -145,7 +122,7 @@ const Extra = () => {
       selectedPrivacy?.currencyType ===
         CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BSC_BNB;
     let humanFee = convert.toNumber(
-      (isNativeToken ? estimateFee : tokenFee) || 0,
+      (isNativeToken ? defaultFee?.estimateFee : defaultFee?.tokenFee) || 0,
       true,
     );
     const originalFee = convert.toOriginalAmount(
@@ -283,10 +260,49 @@ const GenQRCode = (props) => {
     isPortalCompatible,
     data: shieldData,
   } = props;
+  const shieldDataBsc = useSelector(
+    shieldDataBscSelector,
+  );
   const { address } = shieldData || {};
   const [toggle, setToggle] = React.useState(true);
   const platforms = ['ETH', 'BSC'];
-  const selectedPlatform = 0;
+  const selectedPrivacy = useSelector(selectedPrivacySelector.selectedPrivacy);
+  const [selectedPlatform, setPlatform] = React.useState(0);
+  const [selectingPlatform, setSelectingPlatform] = React.useState(0);
+  const account = useSelector(defaultAccountSelector);
+  const isPRV = selectedPrivacy?.tokenId === PRV_ID;
+  const [defaultFee, setDefaultFee] = React.useState({
+    estimateFee: 0,
+    tokenFee: 0,
+  });
+  const dispatch = useDispatch();
+  const [ethFee, setEthFee] = React.useState({ estimateFee: 0, tokenFee: 0 });
+  const [bscFee, setBscFee] = React.useState({ estimateFee: 0, tokenFee: 0 });
+  const [isLoadingBsc, setIsLoadingBsc] = React.useState(false);
+  if (
+    (shieldData?.tokenFee || shieldData?.estimateFee) &&
+    (defaultFee?.estimateFee === 0 && defaultFee?.tokenFee === 0)
+  ) {
+    const temp = {
+      estimateFee: shieldData?.estimateFee,
+      tokenFee: shieldData?.tokenFee,
+    };
+    setDefaultFee(temp);
+    if (isPRV) {
+      setEthFee(ethFee);
+    }
+  } else if ((shieldDataBsc?.tokenFee || shieldDataBsc?.estimateFee) &&  
+  (bscFee?.estimateFee === 0 && bscFee?.tokenFee === 0) && isPRV) {
+    const temp = {
+      estimateFee: shieldDataBsc?.estimateFeem,
+      tokenFee: shieldDataBsc?.tokenFee,
+    };
+    setPlatform(selectingPlatform);
+    setDefaultFee(temp);
+    setBscFee(temp);
+    setIsLoadingBsc(false);
+  }
+
   React.useEffect(() => {
     if (toggle) {
       const timeout = setTimeout(() => {
@@ -309,7 +325,44 @@ const GenQRCode = (props) => {
     if (isFetching || !address) {
       return <LoadingContainer />;
     }
-    return <Extra {...props} />;
+    return (
+      <Extra
+        {...{
+          ...props,
+          selectedPrivacy,
+          defaultFee,
+        }}
+      />
+    );
+  };
+
+  const handlePress = (index) => {
+    if (index !== selectedPlatform && isPRV) {
+      setIsLoadingBsc(true);
+      if (platforms[index] === 'ETH') {
+        setDefaultFee(ethFee);
+        setPlatform(index);
+        setIsLoadingBsc(false);
+      } else if (platforms[index] === 'BSC' && (shieldDataBsc?.tokenFee || shieldDataBsc?.estimateFee)) {
+        setDefaultFee(bscFee);
+        setPlatform(index);
+        setIsLoadingBsc(false);
+      } else {
+        setSelectingPlatform(index);
+        try {
+          dispatch(
+            actionGetPRVBep20FeeToShield(
+              account,
+              account?.signPublicKeyEncode,
+              selectedPrivacy,
+            ),
+          );
+        } catch (e) {
+          new ExHandler(e).showErrorToast();
+          setIsLoadingBsc(false);
+        }
+      }
+    }
   };
 
   const renderOptionsPRV = () => (
@@ -318,13 +371,27 @@ const GenQRCode = (props) => {
         const isSelected = index === selectedPlatform;
         return (
           <TouchableOpacity
-            style={[styled.optionBtn, isSelected ? styled.selectedBtn : styled.unSelectBtn]}
+            style={[
+              styled.optionBtn,
+              isSelected ? styled.selectedBtn : styled.unSelectBtn,
+            ]}
             key={`key-${index}`}
-            // onPress={() => handlePress(index)}
+            onPress={() => handlePress(index)}
+            disabled={isLoadingBsc}
           >
             <View style={styled.optionContent}>
-              <Image style={styled.icon} source={isSelected ? ic_radio_check : ic_radio} />
-              <Text style={[styled.textSelectBox, { color: isSelected ? COLORS.black : COLORS.colorGreyBold }]}>{item}</Text>
+              <Image
+                style={styled.icon}
+                source={isSelected ? ic_radio_check : ic_radio}
+              />
+              <Text
+                style={[
+                  styled.textSelectBox,
+                  { color: isSelected ? COLORS.black : COLORS.colorGreyBold },
+                ]}
+              >
+                {item}
+              </Text>
             </View>
           </TouchableOpacity>
         );
@@ -349,7 +416,7 @@ const GenQRCode = (props) => {
           }}
         />
       )}
-      {renderOptionsPRV()}
+      {isPRV && renderOptionsPRV()}
       {renderComponent()}
     </View>
   );

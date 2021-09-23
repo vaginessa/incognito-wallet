@@ -17,6 +17,7 @@ import {
   ACTION_FETCH_FAIL,
   ACTION_TOGGLE_GUIDE,
   ACTION_RESET,
+  ACTION_BSC_FEE_FETCHING,
 } from './Shield.constant';
 import { shieldSelector } from './Shield.selector';
 import { PRV_ID } from '../DexV2/constants';
@@ -32,6 +33,11 @@ export const actionFetching = () => ({
 export const actionFetched = (payload) => ({
   type: ACTION_FETCHED,
   payload,
+});
+
+export const actionBSCFetch = (bscPayload) => ({
+  type: ACTION_BSC_FEE_FETCHING,
+  bscPayload,
 });
 
 export const actionFetchFail = (isPortalCompatible = true) => ({
@@ -58,8 +64,6 @@ export const actionGetAddressToShield = async ({
     if (!selectedPrivacy?.isPToken) {
       return null;
     }
-    console.log('got here 2');
-    console.log({isETH});
     if (
       selectedPrivacy?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.ETH
     ) {
@@ -129,6 +133,30 @@ export const actionGetAddressToShield = async ({
   }
 };
 
+export const actionGetPRVBep20FeeToShield = (account, signPublicKeyEncode, selectedPrivacy) => async (
+  dispatch,
+  getState,
+) => {
+  let generateResult = await genBSCDepositAddress({
+    paymentAddress: account.PaymentAddress,
+    walletAddress: account.PaymentAddress,
+    tokenId: selectedPrivacy?.tokenId,
+    tokenContractID: selectedPrivacy?.contractId,
+    currencyType: selectedPrivacy?.currencyType,
+    signPublicKeyEncode,
+  });
+  let {
+    tokenFee,
+    estimateFee,
+  } = generateResult;
+  await dispatch(
+    actionBSCFetch({
+      tokenFee,
+      estimateFee,
+    }),
+  );
+};
+
 export const actionFetch = ({ tokenId, selectedPrivacy, account, isETH = true }) => async (
   dispatch,
   getState,
@@ -137,12 +165,10 @@ export const actionFetch = ({ tokenId, selectedPrivacy, account, isETH = true })
     const state = getState();
     const { isFetching } = shieldSelector(state);
     const signPublicKeyEncode = signPublicKeyEncodeSelector(state);
-    console.log('got here 0');
     if (!selectedPrivacy || isFetching) {
       return;
     }
     dispatch(actionFetching());
-    console.log('got here');
     const [dataMinMax, addressShield] = await Promise.all([
       actionGetMinMaxShield({ tokenId }),
       actionGetAddressToShield({
@@ -165,6 +191,14 @@ export const actionFetch = ({ tokenId, selectedPrivacy, account, isETH = true })
     if (expiredAt) {
       expiredAt = formatUtil.formatDateTime(expiredAt);
     }
+
+    await dispatch(
+      actionBSCFetch({
+        tokenFee : 0,
+        estimateFee : 0,
+      }),
+    );
+
     await dispatch(
       actionFetched({
         min,
