@@ -36,11 +36,14 @@ import {
   ACTION_FETCH_ORDERING,
   ACTION_FETCHED_ORDERS_HISTORY,
   ACTION_FETCH_FAIL_ORDERS_HISTORY,
+  ACTION_FETCHING_ORDER_DETAIL,
+  ACTION_FETCHED_ORDER_DETAIL,
 } from './OrderLimit.constant';
 import {
   poolSelectedDataSelector,
   inputAmountSelector,
   orderLimitDataSelector,
+  orderDetailSelector,
 } from './OrderLimit.selector';
 import { calDefaultPairOrderLimit } from './OrderLimit.utils';
 
@@ -205,11 +208,9 @@ export const actionInit = (refresh = false) => async (dispatch, getState) => {
       dispatch(change(formConfigs.formName, formConfigs.buytoken, buyAmount));
       dispatch(change(formConfigs.formName, formConfigs.rate, rate));
     });
-    await Promise.all([
-      dispatch(actionFetchOrdersHistory()),
-      dispatch(actionFetchWithdrawOrderTxs()),
-      dispatch(actionSetNFTTokenData()),
-    ]);
+    await dispatch(actionSetNFTTokenData());
+    dispatch(actionFetchWithdrawOrderTxs());
+    dispatch(actionFetchOrdersHistory());
   } catch (error) {
     new ExHandler(error).showErrorToast;
   } finally {
@@ -273,6 +274,8 @@ export const actionFetchOrdersHistory = () => async (dispatch, getState) => {
       (await pDexV3Inst.getOrderLimitHistory({
         poolid: pool?.poolId,
         version: PrivacyVersion.ver2,
+        token1ID: pool?.token1Id,
+        token2ID: pool?.token2Id,
       })) || [];
     await dispatch(actionFetchedOrdersHistory(orders));
   } catch (error) {
@@ -348,5 +351,36 @@ export const actionBookOrder = () => async (dispatch, getState) => {
     new ExHandler(error).showErrorToast();
   } finally {
     await dispatch(actionFetchingBookOrder(false));
+  }
+};
+
+export const actionFetchingOrderDetail = () => ({
+  type: ACTION_FETCHING_ORDER_DETAIL,
+});
+
+export const actionFetchedOrderDetail = (payload) => ({
+  type: ACTION_FETCHED_ORDER_DETAIL,
+  payload,
+});
+
+export const actionFetchDataOrderDetail = () => async (dispatch, getState) => {
+  let _order = {};
+  const state = getState();
+  const { order } = orderDetailSelector(state);
+  if (!order?.requestTx) {
+    return;
+  }
+  try {
+    await dispatch(actionFetchingOrderDetail());
+    const pDexV3 = await dispatch(actionGetPDexV3Inst());
+    _order = await pDexV3.getOrderLimitDetail({ requestTx: order?.requestTx });
+  } catch (error) {
+    _order = { ...order };
+    new ExHandler(error).showErrorToast();
+  } finally {
+    _order = _order || order;
+    dispatch(actionFetchWithdrawOrderTxs());
+    dispatch(actionSetNFTTokenData());
+    await dispatch(actionFetchedOrderDetail(_order));
   }
 };

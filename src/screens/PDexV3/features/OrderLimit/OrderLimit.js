@@ -1,5 +1,5 @@
 import { Header } from '@src/components';
-import { KeyboardAwareScrollView, ScrollView } from '@src/components/core';
+import { KeyboardAwareScrollView } from '@src/components/core';
 import Tabs from '@src/components/core/Tabs';
 import React from 'react';
 import { View, RefreshControl } from 'react-native';

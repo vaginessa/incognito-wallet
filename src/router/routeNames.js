@@ -184,4 +184,5 @@ export default {
   TradeOrderHistory: 'TradeOrderHistory',
   PairList: 'PairList',
   ReviewOrderLimit: 'ReviewOrderLimit',
+  OrderLimitDetail: 'OrderLimitDetail',
 };

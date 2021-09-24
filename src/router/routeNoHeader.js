@@ -98,6 +98,7 @@ import Trade, {
 import NFTToken, { MintNFTToken } from '@screens/PDexV3/features/NFTToken';
 import OrderLimit, {
   ReviewOrderLimit,
+  OrderLimitDetail,
 } from '@src/screens/PDexV3/features/OrderLimit';
 import SelectTokenTrade from '@screens/PDexV3/features/SelectToken';
 import Chart from '@screens/PDexV3/features/Chart';
@@ -117,7 +118,6 @@ import {
   StakingHistories,
   StakingHistoryDetail,
 } from '@screens/PDexV3/features/Staking';
-
 import {
   Contribute,
   CreatePool,
@@ -283,6 +283,10 @@ const pDexV3Routes = [
   {
     screen: ReviewOrderLimit,
     name: routeNames.ReviewOrderLimit,
+  },
+  {
+    screen: OrderLimitDetail,
+    name: routeNames.OrderLimitDetail,
   },
 ];
 

@@ -1,21 +1,27 @@
 import React from 'react';
-import {ScrollView, Text, TouchableOpacity, View} from 'react-native';
+import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import PropTypes from 'prop-types';
-import {styled as mainStyle} from '@screens/PDexV3/PDexV3.styled';
-import {Header, LoadingContainer} from '@src/components';
+import { styled as mainStyle } from '@screens/PDexV3/PDexV3.styled';
+import { Header, LoadingContainer } from '@src/components';
 import withPairs from '@screens/PDexV3/features/PairList/PairList.enhance';
 import styled from '@screens/PDexV3/features/PairList/PairList.styled';
-import {batch, useDispatch, useSelector} from 'react-redux';
-import {pairsActions, pairsSelector} from '@screens/PDexV3/features/PairList/index';
-import {useNavigation, useNavigationParam} from 'react-navigation-hooks';
+import { batch, useDispatch, useSelector } from 'react-redux';
+import {
+  pairsActions,
+  pairsSelector,
+} from '@screens/PDexV3/features/PairList/index';
+import { useNavigation, useNavigationParam } from 'react-navigation-hooks';
 import routeNames from '@routers/routeNames';
-import {actionFetchListPools} from '@screens/PDexV3/features/Pools';
+import { actionFetchListPools } from '@screens/PDexV3/features/Pools';
 import isEmpty from 'lodash/isEmpty';
-import {RefreshControl} from '@components/core';
+import { RefreshControl } from '@components/core';
 
 const PairItem = ({ pair, onPressPair }) => {
   return (
-    <TouchableOpacity style={styled.wrapper} onPress={() => onPressPair(pair.pairId)}>
+    <TouchableOpacity
+      style={styled.wrapper}
+      onPress={() => onPressPair(pair.pairId)}
+    >
       <Text style={styled.title}>{pair.symbolStr}</Text>
       <Text style={styled.poolSize}>{pair.poolSizeStr}</Text>
     </TouchableOpacity>
@@ -35,8 +41,8 @@ const PairList = (props) => {
       dispatch(actionFetchListPools({ pairId }));
       navigation.navigate(routeNames.PoolsList, {
         params: {
-          onPressPool: _onPressPool
-        }
+          onPressPool: _onPressPool,
+        },
       });
     });
   };
@@ -48,12 +54,9 @@ const PairList = (props) => {
     if (isFetching && isEmpty(pairs)) return <LoadingContainer />;
     return (
       <ScrollView
-        refreshControl={(
-          <RefreshControl
-            refreshing={isFetching}
-            onRefresh={onRefresh}
-          />
-        )}
+        refreshControl={
+          <RefreshControl refreshing={isFetching} onRefresh={onRefresh} />
+        }
       >
         {pairs.map(renderItem)}
       </ScrollView>
@@ -79,7 +82,7 @@ PairList.defaultProps = {
 PairList.propTypes = {
   pairs: PropTypes.array.isRequired,
   onSearch: PropTypes.func.isRequired,
-  onPressPool: PropTypes.func
+  onPressPool: PropTypes.func,
 };
 
 PairItem.propTypes = {

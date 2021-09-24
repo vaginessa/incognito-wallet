@@ -178,11 +178,12 @@ export const rateDataSelector = createSelector(
       const selector = formValueSelector(formConfigs.formName);
       customRate = selector(state, formConfigs.rate);
       customRate = customRate || rate;
-      rateStr = `1 ${sellInputAmount?.symbol || ''} = ${format.amountFull(
-        customRate,
-        0,
-        false,
-      )} ${buyInputAmount?.symbol || ''}`;
+      rateStr = getExchangeRate(
+        sellInputAmount,
+        buyInputAmount,
+        sellInputAmount.poolValue,
+        buyInputAmount.poolValue,
+      );
     } catch (error) {
       console.log('rateSelector-error', error);
     }
@@ -273,7 +274,11 @@ export const orderLimitDataSelector = createSelector(
       btnActionTitle = 'Calculating...';
     }
     const tradingFeeStr = `${feeTokenData?.feeAmountText} ${feeTokenData?.symbol}`;
-    const rateStr = `1 ${sellInputAmount?.symbol} = ${rateData.customRate} ${buyInputAmount?.symbol}`;
+    const rateStr = `1 ${sellInputAmount?.symbol} = ${format.amountFull(
+      rateData.customRate,
+      0,
+      false,
+    )} ${buyInputAmount?.symbol}`;
     const refreshing = initing;
     return {
       mainColor,
@@ -314,156 +319,206 @@ const BTN_WITHDRAW_ORDER = {
   [ACCOUNT_CONSTANT.TX_STATUS.TXSTATUS_SUCCESS]: 'ed',
 };
 
-export const orderHistorySelector = createSelector(
+export const mappingOrderHistorySelector = createSelector(
   orderLimitSelector,
   poolSelectedDataSelector,
   nftTokenDataSelector,
+  getPrivacyDataByTokenIDSelector,
   (
-    { ordersHistory, withdrawingOrderTxs, withdrawOrderTxs },
+    { withdrawingOrderTxs, withdrawOrderTxs },
     pool,
     { nftTokenAvailable },
-  ) => {
-    let history = [];
-    const { isFetching, isFetched, data } = ordersHistory;
+    getPrivacyDataByTokenID,
+  ) => (order) => {
     try {
-      if (!pool || !data || data.length === 0) {
-        return history;
+      if (!order) {
+        return {};
       }
       const token1: SelectedPrivacy = pool?.token1;
       const token2: SelectedPrivacy = pool?.token2;
-      history = data.map((order) => {
-        try {
-          let {
-            sellTokenId,
-            requestime,
-            matched,
-            amount,
-            minAccept: price,
-            requestTx,
-            isCompleted,
-            status,
-            statusCode,
-          } = order;
-          let type, mainColor, pDecimals, infoStr, amountStr, priceStr;
-          const sellTokenBalance = new BigNumber(order?.sellTokenBalance);
-          const buyTokenBalance = new BigNumber(order?.buyTokenBalance);
-          const sellTokenWithdrawed = new BigNumber(order?.sellTokenWithdrawed);
-          let statusStr = status;
-          let visibleBtnCancel = false;
-          let visibleBtnClaim = false;
-          const isWithdrawing = statusCode === 3 || status === 'withdrawing';
-          if (isCompleted) {
-            if (sellTokenWithdrawed.isGreaterThan(0)) {
-              statusStr = 'Canceled';
-            } else {
-              statusStr = 'Claimed';
-            }
-          } else {
-            if (
-              sellTokenBalance.isEqualTo(0) &&
-              buyTokenBalance.isGreaterThan(0)
-            ) {
-              if (isWithdrawing) {
-                statusStr = 'Claiming';
-              } else {
-                statusStr = 'Claim';
-                visibleBtnClaim = true;
-              }
-            } else if (sellTokenBalance.isGreaterThan(0)) {
-              if (isWithdrawing) {
-                statusStr = 'Canceling';
-              } else {
-                statusStr = 'Cancel';
-                visibleBtnCancel = true;
-              }
-            }
-          }
-          const withdrawTx =
-            withdrawOrderTxs.find((tx) => isEqual(tx?.requestTx, requestTx)) ||
-            {};
-          let cancelTx, claimTx;
-          if (withdrawTx?.requestTx) {
-            switch (withdrawTx?.txType) {
-            case ACCOUNT_CONSTANT.TX_TYPE.CANCEL_ORDER_LIMIT:
-              cancelTx = withdrawTx;
-              break;
-            case ACCOUNT_CONSTANT.TX_TYPE.CLAIM_ORDER_LIMIT:
-              claimTx = withdrawTx;
-              break;
-            default:
-              break;
-            }
-          }
-          const btnTitleClaim = 'Claim';
-          const btnTitleCancel = 'Cancel';
-          const { status: cancelTxStatus, withdrawTxId: cancelTxId } =
-            cancelTx || {};
-          const { status: claimTxStatus, withdrawTxId: claimTxId } =
-            claimTx || {};
-          visibleBtnCancel =
-            visibleBtnCancel && !cancelTxId && !!nftTokenAvailable;
-          visibleBtnClaim =
-            visibleBtnClaim && !claimTxId && !!nftTokenAvailable;
-          let btnCancel = BTN_WITHDRAW_ORDER[cancelTxStatus]
-            ? `${btnTitleCancel}${BTN_WITHDRAW_ORDER[cancelTxStatus]}`
-            : '';
-          let btnClaim = BTN_WITHDRAW_ORDER[claimTxStatus]
-            ? `${btnTitleClaim}${BTN_WITHDRAW_ORDER[claimTxStatus]}`
-            : '';
-          if (sellTokenId === token1.tokenId) {
-            type = 'sell';
-            mainColor = COLORS.red;
-            pDecimals = token1.pDecimals;
-            amountStr = format.amountFull(amount, pDecimals, false);
-            priceStr = format.amountFull(price, token2.pDecimals, false);
-            infoStr = `Sell ${amountStr} ${token1.symbol}\nPrice ${priceStr} ${token2.symbol}`;
-          }
-          if (sellTokenId === token2.tokenId) {
-            type = 'buy';
-            mainColor = COLORS.green;
-            pDecimals = token2.pDecimals;
-            amountStr = format.amountFull(amount, pDecimals, false);
-            priceStr = format.amountFull(price, token1.pDecimals, false);
-            infoStr = `Buy ${amountStr} ${token2.symbol}\nPrice ${priceStr} ${token1.symbol}`;
-          }
-          const percent = floor(
-            new BigNumber(matched)
-              .dividedBy(new BigNumber(amount))
-              .multipliedBy(100)
-              .toNumber(),
-          );
-          const percentStr = `Filled ${percent}%`;
-          const timeStr = format.formatDateTime(
-            new Date(requestime * 1000).getTime(),
-          );
-          const withdrawing = withdrawingOrderTxs.includes(requestTx);
-          const result = {
-            ...order,
-            type,
-            mainColor,
-            timeStr,
-            percent,
-            percentStr,
-            infoStr,
-            visibleBtnCancel,
-            btnClaim,
-            visibleBtnClaim,
-            btnTitleCancel,
-            btnTitleClaim,
-            btnCancel,
-            withdrawing,
-            statusStr,
-          };
-          return result;
-        } catch (error) {
-          console.log('error mapping history', error);
+      let {
+        sellTokenId,
+        requestime,
+        matched,
+        amount,
+        minAccept: price,
+        requestTx,
+        isCompleted,
+        status,
+        statusCode,
+        minAccept,
+        buyTokenId,
+      } = order;
+      let type,
+        mainColor,
+        pDecimals,
+        infoStr,
+        amountStr,
+        priceStr,
+        sellStr,
+        buyStr,
+        rateStr,
+        buyToken,
+        sellToken;
+      const sellTokenBalance = new BigNumber(order?.sellTokenBalance);
+      const buyTokenBalance = new BigNumber(order?.buyTokenBalance);
+      const sellTokenWithdrawed = new BigNumber(order?.sellTokenWithdrawed);
+      let statusStr = status;
+      let visibleBtnCancel = false;
+      let visibleBtnClaim = false;
+      const isWithdrawing = statusCode === 3 || status === 'withdrawing';
+      if (isCompleted) {
+        if (sellTokenWithdrawed.isGreaterThan(0)) {
+          statusStr = 'Canceled';
+        } else {
+          statusStr = 'Claimed';
         }
+      } else {
+        if (sellTokenBalance.isEqualTo(0) && buyTokenBalance.isGreaterThan(0)) {
+          if (isWithdrawing) {
+            statusStr = 'Claiming';
+          } else {
+            statusStr = 'Claim';
+            visibleBtnClaim = true;
+          }
+        } else if (sellTokenBalance.isGreaterThan(0)) {
+          if (isWithdrawing) {
+            statusStr = 'Canceling';
+          } else {
+            statusStr = 'Cancel';
+            visibleBtnCancel = true;
+          }
+        }
+      }
+      const withdrawTx =
+        withdrawOrderTxs.find((tx) => isEqual(tx?.requestTx, requestTx)) || {};
+      let cancelTx, claimTx;
+      if (withdrawTx?.requestTx) {
+        switch (withdrawTx?.txType) {
+        case ACCOUNT_CONSTANT.TX_TYPE.CANCEL_ORDER_LIMIT:
+          cancelTx = withdrawTx;
+          break;
+        case ACCOUNT_CONSTANT.TX_TYPE.CLAIM_ORDER_LIMIT:
+          claimTx = withdrawTx;
+          break;
+        default:
+          break;
+        }
+      }
+      const btnTitleClaim = 'Claim';
+      const btnTitleCancel = 'Cancel';
+      const { status: cancelTxStatus, withdrawTxId: cancelTxId } =
+        cancelTx || {};
+      const { status: claimTxStatus, withdrawTxId: claimTxId } = claimTx || {};
+      visibleBtnCancel = visibleBtnCancel && !cancelTxId;
+      visibleBtnClaim = visibleBtnClaim && !claimTxId;
+      let btnCancel = BTN_WITHDRAW_ORDER[cancelTxStatus]
+        ? `${btnTitleCancel}${BTN_WITHDRAW_ORDER[cancelTxStatus]}`
+        : '';
+      let btnClaim = BTN_WITHDRAW_ORDER[claimTxStatus]
+        ? `${btnTitleClaim}${BTN_WITHDRAW_ORDER[claimTxStatus]}`
+        : '';
+      if (sellTokenId === token1.tokenId) {
+        type = 'sell';
+        mainColor = COLORS.red;
+        pDecimals = token1.pDecimals;
+        amountStr = format.amountFull(amount, pDecimals, false);
+        priceStr = format.amountFull(price, token2.pDecimals, false);
+        sellStr = `${amountStr} ${token1.symbol}`;
+        buyStr = `${priceStr} ${token2.symbol}`;
+        infoStr = `Sell ${sellStr}\nPrice ${buyStr}`;
+      }
+      if (sellTokenId === token2.tokenId) {
+        type = 'buy';
+        mainColor = COLORS.green;
+        pDecimals = token2.pDecimals;
+        amountStr = format.amountFull(amount, pDecimals, false);
+        priceStr = format.amountFull(price, token1.pDecimals, false);
+        buyStr = `${amountStr} ${token2.symbol}`;
+        sellStr = `${priceStr} ${token1.symbol}`;
+        infoStr = `Buy ${buyStr}\nPrice ${sellStr}`;
+      }
+      sellToken = getPrivacyDataByTokenID(sellTokenId);
+      buyToken = getPrivacyDataByTokenID(buyTokenId);
+      const percent = floor(
+        new BigNumber(matched)
+          .dividedBy(new BigNumber(amount))
+          .multipliedBy(100)
+          .toNumber(),
+      );
+      const percentStr = `Filled ${percent}%`;
+      const percentStr1 = `${percent}%`;
+      const timeStr = format.formatDateTime(
+        new Date(requestime * 1000).getTime(),
+      );
+      const withdrawing = withdrawingOrderTxs.includes(requestTx);
+      const rate = getPairRate({
+        token1Value: amount,
+        token2Value: minAccept,
+        token1: sellToken,
+        token2: buyToken,
       });
+      rateStr = getExchangeRate(sellToken, buyToken, amount, minAccept);
+      const result = {
+        ...order,
+        type,
+        mainColor,
+        timeStr,
+        percent,
+        percentStr,
+        infoStr,
+        visibleBtnCancel,
+        btnClaim,
+        visibleBtnClaim,
+        btnTitleCancel,
+        btnTitleClaim,
+        btnCancel,
+        withdrawing,
+        statusStr,
+        nftTokenAvailable,
+        poolId: pool?.poolId,
+        percentStr1,
+        buyStr,
+        sellStr,
+        rate,
+        rateStr,
+        networkfeeAmountStr: `${format.amountFull(1, PRV.pDecimals, false)} ${
+          PRV.symbol
+        }`,
+        responseTxs: [
+          '220bf33f0d6db3037f1cbe99acdeb2c6735450a94becb65fb671e2293894112b',
+          '220bf33f0d6db3037f1cbe99acdeb2c6735450a94becb65fb671e2293894112b',
+        ],
+      };
+      return result;
     } catch (error) {
-      console.log('openordersHistorySelector-error', error);
+      console.log('mappingOrderHistorySelector-error', error);
     }
+  },
+);
+
+export const orderHistorySelector = createSelector(
+  orderLimitSelector,
+  poolSelectedDataSelector,
+  mappingOrderHistorySelector,
+  ({ ordersHistory }, pool, mappingOrderHistory) => {
+    let history = [];
+    const { isFetching, isFetched, data } = ordersHistory;
+    if (data.length === 0 || !data || !pool) {
+      return history;
+    }
+    history = data.map((order) => mappingOrderHistory(order));
     return { history, isFetching, isFetched };
   },
+);
+
+export const openOrdersSelector = createSelector(
+  orderHistorySelector,
+  ({ isFetched, isFetching, history }) => ({
+    history: history?.filter(({ isCompleted }) => !isCompleted),
+    isFetched,
+    isFetching,
+  }),
 );
 
 export const orderCancelingSelector = createSelector(
@@ -474,4 +529,15 @@ export const orderCancelingSelector = createSelector(
 export const isOrderCancelingSelector = createSelector(
   orderCancelingSelector,
   (orderCanceling) => (id) => id && orderCanceling?.includes(id),
+);
+
+export const orderDetailSelector = createSelector(
+  orderLimitSelector,
+  mappingOrderHistorySelector,
+  ({ orderDetail: { fetching, order } }, mappingOrderHistory) => {
+    return {
+      fetching,
+      order: mappingOrderHistory(order),
+    };
+  },
 );

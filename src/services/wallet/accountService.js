@@ -728,7 +728,6 @@ export default class Account {
       if (account) {
         const keyInfo = (await account.getKeyInfo({ version })) || {};
         const otaKey = account.getOTAKey();
-        console.log('account', typeof account);
         const pDexV3Inst = await getPDexV3Instance({ account });
         const keyFollowPoolsDefault = pDexV3Inst.getKeyFollowedDefaultPools();
         const keyFollowPools = pDexV3Inst.getKeyFollowPools();

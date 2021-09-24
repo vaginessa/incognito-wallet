@@ -50,11 +50,11 @@ const styled = StyleSheet.create({
 });
 
 const Rate = React.memo(() => {
-  const rateData = useSelector(rateDataSelector);
+  const orderlimitData = useSelector(orderLimitDataSelector);
   return (
     <Hook
       label="Rate"
-      value={rateData.rateStr}
+      value={orderlimitData?.rateStr}
       hasQuestionIcon
       onPressQuestionIcon={() => null}
       boldLabel

@@ -32,6 +32,14 @@ export const ACTION_FETCHING_ORDERS_HISTORY =
 
 export const ACTION_FETCHED_ORDERS_HISTORY =
   '[pDexV3][orderLimit] Fetched history order';
-
 export const ACTION_FETCH_FAIL_ORDERS_HISTORY =
   '[pDexV3][orderLimit] Fetch fail history order';
+
+export const ACTION_FETCH_ORDER_DETAIL =
+  '[pDexV3][orderLimit] Fetch order detail';
+
+export const ACTION_FETCHING_ORDER_DETAIL =
+  '[pDexV3][orderLimit] Fetching order detail';
+
+export const ACTION_FETCHED_ORDER_DETAIL =
+  '[pDexV3][orderLimit] Fetched order detail';

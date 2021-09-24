@@ -6,13 +6,22 @@ import isNumber from 'lodash/isNumber';
 import isNaN from 'lodash/isNaN';
 import SelectedPrivacy from '@src/models/selectedPrivacy';
 
-export const getPairRate = ({ token2, token1Value, token2Value }) => {
+export const getPairRate = ({ token1, token2, token1Value, token2Value }) => {
   try {
-    const rate = new BigNumber(token2Value)
-      .dividedBy(new BigNumber(token1Value))
-      .toNumber();
-    const rateFixed = format.toFixed(rate, token2?.pDecimals || 0);
-    if (!rateFixed || rateFixed === '0') {
+    const humanAmountToken1Value = convertUtil.toHumanAmount(
+      token1Value,
+      token1?.pDecimals,
+    );
+    const humanAmountToken2Value = convertUtil.toHumanAmount(
+      token2Value,
+      token2?.pDecimals,
+    );
+    let rate = new BigNumber(humanAmountToken2Value).dividedBy(
+      new BigNumber(humanAmountToken1Value),
+    );
+    const rawRate = rate.isNaN() ? 0 : rate.toNumber();
+    const rateFixed = format.toFixed(rawRate, token2?.pDecimals || 0);
+    if (!rateFixed) {
       return '';
     }
     return rateFixed;
@@ -24,9 +33,7 @@ export const getPairRate = ({ token2, token1Value, token2Value }) => {
 export const getExchangeRate = (token1, token2, token1Value, token2Value) => {
   try {
     const rawRate = getPairRate({ token1, token2, token1Value, token2Value });
-    return `1 ${token1.symbol} = ${format.amountFull(rawRate, 0, false)} ${
-      token2?.symbol
-    }`;
+    return `1 ${token1.symbol} = ${format.amountFull(rawRate, 0, false)} ${token2?.symbol}`;
   } catch (error) {
     console.log('getExchangeRate-error', error);
   }

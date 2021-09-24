@@ -18,6 +18,8 @@ import {
   ACTION_FETCHING_ORDERS_HISTORY,
   ACTION_FETCHED_ORDERS_HISTORY,
   ACTION_FETCH_FAIL_ORDERS_HISTORY,
+  ACTION_FETCHING_ORDER_DETAIL,
+  ACTION_FETCHED_ORDER_DETAIL,
 } from './OrderLimit.constant';
 
 const initialState = {
@@ -44,10 +46,35 @@ const initialState = {
   withdrawingOrderTxs: [],
   withdrawOrderTxs: [],
   ordering: false,
+  orderDetail: {
+    order: {},
+    fetching: false,
+  },
 };
 
 export default (state = initialState, action) => {
   switch (action.type) {
+  case ACTION_FETCHING_ORDER_DETAIL: {
+    const { orderDetail } = state;
+    return {
+      ...state,
+      orderDetail: {
+        ...orderDetail,
+        fetching: true,
+      },
+    };
+  }
+  case ACTION_FETCHED_ORDER_DETAIL: {
+    const { orderDetail } = state;
+    return {
+      ...state,
+      orderDetail: {
+        ...orderDetail,
+        fetching: false,
+        order: action.payload,
+      },
+    };
+  }
   case ACTION_FETCHING_ORDERS_HISTORY: {
     const { ordersHistory } = state;
     return {

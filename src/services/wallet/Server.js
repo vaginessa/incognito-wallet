@@ -6,6 +6,8 @@ export const MAINNET_1_FULLNODE = 'http://51.83.237.20:9338';
 export const TESTNET_FULLNODE = 'https://testnet.incognito.org/fullnode';
 export const TESTNET1_FULLNODE = 'https://testnet1.incognito.org/fullnode';
 export const DEV_TEST_FULLNODE = 'http://139.162.55.124:18334';
+// export const DEV_TEST_FULLNODE =
+//   'https://pdexv3test.incognito.corncob.dev/block/f77320ece044035ef7f5c0681bfa921c326ac92707b67bcacce7a78d067df7d9?beacon=true';
 export const DEFAULT_SHARD_NUMBER = 8;
 
 let cachedList = [];
