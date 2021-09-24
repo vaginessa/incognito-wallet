@@ -2,7 +2,6 @@ import TokenModel from './token';
 
 class PToken {
   constructor(data = {}) {
-    console.log('data: ', data);
     const pairPrv = data?.CurrentPrvPool !== 0;
     this.id = data.ID;
     this.address = data.ContractID;
