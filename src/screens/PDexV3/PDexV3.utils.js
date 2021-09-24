@@ -6,13 +6,22 @@ import isNumber from 'lodash/isNumber';
 import isNaN from 'lodash/isNaN';
 import SelectedPrivacy from '@src/models/selectedPrivacy';
 
-export const getPairRate = ({ token2, token1Value, token2Value }) => {
+export const getPairRate = ({ token1, token2, token1Value, token2Value }) => {
   try {
-    const rate = new BigNumber(token2Value)
-      .dividedBy(new BigNumber(token1Value))
-      .toNumber();
-    const rateFixed = format.toFixed(rate, token2?.pDecimals || 0);
-    if (!rateFixed || rateFixed === '0') {
+    const humanAmountToken1Value = convertUtil.toHumanAmount(
+      token1Value,
+      token1?.pDecimals,
+    );
+    const humanAmountToken2Value = convertUtil.toHumanAmount(
+      token2Value,
+      token2?.pDecimals,
+    );
+    let rate = new BigNumber(humanAmountToken2Value).dividedBy(
+      new BigNumber(humanAmountToken1Value),
+    );
+    const rawRate = rate.isNaN() ? 0 : rate.toNumber();
+    const rateFixed = format.toFixed(rawRate, token2?.pDecimals || 0);
+    if (!rateFixed) {
       return '';
     }
     return rateFixed;
@@ -23,10 +32,8 @@ export const getPairRate = ({ token2, token1Value, token2Value }) => {
 
 export const getExchangeRate = (token1, token2, token1Value, token2Value) => {
   try {
-    const rawRate = new BigNumber(token2Value).dividedBy(token1Value / Math.pow(10, token1.pDecimals || 0)).toNumber();
-    return `1 ${token1.symbol} = ${format.toFixed(rawRate, token2.pDecimals)} ${
-      token2?.symbol
-    }`;
+    const rawRate = getPairRate({ token1, token2, token1Value, token2Value });
+    return `1 ${token1.symbol} = ${format.amountFull(rawRate, 0, false)} ${token2?.symbol}`;
   } catch (error) {
     console.log('getExchangeRate-error', error);
   }
@@ -69,13 +76,15 @@ export const getPoolSize = (
   token1PoolValue = 0,
   token2PoolValue = 0,
 ) => {
-  const formattedToken1Pool = format.amount(
+  const formattedToken1Pool = format.amountFull(
     token1PoolValue,
     token1?.pDecimals,
+    false
   );
-  const formattedToken2Pool = format.amount(
+  const formattedToken2Pool = format.amountFull(
     token2PoolValue,
     token2?.pDecimals,
+    false
   );
   return `${formattedToken1Pool} ${token1?.symbol} + ${formattedToken2Pool} ${token2?.symbol}`;
 };
