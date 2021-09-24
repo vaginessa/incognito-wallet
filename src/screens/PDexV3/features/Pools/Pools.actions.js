@@ -107,8 +107,7 @@ export const actionFetchListFollowingPools = () => async (
     const state = getState();
     const account = defaultAccountWalletSelector(state);
     const pDexV3Inst = await getPDexV3Instance({ account });
-    const followPoolIds = await pDexV3Inst.getListFollowingPools();
-    if (followPoolIds.length === 0) return;
+    const followPoolIds = (await pDexV3Inst.getListFollowingPools()) || [];
     const followPools =
       (await pDexV3Inst.getListPoolsDetail(followPoolIds)) || [];
     await dispatch(actionFetchedListPoolsFollowing({ followPools }));

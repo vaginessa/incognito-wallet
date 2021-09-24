@@ -1,5 +1,5 @@
 import {StyleSheet} from 'react-native';
-import {UTILS} from '@src/styles';
+import {COLORS, FONT, UTILS} from '@src/styles';
 
 export const styled = StyleSheet.create({
   container: {
@@ -14,4 +14,17 @@ export const styled = StyleSheet.create({
   scrollView: {
     marginBottom: UTILS.heightScale(70),
   },
+  mainInfo: {
+    marginVertical: UTILS.heightScale(20),
+  },
+  bigText: {
+    ...FONT.STYLE.bold,
+    color: COLORS.colorTradeBlue,
+    fontSize: 35,
+    lineHeight: 45,
+  },
+  error: {
+    color: COLORS.red,
+    lineHeight: 22,
+  }
 });

@@ -24,7 +24,6 @@ export const PoolItem = React.memo((props) => {
     amp,
     apy,
     volumeToAmount,
-    priceChangeToAmount,
     perChange24hToStr,
     perChange24hColor,
     isFollowed,
@@ -56,20 +55,7 @@ export const PoolItem = React.memo((props) => {
             style={[
               styled.subText,
               styled.rightText,
-              {
-                color: perChange24hColor,
-              },
-            ]}
-          >
-            {`$${priceChangeToAmount}`}
-          </Text>
-          <Text
-            style={[
-              styled.subText,
-              styled.rightText,
-              {
-                color: perChange24hColor,
-              },
+              { color: perChange24hColor },
             ]}
           >
             {perChange24hToStr}

@@ -79,12 +79,12 @@ export const getPoolSize = (
   const formattedToken1Pool = format.amountFull(
     token1PoolValue,
     token1?.pDecimals,
-    false,
+    false
   );
   const formattedToken2Pool = format.amountFull(
     token2PoolValue,
     token2?.pDecimals,
-    false,
+    false
   );
   return `${formattedToken1Pool} ${token1?.symbol} + ${formattedToken2Pool} ${token2?.symbol}`;
 };
@@ -114,13 +114,7 @@ export const calculateContributeValue = ({
   ) {
     return '';
   }
-  // const rate = format.toFixed((new BigNumber(outputPool).dividedBy(inputPool).toNumber()), outputToken.pDecimals);
-  const rate = getPairRate({
-    token2: outputToken,
-    token1Value: inputPool,
-    token2Value: outputPool,
-  });
-  const number = new BigNumber(inputValue).multipliedBy(rate).toNumber();
+  const number = new BigNumber(inputValue).multipliedBy(outputPool).dividedBy(inputPool).toNumber();
   const amount = convertUtil.toHumanAmount(number, outputToken.pDecimals);
   return format.toFixed(amount, outputToken.pDecimals);
 };

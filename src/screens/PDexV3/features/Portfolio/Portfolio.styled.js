@@ -50,4 +50,13 @@ export const portfolioItemStyled = StyleSheet.create({
     fontSize: FONT.SIZE.small - 1,
     lineHeight: FONT.SIZE.small + 2,
   },
+  withdrawBtn: {
+    height: 28,
+    width: 50,
+  },
+  withdrawing: {
+    height: 28,
+    width: 85,
+    backgroundColor: COLORS.lightGrey32
+  }
 });

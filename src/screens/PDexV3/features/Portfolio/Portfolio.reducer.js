@@ -2,12 +2,14 @@ import {
   ACTION_FETCHING,
   ACTION_FETCHED,
   ACTION_FETCH_FAIL,
+  ACTION_SET_SHARE_DETAIL
 } from './Portfolio.constant';
 
 const initialState = {
   isFetching: false,
   isFetched: false,
   data: [],
+  shareDetails: []
 };
 
 export default (state = initialState, action) => {
@@ -31,6 +33,12 @@ export default (state = initialState, action) => {
       ...state,
       isFetched: false,
       isFetching: false,
+    };
+  }
+  case ACTION_SET_SHARE_DETAIL: {
+    return {
+      ...state,
+      shareDetails: action.payload
     };
   }
   default:

@@ -81,7 +81,6 @@ import ShieldDecentralizeDescription from '@screens/Shield/features/ShieldDecent
 import Convert from '@screens/Home/features/Convert';
 import ConfirmLiquidity from '@screens/Dex/components/Confirm';
 import HistoriesLiquidity from '@screens/Dex/features/Histories';
-import HistoryContributeDetail from '@screens/Dex/features/HistoryContributeDetail';
 import HistoryWithdrawDetail from '@screens/Dex/features/HistoryWithdrawDetail';
 import ConfirmRetryLiquidity from '@screens/Dex/features/ConfirmRetry';
 import TwoTokensSelect from '@screens/Dex/features/TwoTokensSelect';
@@ -103,10 +102,12 @@ import OrderLimit, {
 import SelectTokenTrade from '@screens/PDexV3/features/SelectToken';
 import Chart from '@screens/PDexV3/features/Chart';
 import WebView from '@screens/WebView';
-import HomeLiquidityHistories from '@screens/PDexV3/features/HomeLiquidityHistories';
-import ContributeHistoryDetail from '@screens/PDexV3/features/ContributeHistoryDetail';
-import RemovePoolHistoriesDetail from '@screens/PDexV3/features/RemovePoolHistoriesDetail';
-import WithdrawRewardHistoriesDetail from '@screens/PDexV3/features/WithdrawRewardHistoriesDetail';
+import {
+  LiquidityHistories,
+  ContributeHistoryDetail,
+  RemoveLPDetail,
+  WithdrawFeeLPDetail,
+} from '@screens/PDexV3/features/LiquidityHistories';
 import {
   Staking,
   StakingMoreCoins,
@@ -122,6 +123,9 @@ import {
   Contribute,
   CreatePool,
   RemovePool,
+  ContributeConfirm,
+  CreatePoolConfirm,
+  RemovePoolConfirm,
 } from '@screens/PDexV3/features/Liquidity';
 import PairList from '@screens/PDexV3/features/PairList';
 
@@ -221,20 +225,20 @@ const pDexV3Routes = [
     name: routeNames.ReviewOrderSwap,
   },
   {
-    screen: HomeLiquidityHistories,
-    name: routeNames.HomeLiquidityHistories,
+    screen: LiquidityHistories,
+    name: routeNames.LiquidityHistories,
   },
   {
     screen: ContributeHistoryDetail,
     name: routeNames.ContributeHistoryDetail,
   },
   {
-    screen: RemovePoolHistoriesDetail,
-    name: routeNames.RemovePoolHistoriesDetail,
+    screen: RemoveLPDetail,
+    name: routeNames.RemoveLPDetail,
   },
   {
-    screen: WithdrawRewardHistoriesDetail,
-    name: routeNames.WithdrawRewardHistoriesDetail,
+    screen: WithdrawFeeLPDetail,
+    name: routeNames.WithdrawFeeLPDetail,
   },
   {
     screen: Staking,
@@ -287,6 +291,18 @@ const pDexV3Routes = [
   {
     screen: OrderLimitDetail,
     name: routeNames.OrderLimitDetail,
+  },
+  {
+    screen: ContributeConfirm,
+    name: routeNames.ContributeConfirm,
+  },
+  {
+    screen: CreatePoolConfirm,
+    name: routeNames.CreatePoolConfirm,
+  },
+  {
+    screen: RemovePoolConfirm,
+    name: routeNames.RemovePoolConfirm,
   },
 ];
 
@@ -562,10 +578,6 @@ const routes = [
   {
     screen: HistoriesLiquidity,
     name: routeNames.HistoriesLiquidity,
-  },
-  {
-    screen: HistoryContributeDetail,
-    name: routeNames.HistoryContributeDetail,
   },
   {
     screen: HistoryWithdrawDetail,

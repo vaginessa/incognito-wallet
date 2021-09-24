@@ -4,9 +4,8 @@ import {
   formConfigsContribute,
   formConfigsCreatePool,
   removePoolSelector,
-  formConfigsRemovePool
+  formConfigsRemovePool, createPoolSelector
 } from '@screens/PDexV3/features/Liquidity';
-import Util from '@utils/Util';
 import {batch} from 'react-redux';
 import {getBalance} from '@src/redux/actions/token';
 import {ExHandler} from '@services/exception';
@@ -90,6 +89,7 @@ const actionChangeInputContribute = (newInput) => async (dispatch, getState) => 
     const outputText = calculateContributeValue({
       inputValue,
       outputToken,
+      inputToken,
       inputPool: token1PoolValue,
       outputPool: token2PoolValue,
     });
@@ -110,6 +110,7 @@ const actionChangeOutputContribute = (newOutput) => async (dispatch, getState) =
     const inputText = calculateContributeValue({
       inputValue: outputValue,
       outputToken: inputToken,
+      inputToken: outputToken,
       inputPool: token2PoolValue,
       outputPool: token1PoolValue,
     });
@@ -140,12 +141,61 @@ const actionSetCreatePoolText = ({ text, field }) => async (dispatch) => {
   }
 };
 
+const actionUpdateCreatePoolInputToken = (tokenId) => async (dispatch, getState) => {
+  try {
+    const state = getState();
+    const { inputToken, outputToken } = createPoolSelector.tokenSelector(state);
+    const newInputToken = tokenId;
+    let newOutputToken = outputToken.tokenId;
+    if (newInputToken === outputToken.tokenId) {
+      newOutputToken = inputToken.tokenId;
+    }
+    batch(() => {
+      dispatch(actionSetCreatePoolToken({
+        inputToken: newInputToken,
+        outputToken: newOutputToken,
+      }));
+      dispatch(actionGetBalance([newInputToken, newOutputToken]));
+    });
+  } catch (error) {
+    new ExHandler(error).showErrorToast();
+  }
+};
+
+const actionUpdateCreatePoolOutputToken = (tokenId) => async (dispatch, getState) => {
+  try {
+    const state = getState();
+    const { inputToken, outputToken } = createPoolSelector.tokenSelector(state);
+    const newOutputToken = tokenId;
+    let newInputToken = inputToken.tokenId;
+    if (newInputToken === outputToken.tokenId) {
+      newInputToken = outputToken.tokenId;
+    }
+    batch(() => {
+      dispatch(actionSetCreatePoolToken({
+        inputToken: newInputToken,
+        outputToken: newOutputToken,
+      }));
+      dispatch(actionGetBalance([newInputToken, newOutputToken]));
+    });
+  } catch (error) {
+    new ExHandler(error).showErrorToast();
+  }
+};
+
 const actionInitCreatePool = () => (dispatch, getState) => {
   try {
     const state = getState();
     const tokenIDs = allTokensIDsSelector(state);
-    const newInputToken = tokenIDs[0];
-    const newOutputToken = tokenIDs[1];
+    const { inputToken, outputToken } = createPoolSelector.tokenSelector(state);
+    let newInputToken, newOutputToken;
+    if (!inputToken && !outputToken) {
+      newInputToken = tokenIDs[0];
+      newOutputToken = tokenIDs[1];
+    } else {
+      newInputToken = inputToken.tokenId;
+      newOutputToken = outputToken.tokenId;
+    }
     batch(() => {
       dispatch(actionSetCreatePoolToken({
         inputToken: newInputToken,
@@ -241,12 +291,33 @@ const actionChangeOutputRemovePool = (newText) => async (dispatch, getState) => 
   }
 };
 
+const actionMaxRemovePool = () => async (dispatch, getState) => {
+  try {
+    const state = getState();
+    const maxShareData = removePoolSelector.maxShareAmountSelector(state);
+    const {
+      maxInputShareStr,
+      maxOutputShareStr,
+    } = maxShareData;
+    batch(() => {
+      dispatch(change(formConfigsRemovePool.formName, formConfigsRemovePool.inputToken, maxInputShareStr));
+      dispatch(change(formConfigsRemovePool.formName, formConfigsRemovePool.outputToken, maxOutputShareStr));
+    });
+  } catch (error) {
+    new ExHandler(error).showErrorToast();
+  }
+};
+
 export default ({
+  actionGetBalance,
   actionSetContributePoolID,
   actionInitContribute,
   actionChangeInputContribute,
   actionChangeOutputContribute,
 
+  actionSetCreatePoolToken,
+  actionUpdateCreatePoolInputToken,
+  actionUpdateCreatePoolOutputToken,
   actionInitCreatePool,
   actionSetCreatePoolText,
 
@@ -254,5 +325,6 @@ export default ({
   actionSetRemovePoolToken,
   actionInitRemovePool,
   actionChangeInputRemovePool,
-  actionChangeOutputRemovePool
+  actionChangeOutputRemovePool,
+  actionMaxRemovePool,
 });
