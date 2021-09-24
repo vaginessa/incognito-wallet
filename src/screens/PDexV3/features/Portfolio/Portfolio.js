@@ -3,7 +3,9 @@ import React from 'react';
 import { View } from 'react-native';
 import { useSelector } from 'react-redux';
 import HomeTabHeader from '@screens/PDexV3/features/Home/Home.tabHeader';
-import { listShareIDsSelector, totalShareSelector } from './Portfolio.selector';
+import {LoadingContainer} from '@components/core';
+import Empty from '@components/Empty';
+import {isFetchingSelector, listShareIDsSelector, totalShareSelector} from './Portfolio.selector';
 import { styled } from './Portfolio.styled';
 import PortfolioItem from './Portfolio.item';
 
@@ -15,21 +17,21 @@ const PortfolioList = React.memo(() => {
       renderItem={({ item }) => <PortfolioItem shareId={item} />}
       keyExtractor={(item) => item?.shareId}
       showsVerticalScrollIndicator={false}
+      ListEmptyComponent={<Empty />}
       style={styled.list}
     />
   );
 });
 
-const Portfolio = (props) => {
+const Portfolio = () => {
   const totalShare = useSelector(totalShareSelector);
+  const isFetching = useSelector(isFetchingSelector);
   return (
     <View style={styled.container}>
       <HomeTabHeader title="Your return" desc={`$${totalShare}`} />
-      <PortfolioList />
+      {isFetching ? (<LoadingContainer />) : (<PortfolioList />)}
     </View>
   );
 };
-
-Portfolio.propTypes = {};
 
 export default React.memo(Portfolio);

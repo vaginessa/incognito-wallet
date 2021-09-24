@@ -2,12 +2,15 @@ import {createSelector} from 'reselect';
 import {liquiditySelector} from '@screens/PDexV3/features/Liquidity/Liquidity.selector';
 import {getPrivacyDataByTokenID as getPrivacyDataByTokenIDSelector} from '@src/redux/selectors/selectedPrivacy';
 import {getDataShareByPoolIdSelector} from '@screens/PDexV3/features/Portfolio/Portfolio.selector';
-import {formatBalance, getExchangeRate, getPoolSize} from '@screens/PDexV3';
+import {getExchangeRate, getPoolSize} from '@screens/PDexV3';
 import helper from '@src/constants/helper';
 import {sharedSelector} from '@src/redux/selectors';
-import {getInputAmount} from '@screens/PDexV3/features/Liquidity/Liquidity.utils';
+import {getInputShareAmount} from '@screens/PDexV3/features/Liquidity/Liquidity.utils';
 import BigNumber from 'bignumber.js';
 import format from '@utils/format';
+import uniqBy from 'lodash/uniqBy';
+import convert from '@utils/convert';
+import {formConfigsRemovePool} from '@screens/PDexV3/features/Liquidity/Liquidity.constant';
 
 const removePoolSelector = createSelector(
   liquiditySelector,
@@ -21,7 +24,9 @@ const isFetchingSelector = createSelector(
 
 export const feeAmountSelector = createSelector(
   removePoolSelector,
-  ({ feeAmount }) => feeAmount,
+  getPrivacyDataByTokenIDSelector,
+  ({ feeAmount, feeToken }, getPrivacyDataByTokenID) =>
+    ({ feeAmount, feeToken, token: getPrivacyDataByTokenID(feeToken) }),
 );
 
 export const poolIDSelector = createSelector(
@@ -44,26 +49,31 @@ export const tokenSelector = createSelector(
 );
 
 export const shareDataSelector = createSelector(
+  poolIDSelector,
   removePoolSelector,
   tokenSelector,
   getDataShareByPoolIdSelector,
-  (removePool, { inputToken, outputToken }, getDataShareByPoolID) => {
-    const shareData = getDataShareByPoolID('111');
+  sharedSelector.isGettingBalance,
+  feeAmountSelector,
+  (poolId, removePool, { inputToken, outputToken }, getDataShareByPoolID, isGettingBalance, { token: feeToken }) => {
+    const shareData = getDataShareByPoolID(poolId);
     if (!shareData) return {};
-    const { shareStr, token1PoolValue, token2PoolValue , amp} = shareData;
+    const { shareStr, token1PoolValue, token2PoolValue , amp, nftId} = shareData;
     const exchangeRateStr = getExchangeRate(inputToken, outputToken, token1PoolValue, token2PoolValue);
     const poolSize = getPoolSize(inputToken, outputToken, token1PoolValue, token2PoolValue);
-    const balanceStr = formatBalance(inputToken, outputToken, inputToken.amount, outputToken?.amount);
+    const tokens = uniqBy([inputToken, outputToken, feeToken], (token) => token.tokenId);
+    const hookBalances = tokens.map((token) => ({
+      label: 'Balance',
+      value: `${format.amountFull(token.amount, token.pDecimals)} ${token.symbol}`,
+      loading: isGettingBalance.includes(token?.tokenId)
+    }));
     const hookFactories = [
       {
         label: 'AMP',
         value: amp,
         info: helper.HELPER_CONSTANT.AMP
       },
-      {
-        label: 'Balance',
-        value: balanceStr,
-      },
+      ...hookBalances,
       {
         label: 'Share',
         value: shareStr,
@@ -80,16 +90,9 @@ export const shareDataSelector = createSelector(
     return {
       ...shareData,
       hookFactories,
+      nftId,
     };
   }
-);
-
-export const inputAmountSelector = createSelector(
-  (state) => state,
-  sharedSelector.isGettingBalance,
-  tokenSelector,
-  feeAmountSelector,
-  getInputAmount,
 );
 
 export const maxShareAmountSelector = createSelector(
@@ -111,8 +114,10 @@ export const maxShareAmountSelector = createSelector(
     const sharePercent = new BigNumber(share).dividedBy(totalShare).toNumber();
     const maxInputShare = new BigNumber(sharePercent).multipliedBy(token1PoolValue).toNumber() || 0;
     const maxOutputShare = new BigNumber(sharePercent).multipliedBy(token2PoolValue).toNumber() || 0;
-    const maxInputShareStr = format.amountFull(maxInputShare, inputToken.pDecimals);
-    const maxOutputShareStr = format.amountFull(maxOutputShare, outputToken.pDecimals);
+    const maxInputHuman = convert.toHumanAmount(maxInputShare, inputToken.pDecimals);
+    const maxInputShareStr = format.toFixed(maxInputHuman, inputToken.pDecimals);
+    const maxOutputHuman = convert.toHumanAmount(maxOutputShare, outputToken.pDecimals);
+    const maxOutputShareStr = format.toFixed(maxOutputHuman, outputToken.pDecimals);
     return {
       maxInputShare,
       maxOutputShare,
@@ -121,9 +126,30 @@ export const maxShareAmountSelector = createSelector(
       sharePercent,
       maxInputShareStr,
       maxOutputShareStr,
+      maxInputHuman,
+      maxOutputHuman,
     };
   }
 );
+
+export const inputAmountSelector = createSelector(
+  (state) => state,
+  sharedSelector.isGettingBalance,
+  tokenSelector,
+  feeAmountSelector,
+  maxShareAmountSelector,
+  getInputShareAmount,
+);
+
+export const disableRemovePool = createSelector(
+  inputAmountSelector,
+  ( inputAmount ) => {
+    const { error: inputError, originalInputAmount: amount1 } = inputAmount(formConfigsRemovePool.formName, formConfigsRemovePool.inputToken);
+    const { error: outputError, originalInputAmount: amount2 } = inputAmount(formConfigsRemovePool.formName, formConfigsRemovePool.outputToken);
+    return !!inputError || !!outputError || !amount1 || !amount2;
+  }
+);
+
 
 export default ({
   isFetchingSelector,
@@ -133,4 +159,5 @@ export default ({
   shareDataSelector,
   inputAmountSelector,
   maxShareAmountSelector,
+  disableRemovePool,
 });

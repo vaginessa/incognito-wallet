@@ -5,12 +5,13 @@ import {Header, Row} from '@src/components';
 import {useSelector} from 'react-redux';
 import {selectedPrivacySelector} from '@src/redux/selectors';
 import {PRVIDSTR} from 'incognito-chain-web-js/build/wallet';
-import {RoundCornerButton, TotalReward} from '@components/core';
+import {RoundCornerButton} from '@components/core';
 import routeNames from '@routers/routeNames';
 import {useNavigation} from 'react-navigation-hooks';
 import {btnStyles as btnStyled} from '@screens/PDexV3/features/Staking/Staking.styled';
 import {STAKING_MESSAGES} from '@screens/PDexV3/features/Staking/Staking.constant';
 import StakingHome from '@screens/PDexV3/features/Staking/Staking.home';
+import TotalReward from '@components/core/TotalReward';
 
 const Reward = React.memo(() => {
   const nativeToken = useSelector(selectedPrivacySelector.getPrivacyDataByTokenID)(PRVIDSTR);

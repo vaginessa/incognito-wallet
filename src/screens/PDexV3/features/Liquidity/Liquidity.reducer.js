@@ -14,7 +14,7 @@ const contributeState = {
 const createPoolState = {
   inputToken: undefined,
   outputToken: undefined,
-  feeAmount: ACCOUNT_CONSTANT.MAX_FEE_PER_TX,
+  feeAmount: ACCOUNT_CONSTANT.MAX_FEE_PER_TX * 2,
   feeToken: PRVIDSTR,
 };
 

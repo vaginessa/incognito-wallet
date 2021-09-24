@@ -4,6 +4,7 @@ import { StyleSheet } from 'react-native';
 export const styled = StyleSheet.create({
   container: {},
   listPools: { paddingBottom: 50 },
+  wrapFooter: { marginBottom: 100 }
 });
 
 export const headStyled = StyleSheet.create({

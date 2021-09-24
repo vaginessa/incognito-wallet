@@ -149,7 +149,7 @@ export const actionSetSignPublicKeyEncode = (defaultAccount) => async (
   }
 };
 
-export const actionSetNFTTokenData = () => async (dispatch, getState) => {
+export const actionSetNFTTokenData = () => async (dispatch) => {
   try {
     const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
     const nftPayload = await pDexV3Inst.getNFTTokenData({

@@ -7,19 +7,19 @@ const styled = StyleSheet.create({
   },
   hookContainer: {
     justifyContent: 'space-between',
-    marginBottom: 8,
+    marginBottom: 15,
     alignItems: 'center',
   },
   hookLabel: {
-    fontFamily: FONT.NAME.bold,
-    fontSize: FONT.SIZE.small,
-    lineHeight: FONT.SIZE.small + 3,
+    fontFamily: FONT.NAME.medium,
+    fontSize: FONT.SIZE.small + 2,
+    lineHeight: FONT.SIZE.small + 5,
     color: COLORS.lightGrey17,
   },
   hookValue: {
     fontFamily: FONT.NAME.medium,
-    fontSize: FONT.SIZE.small,
-    lineHeight: FONT.SIZE.small + 3,
+    fontSize: FONT.SIZE.small + 2,
+    lineHeight: FONT.SIZE.small + 5,
     color: COLORS.lightGrey31,
   },
   extraContainer: {

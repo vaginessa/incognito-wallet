@@ -1,12 +1,13 @@
-import { Row } from '@src/components';
-import { TouchableOpacity } from '@src/components/core';
+import {Row} from '@src/components';
+import { TouchableOpacity, LoadingContainer} from '@src/components/core';
 import React from 'react';
-import { View, Text } from 'react-native';
+import {View, Text} from 'react-native';
 import { useNavigation } from 'react-navigation-hooks';
 import {useDispatch, useSelector} from 'react-redux';
 import Pool from '@screens/PDexV3/features/Pool';
 import {
   actionToggleFollowingPool,
+  isFetchingSelector,
   listPoolsFollowingSelector,
 } from '@screens/PDexV3/features/Pools';
 import routeNames from '@src/router/routeNames';
@@ -17,6 +18,7 @@ import {
   poolsListHeaderFollowingStyled,
   footerStyled,
 } from './Pools.styled';
+
 
 const PoolsHeader = React.memo(({ handlePressPool }) => {
   const navigate = useNavigation();
@@ -100,6 +102,7 @@ const PoolsListHeaderFollowing = React.memo(() => {
 
 export const PoolsListFollowing = React.memo(({ handlePressPool }) => {
   const followPools = useSelector(listPoolsFollowingSelector) || [];
+  const isFetching = useSelector(isFetchingSelector);
   const onPressPool = (poolId) =>
     typeof handlePressPool === 'function' && handlePressPool(poolId);
   const renderItem = (item) => (
@@ -111,13 +114,16 @@ export const PoolsListFollowing = React.memo(({ handlePressPool }) => {
       checkFollow={false}
     />
   );
-  return (
-    <>
-      {followPools.map(renderItem)}
-      <Footer />
-    </>
-
-  );
+  const renderContent = () => {
+    if (isFetching) return <LoadingContainer />;
+    return (
+      <>
+        {followPools.map(renderItem)}
+        <Footer />
+      </>
+    );
+  };
+  return renderContent();
 });
 
 const Pools = (props) => {

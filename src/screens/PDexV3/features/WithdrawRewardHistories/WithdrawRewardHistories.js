@@ -12,7 +12,7 @@ import withHistories from './WithdrawRewardHistories.enhance';
 const WithdrawRewardHook = React.memo(({ pairID }) => {
   const navigation = useNavigation();
   const history = useSelector(getHistoryByPairID)(pairID);
-  const onNextPress = () => navigation.navigate(routeNames.WithdrawRewardHistoriesDetail, { pairID });
+  const onNextPress = () => navigation.navigate(routeNames.WithdrawFeeLPDetail, { pairID });
   return (
     <TouchableOpacity style={styled.wrapperItem} onPress={onNextPress}>
       <View style={styled.topRow}>

@@ -4,6 +4,7 @@ import { actionFetch as actionFetchListShare } from '@screens/PDexV3/features/Po
 import {
   actionFetchPools,
 } from '@screens/PDexV3/features/Pools';
+import {liquidityHistoryActions} from '@screens/PDexV3/features/LiquidityHistories';
 import {
   TAB_POOLS_ID,
   TAB_PORTFOLIO_ID,
@@ -60,6 +61,7 @@ export const actionRefresh = () => async (dispatch, getState) => {
       ];
       break;
     }
+    dispatch(liquidityHistoryActions.actionGetHistories());
     await Promise.all(task);
   } catch (error) {
     new ExHandler(error).showErrorToast();
