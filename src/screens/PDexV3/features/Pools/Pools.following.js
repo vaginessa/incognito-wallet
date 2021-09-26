@@ -8,7 +8,7 @@ import Pool from '@screens/PDexV3/features/Pool';
 import {
   actionToggleFollowingPool,
   isFetchingSelector,
-  listPoolsFollowingSelector,
+  followPoolIdsSelector,
 } from '@screens/PDexV3/features/Pools';
 import routeNames from '@src/router/routeNames';
 import PropTypes from 'prop-types';
@@ -19,12 +19,11 @@ import {
   footerStyled,
 } from './Pools.styled';
 
-
 const PoolsHeader = React.memo(({ handlePressPool }) => {
-  const navigate = useNavigation();
+  const navigation = useNavigation();
   const onSearchPress = () => {
-    navigate.navigate(routeNames.PairList, {
-      params: { onPressPool: handlePressPool },
+    navigation.navigate(routeNames.PoolsList, {
+      params: { onPressPool: handlePressPool, },
     });
   };
   return (
@@ -51,10 +50,8 @@ const Footer = React.memo(() => {
     <TouchableOpacity
       style={styled.wrapFooter}
       onPress={() =>
-        navigate.navigate(routeNames.PairList, {
-          params: {
-            onPressPool: _onPressPool,
-          },
+        navigate.navigate(routeNames.PoolsList, {
+          params: { onPressPool: _onPressPool },
         })
       }
     >
@@ -101,15 +98,16 @@ const PoolsListHeaderFollowing = React.memo(() => {
 });
 
 export const PoolsListFollowing = React.memo(({ handlePressPool }) => {
-  const followPools = useSelector(listPoolsFollowingSelector) || [];
+  const followIds = useSelector(followPoolIdsSelector) || [];
   const isFetching = useSelector(isFetchingSelector);
-  const onPressPool = (poolId) =>
+  const onPressPool = (poolId) => {
     typeof handlePressPool === 'function' && handlePressPool(poolId);
-  const renderItem = (item) => (
+  };
+  const renderItem = (poolId) => (
     <Pool
-      key={item.poolId}
-      poolId={item.poolId}
-      swipable={followPools.length > 1}
+      key={poolId}
+      poolId={poolId}
+      swipable={followIds.length > 1}
       onPressPool={onPressPool}
       checkFollow={false}
     />
@@ -118,7 +116,7 @@ export const PoolsListFollowing = React.memo(({ handlePressPool }) => {
     if (isFetching) return <LoadingContainer />;
     return (
       <>
-        {followPools.map(renderItem)}
+        {followIds.map(renderItem)}
         <Footer />
       </>
     );

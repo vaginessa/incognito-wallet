@@ -3,9 +3,8 @@ import { FlatList, KeyboardAwareScrollView } from '@src/components/core';
 import { withLayout_2 } from '@src/components/Layout';
 import React from 'react';
 import {ActivityIndicator, StyleSheet, View} from 'react-native';
-import {useDispatch, useSelector} from 'react-redux';
+import {useSelector} from 'react-redux';
 import {
-  actionFreeListPools,
   isFetchingSelector,
   poolPairIdsSelector,
 } from '@screens/PDexV3/features/Pools';
@@ -40,12 +39,8 @@ export const PoolsList = React.memo(({ onPressPool }) => {
 });
 
 const PoolsListContainer = (props) => {
-  const dispatch = useDispatch();
   const params = useNavigationParam('params');
   const { headerTitle = 'Pools', onPressPool } = params || props;
-  React.useEffect(() => {
-    return () => dispatch(actionFreeListPools());
-  }, []);
   return (
     <View style={styled.container}>
       <Header title={headerTitle} />

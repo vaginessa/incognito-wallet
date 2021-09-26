@@ -16,9 +16,7 @@ const initialState = {
   pairID: undefined,
   listPools: [],
   listPoolsFollowing: [],
-  follow: {
-    pools: [],
-  }
+  followIds: []
 };
 
 export default (state = initialState, action) => {
@@ -69,13 +67,10 @@ export default (state = initialState, action) => {
     };
   }
   case ACTION_FETCHED_LIST_POOLS_FOLLOWING: {
-    const { followPools } = action.payload;
+    const { followIds } = action.payload;
     return {
       ...state,
-      follow: {
-        ...state.follow,
-        pools: followPools,
-      },
+      followIds: followIds || [],
     };
   }
   default:

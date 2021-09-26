@@ -14,7 +14,7 @@ import { TouchableOpacity } from '@src/components/core';
 import { styled } from './Pool.styled';
 
 export const PoolItem = React.memo((props) => {
-  const { poolId, onPressPool, checkFollow } = props;
+  const { poolId, onPressPool, checkFollow, style } = props;
   const data = useSelector(getDataByPoolIdSelector)(poolId);
   if (!data) {
     return null;
@@ -32,7 +32,7 @@ export const PoolItem = React.memo((props) => {
   return (
     <TouchableOpacity
       onPress={() => typeof onPressPool === 'function' && onPressPool(poolId)}
-      style={styled.container}
+      style={[styled.container, style]}
     >
       <Row>
         <View style={styled.wrapperFirstSection}>
@@ -76,7 +76,7 @@ const Pool = (props) => {
     return (
       <Swipeout
         autoClose
-        style={{ backgroundColor: 'transparent' }}
+        style={{ backgroundColor: 'transparent', marginBottom: 18 }}
         right={[
           {
             text: 'Remove',
@@ -85,7 +85,7 @@ const Pool = (props) => {
           },
         ]}
       >
-        <PoolItem poolId={poolId} onPressPool={onPressPool} checkFollow={checkFollow} />
+        <PoolItem poolId={poolId} onPressPool={onPressPool} checkFollow={checkFollow} style={{ marginBottom: 0 }} />
       </Swipeout>
     );
   }
@@ -107,12 +107,14 @@ Pool.propTypes = {
 PoolItem.defaultProps = {
   onPressPool: null,
   checkFollow: true,
+  style: null,
 };
 
 PoolItem.propTypes = {
   poolId: PropTypes.string.isRequired,
   onPressPool: PropTypes.func,
   checkFollow: PropTypes.bool,
+  style: PropTypes.object,
 };
 
 export default React.memo(Pool);
