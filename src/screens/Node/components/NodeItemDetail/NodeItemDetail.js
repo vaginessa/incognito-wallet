@@ -104,6 +104,15 @@ const NodeItemDetail = memo(({
     );
   };
 
+  const renderWarning = (text, value) => {
+    return (
+      <View style={[{ flexDirection: 'column', marginBottom: 30 }]}>
+        <Text style={[theme.text.boldTextStyleMedium]}>{text}</Text>
+        <Text style={styles.warningDesc} numberOfLines={4}>{value || ''}</Text>
+      </View>
+    );
+  };
+
   const renderNodeSettings = () => {
     return (
       <TouchableOpacity
