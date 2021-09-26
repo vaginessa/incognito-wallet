@@ -19,7 +19,7 @@ import { enhanceSend } from './Form.enhanceSend';
 import { enhanceUnshield } from './Form.enhanceUnShield';
 import { enhanceMemoValidation } from './Form.enhanceMemoValidator';
 import { enhanceSwitchPortal } from './Form.enhanceSwitchPortal';
-import { removeAllSpace } from './Form.utils';
+import {removeAllSpace, standardizedAddress} from './Form.utils';
 
 export const formName = 'formSend';
 
@@ -49,17 +49,17 @@ export const enhance = (WrappedComp) => (props) => {
   const [isKeyboardVisible] = useKeyboard();
   const handleStandardizedAddress = async (value) => {
     let _value = value || '';
-    // try {
-    //   const copiedValue = await Clipboard.getString();
-    //   if (copiedValue !== '') {
-    //     const isPasted = value.includes(copiedValue);
-    //     if (isPasted) {
-    //       _value = standardizedAddress(value);
-    //     }
-    //   }
-    // } catch (e) {
-    //   console.debug('error', e);
-    // }
+    try {
+      const copiedValue = await Clipboard.getString();
+      if (copiedValue !== '') {
+        const isPasted = value.includes(copiedValue);
+        if (isPasted) {
+          _value = standardizedAddress(value);
+        }
+      }
+    } catch (e) {
+      console.debug('error', e);
+    }
     return removeAllSpace(_value);
   };
   const onChangeField = async (value, field) => {
