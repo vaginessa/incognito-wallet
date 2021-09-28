@@ -53,7 +53,7 @@ const Provide = ({
 
   return (
     <View style={mainStyle.flex}>
-      <Header title="Provide" />
+      <Header title={`Provide ${coin.symbol}`} />
       <View style={mainStyle.coinContainer}>
         <Row center spaceBetween style={mainStyle.inputContainer}>
           <BaseTextInput

@@ -18,14 +18,17 @@ class CoinConfigModel {
     this.max = data.Max;
     this.apy = data.APY.toFixed(2);
     this.masterAddress = masterAddress;
+    this.locked = data.Locked;
+    this.lockTime = data.LockTime;
 
     if (this.id === COINS.PRV_ID) {
-      this.name = COINS.PRV.name;
+      this.name = this.locked ? `${COINS.PRV.name} Lock` : COINS.PRV.name;
       this.symbol = COINS.PRV.symbol;
       this.pDecimals = COINS.PRV.pDecimals;
     }
 
     this.displayInterest = `${formatUtil.toFixed(this.apy, 2)}%  APY`;
+    this.displayLockTime = this.locked ? `${this.lockTime} MONTHS` : '';
   }
 }
 
