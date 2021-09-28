@@ -14,6 +14,10 @@ import {liquidityActions, removePoolSelector} from '@screens/PDexV3/features/Liq
 import {ButtonTrade} from '@components/Button';
 import {useNavigation} from 'react-navigation-hooks';
 import routeNames from '@routers/routeNames';
+import SelectPercentAmount from '@components/SelectPercentAmount';
+import {COLORS} from '@src/styles';
+import {compose} from 'recompose';
+import withTransaction from '@screens/PDexV3/features/Liquidity/Liquidity.enhanceTransaction';
 
 const initialFormValues = {
   inputToken: '',
@@ -28,12 +32,20 @@ const Form = createForm(formConfigsRemovePool.formName, {
 
 const InputsGroup = () => {
   const dispatch = useDispatch();
+  const [percent, setPercent] = React.useState(0);
   const inputAmount = useSelector(removePoolSelector.inputAmountSelector);
   const inputToken = inputAmount(formConfigsRemovePool.formName, formConfigsRemovePool.inputToken);
   const outputToken = inputAmount(formConfigsRemovePool.formName, formConfigsRemovePool.outputToken);
   const onChangeInput = (text) => dispatch(liquidityActions.actionChangeInputRemovePool(text));
   const onChangeOutput = (text) => dispatch(liquidityActions.actionChangeOutputRemovePool(text));
   const onMaxPress = () => dispatch(liquidityActions.actionMaxRemovePool());
+  const onChangePercent = (_percent) => {
+    setPercent(_percent);
+    if (_percent === 100) {
+      return onMaxPress();
+    }
+    dispatch(liquidityActions.actionChangePercentRemovePool(_percent));
+  };
   const _validateInput = React.useCallback(() => {
     return inputToken.error;
   }, [inputToken.error]);
@@ -68,6 +80,13 @@ const InputsGroup = () => {
         onChange={onChangeOutput}
         onPressInfinityIcon={onMaxPress}
       />
+      <SelectPercentAmount
+        size={4}
+        containerStyled={styled.selectPercentAmountContainer}
+        percentBtnColor={COLORS.colorBlue}
+        selected={percent}
+        onPressPercent={onChangePercent}
+      />
     </View>
   );
 };
@@ -85,7 +104,7 @@ export const Extra = React.memo(() => {
   );
 });
 
-const RemovePool = ({ onInitRemovePool }) => {
+const RemovePool = ({ onInitRemovePool, onRemoveContribute, onCloseModal, visible }) => {
   const disabled = useSelector(removePoolSelector.disableRemovePool);
   const navigation = useNavigation();
   React.useEffect(() => { onInitRemovePool(); }, []);
@@ -113,7 +132,13 @@ const RemovePool = ({ onInitRemovePool }) => {
 };
 
 RemovePool.propTypes = {
-  onInitRemovePool: PropTypes.func.isRequired
+  onInitRemovePool: PropTypes.func.isRequired,
+  onRemoveContribute: PropTypes.func.isRequired,
+  onCloseModal: PropTypes.func.isRequired,
+  visible: PropTypes.bool.isRequired,
 };
 
-export default withLiquidity(memo(RemovePool));
+export default compose(
+  withLiquidity,
+  withTransaction,
+)(memo(RemovePool));

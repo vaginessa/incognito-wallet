@@ -23,7 +23,7 @@ import {defaultAccountWalletSelector} from '@src/redux/selectors/account';
 import {actionSetNFTTokenData} from '@src/redux/actions/account';
 import {filterTokenList} from '@screens/PDexV3/features/Liquidity/Liquidity.utils';
 import {listPoolsPureSelector} from '@screens/PDexV3/features/Pools';
-import {isFetchingSelector} from '@screens/PDexV3/features/Liquidity/Liquidity.createPoolSelector';
+import {tokenSelector} from '@screens/PDexV3/features/Liquidity/Liquidity.removePoolSelector';
 
 /***
  *================================================================
@@ -348,6 +348,30 @@ const actionMaxRemovePool = () => async (dispatch, getState) => {
   }
 };
 
+const actionChangePercentRemovePool = (percent) => async (dispatch, getState) => {
+  try {
+    const state = getState();
+    const maxShareData = removePoolSelector.maxShareAmountSelector(state);
+    const { inputToken, outputToken } = removePoolSelector.tokenSelector(state);
+    const {
+      maxInputHuman,
+      maxOutputHuman,
+    } = maxShareData;
+
+    const inputHuman = new BigNumber(maxInputHuman).multipliedBy(percent).dividedBy(100).toNumber();
+    const inputStr = format.toFixed(inputHuman, inputToken.pDecimals);
+
+    const outputHuman = new BigNumber(maxOutputHuman).multipliedBy(percent).dividedBy(100).toNumber();
+    const outputStr = format.toFixed(outputHuman, outputToken.pDecimals);
+    batch(() => {
+      dispatch(change(formConfigsRemovePool.formName, formConfigsRemovePool.inputToken, inputStr));
+      dispatch(change(formConfigsRemovePool.formName, formConfigsRemovePool.outputToken, outputStr));
+    });
+  } catch (error) {
+    new ExHandler(error).showErrorToast();
+  }
+};
+
 export default ({
   actionGetBalance,
   actionSetContributePoolID,
@@ -368,4 +392,5 @@ export default ({
   actionChangeInputRemovePool,
   actionChangeOutputRemovePool,
   actionMaxRemovePool,
+  actionChangePercentRemovePool,
 });
