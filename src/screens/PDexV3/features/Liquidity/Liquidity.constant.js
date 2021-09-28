@@ -26,7 +26,6 @@ export const formConfigsCreatePool = {
   formName: 'FORM_CREATE_POOL',
   inputToken: 'inputToken',
   outputToken: 'outputToken',
-  amp: 'amp'
 };
 
 export const formConfigsRemovePool = {

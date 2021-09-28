@@ -5,7 +5,7 @@ import {styled as mainStyle} from '@screens/PDexV3/PDexV3.styled';
 import {Header, RowSpaceText} from '@src/components';
 import {LIQUIDITY_MESSAGES,formConfigsCreatePool} from '@screens/PDexV3/features/Liquidity/Liquidity.constant';
 import {createForm, RFTradeInputAmount as TradeInputAmount, validator} from '@components/core/reduxForm';
-import {AddBreakLine, Text} from '@components/core';
+import {AddBreakLine} from '@components/core';
 import {batch, useDispatch, useSelector} from 'react-redux';
 import {Field} from 'redux-form';
 import withLiquidity from '@screens/PDexV3/features/Liquidity/Liquidity.enhance';
@@ -15,12 +15,10 @@ import {useNavigation} from 'react-navigation-hooks';
 import routeNames from '@routers/routeNames';
 import {disableCreatePool} from '@screens/PDexV3/features/Liquidity/Liquidity.createPoolSelector';
 import {ButtonTrade} from '@components/Button';
-import {formConfigs} from '@screens/PDexV3/features/Swap/Swap.constant';
 
 const initialFormValues = {
   inputToken: '',
   outputToken: '',
-  amp: ''
 };
 
 const Form = createForm(formConfigsCreatePool.formName, {
@@ -122,20 +120,6 @@ export const Extra = React.memo(() => {
   );
 });
 
-const AMP = React.memo(() => (
-  <View style={styled.wrapAMP}>
-    <Text style={styled.amp}>AMP</Text>
-    <Field
-      component={TradeInputAmount}
-      name={formConfigsCreatePool.amp}
-      validate={[
-        ...validator.combinedAmount,
-      ]}
-      editableInput
-    />
-  </View>
-));
-
 const CreatePool = ({ onInitCreatePool }) => {
   const disabled = useSelector(disableCreatePool);
   const navigation = useNavigation();
@@ -165,7 +149,6 @@ const CreatePool = ({ onInitCreatePool }) => {
                 disabled={disabled}
                 onPress={onSubmit}
               />
-              <AMP />
               <Extra />
             </>
           )}

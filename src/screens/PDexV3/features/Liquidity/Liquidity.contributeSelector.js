@@ -3,7 +3,7 @@ import {liquiditySelector} from '@screens/PDexV3/features/Liquidity/Liquidity.se
 import {getPrivacyDataByTokenID as getPrivacyDataByTokenIDSelector} from '@src/redux/selectors/selectedPrivacy';
 import {getDataShareByPoolIdSelector} from '@screens/PDexV3/features/Portfolio/Portfolio.selector';
 import {sharedSelector} from '@src/redux/selectors';
-import {getExchangeRate, getPoolSize} from '@screens/PDexV3';
+import {getPoolSize} from '@screens/PDexV3';
 import {getInputAmount} from '@screens/PDexV3/features/Liquidity/Liquidity.utils';
 import uniqBy from 'lodash/uniqBy';
 import format from '@utils/format';
@@ -69,7 +69,6 @@ export const mappingDataSelector = createSelector(
     if (!poolData || !inputToken || !outputToken) return {};
     const { poolId, token1Value: token1PoolValue, token2Value: token2PoolValue } = poolData;
     const { nftId } = getDataShareByPoolId(poolId) || {};
-    const exchangeRateStr = getExchangeRate(inputToken, outputToken, token1PoolValue, token2PoolValue);
     const poolSize = getPoolSize(inputToken, outputToken, token1PoolValue, token2PoolValue);
     const isLoadingBalance =
       isGettingBalance.includes(inputToken?.tokenId)
@@ -86,10 +85,6 @@ export const mappingDataSelector = createSelector(
       {
         label: 'Fee',
         value: `${format.amount(feeAmount, feeToken.pDecimals)} ${feeToken.symbol}`,
-      },
-      {
-        label: 'Exchange rate',
-        value: exchangeRateStr,
       },
       {
         label: 'Pool size',
@@ -128,7 +123,7 @@ export const nftTokenSelector = createSelector(
     };
     const { nftId: _nftId } = getDataShareByPoolId(poolId) || {};
     if (_nftId) {
-      const nft = (list || []).find(item => (parseInt(item.realAmount) && _nftId === item.nftToken));
+      const nft = (list || []).find(({ nftToken: _nftToken }) => _nftId === _nftToken);
       if (nft) {
         res.nftToken = nft.nftToken;
       }
@@ -145,8 +140,8 @@ export const disableContribute = createSelector(
     const { nftToken } = nftData;
     const { error: inputError } = inputAmount(formConfigsContribute.formName, formConfigsContribute.inputToken);
     const { error: outputError } = inputAmount(formConfigsContribute.formName, formConfigsContribute.outputToken);
-    const isDisable = isFetching || !!inputError || !!outputError || !nftToken;
-    return isDisable;
+    const isDisabled = isFetching || !!inputError || !!outputError || !nftToken;
+    return { isDisabled };
   }
 );
 

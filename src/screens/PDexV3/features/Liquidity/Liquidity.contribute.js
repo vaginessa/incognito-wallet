@@ -93,7 +93,7 @@ export const Extra = React.memo(() => {
   );
 });
 
-const ContributeButton = React.memo(() => {
+const ContributeButton = React.memo(({ onSubmit }) => {
   const amountSelector = useSelector(contributeSelector.inputAmountSelector);
   const inputAmount = amountSelector(formConfigsContribute.formName, formConfigsContribute.inputToken);
   const outputAmount = amountSelector(formConfigsContribute.formName, formConfigsContribute.outputToken);
@@ -101,9 +101,9 @@ const ContributeButton = React.memo(() => {
   const poolId = useSelector(contributeSelector.poolIDSelector);
   const { amp } = useSelector(contributeSelector.mappingDataSelector);
   const { nftToken } = useSelector(contributeSelector.nftTokenSelector);
-  const disabled = useSelector(contributeSelector.disableContribute);
+  const { isDisabled } = useSelector(contributeSelector.disableContribute);
   const createContributes = async () => {
-    if (disabled) return;
+    if (isDisabled) return;
     const params = {
       fee: feeAmount / 2,
       tokenId1: inputAmount.tokenId,
@@ -121,7 +121,7 @@ const ContributeButton = React.memo(() => {
     <ButtonTrade
       btnStyle={mainStyle.button}
       title={LIQUIDITY_MESSAGES.addLiquidity}
-      disabled={disabled}
+      disabled={isDisabled}
       onPress={createContributes}
     />
   );
@@ -145,7 +145,7 @@ const Contribute = ({ onInitContribute }) => {
             {() => (
               <>
                 <InputsGroup />
-                <ContributeButton />
+                <ContributeButton onSubmit={onInitContribute} />
                 <Extra />
               </>
             )}
@@ -155,6 +155,10 @@ const Contribute = ({ onInitContribute }) => {
       <NFTTokenBottomBar />
     </>
   );
+};
+
+ContributeButton.propTypes = {
+  onSubmit: PropTypes.func.isRequired
 };
 
 Contribute.propTypes = {

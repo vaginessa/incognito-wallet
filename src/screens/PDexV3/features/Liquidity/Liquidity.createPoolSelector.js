@@ -94,21 +94,21 @@ export const outputTokensListSelector = createSelector(
 export const ampValueSelector = createSelector(
   (state) => state,
   (state) => {
-    const selector = formValueSelector(formConfigsCreatePool.formName);
-    const ampStr = selector(state, formConfigsCreatePool.amp);
-    const amp = convert.toNumber(ampStr, true);
-    const isValid = !isNaN(amp) && amp > 0;
-    return { ampStr, amp, isValid };
+    // const selector = formValueSelector(formConfigsCreatePool.formName);
+    // const ampStr = selector(state, formConfigsCreatePool.amp);
+    // const amp = convert.toNumber(ampStr, true);
+    // const isValid = !isNaN(amp) && amp > 0;
+    // return { ampStr, amp, isValid };
+    return 1000;
   }
 );
 
 export const disableCreatePool = createSelector(
   inputAmountSelector,
-  ampValueSelector,
-  ( inputAmount, { isValid: isValidAMP } ) => {
+  ( inputAmount ) => {
     const { error: inputError } = inputAmount(formConfigsCreatePool.formName, formConfigsCreatePool.inputToken);
     const { error: outputError } = inputAmount(formConfigsCreatePool.formName, formConfigsCreatePool.outputToken);
-    return !!inputError || !!outputError || !isValidAMP;
+    return !!inputError || !!outputError;
   }
 );
 
