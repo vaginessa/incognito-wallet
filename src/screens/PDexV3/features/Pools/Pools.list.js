@@ -30,7 +30,7 @@ export const PoolsList = React.memo(({ onPressPool }) => {
         renderItem={({ item: poolId }) => (
           <Pool poolId={poolId} onPressPool={() => onPressPool(poolId)} />
         )}
-        keyExtractor={(pool) => pool?.poolId}
+        keyExtractor={(poolId) => poolId}
         showsVerticalScrollIndicator={false}
         style={generalStyled.listPools}
       />
@@ -43,7 +43,12 @@ const PoolsListContainer = (props) => {
   const { headerTitle = 'Pools', onPressPool } = params || props;
   return (
     <View style={styled.container}>
-      <Header title={headerTitle} />
+      <Header
+        title={headerTitle}
+        canSearch
+        isNormalSearch
+        onTextSearchChange={() => {}}
+      />
       <PoolsList onPressPool={onPressPool} />
     </View>
   );

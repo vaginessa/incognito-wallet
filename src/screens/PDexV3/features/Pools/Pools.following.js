@@ -28,7 +28,7 @@ const PoolsHeader = React.memo(({ handlePressPool }) => {
   };
   return (
     <View style={headStyled.headContainer}>
-      <Text style={headStyled.titleText}>Market List</Text>
+      <Text style={headStyled.titleText}>Favorite List</Text>
       <TouchableOpacity
         style={headStyled.btnSearch}
         onPress={onSearchPress}
@@ -73,16 +73,9 @@ const HEADER_FACTORIES = [
       poolsListHeaderFollowingStyled.centerText,
     ],
   },
-  {
-    text: '#Change %',
-    styled: [
-      poolsListHeaderFollowingStyled.wrapperThirdSection,
-      poolsListHeaderFollowingStyled.rightText,
-    ],
-  },
 ];
 
-const PoolsListHeaderFollowing = React.memo(() => {
+export const PoolsListHeader = React.memo(() => {
   return (
     <Row style={{ marginVertical: 15, justifyContent: 'space-between' }}>
       {HEADER_FACTORIES.map((item) => (
@@ -129,7 +122,7 @@ const Pools = (props) => {
   return (
     <View style={styled.container}>
       <PoolsHeader handlePressPool={handlePressPool} />
-      <PoolsListHeaderFollowing />
+      <PoolsListHeader />
       <PoolsListFollowing handlePressPool={handlePressPool} />
     </View>
   );

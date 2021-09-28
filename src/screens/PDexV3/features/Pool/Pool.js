@@ -21,11 +21,8 @@ export const PoolItem = React.memo((props) => {
   }
   const {
     verified,
-    amp,
     apy,
     volumeToAmount,
-    perChange24hToStr,
-    perChange24hColor,
     isFollowed,
     poolTitle,
   } = data || {};
@@ -34,7 +31,7 @@ export const PoolItem = React.memo((props) => {
       onPress={() => typeof onPressPool === 'function' && onPressPool(poolId)}
       style={[styled.container, style]}
     >
-      <Row>
+      <Row style={{ justifyContent: 'space-between' }}>
         <View style={styled.wrapperFirstSection}>
           <Row style={styled.rowName}>
             <Text
@@ -45,21 +42,9 @@ export const PoolItem = React.memo((props) => {
             {!!verified && <TokenVerifiedIcon />}
           </Row>
           <Text style={styled.subText}>{`Vol: ${volumeToAmount}$`}</Text>
-          <Text style={styled.subText}>{`AMP: ${amp}`}</Text>
         </View>
         <View style={styled.wrapperSecondSection}>
           <Text style={[styled.subText, styled.apy]}>{`${apy}%`}</Text>
-        </View>
-        <View style={styled.wrapperThirdSection}>
-          <Text
-            style={[
-              styled.subText,
-              styled.rightText,
-              { color: perChange24hColor },
-            ]}
-          >
-            {perChange24hToStr}
-          </Text>
         </View>
       </Row>
     </TouchableOpacity>
@@ -76,7 +61,7 @@ const Pool = (props) => {
     return (
       <Swipeout
         autoClose
-        style={{ backgroundColor: 'transparent', marginBottom: 18 }}
+        style={[styled.container, { backgroundColor: 'transparent' }]}
         right={[
           {
             text: 'Remove',

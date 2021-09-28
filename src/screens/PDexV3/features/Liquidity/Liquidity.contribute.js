@@ -16,6 +16,7 @@ import {useNavigation} from 'react-navigation-hooks';
 import routeNames from '@routers/routeNames';
 import {NFTTokenBottomBar} from '@screens/PDexV3/features/NFTToken';
 import {switchAccountSelector} from '@src/redux/selectors/account';
+import {nftTokenSelector} from '@screens/PDexV3/features/Liquidity/Liquidity.contributeSelector';
 
 const initialFormValues = {
   inputToken: '',
@@ -92,20 +93,43 @@ export const Extra = React.memo(() => {
   );
 });
 
+const ContributeButton = React.memo(() => {
+  const amountSelector = useSelector(contributeSelector.inputAmountSelector);
+  const inputAmount = amountSelector(formConfigsContribute.formName, formConfigsContribute.inputToken);
+  const outputAmount = amountSelector(formConfigsContribute.formName, formConfigsContribute.outputToken);
+  const { feeAmount } = useSelector(contributeSelector.feeAmountSelector);
+  const poolId = useSelector(contributeSelector.poolIDSelector);
+  const { amp } = useSelector(contributeSelector.mappingDataSelector);
+  const { nftToken } = useSelector(contributeSelector.nftTokenSelector);
+  const disabled = useSelector(contributeSelector.disableContribute);
+  const createContributes = async () => {
+    if (disabled) return;
+    const params = {
+      fee: feeAmount / 2,
+      tokenId1: inputAmount.tokenId,
+      tokenId2: outputAmount.tokenId,
+      amount1: inputAmount.originalInputAmount,
+      amount2: outputAmount.originalInputAmount,
+      poolPairID: poolId,
+      amp,
+      nftId: nftToken,
+    };
+    console.log('params', params);
+  };
+
+  return (
+    <ButtonTrade
+      btnStyle={mainStyle.button}
+      title={LIQUIDITY_MESSAGES.addLiquidity}
+      disabled={disabled}
+      onPress={createContributes}
+    />
+  );
+});
+
 const Contribute = ({ onInitContribute }) => {
-  const navigation = useNavigation();
   const isFetching = useSelector(contributeSelector.statusSelector);
-  const disableContribute = useSelector(contributeSelector.disableContribute);
   const switching = useSelector(switchAccountSelector);
-  const onSuccess = () => {
-    batch(() => {
-      onInitContribute();
-      navigation.navigate(routeNames.ContributePool);
-    });
-  };
-  const onSubmit = () => {
-    navigation.navigate(routeNames.ContributeConfirm, { onSuccess });
-  };
   React.useEffect(() => {
     if (typeof onInitContribute === 'function' && !switching) onInitContribute();
   }, [switching]);
@@ -113,17 +137,15 @@ const Contribute = ({ onInitContribute }) => {
     <>
       <View style={mainStyle.container}>
         <Header title={LIQUIDITY_MESSAGES.addLiquidity} accountSelectable />
-        <ScrollView refreshControl={(<RefreshControl refreshing={isFetching} onRefresh={onInitContribute} />)}>
+        <ScrollView
+          refreshControl={(<RefreshControl refreshing={isFetching} onRefresh={onInitContribute} />)}
+          showsVerticalScrollIndicator={false}
+        >
           <Form>
-            {({ handleSubmit }) => (
+            {() => (
               <>
                 <InputsGroup />
-                <ButtonTrade
-                  btnStyle={mainStyle.button}
-                  title={LIQUIDITY_MESSAGES.addLiquidity}
-                  disabled={disableContribute}
-                  onPress={onSubmit}
-                />
+                <ContributeButton />
                 <Extra />
               </>
             )}

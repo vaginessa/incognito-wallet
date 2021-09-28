@@ -4,7 +4,8 @@ import {
   formConfigsContribute,
   formConfigsCreatePool,
   removePoolSelector,
-  formConfigsRemovePool, createPoolSelector
+  formConfigsRemovePool,
+  createPoolSelector
 } from '@screens/PDexV3/features/Liquidity';
 import {batch} from 'react-redux';
 import {getBalance} from '@src/redux/actions/token';
@@ -19,6 +20,7 @@ import BigNumber from 'bignumber.js';
 import format from '@utils/format';
 import convertUtil from '@utils/convert';
 import {defaultAccountWalletSelector} from '@src/redux/selectors/account';
+import {actionSetNFTTokenData} from '@src/redux/actions/account';
 
 /***
  *================================================================
@@ -60,7 +62,10 @@ const actionInitContribute = () => async (dispatch, getState) => {
     const poolID = contributeSelector.poolIDSelector(state);
     const account = defaultAccountWalletSelector(state);
     const pDexV3Inst = await getPDexV3Instance({ account });
-    const poolDetails = (await pDexV3Inst.getListPoolsDetail([poolID])) || [];
+    const [poolDetails] = await Promise.all([
+      (await pDexV3Inst.getListPoolsDetail([poolID])) || [],
+      await dispatch(actionSetNFTTokenData()),
+    ]);
     if (poolDetails.length > 0) {
       const contributePool = poolDetails[0];
       if (!contributePool) return;

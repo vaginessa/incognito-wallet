@@ -4,11 +4,11 @@ import {getPrivacyDataByTokenID as getPrivacyDataByTokenIDSelector} from '@src/r
 import {getDataShareByPoolIdSelector} from '@screens/PDexV3/features/Portfolio/Portfolio.selector';
 import {sharedSelector} from '@src/redux/selectors';
 import {getExchangeRate, getPoolSize} from '@screens/PDexV3';
-import helper from '@src/constants/helper';
 import {getInputAmount} from '@screens/PDexV3/features/Liquidity/Liquidity.utils';
 import uniqBy from 'lodash/uniqBy';
 import format from '@utils/format';
 import {formConfigsContribute} from '@screens/PDexV3/features/Liquidity/Liquidity.constant';
+import {nftTokenDataSelector} from '@src/redux/selectors/account';
 
 const contributeSelector = createSelector(
   liquiditySelector,
@@ -64,14 +64,12 @@ export const mappingDataSelector = createSelector(
     getDataShareByPoolId,
     { inputToken, outputToken },
     isGettingBalance,
-    { token: feeToken }
+    { token: feeToken, feeAmount }
   ) => {
     if (!poolData || !inputToken || !outputToken) return {};
-    const { poolId, amp, token1Value: token1PoolValue, token2Value: token2PoolValue } = poolData;
-    const { shareStr, nftId } = getDataShareByPoolId(poolId) || {};
-    console.log('SANG TEST: 1111');
+    const { poolId, token1Value: token1PoolValue, token2Value: token2PoolValue } = poolData;
+    const { nftId } = getDataShareByPoolId(poolId) || {};
     const exchangeRateStr = getExchangeRate(inputToken, outputToken, token1PoolValue, token2PoolValue);
-    console.log('SANG TEST: 1111', exchangeRateStr);
     const poolSize = getPoolSize(inputToken, outputToken, token1PoolValue, token2PoolValue);
     const isLoadingBalance =
       isGettingBalance.includes(inputToken?.tokenId)
@@ -79,20 +77,15 @@ export const mappingDataSelector = createSelector(
       || isGettingBalance.includes(feeToken?.tokenId);
     const tokens = uniqBy([inputToken, outputToken, feeToken], (token) => token.tokenId);
     const hookBalances = tokens.map((token) => ({
-      label: 'Balance',
-      value: `${format.amount(token.amount, token.pDecimals)} ${token.symbol}`,
+      label: `${token.symbol} Balance`,
+      value: `${format.amount(token.amount, token.pDecimals)}`,
       loading: isGettingBalance.includes(token?.tokenId)
     }));
     const hookFactories = [
-      {
-        label: 'AMP',
-        value: amp,
-        info: helper.HELPER_CONSTANT.AMP
-      },
       ...hookBalances,
       {
-        label: 'Share',
-        value: shareStr || '0 (0%)',
+        label: 'Fee',
+        value: `${format.amount(feeAmount, feeToken.pDecimals)} ${feeToken.symbol}`,
       },
       {
         label: 'Exchange rate',
@@ -124,13 +117,36 @@ export const inputAmountSelector = createSelector(
   getInputAmount
 );
 
+export const nftTokenSelector = createSelector(
+  poolIDSelector,
+  getDataShareByPoolIdSelector,
+  nftTokenDataSelector,
+  (poolId, getDataShareByPoolId, nftData) => {
+    const { list, nftToken } = nftData;
+    let res = {
+      nftToken,
+    };
+    const { nftId: _nftId } = getDataShareByPoolId(poolId) || {};
+    if (_nftId) {
+      const nft = (list || []).find(item => (parseInt(item.realAmount) && _nftId === item.nftToken));
+      if (nft) {
+        res.nftToken = nft.nftToken;
+      }
+    }
+    return res;
+  }
+);
+
 export const disableContribute = createSelector(
   statusSelector,
   inputAmountSelector,
-  ( isFetching, inputAmount ) => {
+  nftTokenSelector,
+  ( isFetching, inputAmount, nftData ) => {
+    const { nftToken } = nftData;
     const { error: inputError } = inputAmount(formConfigsContribute.formName, formConfigsContribute.inputToken);
     const { error: outputError } = inputAmount(formConfigsContribute.formName, formConfigsContribute.outputToken);
-    return isFetching || !!inputError || !!outputError;
+    const isDisable = isFetching || !!inputError || !!outputError || !nftToken;
+    return isDisable;
   }
 );
 
@@ -143,5 +159,6 @@ export default ({
   feeAmountSelector,
   mappingDataSelector,
   inputAmountSelector,
+  nftTokenSelector,
   disableContribute,
 });
