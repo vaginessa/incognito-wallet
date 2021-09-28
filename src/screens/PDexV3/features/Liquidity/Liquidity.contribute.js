@@ -2,21 +2,23 @@ import React, {memo} from 'react';
 import {RefreshControl, ScrollView, View} from 'react-native';
 import PropTypes from 'prop-types';
 import {styled as mainStyle} from '@screens/PDexV3/PDexV3.styled';
-import {Header, RowSpaceText} from '@src/components';
-import {LIQUIDITY_MESSAGES, formConfigsContribute} from '@screens/PDexV3/features/Liquidity/Liquidity.constant';
+import {Header, RowSpaceText, SuccessModal} from '@src/components';
+import {
+  LIQUIDITY_MESSAGES,
+  formConfigsContribute,
+  SUCCESS_MODAL
+} from '@screens/PDexV3/features/Liquidity/Liquidity.constant';
 import {createForm, RFTradeInputAmount as TradeInputAmount, validator} from '@components/core/reduxForm';
-import {batch, useDispatch, useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import styled from '@screens/PDexV3/features/Liquidity/Liquidity.styled';
 import {Field} from 'redux-form';
 import {AddBreakLine} from '@components/core';
 import withLiquidity from '@screens/PDexV3/features/Liquidity/Liquidity.enhance';
 import {contributeSelector, liquidityActions} from '@screens/PDexV3/features/Liquidity';
 import {ButtonTrade} from '@components/Button';
-import {useNavigation} from 'react-navigation-hooks';
-import routeNames from '@routers/routeNames';
 import {NFTTokenBottomBar} from '@screens/PDexV3/features/NFTToken';
-import {switchAccountSelector} from '@src/redux/selectors/account';
-import {nftTokenSelector} from '@screens/PDexV3/features/Liquidity/Liquidity.contributeSelector';
+import {compose} from 'recompose';
+import withTransaction from '@screens/PDexV3/features/Liquidity/Liquidity.enhanceTransaction';
 
 const initialFormValues = {
   inputToken: '',
@@ -114,7 +116,7 @@ const ContributeButton = React.memo(({ onSubmit }) => {
       amp,
       nftId: nftToken,
     };
-    console.log('params', params);
+    onSubmit(params);
   };
 
   return (
@@ -127,16 +129,27 @@ const ContributeButton = React.memo(({ onSubmit }) => {
   );
 });
 
-const Contribute = ({ onInitContribute }) => {
+const Contribute = ({
+  onInitContribute,
+  onCreateContributes,
+  visible,
+  onCloseModal
+}) => {
   const isFetching = useSelector(contributeSelector.statusSelector);
-  const switching = useSelector(switchAccountSelector);
+  const onSubmit = (params) => {
+    typeof onCreateContributes === 'function' && onCreateContributes(params);
+  };
+  const onClose = () => {
+    onCloseModal();
+    onInitContribute();
+  };
   React.useEffect(() => {
-    if (typeof onInitContribute === 'function' && !switching) onInitContribute();
-  }, [switching]);
+    if (typeof onInitContribute === 'function') onInitContribute();
+  }, []);
   return (
     <>
       <View style={mainStyle.container}>
-        <Header title={LIQUIDITY_MESSAGES.addLiquidity} accountSelectable />
+        <Header title={LIQUIDITY_MESSAGES.addLiquidity} />
         <ScrollView
           refreshControl={(<RefreshControl refreshing={isFetching} onRefresh={onInitContribute} />)}
           showsVerticalScrollIndicator={false}
@@ -145,7 +158,7 @@ const Contribute = ({ onInitContribute }) => {
             {() => (
               <>
                 <InputsGroup />
-                <ContributeButton onSubmit={onInitContribute} />
+                <ContributeButton onSubmit={onSubmit} />
                 <Extra />
               </>
             )}
@@ -153,6 +166,13 @@ const Contribute = ({ onInitContribute }) => {
         </ScrollView>
       </View>
       <NFTTokenBottomBar />
+      <SuccessModal
+        closeSuccessDialog={onClose}
+        title={SUCCESS_MODAL.CREATE_POOL.title}
+        buttonTitle="Ok"
+        description={SUCCESS_MODAL.CREATE_POOL.desc}
+        visible={visible}
+      />
     </>
   );
 };
@@ -162,7 +182,13 @@ ContributeButton.propTypes = {
 };
 
 Contribute.propTypes = {
-  onInitContribute: PropTypes.func.isRequired
+  onInitContribute: PropTypes.func.isRequired,
+  onCreateContributes: PropTypes.func.isRequired,
+  onCloseModal: PropTypes.func.isRequired,
+  visible: PropTypes.bool.isRequired,
 };
 
-export default withLiquidity(memo(Contribute));
+export default compose(
+  withLiquidity,
+  withTransaction,
+)(memo(Contribute));

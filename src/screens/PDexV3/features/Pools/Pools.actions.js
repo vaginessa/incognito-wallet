@@ -88,7 +88,8 @@ export const actionFetchListPools = () => async (
         price: 0,
         volume: 0,
         priceChange24H: 0,
-        apy: 0
+        apy: 0,
+        verified: true,
       },
       {
         poolId: '0000000000000000000000000000000000000000000000000000000000000004-aad9c0bd04c44b592e92c8a86ce96116a7b7a165ce186acc8129f4a62c27cb3a-3f0fa0198f14d52c332e4c6afaf0ae27301cc29cfa941384486796fec1c2c862',
@@ -104,6 +105,7 @@ export const actionFetchListPools = () => async (
         virtual1Value: 200000,
         virtual2Value: 800000,
         volume: 0,
+        verified: true,
       },
       {
         poolId: '0000000000000000000000000000000000000000000000000000000000000004-91103a2ca297f502a996f2a27595a7efa1cb6f499409224a7471a1ddd382a7e2-2b0838d855ab72a67a09b5ff423a4f0c0793e56ab33d0838de18809fb9d71d51',
@@ -119,6 +121,7 @@ export const actionFetchListPools = () => async (
         virtual1Value: 200000,
         virtual2Value: 800000,
         volume: 0,
+        verified: true,
       },
       {
         poolId: '0000000000000000000000000000000000000000000000000000000000000004-970cd08487f0c62412efeb1681a7e8faf0e6e9aabe24e293a2c1d95cb091d956-dc59619c051ae371a32097dbd56f2f51217850b1aa2ed6167003f0814317bbd0',
@@ -134,6 +137,7 @@ export const actionFetchListPools = () => async (
         virtual1Value: 200000,
         virtual2Value: 800000,
         volume: 0,
+        verified: true,
       },
       {
         poolId: '0000000000000000000000000000000000000000000000000000000000000004-5952a58e6e00e9406cb480e150a629bb03f0ef603f026d1f6b173a5fa79661e2-cc503cd8be212bcc68d9020d75f198c6c783dab51fa9179fa757cc888b7d876d',
@@ -149,6 +153,7 @@ export const actionFetchListPools = () => async (
         virtual1Value: 200000,
         virtual2Value: 800000,
         volume: 0,
+        verified: true,
       },
       {
         poolId: '0000000000000000000000000000000000000000000000000000000000000004-2fabc23caaa8de5bf0f58c27850388415c0d62dbb3ec4c53e3d4deb0d5d7d614-7cf8712fde07b5a5af458023a2d33139d5c1d769d0dc32c604971ec7ac51c52d',
@@ -164,6 +169,7 @@ export const actionFetchListPools = () => async (
         virtual1Value: 250,
         virtual2Value: 250,
         volume: 0,
+        verified: true,
       },
       {
         poolId: '0000000000000000000000000000000000000000000000000000000000000004-2fabc23caaa8de5bf0f58c27850388415c0d62dbb3ec4c53e3d4deb0d5d7d614-a4c7aaca3f5a16c6c6bc96f14c5f408e74a47fc86cb41793f80e6c1aeb2d9f15',
@@ -179,6 +185,7 @@ export const actionFetchListPools = () => async (
         virtual1Value: 374,
         virtual2Value: 1122,
         volume: 0,
+        verified: true,
       }
     ];
     await dispatch(actionFetchedListPools([...pools]));

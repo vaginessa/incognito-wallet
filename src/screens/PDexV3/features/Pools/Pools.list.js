@@ -6,11 +6,12 @@ import {ActivityIndicator, StyleSheet, View} from 'react-native';
 import {useSelector} from 'react-redux';
 import {
   isFetchingSelector,
-  poolPairIdsSelector,
+  listPoolsSelector,
 } from '@screens/PDexV3/features/Pools';
 import Pool from '@screens/PDexV3/features/Pool';
 import { useNavigationParam } from 'react-navigation-hooks';
 import PropTypes from 'prop-types';
+import isEmpty from 'lodash/isEmpty';
 import { styled as generalStyled } from './Pools.styled';
 
 const styled = StyleSheet.create({
@@ -19,18 +20,18 @@ const styled = StyleSheet.create({
   },
 });
 
-export const PoolsList = React.memo(({ onPressPool }) => {
-  const poolIds = useSelector(poolPairIdsSelector);
+export const PoolsList = React.memo(({ onPressPool, pools }) => {
+  // const poolIds = useSelector(poolPairIdsSelector);
   const isFetching = useSelector(isFetchingSelector);
   return (
     <KeyboardAwareScrollView contentContainerStyle={{ paddingTop: 27 }}>
       {isFetching && (<ActivityIndicator style={{ marginBottom: 30 }} />)}
       <FlatList
-        data={poolIds}
-        renderItem={({ item: poolId }) => (
-          <Pool poolId={poolId} onPressPool={() => onPressPool(poolId)} />
+        data={pools}
+        renderItem={({ item }) => (
+          <Pool poolId={item.poolId} onPressPool={() => onPressPool(item.poolId)} />
         )}
-        keyExtractor={(poolId) => poolId}
+        keyExtractor={({ poolId }) => poolId}
         showsVerticalScrollIndicator={false}
         style={generalStyled.listPools}
       />
@@ -40,16 +41,33 @@ export const PoolsList = React.memo(({ onPressPool }) => {
 
 const PoolsListContainer = (props) => {
   const params = useNavigationParam('params');
-  const { headerTitle = 'Pools', onPressPool } = params || props;
+  const { headerTitle = 'Search pools', onPressPool } = params || props;
+  const purePools = useSelector(listPoolsSelector);
+  const [pools, setPools] = React.useState(() => purePools.filter(({ verified }) => verified));
+  const onSearch = (searchText) => {
+    const dataByPoolId = purePools.filter(({ poolId }) => searchText.toLowerCase() === poolId.toLowerCase());
+    if (!isEmpty(dataByPoolId)) {
+      setPools(dataByPoolId);
+      return;
+    }
+    const searchData = purePools.filter(({ token1, token2, verified }) => (
+      (
+        token1.symbol.toLowerCase().includes(searchText.toLowerCase()) ||
+        token2.symbol.toLowerCase().includes(searchText.toLowerCase())
+      ) &&
+      verified
+    ));
+    setPools(searchData);
+  };
   return (
     <View style={styled.container}>
       <Header
         title={headerTitle}
         canSearch
         isNormalSearch
-        onTextSearchChange={() => {}}
+        onTextSearchChange={onSearch}
       />
-      <PoolsList onPressPool={onPressPool} />
+      <PoolsList onPressPool={onPressPool} pools={pools} />
     </View>
   );
 };

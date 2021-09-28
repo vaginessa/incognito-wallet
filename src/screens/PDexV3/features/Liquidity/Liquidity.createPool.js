@@ -2,8 +2,12 @@ import React, {memo} from 'react';
 import {ScrollView, View} from 'react-native';
 import PropTypes from 'prop-types';
 import {styled as mainStyle} from '@screens/PDexV3/PDexV3.styled';
-import {Header, RowSpaceText} from '@src/components';
-import {LIQUIDITY_MESSAGES,formConfigsCreatePool} from '@screens/PDexV3/features/Liquidity/Liquidity.constant';
+import {Header, RowSpaceText, SuccessModal} from '@src/components';
+import {
+  LIQUIDITY_MESSAGES,
+  formConfigsCreatePool,
+  SUCCESS_MODAL
+} from '@screens/PDexV3/features/Liquidity/Liquidity.constant';
 import {createForm, RFTradeInputAmount as TradeInputAmount, validator} from '@components/core/reduxForm';
 import {AddBreakLine} from '@components/core';
 import {batch, useDispatch, useSelector} from 'react-redux';
@@ -15,6 +19,11 @@ import {useNavigation} from 'react-navigation-hooks';
 import routeNames from '@routers/routeNames';
 import {disableCreatePool} from '@screens/PDexV3/features/Liquidity/Liquidity.createPoolSelector';
 import {ButtonTrade} from '@components/Button';
+import {compose} from 'recompose';
+import withTransaction from '@screens/PDexV3/features/Liquidity/Liquidity.enhanceTransaction';
+import {NFTTokenBottomBar} from '@screens/PDexV3/features/NFTToken';
+import {actionToggleModal} from '@components/Modal';
+import {TradeSuccessModal} from '@screens/PDexV3/features/Trade';
 
 const initialFormValues = {
   inputToken: '',
@@ -120,46 +129,97 @@ export const Extra = React.memo(() => {
   );
 });
 
-const CreatePool = ({ onInitCreatePool }) => {
-  const disabled = useSelector(disableCreatePool);
-  const navigation = useNavigation();
-  const onSuccess = () => {
-    batch(() => {
-      onInitCreatePool();
-      navigation.navigate(routeNames.CreatePool);
-    });
+const ButtonCreatePool = React.memo(({ onSubmit }) => {
+  const { disabled } = useSelector(disableCreatePool);
+  const amountSelector = useSelector(createPoolSelector.inputAmountSelector);
+  const inputAmount = amountSelector(formConfigsCreatePool.formName, formConfigsCreatePool.inputToken);
+  const outputAmount = amountSelector(formConfigsCreatePool.formName, formConfigsCreatePool.outputToken);
+  const { feeAmount } = useSelector(createPoolSelector.feeAmountSelector);
+  const { amp } = useSelector(createPoolSelector.ampValueSelector);
+  const handleSubmit = () => {
+    if (disabled) return;
+    const params = {
+      fee: feeAmount / 2,
+      tokenId1: inputAmount.tokenId,
+      tokenId2: outputAmount.tokenId,
+      amount1: inputAmount.originalInputAmount,
+      amount2: outputAmount.originalInputAmount,
+      amp,
+    };
+    onSubmit(params);
   };
-  const onSubmit = () => {
-    navigation.navigate(routeNames.CreatePoolConfirm, { onSuccess });
+  return (
+    <ButtonTrade
+      btnStyle={mainStyle.button}
+      title={LIQUIDITY_MESSAGES.createPool}
+      disabled={disabled}
+      onPress={handleSubmit}
+    />
+  );
+});
+
+const CreatePool = ({
+  onInitCreatePool,
+  onFreeCreatePool,
+  onCreateNewPool,
+  visible,
+  onCloseModal
+}) => {
+  const onSubmit = (params) => {
+    typeof onCreateNewPool === 'function' && onCreateNewPool(params);
   };
+
+  const onClose = () => {
+    onCloseModal();
+    onInitCreatePool();
+  };
+
+  const renderContent = () => (
+    <>
+      <InputsGroup />
+      <ButtonCreatePool onSubmit={onSubmit} />
+      <Extra />
+    </>
+  );
   React.useEffect(() => {
-    setTimeout(() => { onInitCreatePool(); }, 500);
+    onInitCreatePool();
+    return () => onFreeCreatePool();
   }, []);
   return (
-    <View style={mainStyle.container}>
-      <Header title={LIQUIDITY_MESSAGES.createPool} />
-      <ScrollView>
-        <Form>
-          {({ handleSubmit }) => (
-            <>
-              <InputsGroup />
-              <ButtonTrade
-                btnStyle={mainStyle.button}
-                title={LIQUIDITY_MESSAGES.createPool}
-                disabled={disabled}
-                onPress={onSubmit}
-              />
-              <Extra />
-            </>
-          )}
-        </Form>
-      </ScrollView>
-    </View>
+    <>
+      <View style={mainStyle.container}>
+        <Header title={LIQUIDITY_MESSAGES.createPool} />
+        <ScrollView>
+          <Form>
+            {renderContent()}
+          </Form>
+        </ScrollView>
+      </View>
+      <NFTTokenBottomBar />
+      <SuccessModal
+        closeSuccessDialog={onClose}
+        title={SUCCESS_MODAL.ADD_POOL.title}
+        buttonTitle="Ok"
+        description={SUCCESS_MODAL.ADD_POOL.desc}
+        visible={visible}
+      />
+    </>
   );
 };
 
 CreatePool.propTypes = {
-  onInitCreatePool: PropTypes.func.isRequired
+  onInitCreatePool: PropTypes.func.isRequired,
+  onFreeCreatePool: PropTypes.func.isRequired,
+  onCreateNewPool: PropTypes.func.isRequired,
+  onCloseModal: PropTypes.func.isRequired,
+  visible: PropTypes.bool.isRequired,
 };
 
-export default withLiquidity(memo(CreatePool));
+ButtonCreatePool.propTypes = {
+  onSubmit: PropTypes.func.isRequired,
+};
+
+export default compose(
+  withLiquidity,
+  withTransaction,
+)(memo(CreatePool));

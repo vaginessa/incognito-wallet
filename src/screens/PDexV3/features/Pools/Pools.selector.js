@@ -25,18 +25,21 @@ export const followPoolIdsSelector = createSelector(
   ({ followIds }) => followIds || [],
 );
 
-/*** Pools with current pairID select */
-export const poolPairIdsSelector = createSelector(
+export const listPoolsPureSelector = createSelector(
   poolsSelector,
-  ({ listPools }) => listPools.map((pool) => pool.poolId),
+  ({ listPools }) => listPools,
 );
 
-/*** Pools with current pairID merge with followPools  select */
+export const poolPairIdsSelector = createSelector(
+  listPoolsPureSelector,
+  (listPools) => listPools.map((pool) => pool.poolId),
+);
+
 export const listPoolsSelector = createSelector(
-  poolsSelector,
+  listPoolsPureSelector,
   getPrivacyDataByTokenIDSelector,
   followPoolIdsSelector,
-  ({ listPools }, getPrivacyDataByTokenID, followIds) => {
+  (listPools, getPrivacyDataByTokenID, followIds) => {
     const pools = uniqBy([...listPools], 'poolId');
     return pools.map((pool) => {
       const {

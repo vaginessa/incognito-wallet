@@ -146,13 +146,28 @@ export const defaultAccountWalletSelector = createSelector(
     defaultAccount && wallet && getAccountWallet(defaultAccount, wallet),
 );
 
-export const getValidRealAmountNFT = createSelector(
+export const getValidRealAmountNFTSelector = createSelector(
   nftTokenDataSelector,
   (nftData) => (nftId) => {
     const { list } = nftData;
     let _nftToken;
     if (nftId) {
       const nft = (list || []).find(({ nftToken: _nftToken, realAmount }) => (nftId === _nftToken && parseInt(realAmount)));
+      if (nft) {
+        _nftToken = nft.nftToken;
+      }
+    }
+    return _nftToken;
+  },
+);
+
+export const getValidAmountNFTSelector = createSelector(
+  nftTokenDataSelector,
+  (nftData) => (nftId) => {
+    const { list, nftToken } = nftData;
+    let _nftToken = nftToken;
+    if (nftId) {
+      const nft = (list || []).find(({ nftToken: _nftToken, amount }) => (nftId === _nftToken && parseInt(amount)));
       if (nft) {
         _nftToken = nft.nftToken;
       }
@@ -182,5 +197,6 @@ export default {
   otaKeyOfDefaultAccountSelector,
   nftTokenDataSelector,
   defaultAccountWalletSelector,
-  getValidRealAmountNFT,
+  getValidRealAmountNFTSelector,
+  getValidAmountNFTSelector,
 };

@@ -4,6 +4,7 @@ import format from '@utils/format';
 import {MESSAGES} from '@screens/Dex/constants';
 import BigNumber from 'bignumber.js';
 import {formConfigsRemovePool} from '@screens/PDexV3/features/Liquidity/Liquidity.constant';
+import uniq from 'lodash/uniq';
 
 const convertAmount = ({ originalNum, pDecimals }) => {
   const humanAmount = convert.toHumanAmount(originalNum, pDecimals);
@@ -22,7 +23,8 @@ export const getInputAmount = (
       return {
         amount: '',
         originalAmount: 0,
-        loadingBalance: true
+        loadingBalance: true,
+        error: MESSAGES.NEGATIVE_NUMBER,
       };
     }
 
@@ -129,4 +131,23 @@ export const getInputShareAmount = (
   } catch (error) {
     console.log('inputAmountSelector error', error);
   }
+};
+
+export const filterTokenList = ({
+  tokenId,
+  pools = [],
+  tokenIds = [],
+  ignoreTokens = []
+}) => {
+  const existTokens = uniq(pools.reduce((prev, curr) => {
+    const { token1Id, token2Id } = curr;
+    if (token1Id === tokenId) {
+      prev.push(token2Id);
+    }
+    if (token2Id === tokenId) {
+      prev.push(token1Id);
+    }
+    return prev;
+  }, []));
+  return tokenIds.filter(_tokenId => !ignoreTokens.includes(_tokenId) && !existTokens.includes(_tokenId));
 };

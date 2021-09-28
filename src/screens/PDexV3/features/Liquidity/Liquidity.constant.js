@@ -4,6 +4,8 @@ export const TYPES = {
   ACTION_SET_CONTRIBUTE_POOL_DATA: '[pDexV3][liquidity] Set contribute pool data',
 
   ACTION_SET_CREATE_POOL_TOKEN: '[pDexV3][liquidity] Set create pool token',
+  ACTION_FREE_CREATE_POOL_TOKEN: '[pDexV3][liquidity] Free create pool',
+  ACTION_SET_FETCHING_CREATE_POOL: '[pDexV3][liquidity] Set fetching create pool',
 
   ACTION_SET_REMOVE_FETCHING: '[pDexV3][liquidity] Set remove pool fetching',
   ACTION_SET_REMOVE_POOL_ID: '[pDexV3][liquidity] Set remove pool poolID',
@@ -37,20 +39,14 @@ export const formConfigsRemovePool = {
 export const SUCCESS_MODAL = {
   ADD_POOL: {
     title: 'Liquidity added',
-    desc: 'Please wait a few minutes for your\n' +
-  'added liquidity to display.\n' +
-  'Thanks for providing privacy.',
+    desc: 'Please wait a few minutes for your added liquidity to display.'
   },
   CREATE_POOL: {
     title: 'Liquidity added',
-    desc: 'Please wait a few minutes for your\n' +
-  'added liquidity to display.\n' +
-  'Thanks for providing privacy.',
+    desc: 'Please wait a few minutes for your added liquidity to display.'
   },
   REMOVE_POOL: {
     title: 'Remove added',
-    desc: 'Please wait a few minutes for your\n' +
-      'added remove pool to display.\n' +
-      'Thanks for providing privacy.',
+    desc: 'Please wait a few minutes for your added remove pool to display.'
   }
 };

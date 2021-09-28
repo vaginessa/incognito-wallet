@@ -16,6 +16,9 @@ const createPoolState = {
   outputToken: undefined,
   feeAmount: ACCOUNT_CONSTANT.MAX_FEE_PER_TX * 2,
   feeToken: PRVIDSTR,
+  amp: undefined,
+  rate: undefined,
+  isFetching: false,
 };
 
 const removePoolState = {
@@ -80,6 +83,24 @@ const liquidityReducer = (state = initialState, action) => {
       createPool: {
         ...state.createPool,
         ...action.payload
+      }
+    };
+  }
+  case TYPES.ACTION_FREE_CREATE_POOL_TOKEN: {
+    return {
+      ...state,
+      createPool: {
+        ...createPoolState
+      }
+    };
+  }
+  case TYPES.ACTION_SET_FETCHING_CREATE_POOL: {
+    const { isFetching } = action.payload;
+    return {
+      ...state,
+      createPool: {
+        ...state.createPool,
+        isFetching
       }
     };
   }

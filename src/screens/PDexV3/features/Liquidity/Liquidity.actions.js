@@ -21,6 +21,9 @@ import format from '@utils/format';
 import convertUtil from '@utils/convert';
 import {defaultAccountWalletSelector} from '@src/redux/selectors/account';
 import {actionSetNFTTokenData} from '@src/redux/actions/account';
+import {filterTokenList} from '@screens/PDexV3/features/Liquidity/Liquidity.utils';
+import {listPoolsPureSelector} from '@screens/PDexV3/features/Pools';
+import {isFetchingSelector} from '@screens/PDexV3/features/Liquidity/Liquidity.createPoolSelector';
 
 /***
  *================================================================
@@ -138,6 +141,15 @@ const actionSetCreatePoolToken = (payload) => ({
   payload,
 });
 
+const actionFeeCreatePool = () => ({
+  type: TYPES.ACTION_FREE_CREATE_POOL_TOKEN,
+});
+
+const actionSetFetchingCreatePool = ({ isFetching }) => ({
+  type: TYPES.ACTION_SET_FETCHING_CREATE_POOL,
+  payload: { isFetching }
+});
+
 const actionSetCreatePoolText = ({ text, field }) => async (dispatch) => {
   try {
     dispatch(change(formConfigsCreatePool.formName, field, text));
@@ -149,27 +161,45 @@ const actionSetCreatePoolText = ({ text, field }) => async (dispatch) => {
 const actionUpdateCreatePoolInputToken = (tokenId) => async (dispatch, getState) => {
   try {
     const state = getState();
+    const isFetching = createPoolSelector.isFetchingSelector(state);
+    if (isFetching) return;
+    dispatch(actionSetFetchingCreatePool({ isFetching: true }));
+    const tokenIds = allTokensIDsSelector(state);
     const { inputToken, outputToken } = createPoolSelector.tokenSelector(state);
+    const pools = listPoolsPureSelector(state);
     const newInputToken = tokenId;
     let newOutputToken = outputToken.tokenId;
     if (newInputToken === outputToken.tokenId) {
       newOutputToken = inputToken.tokenId;
     }
-    batch(() => {
+    const outputTokens = filterTokenList({
+      tokenId: newInputToken,
+      pools,
+      tokenIds,
+      ignoreTokens: [newInputToken]
+    });
+    const isExist = outputTokens.some(tokenId => tokenId === newOutputToken);
+    if (!isExist) newOutputToken = outputTokens[0];
+    await Promise.all([
       dispatch(actionSetCreatePoolToken({
         inputToken: newInputToken,
         outputToken: newOutputToken,
-      }));
-      dispatch(actionGetBalance([newInputToken, newOutputToken]));
-    });
+      })),
+      dispatch(actionGetBalance([newInputToken, newOutputToken])),
+    ]);
   } catch (error) {
     new ExHandler(error).showErrorToast();
+  } finally {
+    dispatch(actionSetFetchingCreatePool({ isFetching: false }));
   }
 };
 
 const actionUpdateCreatePoolOutputToken = (tokenId) => async (dispatch, getState) => {
   try {
     const state = getState();
+    const isFetching = createPoolSelector.isFetchingSelector(state);
+    if (isFetching) return;
+    dispatch(actionSetFetchingCreatePool({ isFetching: true }));
     const { inputToken, outputToken } = createPoolSelector.tokenSelector(state);
     const newOutputToken = tokenId;
     let newInputToken = inputToken.tokenId;
@@ -185,32 +215,37 @@ const actionUpdateCreatePoolOutputToken = (tokenId) => async (dispatch, getState
     });
   } catch (error) {
     new ExHandler(error).showErrorToast();
+  } finally {
+    dispatch(actionSetFetchingCreatePool({ isFetching: false }));
   }
 };
 
-const actionInitCreatePool = () => (dispatch, getState) => {
+const actionInitCreatePool = () => async (dispatch, getState) => {
   try {
     const state = getState();
+    const isFetching = createPoolSelector.isFetchingSelector(state);
+    if (isFetching) return;
+    dispatch(actionSetFetchingCreatePool({ isFetching: true }));
     const tokenIDs = allTokensIDsSelector(state);
+    const listPools = listPoolsPureSelector(state);
     const { inputToken, outputToken } = createPoolSelector.tokenSelector(state);
     let newInputToken, newOutputToken;
     if (!inputToken && !outputToken) {
       newInputToken = tokenIDs[0];
-      newOutputToken = tokenIDs[1];
+      const outputTokens = filterTokenList({ tokenId: newInputToken, pools: listPools, tokenIds: tokenIDs, ignoreTokens: [newInputToken] });
+      newOutputToken = outputTokens[0];
     } else {
       newInputToken = inputToken.tokenId;
       newOutputToken = outputToken.tokenId;
     }
-    batch(() => {
-      dispatch(actionSetCreatePoolToken({
-        inputToken: newInputToken,
-        outputToken: newOutputToken,
-      }));
-      dispatch(actionGetBalance([newInputToken, newOutputToken]));
-      dispatch(change(formConfigsCreatePool.formName, formConfigsCreatePool.amp, '1'));
-    });
+    await Promise.all([
+      dispatch(actionSetCreatePoolToken({ inputToken: newInputToken, outputToken: newOutputToken })),
+      dispatch(actionGetBalance([newInputToken, newOutputToken])),
+    ]);
   } catch (error) {
     new ExHandler(error).showErrorToast();
+  } finally {
+    dispatch(actionSetFetchingCreatePool({ isFetching: false }));
   }
 };
 
@@ -325,6 +360,7 @@ export default ({
   actionUpdateCreatePoolOutputToken,
   actionInitCreatePool,
   actionSetCreatePoolText,
+  actionFeeCreatePool,
 
   actionSetRemovePoolID,
   actionSetRemovePoolToken,
