@@ -57,16 +57,15 @@ export async function submitProvideRawTx({
   });
 }
 
-export async function migratePRVProvide({paymentAddress, signPublicKeyEncode, amount, captchaCode, tokenId, locked}) {
-  const url = '/pool/staker/migrate';
+export async function migratePRVProvide({paymentAddress, signEncode, verifyCode, amount}) {
+  const url = '/staker/migrate-to-prv-lock';
   return http.post(url, {
     'PStakeAddress': paymentAddress,
-    'SignPublicKeyEncode': signPublicKeyEncode,
+    'SignEncode': signEncode,
+    'PaymentAddress': paymentAddress,
     'Amount': amount,
-    'g-recaptcha-response': captchaCode,
+    'g-recaptcha-response': verifyCode,
     'CaptchaVersion': 'v3',
-    'TokenID': tokenId,
-    'Locked': locked,
   });
 }
 
