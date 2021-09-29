@@ -114,7 +114,7 @@ const CoinList = ({
           const mapCoin = item.coin;
           return (
             <TouchableOpacity onPress={() => handleShowLockHistory(mapCoin)} key={mapCoin}>
-              <View style={mainStyles.coin} key={item.symbol}>
+              <View style={mainStyles.coin} key={item}>
                 <Row>
                   <View>
                     <Text style={mainStyles.coinName}>{item.symbol}</Text>

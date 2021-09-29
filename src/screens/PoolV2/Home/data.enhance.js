@@ -34,10 +34,11 @@ const withPoolData = (WrappedComp) => (props) => {
   };
 
   const getUserData = async (account, coins) => {
-    let userData = await getUserPoolData(account.PaymentAddress, coins);
+    const userData = await getUserPoolData(account.PaymentAddress, coins);
     let groupedUserDataTmp = [...userData];
-    if (userData && userData.length > 0) {
+    if (groupedUserDataTmp && groupedUserDataTmp.length > 0) {
       groupedUserDataTmp.map((item, index) => {
+        let newItem = {...item};
         const sameIDItems = groupedUserDataTmp.filter((i) => {
           return groupedUserDataTmp.indexOf(i) !== index && i.id === item.id && i.locked === item.locked && i.lockTime === item.lockTime;
         });
@@ -55,19 +56,19 @@ const withPoolData = (WrappedComp) => (props) => {
             totalUnstakePendingBalance = i.unstakePendingBalance;
             totalWithdrawPendingBalance = i.withdrawPendingBalance;
           });
-          item.balance = totalBalance;
-          item.rewardBalance = totalReward;
-          item.pendingBalance = totalPendingBalance;
-          item.unstakePendingBalance = totalUnstakePendingBalance;
-          item.withdrawPendingBalance = totalWithdrawPendingBalance;
+          newItem.balance = totalBalance;
+          newItem.rewardBalance = totalReward;
+          newItem.pendingBalance = totalPendingBalance;
+          newItem.unstakePendingBalance = totalUnstakePendingBalance;
+          newItem.withdrawPendingBalance = totalWithdrawPendingBalance;
 
-          item.displayReward = formatUtils.amountFull(item.rewardBalance, COINS.PRV.pDecimals, true);
-          item.displayBalance = formatUtils.amountFull(item.balance, item.pDecimals, true);
-          item.displayFullBalance = formatUtils.amountFull(item.balance, item.pDecimals, false);
-          item.displayPendingBalance = formatUtils.amountFull(item.pendingBalance, item.pDecimals, true);
-          item.displayUnstakeBalance = formatUtils.amountFull(item.unstakePendingBalance, item.pDecimals, true);
-          item.displayWithdrawReward = formatUtils.amountFull(item.withdrawPendingBalance, COINS.PRV.pDecimals, true);
-          groupedUserDataTmp[index] = item;
+          newItem.displayReward = formatUtils.amountFull(newItem.rewardBalance, COINS.PRV.pDecimals, true);
+          newItem.displayBalance = formatUtils.amountFull(newItem.balance, newItem.pDecimals, true);
+          newItem.displayFullBalance = formatUtils.amountFull(newItem.balance, newItem.pDecimals, false);
+          newItem.displayPendingBalance = formatUtils.amountFull(newItem.pendingBalance, newItem.pDecimals, true);
+          newItem.displayUnstakeBalance = formatUtils.amountFull(newItem.unstakePendingBalance, newItem.pDecimals, true);
+          newItem.displayWithdrawReward = formatUtils.amountFull(newItem.withdrawPendingBalance, COINS.PRV.pDecimals, true);
+          groupedUserDataTmp[index] = newItem;
 
           sameIDItems.map((i) => {
             groupedUserDataTmp.splice(groupedUserDataTmp.indexOf(i), 1);
@@ -75,8 +76,8 @@ const withPoolData = (WrappedComp) => (props) => {
         }
 
         return ({
-          ...item,
-          decimalBalance: convert.toNumber(item.displayBalance, true),
+          ...newItem,
+          decimalBalance: convert.toNumber(newItem.displayBalance, true),
         });
       });
       groupedUserDataTmp = _.orderBy(groupedUserDataTmp, ['decimalBalance'], ['desc', 'asc']);
