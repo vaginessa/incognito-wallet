@@ -3,7 +3,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 import { compose } from 'recompose';
-import { View, Text, TouchableOpacity } from '@components/core';
+import { View, Text, TouchableOpacity, ScrollView } from '@components/core';
 import { Row, PRVSymbol } from '@src/components/';
 import { withLayout_2 } from '@components/Layout';
 import Header from '@components/Header/index';
@@ -24,42 +24,39 @@ const LockHistory = ({
   return (
     <View style={styles.wrapper}>
       <Header title="Provide PRV lock history" onGoBack={() => navigation.navigate(ROUTE_NAMES.PoolV2)} />
-      <Row>
-        <View>
-          <Text style={mainStyles.coinName}> Provide </Text>
-        </View>
-        <View style={[mainStyles.flex]}>
-          <Text style={[mainStyles.coinName, mainStyles.textRight]}>
-            Unlock date
-          </Text>
-        </View>
-      </Row>
-      {lockHistories.map((item) => {
-        return (
-          <TouchableOpacity key={item}>
-            <View style={mainStyles.coin} key={item.symbol}>
-              <Row>
-                <View>
-                  <Text style={mainStyles.coinName}>{item.displayBalance} {item.symbol} </Text>
-                  <Row>
-                    <PRVSymbol style={mainStyles.coinInterest} />
-                    <Text style={[mainStyles.coinExtra, mainStyles.coinInterest]}>
-                      &nbsp;{item.displayReward}
-                    </Text>
-                  </Row>
-                </View>
+      <ScrollView style={mainStyles.coinContainer}>
+        {lockHistories.map((item) => {
+          return (
+            <TouchableOpacity key={item}>
+              <View style={mainStyles.coin} key={item.symbol}>
+                <Row>
+                  <View>
+                    <Text style={mainStyles.coinName}>{item.displayBalance} {item.symbol} </Text>
+                    <Text style={mainStyles.coinExtra}> Unlock </Text>
+                  </View>
 
-                <View style={[mainStyles.flex]}>
-                  <Text style={[mainStyles.coinExtra, mainStyles.textRight]}>
-                    {item.displayUnlockDate}
-                  </Text>
-                </View>
-              </Row>
-            </View>
-          </TouchableOpacity>
-          
-        );
-      })}
+                  <View style={[mainStyles.flex]}>
+                    <Row
+                      style={[mainStyles.textRight, mainStyles.justifyRight]}
+                      center
+                    >
+                      <PRVSymbol style={mainStyles.coinInterest} />
+                      <Text style={mainStyles.coinInterest}>
+                        &nbsp;{item.displayReward}
+                      </Text>
+                    </Row>
+                    <Text style={[mainStyles.textRight, mainStyles.unlockDate]}>
+                      {item.displayUnlockDate}
+                    </Text>
+                  </View>
+                </Row>
+              </View>
+            </TouchableOpacity>
+            
+          );
+        })}
+      </ScrollView>
+      
     </View>
   );
 };
