@@ -40,7 +40,8 @@ export async function submitProvideRawTx({
   rawData,
   amount,
   captchaCode,
-  tokenId
+  tokenId,
+  locked,
 }) {
   const url = '/pool/staker/submit-rawdata';
   return http.post(url, {
@@ -52,6 +53,7 @@ export async function submitProvideRawTx({
     'g-recaptcha-response': captchaCode,
     'CaptchaVersion': 'v3',
     'TokenID': tokenId,
+    'Locked': locked,
   });
 }
 

@@ -12,7 +12,7 @@ import { useNavigation } from 'react-navigation-hooks';
 import ROUTE_NAMES from '@routers/routeNames';
 import { Header, Row } from '@src/components/';
 import { BtnInfinite } from '@components/Button/index';
-import convertUtil from '@utils/convert';
+import convertUtil, { formatTime }from '@utils/convert';
 import formatUtil from '@utils/format';
 import styles from './style';
 
@@ -69,6 +69,11 @@ const Provide = ({
           />
         </Row>
         <Text style={mainStyle.coinExtra}>{coin.displayInterest}</Text>
+        {
+          coin.locked 
+            ? <Text style={mainStyle.coinExtra}>{coin.displayLockTime}</Text>
+            : null
+        }
         <Text style={mainStyle.error}>{error}</Text>
         <RoundCornerButton
           title="Provide liquidity"

@@ -50,6 +50,7 @@ const withConfirm = (WrappedComp) => (props) => {
         amount: provideValue,
         captchaCode,
         tokenId: coin.id,
+        locked: coin.locked,
       });
       onSuccess(true);
     } catch (error) {

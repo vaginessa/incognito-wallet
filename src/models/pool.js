@@ -28,7 +28,7 @@ class CoinConfigModel {
     }
 
     this.displayInterest = `${formatUtil.toFixed(this.apy, 2)}%  APY`;
-    this.displayLockTime = this.locked ? `${this.lockTime} MONTHS` : '';
+    this.displayLockTime = this.locked ? `${this.lockTime} Months` : '';
   }
 }
 
@@ -45,6 +45,8 @@ export class UserCoinPoolModel {
     this.pendingBalance = data.PendingBalance;
     this.unstakePendingBalance = data.UnstakePendingBalance;
     this.withdrawPendingBalance = data.WithdrawPendingBalance;
+    this.locked = data.Locked;
+    this.lockTime = data.LockTime;
 
     // if (this.id === COINS.PRV_ID) {
     //   this.name = COINS.PRV.name;
@@ -52,7 +54,7 @@ export class UserCoinPoolModel {
     //   this.pDecimals = COINS.PRV.pDecimals;
     // }
 
-    this.coin = coins.find(coin => coin.id === this.id);
+    this.coin = coins.find(coin => coin.id === this.id && coin.locked === this.locked && coin.lockTime === this.lockTime);
 
     if (this.coin) {
       this.pDecimals = this.coin.pDecimals;

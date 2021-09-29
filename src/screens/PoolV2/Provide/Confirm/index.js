@@ -26,7 +26,8 @@ const Confirm = ({
   error,
   disable,
   onRefresh,
-  refreshing
+  refreshing,
+  unlockTimeFormat,
 }) => {
   const renderRefreshControl = () => (
     <RefreshControl
@@ -42,6 +43,19 @@ const Confirm = ({
           <Text style={styles.bigText}>Provide</Text>
           <Text style={styles.bigText} numberOfLines={3}>{provide} {coin.symbol}</Text>
         </View>
+        {
+          unlockTimeFormat
+            ? (
+              <>
+                <ExtraInfo
+                  left="Unlock date"
+                  right={`${unlockTimeFormat}`}
+                  style={{ ...styles.extra, ...styles.bold }}
+                />
+              </>
+            )
+            : null
+        }
         <ExtraInfo
           left="Deposit"
           right={`${deposit} ${coin.symbol}`}
@@ -82,6 +96,7 @@ Confirm.propTypes = {
 
   onRefresh: PropTypes.func.isRequired,
   refreshing: PropTypes.bool,
+  unlockTimeFormat: PropTypes.string,
 };
 
 Confirm.defaultProps = {
@@ -89,7 +104,8 @@ Confirm.defaultProps = {
   deposit: '',
   provide: '',
   error: '',
-  refreshing: false
+  refreshing: false,
+  unlockTimeFormat: ''
 };
 
 export default compose(

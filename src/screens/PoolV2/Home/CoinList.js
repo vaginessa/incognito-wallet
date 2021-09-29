@@ -76,36 +76,47 @@ const CoinList = ({
         )}
         style={styles.scrollView}
       >
-        {data.map(item => (
-          <View style={mainStyles.coin} key={item.symbol}>
-            <Row>
-              <View>
-                <Text style={mainStyles.coinName}>{item.symbol}</Text>
-                <Text style={mainStyles.coinExtra}>
-                  {coins.find(coin => coin.id === item.id).displayInterest}
-                </Text>
-              </View>
-              <View style={[mainStyles.flex]}>
-                <Text style={[mainStyles.coinName, mainStyles.textRight]}>{item.displayBalance}</Text>
-                {!!item.displayPendingBalance &&
-                  <Text style={[mainStyles.coinExtra, mainStyles.textRight]}>+ {item.displayPendingBalance}</Text>
-                }
-                {!!item.displayUnstakeBalance &&
-                <Text style={[mainStyles.coinExtra, mainStyles.textRight]}>- {item.displayUnstakeBalance}</Text>
-                }
-                <Row style={[mainStyles.textRight, mainStyles.justifyRight]} center>
-                  <PRVSymbol style={mainStyles.coinInterest} />
-                  <Text style={mainStyles.coinInterest}>
-                    &nbsp;{item.displayReward}
+        {data.map(item => {
+          const mapCoin = coins.find(coin => coin.id === item.id && coin.locked === item.locked && coin.lockTime == item.lockTime);
+          return (
+            <View style={mainStyles.coin} key={item.symbol}>
+              <Row>
+                <View>
+                  <Text style={mainStyles.coinName}>{item.symbol}</Text>
+                  <Text style={mainStyles.coinExtra}>
+                    { mapCoin.displayInterest }
                   </Text>
-                </Row>
-                {!!item.displayWithdrawReward &&
-                <Text style={[mainStyles.coinExtra, mainStyles.textRight]}>- {item.displayWithdrawReward}</Text>
-                }
-              </View>
-            </Row>
-          </View>
-        ))}
+                  { item.locked
+                    ? (
+                      <Text style={mainStyles.coinExtra}>
+                        { mapCoin.displayLockTime }
+                      </Text>
+                    )
+                    : null
+                  }
+                </View>
+                <View style={[mainStyles.flex]}>
+                  <Text style={[mainStyles.coinName, mainStyles.textRight]}>{item.displayBalance}</Text>
+                  {!!item.displayPendingBalance &&
+                    <Text style={[mainStyles.coinExtra, mainStyles.textRight]}>+ {item.displayPendingBalance}</Text>
+                  }
+                  {!!item.displayUnstakeBalance &&
+                  <Text style={[mainStyles.coinExtra, mainStyles.textRight]}>- {item.displayUnstakeBalance}</Text>
+                  }
+                  <Row style={[mainStyles.textRight, mainStyles.justifyRight]} center>
+                    <PRVSymbol style={mainStyles.coinInterest} />
+                    <Text style={mainStyles.coinInterest}>
+                      &nbsp;{item.displayReward}
+                    </Text>
+                  </Row>
+                  {!!item.displayWithdrawReward &&
+                  <Text style={[mainStyles.coinExtra, mainStyles.textRight]}>- {item.displayWithdrawReward}</Text>
+                  }
+                </View>
+              </Row>
+            </View>
+          );
+        })}
         {renderRate()}
       </ScrollView>
     );
