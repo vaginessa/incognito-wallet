@@ -1,12 +1,20 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator } from '@components/core';
+import {
+  View,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+  ActivityIndicator,
+  RoundCornerButton,
+} from '@components/core';
 import mainStyles from '@screens/PoolV2/style';
 import { Row, PRVSymbol } from '@src/components/';
 import { ArrowRightGreyIcon } from '@components/Icons/index';
 import { useNavigation } from 'react-navigation-hooks';
 import ROUTE_NAMES from '@routers/routeNames';
 import { RefreshControl } from 'react-native';
+import { PRV_ID } from '@src/screens/DexV2/constants';
 import styles from './style';
 
 const CoinList = ({
@@ -34,20 +42,25 @@ const CoinList = ({
           <Text style={mainStyles.coinName}>Provide liquidity for pDEX</Text>
         </Row>
         <ScrollView
-          refreshControl={(
+          refreshControl={
             <RefreshControl
               refreshing={loading}
               onRefresh={() => onLoad(account)}
             />
-          )}
+          }
           style={styles.scrollView}
         >
-          {coins.map(item => (
+          {coins.map((item) => (
             <Row style={mainStyles.coin} key={item.symbol}>
               <Text style={mainStyles.coinName}>{item.name}</Text>
               <Text
-                style={[mainStyles.coinExtra, mainStyles.textRight, mainStyles.flex]}
-              >{item.displayInterest}
+                style={[
+                  mainStyles.coinExtra,
+                  mainStyles.textRight,
+                  mainStyles.flex,
+                ]}
+              >
+                {item.displayInterest}
               </Text>
             </Row>
           ))}
@@ -60,58 +73,81 @@ const CoinList = ({
   const renderRate = () => {
     if (!isLoadingHistories && !histories?.length) {
       return (
-        <Text style={mainStyles.coinExtra}>Rates subject to change at any time.</Text>
+        <Text style={mainStyles.coinExtra}>
+          Rates subject to change at any time.
+        </Text>
       );
     }
+  };
+
+  const handleOpenMigrate = (data) => {
+    navigation.navigate(ROUTE_NAMES.PoolV2ProvideMigrateInput, {
+      data,
+      coins,
+    });
   };
 
   const renderUserData = () => {
     return (
       <ScrollView
-        refreshControl={(
+        refreshControl={
           <RefreshControl
             refreshing={loading}
             onRefresh={() => onLoad(account)}
-          />
-        )}
+          />}
         style={styles.scrollView}
       >
-        {data.map(item => {
-          const mapCoin = coins.find(coin => coin.id === item.id && coin.locked === item.locked && coin.lockTime == item.lockTime);
+        {data.map((item) => {
+          const mapCoin = item.coin;
           return (
             <View style={mainStyles.coin} key={item.symbol}>
               <Row>
                 <View>
                   <Text style={mainStyles.coinName}>{item.symbol}</Text>
                   <Text style={mainStyles.coinExtra}>
-                    { mapCoin.displayInterest }
+                    {mapCoin.displayInterest}
+                    {!item.locked && mapCoin.id === PRV_ID && (
+                      <RoundCornerButton
+                        title="Migrate"
+                        style={[styles.migrateButton, mainStyles.button]}
+                        onPress={() => handleOpenMigrate(item)}
+                      />
+                    )}
                   </Text>
-                  { item.locked
-                    ? (
-                      <Text style={mainStyles.coinExtra}>
-                        { mapCoin.displayLockTime }
-                      </Text>
-                    )
-                    : null
-                  }
+                  {item.locked ? (
+                    <Text style={mainStyles.coinExtra}>
+                      {mapCoin.displayLockTime}
+                    </Text>
+                  ) : null}
                 </View>
                 <View style={[mainStyles.flex]}>
-                  <Text style={[mainStyles.coinName, mainStyles.textRight]}>{item.displayBalance}</Text>
-                  {!!item.displayPendingBalance &&
-                    <Text style={[mainStyles.coinExtra, mainStyles.textRight]}>+ {item.displayPendingBalance}</Text>
-                  }
-                  {!!item.displayUnstakeBalance &&
-                  <Text style={[mainStyles.coinExtra, mainStyles.textRight]}>- {item.displayUnstakeBalance}</Text>
-                  }
-                  <Row style={[mainStyles.textRight, mainStyles.justifyRight]} center>
+                  <Text style={[mainStyles.coinName, mainStyles.textRight]}>
+                    {item.displayBalance}
+                  </Text>
+                  {!!item.displayPendingBalance && (
+                    <Text style={[mainStyles.coinExtra, mainStyles.textRight]}>
+                      + {item.displayPendingBalance}
+                    </Text>
+                  )}
+                  {!!item.displayUnstakeBalance && (
+                    <Text style={[mainStyles.coinExtra, mainStyles.textRight]}>
+                      - {item.displayUnstakeBalance}
+                    </Text>
+                  )}
+                  <Row
+                    style={[mainStyles.textRight, mainStyles.justifyRight]}
+                    center
+                  >
                     <PRVSymbol style={mainStyles.coinInterest} />
                     <Text style={mainStyles.coinInterest}>
                       &nbsp;{item.displayReward}
                     </Text>
                   </Row>
-                  {!!item.displayWithdrawReward &&
-                  <Text style={[mainStyles.coinExtra, mainStyles.textRight]}>- {item.displayWithdrawReward}</Text>
-                  }
+                  {!!item.displayWithdrawReward && (
+                    <Text style={[mainStyles.coinExtra, mainStyles.textRight]}>
+                      - {item.displayWithdrawReward}
+                    </Text>
+                  )}
                 </View>
               </Row>
             </View>
@@ -137,7 +173,7 @@ const CoinList = ({
           <TouchableOpacity onPress={handleHistory}>
             <Row center spaceBetween style={mainStyles.flex}>
               <Text style={styles.rateStyle}>Provider history</Text>
-              <ArrowRightGreyIcon style={[{marginLeft: 10}]} />
+              <ArrowRightGreyIcon style={[{ marginLeft: 10 }]} />
             </Row>
           </TouchableOpacity>
         </View>

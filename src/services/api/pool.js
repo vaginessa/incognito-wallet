@@ -57,6 +57,20 @@ export async function submitProvideRawTx({
   });
 }
 
+export async function migratePRVProvide({paymentAddress, signPublicKeyEncode, amount, captchaCode, tokenId, locked}) {
+  const url = '/pool/staker/migrate';
+  return http.post(url, {
+    'PStakeAddress': paymentAddress,
+    'SignPublicKeyEncode': signPublicKeyEncode,
+    'Amount': amount,
+    'g-recaptcha-response': captchaCode,
+    'CaptchaVersion': 'v3',
+    'TokenID': tokenId,
+    'Locked': locked,
+  });
+}
+
+
 export async function checkPreviousProvision({
   tokenId,
   paymentAddress,

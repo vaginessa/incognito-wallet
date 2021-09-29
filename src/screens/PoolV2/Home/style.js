@@ -82,4 +82,8 @@ export default StyleSheet.create({
   scrollView: {
     marginBottom: UTILS.heightScale(70),
   },
+  migrateButton: {
+    marginHorizontal: 1,
+    flex: 1,
+  },
 });

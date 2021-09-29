@@ -301,6 +301,14 @@ const routes = [
     name: routeNames.PoolV2ProvideConfirm,
   },
   {
+    screen: PoolV2Provide.InputMigration,
+    name: routeNames.PoolV2ProvideMigrateInput,
+  },
+  {
+    screen: PoolV2Provide.ConfirmMigration,
+    name: routeNames.PoolV2ProvideMigrateConfirm,
+  },
+  {
     screen: PoolV2Withdraw.SelectCoin,
     name: routeNames.PoolV2WithdrawSelectCoin,
   },
