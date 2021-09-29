@@ -63,13 +63,41 @@ const withTransaction = WrappedComp => props => {
       setLoading(false);
     }
   };
-  const onRemoveContribute = async ({ fee, poolTokenIDs, poolPairID, shareAmount, nftID }) => {
+  const onRemoveContribute = async ({ fee, poolTokenIDs, poolPairID, shareAmount, nftID, amount1, amount2 }) => {
     if (loading) return;
     try {
       setLoading(true);
       const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
       await pDexV3Inst.createAndSendWithdrawContributeRequestTx({
-        fee, poolTokenIDs, poolPairID, shareAmount, nftID
+        fee, poolTokenIDs, poolPairID, shareAmount, nftID, amount1, amount2
+      });
+      onShowSuccess();
+    } catch (error) {
+      setError(new ExHandler(error).getMessage(error?.message));
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const onCreateWithdrawFeeLP = async ({
+    fee,
+    withdrawTokenIDs,
+    poolPairID,
+    nftID,
+    amount1,
+    amount2,
+  }) => {
+    if (loading) return;
+    try {
+      setLoading(true);
+      const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
+      await pDexV3Inst.createAndSendWithdrawLPFeeRequestTx({
+        fee,
+        withdrawTokenIDs,
+        poolPairID,
+        nftID,
+        amount1,
+        amount2,
       });
       onShowSuccess();
     } catch (error) {
@@ -87,6 +115,7 @@ const withTransaction = WrappedComp => props => {
           onCreateContributes,
           onCreateNewPool,
           onRemoveContribute,
+          onCreateWithdrawFeeLP,
           onCloseModal: onClose,
           loading,
           visible,

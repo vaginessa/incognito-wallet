@@ -43,7 +43,8 @@ export const listShareSelector = createSelector(
         token2Reward,
         poolId,
         withdrawing,
-        withdrawable
+        withdrawable,
+        nftId
       } = item;
       const poolDetail = shareDetails.find((share) => poolId === share.poolId);
       const { amp, apy, token1Value: token1PoolValue, token2Value: token2PoolValue } = poolDetail || {};
@@ -84,6 +85,8 @@ export const listShareSelector = createSelector(
           withdrawing,
           withdrawable,
           shareId,
+          nftId,
+          poolId,
         },
       ];
 

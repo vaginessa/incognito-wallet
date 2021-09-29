@@ -177,7 +177,7 @@ const formatWithNotation = (number, noOfDigits = 2) => {
 };
 
 const fixedNumber = (number, digits = 3) => {
-  if (isNaN(number) || isNaN(digits)) return NaN;
+  if (isNaN(number) || isNaN(digits)) return 0;
   return Math.trunc(new BigNumber(number).multipliedBy(Math.pow(10, digits)).dividedBy(Math.pow(10, digits)).toNumber());
 };
 

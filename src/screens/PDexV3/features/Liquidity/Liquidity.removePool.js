@@ -114,7 +114,6 @@ const RemoveLPButton = React.memo(({ onSubmit }) => {
   const nftId = useSelector(removePoolSelector.nftTokenSelector);
   const inputAmount = amountSelector(formConfigsRemovePool.formName, formConfigsRemovePool.inputToken);
   const outputAmount = amountSelector(formConfigsRemovePool.formName, formConfigsRemovePool.outputToken);
-
   const handleSubmit = () => {
     if (disabled) return;
     const params = {
@@ -123,6 +122,8 @@ const RemoveLPButton = React.memo(({ onSubmit }) => {
       poolPairID: poolId,
       shareAmount: inputAmount.withdraw,
       nftID: nftId,
+      amount1: inputAmount.originalInputAmount,
+      amount2: outputAmount.originalInputAmount
     };
     onSubmit(params);
   };
