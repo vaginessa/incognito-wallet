@@ -77,7 +77,7 @@ const CoinList = ({
         style={styles.scrollView}
       >
         {data.map(item => {
-          const mapCoin = coins.find(coin => coin.id === item.id && coin.locked === item.locked && coin.lockTime == item.lockTime);
+          const mapCoin = item.coin;
           return (
             <View style={mainStyles.coin} key={item.symbol}>
               <Row>
