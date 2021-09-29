@@ -1,22 +1,13 @@
 import React from 'react';
-import isEmpty from 'lodash/isEmpty';
-import { ACCOUNT_CONSTANT , PrivacyVersion } from 'incognito-chain-web-js/build/wallet';
 import { ExHandler } from '@services/exception';
-import accountService from '@services/wallet/accountService';
-import { submitProvideRawTx, checkPreviousProvision } from '@services/api/pool';
-import { useSelector } from 'react-redux';
-import { accountSelector } from '@src/redux/selectors';
+import { accountServices } from '@services/wallet';
+import { migratePRVProvide } from '@services/api/pool';
 import ReCaptchaV3 from '@haskkor/react-native-recaptchav3';
 import appConstant from '@src/constants/app';
-import { PRV_ID } from '@src/constants/common';
-import {MESSAGES} from '@screens/Dex/constants';
-import {useError} from '@components/UseEffect/useError';
-
+import { MESSAGES } from '@screens/Dex/constants';
+import { useError } from '@components/UseEffect/useError';
 
 const withConfirm = (WrappedComp) => (props) => {
-  const signPublicKeyEncode = useSelector(
-    accountSelector.signPublicKeyEncodeSelector,
-  );
   const [error, setError] = React.useState('');
   const errorMessage = useError(error);
   const [providing, setProviding] = React.useState(false);
@@ -24,29 +15,33 @@ const withConfirm = (WrappedComp) => (props) => {
   const [disable, setDisable] = React.useState(true);
   const [refreshing, setRefreshing] = React.useState(false);
   const captchaRef = React.useRef(null);
-  const {
-    value,
-    coin,
-    onSuccess,
-    account,
-  } = props;
+  const { value, onSuccess, account, wallet } = props;
 
   const handleProvideApi = async (captchaCode) => {
     try {
       setDisable(false);
       if (!readyToRequest) return;
-      // todo: open comment when api ready
-      // await migratePRVProvide({
-      //   paymentAddress: account.PaymentAddress,
-      //   signPublicKeyEncode,
-      //   amount: value,
+      const signEncode = await accountServices.signPoolWithdraw({
+        account,
+        wallet,
+        amount: 0,
+      });
+      console.log({signEncode});
+      // await migratePRVProvide(
+      //   account.PaymentAddress,
+      //   signEncode,
       //   captchaCode,
-      //   tokenId: coin.id,
-      // });
+      //   value,
+      // );
+      // todo: open comment when api ready
       onSuccess(true);
     } catch (error) {
       setReadyToRequest(false);
-      setError(new ExHandler(error).getMessage(error?.message || MESSAGES.REQUEST_MIGRATE_TOKEN_ERROR));
+      setError(
+        new ExHandler(error).getMessage(
+          error?.message || MESSAGES.REQUEST_MIGRATE_TOKEN_ERROR,
+        ),
+      );
     } finally {
       setProviding(false);
     }
