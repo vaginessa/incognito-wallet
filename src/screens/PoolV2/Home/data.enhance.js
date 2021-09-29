@@ -85,8 +85,8 @@ const withPoolData = (WrappedComp) => (props) => {
     setGroupedUserData(groupedUserDataTmp);
 
     if (
-      groupedUserData &&
-      groupedUserData.some(
+      userData &&
+      userData.some(
         (coin) =>
           coin.balance ||
           coin.rewardBalance ||
@@ -102,7 +102,7 @@ const withPoolData = (WrappedComp) => (props) => {
 
     const totalReducer = (accumulator, item) =>
       accumulator + item.rewardBalance;
-    const totalRewards = groupedUserData.reduce(totalReducer, 0);
+    const totalRewards = userData.reduce(totalReducer, 0);
 
     const displayClipTotalRewards = formatUtils.amountFull(
       totalRewards,
