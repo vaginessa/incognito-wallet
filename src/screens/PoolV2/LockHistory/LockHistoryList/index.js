@@ -24,6 +24,16 @@ const LockHistory = ({
   return (
     <View style={styles.wrapper}>
       <Header title="Provide PRV lock history" onGoBack={() => navigation.navigate(ROUTE_NAMES.PoolV2)} />
+      <Row>
+        <View>
+          <Text style={mainStyles.coinName}> Provide </Text>
+        </View>
+        <View style={[mainStyles.flex]}>
+          <Text style={[mainStyles.coinName, mainStyles.textRight]}>
+            Unlock date
+          </Text>
+        </View>
+      </Row>
       {lockHistories.map((item) => {
         return (
           <TouchableOpacity key={item}>
