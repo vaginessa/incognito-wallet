@@ -2,14 +2,20 @@ import {
   ACTION_FETCHING,
   ACTION_FETCHED,
   ACTION_FETCH_FAIL,
-  ACTION_SET_SHARE_DETAIL
+  ACTION_SET_SHARE_DETAIL,
+  ACTION_SET_POOL_MODAL,
+  ACTION_FREE_MODAL,
 } from './Portfolio.constant';
 
 const initialState = {
   isFetching: false,
   isFetched: false,
   data: [],
-  shareDetails: []
+  shareDetails: [],
+  modal: {
+    visible: false,
+    poolId: undefined
+  }
 };
 
 export default (state = initialState, action) => {
@@ -39,6 +45,25 @@ export default (state = initialState, action) => {
     return {
       ...state,
       shareDetails: action.payload
+    };
+  }
+  case ACTION_SET_POOL_MODAL: {
+    const { poolId } = action.payload;
+    return {
+      ...state,
+      modal: {
+        visible: true,
+        poolId
+      }
+    };
+  }
+  case ACTION_FREE_MODAL: {
+    return {
+      ...state,
+      modal: {
+        visible: false,
+        poolId: undefined
+      }
     };
   }
   default:

@@ -15,12 +15,13 @@ const ContributeDetail = () => {
     linkingService.openUrl(`${CONSTANT_CONFIGS.EXPLORER_CONSTANT_CHAIN_URL}/tx/${txID}`,);
   };
   const hookFactories = React.useMemo(() => {
-    const { pairId, poolId, statusStr, contributes, storageValue } = history;
+    const { pairId, poolId, statusStr, contributes, storageValue, timeStr } = history;
     const headHook = [
       {
         label: 'PoolId',
         valueText: poolId,
         copyable: true,
+        disabled: !poolId,
       },
       {
         label: 'PairId',
@@ -31,6 +32,10 @@ const ContributeDetail = () => {
       {
         label: 'Status',
         valueText: statusStr,
+      },
+      {
+        label: 'Time',
+        valueText: timeStr,
       },
     ];
     const contributeHook = [...contributes, ...storageValue].map((item, index) => {

@@ -58,7 +58,7 @@ export const getShareStr = (share, totalShare) => {
       .toString(),
     7,
   );
-  return `${share} (${percent}%)`;
+  return `${percent}%`;
 };
 
 export const getReward = (token1, token2, token1Value, token2Value) => {

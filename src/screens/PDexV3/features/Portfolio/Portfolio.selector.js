@@ -70,14 +70,6 @@ export const listShareSelector = createSelector(
           value: `${apy}%`,
         },
         {
-          label: 'AMP',
-          value: amp,
-        },
-        {
-          label: 'Exchange rate',
-          value: exchangeRateStr,
-        },
-        {
           label: 'Principal',
           value: principalStr,
         },
@@ -94,6 +86,31 @@ export const listShareSelector = createSelector(
           shareId,
         },
       ];
+
+      const hookFactoriesDetail = [
+        {
+          label: 'PoolId',
+          valueText: poolId,
+          copyable: true,
+        },
+        {
+          label: 'APY',
+          valueText: `${apy}%`,
+        },
+        {
+          label: 'Principal',
+          valueText: principalStr,
+        },
+        {
+          label: 'Share',
+          valueText: shareStr,
+        },
+        {
+          label: 'Reward',
+          valueText: rewardStr,
+        },
+      ];
+
       return {
         ...item,
         shareId,
@@ -108,6 +125,7 @@ export const listShareSelector = createSelector(
         apy,
         token1PoolValue,
         token2PoolValue,
+        hookFactoriesDetail,
       };
     });
   },
@@ -141,4 +159,9 @@ export const totalShareSelector = createSelector(
     }, new BigNumber('0')).toNumber();
     return format.amountFull(rewardUSD, 9, true);
   }
+);
+
+export const modalDataSelector = createSelector(
+  portfolioSelector,
+  ({ modal }) => modal
 );

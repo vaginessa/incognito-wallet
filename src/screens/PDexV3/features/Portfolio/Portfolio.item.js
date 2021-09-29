@@ -1,13 +1,14 @@
 import { Row } from '@src/components';
-import { ButtonTrade, ButtonTrade1 } from '@src/components/Button';
+import { ButtonTrade } from '@src/components/Button';
 import {Text, Toast} from '@src/components/core';
 import React from 'react';
-import { View } from 'react-native';
+import {TouchableOpacity} from 'react-native';
 import {batch, useDispatch, useSelector} from 'react-redux';
 import {useNavigation} from 'react-navigation-hooks';
 import routeNames from '@routers/routeNames';
 import {liquidityActions} from '@screens/PDexV3/features/Liquidity';
 import PropTypes from 'prop-types';
+import {actionSetPoolModal} from '@screens/PDexV3/features/Portfolio/Portfolio.actions';
 import {getDataByShareIdSelector} from './Portfolio.selector';
 import { portfolioItemStyled as styled } from './Portfolio.styled';
 
@@ -54,13 +55,6 @@ const Extra = React.memo((props) => {
       navigation.navigate(routeNames.ContributePool);
     });
   };
-  const onWithdrawPress = () => {
-    batch(() => {
-      dispatch(liquidityActions.actionSetRemovePoolToken({ inputToken: token1.tokenId, outputToken: token2.tokenId }));
-      dispatch(liquidityActions.actionSetRemovePoolID(poolId));
-      navigation.navigate(routeNames.RemovePool);
-    });
-  };
 
   return (
     <Row style={styled.extraContainer}>
@@ -74,12 +68,6 @@ const Extra = React.memo((props) => {
           titleStyle={styled.titleSmall}
           onPress={onInvestPress}
         />
-        <ButtonTrade1
-          title="Withdraw"
-          btnStyle={styled.btnSmall}
-          titleStyle={styled.titleSmall}
-          onPress={onWithdrawPress}
-        />
       </Row>
     </Row>
   );
@@ -87,18 +75,23 @@ const Extra = React.memo((props) => {
 
 const PortfolioItem = (props) => {
   const { shareId } = props;
+  const dispatch = useDispatch();
   const data = useSelector(getDataByShareIdSelector)(shareId);
   if (!data) {
     return null;
   }
+  const onPress = () => dispatch(actionSetPoolModal({ poolId: data.poolId }));
   const { hookFactories } = data || {};
   return (
-    <View style={styled.container}>
+    <TouchableOpacity
+      style={styled.container}
+      onPress={onPress}
+    >
       <Extra shareId={shareId} />
       {hookFactories.map((hook) => (
         <Hook {...hook} />
       ))}
-    </View>
+    </TouchableOpacity>
   );
 };
 
