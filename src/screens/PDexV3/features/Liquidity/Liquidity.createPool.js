@@ -1,5 +1,5 @@
 import React, {memo} from 'react';
-import {ScrollView, View} from 'react-native';
+import {RefreshControl, ScrollView, View} from 'react-native';
 import PropTypes from 'prop-types';
 import {styled as mainStyle} from '@screens/PDexV3/PDexV3.styled';
 import {Header, RowSpaceText, SuccessModal} from '@src/components';
@@ -11,19 +11,16 @@ import {
 import {createForm, RFTradeInputAmount as TradeInputAmount, validator} from '@components/core/reduxForm';
 import {AddBreakLine} from '@components/core';
 import {batch, useDispatch, useSelector} from 'react-redux';
-import {Field} from 'redux-form';
+import {change, Field} from 'redux-form';
 import withLiquidity from '@screens/PDexV3/features/Liquidity/Liquidity.enhance';
 import {createPoolSelector, liquidityActions} from '@screens/PDexV3/features/Liquidity';
 import styled from '@screens/PDexV3/features/Liquidity/Liquidity.styled';
 import {useNavigation} from 'react-navigation-hooks';
 import routeNames from '@routers/routeNames';
-import {disableCreatePool} from '@screens/PDexV3/features/Liquidity/Liquidity.createPoolSelector';
 import {ButtonTrade} from '@components/Button';
 import {compose} from 'recompose';
 import withTransaction from '@screens/PDexV3/features/Liquidity/Liquidity.enhanceTransaction';
 import {NFTTokenBottomBar} from '@screens/PDexV3/features/NFTToken';
-import {actionToggleModal} from '@components/Modal';
-import {TradeSuccessModal} from '@screens/PDexV3/features/Trade';
 
 const initialFormValues = {
   inputToken: '',
@@ -42,20 +39,45 @@ const InputsGroup = () => {
   const inputAmount = useSelector(createPoolSelector.inputAmountSelector);
   const inputTokens = useSelector(createPoolSelector.inputTokensListSelector);
   const outputTokens = useSelector(createPoolSelector.outputTokensListSelector);
+  const focusField = useSelector(createPoolSelector.focusFieldSelector);
+  const isTyping = useSelector(createPoolSelector.isTypingSelector);
   const inputToken = inputAmount(formConfigsCreatePool.formName, formConfigsCreatePool.inputToken);
   const outputToken = inputAmount(formConfigsCreatePool.formName, formConfigsCreatePool.outputToken);
+  const onChangeText = (text) => dispatch(liquidityActions.actionSetCreatePoolText(text));
+  const onFocusToken = (e, focusField) =>  dispatch(liquidityActions.actionSetFocusCreatePool({ focusField }));
+  const onGetRate = () => {
+    if (!inputToken.originalInputAmount || !outputToken.originalInputAmount || !inputToken.tokenId || !outputToken.tokenId) return;
+    const params = {
+      inputAmount: inputToken.originalInputAmount,
+      inputToken: inputToken.tokenId,
+      outputAmount: outputToken.originalInputAmount,
+      outputToken: outputToken.tokenId,
+    };
+    dispatch(liquidityActions.actionSetTypingCreatePool({ isTyping: true }));
+    liquidityActions.debouncedGetCreatePoolRate.cancel();
+    dispatch(liquidityActions.asyncActionDebounced(params, liquidityActions.debouncedGetCreatePoolRate));
+  };
   const _validateInput = React.useCallback(() => {
     return inputToken.error;
   }, [inputToken.error]);
   const _validateOutput = React.useCallback(() => {
     return outputToken.error;
   }, [outputToken.error]);
-  const onChangeText = ({ text, field }) => {
-    dispatch(liquidityActions.actionSetCreatePoolText({
-      text,
-      field,
-    }));
-  };
+
+  const loading = React.useMemo(() => ({
+    input: inputToken.loadingBalance || (isTyping && focusField === formConfigsCreatePool.inputToken),
+    output: outputToken.loadingBalance || (isTyping && focusField === formConfigsCreatePool.outputToken),
+  }), [focusField, isTyping, inputToken.loadingBalance, outputToken.loadingBalance]);
+
+  React.useEffect(() => {
+    onGetRate();
+  }, [
+    inputToken.originalInputAmount,
+    inputToken.tokenId,
+    outputToken.originalInputAmount,
+    outputToken.tokenId,
+  ]);
+
   return (
     <View style={styled.wrapInput}>
       <Field
@@ -68,22 +90,25 @@ const InputsGroup = () => {
           _validateInput,
           ...validator.combinedAmount,
         ]}
-        onChange={(text) => {
-          if (typeof onChangeText === 'function') {
-            onChangeText({ text, field: formConfigsCreatePool.inputToken });
-          }
-        }}
+        onFocus={(e) => onFocusToken(e, formConfigsCreatePool.inputToken)}
+        onChange={onChangeText}
         editableInput={!inputToken.loadingBalance}
-        loadingBalance={inputToken.loadingBalance}
-        onPressSymbol={() => navigation.navigate(routeNames.SelectTokenTrade, {
-          data: inputTokens,
-          onSelectToken: ((token) => {
-            batch(() => {
-              dispatch(liquidityActions.actionUpdateCreatePoolInputToken(token.tokenId));
-              navigation.navigate(routeNames.CreatePool);
-            });
-          }),
-        })}
+        loadingBalance={loading.input}
+        onPressSymbol={() => {
+          if (loading.input) return;
+          navigation.navigate(routeNames.SelectTokenTrade, {
+            data: inputTokens,
+            onSelectToken: ((token) => {
+              batch(() => {
+                dispatch(liquidityActions.actionUpdateCreatePoolInputToken(token.tokenId));
+                navigation.navigate(routeNames.CreatePool);
+              });
+            }),
+          });
+        }}
+        onPressInfinityIcon={() => {
+          dispatch(change(formConfigsCreatePool.formName, formConfigsCreatePool.inputToken, inputToken.maxOriginalAmountText));
+        }}
       />
       <AddBreakLine />
       <Field
@@ -96,22 +121,25 @@ const InputsGroup = () => {
           _validateOutput,
           ...validator.combinedAmount,
         ]}
-        onChange={(text) => {
-          if (typeof onChangeText === 'function') {
-            onChangeText({ text, field: formConfigsCreatePool.outputToken });
-          }
-        }}
+        onChange={onChangeText}
         editableInput={!outputToken.loadingBalance}
-        loadingBalance={outputToken.loadingBalance}
-        onPressSymbol={() => navigation.navigate(routeNames.SelectTokenTrade, {
-          data: outputTokens,
-          onSelectToken: ((token) => {
-            batch(() => {
-              dispatch(liquidityActions.actionUpdateCreatePoolOutputToken(token.tokenId));
-              navigation.navigate(routeNames.CreatePool);
-            });
-          }),
-        })}
+        loadingBalance={loading.output}
+        onPressSymbol={() => {
+          if (loading.output) return;
+          navigation.navigate(routeNames.SelectTokenTrade, {
+            data: outputTokens,
+            onSelectToken: ((token) => {
+              batch(() => {
+                dispatch(liquidityActions.actionUpdateCreatePoolOutputToken(token.tokenId));
+                navigation.navigate(routeNames.CreatePool);
+              });
+            }),
+          });
+        }}
+        onPressInfinityIcon={() => {
+          dispatch(change(formConfigsCreatePool.formName, formConfigsCreatePool.outputToken, outputToken.maxOriginalAmountText));
+        }}
+        onFocus={(e) => onFocusToken(e, formConfigsCreatePool.outputToken)}
       />
     </View>
   );
@@ -130,7 +158,7 @@ export const Extra = React.memo(() => {
 });
 
 const ButtonCreatePool = React.memo(({ onSubmit }) => {
-  const { disabled } = useSelector(disableCreatePool);
+  const { disabled } = useSelector(createPoolSelector.disableCreatePool);
   const amountSelector = useSelector(createPoolSelector.inputAmountSelector);
   const inputAmount = amountSelector(formConfigsCreatePool.formName, formConfigsCreatePool.inputToken);
   const outputAmount = amountSelector(formConfigsCreatePool.formName, formConfigsCreatePool.outputToken);
@@ -165,6 +193,7 @@ const CreatePool = ({
   visible,
   onCloseModal
 }) => {
+  const isFetching = useSelector(createPoolSelector.isFetchingSelector);
   const onSubmit = (params) => {
     typeof onCreateNewPool === 'function' && onCreateNewPool(params);
   };
@@ -189,7 +218,10 @@ const CreatePool = ({
     <>
       <View style={mainStyle.container}>
         <Header title={LIQUIDITY_MESSAGES.createPool} />
-        <ScrollView>
+        <ScrollView
+          refreshControl={(<RefreshControl refreshing={isFetching} onRefresh={onInitCreatePool} />)}
+          showsVerticalScrollIndicator={false}
+        >
           <Form>
             {renderContent()}
           </Form>

@@ -24,6 +24,9 @@ import {actionSetNFTTokenData} from '@src/redux/actions/account';
 import {filterTokenList} from '@screens/PDexV3/features/Liquidity/Liquidity.utils';
 import {listPoolsPureSelector} from '@screens/PDexV3/features/Pools';
 import {tokenSelector} from '@screens/PDexV3/features/Liquidity/Liquidity.removePoolSelector';
+import {focusFieldSelector} from '@screens/PDexV3/features/Liquidity/Liquidity.createPoolSelector';
+import {debounce} from 'lodash';
+import Util from '@utils/Util';
 
 /***
  *================================================================
@@ -150,8 +153,47 @@ const actionSetFetchingCreatePool = ({ isFetching }) => ({
   payload: { isFetching }
 });
 
-const actionSetCreatePoolText = ({ text, field }) => async (dispatch) => {
+const actionSetTypingCreatePool = ({ isTyping }) => ({
+  type: TYPES.ACTION_SET_TYPING_CREATE_POOL,
+  payload: { isTyping }
+});
+
+const actionSetFocusCreatePool = ({ focusField }) => ({
+  type: TYPES.ACTION_SET_FOCUS_CREATE_POOL,
+  payload: { focusField }
+});
+
+const actionSetRateCreatePool = ({ rate, amp }) => ({
+  type: TYPES.ACTION_SET_RATE_CREATE_POOL,
+  payload: { rate, amp }
+});
+
+const debouncedGetCreatePoolRate = debounce(async (dispatch, _, payload) => {
   try {
+    await Util.sleep(2000);
+    // const {
+    //   inputToken,
+    //   inputAmount,
+    //   outputToken,
+    //   outputAmount
+    // } = payload;
+    console.log(payload);
+    dispatch(actionSetRateCreatePool({ rate: 1.5, amp: 2000 }));
+  } catch (error) {
+    new ExHandler(error).showErrorToast();
+  } finally {
+    dispatch(actionSetTypingCreatePool({ isTyping: false }));
+  }
+}, 1000);
+
+const asyncActionDebounced = (payload, closure) => (dispatch, getState) => (
+  closure(dispatch, getState, payload)
+);
+
+const actionSetCreatePoolText = (text) => async (dispatch, getState) => {
+  try {
+    const state = getState();
+    const field = createPoolSelector.focusFieldSelector(state);
     dispatch(change(formConfigsCreatePool.formName, field, text));
   } catch (error) {
     new ExHandler(error).showErrorToast();
@@ -385,6 +427,10 @@ export default ({
   actionInitCreatePool,
   actionSetCreatePoolText,
   actionFeeCreatePool,
+  actionSetFocusCreatePool,
+  asyncActionDebounced,
+  debouncedGetCreatePoolRate,
+  actionSetTypingCreatePool,
 
   actionSetRemovePoolID,
   actionSetRemovePoolToken,

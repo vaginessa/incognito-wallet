@@ -141,7 +141,8 @@ export const disableRemovePool = createSelector(
   ( inputAmount, nftToken ) => {
     const { error: inputError, originalInputAmount: amount1 } = inputAmount(formConfigsRemovePool.formName, formConfigsRemovePool.inputToken);
     const { error: outputError, originalInputAmount: amount2 } = inputAmount(formConfigsRemovePool.formName, formConfigsRemovePool.outputToken);
-    return !!inputError || !!outputError || !amount1 || !amount2 || !nftToken;
+    const disabled = !!inputError || !!outputError || !amount1 || !amount2 || !nftToken;
+    return { disabled };
   }
 );
 
@@ -155,4 +156,5 @@ export default ({
   inputAmountSelector,
   maxShareAmountSelector,
   disableRemovePool,
+  nftTokenSelector,
 });

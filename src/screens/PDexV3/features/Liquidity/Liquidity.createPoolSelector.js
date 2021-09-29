@@ -111,14 +111,25 @@ export const isFetchingSelector = createSelector(
   ({ isFetching }) => isFetching
 );
 
+export const focusFieldSelector = createSelector(
+  createPoolSelector,
+  ({ focusField }) => focusField
+);
+
+export const isTypingSelector = createSelector(
+  createPoolSelector,
+  ({ isTyping }) => isTyping
+);
+
 export const disableCreatePool = createSelector(
   inputAmountSelector,
   isFetchingSelector,
   nftTokenDataSelector,
-  ( inputAmount, isFetching, { nftToken } ) => {
+  isTypingSelector,
+  ( inputAmount, isFetching, { nftToken }, isTyping ) => {
     const { error: inputError } = inputAmount(formConfigsCreatePool.formName, formConfigsCreatePool.inputToken);
     const { error: outputError } = inputAmount(formConfigsCreatePool.formName, formConfigsCreatePool.outputToken);
-    const disabled = !!inputError || !!outputError || isFetching || !nftToken;
+    const disabled = !!inputError || !!outputError || isFetching || !nftToken || isTyping;
     return {
       disabled,
     };
@@ -136,4 +147,6 @@ export default ({
   ampValueSelector,
   disableCreatePool,
   isFetchingSelector,
+  focusFieldSelector,
+  isTypingSelector,
 });

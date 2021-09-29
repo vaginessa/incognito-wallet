@@ -6,6 +6,9 @@ export const TYPES = {
   ACTION_SET_CREATE_POOL_TOKEN: '[pDexV3][liquidity] Set create pool token',
   ACTION_FREE_CREATE_POOL_TOKEN: '[pDexV3][liquidity] Free create pool',
   ACTION_SET_FETCHING_CREATE_POOL: '[pDexV3][liquidity] Set fetching create pool',
+  ACTION_SET_TYPING_CREATE_POOL: '[pDexV3][liquidity] Set typing create pool',
+  ACTION_SET_FOCUS_CREATE_POOL: '[pDexV3][liquidity] Set focus create pool',
+  ACTION_SET_RATE_CREATE_POOL: '[pDexV3][liquidity] Set rate create pool',
 
   ACTION_SET_REMOVE_FETCHING: '[pDexV3][liquidity] Set remove pool fetching',
   ACTION_SET_REMOVE_POOL_ID: '[pDexV3][liquidity] Set remove pool poolID',

@@ -2,8 +2,12 @@ import React, {memo} from 'react';
 import {ScrollView, View} from 'react-native';
 import PropTypes from 'prop-types';
 import {styled as mainStyle} from '@screens/PDexV3/PDexV3.styled';
-import {Header, RowSpaceText} from '@src/components';
-import {formConfigsRemovePool, LIQUIDITY_MESSAGES} from '@screens/PDexV3/features/Liquidity/Liquidity.constant';
+import {Header, RowSpaceText, SuccessModal} from '@src/components';
+import {
+  formConfigsRemovePool,
+  LIQUIDITY_MESSAGES,
+  SUCCESS_MODAL
+} from '@screens/PDexV3/features/Liquidity/Liquidity.constant';
 import withLiquidity from '@screens/PDexV3/features/Liquidity/Liquidity.enhance';
 import {createForm, RFTradeInputAmount as TradeInputAmount, validator} from '@components/core/reduxForm';
 import styled from '@screens/PDexV3/features/Liquidity/Liquidity.styled';
@@ -12,8 +16,6 @@ import {AddBreakLine} from '@components/core';
 import {useDispatch, useSelector} from 'react-redux';
 import {liquidityActions, removePoolSelector} from '@screens/PDexV3/features/Liquidity/index';
 import {ButtonTrade} from '@components/Button';
-import {useNavigation} from 'react-navigation-hooks';
-import routeNames from '@routers/routeNames';
 import SelectPercentAmount from '@components/SelectPercentAmount';
 import {COLORS} from '@src/styles';
 import {compose} from 'recompose';
@@ -104,30 +106,78 @@ export const Extra = React.memo(() => {
   );
 });
 
-const RemovePool = ({ onInitRemovePool, onRemoveContribute, onCloseModal, visible }) => {
-  const disabled = useSelector(removePoolSelector.disableRemovePool);
-  const navigation = useNavigation();
+const RemoveLPButton = React.memo(({ onSubmit }) => {
+  const { disabled } = useSelector(removePoolSelector.disableRemovePool);
+  const amountSelector = useSelector(removePoolSelector.inputAmountSelector);
+  const { feeAmount } = useSelector(removePoolSelector.feeAmountSelector);
+  const poolId = useSelector(removePoolSelector.poolIDSelector);
+  const nftId = useSelector(removePoolSelector.nftTokenSelector);
+  const inputAmount = amountSelector(formConfigsRemovePool.formName, formConfigsRemovePool.inputToken);
+  const outputAmount = amountSelector(formConfigsRemovePool.formName, formConfigsRemovePool.outputToken);
+
+  const handleSubmit = () => {
+    if (disabled) return;
+    const params = {
+      fee: feeAmount,
+      poolTokenIDs: [inputAmount.tokenId, outputAmount.tokenId],
+      poolPairID: poolId,
+      shareAmount: inputAmount.withdraw,
+      nftID: nftId,
+    };
+    onSubmit(params);
+  };
+
+  return (
+    <ButtonTrade
+      btnStyle={mainStyle.button}
+      title={LIQUIDITY_MESSAGES.removePool}
+      disabled={disabled}
+      onPress={handleSubmit}
+    />
+  );
+});
+
+const RemovePool = ({
+  onInitRemovePool,
+  onRemoveContribute,
+  onCloseModal,
+  visible
+}) => {
+  const onSubmit = (params) => {
+    typeof onRemoveContribute === 'function' && onRemoveContribute(params);
+  };
+  const onClose = () => {
+    onCloseModal();
+    onInitRemovePool();
+  };
+
+  const renderContent = () => (
+    <>
+      <InputsGroup />
+      <RemoveLPButton onSubmit={onSubmit} />
+      <Extra />
+    </>
+  );
+
   React.useEffect(() => { onInitRemovePool(); }, []);
   return (
-    <View style={mainStyle.container}>
-      <Header title={LIQUIDITY_MESSAGES.removePool} />
-      <ScrollView>
-        <Form>
-          {({ handleSubmit }) => (
-            <>
-              <InputsGroup />
-              <ButtonTrade
-                btnStyle={mainStyle.button}
-                title={LIQUIDITY_MESSAGES.removePool}
-                disabled={disabled}
-                onPress={() => navigation.navigate(routeNames.RemovePoolConfirm)}
-              />
-              <Extra />
-            </>
-          )}
-        </Form>
-      </ScrollView>
-    </View>
+    <>
+      <View style={mainStyle.container}>
+        <Header title={LIQUIDITY_MESSAGES.removePool} />
+        <ScrollView>
+          <Form>
+            {renderContent()}
+          </Form>
+        </ScrollView>
+      </View>
+      <SuccessModal
+        closeSuccessDialog={onClose}
+        title={SUCCESS_MODAL.ADD_POOL.title}
+        buttonTitle="Ok"
+        description={SUCCESS_MODAL.ADD_POOL.desc}
+        visible={visible}
+      />
+    </>
   );
 };
 
@@ -137,6 +187,11 @@ RemovePool.propTypes = {
   onCloseModal: PropTypes.func.isRequired,
   visible: PropTypes.bool.isRequired,
 };
+
+RemoveLPButton.propTypes = {
+  onSubmit: PropTypes.func.isRequired,
+};
+
 
 export default compose(
   withLiquidity,
