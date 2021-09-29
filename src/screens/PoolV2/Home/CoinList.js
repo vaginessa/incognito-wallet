@@ -19,7 +19,8 @@ import styles from './style';
 
 const CoinList = ({
   coins,
-  data,
+  userData,
+  groupedUserData,
   histories,
   withdrawable,
   loading,
@@ -87,6 +88,17 @@ const CoinList = ({
     });
   };
 
+  const handleShowLockHistory = (coin) => {
+    if (!coin.locked) {
+      return null;
+    }
+
+    navigation.navigate(ROUTE_NAMES.PoolV2ProvideLockHistory, {
+      coin,
+      userData,
+    });
+  };
+
   const renderUserData = () => {
     return (
       <ScrollView
@@ -98,60 +110,63 @@ const CoinList = ({
         }
         style={styles.scrollView}
       >
-        {data.map((item) => {
+        {groupedUserData.map((item) => {
           const mapCoin = item.coin;
           return (
-            <View style={mainStyles.coin} key={item.symbol}>
-              <Row>
-                <View>
-                  <Text style={mainStyles.coinName}>{item.symbol}</Text>
-                  <Text style={mainStyles.coinExtra}>
-                    {mapCoin.displayInterest}
-                    {!item.locked && mapCoin.id === PRV_ID && (
-                      <RoundCornerButton
-                        title="Migrate"
-                        style={[styles.migrateButton, mainStyles.button]}
-                        onPress={() => handleOpenMigrate(item)}
-                      />
-                    )}
-                  </Text>
-                  {item.locked ? (
+            <TouchableOpacity onPress={() => handleShowLockHistory(mapCoin)} key={mapCoin}>
+              <View style={mainStyles.coin} key={item.symbol}>
+                <Row>
+                  <View>
+                    <Text style={mainStyles.coinName}>{item.symbol}</Text>
                     <Text style={mainStyles.coinExtra}>
-                      {mapCoin.displayLockTime}
+                      {mapCoin.displayInterest}
+                      {!item.locked && mapCoin.id === PRV_ID && (
+                        <RoundCornerButton
+                          title="Migrate"
+                          style={[styles.migrateButton, mainStyles.button]}
+                          onPress={() => handleOpenMigrate(item)}
+                        />
+                      )}
                     </Text>
-                  ) : null}
-                </View>
-                <View style={[mainStyles.flex]}>
-                  <Text style={[mainStyles.coinName, mainStyles.textRight]}>
-                    {item.displayBalance}
-                  </Text>
-                  {!!item.displayPendingBalance && (
-                    <Text style={[mainStyles.coinExtra, mainStyles.textRight]}>
-                      + {item.displayPendingBalance}
+                    {item.locked ? (
+                      <Text style={mainStyles.coinExtra}>
+                        {mapCoin.displayLockTime}
+                      </Text>
+                    ) : null}
+                  </View>
+                  <View style={[mainStyles.flex]}>
+                    <Text style={[mainStyles.coinName, mainStyles.textRight]}>
+                      {item.displayBalance}
                     </Text>
-                  )}
-                  {!!item.displayUnstakeBalance && (
-                    <Text style={[mainStyles.coinExtra, mainStyles.textRight]}>
-                      - {item.displayUnstakeBalance}
-                    </Text>
-                  )}
-                  <Row
-                    style={[mainStyles.textRight, mainStyles.justifyRight]}
-                    center
-                  >
-                    <PRVSymbol style={mainStyles.coinInterest} />
-                    <Text style={mainStyles.coinInterest}>
-                      &nbsp;{item.displayReward}
-                    </Text>
-                  </Row>
-                  {!!item.displayWithdrawReward && (
-                    <Text style={[mainStyles.coinExtra, mainStyles.textRight]}>
-                      - {item.displayWithdrawReward}
-                    </Text>
-                  )}
-                </View>
-              </Row>
-            </View>
+                    {!!item.displayPendingBalance && (
+                      <Text style={[mainStyles.coinExtra, mainStyles.textRight]}>
+                        + {item.displayPendingBalance}
+                      </Text>
+                    )}
+                    {!!item.displayUnstakeBalance && (
+                      <Text style={[mainStyles.coinExtra, mainStyles.textRight]}>
+                        - {item.displayUnstakeBalance}
+                      </Text>
+                    )}
+                    <Row
+                      style={[mainStyles.textRight, mainStyles.justifyRight]}
+                      center
+                    >
+                      <PRVSymbol style={mainStyles.coinInterest} />
+                      <Text style={mainStyles.coinInterest}>
+                        &nbsp;{item.displayReward}
+                      </Text>
+                    </Row>
+                    {!!item.displayWithdrawReward && (
+                      <Text style={[mainStyles.coinExtra, mainStyles.textRight]}>
+                        - {item.displayWithdrawReward}
+                      </Text>
+                    )}
+                  </View>
+                </Row>
+              </View>
+            </TouchableOpacity>
+            
           );
         })}
         {renderRate()}
@@ -200,7 +215,8 @@ const CoinList = ({
 
 CoinList.propTypes = {
   coins: PropTypes.array,
-  data: PropTypes.array,
+  groupedUserData: PropTypes.array,
+  userData: PropTypes.array,
   histories: PropTypes.array,
   withdrawable: PropTypes.bool,
   onLoad: PropTypes.func,
@@ -211,7 +227,8 @@ CoinList.propTypes = {
 
 CoinList.defaultProps = {
   coins: [],
-  data: [],
+  groupedUserData: [],
+  userData: [],
   histories: [],
   withdrawable: false,
   onLoad: undefined,

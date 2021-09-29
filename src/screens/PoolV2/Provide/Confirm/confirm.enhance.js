@@ -12,7 +12,6 @@ import { PRV_ID } from '@src/constants/common';
 import {MESSAGES} from '@screens/Dex/constants';
 import {useError} from '@components/UseEffect/useError';
 
-
 const withConfirm = (WrappedComp) => (props) => {
   const signPublicKeyEncode = useSelector(
     accountSelector.signPublicKeyEncodeSelector,

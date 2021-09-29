@@ -47,6 +47,9 @@ export class UserCoinPoolModel {
     this.withdrawPendingBalance = data.WithdrawPendingBalance;
     this.locked = data.Locked;
     this.lockTime = data.LockTime;
+    this.stakerTokenBalanceID = data.ID;
+    this.unlockDate = data.DaturityDate;
+    this.displayUnlockDate = formatUtil.formatDateTime(this.unlockDate, 'DD MMM YYYY HH:mm A');
 
     // if (this.id === COINS.PRV_ID) {
     //   this.name = COINS.PRV.name;
@@ -94,6 +97,7 @@ export class PoolHistory {
     this.coinId = data.TokenID;
     this.tx = data.IncognitoTx;
     this.paymentAddress = data.PStakeAddress;
+    this.stakerTokenBalanceID = data.StakerTokenBalanceID;
 
     this.account = account?.name || account?.AccountName;
     this.coin = coins.find(coin => coin.id === this.coinId);

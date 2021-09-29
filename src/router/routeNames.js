@@ -85,6 +85,7 @@ export default {
   PoolV2HistoryDetail: 'PoolV2HistoryDetail',
   PoolV2ProvideMigrateInput: 'PoolV2ProvideMigrateInput',
   PoolV2ProvideMigrateConfirm: 'PoolV2ProvideMigrateConfirm',
+  PoolV2ProvideLockHistory: 'PoolV2ProvideLockHistory',
   Invest: 'Dex',
   InvestConfirm: 'InvestConfirm',
   InvestBalance: 'InvestBalance',
