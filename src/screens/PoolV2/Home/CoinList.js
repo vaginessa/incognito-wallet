@@ -94,7 +94,8 @@ const CoinList = ({
           <RefreshControl
             refreshing={loading}
             onRefresh={() => onLoad(account)}
-          />}
+          />
+        }
         style={styles.scrollView}
       >
         {data.map((item) => {
