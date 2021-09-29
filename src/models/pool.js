@@ -52,7 +52,7 @@ export class UserCoinPoolModel {
     //   this.pDecimals = COINS.PRV.pDecimals;
     // }
 
-    this.coin = coins.find(coin => coin.id === this.id);
+    this.coin = coins.find(coin => (coin.id === this.id && data.Locked == coin.locked));
 
     if (this.coin) {
       this.pDecimals = this.coin.pDecimals;
