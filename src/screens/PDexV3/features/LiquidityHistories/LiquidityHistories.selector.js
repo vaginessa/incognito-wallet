@@ -1,6 +1,7 @@
 import {createSelector} from 'reselect';
 import format from '@utils/format';
 import {selectedPrivacySelector as selectedPrivacy} from '@src/redux/selectors';
+import isEmpty from 'lodash/isEmpty';
 
 const liquidityHistoriesSelector = createSelector(
   (state) => state.pDexV3,
@@ -54,7 +55,7 @@ const mapContributeData = createSelector(
         };
       });
       const key = (history.requestTxs || []).join('-');
-      const timeStr = format.formatDateTime(history.requesttime);
+      const timeStr = format.formatDateTime(history.requestTime);
       const contributeAmountDesc = contributes.map(item => item.contributeAmountSymbolStr).join(' + ');
 
       const storageValue = (history['storageContribute'] || []).map((item) => {
@@ -72,6 +73,39 @@ const mapContributeData = createSelector(
         };
       });
 
+      const { refund, retry, nftid: nftId, pairHash } = history;
+      let refundData;
+      let retryData;
+      if (!isEmpty(refund) && refund.amp) {
+        const { tokenId, amount, amp } = refund;
+        const token = getPrivacyDataByTokenID(tokenId);
+        refundData = {
+          tokenId,
+          amount,
+          token,
+          title: 'Refund',
+          pairHash,
+          nftId,
+          amp,
+          poolId: history.poolId,
+        };
+      }
+
+      if (!isEmpty(retry) && retry.amp) {
+        const { tokenId, amount, amp } = retry;
+        const token = getPrivacyDataByTokenID(tokenId);
+        retryData = {
+          tokenId,
+          amount,
+          token,
+          title: 'Refund',
+          pairHash,
+          nftId,
+          amp,
+          poolId: history.poolId,
+        };
+      }
+
       return {
         ...history,
         key,
@@ -80,6 +114,8 @@ const mapContributeData = createSelector(
         timeStr,
         contributeAmountDesc,
         storageValue,
+        retryData,
+        refundData,
       };
     });
     return _histories;
@@ -106,8 +142,8 @@ const mapRemoveLPData = createSelector(
   selectedPrivacy.getPrivacyDataByTokenID,
   (histories, getPrivacyDataByTokenID) => {
     const _histories = histories.map(history => {
-      const { requesttime, tokenId1, tokenId2, amount1, amount2 } = history;
-      const timeStr = format.formatDateTime(requesttime);
+      const { requestTime, tokenId1, tokenId2, amount1, amount2 } = history;
+      const timeStr = format.formatDateTime(requestTime);
       const tokenIds = [tokenId1, tokenId2];
       const amounts = [amount1, amount2];
       const removeData = tokenIds.map((tokenId, index) => {
@@ -154,8 +190,8 @@ const mapWithdrawFeeLPData = createSelector(
   selectedPrivacy.getPrivacyDataByTokenID,
   (histories, getPrivacyDataByTokenID) => {
     const _histories = histories.map(history => {
-      const { requesttime, tokenId1, tokenId2, amount1, amount2 } = history;
-      const timeStr = format.formatDateTime(requesttime);
+      const { requestTime, tokenId1, tokenId2, amount1, amount2 } = history;
+      const timeStr = format.formatDateTime(requestTime);
       const tokenIds = [tokenId1, tokenId2];
       const amounts = [amount1, amount2];
       const withdrawData = tokenIds.map((tokenId, index) => {
@@ -189,6 +225,12 @@ const isFetching = createSelector(
   (fetchingContribute, fetchingRemoveLP, fetchingWithdrawFeeLP) => (fetchingContribute || fetchingRemoveLP || fetchingWithdrawFeeLP),
 );
 
+const showHistorySelector = createSelector(
+  contributePureData,
+  removeLPPureData,
+  withdrawFeeLPPureData,
+  (contribute, removeLP, withdrawFeeLP) => !isEmpty(contribute) || !isEmpty(removeLP) || !isEmpty(withdrawFeeLP)
+);
 
 export default ({
   contribute,
@@ -205,4 +247,5 @@ export default ({
   mapWithdrawFeeLPData,
 
   isFetching,
+  showHistorySelector
 });

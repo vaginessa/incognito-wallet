@@ -2,6 +2,7 @@ import { defaultAccountWalletSelector } from '@src/redux/selectors/account';
 import { ExHandler } from '@src/services/exception';
 import { getPDexV3Instance } from '@src/screens/PDexV3';
 import {batch} from 'react-redux';
+import {actionSetNFTTokenData} from '@src/redux/actions/account';
 import {
   ACTION_FETCHING,
   ACTION_FETCHED,
@@ -49,8 +50,10 @@ export const actionFetch = () => async (dispatch, getState) => {
     await dispatch(actionFetching());
     const account = defaultAccountWalletSelector(state);
     const pDexV3Inst = await getPDexV3Instance({ account });
-    let listShare = await pDexV3Inst.getListShare();
-    console.log('listShare: ', listShare);
+    const [listShare] = await Promise.all([
+      await pDexV3Inst.getListShare(),
+      await dispatch(actionSetNFTTokenData()),
+    ]);
     const poolIds = (listShare || []).map(({ poolId }) => poolId);
     let poolDetails = [];
     if (poolIds.length > 0) {

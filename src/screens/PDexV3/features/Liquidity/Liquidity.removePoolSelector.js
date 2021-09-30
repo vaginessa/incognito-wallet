@@ -136,12 +136,13 @@ export const nftTokenSelector = createSelector(
 );
 
 export const disableRemovePool = createSelector(
+  isFetchingSelector,
   inputAmountSelector,
   nftTokenSelector,
-  ( inputAmount, nftToken ) => {
+  ( isFetching, inputAmount, nftToken ) => {
     const { error: inputError, originalInputAmount: amount1 } = inputAmount(formConfigsRemovePool.formName, formConfigsRemovePool.inputToken);
     const { error: outputError, originalInputAmount: amount2 } = inputAmount(formConfigsRemovePool.formName, formConfigsRemovePool.outputToken);
-    const disabled = !!inputError || !!outputError || !amount1 || !amount2 || !nftToken;
+    const disabled = !!inputError || !!outputError || !amount1 || !amount2 || !nftToken || isFetching;
     return { disabled };
   }
 );

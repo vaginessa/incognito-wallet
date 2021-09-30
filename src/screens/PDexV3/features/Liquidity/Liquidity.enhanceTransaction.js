@@ -1,10 +1,12 @@
 import React from 'react';
 import ErrorBoundary from '@src/components/ErrorBoundary';
 import {actionGetPDexV3Inst} from '@screens/PDexV3';
-import {useDispatch} from 'react-redux';
+import {batch, useDispatch} from 'react-redux';
 import {ExHandler} from '@services/exception';
 import Loading from '@screens/Dex/components/Loading';
 import {liquidityHistoryActions} from '@screens/PDexV3/features/LiquidityHistories';
+import {Toast} from '@components/core';
+import {actionFetch} from '@screens/PDexV3/features/Portfolio';
 
 const withTransaction = WrappedComp => props => {
   const dispatch = useDispatch();
@@ -79,6 +81,13 @@ const withTransaction = WrappedComp => props => {
     }
   };
 
+  const endWithdrawFee = () => {
+    batch(() => {
+      onClose();
+      dispatch(actionFetch());
+    });
+  };
+
   const onCreateWithdrawFeeLP = async ({
     fee,
     withdrawTokenIDs,
@@ -99,11 +108,13 @@ const withTransaction = WrappedComp => props => {
         amount1,
         amount2,
       });
-      onShowSuccess();
+      endWithdrawFee();
     } catch (error) {
+      Toast.showError(error.message || typeof error === 'string' && error);
       setError(new ExHandler(error).getMessage(error?.message));
     } finally {
       setLoading(false);
+      endWithdrawFee();
     }
   };
 

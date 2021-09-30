@@ -283,6 +283,7 @@ const actionInitCreatePool = () => async (dispatch, getState) => {
     await Promise.all([
       dispatch(actionSetCreatePoolToken({ inputToken: newInputToken, outputToken: newOutputToken })),
       dispatch(actionGetBalance([newInputToken, newOutputToken])),
+      dispatch(actionSetNFTTokenData()),
     ]);
   } catch (error) {
     new ExHandler(error).showErrorToast();
@@ -319,7 +320,8 @@ const actionInitRemovePool = () => async (dispatch, getState) => {
     if (!inputToken || !outputToken) return;
     const tasks = [
       dispatch(actionFetchPortfolio()),
-      dispatch(actionGetBalance([inputToken.tokenId, outputToken.tokenId]))
+      dispatch(actionGetBalance([inputToken.tokenId, outputToken.tokenId])),
+      dispatch(actionSetNFTTokenData()),
     ];
     await Promise.all(tasks);
   } catch (error) {
