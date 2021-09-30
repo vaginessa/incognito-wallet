@@ -58,7 +58,7 @@ export async function submitProvideRawTx({
 }
 
 export async function migratePRVProvide({paymentAddress, signEncode, verifyCode, amount}) {
-  const url = '/staker/migrate-to-prv-lock';
+  const url = '/pool/staker/migrate-to-prv-lock';
   return http.post(url, {
     'PStakeAddress': paymentAddress,
     'SignEncode': signEncode,

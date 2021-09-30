@@ -24,16 +24,14 @@ const withConfirm = (WrappedComp) => (props) => {
       const signEncode = await accountServices.signPoolWithdraw({
         account,
         wallet,
-        amount: 0,
+        amount: value,
       });
-      console.log({signEncode});
-      // await migratePRVProvide(
-      //   account.PaymentAddress,
-      //   signEncode,
-      //   captchaCode,
-      //   value,
-      // );
-      // todo: open comment when api ready
+      await migratePRVProvide({
+        paymentAddress: account.PaymentAddress,
+        signEncode,
+        verifyCode: captchaCode,
+        amount: value,
+      });
       onSuccess(true);
     } catch (error) {
       setReadyToRequest(false);
