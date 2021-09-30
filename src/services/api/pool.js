@@ -58,7 +58,7 @@ export async function submitProvideRawTx({
 }
 
 export async function migratePRVProvide({paymentAddress, signEncode, verifyCode, amount}) {
-  const url = '/staker/migrate-to-prv-lock';
+  const url = '/pool/staker/migrate-to-prv-lock';
   return http.post(url, {
     'PStakeAddress': paymentAddress,
     'SignEncode': signEncode,
@@ -107,7 +107,7 @@ export async function withdrawProvision(paymentAddress, signEncode, amount, toke
 }
 
 export async function getHistories(account, page, limit, coins) {
-  const url = `/pool/staker/history?p_stake_address=${account.PaymentAddress}&page=${page}&limit=${limit}&type=1,2,6&${CANCEL_KEY}`;
+  const url = `/pool/staker/history?p_stake_address=${account.PaymentAddress}&page=${page}&limit=${limit}&type=1,2,6,8&${CANCEL_KEY}`;
   return http.get(url)
     .then(data => ({
       items: data.Items.map(item => new PoolHistory(item, account, coins)),
