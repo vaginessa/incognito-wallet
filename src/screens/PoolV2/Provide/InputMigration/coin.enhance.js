@@ -11,9 +11,6 @@ const withCoinData = WrappedComp => (props) => {
 
   // get min lock amount of prv
   let minLock = coins.find(i => i?.id === PRV_ID && i?.locked);
-  if (!minLock) {
-    minLock = coin;
-  }
 
   return (
     <WrappedComp
@@ -21,7 +18,7 @@ const withCoinData = WrappedComp => (props) => {
         ...props,
         data,
         coins,
-        coin,
+        coin: minLock,
         inputToken: coin,
         inputBalance: data.balance,
         inputMin: minLock.min || MAX_FEE_PER_TX,

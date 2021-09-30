@@ -31,7 +31,7 @@ const withSuccess = WrappedComp => (props) => {
         title={`You migrated ${migrate} ${coin.symbol}`}
         buttonTitle="Sure thing"
         buttonStyle={mainStyles.button}
-        description='Thanks you.'
+        description='Thank you.'
         visible={success}
       />
     </>
