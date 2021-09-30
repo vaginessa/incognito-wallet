@@ -21,36 +21,48 @@ const LockHistory = ({
   return (
     <View style={styles.wrapper}>
       <Header title="Provide PRV lock detail" onGoBack={() => navigation.navigate(ROUTE_NAMES.PoolV2)} />
-      <ScrollView style={mainStyles.coinContainer}>
-        {lockHistories.map((item) => {
-          return (
-            <TouchableOpacity key={item}>
-              <View style={mainStyles.coin} key={item.symbol}>
-                <Row>
-                  <View>
-                    <Text style={mainStyles.coinName}>{item.displayBalance} {item.symbol} </Text>
-                    <Text style={mainStyles.coinExtra}> Unlock </Text>
-                  </View>
-                  <View style={[mainStyles.flex]}>
-                    <Row
-                      style={[mainStyles.textRight, mainStyles.justifyRight]}
-                      center
-                    >
-                      <PRVSymbol style={mainStyles.coinInterest} />
-                      <Text style={mainStyles.coinInterest}>
-                        &nbsp;{item.displayReward}
-                      </Text>
+      { lockHistories.length > 0 
+        ? (
+          <ScrollView style={mainStyles.coinContainer}>
+            {lockHistories.map((item) => {
+              return (
+                <TouchableOpacity key={item}>
+                  <View style={mainStyles.coin} key={item.symbol}>
+                    <Row>
+                      <View>
+                        <Text style={mainStyles.coinName}>{item.displayBalance} {item.symbol} </Text>
+                        <Text style={mainStyles.coinExtra}> Unlock </Text>
+                      </View>
+                      <View style={[mainStyles.flex]}>
+                        <Row
+                          style={[mainStyles.textRight, mainStyles.justifyRight]}
+                          center
+                        >
+                          <PRVSymbol style={mainStyles.coinInterest} />
+                          <Text style={mainStyles.coinInterest}>
+                            &nbsp;{item.displayReward}
+                          </Text>
+                        </Row>
+                        <Text style={[mainStyles.textRight, mainStyles.unlockDate]}>
+                          {item.displayUnlockDate}
+                        </Text>
+                      </View>
                     </Row>
-                    <Text style={[mainStyles.textRight, mainStyles.unlockDate]}>
-                      {item.displayUnlockDate}
-                    </Text>
                   </View>
-                </Row>
-              </View>
-            </TouchableOpacity>
-          );
-        })}
-      </ScrollView>
+                </TouchableOpacity>
+              );
+            })}
+          </ScrollView>
+        ) 
+        : (
+          <View style={mainStyles.coinContainer}>
+            <Text style={[mainStyles.coinExtra, {textAlign: 'center'}]}>There have no providing lock PRV details.</Text>
+          </View>
+          
+        )
+      }
+
+      
       
     </View>
   );
