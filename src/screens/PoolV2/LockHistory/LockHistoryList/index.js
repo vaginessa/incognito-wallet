@@ -23,7 +23,7 @@ const LockHistory = ({
 
   return (
     <View style={styles.wrapper}>
-      <Header title="Provide PRV lock history" onGoBack={() => navigation.navigate(ROUTE_NAMES.PoolV2)} />
+      <Header title="Provide PRV lock detail" onGoBack={() => navigation.navigate(ROUTE_NAMES.PoolV2)} />
       <ScrollView style={mainStyles.coinContainer}>
         {lockHistories.map((item) => {
           return (
