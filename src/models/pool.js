@@ -101,6 +101,17 @@ export class PoolHistory {
 
     this.account = account?.name || account?.AccountName;
     this.coin = coins.find(coin => coin.id === this.coinId);
+    
+    if (data.Extra) {
+      try {
+        const extra = JSON.parse(data.Extra);
+        this.locked = extra.Locked;
+        this.lockTime = extra.LockTime;
+        this.unlockDate = moment(extra.DaturityDate).format(LONG_DATE_TIME_FORMAT);
+      } catch (e) {
+        console.log('Ignore err: ', e);
+      } 
+    }
 
     if (this.coin) {
       this.description = `${formatUtil.amountFull(this.amount, this.coin.pDecimals, true)} ${this.coin.symbol}`;
@@ -125,6 +136,12 @@ export class PoolHistory {
       'Auto stake off',
       'Reward',
       'Withdraw reward',
+      'None',
+      'Migrate',
     ][data.Type];
+
+    if (this.locked) {
+      this.type += ' lock';
+    }
   }
 }
