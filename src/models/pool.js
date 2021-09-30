@@ -50,7 +50,7 @@ export class UserCoinPoolModel {
     this.stakerTokenBalanceID = data.ID;
     this.unlockDate = data.DaturityDate;
     this.displayUnlockDate = formatUtil.formatDateTime(this.unlockDate, 'DD MMM YYYY HH:mm A');
-    this.status = data.Status;
+    this.active = data.Active;
 
     // if (this.id === COINS.PRV_ID) {
     //   this.name = COINS.PRV.name;

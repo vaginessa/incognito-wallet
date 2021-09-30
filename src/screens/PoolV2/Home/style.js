@@ -84,6 +84,14 @@ export default StyleSheet.create({
   },
   migrateButton: {
     marginHorizontal: 1,
+    backgroundColor: COLORS.overlayBlackDark,
+    height: 35,
+    width: 150,
+  },
+  migrateRow: {
+    justifyContent: 'center',
     flex: 1,
+    flexDirection: 'row',
+    width: '100%',
   },
 });

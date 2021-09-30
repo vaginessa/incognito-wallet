@@ -12,7 +12,7 @@ const withData = WrappedComp => (props) => {
 
   const lockHistories = userData.filter(item => {
     return item.id === coin.id && item.locked === coin.locked && 
-      item.lockTime === coin.lockTime && item.status === LockStatus.Active && item.balance > 0;
+      item.lockTime === coin.lockTime && item.active === LockStatus.Active && item.balance > 0;
   });
 
   return (
