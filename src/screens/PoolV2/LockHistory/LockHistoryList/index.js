@@ -1,7 +1,6 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import PropTypes from 'prop-types';
-import _ from 'lodash';
 import { compose } from 'recompose';
 import { View, Text, TouchableOpacity, ScrollView } from '@components/core';
 import { Row, PRVSymbol } from '@src/components/';
@@ -9,8 +8,6 @@ import { withLayout_2 } from '@components/Layout';
 import Header from '@components/Header/index';
 import { useNavigation } from 'react-navigation-hooks';
 import ROUTE_NAMES from '@routers/routeNames';
-import withHistories from '@screens/PoolV2/histories.enhance';
-import withDefaultAccount from '@components/Hoc/withDefaultAccount';
 import mainStyles from '@screens/PoolV2/style';
 import withData from './data.enhance';
 import styles from './style';
@@ -34,7 +31,6 @@ const LockHistory = ({
                     <Text style={mainStyles.coinName}>{item.displayBalance} {item.symbol} </Text>
                     <Text style={mainStyles.coinExtra}> Unlock </Text>
                   </View>
-
                   <View style={[mainStyles.flex]}>
                     <Row
                       style={[mainStyles.textRight, mainStyles.justifyRight]}
@@ -52,7 +48,6 @@ const LockHistory = ({
                 </Row>
               </View>
             </TouchableOpacity>
-            
           );
         })}
       </ScrollView>
@@ -73,7 +68,5 @@ LockHistory.defaultProps = {
 
 export default compose(
   withLayout_2,
-  withDefaultAccount,
   withData,
-  withHistories,
 )(LockHistory);
