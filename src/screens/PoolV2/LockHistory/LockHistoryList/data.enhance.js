@@ -1,4 +1,5 @@
 import React from 'react';
+import _ from 'lodash';
 import { useNavigationParam } from 'react-navigation-hooks';
 
 const LockStatus = {
@@ -10,11 +11,13 @@ const withData = WrappedComp => (props) => {
   const userData = useNavigationParam('userData');
   const coin = useNavigationParam('coin');
 
-  const lockHistories = userData.filter(item => {
+  let lockHistories = userData.filter(item => {
     return item.id === coin.id && item.locked === coin.locked && 
       item.lockTime === coin.lockTime && item.active === LockStatus.Active && item.balance > 0;
   });
 
+  lockHistories = _.orderBy(lockHistories, ['unlockDate'], ['desc']);
+  
   return (
     <WrappedComp
       {...{
