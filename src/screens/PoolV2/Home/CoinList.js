@@ -52,7 +52,7 @@ const CoinList = ({
           style={styles.scrollView}
         >
           {coins.map((item) => (
-            <Row style={mainStyles.coin} key={item.symbol}>
+            <Row style={mainStyles.coin} key={`${item.id} ${item.locked}`}>
               <Text style={mainStyles.coinName}>{item.name}</Text>
               <Text
                 style={[
@@ -113,8 +113,8 @@ const CoinList = ({
         {groupedUserData.map((item) => {
           const mapCoin = item.coin;
           return (
-            <TouchableOpacity onPress={() => handleShowLockHistory(mapCoin)} key={mapCoin}>
-              <View style={mainStyles.coin} key={item}>
+            <TouchableOpacity onPress={() => handleShowLockHistory(mapCoin)} key={`${item.id} ${item.locked}`}>
+              <View style={mainStyles.coin}>
                 <Row>
                   <View>
                     <Text style={mainStyles.coinName}>{item.symbol}</Text>
