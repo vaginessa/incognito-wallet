@@ -57,8 +57,8 @@ const InputMigration = ({
           />
           <BtnInfinite style={mainStyle.symbol} onPress={handleMax} />
         </Row>
-        {error ? <Text style={mainStyle.error}>{error}</Text> : null}
-        <Text style={mainStyle.coinExtraSmall}>Migrate your non lock PRV to lock in one step</Text>
+        {!!error && <Text style={mainStyle.error}>{error}</Text>}
+        <Text style={mainStyle.coinExtraSmall}>Migrate your non lock PRV to lock in one step.</Text>
         <RoundCornerButton
           title="Migrate"
           style={[mainStyle.button, styles.button]}

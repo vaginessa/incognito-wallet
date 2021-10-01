@@ -88,12 +88,14 @@ const Provide = ({
           left="Balance"
           right={`${coin.displayFullBalance} ${coin.symbol}`}
           style={mainStyle.coinExtraSmall}
+          wrapperStyle={mainStyle.coinExtraSmallWrapper}
         />
         <ExtraInfo
           token={feeToken}
           left="Fee"
           right={`${formatUtil.amount(fee, feeToken.pDecimals)} ${feeToken.symbol}`}
           style={mainStyle.coinExtraSmall}
+          wrapperStyle={mainStyle.coinExtraSmallWrapper}
         />
       </View>
     </View>

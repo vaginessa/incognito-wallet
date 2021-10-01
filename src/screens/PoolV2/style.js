@@ -37,6 +37,9 @@ export default StyleSheet.create({
     lineHeight: 18,
     marginBottom: UTILS.heightScale(8),
   },
+  coinExtraSmallWrapper: {
+    marginVertical: 0,
+  },
   textRight: {
     textAlign: 'right',
   },
