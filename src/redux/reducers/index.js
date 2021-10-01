@@ -21,6 +21,7 @@ import liquidity from '@screens/Dex/Liquidity.reducer';
 import convert from '@screens/Home/features/Convert/Convert.reducer';
 import { tabReducer as tabs } from '@src/components/core/Tabs';
 import { pDexV3Reducer as pDexV3 } from '@screens/PDexV3';
+import bottomModal from '@components/core/BottomModal/BottomModal.reducer';
 import wallet from './wallet';
 import account from './account';
 import server from './server';
@@ -70,6 +71,7 @@ const rootReducer = reduceReducers(
     convert,
     tabs,
     pDexV3,
+    bottomModal
   }),
   globalReducer,
 );

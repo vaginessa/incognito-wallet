@@ -13,6 +13,8 @@ import BigNumber from 'bignumber.js';
 import {PRVIDSTR} from 'incognito-chain-web-js/build/wallet';
 import {getHistoriesKey} from '@screens/PDexV3/features/Staking/Staking.utils';
 import flatten from 'lodash/flatten';
+import {PRV} from '@src/constants/common';
+import uniq from 'lodash/uniq';
 
 export const stakingSelector = createSelector(
   (state) => state.pDexV3,
@@ -21,7 +23,7 @@ export const stakingSelector = createSelector(
   },
 );
 
-export const isFetchingSelector = createSelector(
+export const isFetchingCoinsSelector = createSelector(
   stakingSelector,
   ({ isFetching }) => isFetching);
 
@@ -62,24 +64,20 @@ export const stakingCoinsSelector = createSelector(
       const staking = { stakingAmount, stakingAmountStr, stakingAmountSymbolStr };
       /**---------------------------------------------------------*/
       const rewardsCoins = coins.map(coin => coin.reward);
-      const rewardTokenIds = flatten(rewardsCoins.map(reward => Object.keys(reward)));
+      const rewardTokenIds = uniq(flatten(rewardsCoins.map(reward => Object.keys(reward))));
       const rewardsMerged = rewardTokenIds.reduce((prev, curr) => {
         const tokenId = curr;
-        const reward = rewardsCoins.reduce((_prev, _curr) => (_curr[tokenId] || 1e9) + _prev, 0);
         const token = getPrivacyDataByTokenID(tokenId);
-        const rewardUSD = convert.toHumanAmount(
-          new BigNumber(reward).multipliedBy(token.priceUsd).toNumber(),
-          token.pDecimals
-        );
-        prev.push({ tokenId, reward, token, rewardUSD });
+        const reward = rewardsCoins.reduce((_prev, _curr) => (_curr[tokenId] || 0) + _prev, 0);
+        const rewardStr = formatUtil.amountFull(reward, token.pDecimals);
+        const rewardUSD = convert.toHumanAmount(new BigNumber(reward).multipliedBy(token.priceUsd).toNumber(), token.pDecimals);
+        prev.push({ tokenId, reward, rewardStr, token, rewardUSD });
         return prev;
       }, []);
       const totalRewardUSD = rewardsMerged.reduce((prev, curr) => new BigNumber(prev).plus(curr.rewardUSD).toNumber(), 0);
-      const totalRewardUSDStr = formatUtil.amountFull(
-        new BigNumber(totalRewardUSD).multipliedBy(token.pDecimals).toNumber(),
-        token.symbol
-      );
-      const reward = { rewardsCoins, rewardTokenIds, rewardsMerged, totalRewardUSD, totalRewardUSDStr };
+      const totalRewardAmount = Math.ceil(new BigNumber(totalRewardUSD).multipliedBy(Math.pow(10, token.pDecimals || 9)).toNumber());
+      const totalRewardUSDStr = `$ ${formatUtil.amountFull(totalRewardAmount, token.pDecimals)}`;
+      const reward = { rewardsCoins, rewardTokenIds, rewardsMerged, totalRewardUSD, totalRewardAmount, totalRewardUSDStr };
       return {
         coins,
         tokenId,
@@ -90,6 +88,19 @@ export const stakingCoinsSelector = createSelector(
         reward,
       };
     });
+  }
+);
+
+const stakingRewardSelector = createSelector(
+  stakingCoinsSelector,
+  selectedPrivacy.getPrivacyDataByTokenID,
+  (coins, getPrivacyDataByTokenID) => {
+    const prvToken = getPrivacyDataByTokenID(PRV.id);
+    const rewardUSD = coins.reduce((prev, curr) => new BigNumber(prev).plus(curr.reward.totalRewardAmount), new BigNumber(0)).toNumber();
+    const rewardUSDStr = `$ ${formatUtil.amountFull(rewardUSD, prvToken.pDecimals)}`;
+    const rewardPRV = Math.floor(new BigNumber(rewardUSD).dividedBy(prvToken.priceUsd).toNumber());
+    const rewardPRVStr = `${formatUtil.amountFull(rewardPRV, prvToken.pDecimals)} ${prvToken.symbol}`;
+    return { rewardUSDStr, rewardPRVStr };
   }
 );
 
@@ -205,7 +216,7 @@ export const investDisable = createSelector(
   (inputValue, validate) => (inputValue <= 0 || !!validate()),
 );
 
-export const stakingPoolStatusSelector = createSelector(
+export const isFetchingPoolSelector = createSelector(
   stakingSelector,
   (staking) => {
     return staking.isFetchingPool;
@@ -441,13 +452,14 @@ export const stakingHistoriesMapperSelector = createSelector(
 );
 
 export default ({
-  stakingPoolSelector,
-  isFetchingSelector,
 
-  stakingPoolStatusSelector,
+  stakingPoolSelector,
+  isFetchingPoolSelector,
 
   mapperStakingCoins,
   stakingCoinsSelector,
+  isFetchingCoinsSelector,
+  stakingRewardSelector,
 
   stakingHistoriesKeySelector,
   stakingHistoriesStatus,

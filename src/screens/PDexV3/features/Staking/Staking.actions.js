@@ -4,13 +4,8 @@ import {ExHandler} from '@services/exception';
 import {getBalance} from '@src/redux/actions/token';
 import {PRVIDSTR} from 'incognito-chain-web-js/build/wallet';
 import {batch} from 'react-redux';
-import {
-  isFetchingSelector,
-  stakingHistoriesKeySelector,
-  stakingHistoriesStatus,
-  stakingPoolStatusSelector,
-} from '@screens/PDexV3/features/Staking/Staking.selector';
 import uniq from 'lodash/uniq';
+import {stakingSelector} from '@screens/PDexV3/features/Staking';
 
 const actionFetching = ({ isFetching }) => ({
   type: TYPES.ACTION_FETCHING,
@@ -35,14 +30,41 @@ const actionGetBalances = (tokenIDs) => async (dispatch) => {
   }
 };
 
-const actionFetchData = () => async (dispatch, getState) => {
+const actionFetchCoins = () => async (dispatch, getState) => {
   try {
     const state = getState();
-    const isFetching = isFetchingSelector(state);
+    const isFetching = stakingSelector.isFetchingCoinsSelector(state);
     if (isFetching) return;
     dispatch(actionFetching({ isFetching: true }));
     const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
-    const data = (await pDexV3Inst.getStakingData()) || [];
+    // const data = (await pDexV3Inst.getStakingData()) || [];
+    const data = [
+      {
+        id: '0000000000000000000000000000000000000000000000000000000000000004-7ff888813217555ad24437a4370c760642ccca4b809872ad57af5041962a7b0e',
+        createdAt: '0001-01-01T00:00:00Z',
+        updatedAt: '0001-01-01T00:00:00Z',
+        amount: 96700,
+        reward: {
+          '0000000000000000000000000000000000000000000000000000000000000004': 437716,
+          '497159cf6c9f8d5a7cffd38d392649fee7b61558689ba631b26ef1b2dd8c9a06': 49000,
+          'ffd8d42dc40a8d166ea4848baf8b5f6e9fe0e9c30d60062eb7d44a8df9e00854': 2172617,
+        },
+        tokenId: '0000000000000000000000000000000000000000000000000000000000000004',
+        nftId: '7ff888813217555ad24437a4370c760642ccca4b809872ad57af5041962a7b0e'
+      },
+      {
+        id: 'ffd8d42dc40a8d166ea4848baf8b5f6e9fe0e9c30d60062eb7d44a8df9e00854-7ff888813217555ad24437a4370c760642ccca4b809872ad57af5041962a7b0e',
+        createdAt: '0001-01-01T00:00:00Z',
+        updatedAt: '0001-01-01T00:00:00Z',
+        amount: 1e9,
+        reward: {
+          '0000000000000000000000000000000000000000000000000000000000000004': 128918,
+          '4584d5e9b2fc0337dfb17f4b5bb025e5b82c38cfa4f54e8a3d4fcdd03954ff82': 400
+        },
+        tokenId: '0000000000000000000000000000000000000000000000000000000000000004',
+        nftId: '7ff888813217555ad24437a4370c760642ccca4b809872ad57af5041962a7b0e'
+      },
+    ];
     const tokenIDs = uniq((data || []).map(({ tokenId }) => tokenId));
     batch(() => {
       dispatch(actionGetBalances(tokenIDs));
@@ -94,11 +116,11 @@ const actionSetHistoriesKey = ({ tokenID, nftID }) => ({
 
 const actionFetchHistories = () => async (dispatch, getState) => {
   const state = getState(getState);
-  const { isFetching, isLoadMore } = stakingHistoriesStatus(state);
+  const { isFetching, isLoadMore } = stakingSelector.stakingHistoriesStatus(state);
   if (isFetching || isLoadMore) return;
   try {
     dispatch(actionUpdateFetchingHistories());
-    const { tokenID, nftID, key } = stakingHistoriesKeySelector(state);
+    const { tokenID, nftID, key } = stakingSelector.stakingHistoriesKeySelector(state);
     const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
     const histories = (await pDexV3Inst.getStakingHistories({ tokenID, nftID })) || [];
     dispatch(actionUpdateHistories({ histories, key }));
@@ -121,7 +143,7 @@ const actionSetStakingPools = ({ pools }) => ({
 
 const actionFetchStakingPools = () => async (dispatch, getState) => {
   const state = getState(getState);
-  const isFetching = stakingPoolStatusSelector(state);
+  const isFetching = stakingSelector.isFetchingPoolSelector(state);
   if (isFetching) return;
   try {
     dispatch(actionUpdateFetchingPool({ isFetching: true }));
@@ -137,7 +159,7 @@ const actionFetchStakingPools = () => async (dispatch, getState) => {
 
 
 export default ({
-  actionFetchData,
+  actionFetchCoins,
   actionSetInvestCoin,
   actionSetWithdrawInvestCoin,
   actionSetWithdrawRewardCoin,

@@ -3,6 +3,13 @@ import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {COLORS, FONT} from '@src/styles';
 import PropTypes from 'prop-types';
 import {Row} from '@src/components';
+import {ArrowDown} from '@components/Icons';
+
+export const HeaderModal = React.memo(({ array }) => (
+  <Row spaceBetween>
+    {array.map(text=> <Text style={styled.headerTitle}>{text}</Text>)}
+  </Row>
+));
 
 export const PoolItem = React.memo(({ item }) => {
   if (!item) return;
@@ -23,12 +30,13 @@ export const PoolItem = React.memo(({ item }) => {
   );
 });
 
-export const PortfolioItem = React.memo(({ item }) => {
+export const PortfolioItem = React.memo(({ item, onPressItem, onPressArrow }) => {
+  const handlePressItem = () => typeof onPressItem === 'function' && onPressItem();
+  const handlePressArrow = () => typeof onPressArrow === 'function' &&  onPressArrow(item.reward.rewardsMerged);
   if (!item) return;
   const { token, reward, staking } = item;
-  console.log('item: ', staking);
   return (
-    <TouchableOpacity style={styled.wrapper}>
+    <TouchableOpacity style={styled.wrapper} onPress={handlePressItem}>
       <Row>
         <View style={styled.wrapImage}>
           <Image source={{uri: token.iconUrl}} style={styled.image} />
@@ -39,12 +47,36 @@ export const PortfolioItem = React.memo(({ item }) => {
         </View>
       </Row>
       <View>
-        <Text style={[styled.title, styled.rightText]}>{staking.stakingAmountSymbolStr}</Text>
-        <TouchableOpacity>
-          <Text style={[styled.subTitle, styled.rightText, reward.totalRewardUSD && styled.greenText]}>{`+ ${reward.totalRewardUSDStr}`}</Text>
+        <Text style={[styled.title, styled.rightText]}>{staking.stakingAmountStr}</Text>
+        <TouchableOpacity style={styled.arrowRow} onPress={handlePressArrow}>
+          <Text style={[
+            styled.subTitle,
+            styled.rightText,
+            reward.totalRewardUSD && styled.greenText
+          ]}
+          >{`+ ${reward.totalRewardUSDStr}`}
+          </Text>
+          <ArrowDown style={styled.arrow} />
         </TouchableOpacity>
       </View>
     </TouchableOpacity>
+  );
+});
+
+export const OneLineRow = React.memo(({ token, valueText }) => {
+  return (
+    <View style={[styled.wrapper, { marginTop: 0, marginBottom: 12 }]}>
+      <Row>
+        <View style={styled.wrapImage}>
+          <Image source={{uri: token.iconUrl}} style={styled.image} />
+        </View>
+        <View>
+          <Text style={styled.title}>{token.symbol}</Text>
+          <Text style={styled.subTitle}>{token.name || token.symbol}</Text>
+        </View>
+      </Row>
+      <Text style={styled.title}>{valueText}</Text>
+    </View>
   );
 });
 
@@ -74,11 +106,25 @@ const styled = StyleSheet.create({
     lineHeight: FONT.SIZE.small + 7,
     color: COLORS.lightGrey33,
   },
+  headerTitle: {
+    ...FONT.STYLE.medium,
+    fontSize: FONT.SIZE.small,
+    lineHeight: FONT.SIZE.small + 7,
+    color: COLORS.lightGrey33,
+  },
   greenText: {
     color: COLORS.green2,
   },
   rightText: {
     textAlign: 'right'
+  },
+  arrowRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end'
+  },
+  arrow: {
+    marginLeft: 12
   }
 });
 
@@ -88,4 +134,15 @@ PoolItem.propTypes = {
 
 PortfolioItem.propTypes = {
   item: PropTypes.object.isRequired,
+  onPressItem: PropTypes.func.isRequired,
+  onPressArrow: PropTypes.func.isRequired,
+};
+
+OneLineRow.propTypes = {
+  token: PropTypes.object.isRequired,
+  valueText: PropTypes.string.isRequired,
+};
+
+HeaderModal.propTypes = {
+  array: PropTypes.array.isRequired,
 };

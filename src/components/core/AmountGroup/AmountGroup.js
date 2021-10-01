@@ -1,14 +1,23 @@
 import React, {memo} from 'react';
-import {Text, View} from 'react-native';
+import {ActivityIndicator, Text, View} from 'react-native';
 import PropTypes from 'prop-types';
 import styled from './AmountGroup.styled';
 
-const AmountGroup = ({ title }) => {
+const AmountGroup = ({ title, amountStr, subAmountStr, loading }) => {
   return (
     <View style={styled.wrapper}>
       <Text style={styled.title}>{title}</Text>
-      <Text style={styled.baseAmount}>20.0 $</Text>
-      <Text style={styled.compareAmount}>= 10 PRV</Text>
+      {loading ?
+        (
+          <View style={styled.loading}>
+            <ActivityIndicator />
+          </View>
+        ) : (
+          <>
+            <Text style={styled.baseAmount}>{amountStr}</Text>
+            <Text style={styled.compareAmount}>{subAmountStr}</Text>
+          </>
+        )}
     </View>
   );
 };
@@ -18,7 +27,10 @@ AmountGroup.defaultProps = {
 };
 
 AmountGroup.propTypes = {
-  title: PropTypes.string
+  title: PropTypes.string,
+  amountStr: PropTypes.string.isRequired,
+  subAmountStr: PropTypes.string.isRequired,
+  loading: PropTypes.bool.isRequired,
 };
 
 export default memo(AmountGroup);

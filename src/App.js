@@ -11,12 +11,13 @@ import React, {useEffect, useState} from 'react';
 import {Provider, useDispatch, useSelector} from 'react-redux';
 import {PersistGate} from 'redux-persist/integration/react';
 import NetInfo from '@react-native-community/netinfo';
-import {Linking, Text} from 'react-native';
+import {Linking, Text, View} from 'react-native';
 import {compose} from 'recompose';
 import PropTypes from 'prop-types';
 import Performance from '@screens/Performance';
 import {devSelector} from '@screens/Dev';
 import {CONSTANT_KEYS} from '@src/constants';
+import BottomModal from '@components/core/BottomModal/BottomModal';
 import {MAIN_WEBSITE} from './constants/config';
 import LocalDatabase from './utils/LocalDatabase';
 import ModalConnection from './components/Modal/ModalConnection';
@@ -64,7 +65,7 @@ const App = (props) => {
           }
         }}
       />
-      {logApp && <Performance/>}
+      {logApp && <Performance />}
     </>
   );
 };
@@ -123,12 +124,12 @@ export const AppWrapper = (props) => () => {
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
-        <StatusBar currentScreen={currentScreen}/>
+        <StatusBar currentScreen={currentScreen} />
         <AppScreen>
           <App {...{...props, currentScreen, setCurrentScreen}} />
-          {isShowDeviceLog && <DeviceLog/>}
-          <QrScanner/>
-          <Toast/>
+          {isShowDeviceLog && <DeviceLog />}
+          <QrScanner />
+          <Toast />
           <ModalConnection
             isVisible={false}
             onPressSetting={() => {
@@ -136,6 +137,7 @@ export const AppWrapper = (props) => () => {
             }}
             onPressOk={() => listenNetworkChanges()}
           />
+          <BottomModal />
         </AppScreen>
       </PersistGate>
     </Provider>

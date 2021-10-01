@@ -1,8 +1,9 @@
 import { StyleSheet } from 'react-native';
-import { FONT, COLORS, UTILS } from '@src/styles';
+import { FONT, COLORS } from '@src/styles';
 
 export default StyleSheet.create({
   wrapper: {
+    maxWidth: '80%'
   },
   title: {
     fontFamily: FONT.NAME.regular,
@@ -22,4 +23,7 @@ export default StyleSheet.create({
     lineHeight: FONT.SIZE.small + 3,
     color: COLORS.black1
   },
+  loading: {
+    marginTop: 10
+  }
 });

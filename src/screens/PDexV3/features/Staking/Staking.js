@@ -14,11 +14,20 @@ import {BTNBorder} from '@components/core/Button';
 import StakingPortfolio from '@screens/PDexV3/features/Staking/Staking.portfolio';
 import PropTypes from 'prop-types';
 import withFetch from '@screens/PDexV3/features/Staking/Staking.enhanceFetch';
+import {useSelector} from 'react-redux';
+import {defaultAccountSelector} from '@src/redux/selectors/account';
+import {stakingSelector} from '@screens/PDexV3/features/Staking';
 
 const Reward = React.memo(() => {
+  const { rewardUSDStr, rewardPRVStr } = useSelector(stakingSelector.stakingRewardSelector);
+  const isFetching = useSelector(stakingSelector.isFetchingCoinsSelector);
   return (
     <Row spaceBetween style={{ marginTop: 27 }}>
-      <AmountGroup />
+      <AmountGroup
+        amountStr={rewardUSDStr}
+        subAmountStr={rewardPRVStr}
+        loading={isFetching}
+      />
       <CalendarIcon btnStyle={{ paddingLeft: 15 }} onPress={() => {}} />
     </Row>
   );
@@ -65,11 +74,11 @@ const tabStyled = {
   tabStyledEnabled: tabStyle.tabEnable,
 };
 
-const Staking = ({ handleFetchStakingPools, handleFetchData }) => {
+const Staking = ({ handleFetchData }) => {
+  const account = useSelector(defaultAccountSelector);
   React.useEffect(() => {
-    typeof handleFetchStakingPools === 'function' && handleFetchStakingPools();
     typeof handleFetchData === 'function' && handleFetchData();
-  }, []);
+  }, [account.paymentAddress]);
   return (
     <View style={mainStyle.container}>
       <Header title={STAKING_MESSAGES.staking} accountSelectable />
@@ -90,7 +99,6 @@ const Staking = ({ handleFetchStakingPools, handleFetchData }) => {
 };
 
 Staking.propTypes = {
-  handleFetchStakingPools: PropTypes.func.isRequired,
   handleFetchData: PropTypes.func.isRequired,
 };
 
