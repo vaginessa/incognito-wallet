@@ -1,6 +1,5 @@
 import TYPES from '@screens/PDexV3/features/Staking/Staking.constant';
-import {defaultAccountSelector} from '@src/redux/selectors/account';
-import {getPDexV3Instance} from '@screens/PDexV3';
+import {actionGetPDexV3Inst} from '@screens/PDexV3';
 import {ExHandler} from '@services/exception';
 import {getBalance} from '@src/redux/actions/token';
 import {PRVIDSTR} from 'incognito-chain-web-js/build/wallet';
@@ -10,7 +9,7 @@ import {
   stakingHistoriesKeySelector,
   stakingHistoriesStatus,
   stakingPoolStatusSelector,
-} from '@screens/PDexV3/features/Staking';
+} from '@screens/PDexV3/features/Staking/Staking.selector';
 import uniq from 'lodash/uniq';
 
 const actionFetching = ({ isFetching }) => ({
@@ -42,8 +41,7 @@ const actionFetchData = () => async (dispatch, getState) => {
     const isFetching = isFetchingSelector(state);
     if (isFetching) return;
     dispatch(actionFetching({ isFetching: true }));
-    const account = defaultAccountSelector(state);
-    const pDexV3Inst = await getPDexV3Instance({ account });
+    const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
     const data = (await pDexV3Inst.getStakingData()) || [];
     const tokenIDs = uniq((data || []).map(({ tokenId }) => tokenId));
     batch(() => {
@@ -100,9 +98,8 @@ const actionFetchHistories = () => async (dispatch, getState) => {
   if (isFetching || isLoadMore) return;
   try {
     dispatch(actionUpdateFetchingHistories());
-    const account = defaultAccountSelector(state);
     const { tokenID, nftID, key } = stakingHistoriesKeySelector(state);
-    const pDexV3Inst = await getPDexV3Instance({ account });
+    const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
     const histories = (await pDexV3Inst.getStakingHistories({ tokenID, nftID })) || [];
     dispatch(actionUpdateHistories({ histories, key }));
   } catch (error) {
@@ -122,14 +119,13 @@ const actionSetStakingPools = ({ pools }) => ({
   payload: { pools }
 });
 
-const actionFetchStakingPool = () => async (dispatch, getState) => {
+const actionFetchStakingPools = () => async (dispatch, getState) => {
   const state = getState(getState);
   const isFetching = stakingPoolStatusSelector(state);
   if (isFetching) return;
   try {
     dispatch(actionUpdateFetchingPool({ isFetching: true }));
-    const account = defaultAccountSelector(state);
-    const pDexV3Inst = await getPDexV3Instance({ account });
+    const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
     const pools = (await pDexV3Inst.getStakingPool()) || [];
     dispatch(actionSetStakingPools({ pools }));
   } catch (error) {
@@ -148,5 +144,5 @@ export default ({
   actionChangeAccount,
   actionSetHistoriesKey,
   actionFetchHistories,
-  actionFetchStakingPool,
+  actionFetchStakingPools,
 });

@@ -2,25 +2,25 @@ import React, {memo} from 'react';
 import {View} from 'react-native';
 import {styled as mainStyle} from '@screens/PDexV3/PDexV3.styled';
 import {Header, Row} from '@src/components';
-import {useSelector} from 'react-redux';
-import {selectedPrivacySelector} from '@src/redux/selectors';
-import {PRVIDSTR} from 'incognito-chain-web-js/build/wallet';
-import {RoundCornerButton} from '@components/core';
+import {RoundCornerButton, Tabs} from '@components/core';
 import routeNames from '@routers/routeNames';
 import {useNavigation} from 'react-navigation-hooks';
-import {btnStyles as btnStyled} from '@screens/PDexV3/features/Staking/Staking.styled';
-import {STAKING_MESSAGES} from '@screens/PDexV3/features/Staking/Staking.constant';
-import StakingHome from '@screens/PDexV3/features/Staking/Staking.home';
-import TotalReward from '@components/core/TotalReward';
+import {btnStyles as btnStyled, homeStyle, tabStyle} from '@screens/PDexV3/features/Staking/Staking.styled';
+import {STAKING_MESSAGES, TABS} from '@screens/PDexV3/features/Staking/Staking.constant';
+import AmountGroup from '@components/core/AmountGroup';
+import {CalendarClockIcon as CalendarIcon} from '@components/Icons';
+import StakingPools from '@screens/PDexV3/features/Staking/Staking.pools';
+import {BTNBorder} from '@components/core/Button';
+import StakingPortfolio from '@screens/PDexV3/features/Staking/Staking.portfolio';
+import PropTypes from 'prop-types';
+import withFetch from '@screens/PDexV3/features/Staking/Staking.enhanceFetch';
 
 const Reward = React.memo(() => {
-  const nativeToken = useSelector(selectedPrivacySelector.getPrivacyDataByTokenID)(PRVIDSTR);
   return (
-    <TotalReward
-      total={10000}
-      nativeToken={nativeToken}
-      helperScreen={routeNames.PoolV2Help}
-    />
+    <Row spaceBetween style={{ marginTop: 27 }}>
+      <AmountGroup />
+      <CalendarIcon btnStyle={{ paddingLeft: 15 }} onPress={() => {}} />
+    </Row>
   );
 });
 
@@ -59,15 +59,39 @@ const GroupsButton = React.memo(() => {
   );
 });
 
-const Staking = () => {
+const tabStyled = {
+  titleStyled: tabStyle.title,
+  titleDisabledStyled: tabStyle.disabledText,
+  tabStyledEnabled: tabStyle.tabEnable,
+};
+
+const Staking = ({ handleFetchStakingPools, handleFetchData }) => {
+  React.useEffect(() => {
+    typeof handleFetchStakingPools === 'function' && handleFetchStakingPools();
+    typeof handleFetchData === 'function' && handleFetchData();
+  }, []);
   return (
     <View style={mainStyle.container}>
       <Header title={STAKING_MESSAGES.staking} accountSelectable />
       <Reward />
-      <GroupsButton withdrawable />
-      <StakingHome />
+      <View style={homeStyle.wrapper}>
+        <Tabs rootTabID={TABS.ROOT_ID} styledTabList={{ padding: 0 }}>
+          <View tabID={TABS.TAB_COINS} label={STAKING_MESSAGES.listCoins} {...tabStyled}>
+            <StakingPools />
+          </View>
+          <View tabID={TABS.TAB_PORTFOLIO} label={STAKING_MESSAGES.portfolio} {...tabStyled}>
+            <StakingPortfolio />
+          </View>
+        </Tabs>
+      </View>
+      <BTNBorder title="Stake now" onPress={() => {}} />
     </View>
   );
 };
 
-export default memo(Staking);
+Staking.propTypes = {
+  handleFetchStakingPools: PropTypes.func.isRequired,
+  handleFetchData: PropTypes.func.isRequired,
+};
+
+export default withFetch(memo(Staking));

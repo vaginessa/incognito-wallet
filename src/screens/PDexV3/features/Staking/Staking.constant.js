@@ -27,6 +27,8 @@ export const STAKING_MESSAGES = {
   reward: 'Reward',
   histories: 'Histories',
   history: 'History',
+  portfolio: 'Your portfolio',
+  listCoins: 'List coins'
 };
 
 export const formConfigsInvest = {
@@ -42,6 +44,12 @@ export const formConfigsWithdrawInvest = {
 export const formConfigsWithdrawReward = {
   formName: 'FORM_WITHDRAW_REWARD',
   input: 'input'
+};
+
+export const TABS = {
+  ROOT_ID: 'staking-home',
+  TAB_COINS: 'staking-coins',
+  TAB_PORTFOLIO: 'staking-portfolio',
 };
 
 export default TYPES;

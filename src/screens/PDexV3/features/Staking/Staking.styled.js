@@ -1,6 +1,7 @@
 import {StyleSheet} from 'react-native';
 import {COLORS, FONT, UTILS} from '@src/styles';
 import {isAndroid} from '@utils/platform';
+import {FontStyle} from '@src/styles/TextStyle';
 
 export const btnStyles = StyleSheet.create({
   button: {
@@ -172,4 +173,25 @@ export const historyStyle = StyleSheet.create({
     flex: 1,
     marginRight: 25,
   },
+});
+
+export const tabStyle = StyleSheet.create({
+  title: {
+    ...FontStyle.medium,
+    color: COLORS.white
+  },
+  disabledText: {
+    ...FontStyle.medium,
+    color: COLORS.lightGrey31
+  },
+  tabEnable: {
+    backgroundColor: COLORS.green2
+  }
+});
+
+export const homeStyle = StyleSheet.create({
+  wrapper: {
+    flex: 1,
+    paddingTop: 24
+  }
 });

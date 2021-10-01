@@ -3,6 +3,7 @@ const COLORS = {
   orange: '#FF9500',
   white: 'white',
   black: '#000000',
+  black1: '#515151',
   black2: '#333335',
   blue: '#25CDD6',
   blue1: '#0A3A3C',
@@ -43,6 +44,7 @@ const COLORS = {
   lightGrey30: '#F5F5F5',
   lightGrey31: '#7B7B7B',
   lightGrey32: '#B2B2B6',
+  lightGrey33: '#A6A6A6',
   newGrey: '#8A8A8E',
   manateeGrey: '#959599',
 

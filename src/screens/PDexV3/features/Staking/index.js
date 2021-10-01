@@ -15,4 +15,5 @@ export { default as StakingHistoryDetail } from './Staking.historyDetail';
 // eslint-disable-next-line import/no-cycle
 export { default as stakingActions } from './Staking.actions';
 export { default as stakingReducer } from './Staking.reducer';
-export * from './Staking.selector';
+// eslint-disable-next-line import/export
+export { default as stakingSelector } from './Staking.selector';

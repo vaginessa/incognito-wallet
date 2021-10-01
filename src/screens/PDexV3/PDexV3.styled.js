@@ -7,6 +7,9 @@ export const styled = StyleSheet.create({
     flex: 1,
     marginTop: 10,
   },
+  fullFlex: {
+    flex: 1,
+  },
   button: {
     marginVertical: 50,
     height: 50,

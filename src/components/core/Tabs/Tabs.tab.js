@@ -7,14 +7,12 @@ import { COLORS } from '@src/styles';
 const styled = StyleSheet.create({
   btnStyle: {
     flex: 1,
-    width: '50%',
-    maxWidth: '48%',
-    height: 44,
+    height: '100%'
   },
   btnStyleEnabled: {
     shadowOffset: {
       width: 0,
-      height: 8,
+      height: 2,
     },
     shadowOpacity: 0.2,
     shadowRadius: 4,
@@ -39,6 +37,7 @@ const Tab = (props) => {
     onClickTab,
     tabID,
     tabStyled,
+    tabStyledEnabled,
     tabStyledDisabled,
     titleStyled,
     titleDisabledStyled,
@@ -54,12 +53,12 @@ const Tab = (props) => {
           ? [tabStyled, disabled ? tabStyledDisabled : null]
           : [
             styled.btnStyle,
-            disabled ? styled.btnStyleDisabled : styled.btnStyleEnabled,
+            disabled ? styled.btnStyleDisabled : { ...styled.btnStyleEnabled, ...tabStyledEnabled },
           ]
       }
       titleStyle={
         titleStyled
-          ? [titleStyled, disabled && titleDisabledStyled : null]
+          ? [titleStyled, disabled && titleDisabledStyled]
           : [styled.titleStyle, disabled ? styled.titleDisabledStyle : null]
       }
     />
@@ -71,6 +70,7 @@ Tab.defaultProps = {
   titleStyled: null,
   tabStyledDisabled: null,
   titleDisabledStyled: null,
+  tabStyledEnabled: {}
 };
 
 Tab.propTypes = {
@@ -82,6 +82,7 @@ Tab.propTypes = {
   tabStyledDisabled: PropTypes.any,
   titleStyled: PropTypes.any,
   titleDisabledStyled: PropTypes.any,
+  tabStyledEnabled: PropTypes.any,
 };
 
 export default React.memo(Tab);

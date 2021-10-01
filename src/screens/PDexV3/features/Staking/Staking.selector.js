@@ -12,6 +12,7 @@ import {
 import BigNumber from 'bignumber.js';
 import {PRVIDSTR} from 'incognito-chain-web-js/build/wallet';
 import {getHistoriesKey} from '@screens/PDexV3/features/Staking/Staking.utils';
+import flatten from 'lodash/flatten';
 
 export const stakingSelector = createSelector(
   (state) => state.pDexV3,
@@ -24,33 +25,69 @@ export const isFetchingSelector = createSelector(
   stakingSelector,
   ({ isFetching }) => isFetching);
 
-export const stakingCoinsSelector = createSelector(
+const mapperStakingCoins = createSelector(
   stakingSelector,
+  ({ coins }) => {
+    return coins.reduce((prev, curr) => {
+      const index = prev.findIndex(item => item.tokenId === curr.tokenId);
+      if (index !== -1) {
+        // exist
+        prev[index]?.coins.push(curr);
+      } else {
+        prev.push({
+          tokenId: curr.tokenId,
+          coins: [curr]
+        });
+      }
+      return prev;
+    }, []);
+  }
+);
+
+export const stakingCoinsSelector = createSelector(
+  mapperStakingCoins,
   selectedPrivacy.getPrivacyDataByTokenID,
   sharedSelector.isGettingBalance,
-  ({ coins }, getPrivacyDataByTokenID, isGettingBalance) => {
-    return (coins || []).map(item => {
-      const { tokenId, balance, rewardBalance } = item;
+  (stakingCoins, getPrivacyDataByTokenID, isGettingBalance) => {
+    return (stakingCoins || []).map(({ coins, tokenId }) => {
       const token = getPrivacyDataByTokenID(tokenId);
       const userBalance = token.amount;
-      const userBalanceStr = formatUtil.amountFull(token.amount, token.pDecimals);
+      const userBalanceStr = formatUtil.amountFull(userBalance, token.pDecimals);
       const userBalanceSymbolStr = `${userBalanceStr} ${token.symbol}`;
-      const balanceStakingStr = formatUtil.amountFull(balance, token.pDecimals);
-      const balanceRewardStakingStr = formatUtil.amountFull(rewardBalance, token.pDecimals);
-      const isLoadingBalance = isGettingBalance.includes(tokenId);
-      const hooks = {
-        balanceStakingStr,
-        balanceRewardStakingStr,
-        userBalance,
-        userBalanceStr,
-        userBalanceSymbolStr,
-        isLoadingBalance,
-      };
+      const user = { userBalance, userBalanceStr, userBalanceSymbolStr };
+      /**---------------------------------------------------------*/
+      const stakingAmount = coins.reduce((prev, curr) => new BigNumber(prev).plus(curr.amount).toNumber(), 0);
+      const stakingAmountStr = formatUtil.amountFull(stakingAmount, token.pDecimals);
+      const stakingAmountSymbolStr = `${stakingAmountStr} ${token.symbol}`;
+      const staking = { stakingAmount, stakingAmountStr, stakingAmountSymbolStr };
+      /**---------------------------------------------------------*/
+      const rewardsCoins = coins.map(coin => coin.reward);
+      const rewardTokenIds = flatten(rewardsCoins.map(reward => Object.keys(reward)));
+      const rewardsMerged = rewardTokenIds.reduce((prev, curr) => {
+        const tokenId = curr;
+        const reward = rewardsCoins.reduce((_prev, _curr) => (_curr[tokenId] || 1e9) + _prev, 0);
+        const token = getPrivacyDataByTokenID(tokenId);
+        const rewardUSD = convert.toHumanAmount(
+          new BigNumber(reward).multipliedBy(token.priceUsd).toNumber(),
+          token.pDecimals
+        );
+        prev.push({ tokenId, reward, token, rewardUSD });
+        return prev;
+      }, []);
+      const totalRewardUSD = rewardsMerged.reduce((prev, curr) => new BigNumber(prev).plus(curr.rewardUSD).toNumber(), 0);
+      const totalRewardUSDStr = formatUtil.amountFull(
+        new BigNumber(totalRewardUSD).multipliedBy(token.pDecimals).toNumber(),
+        token.symbol
+      );
+      const reward = { rewardsCoins, rewardTokenIds, rewardsMerged, totalRewardUSD, totalRewardUSDStr };
       return {
-        token,
+        coins,
         tokenId,
-        ...item,
-        ...hooks,
+        token,
+        user,
+        staking,
+        isLoadingBalance: isGettingBalance.includes(tokenId),
+        reward,
       };
     });
   }
@@ -182,7 +219,7 @@ export const stakingPoolSelector = createSelector(
   (staking, getPrivacyDataByTokenID, isGettingBalance) => {
     const pools = staking.pools || [];
     return pools.map((item) => {
-      const { tokenId, amount: poolAmount } = item;
+      const { tokenid: tokenId, amount: poolAmount, id } = item;
       const token = getPrivacyDataByTokenID(tokenId);
       const userBalance = token.amount;
       const userBalanceStr = formatUtil.amountFull(token.amount, token.pDecimals);
@@ -191,6 +228,7 @@ export const stakingPoolSelector = createSelector(
       const isLoadingBalance = isGettingBalance.includes(tokenId);
       const disabled = isLoadingBalance || userBalance === 0;
       return {
+        id,
         tokenId,
         poolAmount,
         poolAmountStr,
@@ -199,7 +237,7 @@ export const stakingPoolSelector = createSelector(
         userBalanceStr,
         userBalanceSymbolStr,
         token,
-        disabled
+        disabled,
       };
     });
   },
@@ -401,3 +439,16 @@ export const stakingHistoriesMapperSelector = createSelector(
     });
   },
 );
+
+export default ({
+  stakingPoolSelector,
+  isFetchingSelector,
+
+  stakingPoolStatusSelector,
+
+  mapperStakingCoins,
+  stakingCoinsSelector,
+
+  stakingHistoriesKeySelector,
+  stakingHistoriesStatus,
+});

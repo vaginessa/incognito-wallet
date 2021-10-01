@@ -7,7 +7,7 @@ const enhanceFetch = WrappedComp => props => {
   const dispatch = useDispatch();
   const handleFetchData = () => dispatch(stakingActions.actionFetchData());
   const handleChangeAccount = () => dispatch(stakingActions.actionChangeAccount());
-  const handleFetchPool = () => dispatch(stakingActions.actionFetchStakingPool());
+  const handleFetchStakingPools = () => dispatch(stakingActions.actionFetchStakingPools());
   return (
     <ErrorBoundary>
       <WrappedComp
@@ -15,7 +15,7 @@ const enhanceFetch = WrappedComp => props => {
           ...props,
           handleFetchData,
           handleChangeAccount,
-          handleFetchPool,
+          handleFetchStakingPools,
         }}
       />
     </ErrorBoundary>

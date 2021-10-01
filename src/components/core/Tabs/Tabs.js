@@ -19,10 +19,8 @@ Tabs.defaultProps = {
 };
 
 Tabs.propTypes = {
-  rootTabID: PropTypes.string.isRequired,
   styledTabList: PropTypes.any,
   styledTabs: PropTypes.any,
-  onClickTabItem: PropTypes.func.isRequired,
   renderTabs: PropTypes.func.isRequired,
 };
 
