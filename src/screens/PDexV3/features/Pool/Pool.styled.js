@@ -3,7 +3,7 @@ import { StyleSheet } from 'react-native';
 
 export const styled = StyleSheet.create({
   container: {
-    marginBottom: 18,
+    marginBottom: 25,
   },
   rowName: {
     alignItems: 'center',
@@ -23,10 +23,10 @@ export const styled = StyleSheet.create({
     fontSize: FONT.SIZE.small,
     lineHeight: FONT.SIZE.small + 2,
     color: COLORS.newGrey,
-    marginTop: 5,
+    marginTop: 10,
   },
   wrapperFirstSection: {
-    flex: 0.5,
+    flex: 0.8,
   },
   wrapperSecondSection: {
     flex: 0.2,

@@ -16,7 +16,7 @@ const ButtonTrade1 = React.memo(({ btnStyle, titleStyle, ...rest }) => {
   return (
     <ButtonBasic
       btnStyle={[btnStyle, styled.btnStyle]}
-      titleStyle={[titleStyle, styled.titleStyle]}
+      titleStyle={[styled.titleStyle, titleStyle]}
       {...rest}
     />
   );

@@ -15,7 +15,7 @@ const Item = React.memo(({ history, isLast }) => {
   return (
     <TouchableOpacity style={[styled.wrapperItem, isLast && { marginBottom: 20 }]} onPress={onNextPress}>
       <View style={styled.topRow}>
-        <Text style={styled.title}>Contribute</Text>
+        <Text style={styled.title}>{`${history.poolId ? 'Contribute' : 'Create pool'}`}</Text>
         <Text style={styled.status}>{history?.statusStr}</Text>
       </View>
       <View style={styled.bottomRow}>

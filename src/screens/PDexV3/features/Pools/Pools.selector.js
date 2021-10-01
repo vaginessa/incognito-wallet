@@ -20,34 +20,27 @@ export const listPoolsIDsSelector = createSelector(
   ({ listPools }) => listPools.map((pool) => pool.poolId),
 );
 
-const followSelector = createSelector(
-  poolsSelector,
-  ({ follow }) => follow,
-);
-
-export const listPoolsFollowingSelector = createSelector(
-  followSelector,
-  ({ pools }) => pools,
-);
-
 export const followPoolIdsSelector = createSelector(
-  followSelector,
-  ({ pools }) => pools.map((pool) => pool.poolId),
+  poolsSelector,
+  ({ followIds }) => followIds || [],
 );
 
-/*** Pools with current pairID select */
+export const listPoolsPureSelector = createSelector(
+  poolsSelector,
+  ({ listPools }) => listPools,
+);
+
 export const poolPairIdsSelector = createSelector(
-  poolsSelector,
-  ({ listPools }) => listPools.map((pool) => pool.poolId),
+  listPoolsPureSelector,
+  (listPools) => listPools.map((pool) => pool.poolId),
 );
 
-/*** Pools with current pairID merge with followPools  select */
 export const listPoolsSelector = createSelector(
-  poolsSelector,
-  listPoolsFollowingSelector,
+  listPoolsPureSelector,
   getPrivacyDataByTokenIDSelector,
-  ({ listPools }, followPools, getPrivacyDataByTokenID) => {
-    const pools = uniqBy([...listPools, ...followPools], 'poolId');
+  followPoolIdsSelector,
+  (listPools, getPrivacyDataByTokenID, followIds) => {
+    const pools = uniqBy([...listPools], 'poolId');
     return pools.map((pool) => {
       const {
         volume,
@@ -95,9 +88,7 @@ export const listPoolsSelector = createSelector(
         priceChangeToAmount,
         perChange24hToStr,
         perChange24hColor,
-        isFollowed:
-          followPools.findIndex((followPool) => poolId === followPool.poolId) >
-          -1,
+        isFollowed: followIds.findIndex((_poolId) => poolId === _poolId) > -1,
         poolTitle: `${token1?.symbol} / ${token2?.symbol}`,
         poolSizeStr,
         exchangeRateStr: getExchangeRate(

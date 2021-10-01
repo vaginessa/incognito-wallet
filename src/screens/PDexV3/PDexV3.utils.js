@@ -55,10 +55,10 @@ export const getShareStr = (share, totalShare) => {
     new BigNumber(share)
       .dividedBy(totalShare || 1)
       .multipliedBy(100)
-      .toString(),
-    7,
+      .toNumber(),
+    3,
   );
-  return `${share} (${percent}%)`;
+  return `${percent}%`;
 };
 
 export const getReward = (token1, token2, token1Value, token2Value) => {

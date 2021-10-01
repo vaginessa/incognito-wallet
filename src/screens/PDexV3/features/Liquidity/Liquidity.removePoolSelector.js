@@ -11,6 +11,7 @@ import format from '@utils/format';
 import uniqBy from 'lodash/uniqBy';
 import convert from '@utils/convert';
 import {formConfigsRemovePool} from '@screens/PDexV3/features/Liquidity/Liquidity.constant';
+import {getValidRealAmountNFTSelector} from '@src/redux/selectors/account';
 
 const removePoolSelector = createSelector(
   liquiditySelector,
@@ -58,35 +59,13 @@ export const shareDataSelector = createSelector(
   (poolId, removePool, { inputToken, outputToken }, getDataShareByPoolID, isGettingBalance, { token: feeToken }) => {
     const shareData = getDataShareByPoolID(poolId);
     if (!shareData) return {};
-    const { shareStr, token1PoolValue, token2PoolValue , amp, nftId} = shareData;
-    const exchangeRateStr = getExchangeRate(inputToken, outputToken, token1PoolValue, token2PoolValue);
-    const poolSize = getPoolSize(inputToken, outputToken, token1PoolValue, token2PoolValue);
+    const { nftId } = shareData;
     const tokens = uniqBy([inputToken, outputToken, feeToken], (token) => token.tokenId);
-    const hookBalances = tokens.map((token) => ({
-      label: 'Balance',
-      value: `${format.amountFull(token.amount, token.pDecimals)} ${token.symbol}`,
+    const hookFactories = tokens.map((token) => ({
+      label: `${token.symbol} Balance`,
+      value: `${format.amountFull(token.amount, token.pDecimals)}`,
       loading: isGettingBalance.includes(token?.tokenId)
     }));
-    const hookFactories = [
-      {
-        label: 'AMP',
-        value: amp,
-        info: helper.HELPER_CONSTANT.AMP
-      },
-      ...hookBalances,
-      {
-        label: 'Share',
-        value: shareStr,
-      },
-      {
-        label: 'Exchange rate',
-        value: exchangeRateStr,
-      },
-      {
-        label: 'Pool size',
-        value: poolSize,
-      },
-    ];
     return {
       ...shareData,
       hookFactories,
@@ -141,12 +120,30 @@ export const inputAmountSelector = createSelector(
   getInputShareAmount,
 );
 
+export const nftTokenSelector = createSelector(
+  poolIDSelector,
+  getDataShareByPoolIdSelector,
+  getValidRealAmountNFTSelector,
+  (poolId, getDataShareByPoolId, getValidRealAmountNFT) => {
+    const { nftId: _nftId } = getDataShareByPoolId(poolId) || {};
+    let _nftToken;
+    const nftToken = getValidRealAmountNFT(_nftId);
+    if (nftToken) {
+      _nftToken = nftToken;
+    }
+    return _nftToken;
+  }
+);
+
 export const disableRemovePool = createSelector(
+  isFetchingSelector,
   inputAmountSelector,
-  ( inputAmount ) => {
+  nftTokenSelector,
+  ( isFetching, inputAmount, nftToken ) => {
     const { error: inputError, originalInputAmount: amount1 } = inputAmount(formConfigsRemovePool.formName, formConfigsRemovePool.inputToken);
     const { error: outputError, originalInputAmount: amount2 } = inputAmount(formConfigsRemovePool.formName, formConfigsRemovePool.outputToken);
-    return !!inputError || !!outputError || !amount1 || !amount2;
+    const disabled = !!inputError || !!outputError || !amount1 || !amount2 || !nftToken || isFetching;
+    return { disabled };
   }
 );
 
@@ -160,4 +157,5 @@ export default ({
   inputAmountSelector,
   maxShareAmountSelector,
   disableRemovePool,
+  nftTokenSelector,
 });

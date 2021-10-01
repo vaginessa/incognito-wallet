@@ -18,7 +18,6 @@ const Confirm = ({ onRemoveContribute, error }) => {
   const { feeAmount } = useSelector(removePoolSelector.feeAmountSelector);
   const poolId = useSelector(removePoolSelector.poolIDSelector);
   const { nftId } = useSelector(removePoolSelector.shareDataSelector);
-  console.log('nftId', nftId);
   const inputAmount = amountSelector(formConfigsRemovePool.formName, formConfigsRemovePool.inputToken);
   const outputAmount = amountSelector(formConfigsRemovePool.formName, formConfigsRemovePool.outputToken);
   const removeContributes = async () => {

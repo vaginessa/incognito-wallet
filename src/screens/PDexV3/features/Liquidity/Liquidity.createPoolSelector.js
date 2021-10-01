@@ -4,12 +4,13 @@ import {getPrivacyDataByTokenID as getPrivacyDataByTokenIDSelector} from '@src/r
 import {sharedSelector} from '@src/redux/selectors';
 import {getExchangeRate} from '@screens/PDexV3';
 import {allTokensIDsSelector} from '@src/redux/selectors/token';
-import {getInputAmount} from '@screens/PDexV3/features/Liquidity/Liquidity.utils';
-import {formValueSelector} from 'redux-form';
+import {filterTokenList, getInputAmount} from '@screens/PDexV3/features/Liquidity/Liquidity.utils';
 import {formConfigsCreatePool} from '@screens/PDexV3/features/Liquidity/Liquidity.constant';
 import uniqBy from 'lodash/uniqBy';
 import format from '@utils/format';
-import convert from '@utils/convert';
+import {listPoolsPureSelector} from '@screens/PDexV3/features/Pools';
+import {getDataShareByPoolIdSelector} from '@screens/PDexV3/features/Portfolio';
+import {nftTokenDataSelector} from '@src/redux/selectors/account';
 
 const createPoolSelector = createSelector(
   liquiditySelector,
@@ -85,30 +86,53 @@ export const outputTokensListSelector = createSelector(
   allTokensIDsSelector,
   tokenSelector,
   getPrivacyDataByTokenIDSelector,
-  (tokenIDs, { outputToken }, getPrivacyDataByTokenID) => {
+  listPoolsPureSelector,
+  (tokenIDs, { inputToken, outputToken }, getPrivacyDataByTokenID, pools) => {
     if (!tokenIDs || !outputToken) return [];
-    return tokenIDs.filter((tokenID) => (tokenID !== outputToken?.tokenId)).map(tokenID => getPrivacyDataByTokenID(tokenID));
+    const tokens = filterTokenList({
+      tokenId: inputToken.tokenId,
+      pools,
+      tokenIds: tokenIDs,
+      ignoreTokens: [outputToken.tokenId, inputToken.tokenId],
+    });
+    return tokens.map(tokenID => getPrivacyDataByTokenID(tokenID));
   }
 );
 
 export const ampValueSelector = createSelector(
-  (state) => state,
-  (state) => {
-    const selector = formValueSelector(formConfigsCreatePool.formName);
-    const ampStr = selector(state, formConfigsCreatePool.amp);
-    const amp = convert.toNumber(ampStr, true);
-    const isValid = !isNaN(amp) && amp > 0;
-    return { ampStr, amp, isValid };
+  createPoolSelector,
+  ({ amp }) => {
+    return { amp };
   }
+);
+
+export const isFetchingSelector = createSelector(
+  createPoolSelector,
+  ({ isFetching }) => isFetching
+);
+
+export const focusFieldSelector = createSelector(
+  createPoolSelector,
+  ({ focusField }) => focusField
+);
+
+export const isTypingSelector = createSelector(
+  createPoolSelector,
+  ({ isTyping }) => isTyping
 );
 
 export const disableCreatePool = createSelector(
   inputAmountSelector,
-  ampValueSelector,
-  ( inputAmount, { isValid: isValidAMP } ) => {
+  isFetchingSelector,
+  nftTokenDataSelector,
+  isTypingSelector,
+  ( inputAmount, isFetching, { nftToken }, isTyping ) => {
     const { error: inputError } = inputAmount(formConfigsCreatePool.formName, formConfigsCreatePool.inputToken);
     const { error: outputError } = inputAmount(formConfigsCreatePool.formName, formConfigsCreatePool.outputToken);
-    return !!inputError || !!outputError || !isValidAMP;
+    const disabled = !!inputError || !!outputError || isFetching || !nftToken || isTyping;
+    return {
+      disabled,
+    };
   }
 );
 
@@ -122,4 +146,7 @@ export default ({
   inputAmountSelector,
   ampValueSelector,
   disableCreatePool,
+  isFetchingSelector,
+  focusFieldSelector,
+  isTypingSelector,
 });

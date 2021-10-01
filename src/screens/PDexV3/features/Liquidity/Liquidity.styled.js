@@ -17,6 +17,9 @@ const styled = StyleSheet.create({
     fontSize: FONT.SIZE.medium,
     lineHeight: FONT.SIZE.medium + 15,
   },
+  selectPercentAmountContainer: {
+    marginTop: 40
+  }
 });
 
 export default styled;

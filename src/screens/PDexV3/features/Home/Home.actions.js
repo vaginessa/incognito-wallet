@@ -61,8 +61,8 @@ export const actionRefresh = () => async (dispatch, getState) => {
       ];
       break;
     }
-    dispatch(liquidityHistoryActions.actionGetHistories());
     await Promise.all(task);
+    dispatch(liquidityHistoryActions.actionGetHistories());
   } catch (error) {
     new ExHandler(error).showErrorToast();
   } finally {

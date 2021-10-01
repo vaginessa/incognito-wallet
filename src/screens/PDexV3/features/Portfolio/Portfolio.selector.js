@@ -43,7 +43,8 @@ export const listShareSelector = createSelector(
         token2Reward,
         poolId,
         withdrawing,
-        withdrawable
+        withdrawable,
+        nftId
       } = item;
       const poolDetail = shareDetails.find((share) => poolId === share.poolId);
       const { amp, apy, token1Value: token1PoolValue, token2Value: token2PoolValue } = poolDetail || {};
@@ -70,14 +71,6 @@ export const listShareSelector = createSelector(
           value: `${apy}%`,
         },
         {
-          label: 'AMP',
-          value: amp,
-        },
-        {
-          label: 'Exchange rate',
-          value: exchangeRateStr,
-        },
-        {
           label: 'Principal',
           value: principalStr,
         },
@@ -92,8 +85,35 @@ export const listShareSelector = createSelector(
           withdrawing,
           withdrawable,
           shareId,
+          nftId,
+          poolId,
         },
       ];
+
+      const hookFactoriesDetail = [
+        {
+          label: 'PoolId',
+          valueText: poolId,
+          copyable: true,
+        },
+        {
+          label: 'APY',
+          valueText: `${apy}%`,
+        },
+        {
+          label: 'Principal',
+          valueText: principalStr,
+        },
+        {
+          label: 'Share',
+          valueText: shareStr,
+        },
+        {
+          label: 'Reward',
+          valueText: rewardStr,
+        },
+      ];
+
       return {
         ...item,
         shareId,
@@ -108,6 +128,7 @@ export const listShareSelector = createSelector(
         apy,
         token1PoolValue,
         token2PoolValue,
+        hookFactoriesDetail,
       };
     });
   },
@@ -141,4 +162,9 @@ export const totalShareSelector = createSelector(
     }, new BigNumber('0')).toNumber();
     return format.amountFull(rewardUSD, 9, true);
   }
+);
+
+export const modalDataSelector = createSelector(
+  portfolioSelector,
+  ({ modal }) => modal
 );

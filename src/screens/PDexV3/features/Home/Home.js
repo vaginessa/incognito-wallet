@@ -14,6 +14,7 @@ import routeNames from '@src/router/routeNames';
 import { TradingVol24h } from '@screens/PDexV3/features/Share';
 import { liquidityActions } from '@screens/PDexV3/features/Liquidity';
 import SelectAccountButton from '@components/SelectAccountButton';
+import {liquidityHistorySelector} from '@screens/PDexV3/features/LiquidityHistories';
 import withHome from './Home.enhance';
 import { styled } from './Home.styled';
 import { ROOT_TAB_HOME, TAB_POOLS_ID, TAB_PORTFOLIO_ID } from './Home.constant';
@@ -53,15 +54,18 @@ const TabPools = React.memo(() => {
 
 const RightHeader = React.memo(() => {
   const navigation = useNavigation();
+  const showHistory = useSelector(liquidityHistorySelector.showHistorySelector);
   const handleNavOrderHistory = () => {
     navigation.navigate(routeNames.LiquidityHistories);
   };
   return (
     <Row style={tradeStyled.rightHeader}>
-      <BtnOrderHistory
-        style={tradeStyled.btnOrderHistory}
-        onPress={handleNavOrderHistory}
-      />
+      {!!showHistory && (
+        <BtnOrderHistory
+          style={tradeStyled.btnOrderHistory}
+          onPress={handleNavOrderHistory}
+        />
+      )}
       <SelectAccountButton />
     </Row>
   );

@@ -12,10 +12,15 @@ const contributeState = {
 };
 
 const createPoolState = {
+  focusField: undefined,
   inputToken: undefined,
   outputToken: undefined,
   feeAmount: ACCOUNT_CONSTANT.MAX_FEE_PER_TX * 2,
   feeToken: PRVIDSTR,
+  amp: undefined,
+  rate: undefined,
+  isFetching: false,
+  isTyping: false,
 };
 
 const removePoolState = {
@@ -80,6 +85,55 @@ const liquidityReducer = (state = initialState, action) => {
       createPool: {
         ...state.createPool,
         ...action.payload
+      }
+    };
+  }
+  case TYPES.ACTION_FREE_CREATE_POOL_TOKEN: {
+    return {
+      ...state,
+      createPool: {
+        ...createPoolState
+      }
+    };
+  }
+  case TYPES.ACTION_SET_FETCHING_CREATE_POOL: {
+    const { isFetching } = action.payload;
+    return {
+      ...state,
+      createPool: {
+        ...state.createPool,
+        isFetching
+      }
+    };
+  }
+  case TYPES.ACTION_SET_FOCUS_CREATE_POOL: {
+    const { focusField } = action.payload;
+    return {
+      ...state,
+      createPool: {
+        ...state.createPool,
+        focusField
+      }
+    };
+  }
+  case TYPES.ACTION_SET_TYPING_CREATE_POOL: {
+    const { isTyping } = action.payload;
+    return {
+      ...state,
+      createPool: {
+        ...state.createPool,
+        isTyping
+      }
+    };
+  }
+  case TYPES.ACTION_SET_RATE_CREATE_POOL: {
+    const { amp, rate } = action.payload;
+    return {
+      ...state,
+      createPool: {
+        ...state.createPool,
+        amp,
+        rate,
       }
     };
   }

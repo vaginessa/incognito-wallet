@@ -1,26 +1,30 @@
 import React, {memo} from 'react';
-import {ScrollView, View} from 'react-native';
+import {RefreshControl, ScrollView, View} from 'react-native';
 import PropTypes from 'prop-types';
 import {styled as mainStyle} from '@screens/PDexV3/PDexV3.styled';
-import {Header, RowSpaceText} from '@src/components';
-import {LIQUIDITY_MESSAGES,formConfigsCreatePool} from '@screens/PDexV3/features/Liquidity/Liquidity.constant';
+import {Header, RowSpaceText, SuccessModal} from '@src/components';
+import {
+  LIQUIDITY_MESSAGES,
+  formConfigsCreatePool,
+  SUCCESS_MODAL
+} from '@screens/PDexV3/features/Liquidity/Liquidity.constant';
 import {createForm, RFTradeInputAmount as TradeInputAmount, validator} from '@components/core/reduxForm';
-import {AddBreakLine, Text} from '@components/core';
+import {AddBreakLine} from '@components/core';
 import {batch, useDispatch, useSelector} from 'react-redux';
-import {Field} from 'redux-form';
+import {change, Field} from 'redux-form';
 import withLiquidity from '@screens/PDexV3/features/Liquidity/Liquidity.enhance';
 import {createPoolSelector, liquidityActions} from '@screens/PDexV3/features/Liquidity';
 import styled from '@screens/PDexV3/features/Liquidity/Liquidity.styled';
 import {useNavigation} from 'react-navigation-hooks';
 import routeNames from '@routers/routeNames';
-import {disableCreatePool} from '@screens/PDexV3/features/Liquidity/Liquidity.createPoolSelector';
 import {ButtonTrade} from '@components/Button';
-import {formConfigs} from '@screens/PDexV3/features/Swap/Swap.constant';
+import {compose} from 'recompose';
+import withTransaction from '@screens/PDexV3/features/Liquidity/Liquidity.enhanceTransaction';
+import {NFTTokenBottomBar} from '@screens/PDexV3/features/NFTToken';
 
 const initialFormValues = {
   inputToken: '',
   outputToken: '',
-  amp: ''
 };
 
 const Form = createForm(formConfigsCreatePool.formName, {
@@ -35,20 +39,45 @@ const InputsGroup = () => {
   const inputAmount = useSelector(createPoolSelector.inputAmountSelector);
   const inputTokens = useSelector(createPoolSelector.inputTokensListSelector);
   const outputTokens = useSelector(createPoolSelector.outputTokensListSelector);
+  const focusField = useSelector(createPoolSelector.focusFieldSelector);
+  const isTyping = useSelector(createPoolSelector.isTypingSelector);
   const inputToken = inputAmount(formConfigsCreatePool.formName, formConfigsCreatePool.inputToken);
   const outputToken = inputAmount(formConfigsCreatePool.formName, formConfigsCreatePool.outputToken);
+  const onChangeText = (text) => dispatch(liquidityActions.actionSetCreatePoolText(text));
+  const onFocusToken = (e, focusField) =>  dispatch(liquidityActions.actionSetFocusCreatePool({ focusField }));
+  const onGetRate = () => {
+    if (!inputToken.originalInputAmount || !outputToken.originalInputAmount || !inputToken.tokenId || !outputToken.tokenId) return;
+    const params = {
+      inputAmount: inputToken.originalInputAmount,
+      inputToken: inputToken.tokenId,
+      outputAmount: outputToken.originalInputAmount,
+      outputToken: outputToken.tokenId,
+    };
+    dispatch(liquidityActions.actionSetTypingCreatePool({ isTyping: true }));
+    liquidityActions.debouncedGetCreatePoolRate.cancel();
+    dispatch(liquidityActions.asyncActionDebounced(params, liquidityActions.debouncedGetCreatePoolRate));
+  };
   const _validateInput = React.useCallback(() => {
     return inputToken.error;
   }, [inputToken.error]);
   const _validateOutput = React.useCallback(() => {
     return outputToken.error;
   }, [outputToken.error]);
-  const onChangeText = ({ text, field }) => {
-    dispatch(liquidityActions.actionSetCreatePoolText({
-      text,
-      field,
-    }));
-  };
+
+  const loading = React.useMemo(() => ({
+    input: inputToken.loadingBalance || (isTyping && focusField === formConfigsCreatePool.inputToken),
+    output: outputToken.loadingBalance || (isTyping && focusField === formConfigsCreatePool.outputToken),
+  }), [focusField, isTyping, inputToken.loadingBalance, outputToken.loadingBalance]);
+
+  React.useEffect(() => {
+    onGetRate();
+  }, [
+    inputToken.originalInputAmount,
+    inputToken.tokenId,
+    outputToken.originalInputAmount,
+    outputToken.tokenId,
+  ]);
+
   return (
     <View style={styled.wrapInput}>
       <Field
@@ -61,22 +90,25 @@ const InputsGroup = () => {
           _validateInput,
           ...validator.combinedAmount,
         ]}
-        onChange={(text) => {
-          if (typeof onChangeText === 'function') {
-            onChangeText({ text, field: formConfigsCreatePool.inputToken });
-          }
-        }}
+        onFocus={(e) => onFocusToken(e, formConfigsCreatePool.inputToken)}
+        onChange={onChangeText}
         editableInput={!inputToken.loadingBalance}
-        loadingBalance={inputToken.loadingBalance}
-        onPressSymbol={() => navigation.navigate(routeNames.SelectTokenTrade, {
-          data: inputTokens,
-          onSelectToken: ((token) => {
-            batch(() => {
-              dispatch(liquidityActions.actionUpdateCreatePoolInputToken(token.tokenId));
-              navigation.navigate(routeNames.CreatePool);
-            });
-          }),
-        })}
+        loadingBalance={loading.input}
+        onPressSymbol={() => {
+          if (loading.input) return;
+          navigation.navigate(routeNames.SelectTokenTrade, {
+            data: inputTokens,
+            onSelectToken: ((token) => {
+              batch(() => {
+                dispatch(liquidityActions.actionUpdateCreatePoolInputToken(token.tokenId));
+                navigation.navigate(routeNames.CreatePool);
+              });
+            }),
+          });
+        }}
+        onPressInfinityIcon={() => {
+          dispatch(change(formConfigsCreatePool.formName, formConfigsCreatePool.inputToken, inputToken.maxOriginalAmountText));
+        }}
       />
       <AddBreakLine />
       <Field
@@ -89,22 +121,25 @@ const InputsGroup = () => {
           _validateOutput,
           ...validator.combinedAmount,
         ]}
-        onChange={(text) => {
-          if (typeof onChangeText === 'function') {
-            onChangeText({ text, field: formConfigsCreatePool.outputToken });
-          }
-        }}
+        onChange={onChangeText}
         editableInput={!outputToken.loadingBalance}
-        loadingBalance={outputToken.loadingBalance}
-        onPressSymbol={() => navigation.navigate(routeNames.SelectTokenTrade, {
-          data: outputTokens,
-          onSelectToken: ((token) => {
-            batch(() => {
-              dispatch(liquidityActions.actionUpdateCreatePoolOutputToken(token.tokenId));
-              navigation.navigate(routeNames.CreatePool);
-            });
-          }),
-        })}
+        loadingBalance={loading.output}
+        onPressSymbol={() => {
+          if (loading.output) return;
+          navigation.navigate(routeNames.SelectTokenTrade, {
+            data: outputTokens,
+            onSelectToken: ((token) => {
+              batch(() => {
+                dispatch(liquidityActions.actionUpdateCreatePoolOutputToken(token.tokenId));
+                navigation.navigate(routeNames.CreatePool);
+              });
+            }),
+          });
+        }}
+        onPressInfinityIcon={() => {
+          dispatch(change(formConfigsCreatePool.formName, formConfigsCreatePool.outputToken, outputToken.maxOriginalAmountText));
+        }}
+        onFocus={(e) => onFocusToken(e, formConfigsCreatePool.outputToken)}
       />
     </View>
   );
@@ -122,61 +157,101 @@ export const Extra = React.memo(() => {
   );
 });
 
-const AMP = React.memo(() => (
-  <View style={styled.wrapAMP}>
-    <Text style={styled.amp}>AMP</Text>
-    <Field
-      component={TradeInputAmount}
-      name={formConfigsCreatePool.amp}
-      validate={[
-        ...validator.combinedAmount,
-      ]}
-      editableInput
+const ButtonCreatePool = React.memo(({ onSubmit }) => {
+  const { disabled } = useSelector(createPoolSelector.disableCreatePool);
+  const amountSelector = useSelector(createPoolSelector.inputAmountSelector);
+  const inputAmount = amountSelector(formConfigsCreatePool.formName, formConfigsCreatePool.inputToken);
+  const outputAmount = amountSelector(formConfigsCreatePool.formName, formConfigsCreatePool.outputToken);
+  const { feeAmount } = useSelector(createPoolSelector.feeAmountSelector);
+  const { amp } = useSelector(createPoolSelector.ampValueSelector);
+  const handleSubmit = () => {
+    if (disabled) return;
+    const params = {
+      fee: feeAmount / 2,
+      tokenId1: inputAmount.tokenId,
+      tokenId2: outputAmount.tokenId,
+      amount1: inputAmount.originalInputAmount,
+      amount2: outputAmount.originalInputAmount,
+      amp,
+    };
+    onSubmit(params);
+  };
+  return (
+    <ButtonTrade
+      btnStyle={mainStyle.button}
+      title={LIQUIDITY_MESSAGES.createPool}
+      disabled={disabled}
+      onPress={handleSubmit}
     />
-  </View>
-));
+  );
+});
 
-const CreatePool = ({ onInitCreatePool }) => {
-  const disabled = useSelector(disableCreatePool);
-  const navigation = useNavigation();
-  const onSuccess = () => {
-    batch(() => {
-      onInitCreatePool();
-      navigation.navigate(routeNames.CreatePool);
-    });
+const CreatePool = ({
+  onInitCreatePool,
+  onFreeCreatePool,
+  onCreateNewPool,
+  visible,
+  onCloseModal
+}) => {
+  const isFetching = useSelector(createPoolSelector.isFetchingSelector);
+  const onSubmit = (params) => {
+    typeof onCreateNewPool === 'function' && onCreateNewPool(params);
   };
-  const onSubmit = () => {
-    navigation.navigate(routeNames.CreatePoolConfirm, { onSuccess });
+
+  const onClose = () => {
+    onCloseModal();
+    onInitCreatePool();
   };
+
+  const renderContent = () => (
+    <>
+      <InputsGroup />
+      <ButtonCreatePool onSubmit={onSubmit} />
+      <Extra />
+    </>
+  );
   React.useEffect(() => {
-    setTimeout(() => { onInitCreatePool(); }, 500);
+    onInitCreatePool();
+    return () => onFreeCreatePool();
   }, []);
   return (
-    <View style={mainStyle.container}>
-      <Header title={LIQUIDITY_MESSAGES.createPool} />
-      <ScrollView>
-        <Form>
-          {({ handleSubmit }) => (
-            <>
-              <InputsGroup />
-              <ButtonTrade
-                btnStyle={mainStyle.button}
-                title={LIQUIDITY_MESSAGES.createPool}
-                disabled={disabled}
-                onPress={onSubmit}
-              />
-              <AMP />
-              <Extra />
-            </>
-          )}
-        </Form>
-      </ScrollView>
-    </View>
+    <>
+      <View style={mainStyle.container}>
+        <Header title={LIQUIDITY_MESSAGES.createPool} />
+        <ScrollView
+          refreshControl={(<RefreshControl refreshing={isFetching} onRefresh={onInitCreatePool} />)}
+          showsVerticalScrollIndicator={false}
+        >
+          <Form>
+            {renderContent()}
+          </Form>
+        </ScrollView>
+      </View>
+      <NFTTokenBottomBar />
+      <SuccessModal
+        closeSuccessDialog={onClose}
+        title={SUCCESS_MODAL.ADD_POOL.title}
+        buttonTitle="Ok"
+        description={SUCCESS_MODAL.ADD_POOL.desc}
+        visible={visible}
+      />
+    </>
   );
 };
 
 CreatePool.propTypes = {
-  onInitCreatePool: PropTypes.func.isRequired
+  onInitCreatePool: PropTypes.func.isRequired,
+  onFreeCreatePool: PropTypes.func.isRequired,
+  onCreateNewPool: PropTypes.func.isRequired,
+  onCloseModal: PropTypes.func.isRequired,
+  visible: PropTypes.bool.isRequired,
 };
 
-export default withLiquidity(memo(CreatePool));
+ButtonCreatePool.propTypes = {
+  onSubmit: PropTypes.func.isRequired,
+};
+
+export default compose(
+  withLiquidity,
+  withTransaction,
+)(memo(CreatePool));

@@ -55,9 +55,8 @@ const actionGetRemoveLPHistories = () => async (dispatch, getState) => {
     const isFetching = liquidityHistorySelector.isFetchingRemoveLP(state);
     if (isFetching) return;
     dispatch(actionFetchingRemoveLP({ isFetching: true }));
-    // const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
-    // const histories = await pDexV3Inst.getRemoveLPHistories();
-    const histories = [{'requestTx':'1108be2fdd14eb0abf81ab6cd377e3ca02f7b3e875f6e653c0f59a9cc531e010','respondTxs':['f67ec5ed0188a20dc1e504efcf90003d4f3278837ad37816266052eb6724e103'],'status':'success','tokenId1':'0000000000000000000000000000000000000000000000000000000000000004','tokenId2':'','amount1':500007166,'amount2':0,'shareAmount':22361,'requestime':0,'nftId':'54cf112cbff508de73c33ab7544af0555dd7bc44dc4bfc61fedcc680b66cdba7','poolId':'0000000000000000000000000000000000000000000000000000000000000004-6133dbf8e3d71a8f8e406ebd459492d34180622ba572b2d8f0fc8484b09ddd47-13a6c00e978a0073f28b19a2a1298542341fad56d0dd4eb27f0acfcede0aef35','statusStr':'Completed'}];
+    const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
+    const histories = await pDexV3Inst.getRemoveLPHistories();
     dispatch(actionSetRemoveLP({ histories }));
   } catch (error) {
     new ExHandler(error).showErrorToast();
@@ -72,9 +71,8 @@ const actionGetWithdrawLPHistories = () => async (dispatch, getState) => {
     const isFetching = liquidityHistorySelector.isFetchingWithdrawFeeLP(state);
     if (isFetching) return;
     dispatch(actionFetchingRemoveLP({ isFetching: true }));
-    // const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
-    // const histories = await pDexV3Inst.getRemoveLPHistories();
-    const histories = [{'requestTx':'1108be2fdd14eb0abf81ab6cd377e3ca02f7b3e875f6e653c0f59a9cc531e010','respondTxs':['f67ec5ed0188a20dc1e504efcf90003d4f3278837ad37816266052eb6724e103'],'status':'success','tokenId1':'0000000000000000000000000000000000000000000000000000000000000004','tokenId2':'','amount1':500007166,'amount2':0,'shareAmount':22361,'requestime':0,'nftId':'54cf112cbff508de73c33ab7544af0555dd7bc44dc4bfc61fedcc680b66cdba7','poolId':'0000000000000000000000000000000000000000000000000000000000000004-6133dbf8e3d71a8f8e406ebd459492d34180622ba572b2d8f0fc8484b09ddd47-13a6c00e978a0073f28b19a2a1298542341fad56d0dd4eb27f0acfcede0aef35','statusStr':'Completed'}];
+    const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
+    const histories = await pDexV3Inst.getWithdrawFeeLPHistories();
     dispatch(actionSetWithdrawFeeLP({ histories }));
   } catch (error) {
     new ExHandler(error).showErrorToast();

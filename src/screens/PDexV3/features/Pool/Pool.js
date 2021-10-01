@@ -14,27 +14,24 @@ import { TouchableOpacity } from '@src/components/core';
 import { styled } from './Pool.styled';
 
 export const PoolItem = React.memo((props) => {
-  const { poolId, onPressPool, checkFollow } = props;
+  const { poolId, onPressPool, checkFollow, style } = props;
   const data = useSelector(getDataByPoolIdSelector)(poolId);
   if (!data) {
     return null;
   }
   const {
     verified,
-    amp,
     apy,
     volumeToAmount,
-    perChange24hToStr,
-    perChange24hColor,
     isFollowed,
     poolTitle,
   } = data || {};
   return (
     <TouchableOpacity
       onPress={() => typeof onPressPool === 'function' && onPressPool(poolId)}
-      style={styled.container}
+      style={[styled.container, style]}
     >
-      <Row>
+      <Row style={{ justifyContent: 'space-between' }}>
         <View style={styled.wrapperFirstSection}>
           <Row style={styled.rowName}>
             <Text
@@ -45,21 +42,9 @@ export const PoolItem = React.memo((props) => {
             {!!verified && <TokenVerifiedIcon />}
           </Row>
           <Text style={styled.subText}>{`Vol: ${volumeToAmount}$`}</Text>
-          <Text style={styled.subText}>{`AMP: ${amp}`}</Text>
         </View>
         <View style={styled.wrapperSecondSection}>
           <Text style={[styled.subText, styled.apy]}>{`${apy}%`}</Text>
-        </View>
-        <View style={styled.wrapperThirdSection}>
-          <Text
-            style={[
-              styled.subText,
-              styled.rightText,
-              { color: perChange24hColor },
-            ]}
-          >
-            {perChange24hToStr}
-          </Text>
         </View>
       </Row>
     </TouchableOpacity>
@@ -76,7 +61,7 @@ const Pool = (props) => {
     return (
       <Swipeout
         autoClose
-        style={{ backgroundColor: 'transparent' }}
+        style={[styled.container, { backgroundColor: 'transparent' }]}
         right={[
           {
             text: 'Remove',
@@ -85,7 +70,7 @@ const Pool = (props) => {
           },
         ]}
       >
-        <PoolItem poolId={poolId} onPressPool={onPressPool} checkFollow={checkFollow} />
+        <PoolItem poolId={poolId} onPressPool={onPressPool} checkFollow={checkFollow} style={{ marginBottom: 0 }} />
       </Swipeout>
     );
   }
@@ -107,12 +92,14 @@ Pool.propTypes = {
 PoolItem.defaultProps = {
   onPressPool: null,
   checkFollow: true,
+  style: null,
 };
 
 PoolItem.propTypes = {
   poolId: PropTypes.string.isRequired,
   onPressPool: PropTypes.func,
   checkFollow: PropTypes.bool,
+  style: PropTypes.object,
 };
 
 export default React.memo(Pool);
