@@ -14,6 +14,11 @@ import {
   ACTION_SET_PERCENT,
   ACTION_FETCH_SWAP,
   ACTION_FETCHED_LIST_PAIRS,
+  ACTION_FETCHING_ORDERS_HISTORY,
+  ACTION_FETCHED_ORDERS_HISTORY,
+  ACTION_FETCH_FAIL_ORDERS_HISTORY,
+  ACTION_FETCHING_ORDER_DETAIL,
+  ACTION_FETCHED_ORDER_DETAIL,
 } from './Swap.constant';
 
 const initialState = {
@@ -32,10 +37,70 @@ const initialState = {
   percent: 0,
   swaping: false,
   pairs: [],
+  swapHistory: {
+    isFetching: false,
+    isFetched: false,
+    data: [],
+  },
+  swapDetail: {
+    order: {},
+    fetching: false,
+  },
 };
 
 export default (state = initialState, action) => {
   switch (action.type) {
+  case ACTION_FETCHING_ORDER_DETAIL: {
+    const { orderDetail } = state;
+    return {
+      ...state,
+      orderDetail: {
+        ...orderDetail,
+        fetching: true,
+      },
+    };
+  }
+  case ACTION_FETCHED_ORDER_DETAIL: {
+    const { orderDetail } = state;
+    return {
+      ...state,
+      orderDetail: {
+        ...orderDetail,
+        fetching: false,
+        order: action.payload,
+      },
+    };
+  }
+  case ACTION_FETCHING_ORDERS_HISTORY: {
+    const { swapHistory } = state;
+    return {
+      ...state,
+      swapHistory: { ...swapHistory, isFetching: true },
+    };
+  }
+  case ACTION_FETCHED_ORDERS_HISTORY: {
+    const { swapHistory } = state;
+    return {
+      ...state,
+      swapHistory: {
+        ...swapHistory,
+        isFetching: false,
+        isFetched: true,
+        data: [...action.payload],
+      },
+    };
+  }
+  case ACTION_FETCH_FAIL_ORDERS_HISTORY: {
+    const { swapHistory } = state;
+    return {
+      ...state,
+      swapHistory: {
+        ...swapHistory,
+        isFetched: false,
+        isFetching: false,
+      },
+    };
+  }
   case ACTION_FETCHED_LIST_PAIRS: {
     return {
       ...state,

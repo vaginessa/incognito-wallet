@@ -17,6 +17,18 @@ export const ACTION_RESET = '[pDexV3][swap] Reset';
 export const ACTION_FETCH_SWAP = '[pDexV3][swap] Fetching swap';
 export const ACTION_FETCHED_LIST_PAIRS = '[pDexV3][swap] Fetched list pairs';
 
+export const ACTION_FETCHING_ORDERS_HISTORY =
+  '[pDexV3][swap] Fetching history order';
+export const ACTION_FETCHED_ORDERS_HISTORY =
+  '[pDexV3][swap] Fetched history order';
+export const ACTION_FETCH_FAIL_ORDERS_HISTORY =
+  '[pDexV3][swap] Fetch fail history order';
+export const ACTION_FETCH_ORDER_DETAIL = '[pDexV3][swap] Fetch order detail';
+export const ACTION_FETCHING_ORDER_DETAIL =
+  '[pDexV3][swap] Fetching order detail';
+export const ACTION_FETCHED_ORDER_DETAIL =
+  '[pDexV3][swap] Fetched order detail';
+
 export const TAB_SIMPLE_ID = 'simple';
 export const TAB_PRO_ID = 'pro';
 export const ROOT_TAB_ID = '[swap] Root tab swap';

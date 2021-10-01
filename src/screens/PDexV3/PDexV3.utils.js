@@ -1,3 +1,4 @@
+
 /* eslint-disable import/no-cycle */
 import BigNumber from 'bignumber.js';
 import format from '@src/utils/format';
@@ -33,7 +34,7 @@ export const getPairRate = ({ token1, token2, token1Value, token2Value }) => {
 export const getExchangeRate = (token1, token2, token1Value, token2Value) => {
   try {
     const rawRate = getPairRate({ token1, token2, token1Value, token2Value });
-    return `1 ${token1.symbol} = ${format.amountFull(rawRate, 0, false)} ${token2?.symbol}`;
+    return `1 ${token1?.symbol} = ${format.amountFull(rawRate, 0, false)} ${token2?.symbol}`;
   } catch (error) {
     console.log('getExchangeRate-error', error);
   }

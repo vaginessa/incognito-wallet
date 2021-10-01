@@ -136,7 +136,6 @@ export const getBalance = (tokenId) => async (dispatch, getState) => {
         loading: false,
       }),
     );
-    balance;
   } catch (e) {
     dispatch(
       setToken({

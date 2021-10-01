@@ -351,6 +351,7 @@ const combinedNanoAmount = [
 ];
 
 const combinedNumber = [required(), number(), minValue(0)];
+const combinedNanoNumber = [required(), number(), minValue(0), isInteger()];
 
 const combinedIncognitoAddress = [required(), incognitoAddress()];
 const combinedETHAddress = [required(), ethAddress()];
@@ -497,4 +498,5 @@ export default {
   isZILAddress,
   invalidAddress,
   combinedNumber,
+  combinedNanoNumber,
 };

@@ -37,8 +37,6 @@ const styled = StyleSheet.create({
   },
 });
 
-// = 'Your balance will update in a couple of minutes after the trade is finalized.',
-//  = 'Trade initiated!'
 const TradeSucessModal = (props) => {
   const {
     title,

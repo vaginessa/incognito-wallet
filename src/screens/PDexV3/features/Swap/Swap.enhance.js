@@ -1,19 +1,43 @@
 import React from 'react';
 import ErrorBoundary from '@src/components/ErrorBoundary';
-import { useNavigation } from 'react-navigation-hooks';
-import routeNames from '@src/router/routeNames';
 import { useDispatch, useSelector } from 'react-redux';
-import { actionInitSwapForm, actionReset } from './Swap.actions';
+import { actionToggleModal } from '@src/components/Modal';
+import { TradeSuccessModal } from '@src/screens/PDexV3/features/Trade';
+import {
+  actionInitSwapForm,
+  actionReset,
+  actionFetchSwap,
+} from './Swap.actions';
 import { swapInfoSelector } from './Swap.selector';
 
 const enhance = (WrappedComp) => (props) => {
-  const navigation = useNavigation();
   const dispatch = useDispatch();
   const swapInfo = useSelector(swapInfoSelector);
-  const handleReviewOrder = () =>
-    !swapInfo?.disabledBtnSwap &&
-    navigation.navigate(routeNames.ReviewOrderSwap);
-  const initSwapForm = () => dispatch(actionInitSwapForm());
+  const initSwapForm = React.useCallback(() => {
+    dispatch(actionInitSwapForm());
+  }, []);
+  const handleConfirm = async () => {
+    try {
+      const tx = await dispatch(actionFetchSwap());
+      if (tx) {
+        dispatch(
+          actionToggleModal({
+            data: (
+              <TradeSuccessModal
+                title="Trade inited"
+                desc={`You placed an order to sell ${swapInfo?.sellInputAmountStr ||
+                  ''} for ${swapInfo?.buyInputAmountStr || ''}.`}
+                handleTradeSucesss={initSwapForm}
+              />
+            ),
+            visible: true,
+          }),
+        );
+      }
+    } catch {
+      //
+    }
+  };
   React.useEffect(() => {
     initSwapForm();
     return () => {
@@ -22,7 +46,7 @@ const enhance = (WrappedComp) => (props) => {
   }, []);
   return (
     <ErrorBoundary>
-      <WrappedComp {...{ ...props, handleReviewOrder }} />
+      <WrappedComp {...{ ...props, handleConfirm }} />
     </ErrorBoundary>
   );
 };

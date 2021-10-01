@@ -43,7 +43,7 @@ const styled = StyleSheet.create({
   },
 });
 
-const Hook = React.memo(
+export const Hook = React.memo(
   ({
     label,
     value,

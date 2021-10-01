@@ -5,6 +5,7 @@ import convert from '@src/utils/convert';
 import format from '@src/utils/format';
 import BigNumber from 'bignumber.js';
 import { formValueSelector } from 'redux-form';
+import floor from 'lodash/floor';
 import { formConfigs } from './Swap.constant';
 
 export const minFeeValidator = (feetokenData) => {
@@ -115,11 +116,9 @@ export const getInputAmount = (
       };
     }
     const selector = formValueSelector(formConfigs.formName);
-
     const amountText = selector(state, field);
     let amount = convert.toNumber(amountText, true) || 0;
     const originalAmount = convert.toOriginalAmount(amount, token.pDecimals);
-
     let availableOriginalAmount = token.amount || 0;
     let availableAmountNumber = 0;
     let availableAmountText = '';
@@ -166,8 +165,23 @@ export const getInputAmount = (
 
       balance: token.amount,
       balanceStr: format.amountFull(token.amount, token.pDecimals, false),
+
+      tokenData: token,
     };
   } catch (error) {
     console.log('inputAmountSelector error', error);
   }
+};
+
+export const calMintAmountExpected = ({ maxGet, slippagetolerance } = {}) => {
+  try {
+    let maxGetBn = new BigNumber(maxGet);
+    const amount = floor(
+      maxGetBn.minus(maxGetBn.multipliedBy(slippagetolerance / 100)).toNumber(),
+    );
+    return amount;
+  } catch (error) {
+    console.log('error', error);
+  }
+  return maxGet;
 };

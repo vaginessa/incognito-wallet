@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import { Tabs1 } from '@src/components/core/Tabs';
 import { createForm } from '@components/core/reduxForm';
 import { useSelector } from 'react-redux';
+import LoadingTx from '@src/components/LoadingTx';
 import { styled, tabsStyled } from './Swap.styled';
 import {
   ROOT_TAB_ID,
@@ -32,7 +33,7 @@ const Form = createForm(formConfigs.formName, {
 });
 
 const Swap = (props) => {
-  const { handleReviewOrder } = props;
+  const { handleConfirm } = props;
   const swapInfo = useSelector(swapInfoSelector);
   const tabsFactories = [
     {
@@ -64,7 +65,7 @@ const Swap = (props) => {
             <SwapInputsGroup />
             <ButtonTrade
               btnStyle={styled.btnTrade}
-              onPress={handleReviewOrder}
+              onPress={handleConfirm}
               title={swapInfo?.btnSwapText || ''}
               disabled={!!swapInfo?.disabledBtnSwap}
             />
@@ -81,12 +82,13 @@ const Swap = (props) => {
           </>
         )}
       </Form>
+      {!!swapInfo.swaping && <LoadingTx />}
     </View>
   );
 };
 
 Swap.propTypes = {
-  handleReviewOrder: PropTypes.func.isRequired,
+  handleConfirm: PropTypes.func.isRequired,
 };
 
 export default withSwap(React.memo(Swap));

@@ -8,10 +8,11 @@ import SelectedPrivacy from '@src/models/selectedPrivacy';
 import { PRV } from '@src/constants/common';
 import { sharedSelector } from '@src/redux/selectors';
 import orderBy from 'lodash/orderBy';
-import { getPoolSize } from '@screens/PDexV3';
+import { getExchangeRate, getPairRate, getPoolSize } from '@screens/PDexV3';
 import { PRIORITY_LIST } from '@screens/Dex/constants';
+import BigNumber from 'bignumber.js';
 import { formConfigs } from './Swap.constant';
-import { getInputAmount } from './Swap.utils';
+import { calMintAmountExpected, getInputAmount } from './Swap.utils';
 
 export const swapSelector = createSelector(
   (state) => state.pDexV3,
@@ -40,6 +41,8 @@ export const listPairsSelector = createSelector(
   },
 );
 
+// group inputs
+
 export const inpuTokenSelector = createSelector(
   getPrivacyDataByTokenIDSelector,
   swapSelector,
@@ -67,6 +70,13 @@ export const buytokenSelector = createSelector(
   (getInputToken) => getInputToken(formConfigs.buytoken),
 );
 
+export const focustokenSelector = createSelector(
+  swapSelector,
+  ({ focustoken }) => focustoken,
+);
+
+// fee
+
 export const feeSelectedSelector = createSelector(
   swapSelector,
   ({ feetoken }) => feetoken || '',
@@ -77,32 +87,40 @@ export const feetokenDataSelector = createSelector(
   swapSelector,
   feeSelectedSelector,
   getPrivacyDataByTokenIDSelector,
-  (state, { data }, feetoken, getPrivacyDataByTokenID) => {
+  (state, { data, networkfee }, feetoken, getPrivacyDataByTokenID) => {
     try {
       const feeTokenData: SelectedPrivacy = getPrivacyDataByTokenID(feetoken);
       const selector = formValueSelector(formConfigs.formName);
       const fee = selector(state, formConfigs.feetoken);
       const { fee: minFeeOriginal = 0 } = data;
       let feeAmount = convert.toNumber(fee, true) || 0;
-      const feeAmountText = fee;
-      const origininalFeeAmount = convert.toOriginalAmount(
-        feeAmount,
-        feeTokenData?.pDecimals,
-        false,
-      );
+      const feeAmountText = `${fee} ${feeTokenData.symbol}`;
+      const origininalFeeAmount =
+        convert.toOriginalAmount(feeAmount, feeTokenData?.pDecimals, false) ||
+        0;
       const minFeeAmount = convert.toHumanAmount(
         minFeeOriginal,
         feeTokenData?.pDecimals,
       );
-      const minFeeAmountText = format.toFixed(
+      const minFeeAmountFixed = format.toFixed(
         minFeeAmount,
         feeTokenData?.pDecimals,
       );
+      const minFeeAmountText = format.amountFull(
+        minFeeOriginal,
+        feeTokenData?.pDecimals,
+        false,
+      );
       const minFeeAmountStr = `${minFeeAmountText} ${feeTokenData?.symbol}`;
+      const totalFeePRV = format.amountFull(
+        new BigNumber(origininalFeeAmount).plus(networkfee).toNumber(),
+        PRV.pDecimals,
+        false,
+      );
+      const totalFeePRVText = `${totalFeePRV} ${PRV.symbol}`;
       return {
+        ...feeTokenData,
         feetoken,
-        symbol: feeTokenData?.symbol,
-        pDecimals: feeTokenData?.pDecimals,
         feeAmount,
         feeAmountText,
         origininalFeeAmount,
@@ -110,6 +128,9 @@ export const feetokenDataSelector = createSelector(
         minFeeAmount,
         minFeeAmountStr,
         minFeeAmountText,
+        totalFeePRV,
+        totalFeePRVText,
+        minFeeAmountFixed,
       };
     } catch (error) {
       console.log('feetokenDataSelector-error', error);
@@ -117,9 +138,26 @@ export const feetokenDataSelector = createSelector(
   },
 );
 
-export const focustokenSelector = createSelector(
-  swapSelector,
-  ({ focustoken }) => focustoken,
+export const feeTypesSelector = createSelector(
+  selltokenSelector,
+  feeSelectedSelector,
+  (selltoken: SelectedPrivacy, feetoken) => {
+    let types = [
+      {
+        tokenId: PRV.id,
+        symbol: PRV.symbol,
+        actived: feetoken == PRV.id,
+      },
+    ];
+    if (selltoken?.tokenId && !selltoken.isMainCrypto) {
+      types.push({
+        tokenId: selltoken.tokenId,
+        symbol: selltoken.symbol,
+        actived: feetoken == selltoken.tokenId,
+      });
+    }
+    return types;
+  },
 );
 
 export const inputAmountSelector = createSelector(
@@ -132,12 +170,22 @@ export const inputAmountSelector = createSelector(
   getInputAmount,
 );
 
+export const slippagetoleranceSelector = createSelector(
+  (state) => state,
+  (state) => {
+    const selector = formValueSelector(formConfigs.formName);
+    const slippagetolerance = selector(state, formConfigs.slippagetolerance);
+    return Number(slippagetolerance) || 1;
+  },
+);
+
 export const swapInfoSelector = createSelector(
   swapSelector,
   feetokenDataSelector,
   inputAmountSelector,
   (state) => state,
   getPrivacyDataByTokenIDSelector,
+  slippagetoleranceSelector,
   (
     {
       data,
@@ -154,17 +202,12 @@ export const swapInfoSelector = createSelector(
     getInputAmount,
     state,
     getPrivacyDataByTokenID,
+    slippagetolerance,
   ) => {
     try {
       const sellInputAmount = getInputAmount(formConfigs.selltoken);
       const buyInputAmount = getInputAmount(formConfigs.buytoken);
-      const {
-        fee,
-        route: routing,
-        sizeimpact,
-        maxPriceStr,
-        poolDetails,
-      } = data;
+      const { fee, route: routing, sizeimpact, poolDetails, maxGet } = data;
       let allPoolSize = [];
       try {
         allPoolSize = Object.entries(poolDetails).map(([, value]) => {
@@ -198,7 +241,7 @@ export const swapInfoSelector = createSelector(
       );
       const editableInput =
         !swapingToken && !initing && !selecting && isFetched && !isFetching;
-      let btnSwapText = 'Preview your order';
+      let btnSwapText = 'Confirm';
       const calculating = swapingToken || initing || selecting || isFetching;
       const disabledBtnSwap =
         calculating ||
@@ -221,8 +264,26 @@ export const swapInfoSelector = createSelector(
         !sellInputAmount.isMainCrypto && !buyInputAmount.isMainCrypto;
       const prvBalance = format.amountFull(prv.amount, PRV.pDecimals, false);
       const prvBalanceStr = `${prvBalance} ${PRV.symbol}`;
+      const originalMinAmountExpected = calMintAmountExpected({
+        maxGet,
+        slippagetolerance,
+      });
+      const minAmountExpectedToHumanAmount = convert.toHumanAmount(
+        originalMinAmountExpected,
+        buyInputAmount.pDecimals,
+      );
+      const buyAmountExpectedToFixed = format.toFixed(
+        minAmountExpectedToHumanAmount,
+        buyInputAmount.pDecimals,
+      );
+      const maxPriceStr = getExchangeRate(
+        sellInputAmount.tokenData,
+        buyInputAmount.tokenData,
+        sellInputAmount.originalAmount,
+        buyInputAmount.originalAmount,
+      );
       return {
-        balanceStr: `${sellInputBalanceStr} + ${buyInputBalanceStr}`,
+        balanceStr: sellInputBalanceStr,
         routing,
         minFeeAmount,
         minFeeAmountStr,
@@ -243,6 +304,9 @@ export const swapInfoSelector = createSelector(
         percent,
         swaping,
         allPoolSize,
+        maxGet,
+        originalMinAmountExpected,
+        buyAmountExpectedToFixed,
       };
     } catch (error) {
       console.log('swapInfoSelector-error', error);
@@ -250,33 +314,80 @@ export const swapInfoSelector = createSelector(
   },
 );
 
-export const slippagetoleranceSelector = createSelector(
-  (state) => state,
-  (state) => {
-    const selector = formValueSelector(formConfigs.formName);
-    const slippagetolerance = selector(state, formConfigs.slippagetolerance);
-    return Number(slippagetolerance) || 1;
+// history
+
+export const mappingOrderHistorySelector = createSelector(
+  getPrivacyDataByTokenIDSelector,
+  (getPrivacyDataByTokenID) => (order) => {
+    try {
+      if (!order) {
+        return {};
+      }
+      let {
+        sellTokenId,
+        amount,
+        buyTokenId,
+        minAccept: price,
+        requestime,
+        status,
+        minAccept,
+        fee,
+        feetoken: feeTokenId,
+        fromStorage,
+      } = order;
+      const sellToken: SelectedPrivacy = getPrivacyDataByTokenID(sellTokenId);
+      const buyToken: SelectedPrivacy = getPrivacyDataByTokenID(buyTokenId);
+      const feeToken: SelectedPrivacy = getPrivacyDataByTokenID(feeTokenId);
+      const amountStr = format.amountFull(amount, sellToken.pDecimals, false);
+      const priceStr = format.amountFull(price, buyToken.pDecimals, false);
+      const sellStr = `${amountStr} ${sellToken.symbol}`;
+      const buyStr = `${priceStr} ${buyToken.symbol}`;
+      const time = fromStorage ? requestime : requestime * 1000;
+      const timeStr = format.formatDateTime(new Date(time).getTime());
+      const rate = getPairRate({
+        token1Value: amount,
+        token2Value: minAccept,
+        token1: sellToken,
+        token2: buyToken,
+      });
+      const rateStr = getExchangeRate(sellToken, buyToken, amount, minAccept);
+      const tradingFeeStr = format.amountFull(fee, feeToken.pDecimals, false);
+      const result = {
+        ...order,
+        sellStr,
+        buyStr,
+        rateStr,
+        timeStr,
+        rate,
+        networkfeeAmountStr: `${format.amountFull(1, PRV.pDecimals, false)} ${
+          PRV.symbol
+        }`,
+        tradingFeeStr,
+        statusStr: status,
+      };
+      return result;
+    } catch (error) {
+      console.log('mappingOrderHistorySelector-error', error);
+    }
   },
 );
 
-export const feeTypesSelector = createSelector(
-  selltokenSelector,
-  feeSelectedSelector,
-  (selltoken: SelectedPrivacy, feetoken) => {
-    let types = [
-      {
-        tokenId: PRV.id,
-        symbol: PRV.symbol,
-        actived: feetoken == PRV.id,
-      },
-    ];
-    if (selltoken?.tokenId && !selltoken.isMainCrypto) {
-      types.push({
-        tokenId: selltoken.tokenId,
-        symbol: selltoken.symbol,
-        actived: feetoken == selltoken.tokenId,
-      });
-    }
-    return types;
+export const swapsHistorySelector = createSelector(
+  swapSelector,
+  mappingOrderHistorySelector,
+  ({ swapsHistory: { data, ...rest } }, mappingOrderHistory) => ({
+    ...rest,
+    history: data.map((order) => mappingOrderHistory(order)),
+  }),
+);
+
+export const orderDetailSelector = createSelector(
+  swapSelector,
+  mappingOrderHistorySelector,
+  ({ swapDetail: { fetching, order } }, mappingOrderHistory) => {
+    return {
+      fetching,
+      order: mappingOrderHistory(order),
+    };
   },
 );

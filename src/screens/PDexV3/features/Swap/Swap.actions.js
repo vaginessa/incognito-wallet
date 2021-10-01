@@ -1,5 +1,5 @@
 import { getBalance } from '@src/redux/actions/token';
-import { actionGetPDexV3Inst , getPDexV3Instance, getPoolSize } from '@screens/PDexV3';
+import { actionGetPDexV3Inst, getPDexV3Instance } from '@screens/PDexV3';
 import {
   ACCOUNT_CONSTANT,
   PrivacyVersion,
@@ -16,9 +16,9 @@ import isEmpty from 'lodash/isEmpty';
 import SelectedPrivacy from '@src/models/selectedPrivacy';
 import { batch } from 'react-redux';
 import { BIG_COINS } from '@src/screens/Dex/constants';
+import uniq from 'lodash/uniq';
 import { PRV, PRV_ID } from '@src/constants/common';
 
-import uniq from 'lodash/uniq';
 import {
   ACTION_FETCHING,
   ACTION_FETCHED,
@@ -35,6 +35,11 @@ import {
   ACTION_SET_PERCENT,
   ACTION_FETCH_SWAP,
   ACTION_FETCHED_LIST_PAIRS,
+  ACTION_FETCHING_ORDERS_HISTORY,
+  ACTION_FETCHED_ORDERS_HISTORY,
+  ACTION_FETCH_FAIL_ORDERS_HISTORY,
+  ACTION_FETCHING_ORDER_DETAIL,
+  ACTION_FETCHED_ORDER_DETAIL,
 } from './Swap.constant';
 import {
   buytokenSelector,
@@ -42,10 +47,8 @@ import {
   feetokenDataSelector,
   inputAmountSelector,
   selltokenSelector,
-  slippagetoleranceSelector,
-  swapSelector,
+  orderDetailSelector,
   swapInfoSelector,
-  listPairsSelector,
 } from './Swap.selector';
 
 export const actionSetPercent = (payload) => ({
@@ -93,12 +96,11 @@ export const actionReset = (payload) => ({
 
 export const actionEstimateTrade = () => async (dispatch, getState) => {
   try {
-    const state = getState();
+    let state = getState();
     const inputAmount = inputAmountSelector(state);
     const input1Amount = inputAmount(formConfigs.selltoken);
     const input2Amount = inputAmount(formConfigs.buytoken);
     const feetoken = feeSelectedSelector(state);
-    const slippagetolerance = slippagetoleranceSelector(state);
     if (isEmpty(input1Amount) || isEmpty(input2Amount) || isEmpty(feetoken)) {
       return;
     }
@@ -143,30 +145,29 @@ export const actionEstimateTrade = () => async (dispatch, getState) => {
     if (!selltoken || !buytoken || !amount) {
       return;
     }
+    await dispatch(actionFetching());
+    const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
     const payload = {
       selltoken,
       buytoken,
       feetoken,
       amount,
-      slippagetolerance: Number(slippagetolerance),
     };
-    const feeTokenData = getPrivacyDataByTokenID(state)(feetoken);
-    await dispatch(actionFetching());
-    const account = defaultAccountWalletSelector(state);
-    const pDexV3Inst = await getPDexV3Instance({ account });
     const data = await pDexV3Inst.getEstimateTrade(payload);
-    const amountInput = format.toFixed(
-      convert.toHumanAmount(data.minGet, inputtokenDecimals),
-      inputtokenDecimals,
-    );
-    const amountFee = format.toFixed(
-      convert.toHumanAmount(data.fee, feeTokenData.pDecimals),
-      feeTokenData.pDecimals,
-    );
-    dispatch(change(formConfigs.formName, inputtoken, amountInput));
-    dispatch(change(formConfigs.formName, formConfigs.feetoken, amountFee));
-    const maxPriceStr = `1 ${sellsymbol} / ${amountInput} ${buysymbol}`;
-    await dispatch(actionFetched({ ...data, maxPriceStr }));
+    await dispatch(actionFetched(data));
+    state = getState();
+    const swapInfo = swapInfoSelector(state);
+    const feeTokenData = feetokenDataSelector(state);
+    const { minFeeAmountFixed } = feeTokenData;
+    const { buyAmountExpectedToFixed } = swapInfo;
+    batch(() => {
+      dispatch(
+        change(formConfigs.formName, inputtoken, buyAmountExpectedToFixed),
+      );
+      dispatch(
+        change(formConfigs.formName, formConfigs.feetoken, minFeeAmountFixed),
+      );
+    });
   } catch (error) {
     console.log('ERROR', error);
     await dispatch(actionFetchFail());
@@ -183,9 +184,8 @@ export const actionSetSellToken = (selltoken) => async (dispatch, getState) => {
     }
     dispatch(actionSetSellTokenFetched(selltoken));
     const state = getState();
-    const { initing } = swapSelector(state);
     const token = getPrivacyDataByTokenID(state)(selltoken);
-    const { pDecimals, symbol } = token;
+    const { pDecimals } = token;
     const balance = await dispatch(getBalance(selltoken));
     if (!balance) {
       return;
@@ -200,49 +200,12 @@ export const actionSetSellToken = (selltoken) => async (dispatch, getState) => {
       sellOriginalAmount = balance;
     }
     let sellamount = '';
-    if (initing) {
-      const buytoken: SelectedPrivacy = buytokenSelector(state);
-      const selltoken: SelectedPrivacy = selltokenSelector(state);
-      const feeTokenData = feetokenDataSelector(state);
-      const slippagetolerance = slippagetoleranceSelector(state);
-      const payload = {
-        selltoken: selltoken.tokenId,
-        buytoken: buytoken.tokenId,
-        feetoken: feeTokenData.feetoken,
-        amount: sellOriginalAmount,
-        slippagetolerance,
-      };
-      const account = defaultAccountWalletSelector(state);
-      const pDexV3Inst = await getPDexV3Instance({ account });
-      const data = await pDexV3Inst.getEstimateTrade(payload);
-      sellamount = format.toFixed(
-        convert.toHumanAmount(sellOriginalAmount, token.pDecimals),
-        token.pDecimals,
-      );
-      const buyInputAmount = format.toFixed(
-        convert.toHumanAmount(data?.minGet || 0, buytoken.pDecimals),
-        buytoken.pDecimals,
-      );
-      const amountFee = format.toFixed(
-        convert.toHumanAmount(data?.fee || 0, feeTokenData.pDecimals),
-        feeTokenData.pDecimals,
-      );
-      dispatch(
-        change(formConfigs.formName, formConfigs.buytoken, buyInputAmount),
-      );
-      dispatch(change(formConfigs.formName, formConfigs.feetoken, amountFee));
-      dispatch(change(formConfigs.formName, formConfigs.selltoken, sellamount));
-      dispatch(focus(formConfigs.formName, formConfigs.selltoken));
-      const maxPriceStr = `1 ${symbol} / ${buyInputAmount} ${buytoken.symbol}`;
-      await dispatch(actionFetched({ ...data, maxPriceStr }));
-    } else {
-      sellamount = format.toFixed(
-        convert.toHumanAmount(sellOriginalAmount, token.pDecimals),
-        token.pDecimals,
-      );
-      dispatch(change(formConfigs.formName, formConfigs.selltoken, sellamount));
-      dispatch(focus(formConfigs.formName, formConfigs.selltoken));
-    }
+    sellamount = format.toFixed(
+      convert.toHumanAmount(sellOriginalAmount, token.pDecimals),
+      token.pDecimals,
+    );
+    dispatch(change(formConfigs.formName, formConfigs.selltoken, sellamount));
+    dispatch(focus(formConfigs.formName, formConfigs.selltoken));
   } catch (error) {
     new ExHandler(error).showErrorToast();
   }
@@ -264,7 +227,6 @@ export const actionInitingSwapForm = (payload) => ({
 
 export const actionSetInputToken = ({ selltoken, buytoken }) => async (
   dispatch,
-  getState,
 ) => {
   if (!selltoken || !buytoken) {
     return;
@@ -295,13 +257,12 @@ export const actionFetchPairs = () => async (dispatch, getState) => {
     const account = defaultAccountWalletSelector(state);
     const pDexV3Inst = await getPDexV3Instance({ account });
     pairs = (await pDexV3Inst.getListPair()) || [];
-    pairs = uniq(
-      pairs.reduce(
-        (prev, current) =>
-          (prev = prev.concat([current.tokenid1, current.tokenid2])),
-        [],
-      ),
+    pairs = pairs.reduce(
+      (prev, current) =>
+        (prev = prev.concat([current.tokenId1, current.tokenId2])),
+      [],
     );
+    pairs = uniq(pairs);
   } catch (error) {
     new ExHandler(error).showErrorToast();
   }
@@ -309,15 +270,26 @@ export const actionFetchPairs = () => async (dispatch, getState) => {
   return pairs;
 };
 
-export const actionInitSwapForm = () => async (dispatch, getState) => {
+export const actionInitSwapForm = (defaultPair) => async (
+  dispatch,
+  getState,
+) => {
   try {
+    let pair = defaultPair;
     await dispatch(actionInitingSwapForm(true));
-    const pairs = await dispatch(actionFetchPairs());
-    const defaultPair = {
-      selltoken: pairs[0] || PRV_ID,
-      buytoken: pairs[1] || BIG_COINS.USDT,
-    };
-    const { selltoken, buytoken } = defaultPair;
+    if (isEmpty(pair)) {
+      const pairs = await dispatch(actionFetchPairs());
+      pair = {
+        selltoken: PRV_ID,
+        buytoken:
+          pairs.find(
+            (i) =>
+              i ===
+              'fe75fc6ab38c690effd73c14325e771a19c0dca5de7c7a725bcf8b002755fdab',
+          ) || BIG_COINS.USDT,
+      };
+    }
+    const { selltoken, buytoken } = pair;
     batch(() => {
       dispatch(actionSetSellTokenFetched(selltoken));
       dispatch(actionSetBuyTokenFetched(buytoken));
@@ -327,6 +299,7 @@ export const actionInitSwapForm = () => async (dispatch, getState) => {
       dispatch(actionSetFeeToken(PRV.id));
     });
     await dispatch(actionSetInputToken({ selltoken, buytoken }));
+    await dispatch(actionEstimateTrade());
   } catch (error) {
     new ExHandler(error).showErrorToast;
   } finally {
@@ -342,31 +315,18 @@ export const actionSetSwapingToken = (payload) => ({
 export const actionSwapToken = () => async (dispatch, getState) => {
   try {
     const state = getState();
-    const selltoken: SelectedPrivacy = selltokenSelector(state);
-    const buytoken: SelectedPrivacy = buytokenSelector(state);
-    if (!buytoken.tokenId || !selltoken.tokenId) {
+    const { tokenId: selltoken }: SelectedPrivacy = selltokenSelector(state);
+    const { tokenId: buytoken }: SelectedPrivacy = buytokenSelector(state);
+    if (!selltoken | !buytoken) {
       return;
     }
     await dispatch(actionSetSwapingToken(true));
-    let _selltoken = buytoken;
-    let _buytoken = selltoken;
-    batch(() => {
-      dispatch(actionSetFocusToken(''));
-      dispatch(change(formConfigs.formName, formConfigs.selltoken, ''));
-      dispatch(change(formConfigs.formName, formConfigs.buytoken, ''));
-      dispatch(change(formConfigs.formName, formConfigs.feetoken, ''));
-      dispatch(change(formConfigs.formName, formConfigs.buytoken, ''));
-      dispatch(actionSetSellTokenFetched(_selltoken.tokenId));
-      dispatch(actionSetBuyTokenFetched(_buytoken.tokenId));
-      dispatch(actionSetFeeToken(PRV.id));
-    });
     await dispatch(
-      actionSetInputToken({
-        selltoken: _selltoken.tokenId,
-        buytoken: _buytoken.tokenId,
+      actionInitSwapForm({
+        selltoken: buytoken,
+        buytoken: selltoken,
       }),
     );
-    await dispatch(actionEstimateTrade());
   } catch (error) {
     console.log('actionSwapToken-error', error);
     new ExHandler(error).showErrorToast;
@@ -481,9 +441,11 @@ export const actionFetchSwap = () => async (dispatch, getState) => {
       tokenId: tokenIDToSell,
       originalAmount: sellAmount,
     } = sellInputAmount;
-    const { tokenId: tokenIDToBuy } = buyInputAmount;
+    const {
+      tokenId: tokenIDToBuy,
+      originalAmount: minAcceptableAmount,
+    } = buyInputAmount;
     const { origininalFeeAmount: tradingFee, feetoken } = feetokenData;
-    const isTradingFeeInPRV = feetoken === PRV_ID;
     const params = {
       transfer: { fee: ACCOUNT_CONSTANT.MAX_FEE_PER_TX },
       extra: {
@@ -492,8 +454,9 @@ export const actionFetchSwap = () => async (dispatch, getState) => {
         tokenIDToBuy,
         tradingFee,
         tradePath,
-        isTradingFeeInPRV,
+        feetoken,
         version: PrivacyVersion.ver2,
+        minAcceptableAmount,
       },
     };
     console.log('params', params);
@@ -510,12 +473,60 @@ export const actionFetchSwap = () => async (dispatch, getState) => {
   return tx;
 };
 
+export const actionFetchingOrdersHistory = () => ({
+  type: ACTION_FETCHING_ORDERS_HISTORY,
+});
+
+export const actionFetchedOrdersHistory = (payload) => ({
+  type: ACTION_FETCHED_ORDERS_HISTORY,
+  payload,
+});
+
+export const actionFetchFailOrderHistory = () => ({
+  type: ACTION_FETCH_FAIL_ORDERS_HISTORY,
+});
+
 export const actionFetchHistory = () => async (dispatch, getState) => {
   let history = [];
   try {
+    await dispatch(actionFetchingOrdersHistory());
     const pDexV3 = await dispatch(actionGetPDexV3Inst());
-    history = await pDexV3.getOrderSwapHistory();
+    history = await pDexV3.getSwapHistory({ version: PrivacyVersion.ver2 });
+    await dispatch(actionFetchedOrdersHistory(history));
   } catch (error) {
     new ExHandler(error).showErrorToast();
+    await dispatch(actionFetchFailOrderHistory());
+  }
+};
+
+export const actionFetchingOrderDetail = () => ({
+  type: ACTION_FETCHING_ORDER_DETAIL,
+});
+
+export const actionFetchedOrderDetail = (payload) => ({
+  type: ACTION_FETCHED_ORDER_DETAIL,
+  payload,
+});
+
+export const actionFetchDataOrderDetail = () => async (dispatch, getState) => {
+  let _order = {};
+  const state = getState();
+  const { order } = orderDetailSelector(state);
+  if (!order?.requestTx) {
+    return;
+  }
+  try {
+    await dispatch(actionFetchingOrderDetail());
+    const pDexV3 = await dispatch(actionGetPDexV3Inst());
+    _order = await pDexV3.getOrderSwapDetail({
+      requestTx: order?.requestTx,
+      version: PrivacyVersion.ver2,
+    });
+  } catch (error) {
+    _order = { ...order };
+    new ExHandler(error).showErrorToast();
+  } finally {
+    _order = _order || order;
+    await dispatch(actionFetchedOrderDetail(_order));
   }
 };

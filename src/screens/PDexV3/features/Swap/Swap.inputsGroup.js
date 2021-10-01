@@ -135,7 +135,9 @@ const SwapInputsGroup = React.memo(() => {
         onEndEditing={onEndEditing}
         onPressInfinityIcon={onPressInfinityIcon}
         validate={[
-          ...validator.combinedAmount,
+          ...(selltoken.isIncognitoToken
+            ? validator.combinedNanoAmount
+            : validator.combinedAmount),
           _maxAmountValidatorForSellInput,
         ]}
         loadingBalance={!!sellInputAmount?.loadingBalance}

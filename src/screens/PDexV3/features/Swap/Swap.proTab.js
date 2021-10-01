@@ -7,7 +7,7 @@ import Extra, {
   styled as extraStyled,
 } from '@screens/PDexV3/features/Extra';
 import { useDispatch, useSelector } from 'react-redux';
-import { Field } from 'redux-form';
+import { change, Field } from 'redux-form';
 import {
   RFBaseInput,
   RFSelectFeeInput,
@@ -16,6 +16,8 @@ import {
 import SelectedPrivacy from '@src/models/selectedPrivacy';
 import { getPrivacyDataByTokenID } from '@src/redux/selectors/selectedPrivacy';
 import { PRV } from '@src/constants/common';
+import format from '@src/utils/format';
+import convert from '@src/utils/convert';
 import {
   feetokenDataSelector,
   feeTypesSelector,
@@ -29,6 +31,7 @@ import {
   minFeeValidator,
   availablePayFeeByPRVValidator,
   maxAmountValidatorForSlippageTolerance,
+  calMintAmountExpected,
 } from './Swap.utils';
 import { useTabFactories } from './Swap.simpleTab';
 
@@ -40,11 +43,13 @@ const styled = StyleSheet.create({
 
 const TabPro = React.memo(() => {
   const swapInfo = useSelector(swapInfoSelector);
+  const { maxGet } = swapInfo;
   const feeTypes = useSelector(feeTypesSelector);
   const slippagetolerance = useSelector(slippagetoleranceSelector);
   const feetokenData = useSelector(feetokenDataSelector);
   const inputAmount = useSelector(inputAmountSelector);
   const sellinputAmount = inputAmount(formConfigs.selltoken);
+  const buyInputAmount = inputAmount(formConfigs.buytoken);
   const prv: SelectedPrivacy = useSelector(getPrivacyDataByTokenID)(PRV.id);
   const { hooksFactories } = useTabFactories();
   const dispatch = useDispatch();
@@ -57,7 +62,12 @@ const TabPro = React.memo(() => {
     if (Number(slippagetolerance) > 100 || slippagetolerance < 0) {
       return;
     }
-    dispatch(actionEstimateTrade());
+    const minAmount = calMintAmountExpected({ maxGet, slippagetolerance });
+    const amount = format.toFixed(
+      convert.toHumanAmount(minAmount, buyInputAmount.pDecimals),
+      buyInputAmount.pDecimals,
+    );
+    dispatch(change(formConfigs.formName, formConfigs.buytoken, amount));
   };
   let _minFeeValidator = React.useCallback(
     () => minFeeValidator(feetokenData),
@@ -126,7 +136,9 @@ const TabPro = React.memo(() => {
           name={formConfigs.feetoken}
           placeholder="0"
           validate={[
-            ...validator.combinedAmount,
+            ...(feetokenData.isIncognitoToken
+              ? validator.combinedNanoAmount
+              : validator.combinedAmount),
             _minFeeValidator,
             _availablePayFeeByPRVValidator,
           ]}

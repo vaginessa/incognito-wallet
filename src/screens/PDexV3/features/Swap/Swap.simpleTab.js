@@ -1,15 +1,16 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import { Hook, styled as extraStyled } from '@screens/PDexV3/features/Extra';
+import { Hook } from '@screens/PDexV3/features/Extra';
 import { useSelector } from 'react-redux';
-import { Text } from '@src/components/core';
 import isEmpty from 'lodash/isEmpty';
 import {
   feetokenDataSelector,
   swapInfoSelector,
   slippagetoleranceSelector,
+  inputAmountSelector,
 } from './Swap.selector';
 import { MaxPriceAndImpact } from './Swap.shared';
+import { formConfigs } from './Swap.constant';
 
 const styled = StyleSheet.create({
   container: {
@@ -21,6 +22,9 @@ export const useTabFactories = () => {
   const swapInfo = useSelector(swapInfoSelector);
   const feeTokenData = useSelector(feetokenDataSelector);
   const slippagetolerance = useSelector(slippagetoleranceSelector);
+  const sellInputAmount = useSelector(inputAmountSelector)(
+    formConfigs.selltoken,
+  );
   const hooksFactories = React.useMemo(() => {
     let result = [
       {
@@ -45,45 +49,33 @@ export const useTabFactories = () => {
         hasQuestionIcon: true,
         onPressQuestionIcon: () => null,
       },
-      {
-        label: 'Trading fee',
-        value: feeTokenData?.feeAmountText ?? '',
-        hasQuestionIcon: true,
-        onPressQuestionIcon: () => null,
-        boldLabel: true,
-      },
-      {
-        label: 'Network fee',
-        value: swapInfo?.networkfeeAmountStr ?? '',
-        hasQuestionIcon: true,
-        onPressQuestionIcon: () => null,
-        boldLabel: true,
-      },
-      {
-        label: 'Pool size',
-        hasQuestionIcon: true,
-        onPressQuestionIcon: () => null,
-        boldLabel: true,
-        customValue: (
-          <View
-            style={{
-              flex: 1,
-            }}
-          >
-            {swapInfo?.allPoolSize &&
-              swapInfo?.allPoolSize.map((poolSize) => (
-                <Text
-                  style={{ ...extraStyled.value, marginBottom: 5 }}
-                  numberOfLines={1}
-                  ellipsizeMode="tail"
-                >
-                  {poolSize}
-                </Text>
-              ))}
-          </View>
-        ),
-      },
     ];
+    if (sellInputAmount.isMainCrypto && sellInputAmount.usingFee) {
+      result.push({
+        label: 'Trading fee',
+        value: feeTokenData?.totalFeePRVText ?? '',
+        hasQuestionIcon: true,
+        onPressQuestionIcon: () => null,
+        boldLabel: true,
+      });
+    } else {
+      result.push(
+        {
+          label: 'Trading fee',
+          value: feeTokenData?.feeAmountText ?? '',
+          hasQuestionIcon: true,
+          onPressQuestionIcon: () => null,
+          boldLabel: true,
+        },
+        {
+          label: 'Network fee',
+          value: swapInfo?.networkfeeAmountStr ?? '',
+          hasQuestionIcon: true,
+          onPressQuestionIcon: () => null,
+          boldLabel: true,
+        },
+      );
+    }
     return result.filter((hook) => !isEmpty(hook));
   }, [swapInfo]);
   return {
@@ -103,3 +95,4 @@ const TabSimple = React.memo(() => {
 });
 
 export default React.memo(TabSimple);
+0;

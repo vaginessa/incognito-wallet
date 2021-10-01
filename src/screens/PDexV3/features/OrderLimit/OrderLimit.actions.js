@@ -367,13 +367,25 @@ export const actionFetchDataOrderDetail = () => async (dispatch, getState) => {
   let _order = {};
   const state = getState();
   const { order } = orderDetailSelector(state);
-  if (!order?.requestTx) {
+  const pool = poolSelectedDataSelector(state);
+  if (!order?.requestTx || !pool) {
     return;
   }
   try {
+    const { requestTx, fromStorage } = order;
+    const { poolId, token1Id, token2Id } = pool;
     await dispatch(actionFetchingOrderDetail());
     const pDexV3 = await dispatch(actionGetPDexV3Inst());
-    _order = await pDexV3.getOrderLimitDetail({ requestTx: order?.requestTx });
+    const params = {
+      requestTx,
+      poolid: poolId,
+      token1ID: token1Id,
+      token2ID: token2Id,
+      fromStorage,
+      version: PrivacyVersion.ver2,
+    };
+    console.log('params', params);
+    _order = await pDexV3.getOrderLimitDetail(params);
   } catch (error) {
     _order = { ...order };
     new ExHandler(error).showErrorToast();

@@ -24,6 +24,12 @@ import {
 } from './OrderLimit.constant';
 import { getInputAmount as getInputTokenAmount } from './OrderLimit.utils';
 
+const BTN_WITHDRAW_ORDER = {
+  [ACCOUNT_CONSTANT.TX_STATUS.PROCESSING]: 'ing',
+  [ACCOUNT_CONSTANT.TX_STATUS.TXSTATUS_PENDING]: 'ing',
+  [ACCOUNT_CONSTANT.TX_STATUS.TXSTATUS_SUCCESS]: 'ed',
+};
+
 export const orderLimitSelector = createSelector(
   (state) => state.pDexV3.orderLimit,
   (orderLimit) => orderLimit,
@@ -39,6 +45,37 @@ export const poolSelectedDataSelector = createSelector(
       console.log('poolSelectedDataSelector-error', error);
     }
   },
+);
+
+// group inputs
+
+// fee
+
+export const inpuTokenSelector = createSelector(
+  getPrivacyDataByTokenIDSelector,
+  orderLimitSelector,
+  (getPrivacyDataByTokenID, orderLimit) => (field) => {
+    try {
+      const tokenId = orderLimit[field];
+      if (!tokenId) {
+        return {};
+      }
+      const token = getPrivacyDataByTokenID(orderLimit[field]);
+      return token;
+    } catch (error) {
+      console.log('inpuTokenSelector-error', error);
+    }
+  },
+);
+
+export const selltokenSelector = createSelector(
+  inpuTokenSelector,
+  (getInputToken) => getInputToken(formConfigs.selltoken),
+);
+
+export const buytokenSelector = createSelector(
+  inpuTokenSelector,
+  (getInputToken) => getInputToken(formConfigs.buytoken),
 );
 
 export const feeSelectedSelector = createSelector(
@@ -93,43 +130,6 @@ export const feetokenDataSelector = createSelector(
   },
 );
 
-export const inputAmountSelector = createSelector(
-  (state) => state,
-  feetokenDataSelector,
-  orderLimitSelector,
-  sharedSelector.isGettingBalance,
-  getPrivacyDataByTokenIDSelector,
-  poolSelectedDataSelector,
-  getInputTokenAmount,
-);
-
-export const inpuTokenSelector = createSelector(
-  getPrivacyDataByTokenIDSelector,
-  orderLimitSelector,
-  (getPrivacyDataByTokenID, orderLimit) => (field) => {
-    try {
-      const tokenId = orderLimit[field];
-      if (!tokenId) {
-        return {};
-      }
-      const token = getPrivacyDataByTokenID(orderLimit[field]);
-      return token;
-    } catch (error) {
-      console.log('inpuTokenSelector-error', error);
-    }
-  },
-);
-
-export const selltokenSelector = createSelector(
-  inpuTokenSelector,
-  (getInputToken) => getInputToken(formConfigs.selltoken),
-);
-
-export const buytokenSelector = createSelector(
-  inpuTokenSelector,
-  (getInputToken) => getInputToken(formConfigs.buytoken),
-);
-
 export const feeTypesSelector = createSelector(
   selltokenSelector,
   feeSelectedSelector,
@@ -150,6 +150,16 @@ export const feeTypesSelector = createSelector(
     }
     return types;
   },
+);
+
+export const inputAmountSelector = createSelector(
+  (state) => state,
+  feetokenDataSelector,
+  orderLimitSelector,
+  sharedSelector.isGettingBalance,
+  getPrivacyDataByTokenIDSelector,
+  poolSelectedDataSelector,
+  getInputTokenAmount,
 );
 
 export const rateDataSelector = createSelector(
@@ -313,11 +323,7 @@ export const orderLimitDataSelector = createSelector(
   },
 );
 
-const BTN_WITHDRAW_ORDER = {
-  [ACCOUNT_CONSTANT.TX_STATUS.PROCESSING]: 'ing',
-  [ACCOUNT_CONSTANT.TX_STATUS.TXSTATUS_PENDING]: 'ing',
-  [ACCOUNT_CONSTANT.TX_STATUS.TXSTATUS_SUCCESS]: 'ed',
-};
+// history
 
 export const mappingOrderHistorySelector = createSelector(
   orderLimitSelector,
@@ -348,6 +354,7 @@ export const mappingOrderHistorySelector = createSelector(
         statusCode,
         minAccept,
         buyTokenId,
+        fromStorage,
       } = order;
       let type,
         mainColor,
@@ -448,9 +455,8 @@ export const mappingOrderHistorySelector = createSelector(
       );
       const percentStr = `Filled ${percent}%`;
       const percentStr1 = `${percent}%`;
-      const timeStr = format.formatDateTime(
-        new Date(requestime * 1000).getTime(),
-      );
+      const time = fromStorage ? requestime : requestime * 1000;
+      const timeStr = format.formatDateTime(new Date(time).getTime());
       const withdrawing = withdrawingOrderTxs.includes(requestTx);
       const rate = getPairRate({
         token1Value: amount,
@@ -485,10 +491,6 @@ export const mappingOrderHistorySelector = createSelector(
         networkfeeAmountStr: `${format.amountFull(1, PRV.pDecimals, false)} ${
           PRV.symbol
         }`,
-        responseTxs: [
-          '220bf33f0d6db3037f1cbe99acdeb2c6735450a94becb65fb671e2293894112b',
-          '220bf33f0d6db3037f1cbe99acdeb2c6735450a94becb65fb671e2293894112b',
-        ],
       };
       return result;
     } catch (error) {

@@ -65,10 +65,10 @@ const Trade = (props) => {
           </View>
           <View tabID={TAB_LIMIT_ID} label="Limit" onChangeTab={() => null}>
             <TabHomeOrderLimit />
+            <NFTTokenBottomBar />
           </View>
         </Tabs>
       </KeyboardAwareScrollView>
-      <NFTTokenBottomBar />
     </View>
   );
 };

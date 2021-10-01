@@ -2,6 +2,7 @@
 import { CONSTANT_COMMONS, CONSTANT_CONFIGS } from '@src/constants';
 import { BIG_COINS } from '@src/screens/DexV2/constants';
 import { PRV_ID } from '@screens/Dex/constants';
+import { detectToken } from '@src/utils/misc';
 import PToken from './pToken';
 
 function getNetworkName() {
@@ -79,7 +80,9 @@ class SelectedPrivacy {
     this.isPrivateCoin =
       pTokenData?.type === CONSTANT_COMMONS.PRIVATE_TOKEN_TYPE.COIN; // pETH, pBTC, pTOMO,...
     this.isPToken = !!pTokenData.pSymbol; // pToken is private token (pETH <=> ETH, pBTC <=> BTC, ...)
-    this.isIncognitoToken = !this.isPToken && !this.isMainCrypto; // is tokens were issued from users
+    this.isIncognitoToken =
+      (!this.isPToken && !this.isMainCrypto) ||
+      detectToken.ispNEO(this?.tokenId); // is tokens were issued from users
     this.isErc20Token =
       this.isPrivateToken &&
       this.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.ERC20;
@@ -109,7 +112,7 @@ class SelectedPrivacy {
       token?.name,
       isUnknown ? unknownText : 'Privacy',
     );
-    this.amount = (this.isToken ? token.amount : account.value) || 0;
+
     this.tokenId = _tokenID
       ? _tokenID
       : this.isMainCrypto
@@ -155,6 +158,14 @@ class SelectedPrivacy {
     this.isUSDT = this.tokenId === BIG_COINS.USDT;
     this.isPRV = this.tokenId === BIG_COINS.PRV;
     this.symbol = this.externalSymbol || this.symbol || '';
+    if (!this.symbol) {
+      this.symbol = 'INC';
+    }
+    this.amount = token?.amount;
+    if (this.isMainCrypto) {
+      this.amount = account?.value;
+    }
+    this.amount = this.amount || 0;
   }
 }
 
