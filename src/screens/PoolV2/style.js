@@ -30,11 +30,11 @@ export default StyleSheet.create({
     fontSize: 18,
     marginBottom: UTILS.heightScale(8),
   },
-  unlockDate: {
+  coinExtraSmall: {
     fontFamily: FONT.NAME.medium,
     color: COLORS.newGrey,
-    fontSize: 18,
-    fontWeight: 'bold',
+    fontSize: 16,
+    lineHeight: 18,
     marginBottom: UTILS.heightScale(8),
   },
   textRight: {
@@ -50,6 +50,8 @@ export default StyleSheet.create({
     color: COLORS.red,
     fontSize: 16,
     minHeight: 20,
+    fontFamily: FONT.NAME.regular,
+    marginBottom: UTILS.heightScale(8),
   },
   disabled: {
     opacity: 0.5,
@@ -64,7 +66,11 @@ export default StyleSheet.create({
     marginBottom: isAndroid() ? -UTILS.heightScale(8) : 0,
   },
   inputContainer: {
-    marginBottom: UTILS.heightScale(8)
+    marginBottom: UTILS.heightScale(8),
+    backgroundColor: COLORS.lightGrey31,
+    paddingHorizontal: 16,
+    paddingVertical: 13, 
+    borderRadius: 8,
   },
   symbol: {
     fontSize: UTILS.heightScale(20),
