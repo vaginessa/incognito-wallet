@@ -72,11 +72,45 @@ export default StyleSheet.create({
     marginBottom: UTILS.heightScale(8),
     backgroundColor: COLORS.lightGrey31,
     paddingHorizontal: 16,
-    paddingVertical: 13, 
+    paddingVertical: 13,
     borderRadius: 8,
   },
   symbol: {
     fontSize: UTILS.heightScale(20),
     fontFamily: FONT.NAME.bold,
   },
+  wrapTitle: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: UTILS.heightScale(8)
+  },
+  wrapperLock: {
+    paddingHorizontal: 8,
+    alignItems: 'center',
+    paddingVertical: 4,
+    backgroundColor: COLORS.lightGrey19,
+    marginLeft: 8,
+    height: 24,
+    borderRadius: 4
+  },
+  lockText: {
+    ...FONT.STYLE.medium,
+    fontSize: FONT.SIZE.small,
+    color: COLORS.newGrey,
+    marginLeft: 5
+  },
+  btnMirage: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: COLORS.black,
+    marginLeft: 8,
+    height: 24,
+    paddingHorizontal: 8,
+    borderRadius: 4
+  },
+  mirageText: {
+    ...FONT.STYLE.medium,
+    fontSize: FONT.SIZE.small,
+    color: COLORS.white,
+  }
 });
