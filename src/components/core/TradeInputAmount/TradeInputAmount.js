@@ -50,6 +50,9 @@ const TradeInputAmount = (props) => {
     placeholder = '0',
     loadingBalance,
     editableInput,
+    containerStyle,
+    symbolStyle,
+    inputStyle,
     ...rest
   } = props || {};
   const renderSub = () => {
@@ -70,11 +73,12 @@ const TradeInputAmount = (props) => {
     }
   };
   return (
-    <Row style={styled.container}>
+    <Row style={[styled.container, containerStyle, { backgroundColor: '#F7F7F7', height: 50, paddingHorizontal: 8, borderRadius: 4 }]}>
       <View style={styled.inputContainer}>
         <BaseTextInput
           style={{
             ...styled.input,
+            ...inputStyle
           }}
           keyboardType="decimal-pad"
           placeholder={placeholder}
@@ -88,13 +92,26 @@ const TradeInputAmount = (props) => {
       {!!symbol && (
         <TouchableOpacity onPress={onPressSymbol}>
           <Row style={{ alignItems: 'center' }}>
-            {!!symbol && <Text style={styled.symbol}>{symbol}</Text>}
+            {!!symbol && <Text style={[styled.symbol, symbolStyle]}>{symbol}</Text>}
             {canSelectSymbol && <ArrowRightGreyIcon />}
           </Row>
         </TouchableOpacity>
       )}
     </Row>
   );
+};
+
+TradeInputAmount.defaultProps = {
+  hasInfinityIcon: false,
+  onPressInfinityIcon: undefined,
+  symbol: undefined,
+  canSelectSymbol: false,
+  onPressSymbol: undefined,
+  loadingBalance: false,
+  editableInput: false,
+  containerStyle: {},
+  symbolStyle: {},
+  inputStyle: {},
 };
 
 TradeInputAmount.propTypes = {
@@ -105,6 +122,9 @@ TradeInputAmount.propTypes = {
   onPressSymbol: PropTypes.func,
   loadingBalance: PropTypes.bool,
   editableInput: PropTypes.bool,
+  containerStyle: PropTypes.any,
+  symbolStyle: PropTypes.any,
+  inputStyle: PropTypes.any,
 };
 
 export default React.memo(TradeInputAmount);

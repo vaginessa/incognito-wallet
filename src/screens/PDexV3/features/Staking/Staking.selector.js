@@ -15,6 +15,7 @@ import {getHistoriesKey} from '@screens/PDexV3/features/Staking/Staking.utils';
 import flatten from 'lodash/flatten';
 import {PRV} from '@src/constants/common';
 import uniq from 'lodash/uniq';
+import {CONSTANT_COMMONS} from '@src/constants';
 
 export const stakingSelector = createSelector(
   (state) => state.pDexV3,
@@ -76,7 +77,7 @@ export const stakingCoinsSelector = createSelector(
       }, []);
       const totalRewardUSD = rewardsMerged.reduce((prev, curr) => new BigNumber(prev).plus(curr.rewardUSD).toNumber(), 0);
       const totalRewardAmount = Math.ceil(new BigNumber(totalRewardUSD).multipliedBy(Math.pow(10, token.pDecimals || 9)).toNumber());
-      const totalRewardUSDStr = `$ ${formatUtil.amountFull(totalRewardAmount, token.pDecimals)}`;
+      const totalRewardUSDStr = `${CONSTANT_COMMONS.USD_SPECIAL_SYMBOL}${formatUtil.amountFull(totalRewardAmount, token.pDecimals)}`;
       const reward = { rewardsCoins, rewardTokenIds, rewardsMerged, totalRewardUSD, totalRewardAmount, totalRewardUSDStr };
       return {
         coins,
@@ -97,11 +98,16 @@ const stakingRewardSelector = createSelector(
   (coins, getPrivacyDataByTokenID) => {
     const prvToken = getPrivacyDataByTokenID(PRV.id);
     const rewardUSD = coins.reduce((prev, curr) => new BigNumber(prev).plus(curr.reward.totalRewardAmount), new BigNumber(0)).toNumber();
-    const rewardUSDStr = `$ ${formatUtil.amountFull(rewardUSD, prvToken.pDecimals)}`;
+    const rewardUSDStr = `${formatUtil.amountFull(rewardUSD, prvToken.pDecimals)} $ `;
     const rewardPRV = Math.floor(new BigNumber(rewardUSD).dividedBy(prvToken.priceUsd).toNumber());
     const rewardPRVStr = `${formatUtil.amountFull(rewardPRV, prvToken.pDecimals)} ${prvToken.symbol}`;
     return { rewardUSDStr, rewardPRVStr };
   }
+);
+
+const isExistStakingSelector = createSelector(
+  stakingCoinsSelector,
+  (stakingCoins) => stakingCoins.some(({ coins }) => coins.some(item => item.amount)),
 );
 
 export const stakingCoinByTokenIDSelector = createSelector(
@@ -132,89 +138,7 @@ export const stakingFeeSelector = createSelector(
   },
 );
 
-/**
- * ================================================================
- * =======================STAKING INVEST==========================
- * ================================================================
- **/
-export const stakingInvestSelector = createSelector(
-  stakingSelector,
-  (staking) => {
-    return staking.invest;
-  },
-);
 
-export const investCoinSelector = createSelector(
-  stakingInvestSelector,
-  stakingCoinByTokenIDSelector,
-  ({ tokenID }, getStakingCoinByTokenID) => getStakingCoinByTokenID(tokenID),
-);
-
-const investInputValue = createSelector(
-  (state) => state,
-  investCoinSelector,
-  (state, coin) => {
-    const selector = formValueSelector(formConfigsInvest.formName);
-    const inputText = selector(state, formConfigsInvest.input);
-    const inputNumber = convert.toNumber(inputText, true) || 0;
-    return convert.toOriginalAmount(inputNumber, coin.token.pDecimals);
-  }
-);
-
-export const investInputValidate = createSelector(
-  investCoinSelector,
-  stakingFeeSelector,
-  investInputValue,
-  (coin, fee, inputValue) => () => {
-    try {
-      const { userBalance } = coin;
-      const { feeAmount, feeToken } = fee;
-      const { amount: userBalanceForFee } = feeToken;
-      if (feeAmount > userBalanceForFee) {
-        return MESSAGES.NOT_ENOUGH_PRV_NETWORK_FEE;
-      } else if (inputValue > userBalance) {
-        return MESSAGES.BALANCE_INSUFFICIENT;
-      }
-    } catch (error) {
-      return error.message;
-    }
-  },
-);
-
-export const investInputAmount = createSelector(
-  investInputValue,
-  investCoinSelector,
-  stakingFeeSelector,
-  (inputValue, coin, fee) => {
-    const { tokenId, token, userBalance } = coin;
-    const { feeAmount, feeToken } = fee;
-    const inputText = formatUtil.amountFull(inputValue, token.pDecimals);
-    let depositText = inputText;
-    let maxDepositValue = userBalance;
-    if (feeToken.tokenId === tokenId && tokenId === PRVIDSTR) {
-      const depositValue = new BigNumber(inputValue).plus(feeAmount).toNumber();
-      maxDepositValue = new BigNumber(userBalance).minus(feeAmount);
-      depositText = formatUtil.amountFull(depositValue, token.pDecimals);
-    }
-    const depositSymbolStr = `${depositText} ${token.symbol}`;
-    const maxDepositHumanAmount = convert.toHumanAmount(maxDepositValue, token.pDecimals);
-    const maxDepositText = formatUtil.toFixed(maxDepositHumanAmount, token.pDecimals);
-    return {
-      inputText,
-      inputValue,
-      depositText,
-      depositSymbolStr,
-      maxDepositValue,
-      maxDepositText,
-    };
-  }
-);
-
-export const investDisable = createSelector(
-  investInputValue,
-  investInputValidate,
-  (inputValue, validate) => (inputValue <= 0 || !!validate()),
-);
 
 export const isFetchingPoolSelector = createSelector(
   stakingSelector,
@@ -253,6 +177,102 @@ export const stakingPoolSelector = createSelector(
     });
   },
 );
+
+export const getStakingPoolByTokenId = createSelector(
+  stakingPoolSelector,
+  (stakingPools) => (tokenId) => stakingPools.find(({ tokenId: _tokenId }) => _tokenId === tokenId),
+);
+
+
+/**
+ * ================================================================
+ * =======================STAKING INVEST==========================
+ * ================================================================
+ **/
+export const stakingInvestSelector = createSelector(
+  stakingSelector,
+  (staking) => {
+    return staking.invest;
+  },
+);
+
+export const investCoinSelector = createSelector(
+  stakingInvestSelector,
+  getStakingPoolByTokenId,
+  ({ tokenID }, getStakingPool) => getStakingPool(tokenID),
+);
+
+const investInputValue = createSelector(
+  (state) => state,
+  investCoinSelector,
+  (state, coin) => {
+    if (!coin) return 0;
+    const selector = formValueSelector(formConfigsInvest.formName);
+    const inputText = selector(state, formConfigsInvest.input);
+    const inputNumber = convert.toNumber(inputText, true) || 0;
+    return convert.toOriginalAmount(inputNumber, coin.token.pDecimals);
+  }
+);
+
+export const investInputAmount = createSelector(
+  investInputValue,
+  investCoinSelector,
+  stakingFeeSelector,
+  (inputValue, coin, fee) => {
+    if (!coin) return {
+      inputValue: 0,
+      maxDepositValue: 0,
+    };
+    const { tokenId, token, userBalance } = coin;
+    const { feeAmount, feeToken } = fee;
+    const inputText = formatUtil.amountFull(inputValue, token.pDecimals);
+    let depositText = inputText;
+    let maxDepositValue = userBalance;
+    if (feeToken.tokenId === tokenId && tokenId === PRVIDSTR) {
+      const depositValue = new BigNumber(inputValue).plus(feeAmount).toNumber();
+      maxDepositValue = new BigNumber(userBalance).minus(feeAmount).toNumber();
+      depositText = formatUtil.amountFull(depositValue, token.pDecimals);
+    }
+    const depositSymbolStr = `${depositText} ${token.symbol}`;
+    const maxDepositHumanAmount = convert.toHumanAmount(maxDepositValue, token.pDecimals);
+    const maxDepositText = formatUtil.toFixed(maxDepositHumanAmount, token.pDecimals);
+    return {
+      token,
+      inputText,
+      inputValue,
+      depositText,
+      depositSymbolStr,
+      maxDepositValue,
+      maxDepositText,
+    };
+  }
+);
+
+export const investInputValidate = createSelector(
+  stakingFeeSelector,
+  investInputAmount,
+  (fee, { inputValue, maxDepositValue }) => () => {
+    try {
+      const { feeAmount, feeToken } = fee;
+      const { amount: userBalanceForFee } = feeToken;
+      if (new BigNumber(feeAmount).gt(userBalanceForFee)) {
+        return MESSAGES.NOT_ENOUGH_PRV_NETWORK_FEE;
+      }
+      if (new BigNumber(inputValue).gt(maxDepositValue)) {
+        return MESSAGES.BALANCE_INSUFFICIENT;
+      }
+    } catch (error) {
+      return error.message;
+    }
+  },
+);
+
+export const investDisable = createSelector(
+  investInputValue,
+  investInputValidate,
+  (inputValue, validate) => (inputValue <= 0 || !!validate()),
+);
+
 
 /**
  * ================================================================
@@ -458,8 +478,9 @@ export default ({
 
   mapperStakingCoins,
   stakingCoinsSelector,
-  isFetchingCoinsSelector,
   stakingRewardSelector,
+  isFetchingCoinsSelector,
+  isExistStakingSelector,
 
   stakingHistoriesKeySelector,
   stakingHistoriesStatus,

@@ -75,7 +75,10 @@ const tabStyled = {
 };
 
 const Staking = ({ handleFetchData }) => {
+  const navigation = useNavigation();
   const account = useSelector(defaultAccountSelector);
+  const isStaking = useSelector(stakingSelector.isExistStakingSelector);
+  const onStakingMore = () => navigation.navigate(routeNames.StakingMoreCoins);
   React.useEffect(() => {
     typeof handleFetchData === 'function' && handleFetchData();
   }, [account.paymentAddress]);
@@ -93,7 +96,10 @@ const Staking = ({ handleFetchData }) => {
           </View>
         </Tabs>
       </View>
-      <BTNBorder title="Stake now" onPress={() => {}} />
+      <BTNBorder
+        title={isStaking ? STAKING_MESSAGES.stakeMore : STAKING_MESSAGES.stakeNow}
+        onPress={onStakingMore}
+      />
     </View>
   );
 };

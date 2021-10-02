@@ -7,13 +7,13 @@ import {change, Field} from 'redux-form';
 import {styled as mainStyle} from '@screens/PDexV3/PDexV3.styled';
 import Header from '@components/Header/Header';
 import {
-  investCoinSelector, investDisable,
-  stakingFeeSelector,
-  investInputValidate, investInputAmount
+  investCoinSelector,
+  investInputValidate,
+  investInputAmount, investDisable
 } from '@screens/PDexV3/features/Staking/Staking.selector';
 import {coinStyles as coinStyled} from '@screens/PDexV3/features/Staking/Staking.styled';
-import {RoundCornerButton} from '@components/core';
-import {LoadingContainer, RowSpaceText} from '@src/components';
+import {RoundCornerButton, Text} from '@components/core';
+import {LoadingContainer} from '@src/components';
 import {useNavigation} from 'react-navigation-hooks';
 import routeNames from '@routers/routeNames';
 import withInput from '@screens/PDexV3/features/Staking/Staking.enhanceInput';
@@ -31,13 +31,10 @@ const Form = createForm(formConfigsInvest.formName, {
 
 const Input = React.memo(({ onInvestMax }) => {
   const dispatch = useDispatch();
-  const { maxDepositText } = useSelector(investInputAmount);
+  const { maxDepositText, token } = useSelector(investInputAmount);
   const inputValidate = useSelector(investInputValidate);
   const onChangeText = (text) => dispatch(change(formConfigsInvest.formName, formConfigsInvest.input, text));
   const onChangeMaxInvest = () => onInvestMax(maxDepositText);
-  React.useEffect(() => {
-    onChangeMaxInvest();
-  }, []);
   return(
     <Field
       component={TradeInputAmount}
@@ -47,9 +44,12 @@ const Input = React.memo(({ onInvestMax }) => {
         ...validator.combinedAmount,
         inputValidate,
       ]}
+      symbol={token && token?.symbol}
       onChange={onChangeText}
       editableInput
+      canSelectSymbol
       onPressInfinityIcon={onChangeMaxInvest}
+      onPressSymbol={() => {}}
     />
   );
 });
@@ -59,26 +59,25 @@ const CustomInput = withInput(Input);
 const StakingMoreInput = () => {
   const navigation = useNavigation();
   const coin = useSelector(investCoinSelector);
-  const fee = useSelector(stakingFeeSelector);
   const disable = useSelector(investDisable);
   const navigateConfirm = () => navigation.navigate(routeNames.StakingMoreConfirm);
   const renderContent = () => {
     if (!coin) return <LoadingContainer />;
-    const { token, userBalanceSymbolStr } = coin;
-    const { feeAmountSymbolStr } = fee;
     return (
       <Form>
         {() => (
           <>
+            <Text
+              style={{ textAlign: 'right', color: '#858383', fontSize: 12, lineHeight: 18, marginBottom: 8 }}
+            >{`Balance: ${coin.userBalanceSymbolStr}`}
+            </Text>
             <CustomInput />
             <RoundCornerButton
-              title={STAKING_MESSAGES.stakeSymbol(token.symbol)}
+              title={STAKING_MESSAGES.staking}
               style={coinStyled.button}
               disabled={disable}
               onPress={navigateConfirm}
             />
-            <RowSpaceText label="Balance" value={userBalanceSymbolStr} />
-            <RowSpaceText label="Fee" value={feeAmountSymbolStr} />
           </>
         )}
       </Form>

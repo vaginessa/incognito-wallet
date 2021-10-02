@@ -17,22 +17,22 @@ export const coinStyles = StyleSheet.create({
     flex: 1,
   },
   coinContainer: {
-    marginTop: UTILS.heightScale(25),
+    marginTop: 25,
     flex: 1,
   },
   coin: {
-    marginBottom: UTILS.heightScale(20),
+    marginBottom: 20,
   },
   coinName: {
     fontFamily: FONT.NAME.bold,
     fontSize: 20,
-    marginBottom: UTILS.heightScale(8),
+    marginBottom: 8,
   },
   coinInterest: {
     fontSize: 18,
     color: COLORS.green2,
     fontFamily: FONT.NAME.medium,
-    marginBottom: UTILS.heightScale(8),
+    marginBottom: 8,
   },
   coinExtra: {
     fontFamily: FONT.NAME.medium,
@@ -66,23 +66,23 @@ export const coinStyles = StyleSheet.create({
     padding: 0,
     flex: 1,
     marginRight: 15,
-    marginBottom: isAndroid() ? -UTILS.heightScale(8) : 0,
+    marginBottom: isAndroid() ? - 8 : 0,
   },
   inputContainer: {
-    marginBottom: UTILS.heightScale(8)
+    marginBottom: 8
   },
   symbol: {
-    fontSize: UTILS.heightScale(20),
+    fontSize: 20,
     fontFamily: FONT.NAME.bold,
   },
   rateChange: {
     position: 'absolute',
     backgroundColor: 'white',
-    paddingVertical: UTILS.heightScale(15),
+    paddingVertical: 15,
     bottom: 0,
     left: 0,
     right: 0,
-    marginBottom: UTILS.heightScale(15),
+    marginBottom: 15,
   },
   rateStyle: {
     fontFamily: FONT.NAME.medium,
@@ -193,5 +193,53 @@ export const homeStyle = StyleSheet.create({
   wrapper: {
     flex: 1,
     paddingTop: 24
+  }
+});
+
+export const itemStyle = StyleSheet.create({
+  wrapper: {
+    marginTop: 24,
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
+  image: {
+    width: 20,
+    height: 20,
+  },
+  wrapImage: {
+    justifyContent: 'center',
+    marginRight: 12,
+    height: FONT.SIZE.medium + 9,
+  },
+  title: {
+    ...FONT.STYLE.medium,
+    fontSize: FONT.SIZE.medium,
+    lineHeight: FONT.SIZE.medium + 9
+  },
+  subTitle: {
+    ...FONT.STYLE.normal,
+    fontSize: FONT.SIZE.small,
+    lineHeight: FONT.SIZE.small + 7,
+    color: COLORS.lightGrey33,
+  },
+  headerTitle: {
+    ...FONT.STYLE.medium,
+    fontSize: FONT.SIZE.small,
+    lineHeight: FONT.SIZE.small + 7,
+    color: COLORS.lightGrey33,
+  },
+  greenText: {
+    color: COLORS.green2,
+  },
+  rightText: {
+    textAlign: 'right'
+  },
+  arrowRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end'
+  },
+  arrow: {
+    marginLeft: 12
   }
 });

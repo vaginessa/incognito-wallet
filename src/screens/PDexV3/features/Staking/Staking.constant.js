@@ -28,7 +28,9 @@ export const STAKING_MESSAGES = {
   histories: 'Histories',
   history: 'History',
   portfolio: 'Your portfolio',
-  listCoins: 'List coins'
+  listCoins: 'List coins',
+  stakeMore: 'Stake more',
+  stakeNow: 'Stake now',
 };
 
 export const formConfigsInvest = {

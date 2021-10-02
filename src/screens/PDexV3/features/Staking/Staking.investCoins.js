@@ -2,24 +2,23 @@ import React, {memo} from 'react';
 import {RefreshControl, View} from 'react-native';
 import PropTypes from 'prop-types';
 import {styled as mainStyle} from '@screens/PDexV3/PDexV3.styled';
-import {Header, Row} from '@src/components';
+import {Header} from '@src/components';
 import {STAKING_MESSAGES} from '@screens/PDexV3/features/Staking/Staking.constant';
 import {batch, useDispatch, useSelector} from 'react-redux';
 import {
-  stakingActions,
-  stakingPoolSelector,
-  stakingPoolStatusSelector
+  stakingActions, stakingSelector,
 } from '@screens/PDexV3/features/Staking';
-import {ActivityIndicator, ScrollView, Text, TouchableOpacity} from '@components/core';
+import {ScrollView} from '@components/core';
 import {coinStyles as coinStyled} from '@screens/PDexV3/features/Staking/Staking.styled';
 import routeNames from '@routers/routeNames';
 import {useNavigation} from 'react-navigation-hooks';
 import withFetch from '@screens/PDexV3/features/Staking/Staking.enhanceFetch';
+import {HeaderRow, OneRowCoin} from '@screens/PDexV3/features/Staking/Staking.item';
 
 const CoinItem = React.memo(({ coin }) => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
-  const { token, userBalanceStr, isLoadingBalance, tokenId, disabled, poolAmountStr } = coin;
+  const { token, userBalanceStr, userBalance, tokenId } = coin;
   const onInvestCoin = () => {
     batch(() => {
       dispatch(stakingActions.actionSetInvestCoin({ tokenID: tokenId }));
@@ -27,42 +26,26 @@ const CoinItem = React.memo(({ coin }) => {
     });
   };
   return (
-    <TouchableOpacity
-      key={tokenId}
-      style={coinStyled.coin}
-      disabled={disabled}
+    <OneRowCoin
+      valueText={userBalanceStr}
+      token={token}
+      disabled={!userBalance}
       onPress={onInvestCoin}
-    >
-      <View style={disabled && coinStyled.disabled}>
-        <Row spaceBetween>
-          <Text style={coinStyled.coinName}>{token.symbol}</Text>
-          <Text style={coinStyled.coinName}>{poolAmountStr}</Text>
-        </Row>
-        <Row>
-          {isLoadingBalance ?
-            <ActivityIndicator /> :
-            <Text style={coinStyled.coinExtra}>{`${userBalanceStr}`}</Text>
-          }
-        </Row>
-      </View>
-    </TouchableOpacity>
+    />
   );
 });
 
-const StakingMoreCoins = ({ handleFetchPool, handleFetchData }) => {
-  const coins = useSelector(stakingPoolSelector);
-  const isFetching = useSelector(stakingPoolStatusSelector);
+const StakingMoreCoins = ({ handleFetchPool }) => {
+  const coins = useSelector(stakingSelector.stakingPoolSelector);
+  const isFetching = useSelector(stakingSelector.isFetchingPoolSelector);
   const renderItem = (coin) => <CoinItem coin={coin} />;
   const onRefresh = () => {
     if (typeof handleFetchPool === 'function') handleFetchPool();
-    if (typeof handleFetchData === 'function') handleFetchData();
   };
-  React.useEffect(() => {
-    if (typeof handleFetchPool === 'function') handleFetchPool();
-  }, []);
   return (
     <View style={mainStyle.container}>
       <Header title={STAKING_MESSAGES.selectCoin} />
+      <HeaderRow array={['Name', 'Amount']} />
       <ScrollView
         refreshControl={(
           <RefreshControl refreshing={isFetching} onRefresh={onRefresh} />
@@ -81,7 +64,6 @@ CoinItem.propTypes = {
 
 StakingMoreCoins.propTypes = {
   handleFetchPool: PropTypes.func.isRequired,
-  handleFetchData: PropTypes.func.isRequired,
 };
 
 export default withFetch(memo(StakingMoreCoins));
