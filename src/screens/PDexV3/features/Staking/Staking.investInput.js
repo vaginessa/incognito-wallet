@@ -16,6 +16,7 @@ import PropTypes from 'prop-types';
 import {stakingActions, stakingSelector} from '@screens/PDexV3/features/Staking';
 import {BottomModalActions} from '@components/core/BottomModal';
 import {HeaderRow, OneRowCoin} from '@screens/PDexV3/features/Staking/Staking.item';
+import withInvest from '@screens/PDexV3/features/Staking/Staking.investEnhance';
 
 const initialFormValues = {
   input: ''
@@ -58,35 +59,11 @@ const Input = React.memo(({ onInvestMax, onSymbolPress }) => {
 
 const CustomInput = withInput(Input);
 
-const StakingMoreInput = () => {
-  const dispatch = useDispatch();
+const StakingMoreInput = ({ onSymbolPress }) => {
   const navigation = useNavigation();
   const coin = useSelector(stakingSelector.investCoinSelector);
-  const pools = useSelector(stakingSelector.stakingPoolSelector);
   const disable = useSelector(stakingSelector.investDisable);
   const navigateConfirm = () => navigation.navigate(routeNames.StakingMoreConfirm);
-  const onSelectToken = (tokenId) => (
-    batch(() => {
-      dispatch(stakingActions.actionSetInvestCoin({ tokenID: tokenId }));
-      dispatch(BottomModalActions.actionCloseModal());
-    })
-  );
-  const renderModelCell = (data) => (
-    <OneRowCoin
-      token={data.token}
-      valueText={data.userBalanceStr}
-      data={data.tokenId}
-      disabled={!data.userBalance}
-      onPress={onSelectToken}
-    />
-  );
-  const onSymbolPress = () => {
-    dispatch(BottomModalActions.actionOpenModal({
-      title: 'Select coins',
-      customHeader: <HeaderRow array={['Name', 'Amount']} />,
-      customContent: <View style={{ marginTop: 24 }}>{pools.map(renderModelCell)}</View>
-    }));
-  };
   const renderContent = () => {
     if (!coin) return <LoadingContainer />;
     return (
@@ -119,7 +96,8 @@ const StakingMoreInput = () => {
 };
 
 Input.propTypes = {
-  onInvestMax: PropTypes.func.isRequired
+  onInvestMax: PropTypes.func.isRequired,
+  onSymbolPress: PropTypes.func.isRequired
 };
 
-export default memo(StakingMoreInput);
+export default withInvest(memo(StakingMoreInput));

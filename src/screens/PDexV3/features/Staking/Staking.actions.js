@@ -6,6 +6,7 @@ import {PRVIDSTR} from 'incognito-chain-web-js/build/wallet';
 import {batch} from 'react-redux';
 import uniq from 'lodash/uniq';
 import {stakingSelector} from '@screens/PDexV3/features/Staking';
+import {actionSetNFTTokenData} from '@src/redux/actions/account';
 
 const actionFetching = ({ isFetching }) => ({
   type: TYPES.ACTION_FETCHING,
@@ -35,7 +36,10 @@ const actionFetchCoins = () => async (dispatch, getState) => {
     const state = getState();
     const isFetching = stakingSelector.isFetchingCoinsSelector(state);
     if (isFetching) return;
-    dispatch(actionFetching({ isFetching: true }));
+    batch(() => {
+      dispatch(actionFetching({ isFetching: true }));
+      dispatch(actionSetNFTTokenData());
+    });
     const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
     // const data = (await pDexV3Inst.getStakingData()) || [];
     const data = [
@@ -179,4 +183,5 @@ export default ({
   actionSetHistoriesKey,
   actionFetchHistories,
   actionFetchStakingPools,
+  actionGetBalances,
 });
