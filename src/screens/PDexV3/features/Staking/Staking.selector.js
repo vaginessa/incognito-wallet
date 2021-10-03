@@ -138,8 +138,11 @@ export const stakingFeeSelector = createSelector(
   },
 );
 
-
-
+/**
+ * ================================================================
+ * =======================STAKING POOLS==========================
+ * ================================================================
+ **/
 export const isFetchingPoolSelector = createSelector(
   stakingSelector,
   (staking) => {
@@ -251,6 +254,7 @@ export const investInputAmount = createSelector(
 export const investInputValidate = createSelector(
   stakingFeeSelector,
   investInputAmount,
+  investCoinSelector,
   (fee, { inputValue, maxDepositValue }) => () => {
     try {
       const { feeAmount, feeToken } = fee;
@@ -270,7 +274,8 @@ export const investInputValidate = createSelector(
 export const investDisable = createSelector(
   investInputValue,
   investInputValidate,
-  (inputValue, validate) => (inputValue <= 0 || !!validate()),
+  investCoinSelector,
+  (inputValue, validate, { disabled: loadingBalance }) => (inputValue <= 0 || !!validate() || loadingBalance)
 );
 
 
@@ -472,7 +477,6 @@ export const stakingHistoriesMapperSelector = createSelector(
 );
 
 export default ({
-
   stakingPoolSelector,
   isFetchingPoolSelector,
 
@@ -484,4 +488,10 @@ export default ({
 
   stakingHistoriesKeySelector,
   stakingHistoriesStatus,
+
+  stakingInvestSelector,
+  investCoinSelector,
+  investInputAmount,
+  investInputValidate,
+  investDisable,
 });

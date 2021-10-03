@@ -4,10 +4,6 @@ import PropTypes from 'prop-types';
 import {Row} from '@src/components';
 import {ArrowDown} from '@components/Icons';
 import {itemStyle as styled} from '@screens/PDexV3/features/Staking/Staking.styled';
-import {batch, useDispatch} from 'react-redux';
-import {stakingActions} from '@screens/PDexV3/features/Staking/index';
-import routeNames from '@routers/routeNames';
-import {useNavigation} from 'react-navigation-hooks';
 
 export const HeaderRow = React.memo(({ array, style }) => (
   <Row spaceBetween style={style}>

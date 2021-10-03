@@ -50,9 +50,10 @@ const TradeInputAmount = (props) => {
     placeholder = '0',
     loadingBalance,
     editableInput,
-    containerStyle,
+    wrapInputStyle,
     symbolStyle,
     inputStyle,
+    infiniteStyle,
     ...rest
   } = props || {};
   const renderSub = () => {
@@ -67,13 +68,13 @@ const TradeInputAmount = (props) => {
           }
           style={styled.infinityIcon}
         >
-          <InfiniteIcon />
+          <InfiniteIcon style={infiniteStyle} />
         </TouchableOpacity>
       );
     }
   };
   return (
-    <Row style={[styled.container, containerStyle, { backgroundColor: '#F7F7F7', height: 50, paddingHorizontal: 8, borderRadius: 4 }]}>
+    <Row style={[styled.container, wrapInputStyle]}>
       <View style={styled.inputContainer}>
         <BaseTextInput
           style={{
@@ -109,9 +110,10 @@ TradeInputAmount.defaultProps = {
   onPressSymbol: undefined,
   loadingBalance: false,
   editableInput: false,
-  containerStyle: {},
+  wrapInputStyle: {},
   symbolStyle: {},
   inputStyle: {},
+  infiniteStyle: {}
 };
 
 TradeInputAmount.propTypes = {
@@ -122,9 +124,10 @@ TradeInputAmount.propTypes = {
   onPressSymbol: PropTypes.func,
   loadingBalance: PropTypes.bool,
   editableInput: PropTypes.bool,
-  containerStyle: PropTypes.any,
+  wrapInputStyle: PropTypes.any,
   symbolStyle: PropTypes.any,
   inputStyle: PropTypes.any,
+  infiniteStyle: PropTypes.any,
 };
 
 export default React.memo(TradeInputAmount);

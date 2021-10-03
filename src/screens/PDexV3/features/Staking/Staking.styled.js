@@ -1,6 +1,5 @@
 import {StyleSheet} from 'react-native';
 import {COLORS, FONT, UTILS} from '@src/styles';
-import {isAndroid} from '@utils/platform';
 import {FontStyle} from '@src/styles/TextStyle';
 
 export const btnStyles = StyleSheet.create({
@@ -59,21 +58,8 @@ export const coinStyles = StyleSheet.create({
   disabled: {
     opacity: 0.5,
   },
-  input: {
-    fontFamily: FONT.NAME.bold,
-    fontSize: 26,
-    height: isAndroid() ? 52 : 'auto',
-    padding: 0,
-    flex: 1,
-    marginRight: 15,
-    marginBottom: isAndroid() ? - 8 : 0,
-  },
   inputContainer: {
     marginBottom: 8
-  },
-  symbol: {
-    fontSize: 20,
-    fontFamily: FONT.NAME.bold,
   },
   rateChange: {
     position: 'absolute',
@@ -89,6 +75,34 @@ export const coinStyles = StyleSheet.create({
     color: COLORS.newGrey,
     fontSize: 18,
   },
+  smallGray: {
+    textAlign: 'right',
+    color: '#858383',
+    fontSize: 12,
+    lineHeight: 18,
+    marginBottom: 8
+  },
+  wrapInput: {
+    backgroundColor: '#F7F7F7',
+    height: 50,
+    paddingHorizontal: 8,
+    borderRadius: 4
+  },
+  input: {
+    fontSize: FONT.SIZE.medium,
+    lineHeight: FONT.SIZE.medium + 4,
+    fontFamily: FONT.NAME.medium,
+    height: '100%'
+  },
+  symbol: {
+    fontSize: FONT.SIZE.medium,
+    lineHeight: FONT.SIZE.medium + 9,
+    fontFamily: FONT.NAME.medium,
+  },
+  infinite: {
+    width: 22,
+    height: 10
+  }
 });
 
 export const confirmStyle = StyleSheet.create({
