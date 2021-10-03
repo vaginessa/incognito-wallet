@@ -27,7 +27,8 @@ const withData = WrappedComp => (props) => {
 
   let unlockTimeFormat = '';
   if (coin.locked) {
-    const unlockTime = new Date(new Date().getTime() + coin.lockTime*2592000*1000); // 2592000 = 24*60*60*30 = 1 month
+    let unlockTime = new Date();
+    unlockTime.setMonth(unlockTime.getMonth() + coin.lockTime);
     unlockTimeFormat = formatUtil.formatDateTime(unlockTime, 'DD MMM YYYY HH:mm A');
   }
 
