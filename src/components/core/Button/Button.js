@@ -8,16 +8,19 @@ export const BTNPrimary = React.memo(({
   background,
   wrapperStyle,
   textStyle,
-  onPress
+  onPress,
+  disabled
 }) => {
   return (
     <TouchableOpacity
       style={[
         styled.wrapper,
         background && { backgroundColor: background },
-        wrapperStyle
+        { opacity: disabled ? 0.5 : 1 },
+        wrapperStyle,
       ]}
       onPress={onPress}
+      disabled={disabled}
     >
       <Text style={[styled.primaryText, textStyle]}>{title}</Text>
     </TouchableOpacity>
@@ -29,7 +32,8 @@ export const BTNBorder = React.memo(({
   background,
   wrapperStyle,
   textStyle,
-  onPress
+  onPress,
+  disabled
 }) => {
   return (
     <TouchableOpacity
@@ -37,9 +41,11 @@ export const BTNBorder = React.memo(({
         styled.wrapper,
         styled.border,
         background && { backgroundColor: background },
+        { opacity: disabled ? 0.5 : 1 },
         wrapperStyle
       ]}
       onPress={onPress}
+      disabled={disabled}
     >
       <Text style={[styled.normalText, textStyle]}>{title}</Text>
     </TouchableOpacity>
@@ -73,7 +79,8 @@ const styled = StyleSheet.create({
 BTNPrimary.defaultProps = {
   background: COLORS.green2,
   wrapperStyle: null,
-  textStyle: null
+  textStyle: null,
+  disabled: false,
 };
 
 BTNPrimary.propTypes = {
@@ -82,12 +89,14 @@ BTNPrimary.propTypes = {
   wrapperStyle: PropTypes.any,
   onPress: PropTypes.func.isRequired,
   textStyle: PropTypes.any,
+  disabled: PropTypes.bool,
 };
 
 BTNBorder.defaultProps = {
   background: null,
   wrapperStyle: null,
-  textStyle: null
+  textStyle: null,
+  disabled: false,
 };
 
 BTNBorder.propTypes = {
@@ -96,5 +105,6 @@ BTNBorder.propTypes = {
   wrapperStyle: PropTypes.any,
   onPress: PropTypes.func.isRequired,
   textStyle: PropTypes.any,
+  disabled: PropTypes.bool,
 };
 

@@ -8,12 +8,15 @@ import {stakingSelector} from '@screens/PDexV3/features/Staking';
 import {HeaderRow, OneRowCoin, PortfolioItem} from '@screens/PDexV3/features/Staking/Staking.item';
 import {RefreshControl} from '@components/core';
 import {BottomModalActions} from '@components/core/BottomModal';
+import {useNavigation} from 'react-navigation-hooks';
+import routeNames from '@routers/routeNames';
 
 const StakingPortfolio = ({ handleFetchCoins }) => {
   const dispatch = useDispatch();
+  const navigation = useNavigation();
   const coins = useSelector(stakingSelector.stakingCoinsSelector);
   const isFetching = useSelector(stakingSelector.isFetchingCoinsSelector);
-  const renderModelCell = ({ token, rewardStr }) => <OneRowCoin token={token} valueText={rewardStr} />;
+  const renderModelCell = (data) => <OneRowCoin token={data.token} valueText={data.rewardStr} />;
   const showDetailReward = (rewardsMerged) => {
     dispatch(BottomModalActions.actionOpenModal({
       title: 'Exchange rate',
@@ -25,6 +28,9 @@ const StakingPortfolio = ({ handleFetchCoins }) => {
     <PortfolioItem
       item={data.item}
       onPressArrow={showDetailReward}
+      onPressItem={() => (
+        navigation.navigate(routeNames.StakingDetail, { tokenId: data?.item?.tokenId })
+      )}
     />
   );
   return (

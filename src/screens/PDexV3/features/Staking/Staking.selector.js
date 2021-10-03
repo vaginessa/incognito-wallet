@@ -16,6 +16,8 @@ import flatten from 'lodash/flatten';
 import {PRV} from '@src/constants/common';
 import uniq from 'lodash/uniq';
 import {CONSTANT_COMMONS} from '@src/constants';
+import {getValidRealAmountNFTSelector, isFetchingNFTSelector} from '@src/redux/selectors/account';
+import orderBy from 'lodash/orderBy';
 
 export const stakingSelector = createSelector(
   (state) => state.pDexV3,
@@ -51,8 +53,11 @@ export const stakingCoinsSelector = createSelector(
   mapperStakingCoins,
   selectedPrivacy.getPrivacyDataByTokenID,
   sharedSelector.isGettingBalance,
-  (stakingCoins, getPrivacyDataByTokenID, isGettingBalance) => {
+  getValidRealAmountNFTSelector,
+  isFetchingNFTSelector,
+  (stakingCoins, getPrivacyDataByTokenID, isGettingBalance, validNFT, isFetchingNFT) => {
     return (stakingCoins || []).map(({ coins, tokenId }) => {
+      const isValidNFT = coins.some(({ nftId }) => validNFT(nftId));
       const token = getPrivacyDataByTokenID(tokenId);
       const userBalance = token.amount;
       const userBalanceStr = formatUtil.amountFull(userBalance, token.pDecimals);
@@ -64,12 +69,15 @@ export const stakingCoinsSelector = createSelector(
       const stakingAmountSymbolStr = `${stakingAmountStr} ${token.symbol}`;
       const staking = { stakingAmount, stakingAmountStr, stakingAmountSymbolStr };
       /**---------------------------------------------------------*/
-      const rewardsCoins = coins.map(coin => coin.reward);
-      const rewardTokenIds = uniq(flatten(rewardsCoins.map(reward => Object.keys(reward))));
+      const rewardsCoins = coins.map((coin) => ({
+        coins: coin.reward,
+        nftId: coin.nftId,
+      }));
+      const rewardTokenIds = uniq(flatten(rewardsCoins.map(({ coins: reward }) => Object.keys(reward))));
       const rewardsMerged = rewardTokenIds.reduce((prev, curr) => {
         const tokenId = curr;
         const token = getPrivacyDataByTokenID(tokenId);
-        const reward = rewardsCoins.reduce((_prev, _curr) => (_curr[tokenId] || 0) + _prev, 0);
+        const reward = rewardsCoins.reduce((_prev, _curr) => (_curr.coins[tokenId] || 0) + _prev, 0);
         const rewardStr = formatUtil.amountFull(reward, token.pDecimals);
         const rewardUSD = convert.toHumanAmount(new BigNumber(reward).multipliedBy(token.priceUsd).toNumber(), token.pDecimals);
         prev.push({ tokenId, reward, rewardStr, token, rewardUSD });
@@ -79,14 +87,39 @@ export const stakingCoinsSelector = createSelector(
       const totalRewardAmount = Math.ceil(new BigNumber(totalRewardUSD).multipliedBy(Math.pow(10, token.pDecimals || 9)).toNumber());
       const totalRewardUSDStr = `${CONSTANT_COMMONS.USD_SPECIAL_SYMBOL}${formatUtil.amountFull(totalRewardAmount, token.pDecimals)}`;
       const reward = { rewardsCoins, rewardTokenIds, rewardsMerged, totalRewardUSD, totalRewardAmount, totalRewardUSDStr };
+      /**---------------------------------------------------------*/
+      const withdrawableCoins = orderBy(coins.filter(coin => (!!validNFT(coin.nftId)) && coin.amount), 'amount', 'asc');
+      const maxWithdrawAmount = withdrawableCoins.reduce((prev, curr) => prev.plus(curr.amount || 0), new BigNumber(0)).toNumber();
+      const maxWithdrawHumanAmount = convert.toHumanAmount(maxWithdrawAmount, token.pDecimals);
+      const maxWithdrawAmountStr = formatUtil.toFixed(maxWithdrawHumanAmount, token.pDecimals);
+      const maxWithdrawAmountSymbolStr = `${maxWithdrawAmountStr} ${token.symbol}`;
+      const withdrawInvest = {
+        withdrawableCoins,
+        maxWithdrawAmount,
+        maxWithdrawHumanAmount,
+        maxWithdrawAmountStr,
+        maxWithdrawAmountSymbolStr
+      };
+      /**---------------------------------------------------------*/
+      const withdrawRewardCoins = rewardsCoins.filter((_reward) =>
+        (!!validNFT(_reward.nftId)) && Object.values(_reward.coins).some(reward => reward));
+      const withdrawRewardNFT = withdrawRewardCoins.map(({ nftId }) => nftId);
+      const withdrawReward = {
+        withdrawRewardCoins,
+        withdrawRewardNFT,
+      };
       return {
         coins,
         tokenId,
         token,
         user,
-        staking,
+        isValidNFT,
         isLoadingBalance: isGettingBalance.includes(tokenId),
+        disableAction: !isValidNFT || isFetchingNFT,
+        staking,
         reward,
+        withdrawInvest,
+        withdrawReward,
       };
     });
   }
@@ -176,12 +209,14 @@ export const stakingPoolSelector = createSelector(
         userBalanceSymbolStr,
         token,
         disabled,
+        apy: 60,
+        apyStr: '60%'
       };
     });
   },
 );
 
-export const getStakingPoolByTokenId = createSelector(
+export const stakingPoolByTokenId = createSelector(
   stakingPoolSelector,
   (stakingPools) => (tokenId) => stakingPools.find(({ tokenId: _tokenId }) => _tokenId === tokenId),
 );
@@ -201,7 +236,7 @@ export const stakingInvestSelector = createSelector(
 
 export const investCoinSelector = createSelector(
   stakingInvestSelector,
-  getStakingPoolByTokenId,
+  stakingPoolByTokenId,
   ({ tokenID }, getStakingPool) => getStakingPool(tokenID),
 );
 
@@ -308,39 +343,30 @@ const withdrawInvestInputValue = createSelector(
   }
 );
 
-export const withdrawInvestValidate = createSelector(
+export const withdrawInvestInputSelector = createSelector(
   withdrawInvestCoinSelector,
+  (coin) => coin.withdrawInvest
+);
+
+export const withdrawInvestValidate = createSelector(
+  withdrawInvestInputSelector,
   stakingFeeSelector,
   withdrawInvestInputValue,
-  (coin, fee, inputValue) => () => {
+  (withdrawInvest, fee, inputValue) => () => {
     try {
-      const { balance: balanceInvest } = coin;
+      if (!withdrawInvest) return MESSAGES.STAKING_POOL_NOT_FOUND;
+      const { maxWithdrawAmount, maxWithdrawAmountSymbolStr } = withdrawInvest;
       const { feeAmount, feeToken } = fee;
-      const { amount: userBalanceFee } = feeToken;
-      if (feeAmount > userBalanceFee) {
+      if (new BigNumber(feeAmount).gt(feeToken.amount)) {
         return MESSAGES.NOT_ENOUGH_PRV_NETWORK_FEE;
-      } else if (inputValue > balanceInvest) {
-        return MESSAGES.BALANCE_INSUFFICIENT;
+      }
+      if (new BigNumber(inputValue).gt(maxWithdrawAmount)) {
+        return MESSAGES.STAKING_MAX(maxWithdrawAmountSymbolStr);
       }
     } catch (error) {
       return error.message;
     }
   },
-);
-
-export const withdrawInvestInputAmount = createSelector(
-  withdrawInvestInputValue,
-  withdrawInvestCoinSelector,
-  (inputValue, coin) => {
-    const { token, balance: stakingBalance } = coin;
-    const maxDepositHumanAmount = convert.toHumanAmount(stakingBalance, token.pDecimals);
-    const maxDepositText = formatUtil.toFixed(maxDepositHumanAmount, token.pDecimals);
-    return {
-      inputValue,
-      maxDepositValue: stakingBalance,
-      maxDepositText
-    };
-  }
 );
 
 export const withdrawInvestDisable = createSelector(
@@ -477,14 +503,17 @@ export const stakingHistoriesMapperSelector = createSelector(
 );
 
 export default ({
+  stakingFeeSelector,
   stakingPoolSelector,
   isFetchingPoolSelector,
+  stakingPoolByTokenId,
 
   mapperStakingCoins,
   stakingCoinsSelector,
   stakingRewardSelector,
   isFetchingCoinsSelector,
   isExistStakingSelector,
+  stakingCoinByTokenIDSelector,
 
   stakingHistoriesKeySelector,
   stakingHistoriesStatus,
@@ -494,4 +523,11 @@ export default ({
   investInputAmount,
   investInputValidate,
   investDisable,
+
+  withdrawInvestCoinSelector,
+  withdrawInvestValidate,
+  withdrawInvestInputSelector,
+  withdrawInvestDisable,
+
+  withdrawRewardCoinSelector,
 });

@@ -45,6 +45,7 @@ const COLORS = {
   lightGrey31: '#7B7B7B',
   lightGrey32: '#B2B2B6',
   lightGrey33: '#A6A6A6',
+  lightGrey34: '#858383',
   newGrey: '#8A8A8E',
   manateeGrey: '#959599',
 

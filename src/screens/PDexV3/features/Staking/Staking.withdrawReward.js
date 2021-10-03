@@ -14,13 +14,13 @@ import {useDispatch, useSelector} from 'react-redux';
 import {change, Field} from 'redux-form';
 import {
   stakingFeeSelector,
-  withdrawRewardCoinSelector,
   withdrawRewardDisable,
   withdrawRewardInputAmount,
   withdrawRewardValidate
 } from '@screens/PDexV3/features/Staking/Staking.selector';
 import withInput from '@screens/PDexV3/features/Staking/Staking.enhanceInput';
 import {useError} from '@components/UseEffect/useError';
+import {stakingSelector} from '@screens/PDexV3/features/Staking/index';
 
 const initialFormValues = {
   input: ''
@@ -58,7 +58,7 @@ const Input = React.memo(({ onWithdrawMaxReward }) => {
 const CustomInput = withInput(Input);
 
 const StakingWithdrawReward = () => {
-  const coin = useSelector(withdrawRewardCoinSelector);
+  const coin = useSelector(stakingSelector.withdrawRewardCoinSelector);
   const fee = useSelector(stakingFeeSelector);
   const disabled = useSelector(withdrawRewardDisable);
   const renderContent = () => {

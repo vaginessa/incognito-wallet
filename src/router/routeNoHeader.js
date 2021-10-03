@@ -112,6 +112,7 @@ import {
   Staking,
   StakingMoreCoins,
   StakingMoreInput,
+  StakingDetail,
   StakingMoreConfirm,
   StakingWithdrawCoins,
   StakingWithdrawInvest,
@@ -255,6 +256,10 @@ const pDexV3Routes = [
   {
     screen: StakingMoreConfirm,
     name: routeNames.StakingMoreConfirm,
+  },
+  {
+    screen: StakingDetail,
+    name: routeNames.StakingDetail,
   },
   {
     screen: StakingWithdrawCoins,

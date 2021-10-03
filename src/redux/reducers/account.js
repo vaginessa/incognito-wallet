@@ -11,6 +11,7 @@ const initialState = {
   import: false,
   signPublicKeyEncode: '',
   burnerAddress: '',
+  isFetchingNFT: false,
   nft: {
     nftToken: '',
     initNFTToken: false,
@@ -169,6 +170,13 @@ const reducer = (state = initialState, action) => {
     return {
       ...state,
       nft: { ...action.payload },
+      isFetchingNFT: false
+    };
+  }
+  case type.ACTION_FETCHING_NFT: {
+    return {
+      ...state,
+      isFetchingNFT: true
     };
   }
   default:

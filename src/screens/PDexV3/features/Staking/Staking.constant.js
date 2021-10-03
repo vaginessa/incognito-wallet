@@ -31,6 +31,8 @@ export const STAKING_MESSAGES = {
   listCoins: 'List coins',
   stakeMore: 'Stake more',
   stakeNow: 'Stake now',
+  withdrawReward: 'Withdraw reward',
+  withdrawStaking: 'Withdraw staking',
 };
 
 export const formConfigsInvest = {

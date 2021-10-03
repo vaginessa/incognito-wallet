@@ -2,7 +2,7 @@ import React from 'react';
 import {View} from 'react-native';
 import PropTypes from 'prop-types';
 import {styled as mainStyle} from '@screens/PDexV3/PDexV3.styled';
-import {Header, LoadingContainer, RowSpaceText} from '@src/components';
+import {Header} from '@src/components';
 import {
   formConfigsWithdrawInvest,
   STAKING_MESSAGES
@@ -10,17 +10,11 @@ import {
 import {createForm, RFTradeInputAmount as TradeInputAmount, validator} from '@components/core/reduxForm';
 import {coinStyles as coinStyled} from '@screens/PDexV3/features/Staking/Staking.styled';
 import {useDispatch, useSelector} from 'react-redux';
-import {
-  stakingFeeSelector,
-  withdrawInvestCoinSelector,
-  withdrawInvestDisable, withdrawInvestInputAmount,
-  withdrawInvestValidate
-} from '@screens/PDexV3/features/Staking/Staking.selector';
-import {useNavigation} from 'react-navigation-hooks';
-import {RoundCornerButton} from '@components/core';
+import {Text} from '@components/core';
 import {change, Field} from 'redux-form';
-import routeNames from '@routers/routeNames';
 import withInput from '@screens/PDexV3/features/Staking/Staking.enhanceInput';
+import {stakingSelector} from '@screens/PDexV3/features/Staking/index';
+import {BTNPrimary} from '@components/core/Button';
 
 const initialFormValues = {
   input: ''
@@ -34,62 +28,55 @@ const Form = createForm(formConfigsWithdrawInvest.formName, {
 
 const Input = React.memo(({ onWithdrawMaxInvest }) => {
   const dispatch = useDispatch();
-  const inputValidate = useSelector(withdrawInvestValidate);
-  const { maxDepositText } = useSelector(withdrawInvestInputAmount);
+  const inputValidate = useSelector(stakingSelector.withdrawInvestValidate);
+  const { withdrawInvest, token } = useSelector(stakingSelector.withdrawInvestCoinSelector);
+
   const onChangeText = (text) => dispatch(change(formConfigsWithdrawInvest.formName, formConfigsWithdrawInvest.input, text));
-  const onChangeWithdrawMax = () => onWithdrawMaxInvest(maxDepositText);
-  React.useEffect(() => { onChangeWithdrawMax(); }, []);
+  const onChangeWithdrawMax = () => withdrawInvest && onWithdrawMaxInvest(withdrawInvest.maxWithdrawAmountStr);
   return(
-    <Field
-      component={TradeInputAmount}
-      name={formConfigsWithdrawInvest.input}
-      hasInfinityIcon
-      validate={[
-        ...validator.combinedAmount,
-        inputValidate,
-      ]}
-      onChange={onChangeText}
-      editableInput
-      onPressInfinityIcon={onChangeWithdrawMax}
-    />
+    <>
+      <Text style={coinStyled.smallGray}>
+        {`Amount: ${withdrawInvest.maxWithdrawAmountSymbolStr}`}
+      </Text>
+      <Field
+        component={TradeInputAmount}
+        name={formConfigsWithdrawInvest.input}
+        hasInfinityIcon
+        validate={[
+          ...validator.combinedAmount,
+          inputValidate,
+        ]}
+        onChange={onChangeText}
+        editableInput
+        onPressInfinityIcon={onChangeWithdrawMax}
+        wrapInputStyle={coinStyled.wrapInput}
+        inputStyle={coinStyled.input}
+        symbolStyle={coinStyled.symbol}
+        infiniteStyle={coinStyled.infinite}
+        symbol={token && token?.symbol}
+      />
+    </>
   );
 });
 
 const CustomInput = withInput(Input);
 
 const StakingWithdrawInvest = () => {
-  const navigation = useNavigation();
-  const coin = useSelector(withdrawInvestCoinSelector);
-  const fee = useSelector(stakingFeeSelector);
-  const disabled = useSelector(withdrawInvestDisable);
-  const navigateConfirm = () => navigation.navigate(routeNames.StakingMoreConfirm);
-  const renderContent = () => {
-    if (!coin) return <LoadingContainer />;
-    const { token, userBalanceSymbolStr } = coin;
-    const { feeAmountSymbolStr } = fee;
-    return (
-      <Form>
-        {() => (
-          <>
-            <CustomInput />
-            <RoundCornerButton
-              title={STAKING_MESSAGES.withdrawSymbol(token.symbol)}
-              style={coinStyled.button}
-              onPress={navigateConfirm}
-              disabled={disabled}
-            />
-            <RowSpaceText label="Balance" value={userBalanceSymbolStr} />
-            <RowSpaceText label="Fee" value={feeAmountSymbolStr} />
-          </>
-        )}
-      </Form>
-    );
-  };
+  const disabled = useSelector(stakingSelector.withdrawInvestDisable);
+  // const navigateConfirm = () => navigation.navigate(routeNames.StakingMoreConfirm);
   return (
     <View style={mainStyle.container}>
       <Header title={STAKING_MESSAGES.withdraw} />
       <View style={coinStyled.coinContainer}>
-        {renderContent()}
+        <Form>
+          {() => (<CustomInput />)}
+        </Form>
+        <BTNPrimary
+          title={STAKING_MESSAGES.withdraw}
+          wrapperStyle={coinStyled.button}
+          disabled={disabled}
+          onPress={() => {}}
+        />
       </View>
     </View>
   );

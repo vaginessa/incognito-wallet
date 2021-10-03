@@ -23,9 +23,9 @@ export const coinStyles = StyleSheet.create({
     marginBottom: 20,
   },
   coinName: {
-    fontFamily: FONT.NAME.bold,
+    fontFamily: FONT.NAME.medium,
     fontSize: 20,
-    marginBottom: 8,
+    color: COLORS.black,
   },
   coinInterest: {
     fontSize: 18,
@@ -77,10 +77,21 @@ export const coinStyles = StyleSheet.create({
   },
   smallGray: {
     textAlign: 'right',
-    color: '#858383',
-    fontSize: 12,
-    lineHeight: 18,
+    color: COLORS.lightGrey34,
+    fontSize: FONT.SIZE.superSmall,
+    lineHeight: FONT.SIZE.superSmall + 6,
     marginBottom: 8
+  },
+  regularGray: {
+    color: COLORS.lightGrey34,
+    fontSize: FONT.SIZE.regular,
+    lineHeight: FONT.SIZE.regular + 8,
+  },
+  regularDark: {
+    ...FONT.STYLE.medium,
+    color: COLORS.black,
+    fontSize: FONT.SIZE.regular,
+    lineHeight: FONT.SIZE.regular + 8,
   },
   wrapInput: {
     backgroundColor: '#F7F7F7',
@@ -102,6 +113,14 @@ export const coinStyles = StyleSheet.create({
   infinite: {
     width: 22,
     height: 10
+  },
+  rowCenterVertical: {
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+  image: {
+    width: 24,
+    height: 24
   }
 });
 

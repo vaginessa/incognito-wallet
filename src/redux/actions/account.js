@@ -13,9 +13,7 @@ import {
 } from '@src/redux/selectors/masterKey';
 import { switchMasterKey, updateMasterKey } from '@src/redux/actions/masterKey';
 import { storeWalletAccountIdsOnAPI } from '@services/wallet/WalletService';
-import { devSelector } from '@src/screens/Dev';
 import {
-  // tokenSelector,
   accountSelector,
 } from '@src/redux/selectors';
 import { walletSelector } from '@src/redux/selectors/wallet';
@@ -25,7 +23,6 @@ import { getDefaultAccountWalletSelector } from '@src/redux/selectors/shared';
 import {
   burnerAddressSelector,
   defaultAccountSelector,
-  defaultAccountWalletSelector,
 } from '@src/redux/selectors/account';
 import { defaultPTokensIDsSelector } from '@src/redux/selectors/token';
 import { actionGetPDexV3Inst } from '@src/screens/PDexV3';
@@ -149,8 +146,14 @@ export const actionSetSignPublicKeyEncode = (defaultAccount) => async (
   }
 };
 
+export const actionSetFetchingNFT = () => ({
+  type: type.ACTION_FETCHING_NFT,
+  data: { isFetching: true },
+});
+
 export const actionSetNFTTokenData = () => async (dispatch) => {
   try {
+    dispatch(actionSetFetchingNFT());
     const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
     const nftPayload = await pDexV3Inst.getNFTTokenData({
       version: PrivacyVersion.ver2,
