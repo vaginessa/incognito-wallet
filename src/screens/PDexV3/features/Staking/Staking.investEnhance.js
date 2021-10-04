@@ -2,12 +2,13 @@ import React from 'react';
 import ErrorBoundary from '@src/components/ErrorBoundary';
 import {batch, useDispatch, useSelector} from 'react-redux';
 import {stakingActions, stakingSelector} from '@screens/PDexV3/features/Staking/index';
-import {BottomModalActions} from '@components/core/BottomModal';
 import {HeaderRow, OneRowCoin} from '@screens/PDexV3/features/Staking/Staking.item';
 import {View} from 'react-native';
 import {actionSetNFTTokenData} from '@src/redux/actions/account';
 import { PRVIDSTR } from 'incognito-chain-web-js/build/wallet';
 import debounce from 'lodash/debounce';
+import {actionToggleModal} from '@components/Modal';
+import ModalBottomSheet from '@components/Modal/ModalBottomSheet';
 
 const withInvest = WrappedComp => props => {
   const dispatch = useDispatch();
@@ -26,7 +27,7 @@ const withInvest = WrappedComp => props => {
   const onSelectToken = (tokenId) => (
     batch(() => {
       dispatch(stakingActions.actionSetInvestCoin({ tokenID: tokenId }));
-      dispatch(BottomModalActions.actionCloseModal());
+      dispatch(actionToggleModal());
     })
   );
 
@@ -40,10 +41,16 @@ const withInvest = WrappedComp => props => {
     />
   );
   const onSymbolPress = () => {
-    dispatch(BottomModalActions.actionOpenModal({
-      title: 'Select coins',
-      customHeader: <HeaderRow array={['Name', 'Amount']} />,
-      customContent: <View style={{ marginTop: 24 }}>{pools.map(renderModelCell)}</View>
+    dispatch(actionToggleModal({
+      data: (
+        <ModalBottomSheet
+          title='Select coins'
+          headerView={<HeaderRow array={['Name', 'Amount']} />}
+          contentView={<View style={{ marginTop: 24 }}>{pools.map(renderModelCell)}</View>}
+        />
+      ),
+      visible: true,
+      shouldCloseModalWhenTapOverlay: true
     }));
   };
 

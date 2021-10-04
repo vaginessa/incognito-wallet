@@ -45,7 +45,7 @@ const StakingMoreCoins = ({ handleFetchPool }) => {
   return (
     <View style={mainStyle.container}>
       <Header title={STAKING_MESSAGES.selectCoin} />
-      <HeaderRow array={['Name', 'Amount']} />
+      <HeaderRow array={['Name', 'Balance']} />
       <ScrollView
         refreshControl={(
           <RefreshControl refreshing={isFetching} onRefresh={onRefresh} />

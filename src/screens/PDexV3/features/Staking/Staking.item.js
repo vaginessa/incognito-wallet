@@ -26,7 +26,7 @@ export const PoolItem = React.memo(({ item, onPress }) => {
           <Text style={styled.subTitle}>{token.name || token.symbol}</Text>
         </View>
       </Row>
-      <Text style={styled.title}>60%</Text>
+      <Text style={styled.title}>{item.apyStr}</Text>
     </TouchableOpacity>
   );
 });

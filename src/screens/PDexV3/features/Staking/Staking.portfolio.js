@@ -7,9 +7,10 @@ import {useDispatch, useSelector} from 'react-redux';
 import {stakingSelector} from '@screens/PDexV3/features/Staking';
 import {HeaderRow, OneRowCoin, PortfolioItem} from '@screens/PDexV3/features/Staking/Staking.item';
 import {RefreshControl} from '@components/core';
-import {BottomModalActions} from '@components/core/BottomModal';
 import {useNavigation} from 'react-navigation-hooks';
 import routeNames from '@routers/routeNames';
+import {actionToggleModal} from '@components/Modal';
+import ModalBottomSheet from '@components/Modal/ModalBottomSheet';
 
 const StakingPortfolio = ({ handleFetchCoins }) => {
   const dispatch = useDispatch();
@@ -18,10 +19,16 @@ const StakingPortfolio = ({ handleFetchCoins }) => {
   const isFetching = useSelector(stakingSelector.isFetchingCoinsSelector);
   const renderModelCell = (data) => <OneRowCoin token={data.token} valueText={data.rewardStr} />;
   const showDetailReward = (rewardsMerged) => {
-    dispatch(BottomModalActions.actionOpenModal({
-      title: 'Exchange rate',
-      customHeader: <HeaderRow array={['Name', 'Amount']} />,
-      customContent: <View style={{ marginTop: 24 }}>{rewardsMerged.map(renderModelCell)}</View>
+    dispatch(actionToggleModal({
+      data: (
+        <ModalBottomSheet
+          title='Exchange rate'
+          headerView={<HeaderRow array={['Name', 'Amount']} />}
+          contentView={<View style={{ marginTop: 24 }}>{rewardsMerged.map(renderModelCell)}</View>}
+        />
+      ),
+      visible: true,
+      shouldCloseModalWhenTapOverlay: true
     }));
   };
   const renderItem = (data) => (

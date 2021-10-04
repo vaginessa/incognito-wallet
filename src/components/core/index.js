@@ -39,4 +39,3 @@ export { default as TradeInputAmount } from './TradeInputAmount';
 export { default as SwapButton } from './SwapButton';
 export { default as Divider } from './Divider';
 export { default as AddBreakLine } from './AddBreakLine';
-export { default as BottomModal } from './BottomModal';

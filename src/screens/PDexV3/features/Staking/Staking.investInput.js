@@ -13,9 +13,7 @@ import {useNavigation} from 'react-navigation-hooks';
 import routeNames from '@routers/routeNames';
 import withInput from '@screens/PDexV3/features/Staking/Staking.enhanceInput';
 import PropTypes from 'prop-types';
-import {stakingActions, stakingSelector} from '@screens/PDexV3/features/Staking';
-import {BottomModalActions} from '@components/core/BottomModal';
-import {HeaderRow, OneRowCoin} from '@screens/PDexV3/features/Staking/Staking.item';
+import {stakingSelector} from '@screens/PDexV3/features/Staking';
 import withInvest from '@screens/PDexV3/features/Staking/Staking.investEnhance';
 
 const initialFormValues = {

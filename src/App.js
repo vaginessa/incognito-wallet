@@ -11,13 +11,12 @@ import React, {useEffect, useState} from 'react';
 import {Provider, useDispatch, useSelector} from 'react-redux';
 import {PersistGate} from 'redux-persist/integration/react';
 import NetInfo from '@react-native-community/netinfo';
-import {Linking, Text, View} from 'react-native';
+import {Linking, Text} from 'react-native';
 import {compose} from 'recompose';
 import PropTypes from 'prop-types';
 import Performance from '@screens/Performance';
 import {devSelector} from '@screens/Dev';
 import {CONSTANT_KEYS} from '@src/constants';
-import BottomModal from '@components/core/BottomModal/BottomModal';
 import {MAIN_WEBSITE} from './constants/config';
 import LocalDatabase from './utils/LocalDatabase';
 import ModalConnection from './components/Modal/ModalConnection';
@@ -137,7 +136,6 @@ export const AppWrapper = (props) => () => {
             }}
             onPressOk={() => listenNetworkChanges()}
           />
-          <BottomModal />
         </AppScreen>
       </PersistGate>
     </Provider>

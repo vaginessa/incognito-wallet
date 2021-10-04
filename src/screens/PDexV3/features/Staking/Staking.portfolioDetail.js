@@ -10,12 +10,13 @@ import {coinStyles as coinStyled} from '@screens/PDexV3/features/Staking/Staking
 import {COLORS} from '@src/styles';
 import {ArrowDown} from '@components/Icons';
 import {BTNBorder, BTNPrimary} from '@components/core/Button';
-import {BottomModalActions} from '@components/core/BottomModal';
 import {HeaderRow, OneRowCoin} from '@screens/PDexV3/features/Staking/Staking.item';
 import isEmpty from 'lodash/isEmpty';
 import {isFetchingNFTSelector} from '@src/redux/selectors/account';
 import debounce from 'lodash/debounce';
 import routeNames from '@routers/routeNames';
+import {actionToggleModal} from '@components/Modal';
+import ModalBottomSheet from '@components/Modal/ModalBottomSheet';
 
 const PortfolioDetail = () => {
   const dispatch = useDispatch();
@@ -30,10 +31,16 @@ const PortfolioDetail = () => {
   const showDetailReward = () => {
     const { rewardsMerged } = coin.reward || {};
     if (isEmpty(rewardsMerged)) return;
-    dispatch(BottomModalActions.actionOpenModal({
-      title: 'Exchange rate',
-      customHeader: <HeaderRow array={['Name', 'Amount']} />,
-      customContent: <View style={{ marginTop: 24 }}>{rewardsMerged.map(renderModelCell)}</View>
+    dispatch(actionToggleModal({
+      data: (
+        <ModalBottomSheet
+          title='Exchange rate'
+          headerView={<HeaderRow array={['Name', 'Amount']} />}
+          contentView={<View style={{ marginTop: 24 }}>{rewardsMerged.map(renderModelCell)}</View>}
+        />
+      ),
+      visible: true,
+      shouldCloseModalWhenTapOverlay: true
     }));
   };
   const renderMainContent = () => {

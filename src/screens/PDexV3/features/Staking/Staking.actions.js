@@ -174,6 +174,7 @@ const actionFetchStakingPools = () => async (dispatch, getState) => {
   const isFetching = stakingSelector.isFetchingPoolSelector(state);
   if (isFetching) return;
   try {
+    dispatch(actionFetchHistories());
     dispatch(actionUpdateFetchingPool({ isFetching: true }));
     const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
     const pools = (await pDexV3Inst.getStakingPool()) || [];
