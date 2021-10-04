@@ -44,7 +44,7 @@ const actionFetchCoins = () => async (dispatch, getState) => {
     // const data = (await pDexV3Inst.getStakingData()) || [];
     const data = [
       {
-        id: '0000000000000000000000000000000000000000000000000000000000000004-7ff888813217555ad24437a4370c760642ccca4b809872ad57af5041962a7b0e',
+        id: '0000000000000000000000000000000000000000000000000000000000000004-0ac5376ecb2b9ff2d738c53cd8e917fe2f07ee31126aab579a2fb3e666780d49',
         createdAt: '0001-01-01T00:00:00Z',
         updatedAt: '0001-01-01T00:00:00Z',
         amount: 96700,
@@ -54,10 +54,10 @@ const actionFetchCoins = () => async (dispatch, getState) => {
           'ffd8d42dc40a8d166ea4848baf8b5f6e9fe0e9c30d60062eb7d44a8df9e00854': 2172617,
         },
         tokenId: '0000000000000000000000000000000000000000000000000000000000000004',
-        nftId: '7ff888813217555ad24437a4370c760642ccca4b809872ad57af5041962a7b0e'
+        nftId: '0ac5376ecb2b9ff2d738c53cd8e917fe2f07ee31126aab579a2fb3e666780d49'
       },
       {
-        id: '497159cf6c9f8d5a7cffd38d392649fee7b61558689ba631b26ef1b2dd8c9a06-7ff888813217555ad24437a4370c760642ccca4b809872ad57af5041962a7b0e',
+        id: '497159cf6c9f8d5a7cffd38d392649fee7b61558689ba631b26ef1b2dd8c9a06-0ac5376ecb2b9ff2d738c53cd8e917fe2f07ee31126aab579a2fb3e666780d49',
         createdAt: '0001-01-01T00:00:00Z',
         updatedAt: '0001-01-01T00:00:00Z',
         amount: 1e9,
@@ -66,7 +66,7 @@ const actionFetchCoins = () => async (dispatch, getState) => {
           '4584d5e9b2fc0337dfb17f4b5bb025e5b82c38cfa4f54e8a3d4fcdd03954ff82': 400
         },
         tokenId: '497159cf6c9f8d5a7cffd38d392649fee7b61558689ba631b26ef1b2dd8c9a06',
-        nftId: '7ff888813217555ad24437a4370c760642ccca4b809872ad57af5041962a7b0e'
+        nftId: '0ac5376ecb2b9ff2d738c53cd8e917fe2f07ee31126aab579a2fb3e666780d49'
       },
       {
         id: '0000000000000000000000000000000000000000000000000000000000000004-06031997',
@@ -151,6 +151,7 @@ const actionFetchHistories = () => async (dispatch, getState) => {
     const { tokenID, nftID, key } = stakingSelector.stakingHistoriesKeySelector(state);
     const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
     const histories = (await pDexV3Inst.getStakingHistories({ tokenID, nftID })) || [];
+    console.log('SANG TEST: ', histories);
     dispatch(actionUpdateHistories({ histories, key }));
   } catch (error) {
     new ExHandler(error).showErrorToast();
@@ -174,7 +175,6 @@ const actionFetchStakingPools = () => async (dispatch, getState) => {
   const isFetching = stakingSelector.isFetchingPoolSelector(state);
   if (isFetching) return;
   try {
-    dispatch(actionFetchHistories());
     dispatch(actionUpdateFetchingPool({ isFetching: true }));
     const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
     const pools = (await pDexV3Inst.getStakingPool()) || [];

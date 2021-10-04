@@ -2,10 +2,10 @@ import React, {memo} from 'react';
 import {View} from 'react-native';
 import {styled as mainStyle} from '@screens/PDexV3/PDexV3.styled';
 import {Header, Row} from '@src/components';
-import {RoundCornerButton, Tabs} from '@components/core';
+import {Tabs} from '@components/core';
 import routeNames from '@routers/routeNames';
 import {useNavigation} from 'react-navigation-hooks';
-import {btnStyles as btnStyled, homeStyle, tabStyle} from '@screens/PDexV3/features/Staking/Staking.styled';
+import {homeStyle, tabStyle} from '@screens/PDexV3/features/Staking/Staking.styled';
 import {STAKING_MESSAGES, TABS} from '@screens/PDexV3/features/Staking/Staking.constant';
 import AmountGroup from '@components/core/AmountGroup';
 import {CalendarClockIcon as CalendarIcon} from '@components/Icons';
@@ -19,6 +19,7 @@ import {defaultAccountSelector} from '@src/redux/selectors/account';
 import {stakingSelector} from '@screens/PDexV3/features/Staking';
 
 const Reward = React.memo(() => {
+  const navigation = useNavigation();
   const { rewardUSDStr, rewardPRVStr } = useSelector(stakingSelector.stakingRewardSelector);
   const isFetching = useSelector(stakingSelector.isFetchingCoinsSelector);
   return (
@@ -28,42 +29,10 @@ const Reward = React.memo(() => {
         subAmountStr={rewardPRVStr}
         loading={isFetching}
       />
-      <CalendarIcon btnStyle={{ paddingLeft: 15 }} onPress={() => {}} />
-    </Row>
-  );
-});
-
-const GroupsButton = React.memo(() => {
-  const withdrawable = true;
-  const navigation = useNavigation();
-  const handleBuy = () => navigation.navigate(routeNames.Trade);
-  const handleWithdraw = () => navigation.navigate(routeNames.StakingWithdrawCoins);
-  const handleProvide = () => navigation.navigate(routeNames.StakingMoreCoins);
-  const provideButton = (
-    <RoundCornerButton
-      title={withdrawable ? STAKING_MESSAGES.stakingMore : STAKING_MESSAGES.stakingNow}
-      style={btnStyled.button}
-      onPress={handleProvide}
-    />
-  );
-  const buyButton = (
-    <RoundCornerButton
-      title={STAKING_MESSAGES.buyCrypto}
-      style={btnStyled.button}
-      onPress={handleBuy}
-    />
-  );
-  const withdrawButton = (
-    <RoundCornerButton
-      title={STAKING_MESSAGES.withdraw}
-      style={btnStyled.button}
-      onPress={handleWithdraw}
-    />
-  );
-  return (
-    <Row center>
-      {provideButton}
-      {withdrawable ? withdrawButton : buyButton}
+      <CalendarIcon
+        btnStyle={{ paddingLeft: 15 }}
+        onPress={() => navigation.navigate(routeNames.StakingHistories)}
+      />
     </Row>
   );
 });

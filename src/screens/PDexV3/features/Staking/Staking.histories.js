@@ -8,7 +8,7 @@ import {Text, TouchableOpacity} from '@components/core';
 import styles from '@screens/PoolV2/History/HistoryList/style';
 import {ArrowRightGreyIcon} from '@components/Icons';
 import {historyStyle as historyStyled} from '@screens/PDexV3/features/Staking/Staking.styled';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {
   stakingHistoriesMapperSelector,
   stakingHistoriesStatus
@@ -16,6 +16,7 @@ import {
 import {useNavigation} from 'react-navigation-hooks';
 import withHistories from '@screens/PDexV3/features/Staking/Staking.enhanceHistories';
 import routeNames from '@routers/routeNames';
+import {stakingActions} from '@screens/PDexV3/features/Staking/index';
 
 const HistoryItem = React.memo(({ item, head, onNavigation }) => (
   <TouchableOpacity
@@ -35,27 +36,32 @@ const HistoryItem = React.memo(({ item, head, onNavigation }) => (
 ));
 
 const StakingHistories = ({ onFetchHistories }) => {
+  const dispatch = useDispatch();
   const histories = useSelector(stakingHistoriesMapperSelector);
-  const { isFetching } = useSelector(stakingHistoriesStatus);
-  const navigation = useNavigation();
-  const navigateHistoryDetail = (data) => navigation.navigate(routeNames.StakingHistoryDetail, { data });
-  const renderHistoryItem = ({ item, index }) => <HistoryItem item={item} head={index === 0} onNavigation={navigateHistoryDetail} />;
+  console.log('SANG TEST: ', histories);
+  // const { isFetching } = useSelector(stakingHistoriesStatus);
+  // const navigation = useNavigation();
+  // const navigateHistoryDetail = (data) => navigation.navigate(routeNames.StakingHistoryDetail, { data });
+  // const renderHistoryItem = ({ item, index }) => <HistoryItem item={item} head={index === 0} onNavigation={navigateHistoryDetail} />;
+  React.useEffect(() => {
+    dispatch(stakingActions.actionFetchHistories());
+  }, []);
   return (
     <View style={mainStyle.container}>
       <Header title={STAKING_MESSAGES.histories} />
-      <View style={historyStyled.wrapper}>
-        <FlatList
-          data={histories}
-          refreshing={isFetching}
-          onRefresh={() => {
-            if (typeof onFetchHistories === 'function') {
-              onFetchHistories();
-            }
-          }}
-          renderItem={renderHistoryItem}
-          showsVerticalScrollIndicator={false}
-        />
-      </View>
+      {/*<View style={historyStyled.wrapper}>*/}
+      {/*  <FlatList*/}
+      {/*    data={histories}*/}
+      {/*    refreshing={isFetching}*/}
+      {/*    onRefresh={() => {*/}
+      {/*      if (typeof onFetchHistories === 'function') {*/}
+      {/*        onFetchHistories();*/}
+      {/*      }*/}
+      {/*    }}*/}
+      {/*    renderItem={renderHistoryItem}*/}
+      {/*    showsVerticalScrollIndicator={false}*/}
+      {/*  />*/}
+      {/*</View>*/}
     </View>
   );
 };
