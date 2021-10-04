@@ -49,7 +49,7 @@ export const PortfolioItem = React.memo(({ item, onPressItem, onPressArrow }) =>
       </Row>
       <View>
         <Text style={[styled.title, styled.rightText]}>{staking.stakingAmountStr}</Text>
-        <TouchableOpacity style={styled.arrowRow} onPress={handlePressArrow}>
+        <TouchableOpacity style={styled.arrowRow} onPress={() => !!reward.totalRewardUSD && handlePressArrow()}>
           <Text style={[
             styled.subTitle,
             styled.rightText,
@@ -57,7 +57,7 @@ export const PortfolioItem = React.memo(({ item, onPressItem, onPressArrow }) =>
           ]}
           >{`+ ${reward.totalRewardUSDStr}`}
           </Text>
-          <ArrowDown style={styled.arrow} />
+          {!!reward.totalRewardUSD && (<ArrowDown style={styled.arrow} />)}
         </TouchableOpacity>
       </View>
     </TouchableOpacity>

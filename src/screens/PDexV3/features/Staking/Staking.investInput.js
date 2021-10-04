@@ -1,8 +1,8 @@
-import React, {memo} from 'react';
+import React from 'react';
 import {View} from 'react-native';
 import {createForm, RFTradeInputAmount as TradeInputAmount, validator} from '@components/core/reduxForm';
 import {formConfigsInvest, STAKING_MESSAGES} from '@screens/PDexV3/features/Staking/Staking.constant';
-import {batch, useDispatch, useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {change, Field} from 'redux-form';
 import {styled as mainStyle} from '@screens/PDexV3/PDexV3.styled';
 import Header from '@components/Header/Header';
@@ -15,6 +15,8 @@ import withInput from '@screens/PDexV3/features/Staking/Staking.enhanceInput';
 import PropTypes from 'prop-types';
 import {stakingSelector} from '@screens/PDexV3/features/Staking';
 import withInvest from '@screens/PDexV3/features/Staking/Staking.investEnhance';
+import {compose} from 'recompose';
+import withTransaction from '@screens/PDexV3/features/Staking/Staking.transaction';
 
 const initialFormValues = {
   input: ''
@@ -57,26 +59,39 @@ const Input = React.memo(({ onInvestMax, onSymbolPress }) => {
 
 const CustomInput = withInput(Input);
 
-const StakingMoreInput = ({ onSymbolPress }) => {
+const StakingMoreInput = React.memo(({ onSymbolPress, onStaking, error }) => {
   const navigation = useNavigation();
-  const coin = useSelector(stakingSelector.investCoinSelector);
+  const pool = useSelector(stakingSelector.investPoolSelector);
+  const { feeAmount } = useSelector(stakingSelector.stakingFeeSelector);
+  const { nftStaking } = useSelector(stakingSelector.investStakingCoinSelector);
+  const { inputValue, tokenId } = useSelector(stakingSelector.investInputAmount);
   const disable = useSelector(stakingSelector.investDisable);
-  const navigateConfirm = () => navigation.navigate(routeNames.StakingMoreConfirm);
+  const onSubmit = () => {
+    if (!feeAmount || !tokenId || !inputValue || !nftStaking) return;
+    const params = {
+      fee: feeAmount,
+      tokenID: tokenId,
+      tokenAmount: inputValue,
+      nftID: nftStaking
+    };
+    typeof onStaking === 'function' && onStaking(params);
+  };
   const renderContent = () => {
-    if (!coin) return <LoadingContainer />;
+    if (!pool) return <LoadingContainer />;
     return (
       <Form>
         {() => (
           <>
             <Text style={coinStyled.smallGray}>
-              {`Balance: ${coin.userBalanceSymbolStr}`}
+              {`Balance: ${pool.userBalanceSymbolStr}`}
             </Text>
             <CustomInput onSymbolPress={onSymbolPress} />
+            {!!error && (<Text style={coinStyled.error}>{error}</Text>)}
             <RoundCornerButton
               title={STAKING_MESSAGES.staking}
               style={coinStyled.button}
-              disabled={disable}
-              onPress={navigateConfirm}
+              disabled={disable || !!error}
+              onPress={onSubmit}
             />
           </>
         )}
@@ -91,11 +106,23 @@ const StakingMoreInput = ({ onSymbolPress }) => {
       </View>
     </View>
   );
-};
+});
 
 Input.propTypes = {
   onInvestMax: PropTypes.func.isRequired,
   onSymbolPress: PropTypes.func.isRequired
 };
 
-export default withInvest(memo(StakingMoreInput));
+StakingMoreInput.defaultProps = {
+  error: undefined
+};
+StakingMoreInput.propTypes = {
+  onSymbolPress: PropTypes.func.isRequired,
+  onStaking: PropTypes.func.isRequired,
+  error: PropTypes.string,
+};
+
+export default compose(
+  withTransaction,
+  withInvest
+)(StakingMoreInput);

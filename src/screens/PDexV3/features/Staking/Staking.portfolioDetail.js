@@ -44,7 +44,7 @@ const PortfolioDetail = () => {
     }));
   };
   const renderMainContent = () => {
-    const { token, staking } = coin;
+    const { token, staking, inValidNFTs } = coin;
     return (
       <View style={{ flex: 1 }}>
         <ScrollView
@@ -79,6 +79,7 @@ const PortfolioDetail = () => {
               </TouchableOpacity>
             )}
           />
+          {(inValidNFTs && inValidNFTs.length > 0) && (STAKING_MESSAGES.pendingNFTs(() => navigation.navigate(routeNames.NFTToken)))}
         </ScrollView>
       </View>
     );

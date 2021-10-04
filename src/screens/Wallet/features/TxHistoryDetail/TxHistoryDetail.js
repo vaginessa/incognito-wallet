@@ -37,6 +37,7 @@ import { getFeeFromTxHistory } from './TxHistoryDetail.utils';
 export const Hook = (props) => {
   const {
     label,
+    labelStyle,
     valueText,
     valueTextStyle,
     copyable = false,
@@ -77,7 +78,7 @@ export const Hook = (props) => {
     <>
       <View style={[styled.rowText, !moreLines && { height: 30 }]}>
         <Text
-          style={[styled.labelText]}
+          style={[styled.labelText, labelStyle]}
           numberOfLines={1}
           ellipsizeMode="middle"
         >

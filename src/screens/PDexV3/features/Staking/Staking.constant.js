@@ -1,3 +1,7 @@
+import React from 'react';
+import {Text} from 'react-native';
+import {coinStyles as coinStyled} from '@screens/PDexV3/features/Staking/Staking.styled';
+
 const TYPES = {
   ACTION_FETCHING: '[pDexV3][staking] Fetching data',
   ACTION_FETCH_FAIL: '[pDexV3][staking] Fetch fail data',
@@ -33,6 +37,12 @@ export const STAKING_MESSAGES = {
   stakeNow: 'Stake now',
   withdrawReward: 'Withdraw reward',
   withdrawStaking: 'Withdraw staking',
+  pendingNFTs: (onPress) => (
+    <Text style={coinStyled.warning}>
+      You are in possession of zero value, If you have pending transactions, please wait a few minutes for your&nbsp;
+      <Text style={{textDecorationLine: 'underline' }} onPress={() => typeof onPress === 'function' && onPress()}> NFTs</Text> amount update
+    </Text>
+  )
 };
 
 export const formConfigsInvest = {

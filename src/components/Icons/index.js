@@ -41,3 +41,4 @@ export { default as ChevronIcon } from './icon.chevron';
 export { default as SimpleCheckedIcon } from './icon.checked-simple';
 export { default as CalendarClockIcon } from './icon.calendarClock';
 export { default as ArrowDown } from './icon.arrowDown';
+export { default as EmptyBookIcon } from './icon.emptyBook';

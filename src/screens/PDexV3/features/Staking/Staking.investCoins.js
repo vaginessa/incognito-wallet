@@ -35,12 +35,12 @@ const CoinItem = React.memo(({ coin }) => {
   );
 });
 
-const StakingMoreCoins = ({ handleFetchPool }) => {
+const StakingMoreCoins = ({ handleFetchStakingPools }) => {
   const coins = useSelector(stakingSelector.stakingPoolSelector);
   const isFetching = useSelector(stakingSelector.isFetchingPoolSelector);
   const renderItem = (coin) => <CoinItem coin={coin} />;
   const onRefresh = () => {
-    if (typeof handleFetchPool === 'function') handleFetchPool();
+    if (typeof handleFetchStakingPools === 'function') handleFetchStakingPools();
   };
   return (
     <View style={mainStyle.container}>
@@ -63,7 +63,7 @@ CoinItem.propTypes = {
 };
 
 StakingMoreCoins.propTypes = {
-  handleFetchPool: PropTypes.func.isRequired,
+  handleFetchStakingPools: PropTypes.func.isRequired,
 };
 
 export default withFetch(memo(StakingMoreCoins));

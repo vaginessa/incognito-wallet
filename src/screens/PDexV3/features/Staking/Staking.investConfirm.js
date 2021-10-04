@@ -8,7 +8,7 @@ import styles from '@screens/PoolV2/Provide/Confirm/style';
 import {RoundCornerButton, ScrollView, Text} from '@components/core';
 import {useSelector} from 'react-redux';
 import {
-  investCoinSelector,
+  investPoolSelector,
   stakingFeeSelector,
   investInputAmount
 } from '@screens/PDexV3/features/Staking/Staking.selector';
@@ -16,7 +16,7 @@ import {RowSpaceText} from '@src/components';
 import mainStyles from '@screens/PoolV2/style';
 
 const StakeMoreConfirm = () => {
-  const coin = useSelector(investCoinSelector);
+  const coin = useSelector(investPoolSelector);
   const inputAmount = useSelector(investInputAmount);
   const fee = useSelector(stakingFeeSelector);
   return (

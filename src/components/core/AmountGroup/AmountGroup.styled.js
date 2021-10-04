@@ -24,6 +24,6 @@ export default StyleSheet.create({
     color: COLORS.black1
   },
   loading: {
-    marginTop: 10
+    marginTop: 15
   }
 });

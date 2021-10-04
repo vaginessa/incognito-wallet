@@ -1,22 +1,18 @@
 import React, {memo} from 'react';
-import {FlatList, View} from 'react-native';
+import {FlatList, Image, View} from 'react-native';
 import PropTypes from 'prop-types';
 import {styled as mainStyle} from '@screens/PDexV3/PDexV3.styled';
-import {Header} from '@src/components';
+import {Header, Row} from '@src/components';
 import {STAKING_MESSAGES} from '@screens/PDexV3/features/Staking/Staking.constant';
 import {Text, TouchableOpacity} from '@components/core';
 import styles from '@screens/PoolV2/History/HistoryList/style';
-import {ArrowRightGreyIcon} from '@components/Icons';
-import {historyStyle as historyStyled} from '@screens/PDexV3/features/Staking/Staking.styled';
+import {historyStyle as historyStyled, itemStyle as itemStyled} from '@screens/PDexV3/features/Staking/Staking.styled';
 import {useDispatch, useSelector} from 'react-redux';
-import {
-  stakingHistoriesMapperSelector,
-  stakingHistoriesStatus
-} from '@screens/PDexV3/features/Staking/Staking.selector';
 import {useNavigation} from 'react-navigation-hooks';
 import withHistories from '@screens/PDexV3/features/Staking/Staking.enhanceHistories';
 import routeNames from '@routers/routeNames';
-import {stakingActions} from '@screens/PDexV3/features/Staking/index';
+import {stakingActions, stakingSelector} from '@screens/PDexV3/features/Staking/index';
+import {EmptyBookIcon} from '@components/Icons';
 
 const HistoryItem = React.memo(({ item, head, onNavigation }) => (
   <TouchableOpacity
@@ -24,44 +20,58 @@ const HistoryItem = React.memo(({ item, head, onNavigation }) => (
     style={[styles.historyItem, head && historyStyled.historyTitle]}
     onPress={() => onNavigation(item)}
   >
-    <Text style={historyStyled.buttonTitle}>{item.typeStr}</Text>
-    <View style={historyStyled.row}>
-      <Text style={[historyStyled.content, historyStyled.ellipsis]} numberOfLines={1}>{item.amountSymbolStr}</Text>
-      <View style={[historyStyled.row, historyStyled.center, historyStyled.status]}>
-        <Text style={[historyStyled.content]} numberOfLines={1}>{item.statusStr}</Text>
-        <ArrowRightGreyIcon style={{ marginLeft: 10 }} />
-      </View>
-    </View>
+    <Row spaceBetween centerVertical>
+      <Row centerVertical>
+        <Image source={{ uri: item.token.iconUrl }} style={itemStyled.image} />
+        <Text style={[itemStyled.title, { marginLeft: 12 }]}>{item.token.symbol}</Text>
+      </Row>
+      <Text style={itemStyled.title}>{item.amountStr}</Text>
+    </Row>
+    <Row centerVertical style={itemStyled.subRow} spaceBetween>
+      <Text style={itemStyled.subTitle}>{item.typeStr}</Text>
+      <Text style={[itemStyled.subTitle, { color: item.statusColor }]}>{item.statusStr}</Text>
+    </Row>
   </TouchableOpacity>
 ));
 
 const StakingHistories = ({ onFetchHistories }) => {
   const dispatch = useDispatch();
-  const histories = useSelector(stakingHistoriesMapperSelector);
-  console.log('SANG TEST: ', histories);
-  // const { isFetching } = useSelector(stakingHistoriesStatus);
-  // const navigation = useNavigation();
-  // const navigateHistoryDetail = (data) => navigation.navigate(routeNames.StakingHistoryDetail, { data });
-  // const renderHistoryItem = ({ item, index }) => <HistoryItem item={item} head={index === 0} onNavigation={navigateHistoryDetail} />;
+  const navigation = useNavigation();
+  const histories = useSelector(stakingSelector.stakingHistoriesMapperSelector);
+  const { isFetching } = useSelector(stakingSelector.stakingHistoriesStatus);
+  const navigateHistoryDetail = (data) => navigation.navigate(routeNames.StakingHistoryDetail, { data });
+  const renderHistoryItem = (data) => <HistoryItem item={data.item} head={data.index === 0} onNavigation={navigateHistoryDetail} />;
+  const renderContent = () => {
+    if (!isFetching && histories.length === 0) {
+      return (
+        <Row center style={{ marginTop: 70 }}>
+          <EmptyBookIcon message="There have no staking histories" />
+        </Row>
+      );
+    }
+    return (
+      <FlatList
+        data={histories}
+        refreshing={isFetching}
+        onRefresh={() => {
+          if (typeof onFetchHistories === 'function') {
+            onFetchHistories();
+          }
+        }}
+        renderItem={renderHistoryItem}
+        showsVerticalScrollIndicator={false}
+      />
+    );
+  };
   React.useEffect(() => {
     dispatch(stakingActions.actionFetchHistories());
   }, []);
   return (
     <View style={mainStyle.container}>
       <Header title={STAKING_MESSAGES.histories} />
-      {/*<View style={historyStyled.wrapper}>*/}
-      {/*  <FlatList*/}
-      {/*    data={histories}*/}
-      {/*    refreshing={isFetching}*/}
-      {/*    onRefresh={() => {*/}
-      {/*      if (typeof onFetchHistories === 'function') {*/}
-      {/*        onFetchHistories();*/}
-      {/*      }*/}
-      {/*    }}*/}
-      {/*    renderItem={renderHistoryItem}*/}
-      {/*    showsVerticalScrollIndicator={false}*/}
-      {/*  />*/}
-      {/*</View>*/}
+      <View style={historyStyled.wrapper}>
+        {renderContent()}
+      </View>
     </View>
   );
 };

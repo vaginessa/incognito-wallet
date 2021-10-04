@@ -50,10 +50,11 @@ export const coinStyles = StyleSheet.create({
     marginBottom: 30,
   },
   error: {
+    ...FONT.STYLE.normal,
+    fontSize: FONT.SIZE.regular,
+    lineHeight: FONT.SIZE.regular + 8,
     color: COLORS.red,
-    fontSize: 16,
-    minHeight: 20,
-    marginTop: 5
+    marginTop: 10
   },
   disabled: {
     opacity: 0.5,
@@ -121,7 +122,13 @@ export const coinStyles = StyleSheet.create({
   image: {
     width: 24,
     height: 24
-  }
+  },
+  warning: {
+    color: COLORS.orange,
+    fontSize: FONT.SIZE.small,
+    lineHeight: FONT.SIZE.small + 9,
+    fontFamily: FONT.NAME.medium,
+  },
 });
 
 export const confirmStyle = StyleSheet.create({
@@ -274,5 +281,20 @@ export const itemStyle = StyleSheet.create({
   },
   arrow: {
     marginLeft: 12
+  },
+  subRow: {
+    marginTop: 3,
+    marginLeft: 32
+  },
+  mediumTitle: {
+    ...FONT.STYLE.medium,
+    fontSize: FONT.SIZE.regular,
+    lineHeight: FONT.SIZE.regular + 9
+  },
+  mediumGray: {
+    ...FONT.STYLE.medium,
+    fontSize: FONT.SIZE.regular,
+    lineHeight: FONT.SIZE.regular + 9,
+    color: COLORS.lightGrey34
   }
 });

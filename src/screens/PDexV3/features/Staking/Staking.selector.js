@@ -10,14 +10,17 @@ import {
   formConfigsWithdrawReward
 } from '@screens/PDexV3/features/Staking/Staking.constant';
 import BigNumber from 'bignumber.js';
-import {PRVIDSTR} from 'incognito-chain-web-js/build/wallet';
+import {PRVIDSTR, ACCOUNT_CONSTANT} from 'incognito-chain-web-js/build/wallet';
 import {getHistoriesKey} from '@screens/PDexV3/features/Staking/Staking.utils';
 import flatten from 'lodash/flatten';
 import {PRV} from '@src/constants/common';
 import uniq from 'lodash/uniq';
 import {CONSTANT_COMMONS} from '@src/constants';
-import {getValidRealAmountNFTSelector, isFetchingNFTSelector} from '@src/redux/selectors/account';
+import {getValidRealAmountNFTSelector, isFetchingNFTSelector, nftTokenDataSelector} from '@src/redux/selectors/account';
 import orderBy from 'lodash/orderBy';
+import {COLORS} from '@src/styles';
+import maxBy from 'lodash/maxBy';
+
 
 export const stakingSelector = createSelector(
   (state) => state.pDexV3,
@@ -58,6 +61,7 @@ export const stakingCoinsSelector = createSelector(
   (stakingCoins, getPrivacyDataByTokenID, isGettingBalance, validNFT, isFetchingNFT) => {
     return (stakingCoins || []).map(({ coins, tokenId }) => {
       const isValidNFT = coins.some(({ nftId }) => validNFT(nftId));
+      const inValidNFTs = coins.filter(({ nftId }) => !validNFT(nftId));
       const token = getPrivacyDataByTokenID(tokenId);
       const userBalance = token.amount;
       const userBalanceStr = formatUtil.amountFull(userBalance, token.pDecimals);
@@ -114,6 +118,7 @@ export const stakingCoinsSelector = createSelector(
         token,
         user,
         isValidNFT,
+        inValidNFTs,
         isLoadingBalance: isGettingBalance.includes(tokenId),
         disableAction: !isValidNFT || isFetchingNFT,
         staking,
@@ -234,34 +239,51 @@ export const stakingInvestSelector = createSelector(
   },
 );
 
-export const investCoinSelector = createSelector(
+export const investPoolSelector = createSelector(
   stakingInvestSelector,
   stakingPoolByTokenId,
   ({ tokenID }, getStakingPool) => getStakingPool(tokenID),
 );
 
+export const investStakingCoinSelector = createSelector(
+  stakingInvestSelector,
+  stakingCoinByTokenIDSelector,
+  nftTokenDataSelector,
+  ({ tokenID }, stakingCoinByTokenID, { nftToken, list }) => {
+    const stakingCoin = stakingCoinByTokenID(tokenID);
+    if (!stakingCoin) return {};
+    const { coins } = stakingCoin;
+    let nftId = (maxBy(coins || [], 'amount') || {}).nftId;
+    if (!nftId || !list.some(({ nftToken }) => nftToken === nftId)) nftId = nftToken;
+    return {
+      ...stakingCoin,
+      nftStaking: nftId
+    };
+  },
+);
+
 const investInputValue = createSelector(
   (state) => state,
-  investCoinSelector,
-  (state, coin) => {
-    if (!coin) return 0;
+  investPoolSelector,
+  (state, pool) => {
+    if (!pool) return 0;
     const selector = formValueSelector(formConfigsInvest.formName);
     const inputText = selector(state, formConfigsInvest.input);
     const inputNumber = convert.toNumber(inputText, true) || 0;
-    return convert.toOriginalAmount(inputNumber, coin.token.pDecimals);
+    return convert.toOriginalAmount(inputNumber, pool.token.pDecimals);
   }
 );
 
 export const investInputAmount = createSelector(
   investInputValue,
-  investCoinSelector,
+  investPoolSelector,
   stakingFeeSelector,
-  (inputValue, coin, fee) => {
-    if (!coin) return {
+  (inputValue, pool, fee) => {
+    if (!pool) return {
       inputValue: 0,
       maxDepositValue: 0,
     };
-    const { tokenId, token, userBalance } = coin;
+    const { tokenId, token, userBalance } = pool;
     const { feeAmount, feeToken } = fee;
     const inputText = formatUtil.amountFull(inputValue, token.pDecimals);
     let depositText = inputText;
@@ -275,6 +297,7 @@ export const investInputAmount = createSelector(
     const maxDepositHumanAmount = convert.toHumanAmount(maxDepositValue, token.pDecimals);
     const maxDepositText = formatUtil.toFixed(maxDepositHumanAmount, token.pDecimals);
     return {
+      tokenId: token.tokenId,
       token,
       inputText,
       inputValue,
@@ -289,7 +312,7 @@ export const investInputAmount = createSelector(
 export const investInputValidate = createSelector(
   stakingFeeSelector,
   investInputAmount,
-  investCoinSelector,
+  investPoolSelector,
   (fee, { inputValue, maxDepositValue }) => () => {
     try {
       const { feeAmount, feeToken } = fee;
@@ -309,8 +332,9 @@ export const investInputValidate = createSelector(
 export const investDisable = createSelector(
   investInputValue,
   investInputValidate,
-  investCoinSelector,
-  (inputValue, validate, { disabled: loadingBalance }) => (inputValue <= 0 || !!validate() || loadingBalance)
+  investPoolSelector,
+  investStakingCoinSelector,
+  (inputValue, validate, { disabled: loadingBalance }, { nftStaking }) => (inputValue <= 0 || !!validate() || loadingBalance) || !nftStaking
 );
 
 
@@ -488,15 +512,26 @@ export const stakingHistoriesMapperSelector = createSelector(
   selectedPrivacy.getPrivacyDataByTokenID,
   (histories, getPrivacyDataByTokenID) => {
     return (histories || []).map((history) => {
-      const { tokenId, amount, requestTime } = history;
+      const { tokenId, amount, requestTime, status } = history;
       const token = getPrivacyDataByTokenID(tokenId);
-      const amountSymbolStr = `${formatUtil.amountFull(amount, token.pDecimals)} ${token.symbol}`;
+      const amountStr = formatUtil.amountFull(amount, token.pDecimals);
+      const amountSymbolStr = `${amountStr} ${token.symbol}`;
       const timeStr = formatUtil.formatDateTime(requestTime);
+      let statusColor;
+      if (ACCOUNT_CONSTANT.TX_STAKING_STATUS.TXSTATUS_PENDING === status) {
+        statusColor = COLORS.lightGrey33;
+      } else if (ACCOUNT_CONSTANT.TX_STAKING_STATUS.TXSTATUS_SUCCESS === status) {
+        statusColor = COLORS.green;
+      } else {
+        statusColor = COLORS.red2;
+      }
       return {
         ...history,
         token,
+        amountStr,
         amountSymbolStr,
-        timeStr
+        timeStr,
+        statusColor,
       };
     });
   },
@@ -515,14 +550,16 @@ export default ({
   isExistStakingSelector,
   stakingCoinByTokenIDSelector,
 
+  stakingHistoriesMapperSelector,
   stakingHistoriesKeySelector,
   stakingHistoriesStatus,
 
   stakingInvestSelector,
-  investCoinSelector,
+  investPoolSelector,
   investInputAmount,
   investInputValidate,
   investDisable,
+  investStakingCoinSelector,
 
   withdrawInvestCoinSelector,
   withdrawInvestValidate,
