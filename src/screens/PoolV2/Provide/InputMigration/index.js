@@ -58,7 +58,7 @@ const InputMigration = ({
           <BtnInfinite style={mainStyle.symbol} onPress={handleMax} />
         </Row>
         {!!error && <Text style={mainStyle.error}>{error}</Text>}
-        <Text style={mainStyle.coinExtraSmall}>Migrate your non lock PRV to lock in one step.</Text>
+        <Text style={mainStyle.coinExtraSmall}>Migrate your PRV to a {coin?.lockTime} months term option to get {coin?.apy}% APY.</Text>
         <RoundCornerButton
           title="Migrate"
           style={[mainStyle.button, styles.button]}
@@ -66,7 +66,7 @@ const InputMigration = ({
           disabled={!!error || !inputText}
         />
         <ExtraInfo
-          left="Non-lock balance"
+          left="Balance"
           right={`${data.displayFullBalance} ${coin.symbol}`}
           style={mainStyle.coinExtraSmall}
         />
