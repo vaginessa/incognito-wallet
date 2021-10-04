@@ -53,7 +53,7 @@ const HistoryDetail = ({ history }) => {
             <ExtraInfo
               style={styles.extra}
               rightStyle={styles.info}
-              left="Unlock date:"
+              left="Term ends:"
               right={history?.unlockDate}
             />
           </>
