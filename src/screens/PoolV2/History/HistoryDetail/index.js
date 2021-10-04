@@ -47,7 +47,7 @@ const HistoryDetail = ({ history }) => {
             <ExtraInfo
               style={styles.extra}
               rightStyle={styles.info}
-              left="Lock type:"
+              left="Lock term:"
               right={history?.lockTime + ' Months'}
             />
             <ExtraInfo
