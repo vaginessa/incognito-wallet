@@ -13,7 +13,7 @@ class CoinConfigModel {
     const token = data.Token;
 
     this.id = token.TokenID;
-    this.termID = token.ID;
+    this.termID = data.ID;
     this.name = token.Name;
     this.symbol = token.Symbol;
     this.pDecimals = token.PDecimals;

@@ -33,7 +33,6 @@ const Provide = ({
   initIndex,
 }) => {
   const navigation = useNavigation();
-
   const [i, setI] = React.useState(initIndex);
   const [selectedTerm, setSelectedTerm] = React.useState(coin.locked && coin.terms ? {apy: coin.terms[i].apy, lockTime: coin.terms[i].lockTime, termID: coin.terms[i].termID} : undefined);
 
@@ -60,7 +59,7 @@ const Provide = ({
 
   const handlePress = (index) => {
     setI(index);
-    setSelectedTerm({apy: coin.terms[index].apy, lockTime: coin.terms[index].lockTime});
+    setSelectedTerm({apy: coin.terms[index].apy, lockTime: coin.terms[index].lockTime, termID: coin.terms[index].termID});
   };
 
 

@@ -39,7 +39,6 @@ const withPoolData = (WrappedComp) => (props) => {
 
   const groupCoins = (coins) => {
     let groupedCoins = [...coins];
-
     if (groupedCoins && groupedCoins.length > 1) {
       groupedCoins.map((coin, index) => {
         let newCoin = {...coin};
