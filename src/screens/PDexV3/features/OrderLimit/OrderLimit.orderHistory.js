@@ -17,7 +17,7 @@ const styled = StyleSheet.create({
     flex: 1,
   },
   flatlist: {
-    paddingTop: 41,
+    paddingTop: 32,
   },
 });
 

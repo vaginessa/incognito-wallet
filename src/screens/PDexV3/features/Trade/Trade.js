@@ -10,12 +10,10 @@ import { View } from 'react-native';
 import TabSwap from '@screens/PDexV3/features/Swap';
 import { TabHomeOrderLimit } from '@screens/PDexV3/features/OrderLimit';
 import { NFTTokenBottomBar } from '@screens/PDexV3/features/NFTToken';
-import { useSelector } from 'react-redux';
 import { BtnOrderHistory } from '@src/components/Button';
 import SelectAccountButton from '@src/components/SelectAccountButton';
 import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
-import { activedTabSelector } from '@src/components/core/Tabs';
 import TabMarket from '@screens/PDexV3/features/Market';
 import {
   ROOT_TAB_TRADE,
@@ -47,7 +45,6 @@ export const RightHeader = React.memo(
 
 const Trade = (props) => {
   const { refreshing, onRefresh } = props;
-  const activedTab = useSelector(activedTabSelector)(ROOT_TAB_TRADE);
   return (
     <View style={styled.container}>
       <Header title="pDex" />
@@ -62,8 +59,8 @@ const Trade = (props) => {
             <TabSwap />
           </View>
           <View tabID={TAB_LIMIT_ID} label="Limit" onChangeTab={() => null}>
-            {/* <TabHome OrderLimit />
-            <NFTTokenBottomBar /> */}
+            <TabHomeOrderLimit OrderLimit />
+            <NFTTokenBottomBar />
           </View>
           <View tabID={TAB_MARKET_ID} label="Market" onChangeTab={() => null}>
             <TabMarket />

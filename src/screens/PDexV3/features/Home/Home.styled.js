@@ -5,7 +5,7 @@ export const styled = StyleSheet.create({
     flex: 1,
   },
   main: {
-    paddingTop: 42,
+    paddingTop: 32,
     flex: 1,
   },
   groupBtns: {

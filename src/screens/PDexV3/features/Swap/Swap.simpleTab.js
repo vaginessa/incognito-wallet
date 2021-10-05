@@ -16,7 +16,7 @@ import SwapInputsGroup from './Swap.inputsGroup';
 
 const styled = StyleSheet.create({
   container: {
-    marginTop: 30,
+    marginTop: 24,
   },
   hookWrapper: {
     marginTop: 40,

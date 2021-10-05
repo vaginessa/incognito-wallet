@@ -17,7 +17,7 @@ import { actionFetchDataOrderDetail } from './Swap.actions';
 
 const styled = StyleSheet.create({
   container: { flex: 1 },
-  scrollview: { flex: 1, paddingTop: 42 },
+  scrollview: { flex: 1, paddingTop: 32 },
 });
 
 const SwapOrderDetail = () => {

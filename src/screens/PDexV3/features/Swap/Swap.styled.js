@@ -29,7 +29,7 @@ export const tabsStyled = StyleSheet.create({
     color: COLORS.white,
   },
   tabTitleDisabledStyled: {
-    color: COLORS.newGrey,
+    color: COLORS.colorGrey3,
   },
   styledTabList: {
     maxWidth: 144,

@@ -39,7 +39,7 @@ import SwapInputsGroup from './Swap.inputsGroup';
 
 const styled = StyleSheet.create({
   container: {
-    marginTop: 30,
+    marginTop: 24,
   },
   extraWrapper: {
     marginTop: 40,
@@ -129,7 +129,6 @@ const TabPro = React.memo(({ handleConfirm }) => {
             flex: 1,
           }}
           editableInput={!!swapInfo?.editableInput}
-          autoFocus
         />
       ),
     },

@@ -14,7 +14,7 @@ const styled = StyleSheet.create({
     marginTop: 30,
   },
   scrollview: {
-    paddingTop: 42,
+    paddingTop: 32,
     flex: 1,
   },
 });

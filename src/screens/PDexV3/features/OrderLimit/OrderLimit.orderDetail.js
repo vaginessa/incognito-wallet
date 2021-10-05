@@ -16,7 +16,7 @@ import { actionFetchDataOrderDetail } from './OrderLimit.actions';
 
 const styled = StyleSheet.create({
   container: { flex: 1 },
-  scrollview: { flex: 1, paddingTop: 42 },
+  scrollview: { flex: 1, paddingTop: 32 },
   label: {
     fontFamily: FONT.NAME.medium,
     color: COLORS.colorGreyBold,

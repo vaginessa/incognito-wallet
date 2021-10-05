@@ -54,7 +54,7 @@ export const styled = StyleSheet.create({
     lineHeight: FONT.SIZE.medium + 7,
   },
   scrollview: {
-    paddingTop: 42,
+    paddingTop: 32,
   },
   countdown: {
     paddingHorizontal: 10,

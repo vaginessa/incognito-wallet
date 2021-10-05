@@ -7,7 +7,7 @@ const styled = StyleSheet.create({
   divider: {
     flex: 1,
     borderBottomWidth: 1,
-    borderColor: COLORS.lightGrey18,
+    borderColor: COLORS.colorGrey4,
   },
 });
 

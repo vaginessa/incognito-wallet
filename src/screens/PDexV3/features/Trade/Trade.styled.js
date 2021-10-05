@@ -5,10 +5,10 @@ export const styled = StyleSheet.create({
     flex: 1,
   },
   main: {
-    paddingTop: 42,
+    paddingTop: 32,
   },
   styledTabs: {
-    marginBottom: 30,
+    marginBottom: 24,
     backgroundColor: 'transparent',
   },
   btnOrderHistory: {

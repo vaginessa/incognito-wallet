@@ -13,7 +13,6 @@ export const styled = StyleSheet.create({
     backgroundColor: COLORS.colorGreyLight1,
     borderRadius: 40,
     flex: 1,
-    padding: 4
   },
   tabList1: {
     borderRadius: 0,

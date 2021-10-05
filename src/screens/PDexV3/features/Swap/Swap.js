@@ -1,8 +1,4 @@
-import {
-  BtnOrderHistory,
-  ButtonRefresh,
-  ButtonTrade,
-} from '@src/components/Button';
+import { BtnOrderHistory, ButtonRefresh } from '@src/components/Button';
 import React from 'react';
 import { View } from 'react-native';
 import PropTypes from 'prop-types';

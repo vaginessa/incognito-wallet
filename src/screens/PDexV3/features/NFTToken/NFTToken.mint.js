@@ -28,7 +28,7 @@ const styled = StyleSheet.create({
   },
   scrollview: {
     flex: 1,
-    paddingTop: 42,
+    paddingTop: 32,
   },
   form: {},
 });
