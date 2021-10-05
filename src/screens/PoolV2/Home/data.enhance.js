@@ -1,5 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import _ from 'lodash';
+import BigNumber from 'bignumber.js';
 import { ExHandler } from '@services/exception';
 import { MESSAGES } from '@src/constants';
 import { getPoolConfig, getUserPoolData } from '@services/api/pool';
@@ -15,6 +16,7 @@ const withPoolData = (WrappedComp) => (props) => {
   const [loading, setLoading] = useState(false);
   const [config, setConfig] = useState(null);
   const [userData, setUserData] = useState([]);
+  const [groupedUserData, setGroupedUserData] = useState([]);
   const [totalRewards, setTotalRewards] = useState(0);
   const [withdrawable, setWithdrawable] = useState(false);
   const [displayFullTotalRewards, setDisplayFullTotalRewards] = useState('');
@@ -33,15 +35,56 @@ const withPoolData = (WrappedComp) => (props) => {
   };
 
   const getUserData = async (account, coins) => {
-    let userData = await getUserPoolData(account.PaymentAddress, coins);
-    if (userData && userData.length > 0) {
-      userData = userData.map(item => ({
-        ...item,
-        decimalBalance: convert.toNumber(item.displayBalance, true),
-      }));
-      userData = _.orderBy(userData, ['decimalBalance'], ['desc', 'asc']);
+    const userData = await getUserPoolData(account.PaymentAddress, coins);
+    let groupedUserDataTmp = [...userData];
+    if (groupedUserDataTmp && groupedUserDataTmp.length > 0) {
+      groupedUserDataTmp.map((item, index) => {
+        let newItem = {...item};
+        const sameIDItems = groupedUserDataTmp.filter((i) => {
+          return groupedUserDataTmp.indexOf(i) !== index && i.id === item.id && i.locked === item.locked && i.lockTime === item.lockTime;
+        });
+
+        if (sameIDItems && sameIDItems.length > 0) {
+          let totalBalance = new BigNumber(item.balance);
+          let totalReward = new BigNumber(item.rewardBalance);
+          let totalPendingBalance = new BigNumber(item.pendingBalance);
+          let totalUnstakePendingBalance = new BigNumber(item.unstakePendingBalance);
+          let totalWithdrawPendingBalance = new BigNumber(item.withdrawPendingBalance);
+          sameIDItems.map(i => {
+            totalBalance = totalBalance.plus(new BigNumber(i.balance));
+            totalReward = totalReward.plus(new BigNumber(i.rewardBalance));
+            totalPendingBalance = totalPendingBalance.plus(new BigNumber(i.pendingBalance));
+            totalUnstakePendingBalance = totalUnstakePendingBalance.plus(new BigNumber(i.unstakePendingBalance));
+            totalWithdrawPendingBalance = totalWithdrawPendingBalance.plus(new BigNumber(i.withdrawPendingBalance));
+          });
+          newItem.balance = totalBalance.toNumber();
+          newItem.rewardBalance = totalReward.toNumber();
+          newItem.pendingBalance = totalPendingBalance.toNumber();
+          newItem.unstakePendingBalance = totalUnstakePendingBalance.toNumber();
+          newItem.withdrawPendingBalance = totalWithdrawPendingBalance.toNumber();
+
+          newItem.displayReward = formatUtils.amountFull(newItem.rewardBalance, COINS.PRV.pDecimals, true);
+          newItem.displayBalance = formatUtils.amountFull(newItem.balance, newItem.pDecimals, true);
+          newItem.displayFullBalance = formatUtils.amountFull(newItem.balance, newItem.pDecimals, false);
+          newItem.displayPendingBalance = formatUtils.amountFull(newItem.pendingBalance, newItem.pDecimals, true);
+          newItem.displayUnstakeBalance = formatUtils.amountFull(newItem.unstakePendingBalance, newItem.pDecimals, true);
+          newItem.displayWithdrawReward = formatUtils.amountFull(newItem.withdrawPendingBalance, COINS.PRV.pDecimals, true);
+          groupedUserDataTmp[index] = newItem;
+
+          sameIDItems.map((i) => {
+            groupedUserDataTmp.splice(groupedUserDataTmp.indexOf(i), 1);
+          });
+        }
+
+        return ({
+          ...newItem,
+          decimalBalance: convert.toNumber(newItem.displayBalance, true),
+        });
+      });
+      groupedUserDataTmp = _.orderBy(groupedUserDataTmp, ['coin.locked', 'decimalBalance'], ['desc', 'asc']);
     }
     setUserData(userData);
+    setGroupedUserData(groupedUserDataTmp);
 
     if (
       userData &&
@@ -113,6 +156,7 @@ const withPoolData = (WrappedComp) => (props) => {
         loading,
         config,
         userData,
+        groupedUserData,
         withdrawable,
         totalRewards,
         displayFullTotalRewards,

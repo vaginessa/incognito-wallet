@@ -37,6 +37,13 @@ import FrequentReceivers, {
   FrequentReceiversForm,
   SelectNetworkName,
 } from '@screens/FrequentReceivers';
+import {
+  PoolV2,
+  PoolV2History,
+  PoolV2Provide,
+  PoolV2Withdraw,
+  PoolV2LockHistory,
+} from '@src/screens/PoolV2';
 import Profile from '@src/screens/Profile';
 import Receipt from '@src/components/Receipt';
 import NodeItemsHelp from '@screens/NodeItemsHelp';
@@ -451,6 +458,58 @@ const routes = [
   {
     screen: FrequentReceiversForm,
     name: routeNames.FrequentReceiversForm,
+  },
+  {
+    screen: PoolV2.Home,
+    name: routeNames.PoolV2,
+  },
+  {
+    screen: PoolV2.Help,
+    name: routeNames.PoolV2Help,
+  },
+  {
+    screen: PoolV2Provide.SelectCoin,
+    name: routeNames.PoolV2ProvideSelectCoin,
+  },
+  {
+    screen: PoolV2Provide.Input,
+    name: routeNames.PoolV2ProvideInput,
+  },
+  {
+    screen: PoolV2Provide.Confirm,
+    name: routeNames.PoolV2ProvideConfirm,
+  },
+  {
+    screen: PoolV2Provide.InputMigration,
+    name: routeNames.PoolV2ProvideMigrateInput,
+  },
+  {
+    screen: PoolV2Provide.ConfirmMigration,
+    name: routeNames.PoolV2ProvideMigrateConfirm,
+  },
+  {
+    screen: PoolV2Withdraw.SelectCoin,
+    name: routeNames.PoolV2WithdrawSelectCoin,
+  },
+  {
+    screen: PoolV2Withdraw.Rewards,
+    name: routeNames.PoolV2WithdrawRewards,
+  },
+  {
+    screen: PoolV2Withdraw.Provision,
+    name: routeNames.PoolV2WithdrawProvision,
+  },
+  {
+    screen: PoolV2History.HistoryList,
+    name: routeNames.PoolV2History,
+  },
+  {
+    screen: PoolV2History.HistoryDetail,
+    name: routeNames.PoolV2HistoryDetail,
+  },
+  {
+    screen: PoolV2LockHistory.LockHistoryList,
+    name: routeNames.PoolV2ProvideLockHistory,
   },
   {
     name: routeNames.News,

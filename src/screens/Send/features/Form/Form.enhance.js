@@ -19,7 +19,7 @@ import { enhanceSend } from './Form.enhanceSend';
 import { enhanceUnshield } from './Form.enhanceUnShield';
 import { enhanceMemoValidation } from './Form.enhanceMemoValidator';
 import { enhanceSwitchPortal } from './Form.enhanceSwitchPortal';
-import { removeAllSpace } from './Form.utils';
+import {removeAllSpace, standardizedAddress} from './Form.utils';
 
 export const formName = 'formSend';
 
@@ -28,7 +28,7 @@ export const enhance = (WrappedComp) => (props) => {
   const isFormEstimateFeeValid = useSelector((state) =>
     isValid(formEstimateFee)(state),
   );
-  const { handleSendAnonymously, handleUnShieldCrypto, handleUnshieldPortal } = props;
+  const { handleSendAnonymously, handleUnShieldCrypto } = props;
   const navigation = useNavigation();
   const {
     fee,
@@ -45,20 +45,21 @@ export const enhance = (WrappedComp) => (props) => {
   const amount = useSelector((state) => selector(state, 'amount'));
   const toAddress = useSelector((state) => selector(state, 'toAddress'));
   const memo = useSelector((state) => selector(state, 'memo'));
+  const currencyType = useSelector((state) => selector(state, 'currencyType'));
   const [isKeyboardVisible] = useKeyboard();
   const handleStandardizedAddress = async (value) => {
     let _value = value || '';
-    // try {
-    //   const copiedValue = await Clipboard.getString();
-    //   if (copiedValue !== '') {
-    //     const isPasted = value.includes(copiedValue);
-    //     if (isPasted) {
-    //       _value = standardizedAddress(value);
-    //     }
-    //   }
-    // } catch (e) {
-    //   console.debug('error', e);
-    // }
+    try {
+      const copiedValue = await Clipboard.getString();
+      if (copiedValue !== '') {
+        const isPasted = value.includes(copiedValue);
+        if (isPasted) {
+          _value = standardizedAddress(value);
+        }
+      }
+    } catch (e) {
+      console.debug('error', e);
+    }
     return removeAllSpace(_value);
   };
   const onChangeField = async (value, field) => {
@@ -160,6 +161,7 @@ export const enhance = (WrappedComp) => (props) => {
         handleSend,
         isSending,
         memo,
+        currencyType,
       }}
     />
   );

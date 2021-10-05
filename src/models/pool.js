@@ -1,6 +1,8 @@
 import formatUtil, { LONG_DATE_TIME_FORMAT } from '@utils/format';
 import { COINS } from '@src/constants';
 import moment from 'moment';
+import {COLORS} from '@src/styles';
+import orderBy from 'lodash/orderBy';
 
 class CoinConfigModel {
   constructor(data = {}, masterAddress) {
@@ -18,14 +20,17 @@ class CoinConfigModel {
     this.max = data.Max;
     this.apy = data.APY.toFixed(2);
     this.masterAddress = masterAddress;
+    this.locked = data.Locked;
+    this.lockTime = data.LockTime;
 
     if (this.id === COINS.PRV_ID) {
-      this.name = COINS.PRV.name;
+      this.name = this.locked ? `${COINS.PRV.name} Lock` : COINS.PRV.name;
       this.symbol = COINS.PRV.symbol;
       this.pDecimals = COINS.PRV.pDecimals;
     }
 
     this.displayInterest = `${formatUtil.toFixed(this.apy, 2)}%  APY`;
+    this.displayLockTime = this.locked ? `${this.lockTime} Months` : '';
   }
 }
 
@@ -42,6 +47,12 @@ export class UserCoinPoolModel {
     this.pendingBalance = data.PendingBalance;
     this.unstakePendingBalance = data.UnstakePendingBalance;
     this.withdrawPendingBalance = data.WithdrawPendingBalance;
+    this.locked = data.Locked;
+    this.lockTime = data.LockTime;
+    this.stakerTokenBalanceID = data.ID;
+    this.unlockDate = data.DaturityDate;
+    this.displayUnlockDate = formatUtil.formatDateTime(this.unlockDate, 'DD MMM YYYY HH:mm A');
+    this.active = data.Active;
 
     // if (this.id === COINS.PRV_ID) {
     //   this.name = COINS.PRV.name;
@@ -49,7 +60,7 @@ export class UserCoinPoolModel {
     //   this.pDecimals = COINS.PRV.pDecimals;
     // }
 
-    this.coin = coins.find(coin => coin.id === this.id);
+    this.coin = coins.find(coin => coin.id === this.id && coin.locked === this.locked && coin.lockTime === this.lockTime);
 
     if (this.coin) {
       this.pDecimals = this.coin.pDecimals;
@@ -72,7 +83,8 @@ export class PoolConfigModel {
     }
 
     this.masterAddress = data.MasterAddress;
-    this.coins = data.Configs.map(item => new CoinConfigModel(item, this.masterAddress));
+    const coins = (data.Configs.map(item => new CoinConfigModel(item, this.masterAddress)) || []).filter(item => !!item);
+    this.coins = orderBy(coins, ['locked'], ['desc']);
   }
 }
 
@@ -89,9 +101,21 @@ export class PoolHistory {
     this.coinId = data.TokenID;
     this.tx = data.IncognitoTx;
     this.paymentAddress = data.PStakeAddress;
+    this.stakerTokenBalanceID = data.StakerTokenBalanceID;
 
     this.account = account?.name || account?.AccountName;
     this.coin = coins.find(coin => coin.id === this.coinId);
+
+    if (data.LockData) {
+      try {
+        const lockData = JSON.parse(data.LockData);
+        this.locked = lockData.Locked;
+        this.lockTime = lockData.LockTime;
+        this.unlockDate = moment(lockData.DaturityDate).format(LONG_DATE_TIME_FORMAT);
+      } catch (e) {
+        console.log('Ignore err: ', e);
+      }
+    }
 
     if (this.coin) {
       this.description = `${formatUtil.amountFull(this.amount, this.coin.pDecimals, true)} ${this.coin.symbol}`;
@@ -108,6 +132,14 @@ export class PoolHistory {
       'Successful',
     ][data.Status];
 
+    this.statusColor = COLORS.newGrey;
+    if (this.status === 'Unsuccessful') {
+      this.statusColor = COLORS.red1;
+    }
+    if (this.status === 'Successful') {
+      this.statusColor = COLORS.green2;
+    }
+
     this.type = [
       'None',
       'Provide',
@@ -116,6 +148,12 @@ export class PoolHistory {
       'Auto stake off',
       'Reward',
       'Withdraw reward',
+      'None',
+      'Migrate',
     ][data.Type];
+
+    if (this.locked) {
+      this.type += ' lock';
+    }
   }
 }

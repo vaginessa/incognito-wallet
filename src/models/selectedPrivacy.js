@@ -167,6 +167,7 @@ class SelectedPrivacy {
       this.symbol = CONSTANT_COMMONS.PRV.symbol;
     }
     this.amount = this.amount || 0;
+    this.listChildToken = pTokenData?.listChildToken;
   }
 }
 

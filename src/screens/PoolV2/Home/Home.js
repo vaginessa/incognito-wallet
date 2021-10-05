@@ -1,21 +1,42 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { compose } from 'recompose';
-import {View} from '@components/core';
+import { View } from '@components/core';
 import { withLayout_2 } from '@components/Layout';
 import Actions from '@screens/PoolV2/Home/Actions';
 import CoinList from '@screens/PoolV2/Home/CoinList';
 import withPoolData from '@screens/PoolV2/Home/data.enhance';
 import withDefaultAccount from '@components/Hoc/withDefaultAccount';
-import { Header, LoadingContainer } from '@src/components/';
+import { Header, LoadingContainer } from '@src/components';
 import withHistories from '@screens/PoolV2/Home/histories.enhance';
 import withRetry from '@screens/PoolV2/Home/retry.enhance';
 import TotalReward from '@components/core/TotalReward';
+import { InfoIcon } from '@components/Icons';
+import { TouchableOpacity } from 'react-native';
+import { useNavigation } from 'react-navigation-hooks';
+import routeNames from '@routers/routeNames';
+import helperConst from '@src/constants/helper';
 import styles from './style';
+
+const BtnInfo = React.memo(() => {
+  const navigation = useNavigation();
+  const onPress = () => {
+    navigation.navigate(routeNames.Helper, {
+      ...helperConst.HELPER_CONSTANT.PROVIDE,
+      style: { paddingTop: 0 },
+    });
+  };
+  return (
+    <TouchableOpacity style={{ marginLeft: 5 }} onPress={onPress}>
+      <InfoIcon />
+    </TouchableOpacity>
+  );
+});
 
 const Home = ({
   config,
   userData,
+  groupedUserData,
   withdrawable,
   totalRewards,
   displayClipTotalRewards,
@@ -25,7 +46,7 @@ const Home = ({
   loading,
   account,
   isLoadingHistories,
-  nativeToken
+  nativeToken,
 }) => {
   const renderContent = () => {
     if (!config || !userData) {
@@ -48,7 +69,8 @@ const Home = ({
         />
         <CoinList
           coins={config.coins}
-          data={userData}
+          userData={userData}
+          groupedUserData={groupedUserData}
           withdrawable={withdrawable}
           histories={histories}
           onLoad={onLoad}
@@ -62,7 +84,11 @@ const Home = ({
 
   return (
     <View style={styles.container}>
-      <Header title="Provide" accountSelectable />
+      <Header
+        title="Provide"
+        customHeaderTitle={<BtnInfo />}
+        accountSelectable
+      />
       {renderContent()}
     </View>
   );
@@ -71,6 +97,7 @@ const Home = ({
 Home.propTypes = {
   config: PropTypes.object,
   userData: PropTypes.array,
+  groupedUserData: PropTypes.array,
   withdrawable: PropTypes.bool.isRequired,
   displayFullTotalRewards: PropTypes.string.isRequired,
   displayClipTotalRewards: PropTypes.string.isRequired,
@@ -86,6 +113,7 @@ Home.propTypes = {
 Home.defaultProps = {
   config: null,
   userData: null,
+  groupedUserData: null,
 };
 
 export default compose(

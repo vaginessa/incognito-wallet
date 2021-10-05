@@ -12,7 +12,7 @@ import { useNavigation } from 'react-navigation-hooks';
 import ROUTE_NAMES from '@routers/routeNames';
 import { Header, Row } from '@src/components/';
 import { BtnInfinite } from '@components/Button/index';
-import convertUtil from '@utils/convert';
+import convertUtil, { formatTime }from '@utils/convert';
 import formatUtil from '@utils/format';
 import styles from './style';
 
@@ -53,7 +53,7 @@ const Provide = ({
 
   return (
     <View style={mainStyle.flex}>
-      <Header title="Provide" />
+      <Header title='Provide' />
       <View style={mainStyle.coinContainer}>
         <Row center spaceBetween style={mainStyle.inputContainer}>
           <BaseTextInput
@@ -68,10 +68,18 @@ const Provide = ({
             onPress={handleMax}
           />
         </Row>
-        <Text style={mainStyle.coinExtra}>{coin.displayInterest}</Text>
+        <Row center spaceBetween>
+          <Text style={mainStyle.coinExtraSmall}>{coin.displayInterest}</Text>
+          {
+            coin.locked 
+              ? <Text style={[mainStyle.coinExtraSmall, mainStyle.textRight]}>{coin.displayLockTime}</Text>
+              : null
+          }
+        </Row>
         <Text style={mainStyle.error}>{error}</Text>
+        
         <RoundCornerButton
-          title="Provide liquidity"
+          title="Provide"
           style={[mainStyle.button, styles.button]}
           onPress={handleProvide}
           disabled={!!error || !inputText}
@@ -79,12 +87,15 @@ const Provide = ({
         <ExtraInfo
           left="Balance"
           right={`${coin.displayFullBalance} ${coin.symbol}`}
+          style={mainStyle.coinExtraSmall}
+          wrapperStyle={mainStyle.coinExtraSmallWrapper}
         />
         <ExtraInfo
           token={feeToken}
           left="Fee"
           right={`${formatUtil.amount(fee, feeToken.pDecimals)} ${feeToken.symbol}`}
-          style={styles.extra}
+          style={mainStyle.coinExtraSmall}
+          wrapperStyle={mainStyle.coinExtraSmallWrapper}
         />
       </View>
     </View>
