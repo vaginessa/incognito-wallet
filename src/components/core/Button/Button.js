@@ -57,7 +57,7 @@ const styled = StyleSheet.create({
     height: 50,
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 20,
+    marginBottom: 8,
     borderRadius: 25
   },
   primaryText: {

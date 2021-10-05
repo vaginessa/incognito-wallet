@@ -11,6 +11,7 @@ import {useNavigation} from 'react-navigation-hooks';
 import routeNames from '@routers/routeNames';
 import {actionToggleModal} from '@components/Modal';
 import ModalBottomSheet from '@components/Modal/ModalBottomSheet';
+import {EmptyBookIcon} from '@components/Icons';
 
 const StakingPortfolio = ({ handleFetchCoins }) => {
   const dispatch = useDispatch();
@@ -40,9 +41,8 @@ const StakingPortfolio = ({ handleFetchCoins }) => {
       )}
     />
   );
-  return (
-    <View style={mainStyle.fullFlex}>
-      <HeaderRow array={['Name', 'Amount']} style={{ marginTop: 10 }} />
+  const renderContent = () => {
+    return (
       <FlatList
         refreshControl={
           <RefreshControl refreshing={isFetching} onRefresh={handleFetchCoins} />
@@ -51,7 +51,17 @@ const StakingPortfolio = ({ handleFetchCoins }) => {
         renderItem={renderItem}
         keyExtractor={(item) => item.tokenId}
         showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ flexGrow: 1 }}
+        ListEmptyComponent={(
+          <EmptyBookIcon message="Your staking coins is empty" />
+        )}
       />
+    );
+  };
+  return (
+    <View style={mainStyle.fullFlex}>
+      <HeaderRow array={['Name', 'Amount']} style={{ marginTop: 10 }} />
+      {renderContent()}
     </View>
   );
 };

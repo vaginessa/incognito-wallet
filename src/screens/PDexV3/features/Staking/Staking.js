@@ -1,5 +1,5 @@
 import React, {memo} from 'react';
-import {View} from 'react-native';
+import {SafeAreaView, View} from 'react-native';
 import {styled as mainStyle} from '@screens/PDexV3/PDexV3.styled';
 import {Header, Row} from '@src/components';
 import {Tabs} from '@components/core';
@@ -68,10 +68,12 @@ const Staking = ({ handleFetchData }) => {
             </View>
           </Tabs>
         </View>
-        <BTNBorder
-          title={isStaking ? STAKING_MESSAGES.stakeMore : STAKING_MESSAGES.stakeNow}
-          onPress={onStakingMore}
-        />
+        <SafeAreaView>
+          <BTNBorder
+            title={isStaking ? STAKING_MESSAGES.stakeMore : STAKING_MESSAGES.stakeNow}
+            onPress={onStakingMore}
+          />
+        </SafeAreaView>
       </View>
       <NFTTokenBottomBar />
     </>

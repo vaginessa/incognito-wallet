@@ -307,7 +307,7 @@ const enhance = (WrappedComp) => (props) => {
         isFetched && //finish splash screen
         !errorMsg //no error
       ) {
-        navigation.navigate(routeNames.Trade);
+        navigation.navigate(routeNames.Staking);
       }
     }, [masterKeys, isInitialing, isCreating, isMigrated, isFetched, errorMsg]),
   );

@@ -1,5 +1,5 @@
 import React, {memo} from 'react';
-import {Image, RefreshControl, ScrollView, Text, TouchableOpacity, View} from 'react-native';
+import {Image, RefreshControl, SafeAreaView, ScrollView, Text, TouchableOpacity, View} from 'react-native';
 import {Header, Row, RowSpaceText} from '@src/components';
 import {STAKING_MESSAGES} from '@screens/PDexV3/features/Staking/Staking.constant';
 import {styled as mainStyle} from '@screens/PDexV3/PDexV3.styled';
@@ -17,15 +17,21 @@ import debounce from 'lodash/debounce';
 import routeNames from '@routers/routeNames';
 import {actionToggleModal} from '@components/Modal';
 import ModalBottomSheet from '@components/Modal/ModalBottomSheet';
+import withTransaction from '@screens/PDexV3/features/Staking/Staking.transaction';
+import PropTypes from 'prop-types';
 
-const PortfolioDetail = () => {
+const PortfolioDetail = ({ onWithdrawReward, error, setError }) => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const tokenId = useNavigationParam('tokenId');
   const coin = useSelector(stakingSelector.stakingCoinByTokenIDSelector)(tokenId);
   const pool = useSelector(stakingSelector.stakingPoolByTokenId)(tokenId);
+  const { feeAmount } = useSelector(stakingSelector.stakingFeeSelector);
   const loading = useSelector(isFetchingNFTSelector);
-  const onFetchData = () => dispatch(stakingActions.actionFetchCoins());
+  const onFetchData = () => {
+    dispatch(stakingActions.actionFetchCoins());
+    setError('');
+  };
   const debounceFetchData = debounce(React.useCallback(onFetchData, []), 300);
   const renderModelCell = (data) => <OneRowCoin token={data.token} valueText={data.rewardStr} />;
   const showDetailReward = () => {
@@ -43,8 +49,16 @@ const PortfolioDetail = () => {
       shouldCloseModalWhenTapOverlay: true
     }));
   };
+
+  const renderWarning = (hasPendingNFT, cantWithdraw) => {
+    if (cantWithdraw) return <Text style={coinStyled.warning}>{STAKING_MESSAGES.cantWithdraw}</Text>;
+    if (hasPendingNFT) STAKING_MESSAGES.pendingNFTs(() => navigation.navigate(routeNames.NFTToken));
+    return null;
+  };
   const renderMainContent = () => {
-    const { token, staking, inValidNFTs } = coin;
+    const { token, staking, inValidNFTs, hasValidNFT } = coin;
+    const hasPendingNFT = isEmpty(inValidNFTs);
+    const cantWithdraw = staking.stakingAmount && !hasValidNFT;
     return (
       <View style={{ flex: 1 }}>
         <ScrollView
@@ -71,42 +85,52 @@ const PortfolioDetail = () => {
             customRight={(
               <TouchableOpacity style={coinStyled.rowCenterVertical} onPress={showDetailReward}>
                 <Text
-                  style={[[coinStyled.regularDark], { color: COLORS.green2, marginRight: 5  }]}
+                  style={[
+                    coinStyled.regularDark,
+                    { marginRight: 5  },
+                    !!coin.reward.totalRewardUSD && { color: COLORS.green2 }
+                  ]}
                 >
                   {`+ ${coin.reward.totalRewardUSDStr}`}
                 </Text>
-                <ArrowDown />
+                {!!coin.reward.totalRewardUSD && (<ArrowDown />)}
               </TouchableOpacity>
             )}
           />
-          {(inValidNFTs && inValidNFTs.length > 0) && (STAKING_MESSAGES.pendingNFTs(() => navigation.navigate(routeNames.NFTToken)))}
+          {renderWarning(hasPendingNFT, cantWithdraw)}
+          {!!error && <Text style={coinStyled.error}>{error}</Text>}
         </ScrollView>
       </View>
     );
   };
+  const onSubmit = () => {
+    if (!coin.withdrawReward.withdrawRewardNFT || coin.withdrawReward.withdrawRewardNFT.length === 0) return;
+    const params = coin.withdrawReward.withdrawRewardNFT.map(nftId => ({ nftID: nftId, stakingTokenID: coin.tokenId, fee: feeAmount }));
+    onWithdrawReward(params);
+  };
   const renderContent = () => {
     if (!coin || !pool) return null;
-    const { disableAction } = coin;
+    const { disableAction, reward } = coin;
     return(
       <View style={{ justifyContent: 'space-between', flex: 1 }}>
         {renderMainContent()}
-        <BTNBorder
-          title={STAKING_MESSAGES.withdrawStaking}
-          wrapperStyle={{ marginBottom: 8 }}
-          onPress={() => {
-            navigation.navigate(routeNames.StakingWithdrawInvest);
-            dispatch(stakingActions.actionSetWithdrawInvestCoin({ tokenID: tokenId }));
-          }}
-          // disabled={disableAction}
-        />
-        <BTNPrimary
-          title={STAKING_MESSAGES.withdrawReward}
-          onPress={() => {
-            navigation.navigate(routeNames.StakingWithdrawReward);
-            dispatch(stakingActions.actionSetWithdrawRewardCoin({ tokenID: tokenId }));
-          }}
-          // disabled={disableAction}
-        />
+        <SafeAreaView>
+          <BTNBorder
+            title={STAKING_MESSAGES.withdrawStaking}
+            disabled={disableAction}
+            onPress={() => {
+              navigation.navigate(routeNames.StakingWithdrawInvest);
+              dispatch(stakingActions.actionSetWithdrawInvestCoin({ tokenID: tokenId }));
+            }}
+          />
+          {!!reward.totalRewardUSD && (
+            <BTNPrimary
+              title={STAKING_MESSAGES.withdrawReward}
+              disabled={disableAction}
+              onPress={onSubmit}
+            />
+          )}
+        </SafeAreaView>
       </View>
     );
   };
@@ -125,6 +149,14 @@ const PortfolioDetail = () => {
   );
 };
 
-PortfolioDetail.propTypes = {};
+PortfolioDetail.defaultProps = {
+  error: undefined
+};
 
-export default memo(PortfolioDetail);
+PortfolioDetail.propTypes = {
+  onWithdrawReward: PropTypes.func.isRequired,
+  error: PropTypes.string,
+  setError: PropTypes.func.isRequired
+};
+
+export default withTransaction(memo(PortfolioDetail));
