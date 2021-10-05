@@ -1,14 +1,14 @@
 import React from 'react';
 import { Image, StyleSheet } from 'react-native';
-import QrCodeSrc from '@src/assets/images/icons/history_order.png';
+import QrCodeSrc from '@src/assets/images/new-icons/history_order.png';
 import { TouchableOpacity } from '@src/components/core';
 import PropTypes from 'prop-types';
 
 const styled = StyleSheet.create({
   container: {},
   icon: {
-    width: 20,
-    height: 22,
+    width: 24,
+    height: 24,
   },
 });
 

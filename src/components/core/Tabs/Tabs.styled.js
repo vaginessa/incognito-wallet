@@ -13,6 +13,15 @@ export const styled = StyleSheet.create({
     padding: 4,
     flex: 1,
   },
+  tabList1: {
+    borderRadius: 0,
+    backgroundColor: 'transparent',
+    padding: 0,
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    borderBottomColor: COLORS.colorGrey2,
+    borderBottomWidth: 1,
+  },
   tabContent: {
     flex: 1,
   },

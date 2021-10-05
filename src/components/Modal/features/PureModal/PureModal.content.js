@@ -11,11 +11,11 @@ const styled = StyleSheet.create({
   },
   wrapper: {
     backgroundColor: COLORS.white,
-    marginHorizontal: 25,
+    marginHorizontal: 24,
     borderRadius: 13,
     width: UTILS.deviceWidth() - 50,
-    paddingHorizontal: 20,
-    paddingVertical: 50,
+    paddingHorizontal: 24,
+    paddingVertical: 24,
     position: 'relative',
   },
 });

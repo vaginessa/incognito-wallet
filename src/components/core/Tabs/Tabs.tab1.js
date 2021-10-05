@@ -2,37 +2,39 @@ import React from 'react';
 import { StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
 import { ButtonBasic } from '@src/components/Button';
-import { COLORS } from '@src/styles';
+import { COLORS, FONT } from '@src/styles';
 
 const styled = StyleSheet.create({
   btnStyle: {
-    flex: 1,
-    width: '50%',
-    maxWidth: '48%',
-    height: 44,
+    backgroundColor: 'transparent',
+    borderRadius: 0,
+    padding: 0,
+    marginRight: 32,
   },
   btnStyleEnabled: {
-    shadowOffset: {
-      width: 0,
-      height: 8,
-    },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    backgroundColor: COLORS.white,
+    borderBottomColor: COLORS.colorBlue,
+    borderBottomWidth: 4,
   },
   btnStyleDisabled: {
     backgroundColor: 'transparent',
     borderColor: 'transparent',
+    borderBottomColor: 'transparent',
+    borderBottomWidth: 4,
   },
   titleStyle: {
-    color: COLORS.colorBlue,
+    color: COLORS.black,
+    padding: 0,
+    margin: 0,
+    fontSize: FONT.SIZE.regular,
+    fontFamily: FONT.NAME.medium,
+    lineHeight: FONT.SIZE.regular + 5,
   },
   titleDisabledStyle: {
-    color: COLORS.colorGreyMedium,
+    color: COLORS.colorGrey1,
   },
 });
 
-const Tab = (props) => {
+const Tab1 = (props) => {
   const {
     activeTab,
     label,
@@ -66,14 +68,14 @@ const Tab = (props) => {
   );
 };
 
-Tab.defaultProps = {
+Tab1.defaultProps = {
   tabStyled: null,
   titleStyled: null,
   tabStyledDisabled: null,
   titleDisabledStyled: null,
 };
 
-Tab.propTypes = {
+Tab1.propTypes = {
   activeTab: PropTypes.string.isRequired,
   label: PropTypes.string.isRequired,
   onClickTab: PropTypes.func.isRequired,
@@ -84,4 +86,4 @@ Tab.propTypes = {
   titleDisabledStyled: PropTypes.any,
 };
 
-export default React.memo(Tab);
+export default React.memo(Tab1);

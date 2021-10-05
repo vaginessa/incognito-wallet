@@ -240,8 +240,8 @@ export const swapInfoSelector = createSelector(
         convert.toHumanAmount(floor(sizeimpact * 100), 0),
         0,
       );
-      const editableInput =
-        !swapingToken && !initing && !selecting && isFetched && !isFetching;
+      const editableInput = !swapingToken && !initing && !selecting;
+      // && isFetched && !isFetching;
       let btnSwapText = 'Confirm';
       const calculating = swapingToken || initing || selecting || isFetching;
       const disabledBtnSwap =

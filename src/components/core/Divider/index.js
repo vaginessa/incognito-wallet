@@ -8,7 +8,6 @@ const styled = StyleSheet.create({
     flex: 1,
     borderBottomWidth: 1,
     borderColor: COLORS.lightGrey18,
-    marginVertical: 15,
   },
 });
 

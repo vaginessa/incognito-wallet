@@ -1,83 +1,26 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import Row from '@src/components/Row';
 import { withLayout_2 } from '@src/components/Layout';
 import Header from '@components/Header';
 import { ScrollView, RefreshControl, Text } from '@components/core';
 import { useDispatch, useSelector } from 'react-redux';
-import { COLORS, FONT } from '@src/styles';
-import { BtnCopy, BtnOpenUrl } from '@src/components/Button';
+import { BtnCopy } from '@src/components/Button';
 import { ExHandler } from '@src/services/exception';
 import LinkingService from '@src/services/linking';
 import ClipboardService from '@src/services/clipboard';
 import { CONSTANT_CONFIGS } from '@src/constants';
+import TradeOrderDetail, {
+  styled as orderDetailStyled,
+} from '@screens/PDexV3/features/Trade/Trade.orderDetail';
 import { orderDetailSelector } from './Swap.selector';
 import { actionFetchDataOrderDetail } from './Swap.actions';
 
 const styled = StyleSheet.create({
   container: { flex: 1 },
   scrollview: { flex: 1, paddingTop: 42 },
-  label: {
-    fontFamily: FONT.NAME.medium,
-    color: COLORS.colorGreyBold,
-    fontSize: FONT.SIZE.regular,
-    lineHeight: FONT.SIZE.regular + 3,
-    width: 120,
-    marginRight: 15,
-  },
-  value: {
-    fontFamily: FONT.NAME.bold,
-    color: COLORS.black,
-    fontSize: FONT.SIZE.regular,
-    lineHeight: FONT.SIZE.regular + 3,
-    textAlign: 'left',
-    flex: 1,
-  },
-  row: {
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 30,
-  },
-  btn: {
-    marginLeft: 10,
-  },
 });
 
-export const Hook = React.memo(
-  ({
-    label,
-    value,
-    copiable,
-    openUrl,
-    handleOpenUrl,
-    customValue,
-    hookStyled,
-  }) => {
-    const handleCopy = () => ClipboardService.set(value);
-    return (
-      <Row style={{ ...styled.row, ...hookStyled }}>
-        <Text style={styled.label} ellipsizeMode="middle" numberOfLines={1}>
-          {`${label}: `}
-        </Text>
-        {customValue ? (
-          customValue
-        ) : (
-          <>
-            <Text style={styled.value} ellipsizeMode="middle" numberOfLines={1}>
-              {value}
-            </Text>
-            {copiable && <BtnCopy onPress={handleCopy} style={styled.btn} />}
-            {openUrl && (
-              <BtnOpenUrl onPress={handleOpenUrl} style={styled.btn} />
-            )}
-          </>
-        )}
-      </Row>
-    );
-  },
-);
-
-const OrderDetail = (props) => {
+const SwapOrderDetail = () => {
   const dispatch = useDispatch();
   const { fetching: refreshing, order } = useSelector(orderDetailSelector);
   const onRefresh = async () => {
@@ -134,7 +77,7 @@ const OrderDetail = (props) => {
           <View style={{ flex: 1 }}>
             {order?.responseTxs.map((responseTx) => (
               <Text
-                style={{ ...styled.value, marginBottom: 15 }}
+                style={{ ...orderDetailStyled.value, marginBottom: 15 }}
                 ellipsizeMode="middle"
                 numberOfLines={1}
               >
@@ -179,12 +122,14 @@ const OrderDetail = (props) => {
         }
       >
         {factories.length > 0 &&
-          factories?.map((item) => <Hook key={item?.label} {...item} />)}
+          factories?.map((item) => (
+            <TradeOrderDetail key={item?.label} {...item} />
+          ))}
       </ScrollView>
     </View>
   );
 };
 
-OrderDetail.propTypes = {};
+SwapOrderDetail.propTypes = {};
 
-export default withLayout_2(React.memo(OrderDetail));
+export default withLayout_2(React.memo(SwapOrderDetail));

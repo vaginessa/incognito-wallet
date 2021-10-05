@@ -7,9 +7,10 @@ import { actionChangeTab } from './Tabs.actions';
 import { styled } from './Tabs.styled';
 import { activedTabSelector } from './Tabs.selector';
 import Tab from './Tabs.tab';
+import Tab1 from './Tabs.tab1';
 
 const enhance = (WrappedComp) => (props) => {
-  const { children, rootTabID } = props;
+  const { children, rootTabID, useTab1 = false } = props;
   const activeTab = useSelector(activedTabSelector)(rootTabID);
   const dispatch = useDispatch();
   const onClickTabItem = (tab) => {
@@ -34,6 +35,18 @@ const enhance = (WrappedComp) => (props) => {
   const renderTabs = () => {
     return children.map((child) => {
       const { label, tabID, ...rest } = child.props;
+      if (useTab1) {
+        return (
+          <Tab1
+            activeTab={activeTab}
+            key={label}
+            label={label}
+            onClickTab={onClickTabItem}
+            tabID={tabID}
+            {...rest}
+          />
+        );
+      }
       return (
         <Tab
           activeTab={activeTab}

@@ -29,25 +29,18 @@ const styled = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  orderTitle: {
-    fontFamily: FONT.NAME.medium,
-    fontSize: FONT.SIZE.medium,
-    lineHeight: FONT.SIZE.medium + 5,
-    color: COLORS.black,
-    marginRight: 15,
-  },
   orderId: {
-    fontFamily: FONT.NAME.regular,
-    fontSize: FONT.SIZE.regular,
-    lineHeight: FONT.SIZE.regular + 5,
-    color: COLORS.colorGreyBold,
+    fontFamily: FONT.NAME.medium,
+    fontSize: FONT.SIZE.small,
+    lineHeight: FONT.SIZE.small + 5,
+    color: COLORS.colorGrey3,
     maxWidth: 200,
   },
   swap: {
-    fontFamily: FONT.NAME.regular,
-    fontSize: FONT.SIZE.regular,
-    lineHeight: FONT.SIZE.regular + 5,
-    color: COLORS.colorGreyBold,
+    fontFamily: FONT.NAME.medium,
+    fontSize: FONT.SIZE.small,
+    lineHeight: FONT.SIZE.small + 5,
+    color: COLORS.black,
     marginRight: 15,
   },
   statusStr: {
@@ -56,9 +49,21 @@ const styled = StyleSheet.create({
     lineHeight: FONT.SIZE.regular + 5,
     color: COLORS.colorGreyBold,
   },
-  orderWrapper: {
+  wrapperOrder: {
     flex: 1,
-    marginRight: 15,
+  },
+  row: {
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  dividerStyled: {
+    marginVertical: 16,
+  },
+  title: {
+    fontFamily: FONT.NAME.medium,
+    fontSize: FONT.SIZE.regular,
+    lineHeight: FONT.SIZE.regular + 5,
+    color: COLORS.black,
   },
 });
 
@@ -76,25 +81,24 @@ const Order = React.memo(({ data, visibleDivider }) => {
   return (
     <>
       <TouchableOpacity style={styled.order} onPress={handleNavOrderDetail}>
-        <View style={styled.orderWrapper}>
-          <Row>
-            <Text style={styled.orderTitle}>Swap</Text>
+        <View style={styled.wrapperOrder}>
+          <Row style={{ ...styled.row, marginBottom: 4 }}>
             <Text
               style={styled.orderId}
               numberOfLines={1}
               ellipsizeMode="middle"
             >
-              {requestTx}
+              {`#${requestTx}`}
             </Text>
+            <Text style={styled.title}>Swap</Text>
           </Row>
-          <Row>
+          <Row style={styled.row}>
             <Text style={styled.swap}>{swapStr}</Text>
             <Text style={styled.statusStr}>{statusStr}</Text>
           </Row>
         </View>
-        <ArrowRightGreyIcon />
       </TouchableOpacity>
-      {visibleDivider && <Divider />}
+      {visibleDivider && <Divider dividerStyled={styled.dividerStyled} />}
     </>
   );
 });
@@ -110,7 +114,7 @@ const OrderHistory = () => {
   );
   return (
     <View style={styled.container}>
-      <Header title="Order history" />
+      <Header title="Swap history" />
       <FlatList
         refreshControl={
           <RefreshControl refreshing={isFetching} onRefresh={onRefresh} />

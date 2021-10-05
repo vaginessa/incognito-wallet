@@ -1,4 +1,4 @@
-import { COLORS } from '@src/styles';
+import { FONT, COLORS } from '@src/styles';
 import React from 'react';
 import { StyleSheet } from 'react-native';
 import ButtonBasic from './ButtonBasic';
@@ -6,9 +6,13 @@ import ButtonBasic from './ButtonBasic';
 const styled = StyleSheet.create({
   btnStyle: {
     backgroundColor: COLORS.colorBlue,
+    height: 44,
   },
   titleStyle: {
     color: COLORS.white,
+    fontFamily: FONT.NAME.bold,
+    fontSize: FONT.SIZE.regular,
+    lineHeight: FONT.SIZE.regular + 5,
   },
 });
 

@@ -1,39 +1,49 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { StyleSheet } from 'react-native';
-import { Text } from '@src/components/core';
+import { Image, Text } from '@src/components/core';
 import { ButtonTrade } from '@src/components/Button';
 import { COLORS, FONT } from '@src/styles';
 import { useDispatch } from 'react-redux';
 import { actionToggleModal } from '@src/components/Modal';
 import { PureModalContent } from '@src/components/Modal/features/PureModal';
 import { useNavigation } from 'react-navigation-hooks';
+import srcOrdered from '@assets/images/new-icons/order-initiated.png';
 import routeNames from '@src/router/routeNames';
+import { Row } from '@src/components';
 
 const styled = StyleSheet.create({
   title: {
     fontFamily: FONT.NAME.bold,
     fontSize: FONT.SIZE.superMedium,
     lineHeight: FONT.SIZE.superMedium + 5,
-    color: COLORS.black,
+    color: COLORS.colorBlue,
     textAlign: 'center',
-    marginBottom: 15,
+    marginBottom: 24,
+    marginTop: 8,
   },
   desc: {
     fontFamily: FONT.NAME.medium,
-    fontSize: FONT.SIZE.medium,
-    lineHeight: FONT.SIZE.medium + 5,
+    fontSize: FONT.SIZE.regular,
+    lineHeight: FONT.SIZE.regular + 5,
     color: COLORS.black,
     textAlign: 'center',
-    marginBottom: 10,
+    marginBottom: 24,
   },
   sub: {
-    fontFamily: FONT.NAME.regular,
+    fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.regular,
     lineHeight: FONT.SIZE.regular + 5,
     color: COLORS.newGrey,
     textAlign: 'center',
-    marginBottom: 30,
+  },
+  icon: {
+    width: 40,
+    height: 40,
+  },
+  row: {
+    alignItems: 'center',
+    flexDirection: 'column',
   },
 });
 
@@ -41,7 +51,6 @@ const TradeSucessModal = (props) => {
   const {
     title,
     desc,
-    btnColor = COLORS.colorTradeBlue,
     sub,
     btnTitle = 'Keep trading',
     handleTradeSucesss,
@@ -58,11 +67,14 @@ const TradeSucessModal = (props) => {
   };
   return (
     <PureModalContent>
-      <Text style={styled.title}>{title}</Text>
+      <Row style={styled.row}>
+        <Image source={srcOrdered} style={styled.icon} />
+        <Text style={styled.title}>{title}</Text>
+      </Row>
       <Text style={styled.desc}>{desc}</Text>
       {sub && <Text style={styled.sub}>{sub}</Text>}
       <ButtonTrade
-        btnStyle={{ backgroundColor: btnColor }}
+        btnStyle={{ marginTop: 24, marginBottom: 0 }}
         title={btnTitle}
         onPress={handleKeepTrading}
       />

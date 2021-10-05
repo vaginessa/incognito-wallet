@@ -5,10 +5,18 @@ import { styled } from './Tabs.styled';
 import withTabs from './Tabs.enhance';
 
 const Tabs = (props) => {
-  const { renderTabs, styledTabList, styledTabs } = props;
+  const { renderTabs, styledTabList, styledTabs, useTab1 } = props;
   return (
     <View style={[styled.tabs, styledTabs]}>
-      <View style={[styled.tabList, styledTabList]}>{renderTabs()}</View>
+      <View
+        style={[
+          styled.tabList,
+          useTab1 ? styled.tabList1 : null,
+          styledTabList,
+        ]}
+      >
+        {renderTabs()}
+      </View>
     </View>
   );
 };

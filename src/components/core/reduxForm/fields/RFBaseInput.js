@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 import BaseTextInput from '@src/components/core/BaseTextInput';
 import Row from '@src/components/Row';
 import { COLORS, FONT } from '@src/styles';
@@ -11,11 +11,17 @@ const styled = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'space-between',
+    backgroundColor: COLORS.colorGrey4,
+    height: 50,
+    borderRadius: 8,
+    flexDirection: 'row',
+    paddingHorizontal: 15,
   },
   input: {
-    fontFamily: FONT.NAME.bold,
-    fontSize: FONT.SIZE.superMedium,
     color: COLORS.black,
+    fontSize: FONT.SIZE.medium,
+    lineHeight: FONT.SIZE.medium + 5,
+    fontFamily: FONT.NAME.medium,
   },
 });
 
@@ -35,7 +41,7 @@ const renderCustomField = (props) => {
           onChangeText: (text) => onChange(text),
           onFocus: (event) => onFocus(event),
           onBlur: (event) => onBlur(event),
-          editable: rest?.editableInput,
+          editable: !!rest?.editableInput,
         }}
       />
       {rightCustom && rightCustom}

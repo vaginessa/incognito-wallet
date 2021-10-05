@@ -9,6 +9,7 @@ export const styled = StyleSheet.create({
   },
   styledTabs: {
     marginBottom: 30,
+    backgroundColor: 'transparent',
   },
   btnOrderHistory: {
     marginRight: 15,

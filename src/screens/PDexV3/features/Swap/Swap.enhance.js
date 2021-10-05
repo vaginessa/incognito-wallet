@@ -24,10 +24,13 @@ const enhance = (WrappedComp) => (props) => {
           actionToggleModal({
             data: (
               <TradeSuccessModal
-                title="Trade inited"
-                desc={`You placed an order to sell ${swapInfo?.sellInputAmountStr ||
+                title="Order initiated!"
+                desc={`You placed an order to sell\n${swapInfo?.sellInputAmountStr ||
                   ''} for ${swapInfo?.buyInputAmountStr || ''}.`}
                 handleTradeSucesss={initSwapForm}
+                sub={
+                  'Your balance will update in a couple of\nminutes after the trade is finalized.'
+                }
               />
             ),
             visible: true,
@@ -46,7 +49,7 @@ const enhance = (WrappedComp) => (props) => {
   }, []);
   return (
     <ErrorBoundary>
-      <WrappedComp {...{ ...props, handleConfirm }} />
+      <WrappedComp {...{ ...props, handleConfirm, initSwapForm }} />
     </ErrorBoundary>
   );
 };
