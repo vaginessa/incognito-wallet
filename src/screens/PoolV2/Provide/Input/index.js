@@ -35,7 +35,7 @@ const Provide = ({
   const navigation = useNavigation();
 
   const [i, setI] = React.useState(initIndex);
-  const [selectedTerm, setSelectedTerm] = React.useState({apy: coin.terms[i].apy, lockTime: coin.terms[i].lockTime});
+  const [selectedTerm, setSelectedTerm] = React.useState(coin.locked && coin.terms ? {apy: coin.terms[i].apy, lockTime: coin.terms[i].lockTime, termID: coin.terms[i].termID} : undefined);
 
   const handleProvide = () => {
     navigation.navigate(ROUTE_NAMES.PoolV2ProvideConfirm, {
