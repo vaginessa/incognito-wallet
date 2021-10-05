@@ -11,8 +11,8 @@ import { ExHandler } from '@src/services/exception';
 import LinkingService from '@src/services/linking';
 import ClipboardService from '@src/services/clipboard';
 import { CONSTANT_CONFIGS } from '@src/constants';
-import { orderDetailSelector } from './OrderLimit.selector';
-import { actionFetchDataOrderDetail } from './OrderLimit.actions';
+import { orderDetailSelector } from './Swap.selector';
+import { actionFetchDataOrderDetail } from './Swap.actions';
 
 const styled = StyleSheet.create({
   container: { flex: 1 },
@@ -77,7 +77,7 @@ export const Hook = React.memo(
   },
 );
 
-const OrderDetail = () => {
+const OrderDetail = (props) => {
   const dispatch = useDispatch();
   const { fetching: refreshing, order } = useSelector(orderDetailSelector);
   const onRefresh = async () => {
@@ -88,11 +88,6 @@ const OrderDetail = () => {
       return [];
     }
     let ft = [
-      {
-        label: 'Pool ID',
-        value: order?.poolId,
-        copiable: true,
-      },
       {
         label: 'Request Tx',
         value: `#${order?.requestTx}`,
@@ -116,8 +111,8 @@ const OrderDetail = () => {
         value: order?.buyStr,
       },
       {
-        label: 'Fill',
-        value: order?.percentStr1,
+        label: 'Trading fee',
+        value: order?.tradingFeeStr,
       },
       {
         label: 'Status',

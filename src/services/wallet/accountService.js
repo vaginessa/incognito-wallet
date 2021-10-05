@@ -750,6 +750,15 @@ export default class Account {
               return account.clearCacheStorage(params);
             }),
           );
+          task = task.concat(
+            Object.keys(keyInfo.coinindex).map((tokenID) => {
+              const params = {
+                tokenID,
+                version,
+              };
+              return account.getKeyTxHistoryByTokenId(params);
+            }),
+          );
         }
         await Promise.all(task);
       }

@@ -189,4 +189,5 @@ export default {
   ContributeHistoryDetail: 'ContributeHistoryDetail',
   RemoveLPDetail: 'RemoveLPDetail',
   WithdrawFeeLPDetail: 'WithdrawFeeLPDetail',
+  OrdeSwapDetail: 'OrdeSwapDetail',
 };

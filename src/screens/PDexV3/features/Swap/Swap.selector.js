@@ -2,6 +2,7 @@ import { createSelector } from 'reselect';
 import { getPrivacyDataByTokenID as getPrivacyDataByTokenIDSelector } from '@src/redux/selectors/selectedPrivacy';
 import format from '@src/utils/format';
 import floor from 'lodash/floor';
+import capitalize from 'lodash/capitalize';
 import { formValueSelector, isValid } from 'redux-form';
 import convert from '@src/utils/convert';
 import SelectedPrivacy from '@src/models/selectedPrivacy';
@@ -332,7 +333,7 @@ export const mappingOrderHistorySelector = createSelector(
         status,
         minAccept,
         fee,
-        feetoken: feeTokenId,
+        feeToken: feeTokenId,
         fromStorage,
       } = order;
       const sellToken: SelectedPrivacy = getPrivacyDataByTokenID(sellTokenId);
@@ -351,7 +352,12 @@ export const mappingOrderHistorySelector = createSelector(
         token2: buyToken,
       });
       const rateStr = getExchangeRate(sellToken, buyToken, amount, minAccept);
-      const tradingFeeStr = format.amountFull(fee, feeToken.pDecimals, false);
+      const tradingFeeStr = `${format.amountFull(
+        fee,
+        feeToken.pDecimals,
+        false,
+      )} ${feeToken.symbol}`;
+      const swapStr = `${sellStr} = ${buyStr}`;
       const result = {
         ...order,
         sellStr,
@@ -363,28 +369,35 @@ export const mappingOrderHistorySelector = createSelector(
           PRV.symbol
         }`,
         tradingFeeStr,
-        statusStr: status,
+        statusStr: capitalize(status),
+        swapStr,
       };
       return result;
     } catch (error) {
-      console.log('mappingOrderHistorySelector-error', error);
+      console.log('mappingOrderHistorySelector1-error', error);
     }
   },
 );
 
-export const swapsHistorySelector = createSelector(
+export const swapHistorySelector = createSelector(
   swapSelector,
   mappingOrderHistorySelector,
-  ({ swapsHistory: { data, ...rest } }, mappingOrderHistory) => ({
-    ...rest,
-    history: data.map((order) => mappingOrderHistory(order)),
-  }),
+  ({ swapHistory }, mappingOrderHistory) => {
+    const history = swapHistory?.data?.map((order) =>
+      mappingOrderHistory(order),
+    );
+    return {
+      ...swapHistory,
+      history,
+    };
+  },
 );
 
 export const orderDetailSelector = createSelector(
   swapSelector,
   mappingOrderHistorySelector,
-  ({ swapDetail: { fetching, order } }, mappingOrderHistory) => {
+  ({ orderDetail }, mappingOrderHistory) => {
+    const { fetching, order } = orderDetail;
     return {
       fetching,
       order: mappingOrderHistory(order),
