@@ -9,8 +9,6 @@ import Header from '@components/Header/Header';
 import {coinStyles as coinStyled} from '@screens/PDexV3/features/Staking/Staking.styled';
 import {RoundCornerButton, Text} from '@components/core';
 import {LoadingContainer} from '@src/components';
-import {useNavigation} from 'react-navigation-hooks';
-import routeNames from '@routers/routeNames';
 import withInput from '@screens/PDexV3/features/Staking/Staking.enhanceInput';
 import PropTypes from 'prop-types';
 import {stakingSelector} from '@screens/PDexV3/features/Staking';
@@ -60,7 +58,6 @@ const Input = React.memo(({ onInvestMax, onSymbolPress }) => {
 const CustomInput = withInput(Input);
 
 const StakingMoreInput = React.memo(({ onSymbolPress, onStaking, error }) => {
-  const navigation = useNavigation();
   const pool = useSelector(stakingSelector.investPoolSelector);
   const { feeAmount } = useSelector(stakingSelector.stakingFeeSelector);
   const { nftStaking } = useSelector(stakingSelector.investStakingCoinSelector);

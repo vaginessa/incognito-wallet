@@ -20,7 +20,7 @@ export const PoolItem = React.memo((props) => {
     return null;
   }
   const {
-    verified,
+    isVerify,
     apy,
     volumeToAmount,
     isFollowed,
@@ -39,7 +39,7 @@ export const PoolItem = React.memo((props) => {
             >
               {poolTitle}
             </Text>
-            {!!verified && <TokenVerifiedIcon />}
+            {!!isVerify && <TokenVerifiedIcon />}
           </Row>
           <Text style={styled.subText}>{`Vol: ${volumeToAmount}$`}</Text>
         </View>
