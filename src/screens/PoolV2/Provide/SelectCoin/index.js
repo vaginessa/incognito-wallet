@@ -43,7 +43,7 @@ const SelectCoin = ({
               <Row spaceBetween>
                 <Row>
                   <Text style={mainStyle.coinName}>{coin.symbol}</Text>
-                  {!!coin.locked && <LockTimeComp time={coin.displayLockTime} />}
+                  {!!coin.locked && <LockTimeComp />}
                 </Row>
                 {coin.displayBalance ?
                   <Text style={mainStyle.coinName}>{coin.displayBalance}</Text> :

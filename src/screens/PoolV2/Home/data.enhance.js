@@ -51,12 +51,14 @@ const withPoolData = (WrappedComp) => (props) => {
             {
               lockTime: coin.lockTime,
               apy: coin.apy,
+              termID: coin.termID,
             }
           ];
           sameCoinIDs.forEach(c => {
             terms.push({
               lockTime: c.lockTime,
               apy: c.apy,
+              termID: c.termID,
             });
             groupedCoins.splice(groupedCoins.indexOf(c), 1);
           });
@@ -88,6 +90,7 @@ const withPoolData = (WrappedComp) => (props) => {
             {
               lockTime: item.lockTime,
               apy: item.coin.apy,
+              termID: item.coin.termID,
             }
           ];
           sameIDItems.map(i => {
@@ -96,11 +99,12 @@ const withPoolData = (WrappedComp) => (props) => {
             totalPendingBalance = totalPendingBalance.plus(new BigNumber(i.pendingBalance));
             totalUnstakePendingBalance = totalUnstakePendingBalance.plus(new BigNumber(i.unstakePendingBalance));
             totalWithdrawPendingBalance = totalWithdrawPendingBalance.plus(new BigNumber(i.withdrawPendingBalance));
-            let foundTerm = terms.find(t => t.lockTime === i.lockTime && t.apy === i.coin.apy);
+            let foundTerm = terms.find(t => t.lockTime === i.lockTime && t.apy === i.coin.apy && t.termID === i.coin.termID);
             if (!foundTerm) {
               terms.push({
                 lockTime: i.lockTime,
                 apy: i.coin.apy,
+                termID: i.coin.termID,
               });
             }
           });

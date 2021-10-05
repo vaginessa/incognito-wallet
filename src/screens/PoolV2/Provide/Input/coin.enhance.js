@@ -11,14 +11,10 @@ const withCoinData = WrappedComp => (props) => {
 
   let initIndex = 0;
   if (coin.locked) {
-    // todo: remove
-    coin.terms = [
-      {apy: '30', lockTime: 6, termID: 1},
-      {apy: '40', lockTime: 12, termID: 2},
-    ];
-
     const isDefaultTIme = (element) => element.lockTime == 12;
-    initIndex = coin.terms.findIndex(isDefaultTIme);
+    if (coin.terms.findIndex(isDefaultTIme) !== -1) {
+      initIndex = coin.terms.findIndex(isDefaultTIme);
+    }
   }
 
   return (

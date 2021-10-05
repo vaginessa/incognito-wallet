@@ -17,16 +17,17 @@ import { PRV_ID } from '@src/screens/DexV2/constants';
 import styles from './style';
 
 export const LockTimeComp = React.memo(({ time }) => {
-  if (!time) return null;
-  const arrTime = time.split(' ');
   let timeText = time;
-  if (arrTime && arrTime.length === 2) {
-    timeText = `${arrTime[0]}${arrTime[1].charAt(0)}`;
+  if (time) {
+    const arrTime = time.split(' ');
+    if (arrTime && arrTime.length === 2) {
+      timeText = `${arrTime[0]}${arrTime[1].charAt(0)}`;
+    }
   }
   return (
     <Row style={mainStyles.wrapperLock}>
       <LockIcon />
-      <Text style={mainStyles.lockText}>{timeText}</Text>
+      {time && <Text style={mainStyles.lockText}>{timeText}</Text>}
     </Row>
   );
 });
@@ -127,7 +128,7 @@ const CoinList = ({
     return (
       <View style={mainStyles.wrapTitle}>
         <Text style={[mainStyles.coinName, { marginBottom: 0 }]}>{item.symbol}</Text>
-        {item.locked && <LockTimeComp time={mapCoin.displayLockTime} />}
+        {item.locked && <LockTimeComp />}
         {(!item.locked && mapCoin.id === PRV_ID && !!provideBalance) && renderBtnMirage(item)}
       </View>
     );
