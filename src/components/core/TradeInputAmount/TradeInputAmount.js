@@ -76,6 +76,7 @@ const TradeInputAmount = (props) => {
     label,
     rightHeader,
     visibleHeader = false,
+    inputStyle,
     ...rest
   } = props || {};
   const renderSub = () => {
@@ -148,10 +149,12 @@ TradeInputAmount.defaultProps = {
   onPressSymbol: undefined,
   loadingBalance: false,
   editableInput: false,
-  wrapInputStyle: {},
-  symbolStyle: {},
-  inputStyle: {},
-  infiniteStyle: {}
+  infiniteStyle: {},
+  hasIcon: true,
+  label: '',
+  srcIcon: '',
+  visibleHeader: false,
+  rightHeader: undefined,
 };
 
 TradeInputAmount.propTypes = {
