@@ -15,6 +15,7 @@ import {stakingSelector} from '@screens/PDexV3/features/Staking';
 import withInvest from '@screens/PDexV3/features/Staking/Staking.investEnhance';
 import {compose} from 'recompose';
 import withTransaction from '@screens/PDexV3/features/Staking/Staking.transaction';
+import {NFTTokenBottomBar} from '@screens/PDexV3/features/NFTToken';
 
 const initialFormValues = {
   input: ''
@@ -96,12 +97,15 @@ const StakingMoreInput = React.memo(({ onSymbolPress, onStaking, error }) => {
     );
   };
   return (
-    <View style={mainStyle.container}>
-      <Header title={STAKING_MESSAGES.staking} />
-      <View style={coinStyled.coinContainer}>
-        {renderContent()}
+    <>
+      <View style={mainStyle.container}>
+        <Header title={STAKING_MESSAGES.staking} />
+        <View style={coinStyled.coinContainer}>
+          {renderContent()}
+        </View>
       </View>
-    </View>
+      <NFTTokenBottomBar />
+    </>
   );
 });
 

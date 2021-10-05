@@ -17,6 +17,8 @@ import withFetch from '@screens/PDexV3/features/Staking/Staking.enhanceFetch';
 import {useSelector} from 'react-redux';
 import {defaultAccountSelector} from '@src/redux/selectors/account';
 import {stakingSelector} from '@screens/PDexV3/features/Staking';
+import {NFTTokenBottomBar} from '@screens/PDexV3/features/NFTToken';
+import ErrorBoundary from '@components/ErrorBoundary';
 
 const Reward = React.memo(() => {
   const navigation = useNavigation();
@@ -52,24 +54,27 @@ const Staking = ({ handleFetchData }) => {
     typeof handleFetchData === 'function' && handleFetchData();
   }, [account.paymentAddress]);
   return (
-    <View style={mainStyle.container}>
-      <Header title={STAKING_MESSAGES.staking} accountSelectable />
-      <Reward />
-      <View style={homeStyle.wrapper}>
-        <Tabs rootTabID={TABS.ROOT_ID} styledTabList={{ padding: 0 }}>
-          <View tabID={TABS.TAB_COINS} label={STAKING_MESSAGES.listCoins} {...tabStyled}>
-            <StakingPools />
-          </View>
-          <View tabID={TABS.TAB_PORTFOLIO} label={STAKING_MESSAGES.portfolio} {...tabStyled}>
-            <StakingPortfolio />
-          </View>
-        </Tabs>
+    <>
+      <View style={mainStyle.container}>
+        <Header title={STAKING_MESSAGES.staking} accountSelectable />
+        <Reward />
+        <View style={homeStyle.wrapper}>
+          <Tabs rootTabID={TABS.ROOT_ID} styledTabList={{ padding: 0 }}>
+            <View tabID={TABS.TAB_COINS} label={STAKING_MESSAGES.listCoins} {...tabStyled}>
+              <StakingPools />
+            </View>
+            <View tabID={TABS.TAB_PORTFOLIO} label={STAKING_MESSAGES.portfolio} {...tabStyled}>
+              <StakingPortfolio />
+            </View>
+          </Tabs>
+        </View>
+        <BTNBorder
+          title={isStaking ? STAKING_MESSAGES.stakeMore : STAKING_MESSAGES.stakeNow}
+          onPress={onStakingMore}
+        />
       </View>
-      <BTNBorder
-        title={isStaking ? STAKING_MESSAGES.stakeMore : STAKING_MESSAGES.stakeNow}
-        onPress={onStakingMore}
-      />
-    </View>
+      <NFTTokenBottomBar />
+    </>
   );
 };
 

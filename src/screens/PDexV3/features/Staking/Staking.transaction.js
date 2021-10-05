@@ -14,7 +14,22 @@ const withTransaction = WrappedComp => props => {
     try {
       setLoadingTx(true);
       const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
-      const res = await pDexV3Inst.stakeCreateRequestTx({ fee, tokenID, tokenAmount, nftID });
+      await pDexV3Inst.stakeCreateRequestTx({ fee, tokenID, tokenAmount, nftID });
+    } catch (error) {
+      setError(new ExHandler(error).getMessage(error?.message));
+    } finally {
+      setLoadingTx(false);
+    }
+  };
+
+  const onUnStaking = async (withdrawCoins) => {
+    if (loadingTx) return;
+    try {
+      setLoadingTx(true);
+      const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
+      for (const item of withdrawCoins) {
+        await pDexV3Inst.stakeWithdrawRequestTx({...item});
+      }
     } catch (error) {
       setError(new ExHandler(error).getMessage(error?.message));
     } finally {
@@ -28,6 +43,7 @@ const withTransaction = WrappedComp => props => {
         {...{
           ...props,
           onStaking,
+          onUnStaking,
           error,
         }}
       />

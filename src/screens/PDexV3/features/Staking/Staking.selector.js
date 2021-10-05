@@ -92,7 +92,9 @@ export const stakingCoinsSelector = createSelector(
       const totalRewardUSDStr = `${CONSTANT_COMMONS.USD_SPECIAL_SYMBOL}${formatUtil.amountFull(totalRewardAmount, token.pDecimals)}`;
       const reward = { rewardsCoins, rewardTokenIds, rewardsMerged, totalRewardUSD, totalRewardAmount, totalRewardUSDStr };
       /**---------------------------------------------------------*/
-      const withdrawableCoins = orderBy(coins.filter(coin => (!!validNFT(coin.nftId)) && coin.amount), 'amount', 'asc');
+      // MOCK UP
+      // const withdrawableCoins = orderBy(coins.filter(coin => (!!validNFT(coin.nftId)) && coin.amount), 'amount', 'asc');
+      const withdrawableCoins = orderBy(coins.filter(coin => coin.amount), 'amount', 'asc');
       const maxWithdrawAmount = withdrawableCoins.reduce((prev, curr) => prev.plus(curr.amount || 0), new BigNumber(0)).toNumber();
       const maxWithdrawHumanAmount = convert.toHumanAmount(maxWithdrawAmount, token.pDecimals);
       const maxWithdrawAmountStr = formatUtil.toFixed(maxWithdrawHumanAmount, token.pDecimals);
@@ -288,7 +290,7 @@ export const investInputAmount = createSelector(
     const inputText = formatUtil.amountFull(inputValue, token.pDecimals);
     let depositText = inputText;
     let maxDepositValue = userBalance;
-    if (feeToken.tokenId === tokenId && tokenId === PRVIDSTR) {
+    if (feeToken.tokenId === tokenId && tokenId === PRVIDSTR && userBalance > feeAmount) {
       const depositValue = new BigNumber(inputValue).plus(feeAmount).toNumber();
       maxDepositValue = new BigNumber(userBalance).minus(feeAmount).toNumber();
       depositText = formatUtil.amountFull(depositValue, token.pDecimals);
@@ -397,6 +399,37 @@ export const withdrawInvestDisable = createSelector(
   withdrawInvestInputValue,
   withdrawInvestValidate,
   (inputValue, validate) => (inputValue <= 0 || !!validate()),
+);
+
+export const withdrawCoinsSelector = createSelector(
+  withdrawInvestInputValue,
+  withdrawInvestCoinSelector,
+  stakingFeeSelector,
+  (inputValue, investCoin, { feeAmount }) => {
+    if (!investCoin) return;
+    const { withdrawInvest } = investCoin;
+    let { withdrawableCoins } = withdrawInvest;
+    withdrawableCoins = orderBy(withdrawableCoins, 'amount', 'acs');
+    let amountCount = new BigNumber(0);
+    const withdrawCoins = withdrawableCoins.reduce((prev, curr) => {
+      if (new BigNumber(inputValue).gt(amountCount)) {
+        const { amount, nftId, tokenId } = curr;
+        const unstakeAmount =
+          new BigNumber(amountCount.plus(amount)).lt(inputValue) ?
+            amount :
+            new BigNumber(inputValue).minus(amountCount).toNumber();
+        prev.push({
+          unstakingAmount: unstakeAmount,
+          nftID: nftId,
+          stakingTokenID: tokenId,
+          stakingPoolID: tokenId,
+        });
+        amountCount = amountCount.plus(unstakeAmount);
+      }
+      return prev;
+    }, []);
+    return withdrawCoins;
+  },
 );
 
 /**
@@ -560,6 +593,7 @@ export default ({
   investInputValidate,
   investDisable,
   investStakingCoinSelector,
+  withdrawCoinsSelector,
 
   withdrawInvestCoinSelector,
   withdrawInvestValidate,

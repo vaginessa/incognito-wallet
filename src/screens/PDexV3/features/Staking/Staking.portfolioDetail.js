@@ -97,7 +97,7 @@ const PortfolioDetail = () => {
             navigation.navigate(routeNames.StakingWithdrawInvest);
             dispatch(stakingActions.actionSetWithdrawInvestCoin({ tokenID: tokenId }));
           }}
-          disabled={disableAction}
+          // disabled={disableAction}
         />
         <BTNPrimary
           title={STAKING_MESSAGES.withdrawReward}
@@ -105,7 +105,7 @@ const PortfolioDetail = () => {
             navigation.navigate(routeNames.StakingWithdrawReward);
             dispatch(stakingActions.actionSetWithdrawRewardCoin({ tokenID: tokenId }));
           }}
-          disabled={disableAction}
+          // disabled={disableAction}
         />
       </View>
     );

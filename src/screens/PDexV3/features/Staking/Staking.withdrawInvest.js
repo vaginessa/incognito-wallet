@@ -15,6 +15,8 @@ import {change, Field} from 'redux-form';
 import withInput from '@screens/PDexV3/features/Staking/Staking.enhanceInput';
 import {stakingSelector} from '@screens/PDexV3/features/Staking/index';
 import {BTNPrimary} from '@components/core/Button';
+import isEmpty from 'lodash/isEmpty';
+import withTransaction from '@screens/PDexV3/features/Staking/Staking.transaction';
 
 const initialFormValues = {
   input: ''
@@ -61,9 +63,13 @@ const Input = React.memo(({ onWithdrawMaxInvest }) => {
 
 const CustomInput = withInput(Input);
 
-const StakingWithdrawInvest = () => {
+const StakingWithdrawInvest = React.memo(({ onUnStaking, error }) => {
   const disabled = useSelector(stakingSelector.withdrawInvestDisable);
-  // const navigateConfirm = () => navigation.navigate(routeNames.StakingMoreConfirm);
+  const withdrawCoins = useSelector(stakingSelector.withdrawCoinsSelector);
+  const onSubmit = () => {
+    if (isEmpty(withdrawCoins)) return;
+    typeof onUnStaking === 'function' && onUnStaking(withdrawCoins);
+  };
   return (
     <View style={mainStyle.container}>
       <Header title={STAKING_MESSAGES.withdraw} />
@@ -71,19 +77,29 @@ const StakingWithdrawInvest = () => {
         <Form>
           {() => (<CustomInput />)}
         </Form>
+        {!!error && (<Text style={coinStyled.error}>{error}</Text>)}
         <BTNPrimary
           title={STAKING_MESSAGES.withdraw}
           wrapperStyle={coinStyled.button}
-          disabled={disabled}
-          onPress={() => {}}
+          disabled={disabled || error}
+          onPress={onSubmit}
         />
       </View>
     </View>
   );
-};
+});
 
 Input.propTypes = {
   onWithdrawMaxInvest: PropTypes.func.isRequired
 };
 
-export default React.memo(StakingWithdrawInvest);
+StakingWithdrawInvest.defaultProps = {
+  error: undefined
+};
+
+StakingWithdrawInvest.protoTypes = {
+  onUnStaking: PropTypes.func.isRequired,
+  error: PropTypes.string,
+};
+
+export default withTransaction(StakingWithdrawInvest);
