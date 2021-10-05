@@ -251,7 +251,7 @@ export const investStakingCoinSelector = createSelector(
   nftTokenDataSelector,
   ({ tokenID }, stakingCoinByTokenID, { nftToken }) => {
     const stakingCoin = stakingCoinByTokenID(tokenID);
-    if (!stakingCoin) return {};
+    if (!stakingCoin) return { nftStaking: nftToken };
     const { coins } = stakingCoin;
     let nftId = (maxBy(coins || [], 'amount') || {}).nftId;
     if (!nftId) nftId = nftToken;
