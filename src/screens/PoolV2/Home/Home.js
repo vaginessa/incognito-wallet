@@ -35,6 +35,7 @@ const BtnInfo = React.memo(() => {
 
 const Home = ({
   config,
+  groupedCoins,
   userData,
   groupedUserData,
   withdrawable,
@@ -62,6 +63,7 @@ const Home = ({
         <Actions
           buy={!withdrawable}
           coins={config.coins}
+          groupedCoins={groupedCoins}
           data={userData}
           totalRewards={totalRewards}
           displayFullTotalRewards={displayFullTotalRewards}
@@ -95,6 +97,7 @@ const Home = ({
 
 Home.propTypes = {
   config: PropTypes.object,
+  groupedCoins: PropTypes.array,
   userData: PropTypes.array,
   groupedUserData: PropTypes.array,
   withdrawable: PropTypes.bool.isRequired,
@@ -113,6 +116,7 @@ Home.defaultProps = {
   config: null,
   userData: null,
   groupedUserData: null,
+  groupedCoins: null
 };
 
 export default compose(

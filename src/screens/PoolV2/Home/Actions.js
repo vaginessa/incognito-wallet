@@ -10,6 +10,7 @@ import styles from './style';
 const Actions = ({
   buy,
   coins,
+  groupedCoins,
   data,
   totalRewards,
   displayFullTotalRewards,
@@ -30,7 +31,7 @@ const Actions = ({
 
   const handleProvide = () => {
     navigation.navigate(ROUTE_NAMES.PoolV2ProvideSelectCoin, {
-      coins
+      coins: groupedCoins
     });
   };
 
@@ -67,6 +68,7 @@ const Actions = ({
 Actions.propTypes = {
   buy: PropTypes.bool,
   coins: PropTypes.array,
+  groupedCoins: PropTypes.array,
   data: PropTypes.array,
   totalRewards: PropTypes.number,
   displayFullTotalRewards: PropTypes.string,
@@ -75,6 +77,7 @@ Actions.propTypes = {
 Actions.defaultProps = {
   buy: false,
   coins: [],
+  groupedCoins: [],
   data: [],
   totalRewards: 0,
   displayFullTotalRewards: '',

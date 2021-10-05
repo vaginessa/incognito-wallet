@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import _ from 'lodash';
+import _, { forEach } from 'lodash';
 import BigNumber from 'bignumber.js';
 import { ExHandler } from '@services/exception';
 import { MESSAGES } from '@src/constants';
@@ -15,6 +15,7 @@ import { selectedPrivacySelector } from '@src/redux/selectors';
 const withPoolData = (WrappedComp) => (props) => {
   const [loading, setLoading] = useState(false);
   const [config, setConfig] = useState(null);
+  const [groupedCoins, setGroupedCoins] = useState([]);
   const [userData, setUserData] = useState([]);
   const [groupedUserData, setGroupedUserData] = useState([]);
   const [totalRewards, setTotalRewards] = useState(0);
@@ -30,8 +31,41 @@ const withPoolData = (WrappedComp) => (props) => {
   const getConfig = async () => {
     const config = await getPoolConfig();
     setConfig(config);
+    const groupedCoins = groupCoins(config.coins);
+    setGroupedCoins(groupedCoins);
 
     return config;
+  };
+
+  const groupCoins = (coins) => {
+    let groupedCoins = [...coins];
+
+    if (groupedCoins && groupedCoins.length > 1) {
+      groupedCoins.map((coin, index) => {
+        let newCoin = {...coin};
+        let sameCoinIDs = groupedCoins.filter((c) => {
+          return groupedCoins.indexOf(c) !== index && c.id === coin.id && c.locked === coin.locked;
+        });
+        if (sameCoinIDs && sameCoinIDs.length > 0) {
+          let terms = [
+            {
+              lockTime: coin.lockTime,
+              apy: coin.apy,
+            }
+          ];
+          sameCoinIDs.forEach(c => {
+            terms.push({
+              lockTime: c.lockTime,
+              apy: c.apy,
+            });
+            groupedCoins.splice(groupedCoins.indexOf(c), 1);
+          });
+          newCoin.terms = terms;
+        }
+        groupedCoins[index] = newCoin;
+      });
+    } 
+    return groupedCoins;
   };
 
   const getUserData = async (account, coins) => {
@@ -41,7 +75,7 @@ const withPoolData = (WrappedComp) => (props) => {
       groupedUserDataTmp.map((item, index) => {
         let newItem = {...item};
         const sameIDItems = groupedUserDataTmp.filter((i) => {
-          return groupedUserDataTmp.indexOf(i) !== index && i.id === item.id && i.locked === item.locked && i.lockTime === item.lockTime;
+          return groupedUserDataTmp.indexOf(i) !== index && i.id === item.id && i.locked === item.locked;
         });
 
         if (sameIDItems && sameIDItems.length > 0) {
@@ -50,12 +84,25 @@ const withPoolData = (WrappedComp) => (props) => {
           let totalPendingBalance = new BigNumber(item.pendingBalance);
           let totalUnstakePendingBalance = new BigNumber(item.unstakePendingBalance);
           let totalWithdrawPendingBalance = new BigNumber(item.withdrawPendingBalance);
+          let terms = [
+            {
+              lockTime: item.lockTime,
+              apy: item.coin.apy,
+            }
+          ];
           sameIDItems.map(i => {
             totalBalance = totalBalance.plus(new BigNumber(i.balance));
             totalReward = totalReward.plus(new BigNumber(i.rewardBalance));
             totalPendingBalance = totalPendingBalance.plus(new BigNumber(i.pendingBalance));
             totalUnstakePendingBalance = totalUnstakePendingBalance.plus(new BigNumber(i.unstakePendingBalance));
             totalWithdrawPendingBalance = totalWithdrawPendingBalance.plus(new BigNumber(i.withdrawPendingBalance));
+            let foundTerm = terms.find(t => t.lockTime === i.lockTime && t.apy === i.coin.apy);
+            if (!foundTerm) {
+              terms.push({
+                lockTime: i.lockTime,
+                apy: i.coin.apy,
+              });
+            }
           });
           newItem.balance = totalBalance.toNumber();
           newItem.rewardBalance = totalReward.toNumber();
@@ -69,6 +116,7 @@ const withPoolData = (WrappedComp) => (props) => {
           newItem.displayPendingBalance = formatUtils.amountFull(newItem.pendingBalance, newItem.pDecimals, true);
           newItem.displayUnstakeBalance = formatUtils.amountFull(newItem.unstakePendingBalance, newItem.pDecimals, true);
           newItem.displayWithdrawReward = formatUtils.amountFull(newItem.withdrawPendingBalance, COINS.PRV.pDecimals, true);
+          newItem.terms = terms;
           groupedUserDataTmp[index] = newItem;
 
           sameIDItems.map((i) => {
@@ -155,6 +203,7 @@ const withPoolData = (WrappedComp) => (props) => {
         ...props,
         loading,
         config,
+        groupedCoins,
         userData,
         groupedUserData,
         withdrawable,
