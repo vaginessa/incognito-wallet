@@ -12,10 +12,19 @@ const withCoinData = WrappedComp => (props) => {
   // get min lock amount of prv
   let minLock = coins.find(i => i?.id === PRV_ID && i?.locked);
 
+  minLock.terms = [
+    {apy: '30', lockTime: 6, termID: 1},
+    {apy: '40', lockTime: 12, termID: 2},
+  ];
+
+  const isDefaultTIme = (element) => element.lockTime == 12;
+  const initIndex = minLock.terms.findIndex(isDefaultTIme);
+
   return (
     <WrappedComp
       {...{
         ...props,
+        initIndex,
         data,
         coins,
         coin: minLock,

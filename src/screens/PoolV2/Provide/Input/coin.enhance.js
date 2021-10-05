@@ -9,6 +9,18 @@ const withCoinData = WrappedComp => (props) => {
   const prvBalance  = useNavigationParam('prvBalance');
   const isPrv       = useNavigationParam('isPrv');
 
+  let initIndex = 0;
+  if (coin.locked) {
+    // todo: remove
+    coin.terms = [
+      {apy: '30', lockTime: 6, termID: 1},
+      {apy: '40', lockTime: 12, termID: 2},
+    ];
+
+    const isDefaultTIme = (element) => element.lockTime == 12;
+    initIndex = coin.terms.findIndex(isDefaultTIme);
+  }
+
   return (
     <WrappedComp
       {...{
@@ -17,6 +29,7 @@ const withCoinData = WrappedComp => (props) => {
         coin,
         inputToken: coin,
         inputBalance: coin.balance,
+        initIndex,
         // inputMin: (coin.id === COINS.PRV_ID ? coin.min + MAX_FEE_PER_TX : coin.min) || MAX_FEE_PER_TX,
         inputMin: coin.min || MAX_FEE_PER_TX,
         fee: MAX_FEE_PER_TX,
