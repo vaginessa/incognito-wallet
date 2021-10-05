@@ -12,9 +12,9 @@ const styled = StyleSheet.create({
   },
   symbol: {
     fontFamily: FONT.NAME.medium,
-    fontSize: FONT.SIZE.superMedium,
-    lineHeight: FONT.SIZE.superMedium + 5,
-    color: COLORS.newGrey,
+    fontSize: FONT.SIZE.medium,
+    lineHeight: FONT.SIZE.medium + 5,
+    color: COLORS.colorGrey3,
     textAlign: 'right',
     marginRight: 10,
   },

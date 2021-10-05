@@ -17,14 +17,14 @@ export const styled = StyleSheet.create({
     alignItems: 'center',
   },
   title: {
-    fontFamily: FONT.NAME.bold,
-    fontSize: FONT.SIZE.superMedium,
-    lineHeight: FONT.SIZE.superMedium + 5,
+    fontFamily: FONT.NAME.medium,
+    fontSize: FONT.SIZE.regular,
+    lineHeight: FONT.SIZE.regular + 5,
     color: COLORS.black,
     marginRight: 10,
   },
   hook: {
-    marginBottom: 15,
+    marginBottom: 8,
     alignItems: 'flex-start',
   },
   labelContainer: {
@@ -36,15 +36,15 @@ export const styled = StyleSheet.create({
   label: {
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.small,
-    lineHeight: FONT.SIZE.small + 5,
-    color: COLORS.newGrey,
+    lineHeight: FONT.SIZE.small + 7,
+    color: COLORS.colorGrey3,
     marginRight: 5,
   },
   value: {
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.small,
-    lineHeight: FONT.SIZE.small + 5,
-    color: COLORS.newGrey,
+    lineHeight: FONT.SIZE.small + 7,
+    color: COLORS.black,
     flex: 1,
     textAlign: 'right',
   },
@@ -85,12 +85,18 @@ export const Hook = React.memo((props) => {
     onPressQuestionIcon,
     customValue,
     customStyledValue,
+    styledHook,
+    customStyledLabel,
   } = props;
   return (
-    <Row style={styled.hook}>
+    <Row style={[styled.hook, styledHook]}>
       <Row style={styled.labelContainer}>
         <Text
-          style={[styled.label, boldLabel && styled.bold]}
+          style={[
+            styled.label,
+            boldLabel && styled.bold,
+            customStyledLabel ?? customStyledLabel,
+          ]}
           numberOfLines={1}
           ellipsizeMode="tail"
         >

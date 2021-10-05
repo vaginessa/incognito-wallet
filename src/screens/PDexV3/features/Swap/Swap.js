@@ -1,4 +1,8 @@
-import { ButtonTrade } from '@src/components/Button';
+import {
+  BtnOrderHistory,
+  ButtonRefresh,
+  ButtonTrade,
+} from '@src/components/Button';
 import React from 'react';
 import { View } from 'react-native';
 import PropTypes from 'prop-types';
@@ -6,6 +10,9 @@ import { Tabs1 } from '@src/components/core/Tabs';
 import { createForm } from '@components/core/reduxForm';
 import { useSelector } from 'react-redux';
 import LoadingTx from '@src/components/LoadingTx';
+import { Row } from '@src/components';
+import { useNavigation } from 'react-navigation-hooks';
+import routeNames from '@src/router/routeNames';
 import { styled, tabsStyled } from './Swap.styled';
 import {
   ROOT_TAB_ID,
@@ -33,7 +40,10 @@ const Form = createForm(formConfigs.formName, {
 });
 
 const Swap = (props) => {
-  const { handleConfirm } = props;
+  const { initSwapForm, handleConfirm } = props;
+  const navigation = useNavigation();
+  const handleNavOrderHistory = () =>
+    navigation.navigate(routeNames.TradeOrderHistory);
   const swapInfo = useSelector(swapInfoSelector);
   const tabsFactories = [
     {
@@ -44,7 +54,7 @@ const Swap = (props) => {
       tabStyledDisabled: tabsStyled.tabBtnDisabled,
       titleStyled: tabsStyled.tabTitleStyled,
       titleDisabledStyled: tabsStyled.tabTitleDisabledStyled,
-      tab: <TabSimple />,
+      tab: <TabSimple handleConfirm={handleConfirm} />,
     },
     {
       tabID: TAB_PRO_ID,
@@ -54,7 +64,7 @@ const Swap = (props) => {
       tabStyledDisabled: tabsStyled.tabBtnDisabled,
       titleStyled: tabsStyled.tabTitleStyled,
       titleDisabledStyled: tabsStyled.tabTitleDisabledStyled,
-      tab: <TabPro />,
+      tab: <TabPro handleConfirm={handleConfirm} />,
     },
   ];
   return (
@@ -62,16 +72,18 @@ const Swap = (props) => {
       <Form>
         {({ handleSubmit }) => (
           <>
-            <SwapInputsGroup />
-            <ButtonTrade
-              btnStyle={styled.btnTrade}
-              onPress={handleConfirm}
-              title={swapInfo?.btnSwapText || ''}
-              disabled={!!swapInfo?.disabledBtnSwap}
-            />
             <Tabs1
               rootTabID={ROOT_TAB_ID}
               styledTabList={tabsStyled.styledTabList}
+              rightCustom={
+                <Row>
+                  <ButtonRefresh
+                    style={styled.btnRefresh}
+                    onPress={initSwapForm}
+                  />
+                  <BtnOrderHistory onPress={handleNavOrderHistory} />
+                </Row>
+              }
             >
               {tabsFactories.map(({ tab, ...rest }) => (
                 <View key={rest.tabID} {...rest}>

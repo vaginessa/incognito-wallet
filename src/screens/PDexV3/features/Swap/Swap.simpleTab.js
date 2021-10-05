@@ -3,6 +3,7 @@ import { View, StyleSheet } from 'react-native';
 import { Hook } from '@screens/PDexV3/features/Extra';
 import { useSelector } from 'react-redux';
 import isEmpty from 'lodash/isEmpty';
+import { ButtonTrade } from '@src/components/Button';
 import {
   feetokenDataSelector,
   swapInfoSelector,
@@ -11,10 +12,18 @@ import {
 } from './Swap.selector';
 import { MaxPriceAndImpact } from './Swap.shared';
 import { formConfigs } from './Swap.constant';
+import SwapInputsGroup from './Swap.inputsGroup';
 
 const styled = StyleSheet.create({
   container: {
     marginTop: 30,
+  },
+  hookWrapper: {
+    marginTop: 40,
+  },
+  btnTrade: {
+    marginTop: 24,
+    height: 50,
   },
 });
 
@@ -27,10 +36,6 @@ export const useTabFactories = () => {
   );
   const hooksFactories = React.useMemo(() => {
     let result = [
-      {
-        label: 'Balance',
-        value: swapInfo?.balanceStr ?? '',
-      },
       swapInfo?.showPRVBalance
         ? {
           label: 'PRV Balance',
@@ -56,7 +61,6 @@ export const useTabFactories = () => {
         value: feeTokenData?.totalFeePRVText ?? '',
         hasQuestionIcon: true,
         onPressQuestionIcon: () => null,
-        boldLabel: true,
       });
     } else {
       result.push(
@@ -65,14 +69,12 @@ export const useTabFactories = () => {
           value: feeTokenData?.feeAmountText ?? '',
           hasQuestionIcon: true,
           onPressQuestionIcon: () => null,
-          boldLabel: true,
         },
         {
           label: 'Network fee',
           value: swapInfo?.networkfeeAmountStr ?? '',
           hasQuestionIcon: true,
           onPressQuestionIcon: () => null,
-          boldLabel: true,
         },
       );
     }
@@ -83,13 +85,23 @@ export const useTabFactories = () => {
   };
 };
 
-const TabSimple = React.memo(() => {
+const TabSimple = React.memo(({ handleConfirm }) => {
   const { hooksFactories } = useTabFactories();
+  const swapInfo = useSelector(swapInfoSelector);
   return (
     <View style={styled.container}>
-      {hooksFactories.map((item) => (
-        <Hook {...item} key={item.label} />
-      ))}
+      <SwapInputsGroup />
+      <ButtonTrade
+        btnStyle={styled.btnTrade}
+        onPress={handleConfirm}
+        title={swapInfo?.btnSwapText || ''}
+        disabled={!!swapInfo?.disabledBtnSwap}
+      />
+      <View style={styled.hookWrapper}>
+        {hooksFactories.map((item) => (
+          <Hook {...item} key={item.label} />
+        ))}
+      </View>
     </View>
   );
 });

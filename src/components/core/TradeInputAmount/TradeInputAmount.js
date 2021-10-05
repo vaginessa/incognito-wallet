@@ -1,42 +1,62 @@
+import React from 'react';
 import { ArrowRightGreyIcon, InfiniteIcon } from '@src/components/Icons';
 import PropTypes from 'prop-types';
 import Row from '@src/components/Row';
-import React from 'react';
-import { View, StyleSheet } from 'react-native';
-import { Text } from '@src/components/core';
+import { StyleSheet } from 'react-native';
+import {
+  Text,
+  BaseTextInput,
+  TouchableOpacity,
+  ActivityIndicator,
+  Image,
+  View,
+} from '@src/components/core';
 import { COLORS, FONT } from '@src/styles';
-import BaseTextInput from '../BaseTextInput';
-import TouchableOpacity from '../TouchableOpacity';
-import ActivityIndicator from '../ActivityIndicator';
 
 const styled = StyleSheet.create({
   container: {
-    alignItems: 'center',
-    width: '100%',
+    flex: 1,
   },
   inputContainer: {
     flex: 1,
-    marginRight: 10,
+    backgroundColor: COLORS.colorGrey4,
+    height: 50,
+    borderRadius: 8,
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    flexDirection: 'row',
+    paddingHorizontal: 15,
   },
   input: {
-    width: '100%',
+    flex: 1,
     color: COLORS.black,
-    fontSize: FONT.SIZE.large + 2,
-    lineHeight: FONT.SIZE.large + 5,
-    fontFamily: FONT.NAME.bold,
+    fontSize: FONT.SIZE.medium,
+    fontFamily: FONT.NAME.medium,
+    marginRight: 15,
   },
   symbol: {
     color: COLORS.black,
-    fontSize: FONT.SIZE.large + 2,
-    lineHeight: FONT.SIZE.large + 5,
-    fontFamily: FONT.NAME.bold,
-    marginRight: 10,
+    fontSize: FONT.SIZE.medium,
+    lineHeight: FONT.SIZE.medium + 5,
+    fontFamily: FONT.NAME.medium,
+    marginRight: 8,
   },
   infinityIcon: {
-    marginRight: 10,
+    marginRight: 8,
   },
   loadingIcon: {
-    marginRight: 10,
+    marginRight: 8,
+  },
+  header: {
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  label: {
+    color: COLORS.black,
+    fontSize: FONT.SIZE.superSmall,
+    lineHeight: FONT.SIZE.superSmall + 5,
+    fontFamily: FONT.NAME.medium,
   },
 });
 
@@ -50,15 +70,25 @@ const TradeInputAmount = (props) => {
     placeholder = '0',
     loadingBalance,
     editableInput,
-    wrapInputStyle,
-    symbolStyle,
-    inputStyle,
     infiniteStyle,
+    hasIcon = true,
+    srcIcon,
+    label,
+    rightHeader,
+    visibleHeader = false,
     ...rest
   } = props || {};
   const renderSub = () => {
     if (loadingBalance) {
       return <ActivityIndicator style={styled.loadingIcon} size="small" />;
+    }
+    if (hasIcon) {
+      return (
+        <Image
+          style={{ width: 20, height: 20, marginRight: 8 }}
+          source={{ uri: srcIcon }}
+        />
+      );
     }
     if (hasInfinityIcon) {
       return (
@@ -74,7 +104,15 @@ const TradeInputAmount = (props) => {
     }
   };
   return (
-    <Row style={[styled.container, wrapInputStyle]}>
+    <View style={styled.container}>
+      {visibleHeader && (
+        <Row style={styled.header}>
+          <Text numberOfLines={1} style={styled.label}>
+            {label}
+          </Text>
+          {rightHeader && rightHeader}
+        </Row>
+      )}
       <View style={styled.inputContainer}>
         <BaseTextInput
           style={{
@@ -88,17 +126,17 @@ const TradeInputAmount = (props) => {
           editable={editableInput}
           {...rest}
         />
+        {renderSub()}
+        {!!symbol && (
+          <TouchableOpacity onPress={onPressSymbol}>
+            <Row style={{ alignItems: 'center' }}>
+              {!!symbol && <Text style={styled.symbol}>{symbol}</Text>}
+              {canSelectSymbol && <ArrowRightGreyIcon />}
+            </Row>
+          </TouchableOpacity>
+        )}
       </View>
-      {renderSub()}
-      {!!symbol && (
-        <TouchableOpacity onPress={onPressSymbol}>
-          <Row style={{ alignItems: 'center' }}>
-            {!!symbol && <Text style={[styled.symbol, symbolStyle]}>{symbol}</Text>}
-            {canSelectSymbol && <ArrowRightGreyIcon />}
-          </Row>
-        </TouchableOpacity>
-      )}
-    </Row>
+    </View>
   );
 };
 
@@ -124,10 +162,12 @@ TradeInputAmount.propTypes = {
   onPressSymbol: PropTypes.func,
   loadingBalance: PropTypes.bool,
   editableInput: PropTypes.bool,
-  wrapInputStyle: PropTypes.any,
-  symbolStyle: PropTypes.any,
-  inputStyle: PropTypes.any,
   infiniteStyle: PropTypes.any,
+  hasIcon: PropTypes.bool,
+  srcIcon: PropTypes.string,
+  label: PropTypes.string,
+  rightHeader: PropTypes.element,
+  visibleHeader: PropTypes.bool,
 };
 
 export default React.memo(TradeInputAmount);

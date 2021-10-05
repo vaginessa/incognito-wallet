@@ -3,6 +3,9 @@ import { StyleSheet } from 'react-native';
 
 export const styled = StyleSheet.create({
   container: {},
+  btnRefresh: {
+    marginRight: 12,
+  },
   btnTrade: {
     marginBottom: 30,
   },
@@ -36,5 +39,44 @@ export const tabsStyled = StyleSheet.create({
 export const inputGroupStyled = StyleSheet.create({
   selectPercentAmountContainer: {
     marginVertical: 30,
+  },
+  rightHeaderSell: {
+    flex: 1,
+    marginLeft: 15,
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+  },
+  balanceStr: {
+    fontFamily: FONT.NAME.regular,
+    fontSize: FONT.SIZE.superSmall,
+    lineHeight: FONT.SIZE.superSmall + 3,
+    color: COLORS.colorGrey3,
+  },
+  btnStyle: {
+    height: 20,
+    marginLeft: 15,
+    borderRadius: 0,
+    paddingHorizontal: 5,
+  },
+  titleStyle: {
+    fontFamily: FONT.NAME.bold,
+    fontSize: FONT.SIZE.superSmall,
+    lineHeight: FONT.SIZE.superSmall + 3,
+  },
+  inputGroups: {
+    margin: 4,
+    shadowOffset: {
+      width: 0,
+      height: 0,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+    borderRadius: 8,
+    backgroundColor: COLORS.white,
+    borderWidth: 1,
+    borderColor: COLORS.colorGrey4,
+    paddingVertical: 24,
+    paddingHorizontal: 16,
   },
 });

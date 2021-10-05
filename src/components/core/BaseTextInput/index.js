@@ -15,7 +15,7 @@ const BaseTextInput = ({ style, ...rest }) => {
       style={[
         styles.input,
         style,
-        !rest?.editable ? { color: COLORS.newGrey } : null,
+        // !rest?.editable ? { color: COLORS.newGrey } : null,
       ]}
       {...rest}
     />

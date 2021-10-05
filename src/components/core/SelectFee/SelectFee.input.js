@@ -11,15 +11,20 @@ const styled = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'space-between',
+    backgroundColor: COLORS.colorGrey4,
+    height: 50,
+    borderRadius: 8,
+    flexDirection: 'row',
+    paddingHorizontal: 15,
   },
   inputWrapper: {
     flex: 1,
     maxWidth: '50%',
   },
   input: {
-    fontFamily: FONT.NAME.bold,
-    fontSize: FONT.SIZE.superMedium,
-    lineHeight: FONT.SIZE.superMedium + 5,
+    fontFamily: FONT.NAME.medium,
+    fontSize: FONT.SIZE.medium,
+    lineHeight: FONT.SIZE.medium + 5,
     color: COLORS.black,
   },
 });

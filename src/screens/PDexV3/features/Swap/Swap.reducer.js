@@ -42,7 +42,7 @@ const initialState = {
     isFetched: false,
     data: [],
   },
-  swapDetail: {
+  orderDetail: {
     order: {},
     fetching: false,
   },
@@ -67,7 +67,7 @@ export default (state = initialState, action) => {
       orderDetail: {
         ...orderDetail,
         fetching: false,
-        order: action.payload,
+        order: { ...action.payload },
       },
     };
   }

@@ -447,7 +447,7 @@ export const actionFetchSwap = () => async (dispatch, getState) => {
     } = buyInputAmount;
     const { origininalFeeAmount: tradingFee, feetoken } = feetokenData;
     const params = {
-      transfer: { fee: ACCOUNT_CONSTANT.MAX_FEE_PER_TX },
+      transfer: { fee: ACCOUNT_CONSTANT.MAX_FEE_PER_TX, info: '' },
       extra: {
         tokenIDToSell,
         sellAmount,
@@ -521,6 +521,7 @@ export const actionFetchDataOrderDetail = () => async (dispatch, getState) => {
     _order = await pDexV3.getOrderSwapDetail({
       requestTx: order?.requestTx,
       version: PrivacyVersion.ver2,
+      fromStorage: !!order?.fromStorage,
     });
   } catch (error) {
     _order = { ...order };

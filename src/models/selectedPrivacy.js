@@ -158,12 +158,13 @@ class SelectedPrivacy {
     this.isUSDT = this.tokenId === BIG_COINS.USDT;
     this.isPRV = this.tokenId === BIG_COINS.PRV;
     this.symbol = this.externalSymbol || this.symbol || '';
-    if (!this.symbol) {
+    if (!this.symbol && this.isIncognitoToken && !this.isMainCrypto) {
       this.symbol = 'INC';
     }
     this.amount = token?.amount;
     if (this.isMainCrypto) {
       this.amount = account?.value;
+      this.symbol = CONSTANT_COMMONS.PRV.symbol;
     }
     this.amount = this.amount || 0;
   }
