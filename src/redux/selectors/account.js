@@ -176,6 +176,11 @@ export const getValidAmountNFTSelector = createSelector(
   },
 );
 
+export const isFetchingNFTSelector = createSelector(
+  accountSelector,
+  ({ isFetchingNFT }) => isFetchingNFT,
+);
+
 export default {
   defaultAccountName,
   listAccount,
@@ -199,4 +204,5 @@ export default {
   defaultAccountWalletSelector,
   getValidRealAmountNFTSelector,
   getValidAmountNFTSelector,
+  isFetchingNFTSelector,
 };

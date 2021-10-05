@@ -1,4 +1,4 @@
-import React, {memo} from 'react';
+import React from 'react';
 import {View} from 'react-native';
 import {createForm, RFTradeInputAmount as TradeInputAmount, validator} from '@components/core/reduxForm';
 import {formConfigsInvest, STAKING_MESSAGES} from '@screens/PDexV3/features/Staking/Staking.constant';
@@ -6,18 +6,16 @@ import {useDispatch, useSelector} from 'react-redux';
 import {change, Field} from 'redux-form';
 import {styled as mainStyle} from '@screens/PDexV3/PDexV3.styled';
 import Header from '@components/Header/Header';
-import {
-  investCoinSelector, investDisable,
-  stakingFeeSelector,
-  investInputValidate, investInputAmount
-} from '@screens/PDexV3/features/Staking/Staking.selector';
 import {coinStyles as coinStyled} from '@screens/PDexV3/features/Staking/Staking.styled';
-import {RoundCornerButton} from '@components/core';
-import {LoadingContainer, RowSpaceText} from '@src/components';
-import {useNavigation} from 'react-navigation-hooks';
-import routeNames from '@routers/routeNames';
+import {RoundCornerButton, Text} from '@components/core';
+import {LoadingContainer} from '@src/components';
 import withInput from '@screens/PDexV3/features/Staking/Staking.enhanceInput';
 import PropTypes from 'prop-types';
+import {stakingSelector} from '@screens/PDexV3/features/Staking';
+import withInvest from '@screens/PDexV3/features/Staking/Staking.investEnhance';
+import {compose} from 'recompose';
+import withTransaction from '@screens/PDexV3/features/Staking/Staking.transaction';
+import {NFTTokenBottomBar} from '@screens/PDexV3/features/NFTToken';
 
 const initialFormValues = {
   input: ''
@@ -29,15 +27,12 @@ const Form = createForm(formConfigsInvest.formName, {
   enableReinitialize: true,
 });
 
-const Input = React.memo(({ onInvestMax }) => {
+const Input = React.memo(({ onInvestMax, onSymbolPress }) => {
   const dispatch = useDispatch();
-  const { maxDepositText } = useSelector(investInputAmount);
-  const inputValidate = useSelector(investInputValidate);
+  const { maxDepositText, token } = useSelector(stakingSelector.investInputAmount);
+  const inputValidate = useSelector(stakingSelector.investInputValidate);
   const onChangeText = (text) => dispatch(change(formConfigsInvest.formName, formConfigsInvest.input, text));
   const onChangeMaxInvest = () => onInvestMax(maxDepositText);
-  React.useEffect(() => {
-    onChangeMaxInvest();
-  }, []);
   return(
     <Field
       component={TradeInputAmount}
@@ -47,55 +42,88 @@ const Input = React.memo(({ onInvestMax }) => {
         ...validator.combinedAmount,
         inputValidate,
       ]}
+      symbol={token && token?.symbol}
       onChange={onChangeText}
       editableInput
+      canSelectSymbol
       onPressInfinityIcon={onChangeMaxInvest}
+      wrapInputStyle={coinStyled.wrapInput}
+      inputStyle={coinStyled.input}
+      symbolStyle={coinStyled.symbol}
+      infiniteStyle={coinStyled.infinite}
+      onPressSymbol={onSymbolPress}
     />
   );
 });
 
 const CustomInput = withInput(Input);
 
-const StakingMoreInput = () => {
-  const navigation = useNavigation();
-  const coin = useSelector(investCoinSelector);
-  const fee = useSelector(stakingFeeSelector);
-  const disable = useSelector(investDisable);
-  const navigateConfirm = () => navigation.navigate(routeNames.StakingMoreConfirm);
+const StakingMoreInput = React.memo(({ onSymbolPress, onStaking, error }) => {
+  const pool = useSelector(stakingSelector.investPoolSelector);
+  const { feeAmount } = useSelector(stakingSelector.stakingFeeSelector);
+  const { nftStaking } = useSelector(stakingSelector.investStakingCoinSelector);
+  const { inputValue, tokenId } = useSelector(stakingSelector.investInputAmount);
+  const disable = useSelector(stakingSelector.investDisable);
+  const onSubmit = () => {
+    if (!feeAmount || !tokenId || !inputValue || !nftStaking) return;
+    const params = {
+      fee: feeAmount,
+      tokenID: tokenId,
+      tokenAmount: inputValue,
+      nftID: nftStaking
+    };
+    typeof onStaking === 'function' && onStaking(params);
+  };
   const renderContent = () => {
-    if (!coin) return <LoadingContainer />;
-    const { token, userBalanceSymbolStr } = coin;
-    const { feeAmountSymbolStr } = fee;
+    if (!pool) return <LoadingContainer />;
     return (
       <Form>
         {() => (
           <>
-            <CustomInput />
+            <Text style={coinStyled.smallGray}>
+              {`Balance: ${pool.userBalanceSymbolStr}`}
+            </Text>
+            <CustomInput onSymbolPress={onSymbolPress} />
+            {!!error && (<Text style={coinStyled.error}>{error}</Text>)}
             <RoundCornerButton
-              title={STAKING_MESSAGES.stakeSymbol(token.symbol)}
+              title={STAKING_MESSAGES.staking}
               style={coinStyled.button}
-              disabled={disable}
-              onPress={navigateConfirm}
+              disabled={disable || !!error}
+              onPress={onSubmit}
             />
-            <RowSpaceText label="Balance" value={userBalanceSymbolStr} />
-            <RowSpaceText label="Fee" value={feeAmountSymbolStr} />
           </>
         )}
       </Form>
     );
   };
   return (
-    <View style={mainStyle.container}>
-      <Header title={STAKING_MESSAGES.staking} />
-      <View style={coinStyled.coinContainer}>
-        {renderContent()}
+    <>
+      <View style={mainStyle.container}>
+        <Header title={STAKING_MESSAGES.staking} />
+        <View style={coinStyled.coinContainer}>
+          {renderContent()}
+        </View>
       </View>
-    </View>
+      <NFTTokenBottomBar />
+    </>
   );
-};
+});
 
 Input.propTypes = {
-  onInvestMax: PropTypes.func.isRequired
+  onInvestMax: PropTypes.func.isRequired,
+  onSymbolPress: PropTypes.func.isRequired
 };
 
-export default memo(StakingMoreInput);
+StakingMoreInput.defaultProps = {
+  error: undefined
+};
+StakingMoreInput.propTypes = {
+  onSymbolPress: PropTypes.func.isRequired,
+  onStaking: PropTypes.func.isRequired,
+  error: PropTypes.string,
+};
+
+export default compose(
+  withTransaction,
+  withInvest
+)(StakingMoreInput);

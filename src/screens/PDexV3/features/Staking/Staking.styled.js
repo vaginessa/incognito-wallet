@@ -1,6 +1,6 @@
 import {StyleSheet} from 'react-native';
 import {COLORS, FONT, UTILS} from '@src/styles';
-import {isAndroid} from '@utils/platform';
+import {FontStyle} from '@src/styles/TextStyle';
 
 export const btnStyles = StyleSheet.create({
   button: {
@@ -16,22 +16,22 @@ export const coinStyles = StyleSheet.create({
     flex: 1,
   },
   coinContainer: {
-    marginTop: UTILS.heightScale(25),
+    marginTop: 25,
     flex: 1,
   },
   coin: {
-    marginBottom: UTILS.heightScale(20),
+    marginBottom: 20,
   },
   coinName: {
-    fontFamily: FONT.NAME.bold,
+    fontFamily: FONT.NAME.medium,
     fontSize: 20,
-    marginBottom: UTILS.heightScale(8),
+    color: COLORS.black,
   },
   coinInterest: {
     fontSize: 18,
     color: COLORS.green2,
     fontFamily: FONT.NAME.medium,
-    marginBottom: UTILS.heightScale(8),
+    marginBottom: 8,
   },
   coinExtra: {
     fontFamily: FONT.NAME.medium,
@@ -50,43 +50,84 @@ export const coinStyles = StyleSheet.create({
     marginBottom: 30,
   },
   error: {
+    ...FONT.STYLE.normal,
+    fontSize: FONT.SIZE.regular,
+    lineHeight: FONT.SIZE.regular + 8,
     color: COLORS.red,
-    fontSize: 16,
-    minHeight: 20,
-    marginTop: 5
+    marginTop: 10
   },
   disabled: {
     opacity: 0.5,
   },
-  input: {
-    fontFamily: FONT.NAME.bold,
-    fontSize: 26,
-    height: isAndroid() ? 52 : 'auto',
-    padding: 0,
-    flex: 1,
-    marginRight: 15,
-    marginBottom: isAndroid() ? -UTILS.heightScale(8) : 0,
-  },
   inputContainer: {
-    marginBottom: UTILS.heightScale(8)
-  },
-  symbol: {
-    fontSize: UTILS.heightScale(20),
-    fontFamily: FONT.NAME.bold,
+    marginBottom: 8
   },
   rateChange: {
     position: 'absolute',
     backgroundColor: 'white',
-    paddingVertical: UTILS.heightScale(15),
+    paddingVertical: 15,
     bottom: 0,
     left: 0,
     right: 0,
-    marginBottom: UTILS.heightScale(15),
+    marginBottom: 15,
   },
   rateStyle: {
     fontFamily: FONT.NAME.medium,
     color: COLORS.newGrey,
     fontSize: 18,
+  },
+  smallGray: {
+    textAlign: 'right',
+    color: COLORS.lightGrey34,
+    fontSize: FONT.SIZE.superSmall,
+    lineHeight: FONT.SIZE.superSmall + 6,
+    marginBottom: 8
+  },
+  regularGray: {
+    color: COLORS.lightGrey34,
+    fontSize: FONT.SIZE.regular,
+    lineHeight: FONT.SIZE.regular + 8,
+  },
+  regularDark: {
+    ...FONT.STYLE.medium,
+    color: COLORS.black,
+    fontSize: FONT.SIZE.regular,
+    lineHeight: FONT.SIZE.regular + 8,
+  },
+  wrapInput: {
+    backgroundColor: '#F7F7F7',
+    height: 50,
+    paddingHorizontal: 8,
+    borderRadius: 4
+  },
+  input: {
+    fontSize: FONT.SIZE.medium,
+    lineHeight: FONT.SIZE.medium + 4,
+    fontFamily: FONT.NAME.medium,
+    height: '100%'
+  },
+  symbol: {
+    fontSize: FONT.SIZE.medium,
+    lineHeight: FONT.SIZE.medium + 9,
+    fontFamily: FONT.NAME.medium,
+  },
+  infinite: {
+    width: 22,
+    height: 10
+  },
+  rowCenterVertical: {
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+  image: {
+    width: 24,
+    height: 24
+  },
+  warning: {
+    color: COLORS.orange,
+    fontSize: FONT.SIZE.small,
+    lineHeight: FONT.SIZE.small + 9,
+    fontFamily: FONT.NAME.medium,
   },
 });
 
@@ -172,4 +213,88 @@ export const historyStyle = StyleSheet.create({
     flex: 1,
     marginRight: 25,
   },
+});
+
+export const tabStyle = StyleSheet.create({
+  title: {
+    ...FontStyle.medium,
+    color: COLORS.white
+  },
+  disabledText: {
+    ...FontStyle.medium,
+    color: COLORS.lightGrey31
+  },
+  tabEnable: {
+    backgroundColor: COLORS.green2
+  }
+});
+
+export const homeStyle = StyleSheet.create({
+  wrapper: {
+    flex: 1,
+    paddingTop: 24
+  }
+});
+
+export const itemStyle = StyleSheet.create({
+  wrapper: {
+    marginTop: 24,
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
+  image: {
+    width: 20,
+    height: 20,
+  },
+  wrapImage: {
+    justifyContent: 'center',
+    marginRight: 12,
+    height: FONT.SIZE.medium + 9,
+  },
+  title: {
+    ...FONT.STYLE.medium,
+    fontSize: FONT.SIZE.medium,
+    lineHeight: FONT.SIZE.medium + 9
+  },
+  subTitle: {
+    ...FONT.STYLE.normal,
+    fontSize: FONT.SIZE.small,
+    lineHeight: FONT.SIZE.small + 7,
+    color: COLORS.lightGrey33,
+  },
+  headerTitle: {
+    ...FONT.STYLE.medium,
+    fontSize: FONT.SIZE.small,
+    lineHeight: FONT.SIZE.small + 7,
+    color: COLORS.lightGrey33,
+  },
+  greenText: {
+    color: COLORS.green2,
+  },
+  rightText: {
+    textAlign: 'right'
+  },
+  arrowRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end'
+  },
+  arrow: {
+    marginLeft: 12
+  },
+  subRow: {
+    marginTop: 3,
+    marginLeft: 32
+  },
+  mediumTitle: {
+    ...FONT.STYLE.medium,
+    fontSize: FONT.SIZE.regular,
+    lineHeight: FONT.SIZE.regular + 9
+  },
+  mediumGray: {
+    ...FONT.STYLE.medium,
+    fontSize: FONT.SIZE.regular,
+    lineHeight: FONT.SIZE.regular + 9,
+    color: COLORS.lightGrey34
+  }
 });

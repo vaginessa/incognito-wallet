@@ -16,7 +16,6 @@ import PropTypes from 'prop-types';
 
 const ContributeDetail = ({ handleRefund, handleRetry }) => {
   const history = useNavigationParam('history');
-  console.log('SANG TEST: ', history);
   const { refundData, retryData } = history;
   const handleOpenLink = (txID) => {
     if (!txID) return;

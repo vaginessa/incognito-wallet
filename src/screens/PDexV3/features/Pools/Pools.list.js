@@ -21,7 +21,6 @@ const styled = StyleSheet.create({
 });
 
 export const PoolsList = React.memo(({ onPressPool, pools }) => {
-  // const poolIds = useSelector(poolPairIdsSelector);
   const isFetching = useSelector(isFetchingSelector);
   return (
     <KeyboardAwareScrollView contentContainerStyle={{ paddingTop: 27 }}>
@@ -43,7 +42,8 @@ const PoolsListContainer = (props) => {
   const params = useNavigationParam('params');
   const { headerTitle = 'Search pools', onPressPool } = params || props;
   const purePools = useSelector(listPoolsSelector);
-  const [pools, setPools] = React.useState(() => purePools.filter(({ verified }) => verified));
+  let refFirstTime = React.useRef(true);
+  const [pools, setPools] = React.useState([]);
   const onSearch = (searchText) => {
     const dataByPoolId = purePools.filter(({ poolId }) => searchText.toLowerCase() === poolId.toLowerCase());
     if (!isEmpty(dataByPoolId)) {
@@ -59,6 +59,12 @@ const PoolsListContainer = (props) => {
     ));
     setPools(searchData);
   };
+  React.useEffect(() => {
+    if (refFirstTime.current && purePools.length > 0) {
+      setPools( () => purePools.filter(({ isVerify }) => isVerify));
+      refFirstTime.current = false;
+    }
+  }, [purePools, refFirstTime]);
   return (
     <View style={styled.container}>
       <Header
@@ -74,6 +80,7 @@ const PoolsListContainer = (props) => {
 
 PoolsList.propTypes = {
   onPressPool: PropTypes.func.isRequired,
+  pools: PropTypes.array.isRequired,
 };
 
 export default withLayout_2(React.memo(PoolsListContainer));

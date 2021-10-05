@@ -70,6 +70,7 @@ const TradeInputAmount = (props) => {
     placeholder = '0',
     loadingBalance,
     editableInput,
+    infiniteStyle,
     hasIcon = true,
     srcIcon,
     label,
@@ -97,7 +98,7 @@ const TradeInputAmount = (props) => {
           }
           style={styled.infinityIcon}
         >
-          <InfiniteIcon />
+          <InfiniteIcon style={infiniteStyle} />
         </TouchableOpacity>
       );
     }
@@ -116,6 +117,7 @@ const TradeInputAmount = (props) => {
         <BaseTextInput
           style={{
             ...styled.input,
+            ...inputStyle
           }}
           keyboardType="decimal-pad"
           placeholder={placeholder}
@@ -138,6 +140,20 @@ const TradeInputAmount = (props) => {
   );
 };
 
+TradeInputAmount.defaultProps = {
+  hasInfinityIcon: false,
+  onPressInfinityIcon: undefined,
+  symbol: undefined,
+  canSelectSymbol: false,
+  onPressSymbol: undefined,
+  loadingBalance: false,
+  editableInput: false,
+  wrapInputStyle: {},
+  symbolStyle: {},
+  inputStyle: {},
+  infiniteStyle: {}
+};
+
 TradeInputAmount.propTypes = {
   hasInfinityIcon: PropTypes.bool,
   onPressInfinityIcon: PropTypes.func,
@@ -146,6 +162,7 @@ TradeInputAmount.propTypes = {
   onPressSymbol: PropTypes.func,
   loadingBalance: PropTypes.bool,
   editableInput: PropTypes.bool,
+  infiniteStyle: PropTypes.any,
   hasIcon: PropTypes.bool,
   srcIcon: PropTypes.string,
   label: PropTypes.string,

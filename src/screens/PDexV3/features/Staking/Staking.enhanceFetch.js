@@ -1,21 +1,29 @@
 import React from 'react';
 import ErrorBoundary from '@src/components/ErrorBoundary';
-import {useDispatch} from 'react-redux';
+import {batch, useDispatch} from 'react-redux';
 import {stakingActions} from '@screens/PDexV3/features/Staking/index';
 
 const enhanceFetch = WrappedComp => props => {
   const dispatch = useDispatch();
-  const handleFetchData = () => dispatch(stakingActions.actionFetchData());
+  const handleFetchCoins = () => dispatch(stakingActions.actionFetchCoins());
   const handleChangeAccount = () => dispatch(stakingActions.actionChangeAccount());
-  const handleFetchPool = () => dispatch(stakingActions.actionFetchStakingPool());
+  const handleFetchStakingPools = () => dispatch(stakingActions.actionFetchStakingPools());
+  const handleFetchData = () => {
+    batch(() => {
+      handleChangeAccount();
+      handleFetchCoins();
+      handleFetchStakingPools();
+    });
+  };
   return (
     <ErrorBoundary>
       <WrappedComp
         {...{
           ...props,
-          handleFetchData,
+          handleFetchCoins,
           handleChangeAccount,
-          handleFetchPool,
+          handleFetchStakingPools,
+          handleFetchData,
         }}
       />
     </ErrorBoundary>

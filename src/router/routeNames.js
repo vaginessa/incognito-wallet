@@ -178,6 +178,7 @@ export default {
   StakingWithdrawReward: 'StakingWithdrawReward',
   StakingHistories: 'StakingHistories',
   StakingHistoryDetail: 'StakingHistoryDetail',
+  StakingDetail: 'StakingDetail',
   TradeOrderHistory: 'TradeOrderHistory',
   PairList: 'PairList',
   ReviewOrderLimit: 'ReviewOrderLimit',
