@@ -38,7 +38,7 @@ export const STAKING_MESSAGES = {
   withdrawReward: 'Withdraw reward',
   withdrawStaking: 'Withdraw staking',
   waitNFT: 'Waiting NFTs token...',
-  cantWithdraw: 'You cant withdraw your staking and reward now, if you have pending transactions, please wait a few minutes for your NFTs amount up to date.',
+  cantWithdraw: 'You cant withdraw your staking and reward now, your current NFTs amount is zero, if you have pending transactions, please wait a few minutes for your NFTs amount up to date.',
   pendingNFTs: (onPress) => (
     <Text style={coinStyled.warning}>
       You are in possession of zero value, if you have pending transactions, please wait a few minutes for your&nbsp;

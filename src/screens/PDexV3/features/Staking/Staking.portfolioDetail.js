@@ -40,7 +40,7 @@ const PortfolioDetail = ({ onWithdrawReward, error, setError }) => {
     dispatch(actionToggleModal({
       data: (
         <ModalBottomSheet
-          title='Exchange rate'
+          title='Rewards'
           headerView={<HeaderRow array={['Name', 'Amount']} />}
           contentView={<View style={{ marginTop: 24 }}>{rewardsMerged.map(renderModelCell)}</View>}
         />
