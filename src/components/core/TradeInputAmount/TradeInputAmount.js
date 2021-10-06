@@ -42,7 +42,7 @@ const styled = StyleSheet.create({
     marginRight: 8,
   },
   infinityIcon: {
-    marginRight: 8,
+    marginHorizontal: 8,
   },
   loadingIcon: {
     marginRight: 8,
@@ -70,7 +70,6 @@ const TradeInputAmount = (props) => {
     placeholder = '0',
     loadingBalance,
     editableInput,
-    infiniteStyle,
     hasIcon = true,
     srcIcon,
     label,
@@ -99,7 +98,7 @@ const TradeInputAmount = (props) => {
           }
           style={styled.infinityIcon}
         >
-          <InfiniteIcon style={infiniteStyle} />
+          <InfiniteIcon style={{ width: 22, height: 10 }} />
         </TouchableOpacity>
       );
     }
@@ -149,7 +148,6 @@ TradeInputAmount.defaultProps = {
   onPressSymbol: undefined,
   loadingBalance: false,
   editableInput: false,
-  infiniteStyle: {},
   hasIcon: true,
   label: '',
   srcIcon: '',
@@ -165,7 +163,6 @@ TradeInputAmount.propTypes = {
   onPressSymbol: PropTypes.func,
   loadingBalance: PropTypes.bool,
   editableInput: PropTypes.bool,
-  infiniteStyle: PropTypes.any,
   hasIcon: PropTypes.bool,
   srcIcon: PropTypes.string,
   label: PropTypes.string,

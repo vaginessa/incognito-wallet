@@ -7,7 +7,7 @@ import convert from '@utils/convert';
 import {
   formConfigsInvest,
   formConfigsWithdrawInvest,
-  formConfigsWithdrawReward
+  formConfigsWithdrawReward, STAKING_MESSAGES
 } from '@screens/PDexV3/features/Staking/Staking.constant';
 import BigNumber from 'bignumber.js';
 import {PRVIDSTR, ACCOUNT_CONSTANT} from 'incognito-chain-web-js/build/wallet';
@@ -60,7 +60,7 @@ export const stakingCoinsSelector = createSelector(
   isFetchingNFTSelector,
   (stakingCoins, getPrivacyDataByTokenID, isGettingBalance, validNFT, isFetchingNFT) => {
     return (stakingCoins || []).map(({ coins, tokenId }) => {
-      const isValidNFT = coins.some(({ nftId }) => validNFT(nftId));
+      const hasValidNFT = coins.some(({ nftId }) => validNFT(nftId));
       const inValidNFTs = coins.filter(({ nftId }) => !validNFT(nftId));
       const token = getPrivacyDataByTokenID(tokenId);
       const userBalance = token.amount;
@@ -92,9 +92,7 @@ export const stakingCoinsSelector = createSelector(
       const totalRewardUSDStr = `${CONSTANT_COMMONS.USD_SPECIAL_SYMBOL}${formatUtil.amountFull(totalRewardAmount, token.pDecimals)}`;
       const reward = { rewardsCoins, rewardTokenIds, rewardsMerged, totalRewardUSD, totalRewardAmount, totalRewardUSDStr };
       /**---------------------------------------------------------*/
-      // MOCK UP
-      // const withdrawableCoins = orderBy(coins.filter(coin => (!!validNFT(coin.nftId)) && coin.amount), 'amount', 'asc');
-      const withdrawableCoins = orderBy(coins.filter(coin => coin.amount), 'amount', 'asc');
+      const withdrawableCoins = orderBy(coins.filter(coin => (!!validNFT(coin.nftId)) && coin.amount), 'amount', 'asc');
       const maxWithdrawAmount = withdrawableCoins.reduce((prev, curr) => prev.plus(curr.amount || 0), new BigNumber(0)).toNumber();
       const maxWithdrawHumanAmount = convert.toHumanAmount(maxWithdrawAmount, token.pDecimals);
       const maxWithdrawAmountStr = formatUtil.toFixed(maxWithdrawHumanAmount, token.pDecimals);
@@ -106,7 +104,7 @@ export const stakingCoinsSelector = createSelector(
         maxWithdrawAmountStr,
         maxWithdrawAmountSymbolStr
       };
-      /**---------------------------------------------------------*/
+      /**---------------------------WITHDRAWABLE REWARD------------------------------*/
       const withdrawRewardCoins = rewardsCoins.filter((_reward) =>
         (!!validNFT(_reward.nftId)) && Object.values(_reward.coins).some(reward => reward));
       const withdrawRewardNFT = withdrawRewardCoins.map(({ nftId }) => nftId);
@@ -119,10 +117,10 @@ export const stakingCoinsSelector = createSelector(
         tokenId,
         token,
         user,
-        isValidNFT,
+        hasValidNFT,
         inValidNFTs,
         isLoadingBalance: isGettingBalance.includes(tokenId),
-        disableAction: !isValidNFT || isFetchingNFT,
+        disableAction: !hasValidNFT || isFetchingNFT,
         staking,
         reward,
         withdrawInvest,
@@ -251,12 +249,12 @@ export const investStakingCoinSelector = createSelector(
   stakingInvestSelector,
   stakingCoinByTokenIDSelector,
   nftTokenDataSelector,
-  ({ tokenID }, stakingCoinByTokenID, { nftToken, list }) => {
+  ({ tokenID }, stakingCoinByTokenID, { nftToken }) => {
     const stakingCoin = stakingCoinByTokenID(tokenID);
-    if (!stakingCoin) return {};
+    if (!stakingCoin) return { nftStaking: nftToken };
     const { coins } = stakingCoin;
     let nftId = (maxBy(coins || [], 'amount') || {}).nftId;
-    if (!nftId || !list.some(({ nftToken }) => nftToken === nftId)) nftId = nftToken;
+    if (!nftId) nftId = nftToken;
     return {
       ...stakingCoin,
       nftStaking: nftId
@@ -298,10 +296,12 @@ export const investInputAmount = createSelector(
     const depositSymbolStr = `${depositText} ${token.symbol}`;
     const maxDepositHumanAmount = convert.toHumanAmount(maxDepositValue, token.pDecimals);
     const maxDepositText = formatUtil.toFixed(maxDepositHumanAmount, token.pDecimals);
+    const inputSymbolStr = `${inputText} ${token.symbol}`;
     return {
       tokenId: token.tokenId,
       token,
       inputText,
+      inputSymbolStr,
       inputValue,
       depositText,
       depositSymbolStr,
@@ -331,12 +331,19 @@ export const investInputValidate = createSelector(
   },
 );
 
-export const investDisable = createSelector(
+export const investButton = createSelector(
   investInputValue,
   investInputValidate,
   investPoolSelector,
   investStakingCoinSelector,
-  (inputValue, validate, { disabled: loadingBalance }, { nftStaking }) => (inputValue <= 0 || !!validate() || loadingBalance) || !nftStaking
+  nftTokenDataSelector,
+  (inputValue, validate, { disabled: loadingBalance }, { nftStaking }, { initNFTToken }) => {
+    const disabled = (inputValue <= 0 || !!validate() || loadingBalance) || !nftStaking;
+    return {
+      disabled,
+      title: nftStaking ? STAKING_MESSAGES.staking : (initNFTToken ? STAKING_MESSAGES.waitNFT : STAKING_MESSAGES.staking),
+    };
+  }
 );
 
 
@@ -416,10 +423,11 @@ export const withdrawCoinsSelector = createSelector(
         const { amount, nftId, tokenId } = curr;
         const unstakeAmount =
           new BigNumber(amountCount.plus(amount)).lt(inputValue) ?
-            amount :
-            new BigNumber(inputValue).minus(amountCount).toNumber();
+            new BigNumber(amount) :
+            new BigNumber(inputValue).minus(amountCount);
         prev.push({
-          unstakingAmount: unstakeAmount,
+          fee: feeAmount,
+          unstakingAmount: unstakeAmount.toNumber(),
           nftID: nftId,
           stakingTokenID: tokenId,
           stakingPoolID: tokenId,
@@ -591,7 +599,7 @@ export default ({
   investPoolSelector,
   investInputAmount,
   investInputValidate,
-  investDisable,
+  investButton,
   investStakingCoinSelector,
   withdrawCoinsSelector,
 

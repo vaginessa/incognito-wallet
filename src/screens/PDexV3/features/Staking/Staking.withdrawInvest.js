@@ -1,5 +1,5 @@
 import React from 'react';
-import {View} from 'react-native';
+import {ScrollView, View} from 'react-native';
 import PropTypes from 'prop-types';
 import {styled as mainStyle} from '@screens/PDexV3/PDexV3.styled';
 import {Header} from '@src/components';
@@ -37,13 +37,17 @@ const Input = React.memo(({ onWithdrawMaxInvest }) => {
   const onChangeWithdrawMax = () => withdrawInvest && onWithdrawMaxInvest(withdrawInvest.maxWithdrawAmountStr);
   return(
     <>
-      <Text style={coinStyled.smallGray}>
-        {`Amount: ${withdrawInvest.maxWithdrawAmountSymbolStr}`}
-      </Text>
       <Field
         component={TradeInputAmount}
         name={formConfigsWithdrawInvest.input}
         hasInfinityIcon
+        visibleHeader
+        hasIcon={false}
+        rightHeader={(
+          <Text style={coinStyled.smallGray}>
+            {`Amount: ${withdrawInvest.maxWithdrawAmountSymbolStr}`}
+          </Text>
+        )}
         validate={[
           ...validator.combinedAmount,
           inputValidate,
@@ -55,7 +59,8 @@ const Input = React.memo(({ onWithdrawMaxInvest }) => {
         inputStyle={coinStyled.input}
         symbolStyle={coinStyled.symbol}
         infiniteStyle={coinStyled.infinite}
-        symbol={token && token?.symbol}
+        symbol={token?.symbol}
+        canSelectSymbol={false}
       />
     </>
   );
@@ -74,16 +79,20 @@ const StakingWithdrawInvest = React.memo(({ onUnStaking, error }) => {
     <View style={mainStyle.container}>
       <Header title={STAKING_MESSAGES.withdraw} />
       <View style={coinStyled.coinContainer}>
-        <Form>
-          {() => (<CustomInput />)}
-        </Form>
-        {!!error && (<Text style={coinStyled.error}>{error}</Text>)}
-        <BTNPrimary
-          title={STAKING_MESSAGES.withdraw}
-          wrapperStyle={coinStyled.button}
-          disabled={disabled || error}
-          onPress={onSubmit}
-        />
+        <ScrollView>
+          <>
+            <Form>
+              {() => (<CustomInput />)}
+            </Form>
+            {!!error && (<Text style={coinStyled.error}>{error}</Text>)}
+            <BTNPrimary
+              title={STAKING_MESSAGES.withdraw}
+              wrapperStyle={coinStyled.button}
+              disabled={disabled || error}
+              onPress={onSubmit}
+            />
+          </>
+        </ScrollView>
       </View>
     </View>
   );

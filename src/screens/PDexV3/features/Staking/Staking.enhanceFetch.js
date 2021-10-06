@@ -12,7 +12,7 @@ const enhanceFetch = WrappedComp => props => {
     batch(() => {
       handleChangeAccount();
       handleFetchCoins();
-      handleFetchStakingPools();
+      dispatch(stakingActions.actionFetchStakingPools());
     });
   };
   return (

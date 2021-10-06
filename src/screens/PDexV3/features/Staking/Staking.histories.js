@@ -42,13 +42,6 @@ const StakingHistories = ({ onFetchHistories }) => {
   const navigateHistoryDetail = (data) => navigation.navigate(routeNames.StakingHistoryDetail, { data });
   const renderHistoryItem = (data) => <HistoryItem item={data.item} head={data.index === 0} onNavigation={navigateHistoryDetail} />;
   const renderContent = () => {
-    if (!isFetching && histories.length === 0) {
-      return (
-        <Row center style={{ marginTop: 70 }}>
-          <EmptyBookIcon message="There have no staking histories" />
-        </Row>
-      );
-    }
     return (
       <FlatList
         data={histories}
@@ -60,6 +53,10 @@ const StakingHistories = ({ onFetchHistories }) => {
         }}
         renderItem={renderHistoryItem}
         showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ flexGrow: 1 }}
+        ListEmptyComponent={(
+          <EmptyBookIcon message="There have no staking histories" />
+        )}
       />
     );
   };

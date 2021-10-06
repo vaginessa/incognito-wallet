@@ -1,5 +1,5 @@
 import React from 'react';
-import {View} from 'react-native';
+import {ScrollView, View} from 'react-native';
 import {createForm, RFTradeInputAmount as TradeInputAmount, validator} from '@components/core/reduxForm';
 import {formConfigsInvest, STAKING_MESSAGES} from '@screens/PDexV3/features/Staking/Staking.constant';
 import {useDispatch, useSelector} from 'react-redux';
@@ -16,6 +16,7 @@ import withInvest from '@screens/PDexV3/features/Staking/Staking.investEnhance';
 import {compose} from 'recompose';
 import withTransaction from '@screens/PDexV3/features/Staking/Staking.transaction';
 import {NFTTokenBottomBar} from '@screens/PDexV3/features/NFTToken';
+import withFetch from '@screens/PDexV3/features/Staking/Staking.enhanceFetch';
 
 const initialFormValues = {
   input: ''
@@ -27,7 +28,7 @@ const Form = createForm(formConfigsInvest.formName, {
   enableReinitialize: true,
 });
 
-const Input = React.memo(({ onInvestMax, onSymbolPress }) => {
+const Input = React.memo(({ onInvestMax, onSymbolPress, rightHeader }) => {
   const dispatch = useDispatch();
   const { maxDepositText, token } = useSelector(stakingSelector.investInputAmount);
   const inputValidate = useSelector(stakingSelector.investInputValidate);
@@ -37,21 +38,16 @@ const Input = React.memo(({ onInvestMax, onSymbolPress }) => {
     <Field
       component={TradeInputAmount}
       name={formConfigsInvest.input}
-      hasInfinityIcon
-      validate={[
-        ...validator.combinedAmount,
-        inputValidate,
-      ]}
-      symbol={token && token?.symbol}
-      onChange={onChangeText}
+      hasIcon={false}
+      symbol={token?.symbol}
+      visibleHeader
+      validate={[...validator.combinedAmount, inputValidate]}
       editableInput
-      canSelectSymbol
+      hasInfinityIcon
+      onChange={onChangeText}
       onPressInfinityIcon={onChangeMaxInvest}
-      wrapInputStyle={coinStyled.wrapInput}
-      inputStyle={coinStyled.input}
-      symbolStyle={coinStyled.symbol}
-      infiniteStyle={coinStyled.infinite}
       onPressSymbol={onSymbolPress}
+      rightHeader={rightHeader}
     />
   );
 });
@@ -62,33 +58,38 @@ const StakingMoreInput = React.memo(({ onSymbolPress, onStaking, error }) => {
   const pool = useSelector(stakingSelector.investPoolSelector);
   const { feeAmount } = useSelector(stakingSelector.stakingFeeSelector);
   const { nftStaking } = useSelector(stakingSelector.investStakingCoinSelector);
-  const { inputValue, tokenId } = useSelector(stakingSelector.investInputAmount);
-  const disable = useSelector(stakingSelector.investDisable);
+  const { inputValue, tokenId, inputSymbolStr } = useSelector(stakingSelector.investInputAmount);
+  const { disabled, title: btnTitle } = useSelector(stakingSelector.investButton);
   const onSubmit = () => {
     if (!feeAmount || !tokenId || !inputValue || !nftStaking) return;
     const params = {
       fee: feeAmount,
       tokenID: tokenId,
       tokenAmount: inputValue,
-      nftID: nftStaking
+      nftID: nftStaking,
+      stakingAmountStr: inputSymbolStr
     };
     typeof onStaking === 'function' && onStaking(params);
   };
   const renderContent = () => {
-    if (!pool) return <LoadingContainer />;
+    if (!pool) return;
     return (
       <Form>
         {() => (
           <>
-            <Text style={coinStyled.smallGray}>
-              {`Balance: ${pool.userBalanceSymbolStr}`}
-            </Text>
-            <CustomInput onSymbolPress={onSymbolPress} />
+            <CustomInput
+              onSymbolPress={onSymbolPress}
+              rightHeader={(
+                <Text style={coinStyled.smallGray}>
+                  {`Balance: ${pool.userBalanceSymbolStr}`}
+                </Text>
+              )}
+            />
             {!!error && (<Text style={coinStyled.error}>{error}</Text>)}
             <RoundCornerButton
-              title={STAKING_MESSAGES.staking}
+              title={btnTitle}
               style={coinStyled.button}
-              disabled={disable || !!error}
+              disabled={disabled || !!error}
               onPress={onSubmit}
             />
           </>
@@ -101,7 +102,9 @@ const StakingMoreInput = React.memo(({ onSymbolPress, onStaking, error }) => {
       <View style={mainStyle.container}>
         <Header title={STAKING_MESSAGES.staking} />
         <View style={coinStyled.coinContainer}>
-          {renderContent()}
+          <ScrollView>
+            {renderContent()}
+          </ScrollView>
         </View>
       </View>
       <NFTTokenBottomBar />
@@ -111,7 +114,8 @@ const StakingMoreInput = React.memo(({ onSymbolPress, onStaking, error }) => {
 
 Input.propTypes = {
   onInvestMax: PropTypes.func.isRequired,
-  onSymbolPress: PropTypes.func.isRequired
+  onSymbolPress: PropTypes.func.isRequired,
+  rightHeader: PropTypes.element.isRequired
 };
 
 StakingMoreInput.defaultProps = {
@@ -125,5 +129,6 @@ StakingMoreInput.propTypes = {
 
 export default compose(
   withTransaction,
-  withInvest
+  withInvest,
+  withFetch,
 )(StakingMoreInput);

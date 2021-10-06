@@ -174,7 +174,10 @@ const actionFetchStakingPools = () => async (dispatch, getState) => {
   const isFetching = stakingSelector.isFetchingPoolSelector(state);
   if (isFetching) return;
   try {
-    dispatch(actionUpdateFetchingPool({ isFetching: true }));
+    batch(() => {
+      dispatch(actionUpdateFetchingPool({ isFetching: true }));
+      dispatch(actionSetNFTTokenData());
+    });
     const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
     const pools = (await pDexV3Inst.getStakingPool()) || [];
     const tokenIds = pools.map(({ tokenId }) => tokenId);

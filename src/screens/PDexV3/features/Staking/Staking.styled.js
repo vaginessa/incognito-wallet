@@ -81,7 +81,6 @@ export const coinStyles = StyleSheet.create({
     color: COLORS.lightGrey34,
     fontSize: FONT.SIZE.superSmall,
     lineHeight: FONT.SIZE.superSmall + 6,
-    marginBottom: 8
   },
   regularGray: {
     color: COLORS.lightGrey34,
