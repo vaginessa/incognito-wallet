@@ -12,8 +12,8 @@ const Actions = ({
   coins,
   groupedCoins,
   data,
-  totalRewards,
-  displayFullTotalRewards,
+  totalRewardsNonLock,
+  displayFullTotalRewardsNonLock
 }) => {
   const navigation = useNavigation();
 
@@ -24,8 +24,8 @@ const Actions = ({
   const handleWithdraw = () => {
     navigation.navigate(ROUTE_NAMES.PoolV2WithdrawSelectCoin, {
       data,
-      totalRewards,
-      displayFullTotalRewards,
+      totalRewardsNonLock,
+      displayFullTotalRewardsNonLock,
     });
   };
 
@@ -70,8 +70,8 @@ Actions.propTypes = {
   coins: PropTypes.array,
   groupedCoins: PropTypes.array,
   data: PropTypes.array,
-  totalRewards: PropTypes.number,
-  displayFullTotalRewards: PropTypes.string,
+  totalRewardsNonLock: PropTypes.number,
+  displayFullTotalRewardsNonLock: PropTypes.string,
 };
 
 Actions.defaultProps = {
@@ -79,8 +79,8 @@ Actions.defaultProps = {
   coins: [],
   groupedCoins: [],
   data: [],
-  totalRewards: 0,
-  displayFullTotalRewards: '',
+  totalRewardsNonLock: 0,
+  displayFullTotalRewardsNonLock: '',
 };
 
 export default React.memo(Actions);

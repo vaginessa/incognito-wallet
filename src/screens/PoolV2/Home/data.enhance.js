@@ -19,8 +19,9 @@ const withPoolData = (WrappedComp) => (props) => {
   const [userData, setUserData] = useState([]);
   const [groupedUserData, setGroupedUserData] = useState([]);
   const [totalRewards, setTotalRewards] = useState(0);
+  const [totalRewardsNonLock, setTotalRewardsNonLock] = useState(0);
   const [withdrawable, setWithdrawable] = useState(false);
-  const [displayFullTotalRewards, setDisplayFullTotalRewards] = useState('');
+  const [displayFullTotalRewardsNonLock, setDisplayFullTotalRewardsNonLock] = useState('');
   const [displayClipTotalRewards, setDisplayClipTotalRewards] = useState('');
 
   const nativeToken = useSelector(
@@ -169,20 +170,26 @@ const withPoolData = (WrappedComp) => (props) => {
       accumulator + item.rewardBalance;
     const totalRewards = userData.reduce(totalReducer, 0);
 
+    const totalReducerNonLock = (accumulator, item) =>
+      accumulator + (!item.locked ? item.rewardBalance : 0);
+    const totalRewardsNonLock_ = userData.reduce(totalReducerNonLock, 0);
+
     const displayClipTotalRewards = formatUtils.amountFull(
       totalRewards,
       COINS.PRV.pDecimals,
       true,
     );
-    const displayFullTotalRewards = formatUtils.amountFull(
-      totalRewards,
+
+    const displayFullTotalRewardsNonLock_ = formatUtils.amountFull(
+      totalRewardsNonLock_,
       COINS.PRV.pDecimals,
       false,
     );
 
     setTotalRewards(totalRewards);
+    setTotalRewardsNonLock(totalRewardsNonLock_);
     setDisplayClipTotalRewards(displayClipTotalRewards.toString());
-    setDisplayFullTotalRewards(displayFullTotalRewards.toString());
+    setDisplayFullTotalRewardsNonLock(displayFullTotalRewardsNonLock_.toString());
   };
 
   const loadData = async (account) => {
@@ -223,10 +230,11 @@ const withPoolData = (WrappedComp) => (props) => {
         groupedUserData,
         withdrawable,
         totalRewards,
-        displayFullTotalRewards,
         displayClipTotalRewards,
         onLoad: loadData,
         nativeToken,
+        totalRewardsNonLock,
+        displayFullTotalRewardsNonLock,
       }}
     />
   );
