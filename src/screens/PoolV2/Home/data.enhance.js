@@ -46,6 +46,8 @@ const withPoolData = (WrappedComp) => (props) => {
           return groupedCoins.indexOf(c) !== index && c.id === coin.id && c.locked === coin.locked;
         });
         if (sameCoinIDs && sameCoinIDs.length > 0) {
+          let maxAPY = newCoin.apy;
+          let displayInterest = newCoin.displayInterest;
           let terms = [
             {
               lockTime: coin.lockTime,
@@ -54,6 +56,10 @@ const withPoolData = (WrappedComp) => (props) => {
             }
           ];
           sameCoinIDs.forEach(c => {
+            if (c.apy > maxAPY) {
+              maxAPY = c.apy;
+              displayInterest = c.displayInterest;
+            }
             terms.push({
               lockTime: c.lockTime,
               apy: c.apy,
@@ -62,6 +68,8 @@ const withPoolData = (WrappedComp) => (props) => {
             groupedCoins.splice(groupedCoins.indexOf(c), 1);
           });
           newCoin.terms = terms;
+          newCoin.apy = maxAPY;
+          newCoin.displayInterest = displayInterest;
         }
         groupedCoins[index] = newCoin;
       });
@@ -78,7 +86,7 @@ const withPoolData = (WrappedComp) => (props) => {
         const sameIDItems = groupedUserDataTmp.filter((i) => {
           return groupedUserDataTmp.indexOf(i) !== index && i.id === item.id && i.locked === item.locked;
         });
-
+        let mapCoin = {...newItem.coin};
         if (sameIDItems && sameIDItems.length > 0) {
           let totalBalance = new BigNumber(item.balance);
           let totalReward = new BigNumber(item.rewardBalance);
@@ -106,6 +114,9 @@ const withPoolData = (WrappedComp) => (props) => {
                 termID: i.coin.termID,
               });
             }
+            if (i.coin.apy > mapCoin.apy) {
+              mapCoin = {...i.coin};
+            }
           });
           newItem.balance = totalBalance.toNumber();
           newItem.rewardBalance = totalReward.toNumber();
@@ -120,6 +131,7 @@ const withPoolData = (WrappedComp) => (props) => {
           newItem.displayUnstakeBalance = formatUtils.amountFull(newItem.unstakePendingBalance, newItem.pDecimals, true);
           newItem.displayWithdrawReward = formatUtils.amountFull(newItem.withdrawPendingBalance, COINS.PRV.pDecimals, true);
           newItem.terms = terms;
+          newItem.coin = mapCoin;
           groupedUserDataTmp[index] = newItem;
 
           sameIDItems.map((i) => {
