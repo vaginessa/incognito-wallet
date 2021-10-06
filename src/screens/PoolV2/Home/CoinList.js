@@ -138,7 +138,7 @@ const CoinList = ({
 
   const renderUpToAPY = (item) => {
     return (
-      <Text style={mainStyles.coinExtra}>
+      <Row style={{alignItems: 'center'}}>
         {
           item.locked && 
             (
@@ -147,14 +147,15 @@ const CoinList = ({
                 style={{
                   width: 14,
                   height: 16,
+                  marginBottom: 8,
                 }}
               />
             )
-        } {item.coin.displayInterest}
-      </Text>
+        }
+        <Text style={mainStyles.coinExtra}> {item.coin.displayInterest}</Text>
+      </Row>
     );
   };
-
 
   const renderUserData = () => {
     return (
