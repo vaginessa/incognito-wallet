@@ -1,11 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import upToIcon from '@src/assets/images/icons/upto_icon.png';
 import {
   View,
   Text,
   ScrollView,
   TouchableOpacity,
   ActivityIndicator,
+  Image,
 } from '@components/core';
 import mainStyles from '@screens/PoolV2/style';
 import { Row, PRVSymbol } from '@src/components/';
@@ -134,6 +136,26 @@ const CoinList = ({
     );
   };
 
+  const renderUpToAPY = (item) => {
+    return (
+      <Text style={mainStyles.coinExtra}>
+        {
+          item.locked && 
+            (
+              <Image
+                source={upToIcon}
+                style={{
+                  width: 14,
+                  height: 16,
+                }}
+              />
+            )
+        } {item.coin.displayInterest}
+      </Text>
+    );
+  };
+
+
   const renderUserData = () => {
     return (
       <ScrollView
@@ -164,9 +186,7 @@ const CoinList = ({
                   <Row>
                     <View>
                       {renderMainCoin(item)}
-                      <Text style={mainStyles.coinExtra}>
-                        {mapCoin.displayInterest}
-                      </Text>
+                      {renderUpToAPY(item)}
                     </View>
                     <View style={[mainStyles.flex]}>
                       <Text style={[mainStyles.coinName, mainStyles.textRight]}>
