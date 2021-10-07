@@ -46,3 +46,4 @@ export { default as SwapIcon } from './icon.swap';
 export { default as LockIcon } from './icon.lock';
 export { default as ArrowGreyDown } from './icon.arrowGreyDown';
 export { default as AppIcon } from './icon.app';
+export { default as StarIcon } from './icon.star';

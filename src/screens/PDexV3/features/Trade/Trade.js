@@ -8,13 +8,12 @@ import {
 import React from 'react';
 import { View } from 'react-native';
 import TabSwap from '@screens/PDexV3/features/Swap';
-import { TabHomeOrderLimit } from '@screens/PDexV3/features/OrderLimit';
-import { NFTTokenBottomBar } from '@screens/PDexV3/features/NFTToken';
+import OrderLimit from '@screens/PDexV3/features/OrderLimit';
 import { BtnOrderHistory } from '@src/components/Button';
 import SelectAccountButton from '@src/components/SelectAccountButton';
 import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
-import TabMarket from '@screens/PDexV3/features/Market';
+import TabMarket from '@screens/PDexV3/features/MarketList';
 import {
   ROOT_TAB_TRADE,
   TAB_LIMIT_ID,
@@ -44,7 +43,7 @@ export const RightHeader = React.memo(
 );
 
 const Trade = (props) => {
-  const { refreshing, onRefresh } = props;
+  const { refreshing, onRefresh, handlePressPool } = props;
   return (
     <View style={styled.container}>
       <Header title="pDex" />
@@ -59,11 +58,10 @@ const Trade = (props) => {
             <TabSwap />
           </View>
           <View tabID={TAB_LIMIT_ID} label="Limit" onChangeTab={() => null}>
-            <TabHomeOrderLimit OrderLimit />
-            <NFTTokenBottomBar />
+            <OrderLimit />
           </View>
           <View tabID={TAB_MARKET_ID} label="Market" onChangeTab={() => null}>
-            <TabMarket />
+            <TabMarket onPressPool={handlePressPool} />
           </View>
         </Tabs>
       </KeyboardAwareScrollView>
@@ -74,6 +72,7 @@ const Trade = (props) => {
 Trade.propTypes = {
   onRefresh: PropTypes.func.isRequired,
   refreshing: PropTypes.bool.isRequired,
+  handlePressPool: PropTypes.func.isRequired,
 };
 
 export default withTrade(React.memo(Trade));

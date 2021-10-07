@@ -62,39 +62,22 @@ const OrderLimit = () => {
   ];
   return (
     <View style={styled.container}>
-      <Header
-        title={poolTitle}
-        rightHeader={
-          <RightHeader
-            callback={onRefresh}
-            visibleBtnHistory
-            selectAccountable={false}
-          />
-        }
-      />
-      <KeyboardAwareScrollView
-        contentContainerStyle={styled.scrollview}
-        refreshControl={
-          <RefreshControl onRefresh={onRefresh} refreshing={refreshing} />
-        }
-      >
-        <Form>
-          {() => (
-            <>
-              <Tabs rootTabID={ROOT_TAB_ORDER_LIMIT}>
-                {tabsFactories.map((tab) => (
-                  <View key={tab.tabID} {...tab} />
-                ))}
-              </Tabs>
-              <OrderLimitInputsGroup />
-              <GroupRate />
-              <GroupActions />
-              <SubInfo />
-              <OpenOrders />
-            </>
-          )}
-        </Form>
-      </KeyboardAwareScrollView>
+      <Form>
+        {() => (
+          <View>
+            <Tabs rootTabID={ROOT_TAB_ORDER_LIMIT}>
+              {tabsFactories.map((tab) => (
+                <View key={tab.tabID} {...tab} />
+              ))}
+            </Tabs>
+            <OrderLimitInputsGroup />
+            <GroupRate />
+            <GroupActions />
+            <SubInfo />
+            <OpenOrders />
+          </View>
+        )}
+      </Form>
       <NFTTokenBottomBar />
     </View>
   );

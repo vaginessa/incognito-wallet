@@ -20,7 +20,4 @@ const enhance = (WrappedComp) => (props) => {
   );
 };
 
-export default compose(
-  withLayout_2,
-  enhance,
-);
+export default compose(enhance);

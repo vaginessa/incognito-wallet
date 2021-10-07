@@ -36,10 +36,11 @@ const enhance = (WrappedComp) => (props) => {
     return children.map((child) => {
       const { label, tabID, ...rest } = child.props;
       if (useTab1) {
+        console.log('tabID', tabID);
         return (
           <Tab1
             activeTab={activeTab}
-            key={label}
+            key={tabID}
             label={label}
             onClickTab={onClickTabItem}
             tabID={tabID}
@@ -50,7 +51,7 @@ const enhance = (WrappedComp) => (props) => {
       return (
         <Tab
           activeTab={activeTab}
-          key={label}
+          key={tabID}
           label={label}
           onClickTab={onClickTabItem}
           tabID={tabID}

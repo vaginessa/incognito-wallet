@@ -9,35 +9,38 @@ export const styled = StyleSheet.create({
     alignItems: 'center',
   },
   name: {
-    ...FONT.STYLE.bold,
-    fontSize: FONT.SIZE.superMedium + 1,
     marginRight: 5,
-    lineHeight: FONT.SIZE.superMedium + 5,
-    color: COLORS.newGrey,
+    fontSize: FONT.SIZE.medium,
+    color: COLORS.black,
+    fontFamily: FONT.NAME.medium,
   },
   nameFollowed: {
     color: COLORS.black,
   },
   subText: {
-    ...FONT.STYLE.medium,
     fontSize: FONT.SIZE.small,
     lineHeight: FONT.SIZE.small + 2,
-    color: COLORS.newGrey,
-    marginTop: 10,
+    color: COLORS.colorGrey3,
+    fontFamily: FONT.NAME.medium,
+    marginBottom: 10,
   },
-  wrapperFirstSection: {
-    flex: 0.8,
+  block1: {
+    flex: 0.7,
+    marginRight: 15,
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
   },
-  wrapperSecondSection: {
+  block2: {
     flex: 0.2,
+    justifyContent: 'flex-end',
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    marginRight: 5,
   },
-  wrapperThirdSection: {
-    flex: 0.3,
-  },
-  apy: {
-    textAlign: 'center',
-  },
-  rightText: {
-    textAlign: 'right',
+  block3: {
+    flex: 0.1,
+    justifyContent: 'flex-end',
+    flexDirection: 'row',
+    alignItems: 'flex-start',
   },
 });

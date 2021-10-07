@@ -10,7 +10,7 @@ const BOTTOM_BAR_PADDING_BOTTOM = getBottomAreaHeight() + 10;
 
 const styled = StyleSheet.create({
   contentContainerStyle: {
-    paddingBottom: 100 + BOTTOM_BAR_PADDING_BOTTOM,
+    paddingBottom: 50 + BOTTOM_BAR_PADDING_BOTTOM,
   },
 });
 

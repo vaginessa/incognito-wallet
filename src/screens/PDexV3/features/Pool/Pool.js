@@ -1,9 +1,7 @@
 import { Row } from '@src/components';
 import { TokenVerifiedIcon } from '@src/components/Icons';
-import { COLORS } from '@src/styles';
 import React from 'react';
 import { View, Text } from 'react-native';
-import Swipeout from 'react-native-swipeout';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   actionToggleFollowingPool,
@@ -11,6 +9,7 @@ import {
 } from '@screens/PDexV3/features/Pools';
 import PropTypes from 'prop-types';
 import { TouchableOpacity } from '@src/components/core';
+import { BtnStar } from '@src/components/Button';
 import { styled } from './Pool.styled';
 
 export const PoolItem = React.memo((props) => {
@@ -22,29 +21,37 @@ export const PoolItem = React.memo((props) => {
   const {
     isVerify,
     apy,
-    volumeToAmount,
+    volumeToAmountStr,
     isFollowed,
     poolTitle,
+    ampStr,
+    apyStr,
+    priceChangeToAmountStr,
   } = data || {};
+
+  const dispatch = useDispatch();
+  const handleToggleFollowingPool = () =>
+    dispatch(actionToggleFollowingPool(poolId));
   return (
     <TouchableOpacity
       onPress={() => typeof onPressPool === 'function' && onPressPool(poolId)}
       style={[styled.container, style]}
     >
-      <Row style={{ justifyContent: 'space-between' }}>
-        <View style={styled.wrapperFirstSection}>
+      <Row>
+        <View style={styled.block1}>
           <Row style={styled.rowName}>
-            <Text
-              style={[styled.name, (!checkFollow || isFollowed) ? styled.nameFollowed : null]}
-            >
-              {poolTitle}
-            </Text>
+            <Text style={styled.name}>{poolTitle}</Text>
             {!!isVerify && <TokenVerifiedIcon />}
           </Row>
-          <Text style={styled.subText}>{`Vol: ${volumeToAmount}$`}</Text>
+          <Text style={styled.subText}>{`Vol: ${volumeToAmountStr}`}</Text>
+          <Text style={styled.subText}>{`AMP: ${ampStr}`}</Text>
         </View>
-        <View style={styled.wrapperSecondSection}>
-          <Text style={[styled.subText, styled.apy]}>{`${apy}%`}</Text>
+        <View style={styled.block2}>
+          <Text style={styled.subText}> {apyStr}</Text>
+          <Text style={styled.subText}> {priceChangeToAmountStr}</Text>
+        </View>
+        <View style={styled.block3}>
+          <BtnStar onPress={handleToggleFollowingPool} isBlue={isFollowed} />
         </View>
       </Row>
     </TouchableOpacity>
@@ -56,23 +63,6 @@ const Pool = (props) => {
   const dispatch = useDispatch();
   if (!poolId) {
     return null;
-  }
-  if (swipable) {
-    return (
-      <Swipeout
-        autoClose
-        style={[styled.container, { backgroundColor: 'transparent' }]}
-        right={[
-          {
-            text: 'Remove',
-            backgroundColor: COLORS.red,
-            onPress: () => dispatch(actionToggleFollowingPool(poolId)),
-          },
-        ]}
-      >
-        <PoolItem poolId={poolId} onPressPool={onPressPool} checkFollow={checkFollow} style={{ marginBottom: 0 }} />
-      </Swipeout>
-    );
   }
   return <PoolItem poolId={poolId} onPressPool={onPressPool} />;
 };

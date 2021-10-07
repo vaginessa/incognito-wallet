@@ -7,8 +7,15 @@ import { ExHandler } from '@src/services/exception';
 import { activedTabSelector } from '@src/components/core/Tabs';
 import { actionInitSwapForm } from '@screens/PDexV3/features/Swap';
 import { actionFetchPools } from '@screens/PDexV3/features/Pools';
+import { actionSetPoolSelected } from '@screens/PDexV3/features/OrderLimit';
+import { actionChangeTab } from '@src/components/core/Tabs/Tabs.actions';
 import { actionFetch } from './Trade.actions';
-import { ROOT_TAB_TRADE, TAB_SWAP_ID, TAB_LIMIT_ID } from './Trade.constant';
+import {
+  ROOT_TAB_TRADE,
+  TAB_SWAP_ID,
+  TAB_LIMIT_ID,
+  TAB_MARKET_ID,
+} from './Trade.constant';
 
 const enhance = (WrappedComp) => (props) => {
   const [refreshing, setRefreshing] = React.useState(false);
@@ -27,6 +34,10 @@ const enhance = (WrappedComp) => (props) => {
         await dispatch(actionFetchPools());
         break;
       }
+      case TAB_MARKET_ID: {
+        await dispatch(actionFetchPools());
+        break;
+      }
       default:
         break;
       }
@@ -36,12 +47,21 @@ const enhance = (WrappedComp) => (props) => {
       await setRefreshing(false);
     }
   };
+  const handlePressPool = (poolId) => {
+    dispatch(actionSetPoolSelected(poolId));
+    dispatch(
+      actionChangeTab({
+        rootTabID: ROOT_TAB_TRADE,
+        tabID: TAB_LIMIT_ID,
+      }),
+    );
+  };
   React.useEffect(() => {
     dispatch(actionFetch());
   }, []);
   return (
     <ErrorBoundary>
-      <WrappedComp {...{ ...props, refreshing, onRefresh }} />
+      <WrappedComp {...{ ...props, refreshing, onRefresh, handlePressPool }} />
     </ErrorBoundary>
   );
 };

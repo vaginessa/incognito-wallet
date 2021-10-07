@@ -1,64 +1,19 @@
-import {Row} from '@src/components';
-import { TouchableOpacity, LoadingContainer} from '@src/components/core';
+import { Row } from '@src/components';
+import { TouchableOpacity, LoadingContainer } from '@src/components/core';
 import React from 'react';
-import {View, Text} from 'react-native';
+import { View, Text } from 'react-native';
 import { useNavigation } from 'react-navigation-hooks';
-import {useDispatch, useSelector} from 'react-redux';
-import Pool from '@screens/PDexV3/features/Pool';
-import {
-  actionToggleFollowingPool,
-  isFetchingSelector,
-  followPoolIdsSelector,
-} from '@screens/PDexV3/features/Pools';
+import { useDispatch, useSelector } from 'react-redux';
 import routeNames from '@src/router/routeNames';
 import PropTypes from 'prop-types';
+import Pool from '@screens/PDexV3/features/Pool';
+import { isFetchingSelector, followPoolIdsSelector } from './Pools.selector';
+import { actionFetchPools, actionToggleFollowingPool } from './Pools.actions';
 import {
   styled,
-  headStyled,
   poolsListHeaderFollowingStyled,
   footerStyled,
 } from './Pools.styled';
-
-const PoolsHeader = React.memo(({ handlePressPool }) => {
-  const navigation = useNavigation();
-  const onSearchPress = () => {
-    navigation.navigate(routeNames.PoolsList, {
-      params: { onPressPool: handlePressPool, },
-    });
-  };
-  return (
-    <View style={headStyled.headContainer}>
-      <Text style={headStyled.titleText}>Favorite List</Text>
-      <TouchableOpacity
-        style={headStyled.btnSearch}
-        onPress={onSearchPress}
-      >
-        <Text style={headStyled.searchText}>Search coin</Text>
-      </TouchableOpacity>
-    </View>
-  );
-});
-
-const Footer = React.memo(() => {
-  const navigate = useNavigation();
-  const dispatch = useDispatch();
-  const _onPressPool = (poolId) => {
-    if (!poolId) return;
-    dispatch(actionToggleFollowingPool(poolId));
-  };
-  return (
-    <TouchableOpacity
-      style={styled.wrapFooter}
-      onPress={() =>
-        navigate.navigate(routeNames.PoolsList, {
-          params: { onPressPool: _onPressPool },
-        })
-      }
-    >
-      <Text style={footerStyled.text}>Add favorite list +</Text>
-    </TouchableOpacity>
-  );
-});
 
 const HEADER_FACTORIES = [
   {
@@ -91,6 +46,7 @@ export const PoolsListHeader = React.memo(() => {
 });
 
 export const PoolsListFollowing = React.memo(({ handlePressPool }) => {
+  const dispatch = useDispatch();
   const followIds = useSelector(followPoolIdsSelector) || [];
   const isFetching = useSelector(isFetchingSelector);
   const onPressPool = (poolId) => {
@@ -107,13 +63,11 @@ export const PoolsListFollowing = React.memo(({ handlePressPool }) => {
   );
   const renderContent = () => {
     if (isFetching) return <LoadingContainer />;
-    return (
-      <>
-        {followIds.map(renderItem)}
-        <Footer />
-      </>
-    );
+    return <View>{followIds.map(renderItem)}</View>;
   };
+  React.useEffect(() => {
+    dispatch(actionFetchPools());
+  }, []);
   return renderContent();
 });
 
@@ -121,7 +75,6 @@ const Pools = (props) => {
   const { handlePressPool } = props;
   return (
     <View style={styled.container}>
-      <PoolsHeader handlePressPool={handlePressPool} />
       <PoolsListHeader />
       <PoolsListFollowing handlePressPool={handlePressPool} />
     </View>
@@ -135,10 +88,5 @@ Pools.propTypes = {
 PoolsListFollowing.propTypes = {
   handlePressPool: PropTypes.func.isRequired,
 };
-
-PoolsHeader.propTypes = {
-  handlePressPool: PropTypes.func.isRequired,
-};
-
 
 export default React.memo(Pools);
