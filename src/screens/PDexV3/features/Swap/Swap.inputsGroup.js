@@ -8,7 +8,6 @@ import { change, Field } from 'redux-form';
 import SelectedPrivacy from '@src/models/selectedPrivacy';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from 'react-navigation-hooks';
-import routeNames from '@src/router/routeNames';
 import { SwapButton, Text } from '@src/components/core';
 import SelectPercentAmount from '@src/components/SelectPercentAmount';
 import BigNumber from 'bignumber.js';
@@ -44,7 +43,6 @@ const SelectPercentAmountInput = React.memo(() => {
   const dispatch = useDispatch();
   const inputAmount = useSelector(inputAmountSelector);
   const sellInputAmount = inputAmount(formConfigs.selltoken);
-  const buyInputAmount = inputAmount(formConfigs.buytoken);
   const { percent: selected } = useSelector(swapInfoSelector);
   const onPressPercent = (percent) => {
     let _percent;
@@ -78,7 +76,6 @@ const SelectPercentAmountInput = React.memo(() => {
 });
 
 const SwapInputsGroup = React.memo(() => {
-  const navigation = useNavigation();
   const dispatch = useDispatch();
   const swapInfo = useSelector(swapInfoSelector);
   const swap = useSelector(swapSelector);
@@ -88,12 +85,10 @@ const SwapInputsGroup = React.memo(() => {
   const inputAmount = useSelector(inputAmountSelector);
   const sellInputAmount = inputAmount(formConfigs.selltoken);
   const buyInputAmount = inputAmount(formConfigs.buytoken);
-  // const availableTokens = useSelector(availableTokensSelector);
   const onSelectToken = (token, field) => {
     dispatch(actionSelectToken(token, field));
-    navigation.pop();
+    dispatch(actionToggleModal());
   };
-  console.log('pairsToken', pairsToken);
   const onSelectSellToken = () => {
     dispatch(
       actionToggleModal({
@@ -115,19 +110,26 @@ const SwapInputsGroup = React.memo(() => {
       }),
     );
   };
-  // navigation.navigate(routeNames.SelectTokenTrade, {
-  // data: pairsToken.filter(
-  //   (token: SelectedPrivacy) => token?.tokenId !== selltoken?.tokenId,
-  // ),
-  // onSelectToken: (token) => onSelectToken(token, formConfigs.selltoken),
-  // });
   const onSelectBuyToken = () =>
-    navigation.navigate(routeNames.SelectTokenTrade, {
-      data: pairsToken.filter(
-        (token: SelectedPrivacy) => token?.tokenId !== buytoken?.tokenId,
-      ),
-      onSelectToken: (token) => onSelectToken(token, formConfigs.buytoken),
-    });
+    dispatch(
+      actionToggleModal({
+        visible: true,
+        shouldCloseModalWhenTapOverlay: true,
+        data: (
+          <ModalBottomSheet
+            customContent={
+              <SelectTokenModal
+                data={pairsToken.filter(
+                  (token: SelectedPrivacy) =>
+                    token?.tokenId !== buytoken?.tokenId,
+                )}
+                onPress={(token) => onSelectToken(token, formConfigs.buytoken)}
+              />
+            }
+          />
+        ),
+      }),
+    );
   const onFocusToken = (e, field) => dispatch(actionSetFocusToken(swap[field]));
   const onEndEditing = () => dispatch(actionEstimateTrade());
   const onSwapButtons = () => dispatch(actionSwapToken());

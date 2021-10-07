@@ -19,9 +19,6 @@ const styled = StyleSheet.create({
     color: COLORS.black,
     marginLeft: 5,
   },
-  scrollview: {
-    paddingBottom: 200,
-  },
 });
 
 const ListAllToken = (props) => {
@@ -32,10 +29,7 @@ const ListAllToken = (props) => {
     renderItem,
   } = props;
   return (
-    <KeyboardAwareScrollView
-      extraHeight={200}
-      contentContainerStyle={styled.scrollview}
-    >
+    <KeyboardAwareScrollView>
       <ListToken {...tokensFactories[0]} renderItem={renderItem} />
       <BtnChecked
         btnStyle={[

@@ -22,7 +22,7 @@ import {
 } from './Swap.constant';
 
 const initialState = {
-  isFetching: true,
+  isFetching: false,
   isFetched: false,
   data: {},
   buytoken: '',

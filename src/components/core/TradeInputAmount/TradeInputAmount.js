@@ -12,6 +12,7 @@ import {
   View,
 } from '@src/components/core';
 import { COLORS, FONT } from '@src/styles';
+import { Icon } from '@src/components/Token/Token.shared';
 
 const styled = StyleSheet.create({
   container: {
@@ -83,12 +84,7 @@ const TradeInputAmount = (props) => {
       return <ActivityIndicator style={styled.loadingIcon} size="small" />;
     }
     if (hasIcon) {
-      return (
-        <Image
-          style={{ width: 20, height: 20, marginRight: 8 }}
-          source={{ uri: srcIcon }}
-        />
-      );
+      return <Icon iconUrl={srcIcon} />;
     }
     if (hasInfinityIcon) {
       return (
@@ -128,7 +124,7 @@ const TradeInputAmount = (props) => {
         />
         {renderSub()}
         {!!symbol && (
-          <TouchableOpacity onPress={onPressSymbol}>
+          <TouchableOpacity style={{ marginLeft: 8 }} onPress={onPressSymbol}>
             <Row style={{ alignItems: 'center' }}>
               {!!symbol && <Text style={styled.symbol}>{symbol}</Text>}
               {canSelectSymbol && <ArrowGreyDown />}

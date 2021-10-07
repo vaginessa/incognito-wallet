@@ -1,9 +1,11 @@
 import React from 'react';
-import { View, StyleSheet, Platform } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { Text } from '@components/core';
-import { withLayout_2 } from '@src/components/Layout';
 import { Row } from '@src/components';
-import { TokenTrade } from '@src/components/Token';
+import {
+  handleFilterTokenByKeySearch,
+  TokenTrade,
+} from '@src/components/Token';
 import { BaseTextInputCustom } from '@src/components/core/BaseTextInput';
 import { COLORS, FONT } from '@src/styles';
 import { ListAllTokenSelectable } from './SelectToken';
@@ -33,10 +35,23 @@ const styled = StyleSheet.create({
 
 const SelectTokenModal = (props) => {
   const { data, onPress } = props;
-  console.log(data);
+  const [text, setText] = React.useState(text);
+  const [availableTokens, setAvailableTokens] = React.useState([]);
   const onChange = (text) => {
-    console.log('text', text);
+    setText(text);
+    if (!text) {
+      return setAvailableTokens(data);
+    }
+    const tokens = handleFilterTokenByKeySearch({
+      tokens: data,
+      keySearch: text,
+    });
+    setAvailableTokens(tokens);
   };
+  React.useEffect(() => {
+    setAvailableTokens(data);
+    setText('');
+  }, [data]);
   if (!data) {
     return null;
   }
@@ -48,6 +63,7 @@ const SelectTokenModal = (props) => {
           onChangeText: onChange,
           placeholder: 'Search coins',
           style: styled.input,
+          autFocus: true,
         }}
       />
       <View style={styled.extra}>
@@ -55,7 +71,7 @@ const SelectTokenModal = (props) => {
           <Text style={styled.subText}>Name</Text>
         </Row>
         <ListAllTokenSelectable
-          availableTokens={data}
+          availableTokens={availableTokens}
           renderItem={({ item }) => (
             <TokenTrade onPress={() => onPress(item)} tokenId={item?.tokenId} />
           )}

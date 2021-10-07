@@ -1,7 +1,8 @@
-import React, {memo} from 'react';
-import {SafeAreaView, ScrollView, StyleSheet, Text, View} from 'react-native';
+import React, { memo } from 'react';
+import { SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
 import PropTypes from 'prop-types';
-import {COLORS, FONT} from '@src/styles';
+import { COLORS, FONT } from '@src/styles';
+import { useKeyboard } from '@src/components/UseEffect/useKeyboard';
 
 const styles = StyleSheet.create({
   container: {
@@ -13,10 +14,10 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 0,
     bottom: 0,
-    width: '100%'
+    width: '100%',
   },
   safeScreen: {
-    flex: 1
+    flex: 1,
   },
   title: {
     ...FONT.STYLE.medium,
@@ -27,19 +28,28 @@ const styles = StyleSheet.create({
   },
 });
 
-const ModalBottomSheet = ({ title, headerView, contentView, customContent }) => {
+const ModalBottomSheet = ({
+  title,
+  headerView,
+  contentView,
+  customContent,
+}) => {
+  const [isKeyboardVisible] = useKeyboard();
   return (
-    <View style={styles.container}>
+    <View
+      style={{
+        ...styles.container,
+        ...(isKeyboardVisible ? { height: '80%' } : {}),
+      }}
+    >
       <SafeAreaView style={styles.safeScreen}>
-        {customContent ? customContent : (
+        {customContent ? (
+          customContent
+        ) : (
           <>
             {!!title && <Text style={styles.title}>{title}</Text>}
             {!!headerView && headerView}
-            {!!contentView && (
-              <ScrollView>
-                {contentView}
-              </ScrollView>
-            )}
+            {!!contentView && <ScrollView>{contentView}</ScrollView>}
           </>
         )}
       </SafeAreaView>

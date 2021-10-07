@@ -2,30 +2,18 @@ import React from 'react';
 import { Text, View } from 'react-native';
 import PropTypes from 'prop-types';
 import withToken from '@src/components/Token/Token.enhance';
-import { AppIcon, TokenVerifiedIcon } from '@src/components/Icons';
+import { TokenVerifiedIcon } from '@src/components/Icons';
 import round from 'lodash/round';
 import Swipeout from 'react-native-swipeout';
 import { BtnDelete, BtnInfo } from '@src/components/Button';
 import replace from 'lodash/replace';
 import trim from 'lodash/trim';
-import {
-  TouchableOpacity,
-  ActivityIndicator,
-  Image,
-} from '@src/components/core';
+import { TouchableOpacity, ActivityIndicator } from '@src/components/core';
 import { useSelector } from 'react-redux';
 import { currencySelector, decimalDigitsSelector } from '@src/screens/Setting';
 import { prefixCurrency, pTokenSelector } from '@src/redux/selectors/shared';
 import { formatAmount, formatPrice } from '@components/Token/Token.utils';
 import { styled } from './Token.styled';
-
-export const Icon = React.memo((props) => {
-  const { iconUrl } = props;
-  if (!iconUrl) {
-    return <AppIcon />;
-  }
-  return <Image source={{ uri: iconUrl }} />;
-});
 
 export const NormalText = (props) => {
   const prefix = useSelector(prefixCurrency);

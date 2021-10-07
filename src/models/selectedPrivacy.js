@@ -55,7 +55,7 @@ function getIconUrl(chainTokenImageUri) {
 
   if (this.isMainCrypto || this.isPToken) {
     let formatedSymbol = String(
-      this.externalSymbol || this.symbol,
+      this.symbol || this.externalSymbol,
     ).toLowerCase();
     uri = `${CONSTANT_CONFIGS.CRYPTO_ICON_URL}/${formatedSymbol}@2x.png`;
   } else {
