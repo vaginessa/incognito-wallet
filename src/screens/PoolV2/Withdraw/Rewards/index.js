@@ -42,6 +42,9 @@ const Provide = ({
           disabled={!!error || disable}
           onPress={onConfirm}
         />
+        <Text style={[mainStyle.coinExtraSmall, {fontWeight: 'bold'}]}>
+          Please note that you can only withdraw rewards of a locked up stake once its term ends.
+        </Text>
         <Text style={mainStyle.coinExtraSmall}>
           Your rewards counter will restart from zero.
           Please wait a couple of minutes for your main
