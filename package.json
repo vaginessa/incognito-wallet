@@ -50,7 +50,8 @@
     "deploy:next": "yarn deployIOS:next && yarn deployAndroid:next",
     "deploy:next2": "yarn deployIOS:next2 && yarn deployAndroid:next2",
     "deploy:next3": "yarn deployIOS:next3 && yarn deployAndroid:next3",
-    "push-code": "git add . && git commit -m 'push code' && git push"
+    "push-code": "git add . && git commit -m 'push code' && git push",
+    "fix-permission": "ssh-agent -s && ssh-add ~/.ssh/id_rsa"
   },
   "dependencies": {
     "@haskkor/react-native-recaptchav3": "https://github.com/incognitochain/react-native-recaptchav3",
