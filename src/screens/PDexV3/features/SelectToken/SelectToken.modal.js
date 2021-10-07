@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, Platform, KeyboardAvoidingView } from 'react-native';
+import { View, StyleSheet, Platform } from 'react-native';
 import { Text } from '@components/core';
 import { withLayout_2 } from '@src/components/Layout';
 import { Row } from '@src/components';
@@ -41,35 +41,27 @@ const SelectTokenModal = (props) => {
     return null;
   }
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={styled.container}
-    >
-      <View style={styled.container}>
-        <Text style={styled.title}>Select coins</Text>
-        <BaseTextInputCustom
-          inputProps={{
-            onChangeText: onChange,
-            placeholder: 'Search coins',
-            style: styled.input,
-          }}
+    <View style={styled.container}>
+      <Text style={styled.title}>Select coins</Text>
+      <BaseTextInputCustom
+        inputProps={{
+          onChangeText: onChange,
+          placeholder: 'Search coins',
+          style: styled.input,
+        }}
+      />
+      <View style={styled.extra}>
+        <Row>
+          <Text style={styled.subText}>Name</Text>
+        </Row>
+        <ListAllTokenSelectable
+          availableTokens={data}
+          renderItem={({ item }) => (
+            <TokenTrade onPress={() => onPress(item)} tokenId={item?.tokenId} />
+          )}
         />
-        <View style={styled.extra}>
-          <Row>
-            <Text style={styled.subText}>Name</Text>
-          </Row>
-          <ListAllTokenSelectable
-            availableTokens={data}
-            renderItem={({ item }) => (
-              <TokenTrade
-                onPress={() => onPress(item)}
-                tokenId={item?.tokenId}
-              />
-            )}
-          />
-        </View>
       </View>
-    </KeyboardAvoidingView>
+    </View>
   );
 };
 
