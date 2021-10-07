@@ -1,18 +1,11 @@
 import { createSelector } from 'reselect';
-
 import SelectedPrivacy from '@src/models/selectedPrivacy';
 import memoize from 'memoize-one';
 import { CONSTANT_COMMONS } from '@src/constants';
 import { ExHandler } from '@src/services/exception';
 import { BIG_COINS, PRIORITY_LIST } from '@src/screens/Dex/constants';
 import { defaultAccount } from './account';
-// eslint-disable-next-line import/no-cycle
-import {
-  tokensFollowedSelector,
-  pTokens,
-  internalTokens,
-  // followed,
-} from './token';
+import { tokensFollowedSelector, pTokens, internalTokens } from './token';
 import { getPrice } from '../utils/selectedPrivacy';
 
 export const selectedPrivacyTokenID = createSelector(

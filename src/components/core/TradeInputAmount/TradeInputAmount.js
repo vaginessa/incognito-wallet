@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowRightGreyIcon, InfiniteIcon } from '@src/components/Icons';
+import { ArrowGreyDown, InfiniteIcon } from '@src/components/Icons';
 import PropTypes from 'prop-types';
 import Row from '@src/components/Row';
 import { StyleSheet } from 'react-native';
@@ -117,7 +117,7 @@ const TradeInputAmount = (props) => {
         <BaseTextInput
           style={{
             ...styled.input,
-            ...inputStyle
+            ...inputStyle,
           }}
           keyboardType="decimal-pad"
           placeholder={placeholder}
@@ -131,7 +131,7 @@ const TradeInputAmount = (props) => {
           <TouchableOpacity onPress={onPressSymbol}>
             <Row style={{ alignItems: 'center' }}>
               {!!symbol && <Text style={styled.symbol}>{symbol}</Text>}
-              {canSelectSymbol && <ArrowRightGreyIcon />}
+              {canSelectSymbol && <ArrowGreyDown />}
             </Row>
           </TouchableOpacity>
         )}

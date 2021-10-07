@@ -17,6 +17,9 @@ import convert from '@src/utils/convert';
 import { Row } from '@src/components';
 import { ButtonTrade } from '@src/components/Button';
 import { COLORS, FONT } from '@src/styles';
+import { actionToggleModal } from '@src/components/Modal';
+import ModalBottomSheet from '@src/components/Modal/features/ModalBottomSheet';
+import { SelectTokenModal } from '@screens/PDexV3/features/SelectToken';
 import { maxAmountValidatorForSellInput } from './Swap.utils';
 import { formConfigs } from './Swap.constant';
 import {
@@ -85,17 +88,39 @@ const SwapInputsGroup = React.memo(() => {
   const inputAmount = useSelector(inputAmountSelector);
   const sellInputAmount = inputAmount(formConfigs.selltoken);
   const buyInputAmount = inputAmount(formConfigs.buytoken);
+  // const availableTokens = useSelector(availableTokensSelector);
   const onSelectToken = (token, field) => {
     dispatch(actionSelectToken(token, field));
     navigation.pop();
   };
-  const onSelectSellToken = () =>
-    navigation.navigate(routeNames.SelectTokenTrade, {
-      data: pairsToken.filter(
-        (token: SelectedPrivacy) => token?.tokenId !== selltoken?.tokenId,
-      ),
-      onSelectToken: (token) => onSelectToken(token, formConfigs.selltoken),
-    });
+  console.log('pairsToken', pairsToken);
+  const onSelectSellToken = () => {
+    dispatch(
+      actionToggleModal({
+        visible: true,
+        shouldCloseModalWhenTapOverlay: true,
+        data: (
+          <ModalBottomSheet
+            customContent={
+              <SelectTokenModal
+                data={pairsToken.filter(
+                  (token: SelectedPrivacy) =>
+                    token?.tokenId !== selltoken?.tokenId,
+                )}
+                onPress={(token) => onSelectToken(token, formConfigs.selltoken)}
+              />
+            }
+          />
+        ),
+      }),
+    );
+  };
+  // navigation.navigate(routeNames.SelectTokenTrade, {
+  // data: pairsToken.filter(
+  //   (token: SelectedPrivacy) => token?.tokenId !== selltoken?.tokenId,
+  // ),
+  // onSelectToken: (token) => onSelectToken(token, formConfigs.selltoken),
+  // });
   const onSelectBuyToken = () =>
     navigation.navigate(routeNames.SelectTokenTrade, {
       data: pairsToken.filter(
@@ -149,7 +174,7 @@ const SwapInputsGroup = React.memo(() => {
         editableInput={!!swapInfo?.editableInput}
         visibleHeader
         label="From"
-        rightHeader={(
+        rightHeader={
           <Row style={styled.rightHeaderSell}>
             <Text
               style={styled.balanceStr}
@@ -165,7 +190,7 @@ const SwapInputsGroup = React.memo(() => {
               onPress={onPressInfinityIcon}
             />
           </Row>
-        )}
+        }
       />
       <SwapButton onSwapButtons={onSwapButtons} />
       <Field

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Image, StyleSheet } from 'react-native';
 import { View } from '@src/components/core';
-import srcCopy from '@src/assets/images/new-icons/search.png';
+import srcCopy from '@src/assets/images/new-icons/arrow-down.png';
 
 const styled = StyleSheet.create({
   container: {
@@ -11,12 +11,12 @@ const styled = StyleSheet.create({
     alignItems: 'center',
   },
   icon: {
-    width: 14,
-    height: 13.97,
+    width: 9.61,
+    height: 8,
   },
 });
 
-const IconSearch = (props) => {
+const ArrowGregDown = (props) => {
   return (
     <View style={styled.container}>
       <Image style={[styled.icon, props?.style]} source={srcCopy} />
@@ -24,6 +24,6 @@ const IconSearch = (props) => {
   );
 };
 
-IconSearch.propTypes = {};
+ArrowGregDown.propTypes = {};
 
-export default IconSearch;
+export default ArrowGregDown;

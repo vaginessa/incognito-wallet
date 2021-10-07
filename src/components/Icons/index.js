@@ -44,3 +44,5 @@ export { default as ArrowDown } from './icon.arrowDown';
 export { default as EmptyBookIcon } from './icon.emptyBook';
 export { default as SwapIcon } from './icon.swap';
 export { default as LockIcon } from './icon.lock';
+export { default as ArrowGreyDown } from './icon.arrowGreyDown';
+export { default as AppIcon } from './icon.app';

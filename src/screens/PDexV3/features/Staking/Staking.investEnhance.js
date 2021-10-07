@@ -8,7 +8,7 @@ import {actionSetNFTTokenData} from '@src/redux/actions/account';
 import { PRVIDSTR } from 'incognito-chain-web-js/build/wallet';
 import debounce from 'lodash/debounce';
 import {actionToggleModal} from '@components/Modal';
-import ModalBottomSheet from '@components/Modal/ModalBottomSheet';
+import ModalBottomSheet from '@components/Modal/features/ModalBottomSheet';
 
 const withInvest = WrappedComp => props => {
   const dispatch = useDispatch();

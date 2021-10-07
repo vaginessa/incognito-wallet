@@ -1,7 +1,5 @@
 import React from 'react';
-import {
-  StyleSheet,
-} from 'react-native';
+import { StyleSheet } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import Modal from 'react-native-modal';
 import { modalSelector, modalLoadingSelector } from './modal.selector';
@@ -11,7 +9,7 @@ import LoadingModal from './features/LoadingModal';
 const styled = StyleSheet.create({
   container: {
     margin: 0,
-    flexDirection: 'column'
+    flexDirection: 'column',
   },
 });
 const ModalComponent = () => {
@@ -28,11 +26,18 @@ const ModalComponent = () => {
     shouldCloseModalWhenTapOverlay ? await dispatch(actionToggleModal()) : null;
   const onRequestClose = async () => {
     await dispatch(actionToggleModal());
-
     if (typeof onBack === 'function') {
       onBack();
     }
   };
+  React.useEffect(() => {
+    return () => {
+      dispatch(actionToggleModal());
+    };
+  }, []);
+  if (!visible) {
+    return null;
+  }
   return (
     <Modal
       isVisible={visible}

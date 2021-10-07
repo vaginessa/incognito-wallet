@@ -16,7 +16,7 @@ import {isFetchingNFTSelector} from '@src/redux/selectors/account';
 import debounce from 'lodash/debounce';
 import routeNames from '@routers/routeNames';
 import {actionToggleModal} from '@components/Modal';
-import ModalBottomSheet from '@components/Modal/ModalBottomSheet';
+import ModalBottomSheet from '@components/Modal/features/ModalBottomSheet';
 import withTransaction from '@screens/PDexV3/features/Staking/Staking.transaction';
 import PropTypes from 'prop-types';
 

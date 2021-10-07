@@ -9,7 +9,6 @@ import {
 import { Header } from '@src/components';
 import { withLayout_2 } from '@src/components/Layout';
 import { useNavigationParam } from 'react-navigation-hooks';
-import { useSearchBox } from '@src/components/Header';
 
 const styled = StyleSheet.create({
   container: {
@@ -17,7 +16,7 @@ const styled = StyleSheet.create({
   },
 });
 
-const ListAllTokenSelectable = withTokenVerified((props) => {
+export const ListAllTokenSelectable = withTokenVerified((props) => {
   return <ListAllToken {...props} />;
 });
 

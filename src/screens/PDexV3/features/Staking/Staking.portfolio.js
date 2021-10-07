@@ -10,7 +10,7 @@ import {RefreshControl} from '@components/core';
 import {useNavigation} from 'react-navigation-hooks';
 import routeNames from '@routers/routeNames';
 import {actionToggleModal} from '@components/Modal';
-import ModalBottomSheet from '@components/Modal/ModalBottomSheet';
+import ModalBottomSheet from '@components/Modal/features/ModalBottomSheet';
 import {EmptyBookIcon} from '@components/Icons';
 
 const StakingPortfolio = ({ handleFetchCoins }) => {

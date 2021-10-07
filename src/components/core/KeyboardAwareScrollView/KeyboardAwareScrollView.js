@@ -1,5 +1,8 @@
 import React from 'react';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import {
+  KeyboardAwareScrollView,
+  KeyboardAwareScrollViewProps,
+} from 'react-native-keyboard-aware-scroll-view';
 import { StyleSheet } from 'react-native';
 import { getBottomAreaHeight } from '@src/utils/SafeAreaHelper';
 
@@ -11,7 +14,8 @@ const styled = StyleSheet.create({
   },
 });
 
-const Component = ({ contentContainerStyle, ...rest }) => {
+const Component = (props: KeyboardAwareScrollViewProps) => {
+  const { contentContainerStyle, ...rest } = props;
   return (
     <KeyboardAwareScrollView
       showsVerticalScrollIndicator={false}

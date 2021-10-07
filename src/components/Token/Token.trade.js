@@ -1,23 +1,35 @@
 import React from 'react';
-import { View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import PropTypes from 'prop-types';
 import { TouchableOpacity } from '@src/components/core';
-import { Name, Symbol } from './Token';
+import { Row } from '@src/components';
+import { COLORS, FONT } from '@src/styles';
+import { Name, Icon } from './Token';
 import withToken from './Token.enhance';
-import { styled } from './Token.styled';
+
+const styled = StyleSheet.create({
+  container: {
+    marginBottom: 20,
+  },
+  row: {
+    alignItems: 'center',
+  },
+  name: {
+    fontSize: FONT.SIZE.medium,
+    fontFamily: FONT.NAME.medium,
+    color: COLORS.black,
+    marginLeft: 12,
+  },
+});
 
 const TokenTrade = (props) => {
   const { style, ...rest } = props;
   return (
-    <TouchableOpacity {...rest}>
-      <View style={[styled.container, style]}>
-        <View style={[styled.extra, styled.extraTop]}>
-          <Name {...props} />
-        </View>
-        <View style={styled.extra}>
-          <Symbol {...props} />
-        </View>
-      </View>
+    <TouchableOpacity style={styled.container} {...rest}>
+      <Row style={styled.row}>
+        <Icon {...props} />
+        <Name styledName={styled.name} shouldShowInfo={false} {...props} />
+      </Row>
     </TouchableOpacity>
   );
 };

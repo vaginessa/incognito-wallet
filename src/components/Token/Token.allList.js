@@ -14,10 +14,13 @@ const styled = StyleSheet.create({
   },
   hookText: {
     fontFamily: FONT.NAME.medium,
-    fontSize: FONT.SIZE.regular,
-    lineHeight: FONT.SIZE.regular + 5,
+    fontSize: FONT.SIZE.small,
+    lineHeight: FONT.SIZE.small + 5,
     color: COLORS.black,
     marginLeft: 5,
+  },
+  scrollview: {
+    paddingBottom: 200,
   },
 });
 
@@ -29,7 +32,10 @@ const ListAllToken = (props) => {
     renderItem,
   } = props;
   return (
-    <KeyboardAwareScrollView>
+    <KeyboardAwareScrollView
+      extraHeight={200}
+      contentContainerStyle={styled.scrollview}
+    >
       <ListToken {...tokensFactories[0]} renderItem={renderItem} />
       <BtnChecked
         btnStyle={[
