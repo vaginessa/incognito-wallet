@@ -57,9 +57,6 @@ const CoinList = ({
   const renderEmpty = () => {
     return (
       <>
-        <Row style={mainStyles.coin}>
-          <Text style={mainStyles.coinName}>Provide liquidity for pDEX</Text>
-        </Row>
         <ScrollView
           refreshControl={(
             <RefreshControl

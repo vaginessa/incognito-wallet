@@ -43,7 +43,7 @@ const Provide = ({
           onPress={onConfirm}
         />
         <Text style={[mainStyle.coinExtraSmall, {fontWeight: 'bold'}]}>
-          Please note that you can only withdraw rewards of a locked up stake once its term ends.
+          Please wait a couple of minutes for your main balance to update. If you have any rewards accrued from fixed term staking, you will be able to withdraw them along with your stake when the term ends.
         </Text>
         <Text style={mainStyle.coinExtraSmall}>
           Your rewards counter will restart from zero.
