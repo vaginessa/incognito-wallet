@@ -36,6 +36,7 @@ export const LockTimeComp = React.memo(({ time }) => {
 
 const CoinList = ({
   coins,
+  groupedCoins,
   userData,
   groupedUserData,
   histories,
@@ -68,18 +69,27 @@ const CoinList = ({
           )}
           style={styles.scrollView}
         >
-          {coins.map((item) => (
+          {groupedCoins.map((item) => (
             <Row style={mainStyles.coin} key={`${item.id} ${item.locked}`}>
               <Text style={mainStyles.coinName}>{item.name}</Text>
-              <Text
-                style={[
-                  mainStyles.coinExtra,
-                  mainStyles.textRight,
-                  mainStyles.flex,
-                ]}
-              >
-                {item.displayInterest}
-              </Text>
+              <View style={[mainStyles.textRight, mainStyles.flex]}>
+                <Row style={{alignItems: 'center'}}>
+                  { item.locked && 
+                      (
+                        <Image
+                          source={upToIcon}
+                          style={{
+                            width: 14,
+                            height: 16,
+                            marginBottom: 8,
+                          }}
+                        />
+                      )
+                  }
+                  <Text style={[mainStyles.coinExtra, mainStyles.textRight, mainStyles.flex]}>{item.displayInterest}</Text>
+                </Row>
+              </View>
+
             </Row>
           ))}
           {renderRate()}
@@ -276,6 +286,7 @@ const CoinList = ({
 
 CoinList.propTypes = {
   coins: PropTypes.array,
+  groupedCoins: PropTypes.array,
   groupedUserData: PropTypes.array,
   userData: PropTypes.array,
   histories: PropTypes.array,
@@ -288,6 +299,7 @@ CoinList.propTypes = {
 
 CoinList.defaultProps = {
   coins: [],
+  groupedCoins: [],
   groupedUserData: [],
   userData: [],
   histories: [],
