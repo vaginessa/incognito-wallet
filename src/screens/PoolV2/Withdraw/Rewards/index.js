@@ -42,13 +42,8 @@ const Provide = ({
           disabled={!!error || disable}
           onPress={onConfirm}
         />
-        <Text style={[mainStyle.coinExtraSmall, {fontWeight: 'bold'}]}>
-          Please wait a couple of minutes for your main balance to update. If you have any rewards accrued from fixed term staking, you will be able to withdraw them along with your stake when the term ends.
-        </Text>
-        <Text style={mainStyle.coinExtraSmall}>
-          Your rewards counter will restart from zero.
-          Please wait a couple of minutes for your main
-          balance to update.
+        <Text style={[mainStyle.coinExtraSmall]}>
+          {'Please wait a couple of minutes for your main balance to update.\n\nIf you have any rewards accrued from fixed term staking, you will be able to withdraw them along with your stake when the term ends.'}
         </Text>
       </View>
       <Loading open={withdrawing} />
