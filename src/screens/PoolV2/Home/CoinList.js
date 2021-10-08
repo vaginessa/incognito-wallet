@@ -69,24 +69,17 @@ const CoinList = ({
           {groupedCoins.map((item) => (
             <Row style={mainStyles.coin} key={`${item.id} ${item.locked}`}>
               <Text style={mainStyles.coinName}>{item.name}</Text>
-              <View style={[mainStyles.textRight, mainStyles.flex]}>
-                <Row style={{alignItems: 'center'}}>
-                  { item.locked && 
+              <Row style={[mainStyles.flex, mainStyles.emptyRight]}>
+                {item.locked &&
                       (
                         <Image
                           source={upToIcon}
-                          style={{
-                            width: 14,
-                            height: 16,
-                            marginBottom: 8,
-                          }}
+                          style={mainStyles.iconUp}
                         />
                       )
-                  }
-                  <Text style={[mainStyles.coinExtra, mainStyles.textRight, mainStyles.flex]}>{item.displayInterest}</Text>
-                </Row>
-              </View>
-
+                }
+                <Text style={[mainStyles.coinExtra, mainStyles.textRight]}>{item.displayInterest}</Text>
+              </Row>
             </Row>
           ))}
           {renderRate()}
@@ -160,7 +153,7 @@ const CoinList = ({
     return (
       <Row style={{alignItems: 'center'}}>
         {
-          item.locked && 
+          item.locked &&
             (
               <Image
                 source={upToIcon}
