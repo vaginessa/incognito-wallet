@@ -100,9 +100,11 @@ export const actionFetchListFollowingPools = () => async (
 
 export const actionFetchPools = () => async (dispatch) => {
   try {
-    await dispatch(actionSetFetching({ isFetching: true }));
-    await dispatch(actionFetchListPools());
-    await dispatch(actionFetchListFollowingPools());
+    dispatch(actionSetFetching({ isFetching: true }));
+    await Promise.all([
+      dispatch(actionFetchListPools()),
+      dispatch(actionFetchListFollowingPools()),
+    ]);
     dispatch(actionFetched());
   } catch (error) {
     new ExHandler(error).showErrorToast();

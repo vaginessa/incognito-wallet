@@ -94,6 +94,8 @@ export const getInputAmount = (
       symbol: token.symbol,
       pDecimals: token.pDecimals,
       isMainCrypto: token.isMainCrypto,
+      iconUrl: token.iconUrl,
+      tokenData: token,
 
       amount,
       originalAmount,
@@ -173,21 +175,28 @@ export const calDefaultPairOrderLimit = ({ pool, x, y, x0 }) => {
       const { virtualValue } = pool;
       const x_v = new BigNumber(virtualValue[(x?.tokenId)]);
       const y_v = new BigNumber(virtualValue[(y?.tokenId)]);
+      console.log('virtualValue', virtualValue);
       const L = x_v.multipliedBy(y_v);
       y0 = y_v.minus(L.dividedBy(x_v.plus(x0)));
+      console.log('y0', y0.toNumber());
       if (y0.isNaN()) {
         y0 = 0;
       } else {
         const y0ToHumanAmount = new BigNumber(
           convert.toHumanAmount(y0, y?.pDecimals),
         );
+        console.log('y0ToHumanAmount', y0ToHumanAmount.toNumber());
         y0Fixed = format.toFixed(y0ToHumanAmount.toNumber(), y?.pDecimals);
+        console.log('y0Fixed', y0Fixed);
         const x0ToHumanAmount = new BigNumber(
           convert.toHumanAmount(x0, x?.pDecimals),
         );
+        console.log('x0ToHumanAmount', x0ToHumanAmount.toNumber());
         let rawRate = y0ToHumanAmount.dividedBy(x0ToHumanAmount);
         rawRate = rawRate.isNaN() ? 0 : rawRate.toNumber();
+        console.log('rawRate', rawRate);
         rate = format.toFixed(rawRate, y?.pDecimals);
+        console.log('rate', rate);
       }
     }
   } catch (error) {

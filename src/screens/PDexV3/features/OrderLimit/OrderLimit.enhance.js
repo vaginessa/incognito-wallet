@@ -1,16 +1,24 @@
 import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import ErrorBoundary from '@src/components/ErrorBoundary';
 import { compose } from 'recompose';
-import { withLayout_2 } from '@src/components/Layout';
-import { useDispatch } from 'react-redux';
-import { actionInit, actionReset } from './OrderLimit.actions';
+import { poolSelectedDataSelector } from './OrderLimit.selector';
+import {
+  actionInit,
+  actionReset,
+  actionSetDefaultPool,
+} from './OrderLimit.actions';
 
 const enhance = (WrappedComp) => (props) => {
   const dispatch = useDispatch();
+  const handleUnmount = async () => {
+    await dispatch(actionSetDefaultPool());
+    dispatch(actionReset());
+  };
   React.useEffect(() => {
     dispatch(actionInit());
     return () => {
-      dispatch(actionReset());
+      handleUnmount();
     };
   }, []);
   return (

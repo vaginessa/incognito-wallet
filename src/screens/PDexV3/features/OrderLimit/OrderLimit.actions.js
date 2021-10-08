@@ -5,7 +5,10 @@ import SelectedPrivacy from '@src/models/selectedPrivacy';
 import { getBalance } from '@src/redux/actions/token';
 import { getPrivacyDataByTokenID } from '@src/redux/selectors/selectedPrivacy';
 import { ExHandler } from '@src/services/exception';
-import { actionFetchListFollowingPools } from '@screens/PDexV3/features/Pools';
+import {
+  actionFetchPools,
+  defaultPoolSelector,
+} from '@screens/PDexV3/features/Pools';
 import convert from '@src/utils/convert';
 import { actionSetNFTTokenData } from '@src/redux/actions/account';
 import format from '@src/utils/format';
@@ -44,6 +47,7 @@ import {
   inputAmountSelector,
   orderLimitDataSelector,
   orderDetailSelector,
+  poolIdSelector,
 } from './OrderLimit.selector';
 import { calDefaultPairOrderLimit } from './OrderLimit.utils';
 
@@ -114,7 +118,7 @@ export const actionSetSellToken = (selltokenId) => async (
     const bnBalance = new BigNumber(balance);
     const bnMinumum = new BigNumber(minimum);
     let sellOriginalAmount = '';
-    if (bnBalance.gte(bnMinumum)) {
+    if (bnBalance.gte(bnMinumum) || bnBalance.eq(0)) {
       sellOriginalAmount = minimum;
     } else {
       sellOriginalAmount = balance;
@@ -157,14 +161,37 @@ export const actionSetInputToken = ({ selltoken, buytoken }) => async (
     throw error;
   }
 };
+export const actionSetDefaultPool = () => async (dispatch, getState) => {
+  try {
+    const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
+    const state = getState();
+    const pool = poolSelectedDataSelector(state);
+    if (!pool) {
+      return;
+    }
+    console.log('SET DEFUALT POOL', pool?.poolId);
+    await pDexV3Inst.setDefaultPool(pool?.poolId);
+  } catch (error) {
+    new ExHandler(error).showErrorToast();
+  }
+};
 
 export const actionInit = (refresh = false) => async (dispatch, getState) => {
   try {
     await dispatch(actionIniting(true));
-    if (refresh) {
-      await dispatch(actionFetchListFollowingPools());
-    }
+    await dispatch(actionFetchPools());
     let state = getState();
+    const poolSelected = poolSelectedDataSelector(state);
+    if (!poolSelected?.poolId) {
+      const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
+      let defaultPoolId = await pDexV3Inst.getDefaultPool();
+      if (!defaultPoolId) {
+        defaultPoolId = defaultPoolSelector(state);
+        await dispatch(actionSetDefaultPool());
+      }
+      await dispatch(actionSetPoolSelected(defaultPoolId));
+    }
+    state = getState();
     const pool = poolSelectedDataSelector(state);
     if (isEmpty(pool)) {
       return;

@@ -35,6 +35,11 @@ export const orderLimitSelector = createSelector(
   (orderLimit) => orderLimit,
 );
 
+export const poolIdSelector = createSelector(
+  orderLimitSelector,
+  ({ poolId }) => poolId,
+);
+
 export const poolSelectedDataSelector = createSelector(
   orderLimitSelector,
   getDataByPoolIdSelector,
@@ -266,7 +271,7 @@ export const orderLimitDataSelector = createSelector(
     const networkfeeAmountStr = `${networkfeeAmount} ${PRV.symbol}`;
     const prv: SelectedPrivacy = getPrivacyDataByTokenID(PRV.id);
     const showPRVBalance =
-      !sellInputAmount.isMainCrypto && !buyInputAmount.isMainCrypto;
+      !sellInputAmount?.isMainCrypto && !buyInputAmount.isMainCrypto;
     const prvBalance = format.amountFull(prv.amount, PRV.pDecimals, false);
     const prvBalanceStr = `${prvBalance} ${PRV.symbol}`;
     const balanceStr = `${sellInputAmount?.balanceStr} ${sellInputAmount?.symbol} + ${buyInputAmount?.balanceStr} ${buyInputAmount?.symbol}`;

@@ -262,7 +262,7 @@ export const swapInfoSelector = createSelector(
       const buyInputAmountStr = `${buyInputAmount?.amountText} ${buyInputAmount?.symbol}`;
       const prv: SelectedPrivacy = getPrivacyDataByTokenID(PRV.id);
       const showPRVBalance =
-        !sellInputAmount.isMainCrypto && !buyInputAmount.isMainCrypto;
+        !sellInputAmount?.isMainCrypto && !buyInputAmount.isMainCrypto;
       const prvBalance = format.amountFull(prv.amount, PRV.pDecimals, false);
       const prvBalanceStr = `${prvBalance} ${PRV.symbol}`;
       const originalMinAmountExpected = calMintAmountExpected({

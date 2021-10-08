@@ -55,7 +55,7 @@ export const useTabFactories = () => {
         onPressQuestionIcon: () => null,
       },
     ];
-    if (sellInputAmount.isMainCrypto && sellInputAmount.usingFee) {
+    if (sellInputAmount?.isMainCrypto && sellInputAmount.usingFee) {
       result.push({
         label: 'Trading fee',
         value: feeTokenData?.totalFeePRVText ?? '',

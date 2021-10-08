@@ -24,12 +24,10 @@ const styled = StyleSheet.create({
   container: {
     marginVertical: 30,
   },
-  dividerStyled: {
-    marginVertical: 30,
+  inputContainer: {
+    marginBottom: 16,
   },
-  selectPercentAmountContainer: {
-    marginVertical: 30,
-  },
+  selectPercentAmountContainer: {},
 });
 
 const SellInput = React.memo(() => {
@@ -90,18 +88,24 @@ const SellInput = React.memo(() => {
     return null;
   }
   return (
-    <Field
-      component={TradeInputAmount}
-      name={formConfigs.selltoken} //
-      hasInfinityIcon
-      symbol={sellInputAmount?.symbol}
-      onEndEditing={onEndEditing}
-      onPressInfinityIcon={onPressInfinityIcon}
-      validate={[...validator.combinedAmount, _maxAmountValidatorForSellInput]}
-      loadingBalance={!!sellInputAmount?.loadingBalance}
-      editableInput={!!orderLimitData?.editableInput}
-      onChange={onChange}
-    />
+    <View style={styled.inputContainer}>
+      <Field
+        component={TradeInputAmount}
+        name={formConfigs.selltoken} //
+        hasInfinityIcon
+        symbol={sellInputAmount?.symbol}
+        srcIcon={sellInputAmount?.iconUrl}
+        onEndEditing={onEndEditing}
+        onPressInfinityIcon={onPressInfinityIcon}
+        validate={[
+          ...validator.combinedAmount,
+          _maxAmountValidatorForSellInput,
+        ]}
+        loadingBalance={!!sellInputAmount?.loadingBalance}
+        editableInput={!!orderLimitData?.editableInput}
+        onChange={onChange}
+      />
+    </View>
   );
 });
 
@@ -144,16 +148,19 @@ const BuyInput = React.memo(() => {
     return null;
   }
   return (
-    <Field
-      component={TradeInputAmount}
-      name={formConfigs.buytoken} //
-      symbol={buyInputAmount?.symbol}
-      onEndEditing={onEndEditing}
-      validate={[...validator.combinedAmount]}
-      loadingBalance={!!buyInputAmount?.loadingBalance}
-      editableInput={!!orderLimitData?.editableInput}
-      onChange={onChange}
-    />
+    <View style={styled.inputContainer}>
+      <Field
+        component={TradeInputAmount}
+        name={formConfigs.buytoken} //
+        symbol={buyInputAmount?.symbol}
+        onEndEditing={onEndEditing}
+        validate={[...validator.combinedAmount]}
+        loadingBalance={!!buyInputAmount?.loadingBalance}
+        editableInput={!!orderLimitData?.editableInput}
+        onChange={onChange}
+        srcIcon={buyInputAmount?.iconUrl}
+      />
+    </View>
   );
 });
 
@@ -208,7 +215,6 @@ const InputsGroup = React.memo(() => {
       return (
         <>
           <SellInput />
-          <Divider dividerStyled={styled.dividerStyled} />
           <BuyInput />
         </>
       );
@@ -217,7 +223,6 @@ const InputsGroup = React.memo(() => {
       return (
         <>
           <BuyInput />
-          <Divider dividerStyled={styled.dividerStyled} />
           <SellInput />
         </>
       );

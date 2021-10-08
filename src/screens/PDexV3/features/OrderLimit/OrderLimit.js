@@ -4,7 +4,7 @@ import Tabs from '@src/components/core/Tabs';
 import React from 'react';
 import { View, RefreshControl } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
-import { COLORS } from '@src/styles';
+import { COLORS, FONT } from '@src/styles';
 import { createForm } from '@src/components/core/reduxForm';
 import { NFTTokenBottomBar } from '@screens/PDexV3/features/NFTToken';
 import { RightHeader } from '@screens/PDexV3/features/Trade/Trade';
@@ -40,7 +40,7 @@ const Form = createForm(formConfigs.formName, {
 const OrderLimit = () => {
   const dispatch = useDispatch();
   const actionChangeTab = () => dispatch(actionInit());
-  const { sellColor, buyColor, poolTitle, refreshing } = useSelector(
+  const { sellColor, buyColor, mainColor, refreshing } = useSelector(
     orderLimitDataSelector,
   );
   const onRefresh = () => dispatch(actionInit(true));
@@ -49,15 +49,37 @@ const OrderLimit = () => {
       tabID: TAB_BUY_ID,
       label: 'Buy',
       onChangeTab: actionChangeTab,
-      titleStyled: { color: buyColor },
-      titleDisabledStyled: { color: COLORS.colorGreyMedium },
+      titleStyled: {
+        color: COLORS.white,
+        fontSize: FONT.SIZE.medium,
+        fontFamily: FONT.NAME.medium,
+      },
+      titleDisabledStyled: { color: COLORS.colorGrey3 },
+      tabStyled: {
+        backgroundColor: buyColor,
+        flex: 1,
+      },
+      tabStyledDisabled: {
+        backgroundColor: 'transparent',
+      },
     },
     {
       tabID: TAB_SELL_ID,
       label: 'Sell',
       onChangeTab: actionChangeTab,
-      titleStyled: { color: sellColor },
-      titleDisabledStyled: { color: COLORS.colorGreyMedium },
+      titleStyled: {
+        color: COLORS.white,
+        fontSize: FONT.SIZE.medium,
+        fontFamily: FONT.NAME.medium,
+      },
+      titleDisabledStyled: { color: COLORS.colorGrey3 },
+      tabStyled: {
+        backgroundColor: sellColor,
+        flex: 1,
+      },
+      tabStyledDisabled: {
+        backgroundColor: 'transparent',
+      },
     },
   ];
   return (

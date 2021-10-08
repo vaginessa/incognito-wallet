@@ -36,7 +36,6 @@ const enhance = (WrappedComp) => (props) => {
     return children.map((child) => {
       const { label, tabID, ...rest } = child.props;
       if (useTab1) {
-        console.log('tabID', tabID);
         return (
           <Tab1
             activeTab={activeTab}
@@ -62,7 +61,7 @@ const enhance = (WrappedComp) => (props) => {
   };
   React.useEffect(() => {
     if (children) {
-      const { tabID, onChangeTab } = children[0].props || {};
+      const { tabID, onChangeTab } = children[1].props || {};
       dispatch(
         actionChangeTab({
           rootTabID,

@@ -125,3 +125,8 @@ export const isFetchingSelector = createSelector(
   poolsSelector,
   ({ isFetching }) => isFetching,
 );
+
+export const defaultPoolSelector = createSelector(
+  listPoolsSelector,
+  (pools) => pools[0]?.poolId,
+);
