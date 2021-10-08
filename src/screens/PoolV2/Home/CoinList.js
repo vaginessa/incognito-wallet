@@ -124,13 +124,26 @@ const CoinList = ({
     );
   };
 
+  const renderBtnViewDetails = (item) => {
+    return (
+      <TouchableOpacity style={mainStyles.btnMirage} onPress={() => handleShowLockHistory(item)}>
+        <Text style={mainStyles.mirageText}>View details</Text>
+      </TouchableOpacity>
+    );
+  };
+
   const renderMainCoin = (item) => {
     const mapCoin = item.coin;
     const provideBalance = item.balance;
     return (
       <View style={mainStyles.wrapTitle}>
         <Text style={[mainStyles.coinName, { marginBottom: 0 }]}>{item.symbol}</Text>
-        {item.locked && <LockTimeComp />}
+        {item.locked && (
+          <>
+            <LockTimeComp />
+            {renderBtnViewDetails(mapCoin)}
+          </>
+        )}
         {(!item.locked && mapCoin.id === PRV_ID && !!provideBalance) && renderBtnMirage(item)}
       </View>
     );
@@ -171,17 +184,10 @@ const CoinList = ({
         {groupedUserData.map((item) => {
           const mapCoin = item.coin;
           if (!mapCoin) return null;
-          const isLock = mapCoin.locked;
-          const isPRV = mapCoin.id === PRV_ID;
-          const provideBalance = item.balance;
-          const COMP = isLock ? TouchableOpacity : View;
           return (
             <View key={`${item.id} ${item.locked}`} style={mainStyles.coin}>
-              <COMP
-                onPress={() => handleShowLockHistory(mapCoin)}
+              <View
                 key={`${item.id} ${item.locked}`}
-                activeOpacity={isLock ? 0.7 : 1}
-                style={[(!isLock && (!isPRV || !provideBalance)) && { opacity: 0.5 }]}
               >
                 <View>
                   <Row>
@@ -220,7 +226,7 @@ const CoinList = ({
                     </View>
                   </Row>
                 </View>
-              </COMP>
+              </View>
             </View>
           );
         })}
