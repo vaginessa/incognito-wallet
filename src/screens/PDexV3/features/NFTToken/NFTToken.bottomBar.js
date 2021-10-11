@@ -1,20 +1,23 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
-import PropTypes from 'prop-types';
-import { BottomBar } from '@src/components/core';
 import { useSelector } from 'react-redux';
 import { nftTokenDataSelector } from '@src/redux/selectors/account';
 import routeNames from '@src/router/routeNames';
 import { useNavigation } from 'react-navigation-hooks';
+import { ButtonBasic } from '@src/components/Button';
 
-const NFTTokenBottomBar = (props) => {
+const NFTTokenBottomBar = () => {
   const navigation = useNavigation();
-  const { initNFTToken } = useSelector(nftTokenDataSelector);
+  const { initNFTToken, nftTokenAvailable, titleStr } = useSelector(
+    nftTokenDataSelector,
+  );
   const onNavMintNFTToken = () => navigation.navigate(routeNames.MintNFTToken);
-  if (!initNFTToken) {
+  if (!initNFTToken || !nftTokenAvailable) {
     return (
-      <BottomBar
-        text="Mint a nft token to access all features"
+      <ButtonBasic
+        btnStyle={{
+          marginVertical: 16,
+        }}
+        title={titleStr}
         onPress={onNavMintNFTToken}
       />
     );

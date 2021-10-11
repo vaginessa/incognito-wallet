@@ -6,13 +6,12 @@ import { useSelector } from 'react-redux';
 import { createForm } from '@src/components/core/reduxForm';
 import { NFTTokenBottomBar } from '@screens/PDexV3/features/NFTToken';
 import { ButtonBasic } from '@src/components/Button';
+import LoadingTx from '@src/components/LoadingTx';
 import GroupActions from './OrderLimit.groupActions';
-import GroupRate from './OrderLimit.groupRate';
+import GroupSubInfo from './OrderLimit.groupSubInfo';
 import { formConfigs, ROOT_TAB_ORDER_LIMIT } from './OrderLimit.constant';
 import { styled } from './OrderLimit.styled';
 import { orderLimitDataSelector } from './OrderLimit.selector';
-import SubInfo from './OrderLimit.subInfo';
-import OpenOrders from './OrderLimit.openOrders';
 import withOrderLimit from './OrderLimit.enhance';
 import OrderLimitInputsGroup from './OrderLimit.inputsGroup';
 
@@ -30,7 +29,7 @@ const Form = createForm(formConfigs.formName, {
 });
 
 const OrderLimit = (props) => {
-  const { mainColor, btnActionTitle, disabledBtn } = useSelector(
+  const { mainColor, btnActionTitle, disabledBtn, ordering } = useSelector(
     orderLimitDataSelector,
   );
   const { tabsFactories, handleConfirm } = props;
@@ -40,7 +39,10 @@ const OrderLimit = (props) => {
         {() => (
           <View>
             <GroupActions />
-            <Tabs rootTabID={ROOT_TAB_ORDER_LIMIT}>
+            <Tabs
+              rootTabID={ROOT_TAB_ORDER_LIMIT}
+              styledTabs={{ marginBottom: 24 }}
+            >
               {tabsFactories.map((tab) => (
                 <View key={tab.tabID} {...tab} />
               ))}
@@ -52,13 +54,12 @@ const OrderLimit = (props) => {
               disabled={disabledBtn}
               onPress={handleConfirm}
             />
-            <GroupRate />
-            <SubInfo />
-            <OpenOrders />
+            <NFTTokenBottomBar />
+            <GroupSubInfo />
           </View>
         )}
       </Form>
-      <NFTTokenBottomBar />
+      {!!ordering && <LoadingTx />}
     </View>
   );
 };

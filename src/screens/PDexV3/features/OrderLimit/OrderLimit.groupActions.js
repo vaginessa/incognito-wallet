@@ -10,15 +10,13 @@ import { Text, TouchableOpacity } from '@src/components/core';
 import { Row } from '@src/components';
 import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
-import { TradeSuccessModal } from '@screens/PDexV3/features/Trade';
-import { actionToggleModal } from '@src/components/Modal';
 import { COLORS, FONT } from '@src/styles';
 import { ArrowGreyDown } from '@src/components/Icons';
 import {
   orderLimitDataSelector,
   rateDataSelector,
 } from './OrderLimit.selector';
-import { actionInit, actionBookOrder } from './OrderLimit.actions';
+import { actionInit } from './OrderLimit.actions';
 
 const styled = StyleSheet.create({
   container: {
@@ -68,9 +66,7 @@ const styled = StyleSheet.create({
 const GroupActions = () => {
   const navigation = useNavigation();
   const {
-    disabledBtn,
     poolId,
-    cfmTitle,
     poolStr,
     priceChange24hStr,
     colorPriceChange24h,
@@ -83,7 +79,6 @@ const GroupActions = () => {
       poolId,
     });
   };
-  console.log('poolStr', poolStr);
   return (
     <View style={styled.container}>
       <Row style={styled.top}>

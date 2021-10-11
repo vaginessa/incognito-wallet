@@ -178,6 +178,8 @@ export const rateDataSelector = createSelector(
     let rate = '';
     let rateStr = '';
     let customRate = '';
+    let defaultRate = {};
+    let rateToken = {};
     try {
       const sellInputAmount = getInputAmount(formConfigs.selltoken);
       const buyInputAmount = getInputAmount(formConfigs.buytoken);
@@ -188,7 +190,8 @@ export const rateDataSelector = createSelector(
           customRate,
         };
       }
-      rate = calDefaultPairOrderLimit({
+      rateToken = pool?.token2;
+      defaultRate = calDefaultPairOrderLimit({
         pool,
         x: pool?.token1,
         y: pool?.token2,
@@ -196,15 +199,17 @@ export const rateDataSelector = createSelector(
       }).rate;
       const selector = formValueSelector(formConfigs.formName);
       customRate = selector(state, formConfigs.rate);
-      customRate = customRate || rate;
-      rateStr = format.amountFull(rate, 0, false);
+      customRate = customRate || defaultRate;
+      rateStr = format.amountFull(defaultRate, 0, false);
     } catch (error) {
       console.log('rateSelector-error', error);
     }
     return {
       rate,
       rateStr,
-      customRate: customRate || rate,
+      customRate,
+      defaultRate,
+      rateToken,
     };
   },
 );
@@ -275,7 +280,7 @@ export const orderLimitDataSelector = createSelector(
       !sellInputAmount?.isMainCrypto && !buyInputAmount.isMainCrypto;
     const prvBalance = format.amountFull(prv.amount, PRV.pDecimals, false);
     const prvBalanceStr = `${prvBalance} ${PRV.symbol}`;
-    const balanceStr = `${sellInputAmount?.balanceStr} ${sellInputAmount?.symbol} + ${buyInputAmount?.balanceStr} ${buyInputAmount?.symbol}`;
+    const balanceStr = `${sellInputAmount?.balanceStr} ${sellInputAmount?.symbol}`;
     const poolSizeStr = `${sellInputAmount?.poolValueStr} ${sellInputAmount?.symbol} + ${buyInputAmount?.poolValueStr} ${buyInputAmount?.symbol}`;
     const editableInput = !initing;
     const calculating = initing;
@@ -284,7 +289,7 @@ export const orderLimitDataSelector = createSelector(
       !isValid(formConfigs.formName)(state) ||
       !nftTokenAvailable;
     if (!nftTokenAvailable) {
-      btnActionTitle = 'Not enough NFT token to book an order';
+      btnActionTitle = 'Not enough NFT token';
     }
     if (calculating) {
       btnActionTitle = 'Calculating...';
@@ -381,7 +386,9 @@ export const mappingOrderHistorySelector = createSelector(
         buyStr,
         rateStr,
         buyToken,
-        sellToken;
+        sellToken,
+        sellTokenData,
+        buyTokenData;
       const sellTokenBalance = new BigNumber(order?.sellTokenBalance);
       const buyTokenBalance = new BigNumber(order?.buyTokenBalance);
       const sellTokenWithdrawed = new BigNumber(order?.sellTokenWithdrawed);
@@ -440,6 +447,7 @@ export const mappingOrderHistorySelector = createSelector(
       let btnClaim = BTN_WITHDRAW_ORDER[claimTxStatus]
         ? `${btnTitleClaim}${BTN_WITHDRAW_ORDER[claimTxStatus]}`
         : '';
+      const poolStr = `${token1.symbol} / ${token2.symbol}`;
       if (sellTokenId === token1.tokenId) {
         type = 'sell';
         mainColor = COLORS.red;
@@ -448,9 +456,10 @@ export const mappingOrderHistorySelector = createSelector(
         priceStr = format.amountFull(price, token2.pDecimals, false);
         sellStr = `${amountStr} ${token1.symbol}`;
         buyStr = `${priceStr} ${token2.symbol}`;
-        infoStr = `Sell ${sellStr}\nPrice ${buyStr}`;
-      }
-      if (sellTokenId === token2.tokenId) {
+        infoStr = poolStr;
+        sellTokenData = token1;
+        buyTokenData = token2;
+      } else if (sellTokenId === token2.tokenId) {
         type = 'buy';
         mainColor = COLORS.green;
         pDecimals = token2.pDecimals;
@@ -458,7 +467,9 @@ export const mappingOrderHistorySelector = createSelector(
         priceStr = format.amountFull(price, token1.pDecimals, false);
         buyStr = `${amountStr} ${token2.symbol}`;
         sellStr = `${priceStr} ${token1.symbol}`;
-        infoStr = `Buy ${buyStr}\nPrice ${sellStr}`;
+        infoStr = poolStr;
+        sellTokenData = token2;
+        buyTokenData = token1;
       }
       sellToken = getPrivacyDataByTokenID(sellTokenId);
       buyToken = getPrivacyDataByTokenID(buyTokenId);
@@ -506,6 +517,12 @@ export const mappingOrderHistorySelector = createSelector(
         networkfeeAmountStr: `${format.amountFull(1, PRV.pDecimals, false)} ${
           PRV.symbol
         }`,
+        sellTokenData,
+        buyTokenData,
+        token1,
+        token2,
+        priceStr,
+        amountStr,
       };
       return result;
     } catch (error) {

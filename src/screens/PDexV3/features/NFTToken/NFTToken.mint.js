@@ -1,8 +1,8 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { useNavigation } from 'react-navigation-hooks';
-import { delay } from '@src/utils/delay';
 import { useSelector, useDispatch } from 'react-redux';
+import { actionGetPDexV3Inst } from '@screens/PDexV3';
 import { withLayout_2 } from '@src/components/Layout';
 import { Header } from '@src/components';
 import { ScrollView } from '@src/components/core';
@@ -11,6 +11,7 @@ import { ButtonBasic } from '@src/components/Button';
 import { actionSetNFTTokenData } from '@src/redux/actions/account';
 import LoadingTx from '@src/components/LoadingTx';
 import {
+  PrivacyVersion,
   ACCOUNT_CONSTANT,
 } from 'incognito-chain-web-js/build/wallet';
 import { defaultAccountSelector } from '@src/redux/selectors/account';
@@ -18,7 +19,6 @@ import { walletSelector } from '@src/redux/selectors/wallet';
 import format from '@src/utils/format';
 import { PRV } from '@src/constants/common';
 import { ExHandler } from '@src/services/exception';
-import { getAccountWallet } from '@src/services/wallet/Wallet.shared';
 import { Hook } from '@screens/PDexV3/features/Extra';
 import NFTTokenHook from './NFTToken.hook';
 
@@ -77,13 +77,11 @@ const FormMint = React.memo((props) => {
   );
   const onMint = async () => {
     try {
-      const accountWallet = getAccountWallet(account, wallet);
       await setMinting(true);
-      console.log('Mint nft token fetching....');
-      await delay(1000);
-      // await accountWallet.createAndMintNftTx({
-      //   extra: { version: PrivacyVersion.ver2 },
-      // });
+      const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
+      await pDexV3Inst.createAndMintNftTx({
+        extra: { version: PrivacyVersion.ver2 },
+      });
       await dispatch(actionSetNFTTokenData());
     } catch (error) {
       new ExHandler(error).showErrorToast();

@@ -37,7 +37,12 @@ const styled = StyleSheet.create({
   },
 });
 
-const SelectAccountButton = ({ ignoredAccounts, disabled, callback }) => {
+const SelectAccountButton = ({
+  ignoredAccounts,
+  disabled,
+  callback,
+  handleSelectedAccount,
+}) => {
   const account = useSelector(accountSelector.defaultAccountSelector);
   const accounts = useSelector(listAllMasterKeyAccounts);
   const navigation = useNavigation();
@@ -46,9 +51,9 @@ const SelectAccountButton = ({ ignoredAccounts, disabled, callback }) => {
     if (disabled) return;
     navigation.navigate(routeNames.SelectAccount, {
       ignoredAccounts,
+      handleSelectedAccount,
     });
   };
-
   const checkAccount = async () => {
     if (ignoredAccounts.includes(account.name.toLowerCase())) {
       const accountNames = accounts.map((item) => item.accountName);
@@ -95,6 +100,7 @@ const SelectAccountButton = ({ ignoredAccounts, disabled, callback }) => {
 SelectAccountButton.propTypes = {
   ignoredAccounts: PropTypes.array,
   disabled: PropTypes.bool,
+  handleSelectedAccount: PropTypes.func,
 };
 
 SelectAccountButton.defaultProps = {

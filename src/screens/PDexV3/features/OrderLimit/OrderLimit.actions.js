@@ -3,18 +3,14 @@ import { activedTabSelector } from '@src/components/core/Tabs/Tabs.selector';
 import { PRV } from '@src/constants/common';
 import SelectedPrivacy from '@src/models/selectedPrivacy';
 import { getBalance } from '@src/redux/actions/token';
-import { getPrivacyDataByTokenID } from '@src/redux/selectors/selectedPrivacy';
 import { ExHandler } from '@src/services/exception';
 import {
   actionFetchPools,
   defaultPoolSelector,
 } from '@screens/PDexV3/features/Pools';
-import convert from '@src/utils/convert';
 import { actionSetNFTTokenData } from '@src/redux/actions/account';
-import format from '@src/utils/format';
-import BigNumber from 'bignumber.js';
 import isEmpty from 'lodash/isEmpty';
-import { change, focus } from 'redux-form';
+import { change, reset } from 'redux-form';
 import { actionGetPDexV3Inst } from '@screens/PDexV3';
 import { batch } from 'react-redux';
 import {
@@ -47,7 +43,7 @@ import {
   inputAmountSelector,
   orderLimitDataSelector,
   orderDetailSelector,
-  poolIdSelector,
+  rateDataSelector,
 } from './OrderLimit.selector';
 import { calDefaultPairOrderLimit } from './OrderLimit.utils';
 
@@ -99,37 +95,13 @@ export const actionSetBuyTokenFetched = (payload) => ({
   payload,
 });
 
-export const actionSetSellToken = (selltokenId) => async (
-  dispatch,
-  getState,
-) => {
+export const actionSetSellToken = (selltokenId) => async (dispatch) => {
   try {
     if (!selltokenId) {
       return;
     }
     dispatch(actionSetSellTokenFetched(selltokenId));
-    const state = getState();
-    const selltoken: SelectedPrivacy = getPrivacyDataByTokenID(state)(
-      selltokenId,
-    );
-    const { pDecimals } = selltoken;
-    const balance = await dispatch(getBalance(selltokenId));
-    const minimum = convert.toOriginalAmount(1, pDecimals);
-    const bnBalance = new BigNumber(balance);
-    const bnMinumum = new BigNumber(minimum);
-    let sellOriginalAmount = '';
-    if (bnBalance.gte(bnMinumum) || bnBalance.eq(0)) {
-      sellOriginalAmount = minimum;
-    } else {
-      sellOriginalAmount = balance;
-    }
-    let sellamount = '';
-    sellamount = format.toFixed(
-      convert.toHumanAmount(sellOriginalAmount, pDecimals),
-      pDecimals,
-    );
-    dispatch(change(formConfigs.formName, formConfigs.selltoken, sellamount));
-    dispatch(focus(formConfigs.formName, formConfigs.selltoken));
+    await dispatch(getBalance(selltokenId));
   } catch (error) {
     new ExHandler(error).showErrorToast();
   }
@@ -196,7 +168,10 @@ export const actionInit = () => async (dispatch, getState) => {
     if (isEmpty(pool)) {
       return;
     }
-    dispatch(actionSetPercent(0));
+    batch(() => {
+      dispatch(actionSetPercent(0));
+      dispatch(reset(formConfigs.formName));
+    });
     const activedTab = activedTabSelector(state)(ROOT_TAB_ORDER_LIMIT);
     const token1: SelectedPrivacy = pool?.token1;
     const token2: SelectedPrivacy = pool?.token2;
@@ -223,18 +198,8 @@ export const actionInit = () => async (dispatch, getState) => {
       actionSetInputToken({ selltoken: selltokenId, buytoken: buytokenId }),
     );
     state = getState();
-    const sellInputAmount = inputAmountSelector(state)(formConfigs.selltoken);
-    const { originalAmount: x0 } = sellInputAmount;
-    const { rate, y0Fixed: buyAmount } = calDefaultPairOrderLimit({
-      pool,
-      x,
-      y,
-      x0,
-    });
-    batch(() => {
-      dispatch(change(formConfigs.formName, formConfigs.buytoken, buyAmount));
-      dispatch(change(formConfigs.formName, formConfigs.rate, rate));
-    });
+    const { defaultRate } = rateDataSelector(state);
+    dispatch(change(formConfigs.formName, formConfigs.rate, defaultRate));
     await dispatch(actionSetNFTTokenData());
     dispatch(actionFetchWithdrawOrderTxs());
     dispatch(actionFetchOrdersHistory());
@@ -408,7 +373,7 @@ export const actionFetchDataOrderDetail = () => async (dispatch, getState) => {
       poolid: poolId,
       token1ID: token1Id,
       token2ID: token2Id,
-      fromStorage,
+      fromStorage: !!fromStorage,
       version: PrivacyVersion.ver2,
     };
     console.log('params', params);

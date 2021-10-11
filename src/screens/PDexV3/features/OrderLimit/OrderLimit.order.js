@@ -11,6 +11,7 @@ import LoadingTx from '@src/components/LoadingTx';
 import RemoveSuccessDialog from '@src/screens/Setting/features/RemoveStorage/RemoveStorage.Dialog';
 import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
+import SelectedPrivacy from '@src/models/selectedPrivacy';
 import {
   actionWithdrawOrder,
   actionInit,
@@ -20,8 +21,6 @@ import {
 const styled = StyleSheet.create({
   orderWrapper: {
     flex: 1,
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
   },
   orderValue: {
     fontSize: FONT.SIZE.small,
@@ -33,18 +32,41 @@ const styled = StyleSheet.create({
   },
   orderItem: {
     flex: 1,
-    maxWidth: '30%',
   },
   btnWithdraw: {
-    width: 80,
-    height: 20,
-    marginTop: 10,
-    backgroundColor: COLORS.white,
+    width: 83,
+    height: 24,
+    backgroundColor: COLORS.colorGrey4,
   },
   btnTitleWithdraw: {
     fontSize: FONT.SIZE.small,
-    lineHeight: FONT.SIZE.small + 5,
     fontFamily: FONT.NAME.medium,
+    color: COLORS.colorGrey3,
+  },
+  subText: {
+    fontSize: FONT.SIZE.small,
+    fontFamily: FONT.NAME.regular,
+    color: COLORS.colorGrey3,
+  },
+  mainText: {
+    fontSize: FONT.SIZE.regular,
+    fontFamily: FONT.NAME.medium,
+    color: COLORS.black,
+  },
+  block1: {
+    textAlign: 'left',
+    alignItems: 'flex-start',
+  },
+  block2: {
+    textAlign: 'center',
+    alignItems: 'center',
+  },
+  block3: {
+    textAlign: 'right',
+    alignItems: 'flex-end',
+  },
+  mv8: {
+    marginVertical: 8,
   },
 });
 
@@ -75,7 +97,6 @@ const Order = React.memo(({ data, visibleDivider }) => {
   }
   const {
     infoStr,
-    percentStr,
     timeStr,
     mainColor,
     visibleBtnCancel,
@@ -88,17 +109,24 @@ const Order = React.memo(({ data, visibleDivider }) => {
     btnCancel,
     withdrawing,
     nftTokenAvailable,
+    type,
+    priceStr,
+    amountStr,
+    percentStr1,
   } = data;
+  const token1: SelectedPrivacy = data?.token1;
+  const token2: SelectedPrivacy = data?.token2;
   const renderHook = () => {
     let comp = null;
     if (visibleBtnCancel) {
       comp = (
         <ButtonBasic
           disabled={!nftTokenAvailable}
-          btnStyle={{ ...styled.btnWithdraw, backgroundColor: mainColor }}
+          btnStyle={styled.btnWithdraw}
           title={btnTitleCancel}
-          titleStyle={{ ...styled.btnTitleWithdraw }}
+          titleStyle={styled.btnTitleWithdraw}
           onPress={() =>
+            !!nftTokenAvailable &&
             onPressWithdrawOrder({
               requestTx,
               txType: ACCOUNT_CONSTANT.TX_TYPE.CANCEL_ORDER_LIMIT,
@@ -112,10 +140,11 @@ const Order = React.memo(({ data, visibleDivider }) => {
       comp = (
         <ButtonBasic
           disabled={!nftTokenAvailable}
-          btnStyle={{ ...styled.btnWithdraw, backgroundColor: mainColor }}
-          titleStyle={{ ...styled.btnTitleWithdraw }}
+          btnStyle={styled.btnWithdraw}
+          titleStyle={styled.btnTitleWithdraw}
           title={btnTitleClaim}
           onPress={() =>
+            !!nftTokenAvailable &&
             onWithdrawOrder({
               requestTx,
               txType: ACCOUNT_CONSTANT.TX_TYPE.CLAIM_ORDER_LIMIT,
@@ -124,63 +153,14 @@ const Order = React.memo(({ data, visibleDivider }) => {
         />
       );
     } else if (btnCancel) {
-      comp = (
-        <OrderValue
-          style={{ ...styled.orderValue, color: mainColor }}
-          value={btnCancel}
-        />
-      );
+      comp = <OrderValue style={styled.subText} value={btnCancel} />;
     } else if (btnClaim) {
-      comp = (
-        <OrderValue
-          style={{ ...styled.orderValue, color: mainColor }}
-          value={btnClaim}
-        />
-      );
+      comp = <OrderValue style={styled.subText} value={btnClaim} />;
     } else {
-      comp = (
-        <OrderValue
-          style={{ ...styled.orderValue, color: mainColor }}
-          value={statusStr}
-        />
-      );
+      comp = <OrderValue style={styled.subText} value={statusStr} />;
     }
-    return (
-      <View
-        style={{
-          flex: 1,
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}
-      >
-        {comp}
-      </View>
-    );
+    return comp;
   };
-  const factories = [
-    {
-      id: 'info',
-      value: infoStr,
-      style: {
-        textAlign: 'left',
-      },
-    },
-    {
-      id: 'percent',
-      value: percentStr,
-      style: {
-        textAlign: 'center',
-      },
-    },
-    {
-      id: 'time',
-      value: timeStr,
-      style: {
-        textAlign: 'right',
-      },
-      hook: renderHook(),
-    },
-  ];
   const handleNavOrderDetail = async () => {
     await dispatch(actionFetchedOrderDetail(data));
     navigation.navigate(routeNames.OrderLimitDetail);
@@ -188,28 +168,49 @@ const Order = React.memo(({ data, visibleDivider }) => {
   return (
     <TouchableOpacity onPress={handleNavOrderDetail}>
       <Row style={styled.orderWrapper}>
-        <RemoveSuccessDialog
-          visible={visible}
-          onPressCancel={() => setVisible(false)}
-          onPressAccept={onWithdrawOrder}
-          title="Cancel order"
-          subTitle={withdrawData?.subTitle || ''}
-          acceptStr="OK"
-        />
-        {factories.map((item) => (
-          <View style={styled.orderItem}>
-            <OrderValue
-              style={{ ...styled.orderValue, ...item.style, color: mainColor }}
-              value={item?.value}
-            />
-
-            {item?.hook && item.hook}
-          </View>
-        ))}
+        <View style={{ ...styled.orderItem, ...styled.block1 }}>
+          <Text
+            style={{
+              textTransform: 'capitalize',
+              ...styled.mainText,
+              color: mainColor,
+            }}
+          >
+            {`${type} `}
+            <Text style={{ ...styled.mainText, textTransform: 'uppercase' }}>
+              {infoStr}
+            </Text>
+          </Text>
+          <Text style={{ ...styled.subText, ...styled.mv8 }}>
+            Price ({token1?.symbol || ''})
+          </Text>
+          <Text style={{ ...styled.mainText, color: mainColor }}>
+            {amountStr}
+          </Text>
+        </View>
+        <View style={{ ...styled.orderItem, ...styled.block2 }}>
+          <Text style={styled.subText}>{timeStr}</Text>
+          <Text style={{ ...styled.subText, ...styled.mv8 }}>
+            Amount ({token2?.symbol || ''})
+          </Text>
+          <Text style={styled.mainText}>{priceStr}</Text>
+        </View>
+        <View style={{ ...styled.orderItem, ...styled.block3 }}>
+          {renderHook()}
+          <Text style={{ ...styled.subText, ...styled.mv8 }}>Filled (%)</Text>
+          <Text style={styled.mainText}>{percentStr1}</Text>
+        </View>
       </Row>
       {withdrawing && <LoadingTx />}
-
       {visibleDivider && <Divider dividerStyled={styled.dividerStyled} />}
+      <RemoveSuccessDialog
+        visible={visible}
+        onPressCancel={() => setVisible(false)}
+        onPressAccept={onWithdrawOrder}
+        title="Cancel order"
+        subTitle={withdrawData?.subTitle || ''}
+        acceptStr="OK"
+      />
     </TouchableOpacity>
   );
 });

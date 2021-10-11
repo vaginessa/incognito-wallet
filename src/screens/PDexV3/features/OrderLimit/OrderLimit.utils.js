@@ -170,7 +170,6 @@ export const calDefaultPairOrderLimit = ({ pool, x, y, x0 }) => {
   let y0 = new BigNumber(0);
   let rate = '';
   let y0Fixed = '';
-  console.log('x0', x0);
   try {
     if (pool) {
       const { virtualValue } = pool;
@@ -181,9 +180,15 @@ export const calDefaultPairOrderLimit = ({ pool, x, y, x0 }) => {
       if (y0.isNaN()) {
         y0 = 0;
       } else {
-        const y0ToHumanAmount = new BigNumber(
+        let y0ToHumanAmount = new BigNumber(
           convert.toHumanAmount(y0, y?.pDecimals),
         );
+        const minumumY0ToHunmanAmount = new BigNumber(
+          convert.toHumanAmount(1, y?.pDecimals),
+        );
+        if (y0ToHumanAmount.lt(minumumY0ToHunmanAmount)) {
+          y0ToHumanAmount = minumumY0ToHunmanAmount;
+        }
         y0Fixed = format.toFixed(y0ToHumanAmount.toNumber(), y?.pDecimals);
         const x0ToHumanAmount = new BigNumber(
           convert.toHumanAmount(x0, x?.pDecimals),
@@ -191,7 +196,6 @@ export const calDefaultPairOrderLimit = ({ pool, x, y, x0 }) => {
         let rawRate = y0ToHumanAmount.dividedBy(x0ToHumanAmount);
         rawRate = rawRate.isNaN() ? 0 : rawRate.toNumber();
         rate = format.toFixed(rawRate, y?.pDecimals);
-        console.log('rate', rate);
       }
     }
   } catch (error) {

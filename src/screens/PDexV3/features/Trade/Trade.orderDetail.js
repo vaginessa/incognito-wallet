@@ -11,7 +11,6 @@ export const styled = StyleSheet.create({
     fontFamily: FONT.NAME.medium,
     color: COLORS.colorGrey3,
     fontSize: FONT.SIZE.small,
-    lineHeight: FONT.SIZE.small + 3,
     width: 120,
   },
   row: {
@@ -20,13 +19,12 @@ export const styled = StyleSheet.create({
     marginBottom: 8,
   },
   btn: {
-    marginLeft: 8,
+    // marginLeft: 2,
   },
   value: {
     fontFamily: FONT.NAME.medium,
     color: COLORS.black,
     fontSize: FONT.SIZE.small,
-    lineHeight: FONT.SIZE.small + 3,
     textAlign: 'left',
     flex: 1,
   },

@@ -46,7 +46,11 @@ const Trade = (props) => {
   const { refreshing, onRefresh, handlePressPool } = props;
   return (
     <View style={styled.container}>
-      <Header title="pDex" />
+      <Header
+        title="pDex"
+        accountSelectable
+        handleSelectedAccount={onRefresh}
+      />
       <KeyboardAwareScrollView
         contentContainerStyle={styled.main}
         refreshControl={

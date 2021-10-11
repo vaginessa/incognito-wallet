@@ -7,7 +7,7 @@ import { ExHandler } from '@src/services/exception';
 import { activedTabSelector } from '@src/components/core/Tabs';
 import { actionInitSwapForm } from '@screens/PDexV3/features/Swap';
 import { actionFetchPools } from '@screens/PDexV3/features/Pools';
-import { actionSetPoolSelected } from '@screens/PDexV3/features/OrderLimit';
+import { actionInit, actionSetPoolSelected } from '@screens/PDexV3/features/OrderLimit';
 import { actionChangeTab } from '@src/components/core/Tabs/Tabs.actions';
 import { actionFetch } from './Trade.actions';
 import {
@@ -31,7 +31,7 @@ const enhance = (WrappedComp) => (props) => {
         break;
       }
       case TAB_LIMIT_ID: {
-        await dispatch(actionFetchPools());
+        await dispatch(actionInit());
         break;
       }
       case TAB_MARKET_ID: {

@@ -131,10 +131,17 @@ export const otaKeyOfDefaultAccountSelector = createSelector(
 export const nftTokenDataSelector = createSelector(
   accountSelector,
   ({ nft }) => {
-    const { initNFTToken, nftToken } = nft;
+    const { initNFTToken, nftToken, nftTokenAvailable } = nft;
+    let titleStr = '';
+    if (!initNFTToken) {
+      titleStr = 'Mint a nft token to access all features';
+    } else if (!nftTokenAvailable) {
+      titleStr = 'Mint more nft token';
+    }
     return {
       ...nft,
       invalidNFTToken: !initNFTToken || !nftToken,
+      titleStr,
     };
   },
 );
@@ -152,7 +159,10 @@ export const getValidRealAmountNFTSelector = createSelector(
     const { list } = nftData;
     let _nftToken;
     if (nftId) {
-      const nft = (list || []).find(({ nftToken: _nftToken, realAmount }) => (nftId === _nftToken && parseInt(realAmount)));
+      const nft = (list || []).find(
+        ({ nftToken: _nftToken, realAmount }) =>
+          nftId === _nftToken && parseInt(realAmount),
+      );
       if (nft) {
         _nftToken = nft.nftToken;
       }
@@ -167,7 +177,10 @@ export const getValidAmountNFTSelector = createSelector(
     const { list, nftToken } = nftData;
     let _nftToken = nftToken;
     if (nftId) {
-      const nft = (list || []).find(({ nftToken: _nftToken, amount }) => (nftId === _nftToken && parseInt(amount)));
+      const nft = (list || []).find(
+        ({ nftToken: _nftToken, amount }) =>
+          nftId === _nftToken && parseInt(amount),
+      );
       if (nft) {
         _nftToken = nft.nftToken;
       }

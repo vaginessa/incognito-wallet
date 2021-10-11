@@ -20,9 +20,8 @@ const styled = StyleSheet.create({
   },
   title: {
     color: COLORS.white,
-    fontFamily: FONT.NAME.bold,
+    fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.medium,
-    lineHeight: FONT.SIZE.medium + 3,
     textAlign: 'center',
   },
   disabled: {

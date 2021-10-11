@@ -61,28 +61,34 @@ const Item = React.memo((props) => {
   );
 });
 
-const OrderBook = (props) => {
+export const OrderBook = React.memo(() => {
   const orderBook = useSelector(orderBookSelector);
   const { buy, sell } = orderBook;
   return (
+    <View style={styled.wrapper}>
+      <View style={styled.wrapperOrder}>
+        {buy.map((o) => (
+          <Item {...o} key={o?.volume} />
+        ))}
+      </View>
+      <View style={styled.wrapperOrder}>
+        {sell.map((o) => (
+          <Item {...o} key={o?.volume} />
+        ))}
+      </View>
+    </View>
+  );
+});
+
+const OrderBookContainer = (props) => {
+  return (
     <View style={styled.container}>
       <Text style={styled.title}>Order Book</Text>
-      <View style={styled.wrapper}>
-        <View style={styled.wrapperOrder}>
-          {buy.map((o) => (
-            <Item {...o} key={o?.volume} />
-          ))}
-        </View>
-        <View style={styled.wrapperOrder}>
-          {sell.map((o) => (
-            <Item {...o} key={o?.volume} />
-          ))}
-        </View>
-      </View>
+      <OrderBook />
     </View>
   );
 };
 
-OrderBook.propTypes = {};
+OrderBookContainer.propTypes = {};
 
-export default React.memo(OrderBook);
+export default React.memo(OrderBookContainer);
