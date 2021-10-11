@@ -40,6 +40,7 @@ const Contribute = ({ onRefresh }) => {
           renderItem={renderItem}
           keyExtractor={(item) => item.key}
           showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ flexGrow: 1 }}
           ListEmptyComponent={
             <EmptyBookIcon message="Your history is empty" />
           }
