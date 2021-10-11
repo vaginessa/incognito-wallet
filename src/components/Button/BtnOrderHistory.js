@@ -5,10 +5,15 @@ import { TouchableOpacity } from '@src/components/core';
 import PropTypes from 'prop-types';
 
 const styled = StyleSheet.create({
-  container: {},
-  icon: {
+  container: {
     width: 24,
     height: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  icon: {
+    width: 16.67,
+    height: 20,
   },
 });
 

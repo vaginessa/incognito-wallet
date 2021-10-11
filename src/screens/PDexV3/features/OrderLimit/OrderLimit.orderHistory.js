@@ -5,6 +5,7 @@ import { Header } from '@src/components';
 import { useDispatch, useSelector } from 'react-redux';
 import { actionSetNFTTokenData } from '@src/redux/actions/account';
 import { ExHandler } from '@src/services/exception';
+import { useFocusEffect } from 'react-navigation-hooks';
 import { orderHistorySelector } from './OrderLimit.selector';
 import Order from './OrderLimit.order';
 import {
@@ -29,10 +30,17 @@ const OrderHistory = () => {
       dispatch(actionFetchWithdrawOrderTxs());
       dispatch(actionSetNFTTokenData());
     } catch (error) {
+      console.log('ERROR HERE', error);
       new ExHandler(error).showErrorToast();
     }
   };
   const { history = [], isFetching } = useSelector(orderHistorySelector);
+  console.log('history.length', history.length);
+  useFocusEffect(
+    React.useCallback(() => {
+      onRefresh();
+    }, []),
+  );
   return (
     <View style={styled.container}>
       <Header title="Order history" />

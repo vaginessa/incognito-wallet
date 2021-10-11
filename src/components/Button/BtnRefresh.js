@@ -5,10 +5,15 @@ import PropTypes from 'prop-types';
 import { COLORS } from '@src/styles';
 
 const styled = StyleSheet.create({
-  container: {},
-  icon: {
+  container: {
     width: 24,
     height: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  icon: {
+    width: 15.3,
+    height: 18,
   },
 });
 

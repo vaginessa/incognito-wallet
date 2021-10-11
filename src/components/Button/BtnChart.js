@@ -1,21 +1,19 @@
 import React from 'react';
 import { TouchableOpacity, Image, StyleSheet } from 'react-native';
-import srcChartIcon from '@src/assets/images/icons/chart_icon.png';
+import srcChartIcon from '@src/assets/images/new-icons/candle.png';
 import PropTypes from 'prop-types';
 import { COLORS } from '@src/styles';
 
 const styled = StyleSheet.create({
   container: {
-    backgroundColor: COLORS.colorGreyLight1,
-    width: 56,
-    height: 32,
+    width: 24,
+    height: 24,
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 20,
   },
   icon: {
-    width: 26,
-    height: 20,
+    width: 17.36,
+    height: 18,
   },
 });
 

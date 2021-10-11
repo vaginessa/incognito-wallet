@@ -22,7 +22,10 @@ import {
   TAB_BUY_ID,
   TAB_SELL_ID,
 } from './OrderLimit.constant';
-import { getInputAmount as getInputTokenAmount } from './OrderLimit.utils';
+import {
+  calDefaultPairOrderLimit,
+  getInputAmount as getInputTokenAmount,
+} from './OrderLimit.utils';
 
 const BTN_WITHDRAW_ORDER = {
   [ACCOUNT_CONSTANT.TX_STATUS.PROCESSING]: 'ing',
@@ -170,7 +173,8 @@ export const inputAmountSelector = createSelector(
 export const rateDataSelector = createSelector(
   (state) => state,
   inputAmountSelector,
-  (state, getInputAmount) => {
+  poolSelectedDataSelector,
+  (state, getInputAmount, pool) => {
     let rate = '';
     let rateStr = '';
     let customRate = '';
@@ -184,21 +188,16 @@ export const rateDataSelector = createSelector(
           customRate,
         };
       }
-      rate = getPairRate({
-        token1: sellInputAmount,
-        token2: buyInputAmount,
-        token1Value: sellInputAmount.poolValue,
-        token2Value: buyInputAmount.poolValue,
-      });
+      rate = calDefaultPairOrderLimit({
+        pool,
+        x: pool?.token1,
+        y: pool?.token2,
+        x0: convert.toOriginalAmount(1, pool?.token1?.pDecimals, true),
+      }).rate;
       const selector = formValueSelector(formConfigs.formName);
       customRate = selector(state, formConfigs.rate);
       customRate = customRate || rate;
-      rateStr = getExchangeRate(
-        sellInputAmount,
-        buyInputAmount,
-        sellInputAmount.poolValue,
-        buyInputAmount.poolValue,
-      );
+      rateStr = format.amountFull(rate, 0, false);
     } catch (error) {
       console.log('rateSelector-error', error);
     }
@@ -264,6 +263,8 @@ export const orderLimitDataSelector = createSelector(
     default:
       break;
     }
+    const token1: SelectedPrivacy = pool?.token1;
+    const token2: SelectedPrivacy = pool?.token2;
     const networkfeeAmount = format.toFixed(
       convert.toHumanAmount(networkfee, PRV.pDecimals),
       PRV.pDecimals,
@@ -295,6 +296,12 @@ export const orderLimitDataSelector = createSelector(
       false,
     )} ${buyInputAmount?.symbol}`;
     const refreshing = initing;
+    const poolStr = `${token1?.symbol || ''} / ${token2?.symbol || ''}`;
+    const priceChange24h = pool?.priceChange24h || 0;
+    let colorPriceChange24h = COLORS.green;
+    if (priceChange24h < 0) {
+      colorPriceChange24h = COLORS.red;
+    }
     return {
       mainColor,
       buyColor,
@@ -324,6 +331,9 @@ export const orderLimitDataSelector = createSelector(
       refreshing,
       sellTokenId: sellInputAmount?.tokenId,
       buyTokenId: buyInputAmount?.tokenId,
+      poolStr,
+      priceChange24hStr: `${priceChange24h}%`,
+      colorPriceChange24h,
     };
   },
 );

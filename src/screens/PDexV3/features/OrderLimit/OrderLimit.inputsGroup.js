@@ -214,16 +214,16 @@ const InputsGroup = React.memo(() => {
     case TAB_SELL_ID: {
       return (
         <>
-          <SellInput />
           <BuyInput />
+          <SellInput />
         </>
       );
     }
     case TAB_BUY_ID: {
       return (
         <>
-          <BuyInput />
           <SellInput />
+          <BuyInput />
         </>
       );
     }

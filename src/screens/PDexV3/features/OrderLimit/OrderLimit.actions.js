@@ -176,7 +176,7 @@ export const actionSetDefaultPool = () => async (dispatch, getState) => {
   }
 };
 
-export const actionInit = (refresh = false) => async (dispatch, getState) => {
+export const actionInit = () => async (dispatch, getState) => {
   try {
     await dispatch(actionIniting(true));
     await dispatch(actionFetchPools());
