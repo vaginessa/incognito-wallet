@@ -80,7 +80,7 @@ export const OrderBook = React.memo(() => {
   );
 });
 
-const OrderBookContainer = (props) => {
+const OrderBookContainer = () => {
   return (
     <View style={styled.container}>
       <Text style={styled.title}>Order Book</Text>

@@ -1,12 +1,7 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { useSelector } from 'react-redux';
-import {
-  Tabs,
-  FlatList,
-  RefreshControl,
-  ActivityIndicator,
-} from '@src/components/core';
+import { Tabs, FlatList, ActivityIndicator } from '@src/components/core';
 import { OrderBook } from '@screens/PDexV3/features/Chart/Chart.orderBook';
 import { openOrdersSelector } from './OrderLimit.selector';
 import Order from './OrderLimit.order';
@@ -18,12 +13,15 @@ import {
 
 const styled = StyleSheet.create({
   container: {},
+  wrapper: {
+    paddingTop: 24,
+  },
 });
 
 const TabOpenOrder = React.memo(() => {
   const { history = [], isFetching } = useSelector(openOrdersSelector);
   return (
-    <View>
+    <View style={styled.wrapper}>
       {isFetching && <ActivityIndicator style={{ marginBottom: 16 }} />}
       <FlatList
         data={history}
@@ -38,13 +36,13 @@ const TabOpenOrder = React.memo(() => {
 
 const TabOrderBook = React.memo(() => {
   return (
-    <View>
+    <View style={styled.wrapper}>
       <OrderBook />
     </View>
   );
 });
 
-const GroupSubInfo = (props) => {
+const GroupSubInfo = () => {
   return (
     <View style={styled.container}>
       <Tabs
