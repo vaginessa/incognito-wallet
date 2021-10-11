@@ -73,6 +73,7 @@ const InputsGroup = () => {
           ]}
           visibleHeader
           editableInput={!inputToken.loadingBalance}
+          srcIcon={inputToken && inputToken?.iconUrl}
           symbol={inputToken && inputToken?.symbol}
           onChange={onChangeInput}
           onPressInfinityIcon={onMaxPress}
@@ -94,6 +95,7 @@ const InputsGroup = () => {
           ]}
           label="Amount"
           symbol={outputToken && outputToken?.symbol}
+          srcIcon={outputToken && outputToken?.iconUrl}
           editableInput={!outputToken.loadingBalance}
           onChange={onChangeOutput}
           onPressInfinityIcon={onMaxPress}

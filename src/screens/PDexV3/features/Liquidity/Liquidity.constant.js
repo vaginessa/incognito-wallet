@@ -1,3 +1,7 @@
+import React from 'react';
+import {Text} from 'react-native';
+import styled from './Liquidity.styled';
+
 export const TYPES = {
   ACTION_SET_CONTRIBUTE_POOL_ID: '[pDexV3][liquidity] Set contribute poolID',
   ACTION_FETCHING_CONTRIBUTE_DATA: '[pDexV3][liquidity] Fetching contribute data',
@@ -18,7 +22,12 @@ export const TYPES = {
 export const LIQUIDITY_MESSAGES = {
   addLiquidity: 'Add liquidity',
   createPool : 'Create liquidity',
-  removePool : 'Remove liquidity'
+  removePool : 'Remove liquidity',
+  estRate: (onPress) => (
+    <Text style={styled.warning}>The exchange rate between two tokens have been the wrong rate, please update new&nbsp;
+      <Text style={{textDecorationLine: 'underline' }} onPress={onPress}>rate here</Text>.
+    </Text>
+  )
 };
 
 export const formConfigsContribute = {

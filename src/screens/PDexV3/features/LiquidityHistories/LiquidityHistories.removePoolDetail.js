@@ -5,6 +5,7 @@ import {Header} from '@src/components';
 import {Hook} from '@screens/Wallet/features/TxHistoryDetail/TxHistoryDetail';
 import {useNavigationParam} from 'react-navigation-hooks';
 import {openLink} from '@components/UseEffect/useLink';
+import styled from '@screens/PDexV3/features/LiquidityHistories/LiquidityHistories.styled';
 
 const RemoveLPDetail = () => {
   const history = useNavigationParam('history');
@@ -59,7 +60,14 @@ const RemoveLPDetail = () => {
     <View style={mainStyle.container}>
       <Header title="Detail" />
       <ScrollView>
-        {hookFactories.map(data => <Hook key={data?.label} {...data} />)}
+        {hookFactories.map(data => (
+          <Hook
+            key={data?.label}
+            {...data}
+            labelStyle={styled.leftText}
+            valueTextStyle={styled.rightText}
+          />
+        ))}
       </ScrollView>
     </View>
   );

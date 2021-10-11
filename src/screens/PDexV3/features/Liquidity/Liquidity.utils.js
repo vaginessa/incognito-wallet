@@ -6,7 +6,7 @@ import BigNumber from 'bignumber.js';
 import {formConfigsRemovePool} from '@screens/PDexV3/features/Liquidity/Liquidity.constant';
 import uniq from 'lodash/uniq';
 
-const convertAmount = ({ originalNum, pDecimals }) => {
+export const convertAmount = ({ originalNum, pDecimals }) => {
   const humanAmount = convert.toHumanAmount(originalNum, pDecimals);
   return format.toFixed(humanAmount, pDecimals);
 };
@@ -65,6 +65,7 @@ export const getInputAmount = (
 
       originalInputAmount,
       inputAmountStr,
+      inputAmount: amount,
       inputAmountSymbolStr: `${inputAmountStr} ${token.symbol}`,
       maxOriginalAmount,
       maxOriginalAmountText,
@@ -119,6 +120,7 @@ export const getInputShareAmount = (
       tokenId: token.tokenId,
       symbol: token.symbol,
       pDecimals: token.pDecimals,
+      iconUrl: token.iconUrl,
 
       originalInputAmount,
       inputAmountStr,

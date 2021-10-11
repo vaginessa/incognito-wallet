@@ -198,12 +198,13 @@ export const Extra = React.memo(() => {
 });
 
 const ButtonCreatePool = React.memo(({ onSubmit }) => {
+  const dispatch = useDispatch();
   const { disabled } = useSelector(createPoolSelector.disableCreatePool);
   const amountSelector = useSelector(createPoolSelector.inputAmountSelector);
   const inputAmount = amountSelector(formConfigsCreatePool.formName, formConfigsCreatePool.inputToken);
   const outputAmount = amountSelector(formConfigsCreatePool.formName, formConfigsCreatePool.outputToken);
   const { feeAmount } = useSelector(createPoolSelector.feeAmountSelector);
-  const { amp } = useSelector(createPoolSelector.ampValueSelector);
+  const { amp, estOutputStr } = useSelector(createPoolSelector.ampValueSelector);
   const handleSubmit = () => {
     if (disabled) return;
     const params = {
@@ -216,13 +217,22 @@ const ButtonCreatePool = React.memo(({ onSubmit }) => {
     };
     onSubmit(params);
   };
+  const changeEstRate = () =>
+    !!estOutputStr && dispatch(change(formConfigsCreatePool.formName, formConfigsCreatePool.outputToken, estOutputStr));
   return (
-    <ButtonTrade
-      btnStyle={mainStyle.button}
-      title={LIQUIDITY_MESSAGES.createPool}
-      disabled={disabled}
-      onPress={handleSubmit}
-    />
+    <>
+      {!!estOutputStr && (
+        <View style={{ marginTop: 15 }}>
+          {LIQUIDITY_MESSAGES.estRate(changeEstRate)}
+        </View>
+      )}
+      <ButtonTrade
+        btnStyle={mainStyle.button}
+        title={LIQUIDITY_MESSAGES.createPool}
+        disabled={disabled}
+        onPress={handleSubmit}
+      />
+    </>
   );
 });
 
