@@ -50,6 +50,7 @@ const PortfolioItem = ({ shareId, isLast, onWithdrawFeeLP }) => {
         shouldCloseModalWhenTapOverlay: true,
         data: (
           <ModalBottomSheet
+            style={{ height: '60%' }}
             customContent={
               <PortfolioModal poolId={data.poolId} onWithdrawFeeLP={onWithdrawFeeLP} />
             }

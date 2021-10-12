@@ -2,9 +2,7 @@ import { createSelector } from 'reselect';
 import format from '@src/utils/format';
 import { getPrivacyDataByTokenID as getPrivacyDataByTokenIDSelector } from '@src/redux/selectors/selectedPrivacy';
 import { COLORS } from '@src/styles';
-import uniq from 'lodash/uniq';
 import { getExchangeRate } from '@screens/PDexV3';
-import {getValidRealAmountNFTSelector} from '@src/redux/selectors/account';
 
 export const poolsSelector = createSelector(
   (state) => state.pDexV3,
@@ -40,8 +38,7 @@ export const listPoolsSelector = createSelector(
   listPoolsPureSelector,
   getPrivacyDataByTokenIDSelector,
   followPoolIdsSelector,
-  getValidRealAmountNFTSelector,
-  (listPools, getPrivacyDataByTokenID, followIds, getValidRealAmountNFT) => {
+  (listPools, getPrivacyDataByTokenID, followIds) => {
     let pools = [];
     try {
       if (listPools.length === 0) {
@@ -85,7 +82,6 @@ export const listPoolsSelector = createSelector(
           token2.pDecimals,
           false,
         );
-        console.log('SANG TEST: ', pool);
         const poolSizeStr = `${pool1ValueStr} ${token1?.symbol} + ${pool2ValueStr} ${token2?.symbol}`;
         return {
           ...pool,
