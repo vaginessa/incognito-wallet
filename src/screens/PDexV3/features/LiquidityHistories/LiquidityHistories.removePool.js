@@ -9,6 +9,8 @@ import PropTypes from 'prop-types';
 import isEmpty from 'lodash/isEmpty';
 import {ActivityIndicator} from '@components/core';
 import {EmptyBookIcon} from '@components/Icons';
+import {styled as mainStyle} from '@screens/PDexV3/PDexV3.styled';
+import withHistories from '@screens/PDexV3/features/LiquidityHistories/LiquidityHistories.enhance';
 
 const Item = React.memo(({ history, isLast }) => {
   const navigation = useNavigation();
@@ -19,24 +21,26 @@ const Item = React.memo(({ history, isLast }) => {
     <TouchableOpacity style={[styled.wrapperItem, isLast && { marginBottom: 20 }]} onPress={onNextPress}>
       <View style={styled.topRow}>
         <Text style={styled.title}>Remove</Text>
-        <Text style={styled.status}>{history?.statusStr}</Text>
       </View>
       <View style={styled.bottomRow}>
         <Text style={styled.desc}>{history?.removeLPAmountDesc}</Text>
+        <Text style={styled.status}>{history?.statusStr}</Text>
       </View>
     </TouchableOpacity>
   );
 });
 
-const RemoveLP = () => {
+const RemoveLP = ({ onRefresh }) => {
   const isFetching = useSelector(liquidityHistorySelector.isFetchingRemoveLP);
   const histories = useSelector(liquidityHistorySelector.mapRemoveLPData);
   const renderItem = (data) => <Item history={data.item} isLast={data.index === (histories.length - 1)} />;
   const renderContent = () => {
     if (isEmpty(histories) && isFetching) return <View style={{ marginTop: 25 }}><ActivityIndicator /></View>;
     return (
-      <View style={{ paddingTop: 20 }}>
+      <View style={mainStyle.fullFlex}>
         <FlatList
+          refreshing={isFetching}
+          onRefresh={onRefresh}
           data={histories}
           renderItem={renderItem}
           keyExtractor={(item) => item.key}
@@ -60,5 +64,5 @@ Item.propTypes = {
   isLast: PropTypes.bool.isRequired
 };
 
-export default memo(RemoveLP);
+export default withHistories(memo(RemoveLP));
 

@@ -59,6 +59,13 @@ const styled = StyleSheet.create({
     fontSize: FONT.SIZE.medium,
     color: COLORS.black,
     lineHeight: FONT.SIZE.medium + 9
+  },
+  warning: {
+    color: COLORS.orange,
+    fontSize: FONT.SIZE.small,
+    lineHeight: FONT.SIZE.small + 9,
+    fontFamily: FONT.NAME.medium,
+    marginTop: 10
   }
 });
 

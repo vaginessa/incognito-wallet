@@ -6,7 +6,9 @@ export default StyleSheet.create({
     paddingTop: 20,
   },
   wrapperItem: {
-    paddingBottom: 25,
+    paddingVertical: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.colorGrey4
   },
   topRow: {
     flexDirection: 'row',
@@ -15,21 +17,36 @@ export default StyleSheet.create({
   bottomRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: 10
+    marginTop: 4
   },
   title: {
     ...FONT.STYLE.medium,
-    fontSize: FONT.SIZE.superMedium,
+    fontSize: FONT.SIZE.regular,
+    lineHeight: FONT.SIZE.regular + 8,
     color: COLORS.black
   },
   status: {
     ...FONT.STYLE.medium,
-    fontSize: FONT.SIZE.medium,
-    color: COLORS.newGrey
+    fontSize: FONT.SIZE.small,
+    lineHeight: FONT.SIZE.small + 7,
+    color: COLORS.lightGrey33
   },
   desc: {
     ...FONT.STYLE.medium,
-    fontSize: FONT.SIZE.regular,
-    color: COLORS.newGrey
-  }
+    fontSize: FONT.SIZE.small,
+    lineHeight: FONT.SIZE.small + 7,
+    color: COLORS.lightGrey34
+  },
+  leftText: {
+    ...FONT.STYLE.medium,
+    fontSize: FONT.SIZE.small,
+    lineHeight: FONT.SIZE.small + 7,
+    color: COLORS.lightGrey34
+  },
+  rightText: {
+    ...FONT.STYLE.medium,
+    fontSize: FONT.SIZE.small,
+    lineHeight: FONT.SIZE.small + 7,
+    color: COLORS.black
+  },
 });

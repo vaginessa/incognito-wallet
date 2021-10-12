@@ -1,12 +1,15 @@
 import {formValueSelector} from 'redux-form';
+// eslint-disable-next-line import/no-cycle
 import convert from '@utils/convert';
+// eslint-disable-next-line import/no-cycle
 import format from '@utils/format';
+// eslint-disable-next-line import/no-cycle
 import {MESSAGES} from '@screens/Dex/constants';
 import BigNumber from 'bignumber.js';
 import {formConfigsRemovePool} from '@screens/PDexV3/features/Liquidity/Liquidity.constant';
 import uniq from 'lodash/uniq';
 
-const convertAmount = ({ originalNum, pDecimals }) => {
+export const convertAmount = ({ originalNum, pDecimals }) => {
   const humanAmount = convert.toHumanAmount(originalNum, pDecimals);
   return format.toFixed(humanAmount, pDecimals);
 };
@@ -65,6 +68,7 @@ export const getInputAmount = (
 
       originalInputAmount,
       inputAmountStr,
+      inputAmount: amount,
       inputAmountSymbolStr: `${inputAmountStr} ${token.symbol}`,
       maxOriginalAmount,
       maxOriginalAmountText,
@@ -119,6 +123,7 @@ export const getInputShareAmount = (
       tokenId: token.tokenId,
       symbol: token.symbol,
       pDecimals: token.pDecimals,
+      iconUrl: token.iconUrl,
 
       originalInputAmount,
       inputAmountStr,
@@ -152,3 +157,39 @@ export const filterTokenList = ({
   }, []));
   return tokenIds.filter(_tokenId => !ignoreTokens.includes(_tokenId) && !existTokens.includes(_tokenId));
 };
+
+export const getShareDataValue = ({
+  shareData,
+  inputToken,
+  outputToken
+}) => {
+  if (!shareData) return {
+    share: 0,
+    totalShare: 0,
+    sharePercent: 0,
+    maxInputShare: 0,
+    maxInputShareStr: '',
+    maxOutputShare: 0,
+    maxOutputShareStr: '',
+  };
+  const { share, totalShare, token1PoolValue, token2PoolValue } = shareData;
+  const sharePercent = new BigNumber(share).dividedBy(totalShare).toNumber();
+  const maxInputShare = new BigNumber(sharePercent).multipliedBy(token1PoolValue).toNumber() || 0;
+  const maxOutputShare = new BigNumber(sharePercent).multipliedBy(token2PoolValue).toNumber() || 0;
+  const maxInputHuman = convert.toHumanAmount(maxInputShare, inputToken.pDecimals);
+  const maxInputShareStr = format.toFixed(maxInputHuman, inputToken.pDecimals);
+  const maxOutputHuman = convert.toHumanAmount(maxOutputShare, outputToken.pDecimals);
+  const maxOutputShareStr = format.toFixed(maxOutputHuman, outputToken.pDecimals);
+  return {
+    maxInputShare,
+    maxOutputShare,
+    share,
+    totalShare,
+    sharePercent,
+    maxInputShareStr,
+    maxOutputShareStr,
+    maxInputHuman,
+    maxOutputHuman,
+  };
+};
+

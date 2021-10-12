@@ -120,6 +120,11 @@ const PoolsListContainer = (props) => {
 
 PoolsList.propTypes = {
   onPressPool: PropTypes.func.isRequired,
+  pools: PropTypes.array.isRequired,
+};
+
+PoolsListContainer.propTypes = {
+  onPressPool: PropTypes.func.isRequired,
   listPools: PropTypes.array.isRequired,
 };
 

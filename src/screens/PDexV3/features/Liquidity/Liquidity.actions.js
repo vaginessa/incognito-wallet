@@ -12,7 +12,7 @@ import {getBalance} from '@src/redux/actions/token';
 import {ExHandler} from '@services/exception';
 import uniq from 'lodash/uniq';
 import {mappingDataSelector} from '@screens/PDexV3/features/Liquidity/Liquidity.contributeSelector';
-import {calculateContributeValue, getPDexV3Instance, parseInputWithText} from '@screens/PDexV3';
+import {actionGetPDexV3Inst, calculateContributeValue, getPDexV3Instance, parseInputWithText} from '@screens/PDexV3';
 import {change} from 'redux-form';
 import {allTokensIDsSelector} from '@src/redux/selectors/token';
 import {actionFetch as actionFetchPortfolio} from '@screens/PDexV3/features/Portfolio';
@@ -23,10 +23,7 @@ import {defaultAccountWalletSelector} from '@src/redux/selectors/account';
 import {actionSetNFTTokenData} from '@src/redux/actions/account';
 import {filterTokenList} from '@screens/PDexV3/features/Liquidity/Liquidity.utils';
 import {listPoolsPureSelector} from '@screens/PDexV3/features/Pools';
-import {tokenSelector} from '@screens/PDexV3/features/Liquidity/Liquidity.removePoolSelector';
-import {focusFieldSelector} from '@screens/PDexV3/features/Liquidity/Liquidity.createPoolSelector';
 import {debounce} from 'lodash';
-import Util from '@utils/Util';
 
 /***
  *================================================================
@@ -170,15 +167,23 @@ const actionSetRateCreatePool = ({ rate, amp }) => ({
 
 const debouncedGetCreatePoolRate = debounce(async (dispatch, _, payload) => {
   try {
-    await Util.sleep(2000);
-    // const {
-    //   inputToken,
-    //   inputAmount,
-    //   outputToken,
-    //   outputAmount
-    // } = payload;
-    console.log(payload);
-    dispatch(actionSetRateCreatePool({ rate: 1.5, amp: 2000 }));
+    const {
+      inputToken,
+      inputAmount,
+      outputToken,
+      outputAmount
+    } = payload;
+    const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
+    const data = await pDexV3Inst.rpcTradeService.apiCheckRate({
+      token1: inputToken,
+      token2: outputToken,
+      amount1: inputAmount,
+      amount2: outputAmount,
+    });
+    if (!data) return;
+    let { maxAmp, rate } = data;
+    maxAmp = new BigNumber(maxAmp).multipliedBy(1e4).toNumber();
+    dispatch(actionSetRateCreatePool({ rate, amp: maxAmp }));
   } catch (error) {
     new ExHandler(error).showErrorToast();
   } finally {

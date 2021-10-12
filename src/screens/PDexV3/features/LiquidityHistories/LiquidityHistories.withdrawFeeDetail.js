@@ -5,6 +5,7 @@ import {openLink} from '@components/UseEffect/useLink';
 import {styled as mainStyle} from '@screens/PDexV3/PDexV3.styled';
 import {Header} from '@src/components';
 import {Hook} from '@screens/Wallet/features/TxHistoryDetail/TxHistoryDetail';
+import styled from '@screens/PDexV3/features/LiquidityHistories/LiquidityHistories.styled';
 
 const WithdrawFeeLPDetail = () => {
   const history = useNavigationParam('history');
@@ -59,7 +60,14 @@ const WithdrawFeeLPDetail = () => {
     <View style={mainStyle.container}>
       <Header title="Detail" />
       <ScrollView>
-        {hookFactories.map(data => <Hook key={data?.label} {...data} />)}
+        {hookFactories.map(data => (
+          <Hook
+            key={data?.label}
+            {...data}
+            labelStyle={styled.leftText}
+            valueTextStyle={styled.rightText}
+          />
+        ))}
       </ScrollView>
     </View>
   );

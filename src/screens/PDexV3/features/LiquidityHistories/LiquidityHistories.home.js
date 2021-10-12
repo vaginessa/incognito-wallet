@@ -1,51 +1,34 @@
 import React, {memo} from 'react';
-import {RefreshControl, ScrollView, View} from 'react-native';
+import {View} from 'react-native';
 import PropTypes from 'prop-types';
 import {Header} from '@src/components';
 import {Tabs} from '@components/core';
-import {liquidityHistorySelector, TABS} from '@screens/PDexV3/features/LiquidityHistories';
+import {TABS} from '@screens/PDexV3/features/LiquidityHistories';
 import withHistories from '@screens/PDexV3/features/LiquidityHistories/LiquidityHistories.enhance';
-import {useSelector} from 'react-redux';
+import {styled as mainStyle} from '@screens/PDexV3/PDexV3.styled';
 import WithdrawRewardHistories from './LiquidityHistories.withdraw';
 import RemovePoolHistories from './LiquidityHistories.removePool';
 import ContributeHistories from './LiquidityHistories.contribute';
 
 const Home = ({ onRefresh }) => {
-  const isFetching = useSelector(liquidityHistorySelector.isFetching);
+  React.useEffect(() => {
+    onRefresh();
+  }, []);
   return (
-    <>
-      <View style={{ marginHorizontal: 25, marginTop: 10 }}>
-        <Header title="Histories" />
-      </View>
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        refreshControl={(<RefreshControl refreshing={isFetching} onRefresh={onRefresh} />)}
-      >
-        <Tabs rootTabID={TABS.ROOT_TAB_HOME_LIQUIDITY_HISTORIES} styledTabs={{ marginHorizontal: 25, marginTop: 15 }}>
-          <View
-            tabID={TABS.TAB_CONTRIBUTE_HISTORIES_ID}
-            label="Add"
-            onChangeTab={() => {}}
-          >
-            <ContributeHistories />
-          </View>
-          <View
-            tabID={TABS.TAB_REMOVE_POOL_HISTORIES_ID}
-            label="Remove"
-            onChangeTab={() => {}}
-          >
-            <RemovePoolHistories />
-          </View>
-          <View
-            tabID={TABS.TAB_WITHDRAW_REWARD_HISTORIES_ID}
-            label="Withdraw"
-            onChangeTab={() => {}}
-          >
-            <WithdrawRewardHistories />
-          </View>
-        </Tabs>
-      </ScrollView>
-    </>
+    <View style={mainStyle.container}>
+      <Header title="Histories" />
+      <Tabs rootTabID={TABS.ROOT_TAB_HOME_LIQUIDITY_HISTORIES} useTab1>
+        <View tabID={TABS.TAB_CONTRIBUTE_HISTORIES_ID} label="Add">
+          <ContributeHistories />
+        </View>
+        <View tabID={TABS.TAB_REMOVE_POOL_HISTORIES_ID} label="Remove">
+          <RemovePoolHistories />
+        </View>
+        <View tabID={TABS.TAB_WITHDRAW_REWARD_HISTORIES_ID} label="Withdraw">
+          <WithdrawRewardHistories />
+        </View>
+      </Tabs>
+    </View>
   );
 };
 

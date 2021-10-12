@@ -1,5 +1,5 @@
 import React, {memo} from 'react';
-import historySrc from '@src/assets/images/new-icons/history_order.png';
+import historySrc from '@src/assets/images/new-icons/history-lp.png';
 import {Image, TouchableOpacity, StyleSheet} from 'react-native';
 import {useNavigation} from 'react-navigation-hooks';
 import routeNames from '@routers/routeNames';

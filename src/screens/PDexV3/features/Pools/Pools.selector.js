@@ -2,7 +2,6 @@ import { createSelector } from 'reselect';
 import format from '@src/utils/format';
 import { getPrivacyDataByTokenID as getPrivacyDataByTokenIDSelector } from '@src/redux/selectors/selectedPrivacy';
 import { COLORS } from '@src/styles';
-import uniq from 'lodash/uniq';
 import { getExchangeRate } from '@screens/PDexV3';
 
 export const poolsSelector = createSelector(

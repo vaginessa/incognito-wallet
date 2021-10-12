@@ -8,11 +8,11 @@ import {Hook} from '@screens/Wallet/features/TxHistoryDetail/TxHistoryDetail';
 import linkingService from '@services/linking';
 import {CONSTANT_CONFIGS} from '@src/constants';
 import {ButtonBasic} from '@components/Button';
-import {styledForm as styled} from '@screens/Send/features/Form/Form.styled';
 import withContributeDetail
   from '@screens/PDexV3/features/LiquidityHistories/LiquidityHistories.enhanceContributeDetail';
 import {ACCOUNT_CONSTANT} from 'incognito-chain-web-js/build/wallet';
 import PropTypes from 'prop-types';
+import styled from './LiquidityHistories.styled';
 
 const ContributeDetail = ({ handleRefund, handleRetry }) => {
   const history = useNavigationParam('history');
@@ -95,18 +95,26 @@ const ContributeDetail = ({ handleRefund, handleRetry }) => {
     <View style={mainStyle.container}>
       <Header title="Detail" />
       <ScrollView>
-        {hookFactories.map(data => <Hook key={data?.label} {...data} />)}
+        {hookFactories.map(data => (
+          <Hook
+            key={data?.label}
+            {...data}
+            labelStyle={styled.leftText}
+            valueTextStyle={styled.rightText}
+            style={{ marginTop: 8 }}
+          />
+        ))}
         {!!refundData && (
-          <Row spaceBetween>
+          <Row spaceBetween style={{ marginTop: 15 }}>
             <ButtonBasic
               title={refundData.title}
-              btnStyle={[styled.submitBtn, { flex: 1 }]}
+              btnStyle={{ flex: 1 }}
               onPress={onRefundTx}
             />
             {!!retryData && (
               <ButtonBasic
                 title={retryData.title}
-                btnStyle={[styled.submitBtn, { flex: 1, marginLeft: 20 }]}
+                btnStyle={{ flex: 1, marginLeft: 20 }}
                 onPress={onRetryTx}
               />
             )}

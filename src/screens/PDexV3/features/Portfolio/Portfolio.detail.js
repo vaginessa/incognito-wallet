@@ -44,6 +44,12 @@ const styles = StyleSheet.create({
   row: {
     alignItems: 'center',
     justifyContent: 'space-between'
+  },
+  warning: {
+    color: COLORS.orange,
+    fontSize: FONT.SIZE.small,
+    lineHeight: FONT.SIZE.small + 9,
+    fontFamily: FONT.NAME.medium,
   }
 });
 
@@ -74,6 +80,7 @@ const PortfolioModal = ({ poolId, onWithdrawFeeLP }) => {
     }, 500);
   };
   if (!data) return null;
+  const { withdrawable, withdrawing, validNFT, disableBtn } = data;
   const { hookFactoriesDetail, token1, token2 } = data || {};
   return (
     <View style={styles.wrapper}>
@@ -85,6 +92,7 @@ const PortfolioModal = ({ poolId, onWithdrawFeeLP }) => {
             textStyle={styles.btnText}
             wrapperStyle={styles.btnSmall}
             onPress={onWithdrawPress}
+            disabled={disableBtn}
           />
         </Row>
         <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
@@ -92,18 +100,22 @@ const PortfolioModal = ({ poolId, onWithdrawFeeLP }) => {
             <Hook key={hook?.label} {...hook} />
           ))}
         </ScrollView>
-        <Row spaceBetween>
-          <BTNBorder
-            title="Claim"
-            onPress={onClaimReward}
-            wrapperStyle={{flex: 1, marginRight: 4}}
-            textStyle={{color: COLORS.colorBlue}}
-            background={COLORS.colorBlue}
-          />
+        {!!validNFT && <Text style={styles.warning}>You cant withdraw your liquidity and reward now, your current NFTs amount is zero</Text>}
+        <Row spaceBetween style={{ marginTop: 10 }}>
+          {!!withdrawable && (
+            <BTNBorder
+              title={withdrawing ? 'Claiming' : 'Claim'}
+              onPress={onClaimReward}
+              wrapperStyle={{flex: 1, marginRight: 8}}
+              textStyle={{color: COLORS.colorBlue}}
+              background={COLORS.colorBlue}
+              disabled={withdrawing || disableBtn}
+            />
+          )}
           <BTNPrimary
             title="Invest more"
             onPress={onInvestPress}
-            wrapperStyle={{flex: 1, marginLeft: 4}}
+            wrapperStyle={{flex: 1}}
             background={COLORS.colorBlue}
           />
         </Row>

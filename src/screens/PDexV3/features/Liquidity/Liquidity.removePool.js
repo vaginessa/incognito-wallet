@@ -73,6 +73,7 @@ const InputsGroup = () => {
           ]}
           visibleHeader
           editableInput={!inputToken.loadingBalance}
+          srcIcon={inputToken && inputToken?.iconUrl}
           symbol={inputToken && inputToken?.symbol}
           onChange={onChangeInput}
           onPressInfinityIcon={onMaxPress}
@@ -94,6 +95,7 @@ const InputsGroup = () => {
           ]}
           label="Amount"
           symbol={outputToken && outputToken?.symbol}
+          srcIcon={outputToken && outputToken?.iconUrl}
           editableInput={!outputToken.loadingBalance}
           onChange={onChangeOutput}
           onPressInfinityIcon={onMaxPress}
@@ -152,7 +154,8 @@ const RemovePool = ({
   onInitRemovePool,
   onRemoveContribute,
   onCloseModal,
-  visible
+  visible,
+  error,
 }) => {
   const isFetching = useSelector(removePoolSelector.isFetchingSelector);
   const onSubmit = (params) => {
@@ -167,6 +170,7 @@ const RemovePool = ({
     <>
       <InputsGroup />
       <View style={styled.padding}>
+        {!!error && <Text style={styled.warning}>{error}</Text>}
         <RemoveLPButton onSubmit={onSubmit} />
       </View>
     </>
@@ -197,17 +201,21 @@ const RemovePool = ({
   );
 };
 
+RemovePool.defaultProps = {
+  error: ''
+};
+
 RemovePool.propTypes = {
   onInitRemovePool: PropTypes.func.isRequired,
   onRemoveContribute: PropTypes.func.isRequired,
   onCloseModal: PropTypes.func.isRequired,
   visible: PropTypes.bool.isRequired,
+  error: PropTypes.string
 };
 
 RemoveLPButton.propTypes = {
   onSubmit: PropTypes.func.isRequired,
 };
-
 
 export default compose(
   withLiquidity,

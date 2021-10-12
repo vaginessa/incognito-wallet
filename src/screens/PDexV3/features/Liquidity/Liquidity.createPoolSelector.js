@@ -2,15 +2,15 @@ import {createSelector} from 'reselect';
 import {liquiditySelector} from '@screens/PDexV3/features/Liquidity/Liquidity.selector';
 import {getPrivacyDataByTokenID as getPrivacyDataByTokenIDSelector} from '@src/redux/selectors/selectedPrivacy';
 import {sharedSelector} from '@src/redux/selectors';
-import {getExchangeRate} from '@screens/PDexV3';
+import {getExchangeRate, getPairRate} from '@screens/PDexV3';
 import {allTokensIDsSelector} from '@src/redux/selectors/token';
-import {filterTokenList, getInputAmount} from '@screens/PDexV3/features/Liquidity/Liquidity.utils';
+import {filterTokenList, getInputAmount, convertAmount} from '@screens/PDexV3/features/Liquidity/Liquidity.utils';
 import {formConfigsCreatePool} from '@screens/PDexV3/features/Liquidity/Liquidity.constant';
-import uniqBy from 'lodash/uniqBy';
 import format from '@utils/format';
 import {listPoolsPureSelector} from '@screens/PDexV3/features/Pools';
-import {getDataShareByPoolIdSelector} from '@screens/PDexV3/features/Portfolio';
 import {nftTokenDataSelector} from '@src/redux/selectors/account';
+import BigNumber from 'bignumber.js';
+import convert from '@utils/convert';
 
 const createPoolSelector = createSelector(
   liquiditySelector,
@@ -53,17 +53,10 @@ export const hookFactoriesSelector = createSelector(
   inputAmountSelector,
   ({ inputToken, outputToken }, isGettingBalance, { token: feeToken }, inputAmount) => {
     if (!inputToken || !outputToken || !feeToken) return [];
-    const tokens = uniqBy([inputToken, outputToken, feeToken], (token) => token.tokenId);
     const input = inputAmount(formConfigsCreatePool.formName, formConfigsCreatePool.inputToken);
     const output = inputAmount(formConfigsCreatePool.formName, formConfigsCreatePool.outputToken);
-    const hookBalances = tokens.map((token) => ({
-      label: 'Balance',
-      value: `${format.amountFull(token.amount, token.pDecimals)} ${token.symbol}`,
-      loading: isGettingBalance.includes(token?.tokenId)
-    }));
     const exchangeRateStr = getExchangeRate(inputToken, outputToken, input.originalInputAmount, output.originalInputAmount);
     return [
-      ...hookBalances,
       {
         label: 'Exchange rate',
         value: exchangeRateStr,
@@ -101,8 +94,34 @@ export const outputTokensListSelector = createSelector(
 
 export const ampValueSelector = createSelector(
   createPoolSelector,
-  ({ amp }) => {
-    return { amp };
+  inputAmountSelector,
+  tokenSelector,
+  ({ amp, rate }, inputAmount, { inputToken, outputToken }) => {
+    if (!inputToken || !outputToken) return {
+      amp: 0,
+    };
+    const input = inputAmount(formConfigsCreatePool.formName, formConfigsCreatePool.inputToken);
+    const output = inputAmount(formConfigsCreatePool.formName, formConfigsCreatePool.outputToken);
+    let rawRate = getPairRate({
+      token1: inputToken,
+      token2: outputToken,
+      token1Value: input.originalInputAmount,
+      token2Value: output.originalInputAmount
+    });
+    rawRate = format.amountFull(rawRate, 0, false);
+    let estOutputStr = undefined;
+    const estRate = new BigNumber(rawRate).minus(rate).abs();
+    const compareValue = 1e-2;
+    if ((estRate.gt(compareValue) || estRate.lt(-compareValue))) {
+      estOutputStr = convertAmount({
+        originalNum: convert.toOriginalAmount(
+          new BigNumber(input.inputAmount).multipliedBy(rate).toNumber(),
+          outputToken.pDecimals
+        ),
+        pDecimals: outputToken.pDecimals
+      });
+    }
+    return { amp, estOutputStr };
   }
 );
 

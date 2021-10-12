@@ -61,12 +61,9 @@ const PortfolioList = withTransaction(React.memo(({ onCreateWithdrawFeeLP }) => 
 
 const Portfolio = () => {
   return (
-    <>
-      <View style={styled.container}>
-        <PortfolioList />
-      </View>
-      <PortfolioModal />
-    </>
+    <View style={styled.container}>
+      <PortfolioList />
+    </View>
   );
 };
 
