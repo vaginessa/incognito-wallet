@@ -30,7 +30,11 @@ const styled = StyleSheet.create({
     flex: 1,
     paddingTop: 32,
   },
-  form: {},
+  form: {
+    // flex: 1,
+    minHeight: 100,
+    marginBottom: 50
+  },
 });
 
 export const formConfigs = {
@@ -51,9 +55,7 @@ const Form = createForm(formConfigs.formName, {
   enableReinitialize: true,
 });
 
-const FormMint = React.memo((props) => {
-  const account = useSelector(defaultAccountSelector);
-  const wallet = useSelector(walletSelector);
+export const FormMint = React.memo(() => {
   const dispatch = useDispatch();
   const [minting, setMinting] = React.useState(false);
   const navigation = useNavigation();
@@ -94,18 +96,18 @@ const FormMint = React.memo((props) => {
     <View style={styled.form}>
       <Form>
         {({ handleSubmit }) => (
-          <View>
+          <>
             {hookFactories}
             <ButtonBasic
               title={`Mint${minting ? '...' : ''}`}
               disabled={minting}
               onPress={onMint}
-              btnStyle={{ marginTop: 30 }}
+              btnStyle={{ marginTop: 24 }}
             />
-          </View>
+            {minting && <LoadingTx />}
+          </>
         )}
       </Form>
-      {minting && <LoadingTx />}
     </View>
   );
 });

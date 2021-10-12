@@ -3,6 +3,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { View } from 'react-native';
 import { useSelector } from 'react-redux';
+import { ScrollView } from '@src/components/core';
 import { createForm } from '@src/components/core/reduxForm';
 import { NFTTokenBottomBar } from '@screens/PDexV3/features/NFTToken';
 import { ButtonBasic } from '@src/components/Button';
@@ -34,33 +35,37 @@ const OrderLimit = (props) => {
   );
   const { tabsFactories, handleConfirm } = props;
   return (
-    <View style={styled.container}>
-      <Form>
-        {() => (
-          <View>
-            <GroupActions />
-            <Tabs
-              rootTabID={ROOT_TAB_ORDER_LIMIT}
-              styledTabs={{ marginBottom: 24 }}
-            >
-              {tabsFactories.map((tab) => (
-                <View key={tab.tabID} {...tab} />
-              ))}
-            </Tabs>
-            <OrderLimitInputsGroup />
-            <ButtonBasic
-              btnStyle={{ backgroundColor: mainColor }}
-              title={btnActionTitle}
-              disabled={disabledBtn}
-              onPress={handleConfirm}
-            />
-            <NFTTokenBottomBar />
-            <GroupSubInfo />
-          </View>
-        )}
-      </Form>
+    <>
+      <View style={styled.container}>
+        <ScrollView>
+          <Form>
+            {() => (
+              <View>
+                <GroupActions />
+                <Tabs
+                  rootTabID={ROOT_TAB_ORDER_LIMIT}
+                  styledTabs={{ marginBottom: 24 }}
+                >
+                  {tabsFactories.map((tab) => (
+                    <View key={tab.tabID} {...tab} />
+                  ))}
+                </Tabs>
+                <OrderLimitInputsGroup />
+                <ButtonBasic
+                  btnStyle={{ backgroundColor: mainColor }}
+                  title={btnActionTitle}
+                  disabled={disabledBtn}
+                  onPress={handleConfirm}
+                />
+                <GroupSubInfo />
+              </View>
+            )}
+          </Form>
+        </ScrollView>
+      </View>
       {!!ordering && <LoadingTx />}
-    </View>
+      <NFTTokenBottomBar />
+    </>
   );
 };
 

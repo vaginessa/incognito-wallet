@@ -2,7 +2,7 @@ import { COLORS, FONT } from '@src/styles';
 import { StyleSheet } from 'react-native';
 
 export const styled = StyleSheet.create({
-  container: {},
+  container: { flex: 1 },
   btnRefresh: {
     marginRight: 12,
   },

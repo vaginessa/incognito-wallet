@@ -12,6 +12,7 @@ import { nftTokenDataSelector } from '@src/redux/selectors/account';
 import { actionSetNFTTokenData } from '@src/redux/actions/account';
 import NFTTokenHook from './NFTToken.hook';
 import { styled } from './NFTToken.styled';
+import { FormMint } from './NFTToken.mint';
 
 const NFTTokenItem = React.memo((props) => {
   const { nftToken = '', amount = '0' } = props;
@@ -36,6 +37,9 @@ const NFTTokenItem = React.memo((props) => {
 
 const ListNFTToken = React.memo((props) => {
   const { list } = useSelector(nftTokenDataSelector);
+  if (list.length === 0) {
+    return null;
+  }
   return (
     <View style={styled.list}>
       <Text style={styled.listTitle}>List</Text>
@@ -82,7 +86,7 @@ const NFTToken = (props) => {
           <NFTTokenHook {...hook} key={hook.label} />
         ))}
         <ListNFTToken />
-        <ButtonBasic title="Mint a nft token" onPress={onMintNFToken} />
+        <FormMint />
       </ScrollView>
     </View>
   );

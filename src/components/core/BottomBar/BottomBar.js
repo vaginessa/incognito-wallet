@@ -15,6 +15,7 @@ const styled = StyleSheet.create({
     paddingVertical: 10,
     marginBottom: hasNotch() ? 30 : 0,
     position: 'relative',
+    borderWidth: 1,
   },
   text: {
     color: COLORS.white,

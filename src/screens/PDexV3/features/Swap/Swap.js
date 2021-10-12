@@ -9,6 +9,7 @@ import LoadingTx from '@src/components/LoadingTx';
 import { Row } from '@src/components';
 import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
+import { ScrollView } from '@src/components/core';
 import { styled, tabsStyled } from './Swap.styled';
 import {
   ROOT_TAB_ID,
@@ -19,7 +20,6 @@ import {
 import TabSimple from './Swap.simpleTab';
 import TabPro from './Swap.proTab';
 import withSwap from './Swap.enhance';
-import SwapInputsGroup from './Swap.inputsGroup';
 import { swapInfoSelector } from './Swap.selector';
 
 const initialFormValues = {
@@ -64,7 +64,7 @@ const Swap = (props) => {
     },
   ];
   return (
-    <View style={styled.container}>
+    <ScrollView style={styled.container}>
       <Form>
         {({ handleSubmit }) => (
           <>
@@ -91,7 +91,7 @@ const Swap = (props) => {
         )}
       </Form>
       {!!swapInfo.swaping && <LoadingTx />}
-    </View>
+    </ScrollView>
   );
 };
 

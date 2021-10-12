@@ -5,7 +5,6 @@ export const styled = StyleSheet.create({
   container: { flex: 1 },
   scrollview: {
     flex: 1,
-    paddingTop: 32,
   },
   nftTokenItemContainer: {
     marginBottom: 15,
