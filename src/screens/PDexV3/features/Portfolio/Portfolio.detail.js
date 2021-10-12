@@ -74,6 +74,7 @@ const PortfolioModal = ({ poolId, onWithdrawFeeLP }) => {
     }, 500);
   };
   if (!data) return null;
+  const { withdrawable, withdrawing } = data;
   const { hookFactoriesDetail, token1, token2 } = data || {};
   return (
     <View style={styles.wrapper}>
@@ -93,17 +94,20 @@ const PortfolioModal = ({ poolId, onWithdrawFeeLP }) => {
           ))}
         </ScrollView>
         <Row spaceBetween>
-          <BTNBorder
-            title="Claim"
-            onPress={onClaimReward}
-            wrapperStyle={{flex: 1, marginRight: 4}}
-            textStyle={{color: COLORS.colorBlue}}
-            background={COLORS.colorBlue}
-          />
+          {!!withdrawable && (
+            <BTNBorder
+              title={withdrawing ? 'Claiming' : 'Claim'}
+              onPress={onClaimReward}
+              wrapperStyle={{flex: 1, marginRight: 8}}
+              textStyle={{color: COLORS.colorBlue}}
+              background={COLORS.colorBlue}
+              disabled={withdrawing}
+            />
+          )}
           <BTNPrimary
             title="Invest more"
             onPress={onInvestPress}
-            wrapperStyle={{flex: 1, marginLeft: 4}}
+            wrapperStyle={{flex: 1}}
             background={COLORS.colorBlue}
           />
         </Row>

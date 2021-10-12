@@ -12,7 +12,7 @@ import {styled as mainStyle} from '@screens/PDexV3/PDexV3.styled';
 import {AddGroupIcon} from '@components/Icons';
 import {activedTabSelector} from '@components/core/Tabs';
 import ReturnLP from '@screens/PDexV3/features/Share/Share.returnLP';
-import {PoolsList} from '@screens/PDexV3/features/Pools';
+import {listPoolsSelector, PoolsList} from '@screens/PDexV3/features/Pools';
 import {NFTTokenBottomBar} from '@screens/PDexV3/features/NFTToken';
 import withHome from './Home.enhance';
 import { ROOT_TAB_HOME, TAB_POOLS_ID, TAB_PORTFOLIO_ID } from './Home.constant';
@@ -21,6 +21,7 @@ import { styled } from './Home.styled';
 const TabPools = React.memo(() => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
+  const listPools = useSelector(listPoolsSelector);
   const onNavigateContribute = (poolId) => {
     batch(() => {
       dispatch(liquidityActions.actionSetContributePoolID({ poolId }));
@@ -28,7 +29,7 @@ const TabPools = React.memo(() => {
     });
   };
   return (
-    <PoolsList onPressPool={onNavigateContribute} />
+    <PoolsList onPressPool={onNavigateContribute} listPools={listPools} />
   );
 });
 

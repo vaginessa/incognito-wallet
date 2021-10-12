@@ -13,20 +13,17 @@ import { BtnStar } from '@src/components/Button';
 import { styled } from './Pool.styled';
 
 export const PoolItem = React.memo((props) => {
-  const { poolId, onPressPool, checkFollow, style } = props;
+  const { poolId, onPressPool, style } = props;
   const data = useSelector(getDataByPoolIdSelector)(poolId);
   if (!data) {
     return null;
   }
   const {
     isVerify,
-    apy,
     volumeToAmountStr,
     isFollowed,
     poolTitle,
-    ampStr,
     apyStr,
-    priceChangeToAmountStr,
   } = data || {};
 
   const dispatch = useDispatch();
@@ -47,7 +44,6 @@ export const PoolItem = React.memo((props) => {
         </View>
         <View style={styled.block2}>
           <Text style={styled.subText}> {apyStr}</Text>
-          <Text style={styled.subText}> {priceChangeToAmountStr}</Text>
         </View>
         <View style={styled.block3}>
           <BtnStar onPress={handleToggleFollowingPool} isBlue={isFollowed} />
@@ -58,8 +54,7 @@ export const PoolItem = React.memo((props) => {
 });
 
 const Pool = (props) => {
-  const { poolId, swipable, onPressPool, checkFollow } = props;
-  const dispatch = useDispatch();
+  const { poolId, onPressPool } = props;
   if (!poolId) {
     return null;
   }
@@ -68,26 +63,21 @@ const Pool = (props) => {
 
 Pool.defaultProps = {
   onPressPool: null,
-  checkFollow: true,
 };
 
 Pool.propTypes = {
   poolId: PropTypes.string.isRequired,
-  swipable: PropTypes.bool.isRequired,
   onPressPool: PropTypes.func,
-  checkFollow: PropTypes.bool,
 };
 
 PoolItem.defaultProps = {
   onPressPool: null,
-  checkFollow: true,
   style: null,
 };
 
 PoolItem.propTypes = {
   poolId: PropTypes.string.isRequired,
   onPressPool: PropTypes.func,
-  checkFollow: PropTypes.bool,
   style: PropTypes.object,
 };
 
