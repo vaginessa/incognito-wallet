@@ -3,7 +3,8 @@ import { Text } from '@src/components/core';
 import { COLORS, FONT } from '@src/styles';
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { actionFetchOrderBook } from './Chart.actions';
 import { orderBookSelector } from './Chart.selector';
 
 const styled = StyleSheet.create({
@@ -64,6 +65,11 @@ const Item = React.memo((props) => {
 export const OrderBook = React.memo(() => {
   const orderBook = useSelector(orderBookSelector);
   const { buy, sell } = orderBook;
+  const dispatch = useDispatch();
+  const fetchData = () => dispatch(actionFetchOrderBook());
+  React.useEffect(() => {
+    fetchData();
+  }, []);
   return (
     <View style={styled.wrapper}>
       <View style={styled.wrapperOrder}>

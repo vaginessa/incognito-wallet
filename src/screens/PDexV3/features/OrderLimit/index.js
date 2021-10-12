@@ -1,4 +1,3 @@
-/* eslint-disable import/no-cycle */
 export { default } from './OrderLimit';
 export { default as TabOrderLimit } from './OrderLimit.tab';
 export { default as TabHomeOrderLimit } from './OrderLimit.homeTab';

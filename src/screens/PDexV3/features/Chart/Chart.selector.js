@@ -1,7 +1,6 @@
-import { createSelector, createSelectorCreator } from 'reselect';
+import { createSelector } from 'reselect';
 import { getDataByPoolIdSelector } from '@screens/PDexV3/features/Pools';
 import SelectedPrivacy from '@src/models/selectedPrivacy';
-import format from '@src/utils/format';
 import { COLORS } from '@src/styles';
 import { mappingOrderBook } from './Chart.utils';
 
@@ -49,6 +48,7 @@ export const orderBookSelector = createSelector(
       ...orderBook,
       buy: _buy,
       sell: _sell,
+      poolid: pool?.poolId,
     };
   },
 );

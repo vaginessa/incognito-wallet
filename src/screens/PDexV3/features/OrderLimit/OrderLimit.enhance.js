@@ -24,7 +24,6 @@ const enhance = (WrappedComp) => (props) => {
   const { sellColor, buyColor, disabledBtn, cfmTitle } = useSelector(
     orderLimitDataSelector,
   );
-  const onRefresh = () => dispatch(actionInit(true));
   const tabsFactories = [
     {
       tabID: TAB_BUY_ID,

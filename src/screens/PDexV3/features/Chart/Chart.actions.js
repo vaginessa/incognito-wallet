@@ -2,7 +2,7 @@ import random from 'lodash/random';
 import max from 'lodash/max';
 import min from 'lodash/min';
 import { ExHandler } from '@src/services/exception';
-import { getPDexV3Instance } from '@screens/PDexV3';
+import { getPDexV3Instance, actionGetPDexV3Inst } from '@screens/PDexV3';
 import { defaultAccountWalletSelector } from '@src/redux/selectors/account';
 import {
   ACTION_FETCHING,
@@ -106,22 +106,17 @@ export const actionFetchOrderBook = () => async (dispatch, getState) => {
   let data = [];
   try {
     const state = getState();
-    const account = defaultAccountWalletSelector(state);
-    const pdexV3Inst = await getPDexV3Instance({ account });
-    const { decimal } = orderBookSelector(state);
-    data = {
-      buy: [...Array(20)].map((item) => ({
-        price: random(40e9, 50e9),
-        volume: random(1, 5, true),
-      })),
-      sell: [...Array(20)].map((item) => ({
-        price: random(40e9, 50e9),
-        volume: random(1, 5, true),
-      })),
-    };
+    const pdexV3Inst = await dispatch(actionGetPDexV3Inst());
+    const { decimal, poolid } = orderBookSelector(state);
+    data = await pdexV3Inst.getOrderBook({
+      poolid,
+      decimal,
+    });
+    data.sell = data.sell || [];
+    data.buy = data.buy || [];
     await dispatch(actionFetchedOrderBook(data));
   } catch (error) {
-    console.log('error here');
+    console.log('error actionFetchOrderBook', error);
     new ExHandler(error).showErrorToast();
   }
   return data;

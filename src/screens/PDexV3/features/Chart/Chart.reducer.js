@@ -1,3 +1,4 @@
+import { ACTION_SET_POOL_ID } from '@screens/PDexV3/features/OrderLimit/OrderLimit.constant';
 import {
   ACTION_FETCHING,
   ACTION_FETCHED,
@@ -14,10 +15,13 @@ const initialState = {
   poolid: '',
   orderBook: {
     data: [],
-    decimal: 1,
+    decimal: 0.1,
   },
   priceHistory: {
-    data: [],
+    data: {
+      buy: [],
+      sell: [],
+    },
     period: '1d',
     datapoint: 20,
     fromtime: new Date().getTime(),
@@ -27,6 +31,13 @@ const initialState = {
 
 export default (state = initialState, action) => {
   switch (action.type) {
+  case ACTION_SET_POOL_ID: {
+    console.log('SET POOL ID FOR ME', action.payload);
+    return {
+      ...state,
+      poolid: action.payload,
+    };
+  }
   case ACTION_SET_SELECTED_POOL_ID: {
     return {
       ...state,
