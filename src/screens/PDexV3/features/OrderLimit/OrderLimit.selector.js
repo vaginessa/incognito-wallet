@@ -253,7 +253,7 @@ export const orderLimitDataSelector = createSelector(
       reviewOrderTitle = `Sell ${sellInputAmount?.amountText} ${sellInputAmount?.symbol}`;
       reviewOrderDesc = 'Receive';
       reviewOrderDescValue = `${buyInputAmount?.amountText} ${buyInputAmount?.symbol}`;
-      cfmTitle = `You placed an order to buy ${reviewOrderDescValue} for ${sellInputAmount?.amountText} ${sellInputAmount?.symbol}`;
+      cfmTitle = `You placed an order to sell ${sellInputAmount?.amountText} ${sellInputAmount?.symbol} for ${reviewOrderDescValue}`;
       break;
     }
     case TAB_BUY_ID: {
@@ -262,7 +262,7 @@ export const orderLimitDataSelector = createSelector(
       reviewOrderTitle = `Buy ${buyInputAmount?.amountText} ${buyInputAmount?.symbol}`;
       reviewOrderDesc = 'Pay with';
       reviewOrderDescValue = `${sellInputAmount?.amountText} ${sellInputAmount?.symbol}`;
-      cfmTitle = `You placed an order to sell ${reviewOrderDescValue} for $${buyInputAmount?.amountText} ${buyInputAmount?.symbol}`;
+      cfmTitle = `You placed an order to buy ${buyInputAmount?.amountText} ${buyInputAmount?.symbol} for ${reviewOrderDescValue}`;
       break;
     }
     default:
@@ -339,6 +339,7 @@ export const orderLimitDataSelector = createSelector(
       poolStr,
       priceChange24hStr: `${priceChange24h}%`,
       colorPriceChange24h,
+      calculating,
     };
   },
 );

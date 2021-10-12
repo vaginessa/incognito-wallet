@@ -236,8 +236,8 @@ export const swapInfoSelector = createSelector(
         PRV.pDecimals,
       );
       const networkfeeAmountStr = `${networkfeeAmount} ${PRV.symbol}`;
-      const editableInput = !swapingToken && !initing && !selecting;
-      // && isFetched && !isFetching;
+      const editableInput =
+        !swapingToken && !initing && !selecting && !isFetching;
       let btnSwapText = 'Confirm';
       const calculating = swapingToken || initing || selecting || isFetching;
       const disabledBtnSwap =
@@ -302,6 +302,7 @@ export const swapInfoSelector = createSelector(
         maxGet,
         originalMinAmountExpected,
         buyAmountExpectedToFixed,
+        refreshing: isFetching,
       };
     } catch (error) {
       console.log('swapInfoSelector-error', error);

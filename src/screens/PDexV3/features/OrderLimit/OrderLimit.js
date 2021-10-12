@@ -3,7 +3,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { View } from 'react-native';
 import { useSelector } from 'react-redux';
-import { ScrollView } from '@src/components/core';
+import { ScrollView, RefreshControl } from '@src/components/core';
 import { createForm } from '@src/components/core/reduxForm';
 import { NFTTokenBottomBar } from '@screens/PDexV3/features/NFTToken';
 import { ButtonBasic } from '@src/components/Button';
@@ -30,13 +30,22 @@ const Form = createForm(formConfigs.formName, {
 });
 
 const OrderLimit = (props) => {
-  const { mainColor, btnActionTitle, disabledBtn, ordering } = useSelector(
-    orderLimitDataSelector,
-  );
-  const { tabsFactories, handleConfirm } = props;
+  const {
+    mainColor,
+    btnActionTitle,
+    disabledBtn,
+    ordering,
+    calculating,
+  } = useSelector(orderLimitDataSelector);
+  const { tabsFactories, handleConfirm, onRefresh } = props;
   return (
     <>
-      <ScrollView style={styled.container}>
+      <ScrollView
+        style={styled.container}
+        refreshControl={
+          <RefreshControl refreshing={calculating} onRefresh={onRefresh} />
+        }
+      >
         <Form>
           {() => (
             <View>

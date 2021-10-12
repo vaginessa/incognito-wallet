@@ -141,7 +141,6 @@ export const actionSetDefaultPool = () => async (dispatch, getState) => {
     if (!pool) {
       return;
     }
-    console.log('SET DEFUALT POOL', pool?.poolId);
     await pDexV3Inst.setDefaultPool(pool?.poolId);
   } catch (error) {
     new ExHandler(error).showErrorToast();
@@ -151,7 +150,10 @@ export const actionSetDefaultPool = () => async (dispatch, getState) => {
 export const actionInit = () => async (dispatch, getState) => {
   try {
     await dispatch(actionIniting(true));
-    await dispatch(actionFetchPools());
+    await Promise.all([
+      dispatch(actionFetchPools()),
+      dispatch(actionSetNFTTokenData()),
+    ]);
     let state = getState();
     const poolSelected = poolSelectedDataSelector(state);
     if (!poolSelected?.poolId) {
@@ -165,6 +167,8 @@ export const actionInit = () => async (dispatch, getState) => {
     }
     state = getState();
     const pool = poolSelectedDataSelector(state);
+    dispatch(actionFetchWithdrawOrderTxs());
+    dispatch(actionFetchOrdersHistory());
     if (isEmpty(pool)) {
       return;
     }
@@ -200,9 +204,6 @@ export const actionInit = () => async (dispatch, getState) => {
     state = getState();
     const { defaultRate } = rateDataSelector(state);
     dispatch(change(formConfigs.formName, formConfigs.rate, defaultRate));
-    await dispatch(actionSetNFTTokenData());
-    dispatch(actionFetchWithdrawOrderTxs());
-    dispatch(actionFetchOrdersHistory());
   } catch (error) {
     new ExHandler(error).showErrorToast;
   } finally {

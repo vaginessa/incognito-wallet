@@ -9,7 +9,7 @@ import LoadingTx from '@src/components/LoadingTx';
 import { Row } from '@src/components';
 import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
-import { ScrollView } from '@src/components/core';
+import { ScrollView, RefreshControl } from '@src/components/core';
 import { styled, tabsStyled } from './Swap.styled';
 import {
   ROOT_TAB_ID,
@@ -65,7 +65,15 @@ const Swap = (props) => {
   ];
   return (
     <>
-      <ScrollView style={styled.scrollview}>
+      <ScrollView
+        style={styled.scrollview}
+        refreshControl={
+          <RefreshControl
+            refreshing={swapInfo?.refreshing}
+            onRefresh={initSwapForm}
+          />
+        }
+      >
         <Form>
           {({ handleSubmit }) => (
             <>

@@ -29,7 +29,7 @@ const styled = StyleSheet.create({
 
 const periods = ['15m', '1h', '4h', '1d', '1w', '1m', '1y'];
 
-const Period = React.memo((props) => {
+const Period = React.memo(() => {
   const dispatch = useDispatch();
   const { period: actived } = useSelector(priceHistorySelector);
   return (
@@ -76,25 +76,6 @@ const PriceHistory = (props) => {
         padding={0}
         width={screenSize.width - 50}
         height={200}
-        // containerComponent={
-        //   <VictoryVoronoiContainer
-        //     labels
-        //     labelComponent={
-        //       <VictoryTooltip
-        //         text={({ datum }) => `$${datum.y}`}
-        //         style={{
-        //           fill: COLORS.black,
-        //           fontSize: FONT.SIZE.medium,
-        //         }}
-        //         flyoutStyle={{
-        //           stroke: 'transparent',
-        //           fill: COLORS.lightGrey19,
-        //         }}
-        //         flyoutPadding={5}
-        //       />
-        //     }
-        //   />
-        // }
         style={{
           data: {
             stroke: COLORS.colorTradeBlue,

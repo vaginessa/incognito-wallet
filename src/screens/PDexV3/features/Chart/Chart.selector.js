@@ -2,6 +2,7 @@ import { createSelector } from 'reselect';
 import { getDataByPoolIdSelector } from '@screens/PDexV3/features/Pools';
 import SelectedPrivacy from '@src/models/selectedPrivacy';
 import { COLORS } from '@src/styles';
+import orderBy from 'lodash/orderBy';
 import { mappingOrderBook } from './Chart.utils';
 
 export const chartSelector = createSelector(
@@ -11,7 +12,7 @@ export const chartSelector = createSelector(
 
 export const priceHistorySelector = createSelector(
   chartSelector,
-  ({ priceHistory }) => {
+  ({ priceHistory, poolid }) => {
     const { minValue, maxValue } = priceHistory;
     const yMaxDomain = maxValue * 2;
     const yMinDomain = minValue;
@@ -19,6 +20,7 @@ export const priceHistorySelector = createSelector(
       ...priceHistory,
       yMinDomain,
       yMaxDomain,
+      poolid,
     };
   },
 );
@@ -34,16 +36,25 @@ export const orderBookSelector = createSelector(
   poolSelectedSelector,
   ({ orderBook }, pool) => {
     const token1: SelectedPrivacy = pool?.token1;
+    const token2: SelectedPrivacy = pool?.token2;
     const { data } = orderBook;
     const { buy = [], sell = [] } = data;
-    const _buy = mappingOrderBook({ data: buy, token1 }).map((o) => ({
-      ...o,
-      color: COLORS.green,
-    }));
-    const _sell = mappingOrderBook({ data: sell, token1 }).map((o) => ({
-      ...o,
-      color: COLORS.red,
-    }));
+    const _buy = orderBy(
+      mappingOrderBook({ data: buy, token1, token2 }).map((o) => ({
+        ...o,
+        color: COLORS.green,
+      })),
+      'price',
+      'desc',
+    );
+    const _sell = orderBy(
+      mappingOrderBook({ data: sell, token1, token2 }).map((o) => ({
+        ...o,
+        color: COLORS.red,
+      })),
+      'price',
+      'asc',
+    );
     return {
       ...orderBook,
       buy: _buy,

@@ -4,6 +4,7 @@ import { COLORS, FONT } from '@src/styles';
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
+import { v4 } from 'uuid';
 import { actionFetchOrderBook } from './Chart.actions';
 import { orderBookSelector } from './Chart.selector';
 
@@ -19,20 +20,19 @@ const styled = StyleSheet.create({
   price: {
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.small,
-    lineHeight: FONT.SIZE.small + 5,
     color: COLORS.black,
-    flex: 1,
-    marginRight: 10,
   },
   volume: {
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.small,
-    lineHeight: FONT.SIZE.small + 5,
-    flex: 1,
+  },
+  label: {
+    fontSize: FONT.SIZE.superSmall,
+    color: COLORS.colorGrey3,
   },
   wrapperOrder: {
     flex: 1,
-    maxWidth: '48%',
+    maxWidth: '49%',
   },
   wrapperItem: { justifyContent: 'space-between', marginBottom: 15 },
   title: {
@@ -45,21 +45,72 @@ const styled = StyleSheet.create({
 });
 
 const Item = React.memo((props) => {
-  const { priceStr, volumeStr, color } = props;
-  return (
-    <Row style={styled.wrapperItem}>
-      <Text numberOfLines={1} ellipsizeMode="tail" style={styled.price}>
-        {priceStr}
-      </Text>
-      <Text
-        numberOfLines={1}
-        ellipsizeMode="tail"
-        style={{ ...styled.volume, color }}
-      >
-        {volumeStr}
-      </Text>
-    </Row>
-  );
+  const { priceStr, volumeStr, color, isBuy, isSell, isLabel } = props;
+  if (isBuy) {
+    if (isLabel) {
+      return (
+        <Row style={styled.wrapperItem}>
+          <Text numberOfLines={1} style={{ ...styled.volume, ...styled.label }}>
+            Amount
+          </Text>
+          <Text numberOfLines={1} style={{ ...styled.price, ...styled.label }}>
+            Price
+          </Text>
+        </Row>
+      );
+    }
+    return (
+      <Row style={styled.wrapperItem}>
+        <Text
+          numberOfLines={1}
+          ellipsizeMode="tail"
+          style={{ ...styled.volume }}
+        >
+          {volumeStr}
+        </Text>
+        <Text
+          numberOfLines={1}
+          ellipsizeMode="tail"
+          style={{ ...styled.price, color }}
+        >
+          {priceStr}
+        </Text>
+      </Row>
+    );
+  }
+  if (isSell) {
+    if (isLabel) {
+      return (
+        <Row style={styled.wrapperItem}>
+          <Text numberOfLines={1} style={{ ...styled.price, ...styled.label }}>
+            Price
+          </Text>
+          <Text numberOfLines={1} style={{ ...styled.volume, ...styled.label }}>
+            Amount
+          </Text>
+        </Row>
+      );
+    }
+    return (
+      <Row style={styled.wrapperItem}>
+        <Text
+          numberOfLines={1}
+          ellipsizeMode="tail"
+          style={{ ...styled.price, color }}
+        >
+          {priceStr}
+        </Text>
+        <Text
+          numberOfLines={1}
+          ellipsizeMode="tail"
+          style={{ ...styled.volume }}
+        >
+          {volumeStr}
+        </Text>
+      </Row>
+    );
+  }
+  return null;
 });
 
 export const OrderBook = React.memo(() => {
@@ -76,13 +127,15 @@ export const OrderBook = React.memo(() => {
   return (
     <View style={styled.wrapper}>
       <View style={styled.wrapperOrder}>
+        <Item isBuy isLabel />
         {buy.map((o) => (
-          <Item {...o} key={o?.volume} />
+          <Item {...o} key={v4()} isBuy />
         ))}
       </View>
       <View style={styled.wrapperOrder}>
+        <Item isSell isLabel />
         {sell.map((o) => (
-          <Item {...o} key={o?.volume} />
+          <Item {...o} key={v4()} isSell />
         ))}
       </View>
     </View>

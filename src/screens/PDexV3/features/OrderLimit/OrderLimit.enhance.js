@@ -86,6 +86,7 @@ const enhance = (WrappedComp) => (props) => {
       //
     }
   };
+  const onRefresh = () => dispatch(actionInit());
   React.useEffect(() => {
     dispatch(actionInit());
     return () => {
@@ -94,7 +95,7 @@ const enhance = (WrappedComp) => (props) => {
   }, []);
   return (
     <ErrorBoundary>
-      <WrappedComp {...{ ...props, handleConfirm, tabsFactories }} />
+      <WrappedComp {...{ ...props, handleConfirm, tabsFactories, onRefresh }} />
     </ErrorBoundary>
   );
 };

@@ -49,40 +49,50 @@ export const actionFetchPriceHistory = () => async (dispatch, getState) => {
     const state = getState();
     const account = defaultAccountWalletSelector(state);
     const pdexV3Inst = await getPDexV3Instance({ account });
-    const { period, datapoint } = priceHistorySelector(state);
+    const { period, datapoint, poolid } = priceHistorySelector(state);
+    if (!poolid) {
+      return;
+    }
     const now = new Date();
-    const data = [...Array(datapoint)].map((item, index, arr) => {
-      let before = new Date();
-      switch (period) {
-      case '15m':
-        before.setMinutes(now.getMinutes() - 15 * index);
-        break;
-      case '1h':
-        before.setHours(now.getHours() - 1 * index);
-        break;
-      case '4h':
-        before.setHours(now.getHours() - 4 * index);
-        break;
-      case '1d':
-        before.setDate(now.getDate() - 1 * index);
-        break;
-      case '1w':
-        before.setDate(now.getDate() - 7 * index);
-        break;
-      case '1m':
-        before.setMonth(now.getMonth() + 1 - 7 * index);
-        break;
-      case '1y':
-        before.setFullYear(now.getFullYear() - 1 * index);
-        break;
-      default:
-        break;
-      }
-      return {
-        x: before,
-        y: random(2e4, 6e4),
-      };
+    const data = await pdexV3Inst.getPriceHistory({
+      poolid,
+      period,
+      datapoint,
+      fromtime: now.getTime(),
     });
+    console.log('data', data);
+    // const data = [...Array(datapoint)].map((item, index, arr) => {
+    //   let before = new Date();
+    //   switch (period) {
+    //     case '15m':
+    //       before.setMinutes(now.getMinutes() - 15 * index);
+    //       break;
+    //     case '1h':
+    //       before.setHours(now.getHours() - 1 * index);
+    //       break;
+    //     case '4h':
+    //       before.setHours(now.getHours() - 4 * index);
+    //       break;
+    //     case '1d':
+    //       before.setDate(now.getDate() - 1 * index);
+    //       break;
+    //     case '1w':
+    //       before.setDate(now.getDate() - 7 * index);
+    //       break;
+    //     case '1m':
+    //       before.setMonth(now.getMonth() + 1 - 7 * index);
+    //       break;
+    //     case '1y':
+    //       before.setFullYear(now.getFullYear() - 1 * index);
+    //       break;
+    //     default:
+    //       break;
+    //   }
+    //   return {
+    //     x: before,
+    //     y: random(2e4, 6e4),
+    //   };
+    // });
     const maxValue = max(data, (i) => i.y).y;
     const minValue = min(data, (i) => i.y).y;
     dispatch(
@@ -108,9 +118,11 @@ export const actionFetchOrderBook = () => async (dispatch, getState) => {
     const state = getState();
     const pdexV3Inst = await dispatch(actionGetPDexV3Inst());
     const { decimal, poolid } = orderBookSelector(state);
-    data = await pdexV3Inst.getOrderBook({
+    if (!poolid) {
+      return [];
+    }
+    data = await pdexV3Inst.getPendingOrder({
       poolid,
-      decimal,
     });
     data.sell = data.sell || [];
     data.buy = data.buy || [];
