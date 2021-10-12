@@ -152,7 +152,8 @@ const Contribute = ({
   onInitContribute,
   onCreateContributes,
   visible,
-  onCloseModal
+  onCloseModal,
+  error
 }) => {
   const isFetching = useSelector(contributeSelector.statusSelector);
   const onSubmit = (params) => {
@@ -178,6 +179,7 @@ const Contribute = ({
               <>
                 <InputsGroup />
                 <View style={styled.padding}>
+                  {!!error && <Text style={styled.warning}>{error}</Text>}
                   <ContributeButton onSubmit={onSubmit} />
                   <Extra />
                 </View>
@@ -199,7 +201,8 @@ const Contribute = ({
 };
 
 ContributeButton.propTypes = {
-  onSubmit: PropTypes.func.isRequired
+  onSubmit: PropTypes.func.isRequired,
+  error: ''
 };
 
 Contribute.propTypes = {
@@ -207,6 +210,7 @@ Contribute.propTypes = {
   onCreateContributes: PropTypes.func.isRequired,
   onCloseModal: PropTypes.func.isRequired,
   visible: PropTypes.bool.isRequired,
+  error: PropTypes.string
 };
 
 export default compose(

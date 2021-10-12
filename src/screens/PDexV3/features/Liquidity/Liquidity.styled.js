@@ -65,6 +65,7 @@ const styled = StyleSheet.create({
     fontSize: FONT.SIZE.small,
     lineHeight: FONT.SIZE.small + 9,
     fontFamily: FONT.NAME.medium,
+    marginTop: 10
   }
 });
 

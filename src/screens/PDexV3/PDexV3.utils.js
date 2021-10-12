@@ -6,6 +6,7 @@ import convertUtil from '@utils/convert';
 import isNumber from 'lodash/isNumber';
 import isNaN from 'lodash/isNaN';
 import SelectedPrivacy from '@src/models/selectedPrivacy';
+import {getShareDataValue} from '@screens/PDexV3/features/Liquidity/Liquidity.utils';
 
 export const getPairRate = ({ token1, token2, token1Value, token2Value }) => {
   try {
@@ -40,14 +41,9 @@ export const getExchangeRate = (token1, token2, token1Value, token2Value) => {
   }
 };
 
-export const getPrincipal = (token1, token2, token1Value, token2Value) => {
-  const token1Str = `${format.amount(token1Value, token1.pDecimals)} ${
-    token1.symbol
-  }`;
-  const token2Str = `${format.amount(token2Value, token2.pDecimals)} ${
-    token2.symbol
-  }`;
-  return `${token1Str} + ${token2Str}`;
+export const getPrincipal = ({ token1, token2, shareData }) => {
+  const { maxInputShareStr, maxOutputShareStr } = getShareDataValue({ inputToken: token1, outputToken: token2, shareData });
+  return `${maxInputShareStr} ${token1.symbol} + ${maxOutputShareStr} ${token2.symbol}`;
 };
 
 export const getShareStr = (share, totalShare) => {

@@ -241,7 +241,8 @@ const CreatePool = ({
   onFreeCreatePool,
   onCreateNewPool,
   visible,
-  onCloseModal
+  onCloseModal,
+  error
 }) => {
   const isFetching = useSelector(createPoolSelector.isFetchingSelector);
   const onSubmit = (params) => {
@@ -257,6 +258,7 @@ const CreatePool = ({
     <>
       <InputsGroup />
       <View style={styled.padding}>
+        {!!error && <Text style={styled.warning}>{error}</Text>}
         <ButtonCreatePool onSubmit={onSubmit} />
         <Extra />
       </View>
@@ -291,12 +293,17 @@ const CreatePool = ({
   );
 };
 
+CreatePool.defaultProps = {
+  error: ''
+};
+
 CreatePool.propTypes = {
   onInitCreatePool: PropTypes.func.isRequired,
   onFreeCreatePool: PropTypes.func.isRequired,
   onCreateNewPool: PropTypes.func.isRequired,
   onCloseModal: PropTypes.func.isRequired,
   visible: PropTypes.bool.isRequired,
+  error: PropTypes.string
 };
 
 ButtonCreatePool.propTypes = {

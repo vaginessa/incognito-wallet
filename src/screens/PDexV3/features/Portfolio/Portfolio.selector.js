@@ -64,12 +64,15 @@ export const listShareSelector = createSelector(
         token1PoolValue,
         token2PoolValue,
       );
-      const principalStr = getPrincipal(
+      const principalStr = getPrincipal({
         token1,
         token2,
-        token1PoolValue,
-        token2PoolValue,
-      );
+        shareData: {
+          ...item,
+          token1PoolValue,
+          token2PoolValue,
+        }
+      });
       const shareStr = getShareStr(share, totalShare);
       const rewardStr = getReward(token1, token2, token1Reward, token2Reward);
       const validNFT = !!getValidRealAmountNFT(nftId);
