@@ -264,7 +264,7 @@ export const actionInitSwapForm = (defaultPair) => async (
           pairs.find(
             (i) =>
               i ===
-              'fe75fc6ab38c690effd73c14325e771a19c0dca5de7c7a725bcf8b002755fdab',
+              '116976a6896ed7001deb011b92576048bd8c670c47cd8529a5ddbba0024c701a',
           ) || BIG_COINS.USDT,
       };
     }
