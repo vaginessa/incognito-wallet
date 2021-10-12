@@ -30,6 +30,7 @@ const styled = StyleSheet.create({
   },
   extra: {
     marginTop: 16,
+    flex: 1,
   },
 });
 

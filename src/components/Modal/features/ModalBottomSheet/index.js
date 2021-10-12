@@ -3,6 +3,7 @@ import { SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
 import PropTypes from 'prop-types';
 import { COLORS, FONT } from '@src/styles';
 import { useKeyboard } from '@src/components/UseEffect/useKeyboard';
+import debounce from 'lodash/debounce';
 
 const styles = StyleSheet.create({
   container: {
@@ -10,6 +11,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     padding: 24,
+    paddingBottom: 0,
     height: '50%',
     position: 'absolute',
     right: 0,
@@ -35,12 +37,24 @@ const ModalBottomSheet = ({
   customContent,
   style,
 }) => {
+  const [stylesheet, setStyle] = React.useState({});
   const [isKeyboardVisible] = useKeyboard();
+  const debounceHandleEnhanceHeight = debounce(
+    React.useCallback(() => setStyle({ height: '80%' }), []),
+    100,
+  );
+  React.useEffect(() => {
+    if (isKeyboardVisible) {
+      debounceHandleEnhanceHeight();
+    } else {
+      setStyle({});
+    }
+  }, [isKeyboardVisible]);
   return (
     <View
       style={{
         ...styles.container,
-        ...(isKeyboardVisible ? { height: '80%' } : {}),
+        ...stylesheet,
         ...style,
       }}
     >

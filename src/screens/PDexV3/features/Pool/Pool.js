@@ -44,7 +44,6 @@ export const PoolItem = React.memo((props) => {
             {!!isVerify && <TokenVerifiedIcon />}
           </Row>
           <Text style={styled.subText}>{`Vol: ${volumeToAmountStr}`}</Text>
-          <Text style={styled.subText}>{`AMP: ${ampStr}`}</Text>
         </View>
         <View style={styled.block2}>
           <Text style={styled.subText}> {apyStr}</Text>

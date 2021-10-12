@@ -1,7 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { View, StyleSheet } from 'react-native';
-import { PoolsList } from '@screens/PDexV3/features/Pools';
+import { listPoolsSelector, PoolsList } from '@screens/PDexV3/features/Pools';
+import { useSelector } from 'react-redux';
 
 const styled = StyleSheet.create({
   container: {
@@ -11,9 +12,10 @@ const styled = StyleSheet.create({
 
 const MarketList = (props) => {
   const { onPressPool } = props;
+  const listPools = useSelector(listPoolsSelector);
   return (
     <View style={styled.container}>
-      <PoolsList onPressPool={onPressPool} />
+      <PoolsList onPressPool={onPressPool} listPools={listPools} />
     </View>
   );
 };

@@ -12,11 +12,14 @@ import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
 import { COLORS, FONT } from '@src/styles';
 import { ArrowGreyDown } from '@src/components/Icons';
+import { actionToggleModal } from '@src/components/Modal';
+import ModalBottomSheet from '@src/components/Modal/features/ModalBottomSheet';
+import { PoolsTab } from '@screens/PDexV3/features/Pools';
+import { actionInit, actionSetPoolSelected } from './OrderLimit.actions';
 import {
   orderLimitDataSelector,
   rateDataSelector,
 } from './OrderLimit.selector';
-import { actionInit } from './OrderLimit.actions';
 
 const styled = StyleSheet.create({
   container: {
@@ -79,10 +82,34 @@ const GroupActions = () => {
       poolId,
     });
   };
+  const handleSelectPool = () => {
+    dispatch(
+      actionToggleModal({
+        visible: true,
+        shouldCloseModalWhenTapOverlay: true,
+        data: (
+          <ModalBottomSheet
+            customContent={
+              <PoolsTab
+                onPressPool={async (poolId) => {
+                  await dispatch(actionSetPoolSelected(poolId));
+                  dispatch(actionInit());
+                  dispatch(actionToggleModal());
+                }}
+              />
+            }
+          />
+        ),
+      }),
+    );
+  };
   return (
     <View style={styled.container}>
       <Row style={styled.top}>
-        <TouchableOpacity style={styled.block1}>
+        <TouchableOpacity
+          style={styled.block1}
+          onPress={() => handleSelectPool()}
+        >
           <Text style={styled.pool}>{poolStr}</Text>
           <ArrowGreyDown />
         </TouchableOpacity>

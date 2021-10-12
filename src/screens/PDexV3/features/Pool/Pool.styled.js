@@ -7,6 +7,7 @@ export const styled = StyleSheet.create({
   },
   rowName: {
     alignItems: 'center',
+    marginBottom: 8,
   },
   name: {
     marginRight: 5,
@@ -22,7 +23,7 @@ export const styled = StyleSheet.create({
     lineHeight: FONT.SIZE.small + 2,
     color: COLORS.colorGrey3,
     fontFamily: FONT.NAME.medium,
-    marginBottom: 10,
+    marginBottom: 8,
   },
   block1: {
     flex: 0.7,
@@ -32,9 +33,8 @@ export const styled = StyleSheet.create({
   },
   block2: {
     flex: 0.2,
-    justifyContent: 'flex-end',
-    flexDirection: 'row',
-    alignItems: 'flex-start',
+    flexDirection: 'column',
+    alignItems: 'flex-end',
     marginRight: 5,
   },
   block3: {

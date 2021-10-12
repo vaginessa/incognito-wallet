@@ -1,7 +1,7 @@
 import { defaultAccountWalletSelector } from '@src/redux/selectors/account';
 import { ExHandler } from '@src/services/exception';
 import { getPDexV3Instance } from '@screens/PDexV3';
-import { Toast } from '@components/core';
+import uniq from 'lodash/uniq';
 import {
   ACTION_FETCHING,
   ACTION_FETCHED,
@@ -67,13 +67,20 @@ export const actionFreeListPools = () => ({
 export const actionFetchListPools = () => async (dispatch, getState) => {
   try {
     const state = getState();
+    const followIds = followPoolIdsSelector(state);
     await dispatch(actionSetFetching({ isFetching: true }));
     const account = defaultAccountWalletSelector(state);
     const pDexV3Inst = await getPDexV3Instance({ account });
     const pools = (await pDexV3Inst.getListPools('all')) || [];
-    console.log('pools', pools.length);
-    await dispatch(actionFetchedListPools([...pools]));
-    // await pDexV3Inst.addListFollowingPool({ poolsIDs });
+    let poolsIDs = pools.map((pool) => pool?.poolId) || [];
+    poolsIDs = [...followIds, ...poolsIDs];
+    poolsIDs = uniq(poolsIDs);
+    const payload =
+      poolsIDs
+        .map((poolId) => pools.find((pool) => pool?.poolId === poolId))
+        .filter(({ poolId }) => !!poolId) || [];
+    // .filter((pool) => !!pool.isVerify)
+    await dispatch(actionFetchedListPools(payload));
   } catch (error) {
     throw error;
   } finally {
@@ -90,8 +97,6 @@ export const actionFetchListFollowingPools = () => async (
     const account = defaultAccountWalletSelector(state);
     const pDexV3Inst = await getPDexV3Instance({ account });
     const followIds = (await pDexV3Inst.getListFollowingPools()) || [];
-    console.log('followIds', followIds.length);
-    // const followPools = (await pDexV3Inst.getListPoolsDetail(followPoolIds)) || [];
     await dispatch(actionFetchedListPoolsFollowing({ followIds }));
   } catch (error) {
     new ExHandler(error).showErrorToast();
@@ -101,10 +106,8 @@ export const actionFetchListFollowingPools = () => async (
 export const actionFetchPools = () => async (dispatch) => {
   try {
     dispatch(actionSetFetching({ isFetching: true }));
-    await Promise.all([
-      dispatch(actionFetchListPools()),
-      dispatch(actionFetchListFollowingPools()),
-    ]);
+    await dispatch(actionFetchListFollowingPools());
+    await dispatch(actionFetchListPools());
     dispatch(actionFetched());
   } catch (error) {
     new ExHandler(error).showErrorToast();

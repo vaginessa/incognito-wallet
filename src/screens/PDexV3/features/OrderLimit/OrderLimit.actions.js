@@ -321,6 +321,10 @@ export const actionBookOrder = () => async (dispatch, getState) => {
   await dispatch(actionFetchingBookOrder(true));
   try {
     const state = getState();
+    const { disabledBtn } = orderLimitDataSelector(state);
+    if (disabledBtn) {
+      return;
+    }
     const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
     const { poolId: poolPairID } = poolSelectedDataSelector(state);
     const {

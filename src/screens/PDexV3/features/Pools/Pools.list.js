@@ -1,18 +1,12 @@
 import React from 'react';
-import {
-  ActivityIndicator,
-  FlatList,
-  KeyboardAwareScrollView,
-  Text,
-} from '@src/components/core';
+import { FlatList, KeyboardAwareScrollView, Text } from '@src/components/core';
 import { BaseTextInputCustom } from '@src/components/core/BaseTextInput';
 import { FONT, COLORS } from '@src/styles';
 import { StyleSheet, View } from 'react-native';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { Row } from '@src/components';
 import Pool from '@screens/PDexV3/features/Pool';
 import PropTypes from 'prop-types';
-import { isFetchingSelector, listPoolsSelector } from './Pools.selector';
 import { actionFetchPools } from './Pools.actions';
 import { handleFilterPoolByKeySeach } from './Pools.utils';
 
@@ -41,9 +35,8 @@ const HEADER_FACTORIES = [
     text: '#APY',
     style: {
       flex: 0.2,
-      justifyContent: 'flex-end',
       flexDirection: 'row',
-      alignItems: 'flex-start',
+      alignItems: 'flex-end',
       marginRight: 5,
       textAlign: 'right',
     },
@@ -58,7 +51,7 @@ const HEADER_FACTORIES = [
 
 export const PoolsListHeader = React.memo(() => {
   return (
-    <Row style={{ marginVertical: 24 }}>
+    <Row style={{ marginTop: 24, marginBottom: 16 }}>
       {HEADER_FACTORIES.map((item) => (
         <Text key={item.text} style={{ ...styled.headerText, ...item.style }}>
           {item.text}
@@ -69,10 +62,8 @@ export const PoolsListHeader = React.memo(() => {
 });
 
 export const PoolsList = React.memo(({ onPressPool, pools }) => {
-  const isFetching = useSelector(isFetchingSelector);
   return (
     <KeyboardAwareScrollView>
-      {isFetching && <ActivityIndicator />}
       <FlatList
         data={pools}
         renderItem={({ item }) => (
@@ -89,11 +80,10 @@ export const PoolsList = React.memo(({ onPressPool, pools }) => {
 });
 
 const PoolsListContainer = (props) => {
-  const { onPressPool } = props;
+  const { onPressPool, listPools } = props;
   const dispatch = useDispatch();
   const [text, setText] = React.useState(text);
   const [pools, setPools] = React.useState([]);
-  const listPools = useSelector(listPoolsSelector);
   const onChange = (text) => {
     setText(text);
     if (!text) {
@@ -130,6 +120,7 @@ const PoolsListContainer = (props) => {
 
 PoolsList.propTypes = {
   onPressPool: PropTypes.func.isRequired,
+  listPools: PropTypes.array.isRequired,
 };
 
 export default React.memo(PoolsListContainer);
