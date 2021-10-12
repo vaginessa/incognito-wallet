@@ -1,10 +1,6 @@
 import { Header, Row } from '@src/components';
 import PropTypes from 'prop-types';
-import {
-  KeyboardAwareScrollView,
-  Tabs,
-  RefreshControl,
-} from '@src/components/core';
+import { Tabs } from '@src/components/core';
 import React from 'react';
 import { View } from 'react-native';
 import TabSwap from '@screens/PDexV3/features/Swap';
@@ -43,7 +39,7 @@ export const RightHeader = React.memo(
 );
 
 const Trade = (props) => {
-  const { refreshing, onRefresh, handlePressPool } = props;
+  const { onRefresh, handlePressPool } = props;
   return (
     <View style={styled.container}>
       <Header

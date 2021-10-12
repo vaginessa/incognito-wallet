@@ -3,6 +3,7 @@ import { StyleSheet } from 'react-native';
 
 export const styled = StyleSheet.create({
   container: { flex: 1 },
+  scrollview: { flex: 1 },
   btnRefresh: {
     marginRight: 12,
   },
@@ -32,7 +33,8 @@ export const tabsStyled = StyleSheet.create({
     color: COLORS.colorGrey3,
   },
   styledTabList: {
-    maxWidth: 144,
+    maxWidth: 120,
+    marginTop: 24,
   },
 });
 

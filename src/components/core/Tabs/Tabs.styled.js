@@ -5,7 +5,6 @@ export const styled = StyleSheet.create({
   tabs: {
     backgroundColor: 'transparent',
     minHeight: 50,
-    marginBottom: 10
   },
   tabList: {
     flexDirection: 'row',

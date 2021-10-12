@@ -36,33 +36,31 @@ const OrderLimit = (props) => {
   const { tabsFactories, handleConfirm } = props;
   return (
     <>
-      <View style={styled.container}>
-        <ScrollView>
-          <Form>
-            {() => (
-              <View>
-                <GroupActions />
-                <Tabs
-                  rootTabID={ROOT_TAB_ORDER_LIMIT}
-                  styledTabs={{ marginBottom: 24 }}
-                >
-                  {tabsFactories.map((tab) => (
-                    <View key={tab.tabID} {...tab} />
-                  ))}
-                </Tabs>
-                <OrderLimitInputsGroup />
-                <ButtonBasic
-                  btnStyle={{ backgroundColor: mainColor }}
-                  title={btnActionTitle}
-                  disabled={disabledBtn}
-                  onPress={handleConfirm}
-                />
-                <GroupSubInfo />
-              </View>
-            )}
-          </Form>
-        </ScrollView>
-      </View>
+      <ScrollView style={styled.container}>
+        <Form>
+          {() => (
+            <View>
+              <GroupActions />
+              <Tabs
+                rootTabID={ROOT_TAB_ORDER_LIMIT}
+                styledTabs={{ marginBottom: 24 }}
+              >
+                {tabsFactories.map((tab) => (
+                  <View key={tab.tabID} {...tab} />
+                ))}
+              </Tabs>
+              <OrderLimitInputsGroup />
+              <ButtonBasic
+                btnStyle={{ backgroundColor: mainColor }}
+                title={btnActionTitle}
+                disabled={disabledBtn}
+                onPress={handleConfirm}
+              />
+              <GroupSubInfo />
+            </View>
+          )}
+        </Form>
+      </ScrollView>
       {!!ordering && <LoadingTx />}
       <NFTTokenBottomBar />
     </>

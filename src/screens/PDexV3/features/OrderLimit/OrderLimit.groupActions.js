@@ -25,6 +25,7 @@ const styled = StyleSheet.create({
   container: {
     flex: 1,
     marginBottom: 16,
+    marginTop: 24,
   },
   top: {
     justifyContent: 'space-between',

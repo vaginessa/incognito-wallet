@@ -39,6 +39,7 @@ import SwapInputsGroup from './Swap.inputsGroup';
 
 const styled = StyleSheet.create({
   container: {
+    flex: 1,
     marginTop: 24,
   },
   extraWrapper: {

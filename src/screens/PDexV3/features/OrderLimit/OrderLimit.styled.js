@@ -8,7 +8,7 @@ export const styled = StyleSheet.create({
     marginVertical: 30,
   },
   scrollview: {
-    paddingTop: 32,
+    paddingVertical: 24,
   },
   inputGroups: {
     marginVertical: 30,

@@ -7,6 +7,7 @@ import { useSelector } from 'react-redux';
 const styled = StyleSheet.create({
   container: {
     flex: 1,
+    paddingTop: 24,
   },
 });
 

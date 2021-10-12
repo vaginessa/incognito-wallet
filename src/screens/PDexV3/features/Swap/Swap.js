@@ -64,34 +64,36 @@ const Swap = (props) => {
     },
   ];
   return (
-    <ScrollView style={styled.container}>
-      <Form>
-        {({ handleSubmit }) => (
-          <>
-            <Tabs1
-              rootTabID={ROOT_TAB_ID}
-              styledTabList={tabsStyled.styledTabList}
-              rightCustom={
-                <Row>
-                  <ButtonRefresh
-                    style={styled.btnRefresh}
-                    onPress={initSwapForm}
-                  />
-                  <BtnOrderHistory onPress={handleNavOrderHistory} />
-                </Row>
-              }
-            >
-              {tabsFactories.map(({ tab, ...rest }) => (
-                <View key={rest.tabID} {...rest}>
-                  {tab}
-                </View>
-              ))}
-            </Tabs1>
-          </>
-        )}
-      </Form>
+    <>
+      <ScrollView style={styled.scrollview}>
+        <Form>
+          {({ handleSubmit }) => (
+            <>
+              <Tabs1
+                rootTabID={ROOT_TAB_ID}
+                styledTabList={tabsStyled.styledTabList}
+                rightCustom={
+                  <Row>
+                    <ButtonRefresh
+                      style={styled.btnRefresh}
+                      onPress={initSwapForm}
+                    />
+                    <BtnOrderHistory onPress={handleNavOrderHistory} />
+                  </Row>
+                }
+              >
+                {tabsFactories.map(({ tab, ...rest }) => (
+                  <View key={rest.tabID} {...rest}>
+                    {tab}
+                  </View>
+                ))}
+              </Tabs1>
+            </>
+          )}
+        </Form>
+      </ScrollView>
       {!!swapInfo.swaping && <LoadingTx />}
-    </ScrollView>
+    </>
   );
 };
 
