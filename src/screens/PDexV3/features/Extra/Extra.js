@@ -1,4 +1,3 @@
-/* eslint-disable react-native/no-unused-styles */
 import { Row } from '@src/components';
 import { Text } from '@src/components/core';
 import PropTypes from 'prop-types';
@@ -31,7 +30,7 @@ export const styled = StyleSheet.create({
     flex: 1,
     maxWidth: '35%',
     alignItems: 'center',
-    marginRight: 15,
+    marginRight: 5,
   },
   label: {
     fontFamily: FONT.NAME.medium,
@@ -55,23 +54,6 @@ export const styled = StyleSheet.create({
   hookCustomStyleBtnQuestion: {
     width: 14,
     height: 14,
-  },
-  orangeValue: {
-    color: COLORS.orange,
-  },
-  specialTitle: {
-    fontSize: FONT.SIZE.superLarge,
-    lineHeight: FONT.SIZE.superLarge + 5,
-    color: COLORS.colorTradeBlue,
-    fontFamily: FONT.NAME.bold,
-    marginBottom: 30,
-  },
-  specialDesc: {
-    fontSize: FONT.SIZE.small,
-    lineHeight: FONT.SIZE.small + 5,
-    marginRight: 5,
-    color: COLORS.black,
-    fontFamily: FONT.NAME.bold,
   },
 });
 

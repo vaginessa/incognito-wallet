@@ -10,7 +10,7 @@ import { ExHandler } from '@src/services/exception';
 import convert from '@src/utils/convert';
 import format from '@src/utils/format';
 import BigNumber from 'bignumber.js';
-import { change, focus } from 'redux-form';
+import { change, focus, reset } from 'redux-form';
 import { delay } from '@src/utils/delay';
 import isEmpty from 'lodash/isEmpty';
 import SelectedPrivacy from '@src/models/selectedPrivacy';
@@ -171,7 +171,7 @@ export const actionEstimateTrade = () => async (dispatch, getState) => {
   } catch (error) {
     console.log('ERROR', error);
     await dispatch(actionFetchFail());
-    new ExHandler(error).showErrorToast();
+    new ExHandler(error, 'Estimate data fail!').showErrorToast();
   } finally {
     dispatch(actionSetFocusToken(''));
   }
@@ -183,29 +183,7 @@ export const actionSetSellToken = (selltoken) => async (dispatch, getState) => {
       return;
     }
     dispatch(actionSetSellTokenFetched(selltoken));
-    const state = getState();
-    const token = getPrivacyDataByTokenID(state)(selltoken);
-    const { pDecimals } = token;
-    const balance = await dispatch(getBalance(selltoken));
-    if (!balance) {
-      return;
-    }
-    const minimum = convert.toOriginalAmount(1, pDecimals);
-    const bnBalance = new BigNumber(balance);
-    const bnMinumum = new BigNumber(minimum);
-    let sellOriginalAmount = '';
-    if (bnBalance.gte(bnMinumum)) {
-      sellOriginalAmount = minimum;
-    } else {
-      sellOriginalAmount = balance;
-    }
-    let sellamount = '';
-    sellamount = format.toFixed(
-      convert.toHumanAmount(sellOriginalAmount, token.pDecimals),
-      token.pDecimals,
-    );
-    dispatch(change(formConfigs.formName, formConfigs.selltoken, sellamount));
-    dispatch(focus(formConfigs.formName, formConfigs.selltoken));
+    await dispatch(getBalance(selltoken));
   } catch (error) {
     new ExHandler(error).showErrorToast();
   }
@@ -275,6 +253,7 @@ export const actionInitSwapForm = (defaultPair) => async (
   getState,
 ) => {
   try {
+    dispatch(reset(formConfigs.formName));
     let pair = defaultPair;
     await dispatch(actionInitingSwapForm(true));
     if (isEmpty(pair)) {
@@ -301,7 +280,7 @@ export const actionInitSwapForm = (defaultPair) => async (
     await dispatch(actionSetInputToken({ selltoken, buytoken }));
     await dispatch(actionEstimateTrade());
   } catch (error) {
-    new ExHandler(error).showErrorToast;
+    new ExHandler(error).showErrorToast();
   } finally {
     await dispatch(actionInitingSwapForm(false));
   }
@@ -329,7 +308,7 @@ export const actionSwapToken = () => async (dispatch, getState) => {
     );
   } catch (error) {
     console.log('actionSwapToken-error', error);
-    new ExHandler(error).showErrorToast;
+    new ExHandler(error).showErrorToast();
   } finally {
     await dispatch(actionSetSwapingToken(false));
   }
@@ -408,7 +387,7 @@ export const actionSelectToken = (token: SelectedPrivacy, field) => async (
     }
   } catch (error) {
     console.log('actionSetSelectingToken-error', error);
-    new ExHandler(error).showErrorToast;
+    new ExHandler(error).showErrorToast();
   } finally {
     await dispatch(actionSetSelectingToken(false));
   }

@@ -40,7 +40,7 @@ const Period = React.memo((props) => {
         marginTop: 30,
       }}
     >
-      {periods.map((period) => (
+      {periods?.map((period) => (
         <ButtonBasic
           btnStyle={styled.btnStyle}
           titleStyle={{
@@ -50,7 +50,7 @@ const Period = React.memo((props) => {
           title={period}
           key={period}
           onPress={async () => {
-            if(actived === period){
+            if (actived === period) {
               return;
             }
             await dispatch(actionChangePeriod(period));
@@ -66,6 +66,7 @@ const PriceHistory = (props) => {
   const { data, yMaxDomain, yMinDomain = 0 } = useSelector(
     priceHistorySelector,
   );
+  console.log('data', data);
   if (data.length === 0) {
     return null;
   }

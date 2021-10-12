@@ -7,10 +7,8 @@ import { ButtonTrade } from '@src/components/Button';
 import {
   feetokenDataSelector,
   swapInfoSelector,
-  slippagetoleranceSelector,
   inputAmountSelector,
 } from './Swap.selector';
-import { MaxPriceAndImpact } from './Swap.shared';
 import { formConfigs } from './Swap.constant';
 import SwapInputsGroup from './Swap.inputsGroup';
 
@@ -31,7 +29,6 @@ const styled = StyleSheet.create({
 export const useTabFactories = () => {
   const swapInfo = useSelector(swapInfoSelector);
   const feeTokenData = useSelector(feetokenDataSelector);
-  const slippagetolerance = useSelector(slippagetoleranceSelector);
   const sellInputAmount = useSelector(inputAmountSelector)(
     formConfigs.selltoken,
   );
@@ -44,21 +41,15 @@ export const useTabFactories = () => {
         }
         : {},
       {
-        label: 'Max price &  impact',
+        label: 'Max price',
         hasQuestionIcon: true,
         onPressQuestionIcon: () => null,
-        customValue: <MaxPriceAndImpact />,
-      },
-      {
-        label: 'Slippage tolerance',
-        value: slippagetolerance || '',
-        hasQuestionIcon: true,
-        onPressQuestionIcon: () => null,
+        value: swapInfo?.maxPriceStr,
       },
     ];
-    if (sellInputAmount?.isMainCrypto && sellInputAmount.usingFee) {
+    if (feeTokenData.isMainCrypto) {
       result.push({
-        label: 'Trading fee',
+        label: 'Fee',
         value: feeTokenData?.totalFeePRVText ?? '',
         hasQuestionIcon: true,
         onPressQuestionIcon: () => null,

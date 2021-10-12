@@ -216,10 +216,13 @@ const SwapInputsGroup = React.memo(() => {
         value={swapInfo?.maxPriceStr}
         hasQuestionIcon
         styledHook={{ marginTop: 32, marginBottom: 0 }}
-        customStyledLabel={{ color: COLORS.black, fontSize: FONT.SIZE.regular }}
+        customStyledLabel={{
+          color: COLORS.black,
+          fontSize: FONT.SIZE.regular,
+        }}
         customStyledValue={{
           color: COLORS.colorGrey3,
-          fontSize: FONT.SIZE.regular,
+          fontSize: FONT.SIZE.small,
         }}
       />
     </View>

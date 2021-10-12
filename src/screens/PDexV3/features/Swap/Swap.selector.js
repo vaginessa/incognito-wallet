@@ -208,7 +208,7 @@ export const swapInfoSelector = createSelector(
     try {
       const sellInputAmount = getInputAmount(formConfigs.selltoken);
       const buyInputAmount = getInputAmount(formConfigs.buytoken);
-      const { fee, route: routing, sizeimpact, poolDetails, maxGet } = data;
+      const { fee, route: routing, poolDetails, maxGet } = data;
       let allPoolSize = [];
       try {
         allPoolSize = Object.entries(poolDetails).map(([, value]) => {
@@ -236,10 +236,6 @@ export const swapInfoSelector = createSelector(
         PRV.pDecimals,
       );
       const networkfeeAmountStr = `${networkfeeAmount} ${PRV.symbol}`;
-      const sizeimpactStr = format.toFixed(
-        convert.toHumanAmount(floor(sizeimpact * 100), 0),
-        0,
-      );
       const editableInput = !swapingToken && !initing && !selecting;
       // && isFetched && !isFetching;
       let btnSwapText = 'Confirm';
@@ -252,17 +248,16 @@ export const swapInfoSelector = createSelector(
         btnSwapText = 'Calculating...';
       }
       const tradingFeeStr = `${feeTokenData?.feeAmountText} ${feeTokenData?.symbol}`;
-      const sellInputBalanceStr = `${sellInputAmount?.balanceStr || ''} ${
+      const sellInputBalanceStr = `${sellInputAmount?.balanceStr || '0'} ${
         sellInputAmount?.symbol
       }`;
-      const buyInputBalanceStr = `${buyInputAmount?.balanceStr || ''} ${
+      const buyInputBalanceStr = `${buyInputAmount?.balanceStr || '0'} ${
         buyInputAmount?.symbol
       }`;
       const sellInputAmountStr = `${sellInputAmount?.amountText} ${sellInputAmount?.symbol}`;
       const buyInputAmountStr = `${buyInputAmount?.amountText} ${buyInputAmount?.symbol}`;
       const prv: SelectedPrivacy = getPrivacyDataByTokenID(PRV.id);
-      const showPRVBalance =
-        !sellInputAmount?.isMainCrypto && !buyInputAmount.isMainCrypto;
+      const showPRVBalance = !sellInputAmount?.isMainCrypto;
       const prvBalance = format.amountFull(prv.amount, PRV.pDecimals, false);
       const prvBalanceStr = `${prvBalance} ${PRV.symbol}`;
       const originalMinAmountExpected = calMintAmountExpected({
@@ -290,7 +285,6 @@ export const swapInfoSelector = createSelector(
         minFeeAmountStr,
         networkfeeAmountStr,
         maxPriceStr,
-        sizeimpactStr,
         editableInput,
         btnSwapText,
         disabledBtnSwap,
@@ -334,7 +328,6 @@ export const mappingOrderHistorySelector = createSelector(
         minAccept,
         fee,
         feeToken: feeTokenId,
-        fromStorage,
       } = order;
       const sellToken: SelectedPrivacy = getPrivacyDataByTokenID(sellTokenId);
       const buyToken: SelectedPrivacy = getPrivacyDataByTokenID(buyTokenId);
@@ -343,7 +336,7 @@ export const mappingOrderHistorySelector = createSelector(
       const priceStr = format.amountFull(price, buyToken.pDecimals, false);
       const sellStr = `${amountStr} ${sellToken.symbol}`;
       const buyStr = `${priceStr} ${buyToken.symbol}`;
-      const time = fromStorage ? requestime : requestime * 1000;
+      const time = requestime;
       const timeStr = format.formatDateTime(new Date(time).getTime());
       const rate = getPairRate({
         token1Value: amount,

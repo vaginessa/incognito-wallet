@@ -34,7 +34,6 @@ export const tabsStyled = StyleSheet.create({
   },
   styledTabList: {
     maxWidth: 120,
-    marginTop: 24,
   },
 });
 

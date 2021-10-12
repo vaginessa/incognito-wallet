@@ -23,7 +23,7 @@ const initialState = {
       sell: [],
     },
     period: '1d',
-    datapoint: 20,
+    datapoint: 50,
     fromtime: new Date().getTime(),
   },
   tradingVolume24: '',

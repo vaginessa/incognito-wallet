@@ -64,12 +64,15 @@ const Item = React.memo((props) => {
 
 export const OrderBook = React.memo(() => {
   const orderBook = useSelector(orderBookSelector);
-  const { buy, sell } = orderBook;
+  const { buy, sell, poolid } = orderBook;
   const dispatch = useDispatch();
   const fetchData = () => dispatch(actionFetchOrderBook());
   React.useEffect(() => {
     fetchData();
-  }, []);
+  }, [poolid]);
+  if (!poolid) {
+    return null;
+  }
   return (
     <View style={styled.wrapper}>
       <View style={styled.wrapperOrder}>

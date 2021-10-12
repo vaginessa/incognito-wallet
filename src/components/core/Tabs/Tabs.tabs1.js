@@ -14,9 +14,9 @@ const styled = StyleSheet.create({
 });
 
 const Tabs1 = (props) => {
-  const { renderTabs, styledTabList, rightCustom } = props;
+  const { renderTabs, styledTabList, rightCustom, containerStyled } = props;
   return (
-    <Row style={styled.container}>
+    <Row style={{ ...styled.container, ...containerStyled }}>
       <View style={[tabsStyled.tabList, styledTabList]}>{renderTabs()}</View>
       {rightCustom}
     </Row>
@@ -34,6 +34,7 @@ Tabs1.propTypes = {
   onClickTabItem: PropTypes.func.isRequired,
   renderTabs: PropTypes.func.isRequired,
   rightCustom: PropTypes.any,
+  containerStyled: PropTypes.object,
 };
 
 export default withTabs(React.memo(Tabs1));

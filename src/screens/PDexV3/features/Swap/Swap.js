@@ -72,6 +72,7 @@ const Swap = (props) => {
               <Tabs1
                 rootTabID={ROOT_TAB_ID}
                 styledTabList={tabsStyled.styledTabList}
+                containerStyled={{ marginTop: 24 }}
                 rightCustom={
                   <Row>
                     <ButtonRefresh
