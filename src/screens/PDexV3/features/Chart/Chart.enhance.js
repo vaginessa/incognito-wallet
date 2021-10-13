@@ -4,6 +4,7 @@ import { compose } from 'recompose';
 import { withLayout_2 } from '@src/components/Layout';
 import { useDispatch } from 'react-redux';
 import { useNavigationParam } from 'react-navigation-hooks';
+import { actionSetPoolSelected } from '@screens/PDexV3/features/OrderLimit';
 import { actionFetch, actionSetSelectedPool } from './Chart.actions';
 
 const enhance = (WrappedComp) => (props) => {
@@ -16,12 +17,17 @@ const enhance = (WrappedComp) => (props) => {
     await dispatch(actionSetSelectedPool(poolid));
     dispatch(actionFetch());
   };
+  const callback = async (poolId) => {
+    await dispatch(actionSetPoolSelected(poolId));
+    await dispatch(actionSetSelectedPool(poolId));
+    dispatch(actionFetch());
+  };
   React.useEffect(() => {
     fetchData();
   }, [poolid]);
   return (
     <ErrorBoundary>
-      <WrappedComp {...props} />
+      <WrappedComp {...{ ...props, onRefresh: fetchData, callback }} />
     </ErrorBoundary>
   );
 };

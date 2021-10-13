@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
+import PropTypes from 'prop-types';
 import {
   ButtonRefresh,
   ButtonChart,
@@ -15,11 +16,10 @@ import { ArrowGreyDown } from '@src/components/Icons';
 import { actionToggleModal } from '@src/components/Modal';
 import ModalBottomSheet from '@src/components/Modal/features/ModalBottomSheet';
 import { PoolsTab } from '@screens/PDexV3/features/Pools';
-import { actionInit, actionSetPoolSelected } from './OrderLimit.actions';
 import {
   orderLimitDataSelector,
   rateDataSelector,
-} from './OrderLimit.selector';
+} from '@screens/PDexV3/features/OrderLimit';
 
 const styled = StyleSheet.create({
   container: {
@@ -45,7 +45,6 @@ const styled = StyleSheet.create({
     fontFamily: FONT.NAME.medium,
     color: COLORS.black,
     marginRight: 8,
-    maxWidth: '50%',
   },
   priceChange24hWrapper: {
     borderRadius: 4,
@@ -67,22 +66,25 @@ const styled = StyleSheet.create({
   },
 });
 
-const GroupActions = () => {
+export const GroupActions = ({
+  callback,
+  onPressRefresh,
+  hasChart = false,
+}) => {
   const navigation = useNavigation();
   const {
     poolId,
     poolStr,
     priceChange24hStr,
     colorPriceChange24h,
+    mainColor,
   } = useSelector(orderLimitDataSelector);
   const { rateStr } = useSelector(rateDataSelector);
   const dispatch = useDispatch();
-  const onPressRefresh = React.useCallback(() => dispatch(actionInit()), []);
-  const onPressChart = () => {
+  const onPressChart = () =>
     navigation.navigate(routeNames.Chart, {
       poolId,
     });
-  };
   const handleSelectPool = () => {
     dispatch(
       actionToggleModal({
@@ -93,9 +95,10 @@ const GroupActions = () => {
             customContent={
               <PoolsTab
                 onPressPool={async (poolId) => {
-                  await dispatch(actionSetPoolSelected(poolId));
-                  dispatch(actionInit());
                   dispatch(actionToggleModal());
+                  if (typeof callback === 'function') {
+                    callback(poolId);
+                  }
                 }}
               />
             }
@@ -114,16 +117,25 @@ const GroupActions = () => {
           <Text style={styled.pool}>{poolStr}</Text>
           <ArrowGreyDown />
         </TouchableOpacity>
-        <Row style={styled.block2}>
-          <ButtonRefresh style={{ marginRight: 10 }} onPress={onPressRefresh} />
-          <ButtonChart style={{ marginRight: 10 }} onPress={onPressChart} />
-          <BtnOrderHistory
-            onPress={() => navigation.navigate(routeNames.TradeOrderHistory)}
-          />
-        </Row>
+        {hasChart && (
+          <Row style={styled.block2}>
+            <ButtonRefresh
+              style={{ marginRight: 10 }}
+              onPress={onPressRefresh}
+            />
+            <ButtonChart style={{ marginRight: 10 }} onPress={onPressChart} />
+            <BtnOrderHistory
+              onPress={() => navigation.navigate(routeNames.TradeOrderHistory)}
+            />
+          </Row>
+        )}
       </Row>
       <Row style={styled.bottom}>
-        <Text style={styled.rate} numberOfLines={1} ellipsizeMode="tail">
+        <Text
+          style={{ ...styled.rate, color: mainColor }}
+          numberOfLines={1}
+          ellipsizeMode="tail"
+        >
           {rateStr}
         </Text>
         <View
@@ -147,6 +159,10 @@ const GroupActions = () => {
   );
 };
 
-GroupActions.propTypes = {};
+GroupActions.propTypes = {
+  callback: PropTypes.func.isRequired,
+  onPressRefresh: PropTypes.func,
+  hasChart: PropTypes.bool,
+};
 
 export default React.memo(GroupActions);

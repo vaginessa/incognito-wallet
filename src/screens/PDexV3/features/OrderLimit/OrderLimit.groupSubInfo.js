@@ -14,7 +14,7 @@ import {
 const styled = StyleSheet.create({
   container: {},
   wrapper: {
-    paddingTop: 24,
+    paddingVertical: 24,
   },
 });
 

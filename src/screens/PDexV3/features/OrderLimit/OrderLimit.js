@@ -8,7 +8,7 @@ import { createForm } from '@src/components/core/reduxForm';
 import { NFTTokenBottomBar } from '@screens/PDexV3/features/NFTToken';
 import { ButtonBasic } from '@src/components/Button';
 import LoadingTx from '@src/components/LoadingTx';
-import GroupActions from './OrderLimit.groupActions';
+import { GroupActions } from '@screens/PDexV3/features/Share';
 import GroupSubInfo from './OrderLimit.groupSubInfo';
 import { formConfigs, ROOT_TAB_ORDER_LIMIT } from './OrderLimit.constant';
 import { styled } from './OrderLimit.styled';
@@ -37,7 +37,7 @@ const OrderLimit = (props) => {
     ordering,
     calculating,
   } = useSelector(orderLimitDataSelector);
-  const { tabsFactories, handleConfirm, onRefresh } = props;
+  const { tabsFactories, handleConfirm, onRefresh, callback } = props;
   return (
     <>
       <ScrollView
@@ -49,7 +49,11 @@ const OrderLimit = (props) => {
         <Form>
           {() => (
             <View>
-              <GroupActions />
+              <GroupActions
+                hasChart
+                onPressRefresh={onRefresh}
+                callback={callback}
+              />
               <Tabs
                 rootTabID={ROOT_TAB_ORDER_LIMIT}
                 styledTabs={{ marginBottom: 24 }}
@@ -79,6 +83,7 @@ const OrderLimit = (props) => {
 OrderLimit.propTypes = {
   tabsFactories: PropTypes.array.isRequired,
   handleConfirm: PropTypes.func.isRequired,
+  callback: PropTypes.func.isRequired,
 };
 
 export default withOrderLimit(React.memo(OrderLimit));

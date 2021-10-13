@@ -11,6 +11,7 @@ import {
   actionReset,
   actionSetDefaultPool,
   actionBookOrder,
+  actionSetPoolSelected,
 } from './OrderLimit.actions';
 import { TAB_BUY_ID, TAB_SELL_ID } from './OrderLimit.constant';
 
@@ -87,6 +88,10 @@ const enhance = (WrappedComp) => (props) => {
     }
   };
   const onRefresh = () => dispatch(actionInit());
+  const callback = async (poolId) => {
+    await dispatch(actionSetPoolSelected(poolId));
+    dispatch(actionInit());
+  };
   React.useEffect(() => {
     dispatch(actionInit());
     return () => {
@@ -95,7 +100,9 @@ const enhance = (WrappedComp) => (props) => {
   }, []);
   return (
     <ErrorBoundary>
-      <WrappedComp {...{ ...props, handleConfirm, tabsFactories, onRefresh }} />
+      <WrappedComp
+        {...{ ...props, handleConfirm, tabsFactories, onRefresh, callback }}
+      />
     </ErrorBoundary>
   );
 };
