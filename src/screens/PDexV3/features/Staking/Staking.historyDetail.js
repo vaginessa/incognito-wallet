@@ -1,5 +1,5 @@
 import React, {memo} from 'react';
-import {Image, ScrollView, View} from 'react-native';
+import {ScrollView, View} from 'react-native';
 import {useNavigationParam} from 'react-navigation-hooks';
 import {styled as mainStyle} from '@screens/PDexV3/PDexV3.styled';
 import {Header, Row} from '@src/components';
@@ -9,6 +9,7 @@ import {CONSTANT_CONFIGS} from '@src/constants';
 import {Hook} from '@screens/Wallet/features/TxHistoryDetail/TxHistoryDetail';
 import {Text} from '@components/core';
 import {itemStyle as itemStyled} from '@screens/PDexV3/features/Staking/Staking.styled';
+import {Icon} from '@components/Token/Token.shared';
 
 const HistoryDetail = () => {
   const { requestTx, respondTx, typeStr, amountStr, statusStr, nftid: nftId, timeStr, token, statusColor } = useNavigationParam('data');
@@ -61,7 +62,7 @@ const HistoryDetail = () => {
       <Header title={STAKING_MESSAGES.history} />
       <Row spaceBetween centerVertical style={{ marginTop: 16, marginBottom: 24 }}>
         <Row centerVertical>
-          <Image source={{ uri: token.iconUrl }} style={itemStyled.image} />
+          <Icon iconUrl={token.iconUrl} style={itemStyled.image} />
           <Text style={[itemStyled.title, { marginLeft: 12 }]}>{token.symbol}</Text>
         </Row>
         <Text style={itemStyled.title}>{amountStr}</Text>

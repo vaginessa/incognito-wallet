@@ -100,7 +100,7 @@ const PortfolioModal = ({ poolId, onWithdrawFeeLP }) => {
             <Hook key={hook?.label} {...hook} />
           ))}
         </ScrollView>
-        {!!validNFT && <Text style={styles.warning}>You cant withdraw your liquidity and reward now, your current NFTs amount is zero</Text>}
+        {!!validNFT && <Text style={styles.warning}>You cant withdraw your liquidity and reward now, your current NFT amount is zero</Text>}
         <Row spaceBetween style={{ marginTop: 10 }}>
           {!!withdrawable && (
             <BTNBorder

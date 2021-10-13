@@ -1,5 +1,5 @@
 import React, {memo} from 'react';
-import {FlatList, Image, View} from 'react-native';
+import {FlatList, View} from 'react-native';
 import PropTypes from 'prop-types';
 import {styled as mainStyle} from '@screens/PDexV3/PDexV3.styled';
 import {Header, Row} from '@src/components';
@@ -13,6 +13,7 @@ import withHistories from '@screens/PDexV3/features/Staking/Staking.enhanceHisto
 import routeNames from '@routers/routeNames';
 import {stakingActions, stakingSelector} from '@screens/PDexV3/features/Staking/index';
 import {EmptyBookIcon} from '@components/Icons';
+import {Icon} from '@components/Token/Token.shared';
 
 const HistoryItem = React.memo(({ item, head, onNavigation }) => (
   <TouchableOpacity
@@ -22,7 +23,7 @@ const HistoryItem = React.memo(({ item, head, onNavigation }) => (
   >
     <Row spaceBetween centerVertical>
       <Row centerVertical>
-        <Image source={{ uri: item.token.iconUrl }} style={itemStyled.image} />
+        <Icon iconUrl={item.token.iconUrl} style={itemStyled.image} />
         <Text style={[itemStyled.title, { marginLeft: 12 }]}>{item.token.symbol}</Text>
       </Row>
       <Text style={itemStyled.title}>{item.amountStr}</Text>
