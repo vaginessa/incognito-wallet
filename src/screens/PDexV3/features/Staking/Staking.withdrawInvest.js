@@ -34,6 +34,7 @@ const Input = React.memo(({ onWithdrawMaxInvest }) => {
   const inputValidate = useSelector(stakingSelector.withdrawInvestValidate);
   const { withdrawInvest, token } = useSelector(stakingSelector.withdrawInvestCoinSelector);
 
+  console.log('token.iconUrl: ', token.iconUrl);
   const onChangeText = (text) => dispatch(change(formConfigsWithdrawInvest.formName, formConfigsWithdrawInvest.input, text));
   const onChangeWithdrawMax = () => withdrawInvest && onWithdrawMaxInvest(withdrawInvest.maxWithdrawAmountStr);
   return(
@@ -41,9 +42,7 @@ const Input = React.memo(({ onWithdrawMaxInvest }) => {
       <Field
         component={TradeInputAmount}
         name={formConfigsWithdrawInvest.input}
-        hasInfinityIcon
         visibleHeader
-        hasIcon={false}
         rightHeader={(
           <Row>
             <Text style={coinStyled.smallGray}>

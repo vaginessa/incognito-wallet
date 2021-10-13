@@ -8,7 +8,6 @@ import {styled as mainStyle} from '@screens/PDexV3/PDexV3.styled';
 import Header from '@components/Header/Header';
 import {coinStyles as coinStyled} from '@screens/PDexV3/features/Staking/Staking.styled';
 import {RoundCornerButton, Text} from '@components/core';
-import {Row} from '@src/components';
 import withInput from '@screens/PDexV3/features/Staking/Staking.enhanceInput';
 import PropTypes from 'prop-types';
 import {stakingSelector} from '@screens/PDexV3/features/Staking';
@@ -18,6 +17,7 @@ import withTransaction from '@screens/PDexV3/features/Staking/Staking.transactio
 import {NFTTokenBottomBar} from '@screens/PDexV3/features/NFTToken';
 import withFetch from '@screens/PDexV3/features/Staking/Staking.enhanceFetch';
 import {MaxIcon} from '@components/Icons';
+import {Row} from '@src/components';
 
 const initialFormValues = {
   input: ''
@@ -39,7 +39,6 @@ const Input = React.memo(({ onInvestMax, onSymbolPress, rightHeader }) => {
     <Field
       component={TradeInputAmount}
       name={formConfigsInvest.input}
-      hasIcon={false}
       symbol={token?.symbol}
       srcIcon={token.iconUrl}
       visibleHeader
@@ -48,7 +47,7 @@ const Input = React.memo(({ onInvestMax, onSymbolPress, rightHeader }) => {
       onChange={onChangeText}
       onPressSymbol={onSymbolPress}
       rightHeader={(
-        <Row>
+        <Row centerVertical>
           <Text style={coinStyled.smallGray}>{rightHeader}</Text>
           <MaxIcon onPress={onChangeMaxInvest} />
         </Row>
