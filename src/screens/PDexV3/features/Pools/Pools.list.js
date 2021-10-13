@@ -80,7 +80,7 @@ export const PoolsList = React.memo(({ onPressPool, pools }) => {
 });
 
 const PoolsListContainer = (props) => {
-  const { onPressPool, listPools } = props;
+  const { onPressPool, listPools, style } = props;
   const dispatch = useDispatch();
   const [text, setText] = React.useState(text);
   const [pools, setPools] = React.useState([]);
@@ -103,7 +103,7 @@ const PoolsListContainer = (props) => {
     dispatch(actionFetchPools());
   }, []);
   return (
-    <View style={styled.container}>
+    <View style={[styled.container, style]}>
       <BaseTextInputCustom
         inputProps={{
           onChangeText: onChange,
@@ -123,9 +123,14 @@ PoolsList.propTypes = {
   pools: PropTypes.array.isRequired,
 };
 
+PoolsListContainer.defaultProps = {
+  style: undefined
+};
+
 PoolsListContainer.propTypes = {
   onPressPool: PropTypes.func.isRequired,
   listPools: PropTypes.array.isRequired,
+  style: PropTypes.any
 };
 
 export default React.memo(PoolsListContainer);
