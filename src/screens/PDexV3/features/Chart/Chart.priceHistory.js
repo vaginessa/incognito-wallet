@@ -6,13 +6,18 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Row } from '@src/components';
 import { ButtonBasic } from '@src/components/Button';
 import { screenSize } from '@src/styles/TextStyle';
+import { ActivityIndicator } from '@src/components/core';
 import { priceHistorySelector } from './Chart.selector';
 import { actionChangePeriod, actionFetchPriceHistory } from './Chart.actions';
 
 const styled = StyleSheet.create({
   container: {
     flex: 1,
-    marginVertical: 30,
+    marginVertical: 24,
+  },
+  chart: {
+    height: 200,
+    width: '100%',
   },
   btnStyle: {
     minWidth: 40,
@@ -27,7 +32,7 @@ const styled = StyleSheet.create({
   },
 });
 
-const periods = ['15m', '1h', '4h', '1d', '1w', '1m', '1y'];
+const periods = ['15m', '1h', '4h', '1d', 'W', 'M'];
 
 const Period = React.memo(() => {
   const dispatch = useDispatch();
@@ -54,7 +59,7 @@ const Period = React.memo(() => {
               return;
             }
             await dispatch(actionChangePeriod(period));
-            await dispatch(actionFetchPriceHistory());
+            dispatch(actionFetchPriceHistory());
           }}
         />
       ))}
@@ -62,28 +67,27 @@ const Period = React.memo(() => {
   );
 });
 
-const PriceHistory = (props) => {
-  const { data, yMaxDomain, yMinDomain = 0 } = useSelector(
-    priceHistorySelector,
-  );
-  console.log('data', data);
-  if (data.length === 0) {
-    return null;
-  }
+const PriceHistory = () => {
+  const { history, fetching } = useSelector(priceHistorySelector);
   return (
     <View style={styled.container}>
-      <VictoryLine
-        padding={0}
-        width={screenSize.width - 50}
-        height={200}
-        style={{
-          data: {
-            stroke: COLORS.colorTradeBlue,
-            strokeWidth: 3,
-          },
-        }}
-        data={data}
-      />
+      {fetching && <ActivityIndicator />}
+      {history.length > 0 ? (
+        <VictoryLine
+          padding={0}
+          width={screenSize.width - 50}
+          height={200}
+          style={{
+            data: {
+              stroke: COLORS.colorTradeBlue,
+              strokeWidth: 3,
+            },
+          }}
+          data={history}
+        />
+      ) : (
+        <View style={styled.chart} />
+      )}
       <Period />
     </View>
   );

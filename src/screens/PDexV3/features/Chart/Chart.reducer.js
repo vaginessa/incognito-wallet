@@ -7,6 +7,7 @@ import {
   ACTION_CHANGE_PERIOD,
   ACTION_FETCHED_ORDER_BOOK,
   ACTION_SET_SELECTED_POOL_ID,
+  ACTION_FETCHING_PRICE_HISTORY,
 } from './Chart.constant';
 
 const initialState = {
@@ -14,17 +15,17 @@ const initialState = {
   isFetched: false,
   poolid: '',
   orderBook: {
-    data: [],
-    decimal: 0.1,
-  },
-  priceHistory: {
     data: {
       buy: [],
       sell: [],
     },
-    period: '1d',
+    decimal: 0.1,
+  },
+  priceHistory: {
+    data: [],
+    period: '15m',
     datapoint: 50,
-    fromtime: new Date().getTime(),
+    fetching: false,
   },
   tradingVolume24: '',
 };
@@ -32,7 +33,6 @@ const initialState = {
 export default (state = initialState, action) => {
   switch (action.type) {
   case ACTION_SET_POOL_ID: {
-    console.log('SET POOL ID FOR ME', action.payload);
     return {
       ...state,
       poolid: action.payload,
@@ -62,12 +62,22 @@ export default (state = initialState, action) => {
       },
     };
   }
+  case ACTION_FETCHING_PRICE_HISTORY: {
+    return {
+      ...state,
+      priceHistory: {
+        ...state.priceHistory,
+        fetching: true,
+      },
+    };
+  }
   case ACTION_FETCHED_PRICE_HISTORY: {
     return {
       ...state,
       priceHistory: {
         ...state.priceHistory,
         ...action.payload,
+        fetching: false,
       },
     };
   }

@@ -1,8 +1,10 @@
 import { createSelector } from 'reselect';
+import BigNumber from 'bignumber.js';
 import { getDataByPoolIdSelector } from '@screens/PDexV3/features/Pools';
 import SelectedPrivacy from '@src/models/selectedPrivacy';
 import { COLORS } from '@src/styles';
 import orderBy from 'lodash/orderBy';
+import floor from 'lodash/floor';
 import { mappingOrderBook } from './Chart.utils';
 
 export const chartSelector = createSelector(
@@ -13,14 +15,20 @@ export const chartSelector = createSelector(
 export const priceHistorySelector = createSelector(
   chartSelector,
   ({ priceHistory, poolid }) => {
-    const { minValue, maxValue } = priceHistory;
-    const yMaxDomain = maxValue * 2;
-    const yMinDomain = minValue;
+    const { data } = priceHistory;
+    let history = data.map(({ open, close, timestamp }) => ({
+      x: timestamp,
+      y: floor(
+        new BigNumber(open)
+          .plus(close)
+          .dividedBy(2)
+          .toNumber(),
+      ),
+    }));
     return {
       ...priceHistory,
-      yMinDomain,
-      yMaxDomain,
       poolid,
+      history,
     };
   },
 );
@@ -65,12 +73,9 @@ export const orderBookSelector = createSelector(
 );
 
 export const detailsSelector = createSelector(
-  chartSelector,
   poolSelectedSelector,
-  (chart, pool) => {
+  (pool) => {
     const {
-      ampStr,
-      apyStr,
       volumeToAmountStr,
       poolSizeStr,
       exchangeRateStr,
@@ -79,14 +84,6 @@ export const detailsSelector = createSelector(
       perChange24hColor,
     } = pool;
     const factories = [
-      {
-        label: 'APY',
-        value: apyStr,
-      },
-      {
-        label: 'AMP',
-        value: ampStr,
-      },
       {
         label: 'Trading volume 24h',
         value: volumeToAmountStr,

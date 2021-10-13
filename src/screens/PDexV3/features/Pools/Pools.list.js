@@ -13,6 +13,7 @@ import { handleFilterPoolByKeySeach } from './Pools.utils';
 const styled = StyleSheet.create({
   container: {
     flex: 1,
+    paddingTop: 24,
   },
   headerText: {
     fontSize: FONT.SIZE.small,
@@ -124,13 +125,13 @@ PoolsList.propTypes = {
 };
 
 PoolsListContainer.defaultProps = {
-  style: undefined
+  style: undefined,
 };
 
 PoolsListContainer.propTypes = {
   onPressPool: PropTypes.func.isRequired,
   listPools: PropTypes.array.isRequired,
-  style: PropTypes.any
+  style: PropTypes.any,
 };
 
 export default React.memo(PoolsListContainer);

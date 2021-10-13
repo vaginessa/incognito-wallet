@@ -8,3 +8,5 @@ export const ACTION_CHANGE_DATA_POINT = '[pdexV3][chart] Change data point';
 export const ACTION_FETCHED_ORDER_BOOK = '[pdexV3][chart] Fetched order book';
 export const ACTION_SET_SELECTED_POOL_ID =
   '[pdexV3][chart] Fetched selected pool id';
+export const ACTION_FETCHING_PRICE_HISTORY =
+  '[pdexV3][chart] Fetching price history';

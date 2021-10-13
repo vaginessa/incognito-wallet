@@ -1,6 +1,4 @@
-import random from 'lodash/random';
-import max from 'lodash/max';
-import min from 'lodash/min';
+import { actionFetchListPools } from '@screens/PDexV3/features/Pools';
 import { ExHandler } from '@src/services/exception';
 import { getPDexV3Instance, actionGetPDexV3Inst } from '@screens/PDexV3';
 import { defaultAccountWalletSelector } from '@src/redux/selectors/account';
@@ -13,6 +11,7 @@ import {
   ACTION_CHANGE_DATA_POINT,
   ACTION_FETCHED_ORDER_BOOK,
   ACTION_SET_SELECTED_POOL_ID,
+  ACTION_FETCHING_PRICE_HISTORY,
 } from './Chart.constant';
 import { priceHistorySelector, orderBookSelector } from './Chart.selector';
 
@@ -27,6 +26,10 @@ export const actionFetched = (payload) => ({
 
 export const actionFetchFail = () => ({
   type: ACTION_FETCH_FAIL,
+});
+
+export const actionFetchingPriceHistory = () => ({
+  type: ACTION_FETCHING_PRICE_HISTORY,
 });
 
 export const actionFetchedPriceHistory = (payload) => ({
@@ -45,66 +48,62 @@ export const actionChangeDataPoint = (payload) => ({
 });
 
 export const actionFetchPriceHistory = () => async (dispatch, getState) => {
+  let data = [];
   try {
     const state = getState();
-    const account = defaultAccountWalletSelector(state);
-    const pdexV3Inst = await getPDexV3Instance({ account });
-    const { period, datapoint, poolid } = priceHistorySelector(state);
+    const pdexV3Inst = await dispatch(actionGetPDexV3Inst());
+    const { period: periodStr, datapoint, poolid } = priceHistorySelector(
+      state,
+    );
     if (!poolid) {
       return;
     }
-    const now = new Date();
-    const data = await pdexV3Inst.getPriceHistory({
-      poolid,
-      period,
-      datapoint,
-      fromtime: now.getTime(),
-    });
-    console.log('data', data);
-    // const data = [...Array(datapoint)].map((item, index, arr) => {
-    //   let before = new Date();
-    //   switch (period) {
-    //     case '15m':
-    //       before.setMinutes(now.getMinutes() - 15 * index);
-    //       break;
-    //     case '1h':
-    //       before.setHours(now.getHours() - 1 * index);
-    //       break;
-    //     case '4h':
-    //       before.setHours(now.getHours() - 4 * index);
-    //       break;
-    //     case '1d':
-    //       before.setDate(now.getDate() - 1 * index);
-    //       break;
-    //     case '1w':
-    //       before.setDate(now.getDate() - 7 * index);
-    //       break;
-    //     case '1m':
-    //       before.setMonth(now.getMonth() + 1 - 7 * index);
-    //       break;
-    //     case '1y':
-    //       before.setFullYear(now.getFullYear() - 1 * index);
-    //       break;
-    //     default:
-    //       break;
-    //   }
-    //   return {
-    //     x: before,
-    //     y: random(2e4, 6e4),
-    //   };
-    // });
-    const maxValue = max(data, (i) => i.y).y;
-    const minValue = min(data, (i) => i.y).y;
-    dispatch(
-      actionFetchedPriceHistory({
-        data,
-        maxValue,
-        minValue,
-      }),
-    );
+    await dispatch(actionFetchingPriceHistory());
+    let intervals = '';
+    let period = '';
+    switch (periodStr) {
+    case '15m':
+      period = 'PT15M';
+      intervals = 'P1D';
+      break;
+    case '1h':
+      period = 'PT1H';
+      intervals = 'P3D';
+      break;
+    case '4h':
+      period = 'PT4H';
+      intervals = 'P7D';
+      break;
+    case '1d':
+      period = 'P1D';
+      intervals = 'P60D';
+      break;
+    case 'W':
+      period = 'P1W';
+      intervals = 'P12M';
+      break;
+    case 'M':
+      period = 'P1M';
+      intervals = 'P12M';
+      break;
+    default:
+      break;
+    }
+    const res =
+      (await pdexV3Inst.getPriceHistory({
+        poolid,
+        period,
+        intervals,
+      })) || [];
+    data = res.slice(0, Math.min(datapoint, res.length));
   } catch (error) {
     new ExHandler(error).showErrorToast();
   }
+  dispatch(
+    actionFetchedPriceHistory({
+      data,
+    }),
+  );
 };
 
 export const actionFetchedOrderBook = (payload) => ({
@@ -117,7 +116,7 @@ export const actionFetchOrderBook = () => async (dispatch, getState) => {
   try {
     const state = getState();
     const pdexV3Inst = await dispatch(actionGetPDexV3Inst());
-    const { decimal, poolid } = orderBookSelector(state);
+    const { poolid } = orderBookSelector(state);
     if (!poolid) {
       return [];
     }
@@ -138,6 +137,7 @@ export const actionFetch = () => async (dispatch, getState) => {
   try {
     await dispatch(actionFetching());
     await Promise.all([
+      dispatch(actionFetchListPools()),
       dispatch(actionFetchPriceHistory()),
       dispatch(actionFetchOrderBook()),
     ]);
