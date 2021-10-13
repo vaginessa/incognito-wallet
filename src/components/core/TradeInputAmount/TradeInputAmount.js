@@ -8,7 +8,6 @@ import {
   BaseTextInput,
   TouchableOpacity,
   ActivityIndicator,
-  Image,
   View,
 } from '@src/components/core';
 import { COLORS, FONT } from '@src/styles';

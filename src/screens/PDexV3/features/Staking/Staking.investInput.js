@@ -8,7 +8,7 @@ import {styled as mainStyle} from '@screens/PDexV3/PDexV3.styled';
 import Header from '@components/Header/Header';
 import {coinStyles as coinStyled} from '@screens/PDexV3/features/Staking/Staking.styled';
 import {RoundCornerButton, Text} from '@components/core';
-import {LoadingContainer} from '@src/components';
+import {Row} from '@src/components';
 import withInput from '@screens/PDexV3/features/Staking/Staking.enhanceInput';
 import PropTypes from 'prop-types';
 import {stakingSelector} from '@screens/PDexV3/features/Staking';
@@ -17,6 +17,7 @@ import {compose} from 'recompose';
 import withTransaction from '@screens/PDexV3/features/Staking/Staking.transaction';
 import {NFTTokenBottomBar} from '@screens/PDexV3/features/NFTToken';
 import withFetch from '@screens/PDexV3/features/Staking/Staking.enhanceFetch';
+import {MaxIcon} from '@components/Icons';
 
 const initialFormValues = {
   input: ''
@@ -40,14 +41,18 @@ const Input = React.memo(({ onInvestMax, onSymbolPress, rightHeader }) => {
       name={formConfigsInvest.input}
       hasIcon={false}
       symbol={token?.symbol}
+      srcIcon={token.iconUrl}
       visibleHeader
       validate={[...validator.combinedAmount, inputValidate]}
       editableInput
-      hasInfinityIcon
       onChange={onChangeText}
-      onPressInfinityIcon={onChangeMaxInvest}
       onPressSymbol={onSymbolPress}
-      rightHeader={rightHeader}
+      rightHeader={(
+        <Row>
+          <Text style={coinStyled.smallGray}>{rightHeader}</Text>
+          <MaxIcon onPress={onChangeMaxInvest} />
+        </Row>
+      )}
     />
   );
 });
@@ -79,11 +84,7 @@ const StakingMoreInput = React.memo(({ onSymbolPress, onStaking, error }) => {
           <>
             <CustomInput
               onSymbolPress={onSymbolPress}
-              rightHeader={(
-                <Text style={coinStyled.smallGray}>
-                  {`Balance: ${pool.userBalanceSymbolStr}`}
-                </Text>
-              )}
+              rightHeader={`Balance: ${pool.userBalanceSymbolStr}`}
             />
             {!!error && (<Text style={coinStyled.error}>{error}</Text>)}
             <RoundCornerButton

@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import {Row} from '@src/components';
 import {ArrowDown} from '@components/Icons';
 import {itemStyle as styled} from '@screens/PDexV3/features/Staking/Staking.styled';
+import {Icon} from '@components/Token/Token.shared';
 
 export const HeaderRow = React.memo(({ array, style }) => (
   <Row spaceBetween style={style}>
@@ -19,7 +20,7 @@ export const PoolItem = React.memo(({ item, onPress }) => {
     <TouchableOpacity style={styled.wrapper} onPress={() => typeof onPress === 'function' && onPress(token.tokenId)}>
       <Row>
         <View style={styled.wrapImage}>
-          <Image source={{uri: token.iconUrl}} style={styled.image} />
+          <Icon iconUrl={token.iconUrl} style={styled.image} />
         </View>
         <View>
           <Text style={styled.title}>{token.symbol}</Text>
@@ -40,7 +41,7 @@ export const PortfolioItem = React.memo(({ item, onPressItem, onPressArrow }) =>
     <TouchableOpacity style={styled.wrapper} onPress={handlePressItem}>
       <Row>
         <View style={styled.wrapImage}>
-          <Image source={{uri: token.iconUrl}} style={styled.image} />
+          <Icon iconUrl={token.iconUrl} style={styled.image} />
         </View>
         <View>
           <Text style={styled.title}>{token.symbol}</Text>
@@ -74,7 +75,7 @@ export const OneRowCoin = React.memo(({ token, valueText, onPress, data, disable
       >
         <Row>
           <View style={styled.wrapImage}>
-            <Image source={{uri: token.iconUrl}} style={styled.image} />
+            <Icon iconUrl={token.iconUrl} style={styled.image} />
           </View>
           <View>
             <Text style={styled.title}>{token.symbol}</Text>
