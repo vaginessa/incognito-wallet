@@ -2,7 +2,7 @@ import React from 'react';
 import {ScrollView, View} from 'react-native';
 import PropTypes from 'prop-types';
 import {styled as mainStyle} from '@screens/PDexV3/PDexV3.styled';
-import {Header} from '@src/components';
+import {Header, Row} from '@src/components';
 import {
   formConfigsWithdrawInvest,
   STAKING_MESSAGES
@@ -17,6 +17,7 @@ import {stakingSelector} from '@screens/PDexV3/features/Staking/index';
 import {BTNPrimary} from '@components/core/Button';
 import isEmpty from 'lodash/isEmpty';
 import withTransaction from '@screens/PDexV3/features/Staking/Staking.transaction';
+import {MaxIcon} from '@components/Icons';
 
 const initialFormValues = {
   input: ''
@@ -33,6 +34,7 @@ const Input = React.memo(({ onWithdrawMaxInvest }) => {
   const inputValidate = useSelector(stakingSelector.withdrawInvestValidate);
   const { withdrawInvest, token } = useSelector(stakingSelector.withdrawInvestCoinSelector);
 
+  console.log('token.iconUrl: ', token.iconUrl);
   const onChangeText = (text) => dispatch(change(formConfigsWithdrawInvest.formName, formConfigsWithdrawInvest.input, text));
   const onChangeWithdrawMax = () => withdrawInvest && onWithdrawMaxInvest(withdrawInvest.maxWithdrawAmountStr);
   return(
@@ -40,13 +42,14 @@ const Input = React.memo(({ onWithdrawMaxInvest }) => {
       <Field
         component={TradeInputAmount}
         name={formConfigsWithdrawInvest.input}
-        hasInfinityIcon
         visibleHeader
-        hasIcon={false}
         rightHeader={(
-          <Text style={coinStyled.smallGray}>
-            {`Amount: ${withdrawInvest.maxWithdrawAmountSymbolStr}`}
-          </Text>
+          <Row>
+            <Text style={coinStyled.smallGray}>
+              {`Amount: ${withdrawInvest.maxWithdrawAmountSymbolStr}`}
+            </Text>
+            <MaxIcon onPress={onChangeWithdrawMax} />
+          </Row>
         )}
         validate={[
           ...validator.combinedAmount,
@@ -60,6 +63,7 @@ const Input = React.memo(({ onWithdrawMaxInvest }) => {
         symbolStyle={coinStyled.symbol}
         infiniteStyle={coinStyled.infinite}
         symbol={token?.symbol}
+        srcIcon={token.iconUrl}
         canSelectSymbol={false}
       />
     </>

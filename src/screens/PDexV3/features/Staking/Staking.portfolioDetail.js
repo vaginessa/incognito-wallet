@@ -1,5 +1,5 @@
 import React, {memo} from 'react';
-import {Image, RefreshControl, SafeAreaView, ScrollView, Text, TouchableOpacity, View} from 'react-native';
+import {RefreshControl, SafeAreaView, ScrollView, Text, TouchableOpacity, View} from 'react-native';
 import {Header, Row, RowSpaceText} from '@src/components';
 import {STAKING_MESSAGES} from '@screens/PDexV3/features/Staking/Staking.constant';
 import {styled as mainStyle} from '@screens/PDexV3/PDexV3.styled';
@@ -19,6 +19,7 @@ import {actionToggleModal} from '@components/Modal';
 import ModalBottomSheet from '@components/Modal/features/ModalBottomSheet';
 import withTransaction from '@screens/PDexV3/features/Staking/Staking.transaction';
 import PropTypes from 'prop-types';
+import {Icon} from '@components/Token/Token.shared';
 
 const PortfolioDetail = ({ onWithdrawReward, error, setError }) => {
   const dispatch = useDispatch();
@@ -68,7 +69,7 @@ const PortfolioDetail = ({ onWithdrawReward, error, setError }) => {
         >
           <Row spaceBetween style={{ marginBottom: 32, marginTop: 24 }}>
             <Row centerVertical>
-              <Image source={{uri: token.iconUrl}} style={coinStyled.image} />
+              <Icon iconUrl={token.iconUrl} style={coinStyled.image} />
               <Text style={[coinStyled.coinName, { marginLeft: 12 }]}>{token.symbol}</Text>
             </Row>
             <Text style={coinStyled.coinName}>{staking.stakingAmountStr}</Text>
