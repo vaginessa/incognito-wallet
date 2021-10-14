@@ -11,8 +11,13 @@ import {
   ACTION_FETCHED_LIST_POOLS_DETAIL,
   ACTION_FETCHED_LIST_POOLS_FOLLOWING,
   ACTION_FREE_LIST_POOL,
+  ACTION_RESET,
 } from './Pools.constant';
 import { followPoolIdsSelector } from './Pools.selector';
+
+export const actionReset = () => ({
+  type: ACTION_RESET,
+});
 
 export const actionFetchedTradingVolume24h = (payload) => ({
   type: ACTION_FETCHED_TRADING_VOLUME_24H,

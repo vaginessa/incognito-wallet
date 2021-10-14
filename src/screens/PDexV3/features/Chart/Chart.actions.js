@@ -12,8 +12,13 @@ import {
   ACTION_FETCHED_ORDER_BOOK,
   ACTION_SET_SELECTED_POOL_ID,
   ACTION_FETCHING_PRICE_HISTORY,
+  ACTION_RESET,
 } from './Chart.constant';
 import { priceHistorySelector, orderBookSelector } from './Chart.selector';
+
+export const actionReset = () => ({
+  type: ACTION_RESET,
+});
 
 export const actionFetching = () => ({
   type: ACTION_FETCHING,
@@ -117,6 +122,7 @@ export const actionFetchOrderBook = () => async (dispatch, getState) => {
     const state = getState();
     const pdexV3Inst = await dispatch(actionGetPDexV3Inst());
     const { poolid } = orderBookSelector(state);
+    console.log('fetch poolid', poolid);
     if (!poolid) {
       return [];
     }
@@ -133,7 +139,7 @@ export const actionFetchOrderBook = () => async (dispatch, getState) => {
   return data;
 };
 
-export const actionFetch = () => async (dispatch, getState) => {
+export const actionFetch = () => async (dispatch) => {
   try {
     await dispatch(actionFetching());
     await Promise.all([

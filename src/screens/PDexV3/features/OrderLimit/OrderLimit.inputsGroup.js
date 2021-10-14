@@ -7,7 +7,7 @@ import {
   validator,
 } from '@components/core/reduxForm';
 import SelectedPrivacy from '@src/models/selectedPrivacy';
-import { change, Field } from 'redux-form';
+import { change, Field, focus } from 'redux-form';
 import { useDispatch, useSelector } from 'react-redux';
 import format from '@src/utils/format';
 import BigNumber from 'bignumber.js';
@@ -141,6 +141,7 @@ const SellInput = React.memo(() => {
       buyInputAmount?.pDecimals,
     );
     dispatch(change(formConfigs.formName, formConfigs.buytoken, buyAmount));
+    dispatch(focus(formConfigs.formName, formConfigs.buytoken));
   };
   const onEndEditing = () => {
     changeBuyAmount(sellInputAmount.amount);
@@ -242,6 +243,7 @@ const BuyInput = React.memo(() => {
       break;
     }
     dispatch(change(formConfigs.formName, formConfigs.selltoken, sellAmount));
+    dispatch(focus(formConfigs.formName, formConfigs.selltoken));
   };
   const onEndEditing = () => {
     changeSellAmount(buyInputAmount.amount);
@@ -301,6 +303,9 @@ const SelectPercentAmountInput = React.memo(() => {
     _percent = _percent / 100;
     let amount =
       convert.toNumber(sellInputAmount?.availableAmountText, true) || 0;
+    if (!amount) {
+      return;
+    }
     let originalAmount = convert.toOriginalAmount(
       new BigNumber(amount).multipliedBy(_percent).toNumber(),
       sellInputAmount?.pDecimals,
@@ -313,6 +318,7 @@ const SelectPercentAmountInput = React.memo(() => {
     );
     dispatch(change(formConfigs.formName, formConfigs.buytoken, buyAmount));
     dispatch(change(formConfigs.formName, formConfigs.selltoken, amounText));
+    dispatch(focus(formConfigs.formName, formConfigs.selltoken));
   };
   return (
     <SelectPercentAmount

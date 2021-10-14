@@ -1,3 +1,4 @@
+import { PRV_ID } from '@src/constants/common';
 import { ACCOUNT_CONSTANT } from 'incognito-chain-web-js/build/wallet';
 import { ACTION_SET_FOCUS_TOKEN } from '../Swap/Swap.constant';
 import {
@@ -29,7 +30,7 @@ const initialState = {
   poolId: '',
   buytoken: '',
   selltoken: '',
-  feetoken: '',
+  feetoken: PRV_ID,
   estimateTrade: null,
   focustoken: '',
   networkfee: ACCOUNT_CONSTANT.MAX_FEE_PER_TX,

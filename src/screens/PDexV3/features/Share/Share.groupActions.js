@@ -132,7 +132,7 @@ export const GroupActions = ({
       </Row>
       <Row style={styled.bottom}>
         <Text
-          style={{ ...styled.rate, color: mainColor }}
+          style={{ ...styled.rate, color: colorPriceChange24h }}
           numberOfLines={1}
           ellipsizeMode="tail"
         >

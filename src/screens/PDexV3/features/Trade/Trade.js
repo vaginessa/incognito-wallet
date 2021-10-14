@@ -48,14 +48,14 @@ const Trade = (props) => {
         handleSelectedAccount={onRefresh}
       />
       <Tabs rootTabID={ROOT_TAB_TRADE} styledTabs={styled.styledTabs} useTab1>
-        <View tabID={TAB_SWAP_ID} label="Swap" onChangeTab={() => null}>
-          <TabSwap />
+        <View tabID={TAB_MARKET_ID} label="Market" onChangeTab={() => null}>
+          <TabMarket onPressPool={handlePressPool} />
         </View>
         <View tabID={TAB_LIMIT_ID} label="Limit" onChangeTab={() => null}>
           <OrderLimit />
         </View>
-        <View tabID={TAB_MARKET_ID} label="Market" onChangeTab={() => null}>
-          <TabMarket onPressPool={handlePressPool} />
+        <View tabID={TAB_SWAP_ID} label="Swap" onChangeTab={() => null}>
+          <TabSwap />
         </View>
       </Tabs>
     </View>

@@ -7,6 +7,7 @@ import {
   ACTION_FETCHED_LIST_POOLS_DETAIL,
   ACTION_FETCHED_LIST_POOLS_FOLLOWING,
   ACTION_FREE_LIST_POOL,
+  ACTION_RESET,
 } from './Pools.constant';
 
 const initialState = {
@@ -16,11 +17,14 @@ const initialState = {
   pairID: undefined,
   listPools: [],
   listPoolsFollowing: [],
-  followIds: []
+  followIds: [],
 };
 
 export default (state = initialState, action) => {
   switch (action.type) {
+  case ACTION_RESET: {
+    return { ...initialState };
+  }
   case ACTION_FETCHING: {
     const { isFetching } = action.payload;
     return {
@@ -57,7 +61,7 @@ export default (state = initialState, action) => {
   case ACTION_FREE_LIST_POOL: {
     return {
       ...state,
-      listPools: []
+      listPools: [],
     };
   }
   case ACTION_FETCHED_LIST_POOLS_DETAIL: {

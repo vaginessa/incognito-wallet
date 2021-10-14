@@ -10,3 +10,4 @@ export const ACTION_SET_SELECTED_POOL_ID =
   '[pdexV3][chart] Fetched selected pool id';
 export const ACTION_FETCHING_PRICE_HISTORY =
   '[pdexV3][chart] Fetching price history';
+export const ACTION_RESET = '[pdexV3][chart] Reset chart';

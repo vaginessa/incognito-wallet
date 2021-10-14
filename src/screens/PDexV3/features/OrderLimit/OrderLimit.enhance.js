@@ -5,6 +5,7 @@ import { compose } from 'recompose';
 import { COLORS, FONT } from '@src/styles';
 import { actionToggleModal } from '@src/components/Modal';
 import { TradeSuccessModal } from '@screens/PDexV3/features/Trade';
+import { useFocusEffect } from 'react-navigation-hooks';
 import { orderLimitDataSelector } from './OrderLimit.selector';
 import {
   actionInit,
@@ -92,8 +93,12 @@ const enhance = (WrappedComp) => (props) => {
     await dispatch(actionSetPoolSelected(poolId));
     dispatch(actionInit());
   };
+  useFocusEffect(
+    React.useCallback(() => {
+      dispatch(actionInit());
+    }, []),
+  );
   React.useEffect(() => {
-    dispatch(actionInit());
     return () => {
       handleUnmount();
     };

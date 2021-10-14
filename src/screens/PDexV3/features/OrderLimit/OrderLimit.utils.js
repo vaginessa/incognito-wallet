@@ -23,9 +23,11 @@ export const maxAmountValidatorForSellInput = (sellInputAmount) => {
     if (
       new BigNumber(originalAmount).gt(new BigNumber(availableOriginalAmount))
     ) {
-      return new BigNumber(availableOriginalAmount).gt(0)
-        ? `Max amount you can swap is ${availableAmountText} ${symbol}`
+      let text = new BigNumber(availableOriginalAmount).gt(0)
+        ? `Max amount you can order is ${availableAmountText} ${symbol}`
         : `Your ${symbol} balance is insufficient.`;
+      console.log('text', text);
+      return text;
     }
   } catch (error) {
     console.log('maxAmountValidatorForSellInput-error', error);

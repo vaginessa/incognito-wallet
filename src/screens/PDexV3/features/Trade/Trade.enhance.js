@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { ExHandler } from '@src/services/exception';
 import { activedTabSelector } from '@src/components/core/Tabs';
 import { actionInitSwapForm } from '@screens/PDexV3/features/Swap';
-import { actionFetchPools } from '@screens/PDexV3/features/Pools';
+import { actionFetchPools, actionReset } from '@screens/PDexV3/features/Pools';
 import {
   actionInit,
   actionSetPoolSelected,
@@ -61,6 +61,9 @@ const enhance = (WrappedComp) => (props) => {
   };
   React.useEffect(() => {
     dispatch(actionFetch());
+    return () => {
+      dispatch(actionReset());
+    };
   }, []);
   return (
     <ErrorBoundary>

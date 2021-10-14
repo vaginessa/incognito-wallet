@@ -9,3 +9,4 @@ export const ACTION_FETCHING = '[pDexV3][pools] Fetching data';
 export const ACTION_FETCHED = '[pDexV3][pools] Fetched data';
 export const ACTION_FETCH_FAIL = '[pDexV3][pools] Fetch fail data';
 export const ACTION_FREE_LIST_POOL = '[pDexV3][pools] Free list pools';
+export const ACTION_RESET = 'pDexV3][pools] Free pools';

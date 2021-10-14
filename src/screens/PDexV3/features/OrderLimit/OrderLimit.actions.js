@@ -45,7 +45,6 @@ import {
   orderDetailSelector,
   rateDataSelector,
 } from './OrderLimit.selector';
-import { calDefaultPairOrderLimit } from './OrderLimit.utils';
 
 export const actionSetPercent = (payload) => ({
   type: ACTION_SET_PERCENT,

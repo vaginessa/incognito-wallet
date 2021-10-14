@@ -8,10 +8,11 @@ import {
   ACTION_FETCHED_ORDER_BOOK,
   ACTION_SET_SELECTED_POOL_ID,
   ACTION_FETCHING_PRICE_HISTORY,
+  ACTION_RESET,
 } from './Chart.constant';
 
 const initialState = {
-  isFetching: true,
+  isFetching: false,
   isFetched: false,
   poolid: '',
   orderBook: {
@@ -32,6 +33,11 @@ const initialState = {
 
 export default (state = initialState, action) => {
   switch (action.type) {
+  case ACTION_RESET: {
+    return {
+      ...initialState,
+    };
+  }
   case ACTION_SET_POOL_ID: {
     return {
       ...state,

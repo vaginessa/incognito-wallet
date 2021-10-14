@@ -5,6 +5,7 @@ import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { v4 } from 'uuid';
+import { useFocusEffect } from 'react-navigation-hooks';
 import { actionFetchOrderBook } from './Chart.actions';
 import { orderBookSelector } from './Chart.selector';
 
@@ -118,9 +119,7 @@ export const OrderBook = React.memo(() => {
   const { buy, sell, poolid } = orderBook;
   const dispatch = useDispatch();
   const fetchData = () => dispatch(actionFetchOrderBook());
-  React.useEffect(() => {
-    fetchData();
-  }, [poolid]);
+  useFocusEffect(React.useCallback(() => fetchData(), []));
   if (!poolid) {
     return null;
   }

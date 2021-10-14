@@ -5,7 +5,11 @@ import { withLayout_2 } from '@src/components/Layout';
 import { useDispatch } from 'react-redux';
 import { useNavigationParam } from 'react-navigation-hooks';
 import { actionSetPoolSelected } from '@screens/PDexV3/features/OrderLimit';
-import { actionFetch, actionSetSelectedPool } from './Chart.actions';
+import {
+  actionFetch,
+  actionSetSelectedPool,
+  actionReset,
+} from './Chart.actions';
 
 const enhance = (WrappedComp) => (props) => {
   const poolid = useNavigationParam('poolId');
@@ -24,6 +28,9 @@ const enhance = (WrappedComp) => (props) => {
   };
   React.useEffect(() => {
     fetchData();
+    return () => {
+      dispatch(actionReset());
+    };
   }, [poolid]);
   return (
     <ErrorBoundary>
