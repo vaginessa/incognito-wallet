@@ -16,6 +16,7 @@ import {
   actionSetPoolSelected,
   actionReset as actionResetOrderLimit,
 } from '@screens/PDexV3/features/OrderLimit';
+import { NFTTokenBottomBar } from '@screens/PDexV3/features/NFTToken';
 import { actionChangeTab } from '@src/components/core/Tabs/Tabs.actions';
 import { actionFetch } from './Trade.actions';
 import {
@@ -75,11 +76,12 @@ const enhance = (WrappedComp) => (props) => {
   return (
     <ErrorBoundary>
       <WrappedComp {...{ ...props, refreshing, onRefresh, handlePressPool }} />
+      {activedTab === TAB_LIMIT_ID && <NFTTokenBottomBar />}
     </ErrorBoundary>
   );
 };
 
 export default compose(
-  withLayout_2,
   enhance,
+  withLayout_2,
 );

@@ -32,7 +32,7 @@ const styled = StyleSheet.create({
   },
 });
 
-const periods = ['15m', '1h', '4h', '1d', 'W', 'M'];
+const periods = ['15m', '1h', '4h', '1d', 'W', 'M', 'Y'];
 
 const Period = React.memo(() => {
   const dispatch = useDispatch();

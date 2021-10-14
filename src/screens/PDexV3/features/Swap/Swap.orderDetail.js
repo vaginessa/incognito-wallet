@@ -54,10 +54,6 @@ const SwapOrderDetail = () => {
         value: order?.buyStr,
       },
       {
-        label: 'Trading fee',
-        value: order?.tradingFeeStr,
-      },
-      {
         label: 'Status',
         value: order?.statusStr,
       },
@@ -66,10 +62,16 @@ const SwapOrderDetail = () => {
         value: order?.rateStr,
       },
       {
-        label: 'Network fee',
-        value: order?.networkfeeAmountStr,
+        label: 'Fee',
+        value: order?.tradingFeeStr,
       },
     ];
+    if (!order?.tradingFeeByPRV) {
+      ft.push({
+        label: 'Network fee',
+        value: order?.networkfeeAmountStr,
+      });
+    }
     if (order?.responseTxs?.length > 0) {
       ft.push({
         label: 'Response Tx',

@@ -1,7 +1,7 @@
 import { createSelector } from 'reselect';
 import { getPrivacyDataByTokenID as getPrivacyDataByTokenIDSelector } from '@src/redux/selectors/selectedPrivacy';
 import format from '@src/utils/format';
-import floor from 'lodash/floor';
+import { ACCOUNT_CONSTANT } from 'incognito-chain-web-js/build/wallet';
 import capitalize from 'lodash/capitalize';
 import { formValueSelector, isValid } from 'redux-form';
 import convert from '@src/utils/convert';
@@ -248,12 +248,10 @@ export const swapInfoSelector = createSelector(
         btnSwapText = 'Calculating...';
       }
       const tradingFeeStr = `${feeTokenData?.feeAmountText} ${feeTokenData?.symbol}`;
-      const sellInputBalanceStr = `${sellInputAmount?.balanceStr || '0'} ${
-        sellInputAmount?.symbol
-      }`;
-      const buyInputBalanceStr = `${buyInputAmount?.balanceStr || '0'} ${
-        buyInputAmount?.symbol
-      }`;
+      const sellInputBalanceStr = `${sellInputAmount?.balanceStr ||
+        '0'} ${sellInputAmount?.symbol || ''}`;
+      const buyInputBalanceStr = `${buyInputAmount?.balanceStr ||
+        '0'} ${buyInputAmount?.symbol || ''}`;
       const sellInputAmountStr = `${sellInputAmount?.amountText} ${sellInputAmount?.symbol}`;
       const buyInputAmountStr = `${buyInputAmount?.amountText} ${buyInputAmount?.symbol}`;
       const prv: SelectedPrivacy = getPrivacyDataByTokenID(PRV.id);
@@ -329,6 +327,7 @@ export const mappingOrderHistorySelector = createSelector(
         minAccept,
         fee,
         feeToken: feeTokenId,
+        fromStorage,
       } = order;
       const sellToken: SelectedPrivacy = getPrivacyDataByTokenID(sellTokenId);
       const buyToken: SelectedPrivacy = getPrivacyDataByTokenID(buyTokenId);
@@ -337,8 +336,9 @@ export const mappingOrderHistorySelector = createSelector(
       const priceStr = format.amountFull(price, buyToken.pDecimals, false);
       const sellStr = `${amountStr} ${sellToken.symbol}`;
       const buyStr = `${priceStr} ${buyToken.symbol}`;
-      const time = requestime;
-      const timeStr = format.formatDateTime(new Date(time).getTime());
+      const timeStr = format.formatDateTime(
+        fromStorage ? requestime : requestime * 1000,
+      );
       const rate = getPairRate({
         token1Value: amount,
         token2Value: minAccept,
@@ -346,8 +346,13 @@ export const mappingOrderHistorySelector = createSelector(
         token2: buyToken,
       });
       const rateStr = getExchangeRate(sellToken, buyToken, amount, minAccept);
+      let totalFee = fee;
+      let networkFee = ACCOUNT_CONSTANT.MAX_FEE_PER_TX;
+      if (feeToken.isMainCrypto) {
+        totalFee = new BigNumber(totalFee).plus(networkFee).toNumber();
+      }
       const tradingFeeStr = `${format.amountFull(
-        fee,
+        totalFee,
         feeToken.pDecimals,
         false,
       )} ${feeToken.symbol}`;
@@ -359,12 +364,15 @@ export const mappingOrderHistorySelector = createSelector(
         rateStr,
         timeStr,
         rate,
-        networkfeeAmountStr: `${format.amountFull(1, PRV.pDecimals, false)} ${
-          PRV.symbol
-        }`,
+        networkfeeAmountStr: `${format.amountFull(
+          networkFee,
+          PRV.pDecimals,
+          false,
+        )} ${PRV.symbol}`,
         tradingFeeStr,
         statusStr: capitalize(status),
         swapStr,
+        tradingFeeByPRV: feeToken.isMainCrypto,
       };
       return result;
     } catch (error) {
