@@ -50,6 +50,21 @@ const styles = StyleSheet.create({
     fontSize: FONT.SIZE.small,
     lineHeight: FONT.SIZE.small + 9,
     fontFamily: FONT.NAME.medium,
+  },
+  leftText: {
+    color: COLORS.lightGrey34,
+    fontSize: FONT.SIZE.small,
+    lineHeight: FONT.SIZE.small + 7,
+    fontFamily: FONT.NAME.medium,
+  },
+  rightText: {
+    color: COLORS.black,
+    fontSize: FONT.SIZE.small,
+    lineHeight: FONT.SIZE.small + 7,
+    fontFamily: FONT.NAME.medium,
+  },
+  wrapHook: {
+    marginTop: 8
   }
 });
 
@@ -97,10 +112,10 @@ const PortfolioModal = ({ poolId, onWithdrawFeeLP }) => {
         </Row>
         <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
           {hookFactoriesDetail.map((hook) => (
-            <Hook key={hook?.label} {...hook} />
+            <Hook key={hook?.label} {...hook} labelStyle={styles.leftText} valueTextStyle={styles.rightText} style={styles.wrapHook}/>
           ))}
         </ScrollView>
-        {!!validNFT && <Text style={styles.warning}>You cant withdraw your liquidity and reward now, your current NFT amount is zero</Text>}
+        {!validNFT && <Text style={styles.warning}>You cant withdraw your liquidity and reward now, your current NFT amount is zero</Text>}
         <Row spaceBetween style={{ marginTop: 10 }}>
           {!!withdrawable && (
             <BTNBorder
