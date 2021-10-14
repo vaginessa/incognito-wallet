@@ -119,7 +119,9 @@ export const OrderBook = React.memo(() => {
   const { buy, sell, poolid } = orderBook;
   const dispatch = useDispatch();
   const fetchData = () => dispatch(actionFetchOrderBook());
-  useFocusEffect(React.useCallback(() => fetchData(), []));
+  React.useEffect(() => {
+    fetchData();
+  }, [poolid]);
   if (!poolid) {
     return null;
   }
@@ -128,13 +130,13 @@ export const OrderBook = React.memo(() => {
       <View style={styled.wrapperOrder}>
         <Item isBuy isLabel />
         {buy.map((o) => (
-          <Item {...o} key={v4()} isBuy />
+          <Item {...o} key={o?.txRequest || v4()} isBuy />
         ))}
       </View>
       <View style={styled.wrapperOrder}>
         <Item isSell isLabel />
         {sell.map((o) => (
-          <Item {...o} key={v4()} isSell />
+          <Item {...o} key={o?.txRequest || v4()} isSell />
         ))}
       </View>
     </View>

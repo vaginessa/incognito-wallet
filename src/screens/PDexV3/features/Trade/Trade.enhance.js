@@ -5,11 +5,16 @@ import { compose } from 'recompose';
 import { useDispatch, useSelector } from 'react-redux';
 import { ExHandler } from '@src/services/exception';
 import { activedTabSelector } from '@src/components/core/Tabs';
-import { actionInitSwapForm } from '@screens/PDexV3/features/Swap';
+import {
+  actionInitSwapForm,
+  actionReset as actionResetSwap,
+} from '@screens/PDexV3/features/Swap';
 import { actionFetchPools, actionReset } from '@screens/PDexV3/features/Pools';
+import { actionReset as actionResetChart } from '@screens/PDexV3/features/Chart';
 import {
   actionInit,
   actionSetPoolSelected,
+  actionReset as actionResetOrderLimit,
 } from '@screens/PDexV3/features/OrderLimit';
 import { actionChangeTab } from '@src/components/core/Tabs/Tabs.actions';
 import { actionFetch } from './Trade.actions';
@@ -63,6 +68,9 @@ const enhance = (WrappedComp) => (props) => {
     dispatch(actionFetch());
     return () => {
       dispatch(actionReset());
+      dispatch(actionResetChart());
+      dispatch(actionResetOrderLimit());
+      dispatch(actionResetSwap());
     };
   }, []);
   return (

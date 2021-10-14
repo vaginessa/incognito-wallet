@@ -28,9 +28,6 @@ const enhance = (WrappedComp) => (props) => {
   };
   React.useEffect(() => {
     fetchData();
-    return () => {
-      dispatch(actionReset());
-    };
   }, [poolid]);
   return (
     <ErrorBoundary>

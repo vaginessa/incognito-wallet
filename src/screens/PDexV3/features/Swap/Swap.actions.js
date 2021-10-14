@@ -253,7 +253,7 @@ export const actionInitSwapForm = (defaultPair) => async (
   getState,
 ) => {
   try {
-    dispatch(reset(formConfigs.formName));
+    await dispatch(reset(formConfigs.formName));
     let pair = defaultPair;
     await dispatch(actionInitingSwapForm(true));
     if (isEmpty(pair)) {

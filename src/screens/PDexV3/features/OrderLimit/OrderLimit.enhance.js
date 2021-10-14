@@ -9,7 +9,6 @@ import { useFocusEffect } from 'react-navigation-hooks';
 import { orderLimitDataSelector } from './OrderLimit.selector';
 import {
   actionInit,
-  actionReset,
   actionSetDefaultPool,
   actionBookOrder,
   actionSetPoolSelected,
@@ -20,7 +19,6 @@ const enhance = (WrappedComp) => (props) => {
   const dispatch = useDispatch();
   const handleUnmount = async () => {
     await dispatch(actionSetDefaultPool());
-    dispatch(actionReset());
   };
   const actionChangeTab = () => dispatch(actionInit());
   const { sellColor, buyColor, disabledBtn, cfmTitle } = useSelector(

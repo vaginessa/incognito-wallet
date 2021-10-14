@@ -3,11 +3,8 @@ import ErrorBoundary from '@src/components/ErrorBoundary';
 import { useDispatch, useSelector } from 'react-redux';
 import { actionToggleModal } from '@src/components/Modal';
 import { TradeSuccessModal } from '@src/screens/PDexV3/features/Trade';
-import {
-  actionInitSwapForm,
-  actionReset,
-  actionFetchSwap,
-} from './Swap.actions';
+import { useFocusEffect } from 'react-navigation-hooks';
+import { actionInitSwapForm, actionFetchSwap } from './Swap.actions';
 import { swapInfoSelector } from './Swap.selector';
 
 const enhance = (WrappedComp) => (props) => {
@@ -41,11 +38,13 @@ const enhance = (WrappedComp) => (props) => {
       //
     }
   };
+  useFocusEffect(
+    React.useCallback(() => {
+      initSwapForm();
+    }, []),
+  );
   React.useEffect(() => {
     initSwapForm();
-    return () => {
-      dispatch(actionReset());
-    };
   }, []);
   return (
     <ErrorBoundary>
