@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { compose } from 'recompose';
 import { View, Text, ScrollView, Divider, Image } from '@components/core';
 import emptyListIcon from '@src/assets/images/icons/empty_list.png';
+import { SumIconComp } from '@src/screens/PoolV2/Home/CoinList';
 import { Row, PRVSymbol } from '@src/components/';
 import { COLORS } from '@src/styles';
 import { withLayout_2 } from '@components/Layout';
@@ -31,7 +32,7 @@ const LockHistory = ({
           }}
         />
         <Text style={styles.emptyText}>
-          {'There have no providing\nlock PRV details.'}
+          There is no stake.
         </Text>
       </View>
     );
@@ -39,7 +40,7 @@ const LockHistory = ({
  
   return (
     <View style={styles.wrapper}>
-      <Header title="Investments" onGoBack={() => navigation.navigate(ROUTE_NAMES.PoolV2)} />
+      <Header title="Staking service" onGoBack={() => navigation.navigate(ROUTE_NAMES.PoolV2)} />
       { lockHistories.length > 0 
         ? (
           <ScrollView style={mainStyles.coinContainer}>
@@ -50,6 +51,7 @@ const LockHistory = ({
                     <Row>
                       <View>
                         <Text style={mainStyles.coinName}>{item.displayBalance} {item.symbol} </Text>
+                        <Text style={styles.unlockDate}> {item.coin.displayLockTime} </Text>
                         <Text style={styles.unlockDate}> Term ends </Text>
                       </View>
                       <View style={[mainStyles.flex]}>
@@ -57,11 +59,15 @@ const LockHistory = ({
                           style={[mainStyles.textRight, mainStyles.justifyRight]}
                           center
                         >
-                          <Text style={mainStyles.coinInterest}>+</Text><PRVSymbol style={mainStyles.coinInterest} />
+                          {item.locked && <SumIconComp />}
+                          <PRVSymbol style={mainStyles.coinInterest} />
                           <Text style={mainStyles.coinInterest}>
                             &nbsp;{item.displayReward}
                           </Text>
                         </Row>
+                        <Text style={[mainStyles.textRight, styles.unlockDate]}>
+                          {item.coin.displayInterest}
+                        </Text>
                         <Text style={[mainStyles.textRight, styles.unlockDate]}>
                           {item.displayUnlockDate}
                         </Text>

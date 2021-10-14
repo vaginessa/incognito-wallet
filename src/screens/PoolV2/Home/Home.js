@@ -35,19 +35,21 @@ const BtnInfo = React.memo(() => {
 
 const Home = ({
   config,
+  groupedCoins,
   userData,
   groupedUserData,
   withdrawable,
-  totalRewards,
   displayClipTotalRewards,
-  displayFullTotalRewards,
   histories,
   onLoad,
   loading,
   account,
   isLoadingHistories,
   nativeToken,
+  totalRewardsNonLock,
+  displayFullTotalRewardsNonLock,
 }) => {
+  const navigation = useNavigation();
   const renderContent = () => {
     if (!config || !userData) {
       return <LoadingContainer />;
@@ -63,12 +65,14 @@ const Home = ({
         <Actions
           buy={!withdrawable}
           coins={config.coins}
+          groupedCoins={groupedCoins}
           data={userData}
-          totalRewards={totalRewards}
-          displayFullTotalRewards={displayFullTotalRewards}
+          totalRewardsNonLock={totalRewardsNonLock}
+          displayFullTotalRewardsNonLock={displayFullTotalRewardsNonLock}
         />
         <CoinList
           coins={config.coins}
+          groupedCoins={groupedCoins}
           userData={userData}
           groupedUserData={groupedUserData}
           withdrawable={withdrawable}
@@ -88,6 +92,9 @@ const Home = ({
         title="Provide"
         customHeaderTitle={<BtnInfo />}
         accountSelectable
+        onGoBack={() => {
+          navigation.navigate(routeNames.Home);
+        }}
       />
       {renderContent()}
     </View>
@@ -96,24 +103,26 @@ const Home = ({
 
 Home.propTypes = {
   config: PropTypes.object,
+  groupedCoins: PropTypes.array,
   userData: PropTypes.array,
   groupedUserData: PropTypes.array,
   withdrawable: PropTypes.bool.isRequired,
-  displayFullTotalRewards: PropTypes.string.isRequired,
   displayClipTotalRewards: PropTypes.string.isRequired,
-  totalRewards: PropTypes.number.isRequired,
   histories: PropTypes.array.isRequired,
   onLoad: PropTypes.func.isRequired,
   loading: PropTypes.bool.isRequired,
   account: PropTypes.object.isRequired,
   isLoadingHistories: PropTypes.bool.isRequired,
   nativeToken: PropTypes.object.isRequired,
+  displayFullTotalRewardsNonLock: PropTypes.string.isRequired,
+  totalRewardsNonLock: PropTypes.number.isRequired,
 };
 
 Home.defaultProps = {
   config: null,
   userData: null,
   groupedUserData: null,
+  groupedCoins: null,
 };
 
 export default compose(

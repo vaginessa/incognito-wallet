@@ -1,11 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import upToIcon from '@src/assets/images/icons/upto_icon.png';
+import sumIcon from '@src/assets/images/icons/sum_icon.png';
 import {
   View,
   Text,
   ScrollView,
   TouchableOpacity,
   ActivityIndicator,
+  Image,
 } from '@components/core';
 import mainStyles from '@screens/PoolV2/style';
 import { Row, PRVSymbol } from '@src/components/';
@@ -16,23 +19,31 @@ import { RefreshControl } from 'react-native';
 import { PRV_ID } from '@src/screens/DexV2/constants';
 import styles from './style';
 
-export const LockTimeComp = React.memo(({ time }) => {
-  if (!time) return null;
-  const arrTime = time.split(' ');
-  let timeText = time;
-  if (arrTime && arrTime.length === 2) {
-    timeText = `${arrTime[0]}${arrTime[1].charAt(0)}`;
-  }
+export const LockTimeComp = React.memo(() => {
   return (
     <Row style={mainStyles.wrapperLock}>
       <LockIcon />
-      <Text style={mainStyles.lockText}>{timeText}</Text>
     </Row>
+  );
+});
+
+export const SumIconComp = React.memo(() => {
+  return (
+    <Image
+      source={sumIcon}
+      style={{
+        width: 16,
+        height: 16,
+        marginBottom: 8,
+        marginRight: 8
+      }}
+    />
   );
 });
 
 const CoinList = ({
   coins,
+  groupedCoins,
   userData,
   groupedUserData,
   histories,
@@ -50,12 +61,18 @@ const CoinList = ({
     });
   };
 
+  const UpToIconComp = () => {
+    return (
+      <Image
+        source={upToIcon}
+        style={mainStyles.iconUp}
+      />
+    ); 
+  };
+
   const renderEmpty = () => {
     return (
       <>
-        <Row style={mainStyles.coin}>
-          <Text style={mainStyles.coinName}>Provide liquidity for pDEX</Text>
-        </Row>
         <ScrollView
           refreshControl={(
             <RefreshControl
@@ -65,18 +82,13 @@ const CoinList = ({
           )}
           style={styles.scrollView}
         >
-          {coins.map((item) => (
+          {groupedCoins.map((item) => (
             <Row style={mainStyles.coin} key={`${item.id} ${item.locked}`}>
               <Text style={mainStyles.coinName}>{item.name}</Text>
-              <Text
-                style={[
-                  mainStyles.coinExtra,
-                  mainStyles.textRight,
-                  mainStyles.flex,
-                ]}
-              >
-                {item.displayInterest}
-              </Text>
+              <Row style={[mainStyles.flex, mainStyles.emptyRight]}>
+                {item.locked && <UpToIconComp />}
+                <Text style={[mainStyles.coinExtra, mainStyles.textRight]}>{item.displayInterest}</Text>
+              </Row>
             </Row>
           ))}
           {renderRate()}
@@ -121,15 +133,37 @@ const CoinList = ({
     );
   };
 
+  const renderBtnViewDetails = (item) => {
+    return (
+      <TouchableOpacity style={mainStyles.btnViewDetail} onPress={() => handleShowLockHistory(item)}>
+        <Text style={mainStyles.viewDetailText}>View details</Text>
+      </TouchableOpacity>
+    );
+  };
+
   const renderMainCoin = (item) => {
     const mapCoin = item.coin;
     const provideBalance = item.balance;
     return (
       <View style={mainStyles.wrapTitle}>
         <Text style={[mainStyles.coinName, { marginBottom: 0 }]}>{item.symbol}</Text>
-        {item.locked && <LockTimeComp time={mapCoin.displayLockTime} />}
+        {item.locked && (
+          <>
+            <LockTimeComp />
+            {renderBtnViewDetails(mapCoin)}
+          </>
+        )}
         {(!item.locked && mapCoin.id === PRV_ID && !!provideBalance) && renderBtnMirage(item)}
       </View>
+    );
+  };
+
+  const renderUpToAPY = (item) => {
+    return (
+      <Row style={{alignItems: 'center'}}>
+        {item.locked && <UpToIconComp />}
+        <Text style={mainStyles.coinExtra}>{item.coin.displayInterest}</Text>
+      </Row>
     );
   };
 
@@ -147,25 +181,14 @@ const CoinList = ({
         {groupedUserData.map((item) => {
           const mapCoin = item.coin;
           if (!mapCoin) return null;
-          const isLock = mapCoin.locked;
-          const isPRV = mapCoin.id === PRV_ID;
-          const provideBalance = item.balance;
-          const COMP = isLock ? TouchableOpacity : View;
           return (
             <View key={`${item.id} ${item.locked}`} style={mainStyles.coin}>
-              <COMP
-                onPress={() => handleShowLockHistory(mapCoin)}
-                key={`${item.id} ${item.locked}`}
-                activeOpacity={isLock ? 0.7 : 1}
-                style={[(!isLock && (!isPRV || !provideBalance)) && { opacity: 0.5 }]}
-              >
+              <View key={`${item.id} ${item.locked}`}>
                 <View>
                   <Row>
                     <View>
                       {renderMainCoin(item)}
-                      <Text style={mainStyles.coinExtra}>
-                        {mapCoin.displayInterest}
-                      </Text>
+                      {renderUpToAPY(item)}
                     </View>
                     <View style={[mainStyles.flex]}>
                       <Text style={[mainStyles.coinName, mainStyles.textRight]}>
@@ -185,6 +208,7 @@ const CoinList = ({
                         style={[mainStyles.textRight, mainStyles.justifyRight]}
                         center
                       >
+                        {item.locked && <SumIconComp />}
                         <PRVSymbol style={mainStyles.coinInterest} />
                         <Text style={mainStyles.coinInterest}>
                           &nbsp;{item.displayReward}
@@ -198,7 +222,7 @@ const CoinList = ({
                     </View>
                   </Row>
                 </View>
-              </COMP>
+              </View>
             </View>
           );
         })}
@@ -248,6 +272,7 @@ const CoinList = ({
 
 CoinList.propTypes = {
   coins: PropTypes.array,
+  groupedCoins: PropTypes.array,
   groupedUserData: PropTypes.array,
   userData: PropTypes.array,
   histories: PropTypes.array,
@@ -260,6 +285,7 @@ CoinList.propTypes = {
 
 CoinList.defaultProps = {
   coins: [],
+  groupedCoins: [],
   groupedUserData: [],
   userData: [],
   histories: [],
@@ -267,10 +293,6 @@ CoinList.defaultProps = {
   onLoad: undefined,
   loading: false,
   isLoadingHistories: false,
-};
-
-LockTimeComp.propTypes = {
-  time: PropTypes.string.isRequired
 };
 
 export default React.memo(CoinList);
