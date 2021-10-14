@@ -8,7 +8,8 @@ import { actionSetPoolSelected } from '@screens/PDexV3/features/OrderLimit';
 import {
   actionFetch,
   actionSetSelectedPool,
-  actionReset,
+  actionFetchPriceHistory,
+  actionFetchOrderBook,
 } from './Chart.actions';
 
 const enhance = (WrappedComp) => (props) => {
@@ -25,6 +26,8 @@ const enhance = (WrappedComp) => (props) => {
     await dispatch(actionSetPoolSelected(poolId));
     await dispatch(actionSetSelectedPool(poolId));
     dispatch(actionFetch());
+    dispatch(actionFetchPriceHistory());
+    dispatch(actionFetchOrderBook());
   };
   React.useEffect(() => {
     fetchData();

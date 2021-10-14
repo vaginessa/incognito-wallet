@@ -69,6 +69,7 @@ const RateInput = React.memo(() => {
       dispatch(
         change(formConfigs.formName, formConfigs.selltoken, sellAmount),
       );
+      dispatch(focus(formConfigs.formName, formConfigs.selltoken));
       break;
     }
     case TAB_SELL_ID: {
@@ -79,11 +80,13 @@ const RateInput = React.memo(() => {
           sellinputAmount?.pDecimals,
       );
       dispatch(change(formConfigs.formName, formConfigs.buytoken, buyAmount));
+      dispatch(focus(formConfigs.formName, formConfigs.buytoken));
       break;
     }
     default:
       break;
     }
+    dispatch(actionSetPercent(0));
   };
   const onEndEditing = () => changeBuyAmountByRate(rateData?.customRate);
   const onChange = async (rate) => {
@@ -140,6 +143,7 @@ const SellInput = React.memo(() => {
       new BigNumber(amount).multipliedBy(new BigNumber(customRate)).toNumber(),
       buyInputAmount?.pDecimals,
     );
+    dispatch(actionSetPercent(0));
     dispatch(change(formConfigs.formName, formConfigs.buytoken, buyAmount));
     dispatch(focus(formConfigs.formName, formConfigs.buytoken));
   };
@@ -242,6 +246,7 @@ const BuyInput = React.memo(() => {
     default:
       break;
     }
+    dispatch(actionSetPercent(0));
     dispatch(change(formConfigs.formName, formConfigs.selltoken, sellAmount));
     dispatch(focus(formConfigs.formName, formConfigs.selltoken));
   };

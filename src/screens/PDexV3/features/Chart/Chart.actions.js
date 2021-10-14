@@ -122,7 +122,6 @@ export const actionFetchOrderBook = () => async (dispatch, getState) => {
     const state = getState();
     const pdexV3Inst = await dispatch(actionGetPDexV3Inst());
     const { poolid } = orderBookSelector(state);
-    console.log('fetch poolid', poolid);
     if (!poolid) {
       return [];
     }
@@ -142,11 +141,7 @@ export const actionFetchOrderBook = () => async (dispatch, getState) => {
 export const actionFetch = () => async (dispatch) => {
   try {
     await dispatch(actionFetching());
-    await Promise.all([
-      dispatch(actionFetchListPools()),
-      dispatch(actionFetchPriceHistory()),
-      dispatch(actionFetchOrderBook()),
-    ]);
+    await dispatch(actionFetchListPools());
     await dispatch(actionFetched());
   } catch (error) {
     await dispatch(actionFetchFail());

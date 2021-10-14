@@ -35,7 +35,6 @@ const OrderHistory = () => {
     }
   };
   const { history = [], isFetching } = useSelector(orderHistorySelector);
-  console.log('history.length', history.length);
   useFocusEffect(
     React.useCallback(() => {
       onRefresh();

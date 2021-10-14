@@ -68,7 +68,15 @@ const Period = React.memo(() => {
 });
 
 const PriceHistory = () => {
-  const { history, fetching } = useSelector(priceHistorySelector);
+  const { history, fetching, poolid } = useSelector(priceHistorySelector);
+  const dispatch = useDispatch();
+  const handleFetchData = React.useCallback(
+    () => dispatch(actionFetchPriceHistory()),
+    [],
+  );
+  React.useEffect(() => {
+    handleFetchData();
+  }, []);
   return (
     <View style={styled.container}>
       {fetching && <ActivityIndicator />}

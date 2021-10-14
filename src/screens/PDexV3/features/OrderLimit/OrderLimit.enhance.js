@@ -6,6 +6,7 @@ import { COLORS, FONT } from '@src/styles';
 import { actionToggleModal } from '@src/components/Modal';
 import { TradeSuccessModal } from '@screens/PDexV3/features/Trade';
 import { useFocusEffect } from 'react-navigation-hooks';
+import debounce from 'lodash/debounce';
 import { orderLimitDataSelector } from './OrderLimit.selector';
 import {
   actionInit,
@@ -17,13 +18,18 @@ import { TAB_BUY_ID, TAB_SELL_ID } from './OrderLimit.constant';
 
 const enhance = (WrappedComp) => (props) => {
   const dispatch = useDispatch();
+  const handleInitOrderLimit = debounce(
+    React.useCallback(() => {
+      dispatch(actionInit());
+    }, 200),
+  );
   const handleUnmount = async () => {
     await dispatch(actionSetDefaultPool());
   };
-  const actionChangeTab = () => dispatch(actionInit());
-  const { sellColor, buyColor, disabledBtn, cfmTitle } = useSelector(
-    orderLimitDataSelector,
-  );
+  const actionChangeTab = () => {
+    handleInitOrderLimit();
+  };
+  const { sellColor, buyColor, cfmTitle } = useSelector(orderLimitDataSelector);
   const tabsFactories = [
     {
       tabID: TAB_BUY_ID,
@@ -86,14 +92,16 @@ const enhance = (WrappedComp) => (props) => {
       //
     }
   };
-  const onRefresh = () => dispatch(actionInit());
+  const onRefresh = () => {
+    dispatch(actionInit());
+  };
   const callback = async (poolId) => {
     await dispatch(actionSetPoolSelected(poolId));
     dispatch(actionInit());
   };
   useFocusEffect(
     React.useCallback(() => {
-      dispatch(actionInit());
+      handleInitOrderLimit();
     }, []),
   );
   React.useEffect(() => {

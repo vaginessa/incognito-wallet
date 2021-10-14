@@ -1,14 +1,20 @@
 import React from 'react';
-import { FlatList, KeyboardAwareScrollView, Text } from '@src/components/core';
+import {
+  FlatList,
+  KeyboardAwareScrollView,
+  Text,
+  RefreshControl,
+} from '@src/components/core';
 import { BaseTextInputCustom } from '@src/components/core/BaseTextInput';
 import { FONT, COLORS } from '@src/styles';
 import { StyleSheet, View } from 'react-native';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Row } from '@src/components';
 import Pool from '@screens/PDexV3/features/Pool';
 import PropTypes from 'prop-types';
 import { actionFetchPools } from './Pools.actions';
 import { handleFilterPoolByKeySeach } from './Pools.utils';
+import { isFetchingSelector } from './Pools.selector';
 
 const styled = StyleSheet.create({
   container: {
@@ -63,8 +69,15 @@ export const PoolsListHeader = React.memo(() => {
 });
 
 export const PoolsList = React.memo(({ onPressPool, pools }) => {
+  const refreshing = useSelector(isFetchingSelector);
+  const dispatch = useDispatch();
+  const onRefresh = () => dispatch(actionFetchPools());
   return (
-    <KeyboardAwareScrollView>
+    <KeyboardAwareScrollView
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }
+    >
       <FlatList
         data={pools}
         renderItem={({ item }) => (

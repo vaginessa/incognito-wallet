@@ -43,9 +43,6 @@ const enhance = (WrappedComp) => (props) => {
       initSwapForm();
     }, []),
   );
-  React.useEffect(() => {
-    initSwapForm();
-  }, []);
   return (
     <ErrorBoundary>
       <WrappedComp {...{ ...props, handleConfirm, initSwapForm }} />

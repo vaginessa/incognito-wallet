@@ -13,6 +13,7 @@ import isEmpty from 'lodash/isEmpty';
 import { change, reset } from 'redux-form';
 import { actionGetPDexV3Inst } from '@screens/PDexV3';
 import { batch } from 'react-redux';
+import { actionFetchOrderBook } from '@screens/PDexV3/features/Chart';
 import {
   ACTION_FETCHING,
   ACTION_FETCHED,
@@ -168,6 +169,7 @@ export const actionInit = () => async (dispatch, getState) => {
     const pool = poolSelectedDataSelector(state);
     dispatch(actionFetchWithdrawOrderTxs());
     dispatch(actionFetchOrdersHistory());
+    dispatch(actionFetchOrderBook());
     if (isEmpty(pool)) {
       return;
     }
@@ -380,7 +382,6 @@ export const actionFetchDataOrderDetail = () => async (dispatch, getState) => {
       fromStorage: !!fromStorage,
       version: PrivacyVersion.ver2,
     };
-    console.log('params', params);
     _order = await pDexV3.getOrderLimitDetail(params);
   } catch (error) {
     _order = { ...order };
