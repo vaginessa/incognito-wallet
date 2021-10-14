@@ -195,7 +195,7 @@ export const stakingPoolSelector = createSelector(
   (staking, getPrivacyDataByTokenID, isGettingBalance) => {
     const pools = staking.pools || [];
     return pools.map((item) => {
-      const { tokenid: tokenId, amount: poolAmount, id } = item;
+      const { tokenId, amount: poolAmount, id, apy } = item;
       const token = getPrivacyDataByTokenID(tokenId);
       const userBalance = token.amount;
       const userBalanceStr = formatUtil.amountFull(token.amount, token.pDecimals);
@@ -214,8 +214,8 @@ export const stakingPoolSelector = createSelector(
         userBalanceSymbolStr,
         token,
         disabled,
-        apy: 60,
-        apyStr: '60%'
+        apy,
+        apyStr: `${apy}%`
       };
     });
   },
