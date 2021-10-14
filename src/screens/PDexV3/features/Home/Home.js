@@ -29,7 +29,7 @@ const TabPools = React.memo(() => {
     });
   };
   return (
-    <PoolsList onPressPool={onNavigateContribute} listPools={listPools} style={{ marginTop: 24 }} />
+    <PoolsList onPressPool={onNavigateContribute} listPools={listPools} />
   );
 });
 
