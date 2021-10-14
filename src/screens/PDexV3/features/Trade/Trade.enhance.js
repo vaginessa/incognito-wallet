@@ -65,7 +65,6 @@ const enhance = (WrappedComp) => (props) => {
     );
   };
   React.useEffect(() => {
-    dispatch(actionFetch());
     return () => {
       dispatch(actionReset());
       dispatch(actionResetChart());

@@ -77,7 +77,6 @@ export const GroupActions = ({
     poolStr,
     priceChange24hStr,
     colorPriceChange24h,
-    mainColor,
   } = useSelector(orderLimitDataSelector);
   const { rateStr } = useSelector(rateDataSelector);
   const dispatch = useDispatch();
