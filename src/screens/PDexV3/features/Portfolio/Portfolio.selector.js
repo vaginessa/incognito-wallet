@@ -76,7 +76,7 @@ export const listShareSelector = createSelector(
       const shareStr = getShareStr(share, totalShare);
       const rewardStr = getReward(token1, token2, token1Reward, token2Reward);
       const validNFT = !!getValidRealAmountNFT(nftId);
-      const disableBtn = isFetchingNFT || !!validNFT;
+      const disableBtn = isFetchingNFT || !validNFT;
       let rewards = [
         { tokenId: tokenId1, reward: token1Reward },
         { tokenId: tokenId2, reward: token2Reward },
