@@ -5,12 +5,8 @@ import {
   PrivacyVersion,
 } from 'incognito-chain-web-js/build/wallet';
 import { defaultAccountWalletSelector } from '@src/redux/selectors/account';
-import { getPrivacyDataByTokenID } from '@src/redux/selectors/selectedPrivacy';
 import { ExHandler } from '@src/services/exception';
-import convert from '@src/utils/convert';
-import format from '@src/utils/format';
-import BigNumber from 'bignumber.js';
-import { change, focus, reset } from 'redux-form';
+import { change, reset } from 'redux-form';
 import { delay } from '@src/utils/delay';
 import isEmpty from 'lodash/isEmpty';
 import SelectedPrivacy from '@src/models/selectedPrivacy';

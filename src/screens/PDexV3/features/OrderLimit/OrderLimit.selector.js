@@ -408,14 +408,12 @@ export const mappingOrderHistorySelector = createSelector(
           if (isWithdrawing) {
             statusStr = 'Claiming';
           } else {
-            statusStr = 'Claim';
             visibleBtnClaim = true;
           }
         } else if (sellTokenBalance.isGreaterThan(0)) {
           if (isWithdrawing) {
             statusStr = 'Canceling';
           } else {
-            statusStr = 'Cancel';
             visibleBtnCancel = true;
           }
         }

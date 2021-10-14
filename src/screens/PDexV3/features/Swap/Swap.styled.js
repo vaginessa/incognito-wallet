@@ -57,7 +57,7 @@ export const inputGroupStyled = StyleSheet.create({
   btnStyle: {
     height: 20,
     marginLeft: 15,
-    borderRadius: 0,
+    borderRadius: 4,
     paddingHorizontal: 5,
   },
   titleStyle: {

@@ -91,6 +91,10 @@ export const actionFetchPriceHistory = () => async (dispatch, getState) => {
       period = 'P1M';
       intervals = 'P12M';
       break;
+    case 'Y':
+      period = 'P1M';
+      intervals = 'P12M';
+      break;
     default:
       break;
     }
