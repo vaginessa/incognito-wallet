@@ -1,47 +1,35 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { StyleSheet } from 'react-native';
 import { compose } from 'recompose';
 import ErrorBoundary from '@src/components/ErrorBoundary';
-import Wizard from '@screens/Wizard';
 import { useSelector, useDispatch } from 'react-redux';
 import { login } from '@src/services/auth';
-import { ANALYTICS, CONSTANT_KEYS } from '@src/constants';
+import { ANALYTICS } from '@src/constants';
 import { reloadWallet } from '@src/redux/actions/wallet';
 import { getPTokenList, getInternalTokenList } from '@src/redux/actions/token';
-import { loadPin } from '@src/redux/actions/pin';
 import routeNames from '@src/router/routeNames';
 import { CustomError, ErrorCode, ExHandler } from '@src/services/exception';
 import serverService from '@src/services/wallet/Server';
 import { actionInit as initNotification } from '@src/screens/Notification';
 import { actionFetch as actionFetchHomeConfigs } from '@screens/Home/Home.actions';
-import { useNavigation, useFocusEffect } from 'react-navigation-hooks';
-import { useMigrate } from '@src/components/UseEffect/useMigrate';
-import storageService from '@src/services/storage';
+import { useNavigation } from 'react-navigation-hooks';
 import { LoadingContainer, Text, View } from '@src/components/core';
 import { actionFetch as actionFetchProfile } from '@screens/Profile';
-import { KEYS } from '@src/constants/keys';
 import { getFunctionConfigs } from '@services/api/misc';
 import {
   loadAllMasterKeyAccounts,
   loadAllMasterKeys,
 } from '@src/redux/actions/masterKey';
-import { masterKeysSelector } from '@src/redux/selectors/masterKey';
-import Welcome from '@screens/GetStarted/Welcome';
 import withPin from '@components/pin.enhance';
 import KeepAwake from 'react-native-keep-awake';
 import { COLORS, FONT } from '@src/styles';
 import { accountServices } from '@src/services/wallet';
 import { actionLogEvent } from '@src/screens/Performance';
 import { requestUpdateMetrics } from '@src/redux/actions/app';
-import {
-  wizardSelector,
-  isFollowedDefaultPTokensSelector,
-} from './GetStarted.selector';
-import {
-  actionToggleShowWizard,
-  actionToggleFollowDefaultPTokens,
-} from './GetStarted.actions';
+import { wizardSelector } from './GetStarted.selector';
 import withDetectStatusNetwork from './GetStarted.enhanceNetwork';
+import withWizard from './GetStarted.enhanceWizard';
+import withWelcome from './GetStarted.enhanceWelcome';
 
 const subStyled = StyleSheet.create({
   mainText: {
@@ -62,7 +50,8 @@ const subStyled = StyleSheet.create({
 });
 
 const SubComponent = React.memo((props) => {
-  const { isFetched, statusConfigs } = props;
+  const { statusConfigs } = props;
+  const { isFetched } = useSelector(wizardSelector);
   return (
     <LoadingContainer
       size="large"
@@ -88,12 +77,6 @@ const SubComponent = React.memo((props) => {
 const enhance = (WrappedComp) => (props) => {
   const [statusConfigs, setStatusConfigs] = React.useState('');
   const [loadMasterKeys, setLoadMasterKeys] = useState(false);
-  const { isFetching, isFetched } = useSelector(wizardSelector);
-  const pin = useSelector((state) => state?.pin?.pin);
-  const isFollowedDefaultPTokensMainnet = useSelector(
-    isFollowedDefaultPTokensSelector,
-  );
-  const masterKeys = useSelector(masterKeysSelector);
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const initialState = {
@@ -105,51 +88,6 @@ const enhance = (WrappedComp) => (props) => {
     ...initialState,
   });
   const { errorMsg, isInitialing, isCreating } = state;
-
-  const handleMigrateWizard = async () => {
-    try {
-      if (!isFetching && isFetched) {
-        return;
-      }
-      const isDisplayed = await storageService.getItem(
-        CONSTANT_KEYS.DISPLAYED_WIZARD,
-      );
-      if (isDisplayed) {
-        await dispatch(actionToggleShowWizard({ isFetched: !!isDisplayed }));
-      }
-    } catch (error) {
-      console.debug(error);
-    }
-  };
-
-  const handleMigrateFollowToken = async () => {
-    try {
-      if (isFollowedDefaultPTokensMainnet) {
-        await dispatch(
-          actionToggleFollowDefaultPTokens({
-            keySave: KEYS.IS_FOLLOW_DEFAULT_PTOKENS,
-          }),
-        );
-      }
-    } catch (error) {
-      console.debug(error);
-    }
-  };
-
-  const getDataWillMigrate = async () => {
-    try {
-      await new Promise.all([
-        handleMigrateWizard(),
-        handleMigrateFollowToken(),
-      ]);
-    } catch (error) {
-      console.debug(error);
-    }
-  };
-
-  const { isFetching: isMigrating, isFetched: isMigrated } = useMigrate({
-    getDataWillMigrate,
-  });
 
   const getExistedWallet = async () => {
     try {
@@ -217,13 +155,6 @@ const enhance = (WrappedComp) => (props) => {
           desc: 'CONFIGS_APP',
         }),
       );
-      await setStatusConfigs('loading pin');
-      await dispatch(loadPin());
-      await dispatch(
-        actionLogEvent({
-          desc: 'LOAD_PIN',
-        }),
-      );
       await setStatusConfigs('getting info');
       await login();
       await dispatch(
@@ -262,6 +193,7 @@ const enhance = (WrappedComp) => (props) => {
           desc: 'LOAD_ALL_MASTER_KEYS_ACCOUNTS',
         }),
       );
+      navigation.navigate(routeNames.Home);
     } catch (error) {
       console.log('CONFIGS APP ERROR', error);
       await setState({
@@ -283,53 +215,13 @@ const enhance = (WrappedComp) => (props) => {
   };
 
   React.useEffect(() => {
-    requestAnimationFrame(async () => {
-      await configsApp();
-    });
+    onRetry();
   }, []);
 
-  React.useEffect(() => {
-    if (!masterKeys || !loadMasterKeys || isFetching) {
-      return;
-    }
-    if (masterKeys.length) {
-      initApp();
-    }
-  }, [masterKeys, loadMasterKeys, isFetching]);
-
-  useFocusEffect(
-    React.useCallback(() => {
-      if (
-        masterKeys?.length > 0 &&
-        !isInitialing && //init app success
-        !isCreating && //created wallet
-        isMigrated && //migrate old data success
-        isFetched && //finish splash screen
-        !errorMsg //no error
-      ) {
-        navigation.navigate(routeNames.Home);
-      }
-    }, [masterKeys, isInitialing, isCreating, isMigrated, isFetched, errorMsg]),
-  );
-
-  useEffect(() => {
-    if (pin) {
-      navigation.navigate(routeNames.AddPin, {
-        action: 'login',
-      });
-    }
-  }, [pin]);
-
   const renderMain = () => {
-    if (isFetching) {
-      return <Wizard />;
-    }
     if (!errorMsg) {
-      if (isMigrating || !loadMasterKeys) {
-        return <SubComponent {...{ isFetched, statusConfigs }} />;
-      }
-      if (masterKeys.length === 0) {
-        return <Welcome />;
+      if (!loadMasterKeys) {
+        return <SubComponent {...{ statusConfigs }} />;
       }
     }
     return (
@@ -349,6 +241,8 @@ const enhance = (WrappedComp) => (props) => {
 
 export default compose(
   withDetectStatusNetwork,
+  withWizard,
   withPin,
+  withWelcome,
   enhance,
 );

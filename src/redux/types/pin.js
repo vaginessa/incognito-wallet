@@ -6,6 +6,8 @@ const n = genNamspace('PIN');
 const TYPES = {
   UPDATE: n('NEW'),
   DELETE: n('DELETE'),
+  LOADING: n('LOADING'),
+  AUTHEN: n('AUTHEN'),
 };
 
 export default TYPES;

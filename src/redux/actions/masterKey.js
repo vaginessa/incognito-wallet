@@ -115,7 +115,6 @@ export const initMasterKey = (masterKeyName, mnemonic) => async (dispatch) => {
       mnemonic,
       defaultMasterKey.getStorageName(),
     );
-    await syncServerAccounts(wallet);
     defaultMasterKey.mnemonic = wallet.Mnemonic;
     defaultMasterKey.wallet = wallet;
     wallet.RootName = masterKeyName;
