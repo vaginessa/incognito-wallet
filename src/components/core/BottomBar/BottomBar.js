@@ -4,6 +4,7 @@ import { TouchableOpacity } from '@src/components/core';
 import { Icon } from 'react-native-elements';
 import { COLORS, FONT } from '@src/styles';
 import PropTypes from 'prop-types';
+import { hasNotch } from 'react-native-device-info';
 
 const styled = StyleSheet.create({
   container: {
@@ -13,6 +14,7 @@ const styled = StyleSheet.create({
     justifyContent: 'center',
     paddingVertical: 10,
     position: 'relative',
+    marginBottom: 20,
   },
   text: {
     color: COLORS.white,

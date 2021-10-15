@@ -5,7 +5,6 @@ import { View } from 'react-native';
 import { useSelector } from 'react-redux';
 import { ScrollView, RefreshControl } from '@src/components/core';
 import { createForm } from '@src/components/core/reduxForm';
-import { NFTTokenBottomBar } from '@screens/PDexV3/features/NFTToken';
 import { ButtonBasic } from '@src/components/Button';
 import LoadingTx from '@src/components/LoadingTx';
 import { GroupActions } from '@screens/PDexV3/features/Share';
@@ -75,7 +74,6 @@ const OrderLimit = (props) => {
         </Form>
       </ScrollView>
       {!!ordering && <LoadingTx />}
-      <NFTTokenBottomBar />
     </>
   );
 };
