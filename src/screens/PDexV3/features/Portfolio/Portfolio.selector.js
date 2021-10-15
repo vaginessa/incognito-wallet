@@ -149,8 +149,8 @@ export const listShareSelector = createSelector(
         disableBtn,
         mapRewards,
         totalRewardUSD,
-        totalRewardUSDStr: '',
-        rewardUSDSymbolStr: '',
+        totalRewardUSDStr,
+        rewardUSDSymbolStr,
       };
     });
   },
