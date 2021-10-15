@@ -112,7 +112,7 @@ const PortfolioModal = ({ poolId, onWithdrawFeeLP }) => {
         </Row>
         <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
           {hookFactoriesDetail.map((hook) => (
-            <Hook key={hook?.label} {...hook} labelStyle={styles.leftText} valueTextStyle={styles.rightText} style={styles.wrapHook}/>
+            <Hook key={hook?.label} {...hook} labelStyle={styles.leftText} valueTextStyle={styles.rightText} style={styles.wrapHook} />
           ))}
         </ScrollView>
         {!validNFT && <Text style={styles.warning}>You cant withdraw your liquidity and reward now, your current NFT amount is zero</Text>}

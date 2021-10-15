@@ -119,6 +119,7 @@ export const listShareSelector = createSelector(
         {
           label: 'Principal',
           valueText: principalStr,
+          moreLines: true
         },
         {
           label: 'Share',
