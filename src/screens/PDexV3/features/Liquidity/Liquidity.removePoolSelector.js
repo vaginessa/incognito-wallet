@@ -2,8 +2,6 @@ import {createSelector} from 'reselect';
 import {liquiditySelector} from '@screens/PDexV3/features/Liquidity/Liquidity.selector';
 import {getPrivacyDataByTokenID as getPrivacyDataByTokenIDSelector} from '@src/redux/selectors/selectedPrivacy';
 import {getDataShareByPoolIdSelector} from '@screens/PDexV3/features/Portfolio/Portfolio.selector';
-import {getExchangeRate, getPoolSize} from '@screens/PDexV3';
-import helper from '@src/constants/helper';
 import {sharedSelector} from '@src/redux/selectors';
 import {getInputShareAmount} from '@screens/PDexV3/features/Liquidity/Liquidity.utils';
 import BigNumber from 'bignumber.js';
