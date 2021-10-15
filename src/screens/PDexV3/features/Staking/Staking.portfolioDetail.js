@@ -106,7 +106,9 @@ const PortfolioDetail = ({ onWithdrawReward, error, setError }) => {
   };
   const onSubmit = () => {
     if (!coin.withdrawReward.withdrawRewardNFT || coin.withdrawReward.withdrawRewardNFT.length === 0) return;
-    const params = coin.withdrawReward.withdrawRewardNFT.map(nftId => ({ nftID: nftId, stakingTokenID: coin.tokenId, fee: feeAmount }));
+    const params = coin.withdrawReward.withdrawRewardNFT.map(({ nftId,receiveTokenIds  }) => ({
+      nftID: nftId, stakingTokenID: coin.tokenId, fee: feeAmount, receiveTokenIDs: receiveTokenIds
+    }));
     onWithdrawReward(params);
   };
   const renderContent = () => {

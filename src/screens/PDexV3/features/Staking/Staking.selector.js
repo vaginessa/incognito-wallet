@@ -107,7 +107,7 @@ export const stakingCoinsSelector = createSelector(
       /**---------------------------WITHDRAWABLE REWARD------------------------------*/
       const withdrawRewardCoins = rewardsCoins.filter((_reward) =>
         (!!validNFT(_reward.nftId)) && Object.values(_reward.coins).some(reward => reward));
-      const withdrawRewardNFT = withdrawRewardCoins.map(({ nftId }) => nftId);
+      const withdrawRewardNFT = withdrawRewardCoins.map(({ nftId, coins }) => ({ nftId, receiveTokenIds: Object.keys(coins)}));
       const withdrawReward = {
         withdrawRewardCoins,
         withdrawRewardNFT,
