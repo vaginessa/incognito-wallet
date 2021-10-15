@@ -101,7 +101,7 @@ export const ampValueSelector = createSelector(
     };
     const input = inputAmount(formConfigsCreatePool.formName, formConfigsCreatePool.inputToken);
     const output = inputAmount(formConfigsCreatePool.formName, formConfigsCreatePool.outputToken);
-    const rawRate = new BigNumber(input.originalInputAmount).dividedBy(output.originalInputAmount);
+    const rawRate = new BigNumber(output.originalInputAmount).dividedBy(input.originalInputAmount);
     let estOutputStr = undefined;
     const estRate = new BigNumber(rawRate).minus(rate).abs();
     const compareValue = 1e-2;
