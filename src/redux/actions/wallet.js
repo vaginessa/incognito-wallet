@@ -74,39 +74,34 @@ export const reloadWallet = (accountName = '') => async (
   dispatch,
   getState,
 ) => {
+  let listAccount = [];
+  new Validator('reloadWallet-accountName', accountName).string();
+  const state = getState();
+  const masterKey = currentMasterKeySelector(state);
+  let wallet = masterKey.wallet;
+  let defaultAccount;
   try {
-    new Validator('accountName', accountName).string();
-    const state = getState();
-    const masterKey = currentMasterKeySelector(state);
-    let wallet = masterKey.wallet;
     await configsWallet(wallet);
     if (wallet?.Name) {
-      let listAccount = await wallet.listAccount();
-      if (listAccount.length > 0) {
-        await dispatch(actionSubmitOTAKeyForListAccount(wallet));
-      }
-      let defaultAccount =
+      listAccount = await wallet.listAccount();
+      defaultAccount =
         listAccount.find((item) => isEqual(item?.accountName, accountName)) ||
         listAccount[0];
       if (!defaultAccount?.accountName) {
         throw new Error(`Can not get default account ${accountName}`);
       }
-      const followed = await accountService.getFollowingTokens(
-        defaultAccount,
-        wallet,
-      );
       batch(() => {
         dispatch(setWallet(wallet));
         dispatch(setListAccount(listAccount));
         dispatch(setAccount(defaultAccount));
-        dispatch(setListToken(followed));
       });
-      await dispatch(setDefaultAccount(defaultAccount));
-      await dispatch(actionReloadFollowingToken(true));
-      return wallet;
     }
-    return false;
+    return wallet;
   } catch (e) {
     new ExHandler(e).showErrorToast();
+  } finally {
+    if (listAccount.length > 0) {
+      await dispatch(actionSubmitOTAKeyForListAccount(wallet));
+    }
   }
 };

@@ -13,9 +13,7 @@ import {
 } from '@src/redux/selectors/masterKey';
 import { switchMasterKey, updateMasterKey } from '@src/redux/actions/masterKey';
 import { storeWalletAccountIdsOnAPI } from '@services/wallet/WalletService';
-import {
-  accountSelector,
-} from '@src/redux/selectors';
+import { accountSelector } from '@src/redux/selectors';
 import { walletSelector } from '@src/redux/selectors/wallet';
 import { PRV } from '@src/constants/common';
 import { ExHandler } from '@src/services/exception';
@@ -319,7 +317,7 @@ export const actionReloadFollowingToken = (shouldLoadBalance = true) => async (
         }
       });
     }
-    await dispatch(setListToken(followed));
+    dispatch(setListToken(followed));
     return followed;
   } catch (error) {
     throw error;

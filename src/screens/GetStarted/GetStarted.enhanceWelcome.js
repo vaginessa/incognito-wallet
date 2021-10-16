@@ -1,31 +1,20 @@
 import React from 'react';
 import ErrorBoundary from '@src/components/ErrorBoundary';
-import uniqBy from 'lodash/uniqBy';
 import { LoadingContainer } from '@src/components/core';
-import LocalDatabase from '@utils/LocalDatabase';
 import Welcome from '@screens/GetStarted/Welcome';
+import { initialMasterKeySelector } from '@src/redux/selectors/masterKey';
+import { actionLoadInitial } from '@src/redux/actions/masterKey';
+
+import { useDispatch, useSelector } from 'react-redux';
 
 const enhance = (WrappedComp) => (props) => {
-  const [loading, setLoading] = React.useState(false);
-  const [masterKeyList, setMasterKeyList] = React.useState([]);
-  const loadMasterKey = async () => {
-    let list = [];
-    try {
-      await setLoading(true);
-      list = uniqBy(
-        await LocalDatabase.getMasterKeyList(),
-        (item) => item.name,
-      );
-      await setMasterKeyList(list);
-    } catch (error) {
-      console.log('error', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const { loading, masterKeyList } = useSelector(initialMasterKeySelector);
+  const dispatch = useDispatch();
+  const handleFetchData = () => dispatch(actionLoadInitial());
   React.useEffect(() => {
-    loadMasterKey();
+    handleFetchData();
   }, []);
+  console.log('loading', loading, 'masterKeyList', masterKeyList);
   if (loading) {
     return <LoadingContainer />;
   }

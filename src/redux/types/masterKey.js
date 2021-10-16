@@ -13,6 +13,7 @@ const TYPES = {
   INIT: n('INIT'),
   LOAD_ALL_ACCOUNTS: n('LOAD_ALL_ACCOUNTS'),
   SWITCHING: n('SWITCHING'),
+  LOADING_INITIAL: n('LOADING_INITIAL'),
 };
 
 export default TYPES;

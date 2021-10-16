@@ -11,6 +11,7 @@ const styled = StyleSheet.create({
   wrapper: {
     paddingHorizontal: 25,
     flex: 1,
+    paddingBottom: 0,
   },
 });
 

@@ -76,34 +76,10 @@ const SubComponent = React.memo((props) => {
 
 const enhance = (WrappedComp) => (props) => {
   const [statusConfigs, setStatusConfigs] = React.useState('');
-  const [loadMasterKeys, setLoadMasterKeys] = useState(false);
+  const [loading, setLoading] = React.useState(true);
+  const [errorMsg, setError] = React.useState('');
   const dispatch = useDispatch();
   const navigation = useNavigation();
-  const initialState = {
-    isInitialing: true,
-    isCreating: false,
-    errorMsg: null,
-  };
-  const [state, setState] = React.useState({
-    ...initialState,
-  });
-  const { errorMsg, isInitialing, isCreating } = state;
-
-  const getExistedWallet = async () => {
-    try {
-      const defaultAccountName = await accountServices.getDefaultAccountName();
-      const wallet = await dispatch(reloadWallet(defaultAccountName));
-      if (wallet) {
-        return wallet;
-      }
-      return null;
-    } catch (e) {
-      throw new CustomError(ErrorCode.wallet_can_not_load_existed_wallet, {
-        rawError: e,
-      });
-    }
-  };
-
   const getErrorMsg = (error) => {
     const errorMessage = new ExHandler(
       error,
@@ -113,102 +89,32 @@ const enhance = (WrappedComp) => (props) => {
     )?.writeLog()?.message;
     return errorMessage;
   };
-
-  const goHome = async () => {
-    try {
-      dispatch(initNotification());
-    } catch (error) {
-      new ExHandler(error).showErrorToast();
-    }
-  };
-
-  const initApp = async () => {
-    let errorMessage = null;
-    try {
-      await setState({ ...initialState, isInitialing: true });
-      const wallet = await getExistedWallet();
-      await dispatch(
-        actionLogEvent({
-          desc: 'LOAD_WALLET',
-        }),
-      );
-      await goHome({ wallet });
-    } catch (e) {
-      console.log('INIT APP ERROR', e);
-      errorMessage = getErrorMsg(e);
-    } finally {
-      await setState({
-        ...state,
-        isInitialing: false,
-        isCreating: false,
-        errorMsg: errorMessage,
-      });
-      dispatch(requestUpdateMetrics(ANALYTICS.ANALYTIC_DATA_TYPE.OPEN_APP));
-    }
-  };
-
   const configsApp = async () => {
     try {
-      await dispatch(
-        actionLogEvent({
-          restart: true,
-          desc: 'CONFIGS_APP',
-        }),
-      );
-      await setStatusConfigs('getting info');
+      await setLoading(true);
+      await setStatusConfigs('loading');
       await login();
-      await dispatch(
-        actionLogEvent({
-          desc: 'LOGIN',
-        }),
-      );
       await setStatusConfigs('getting configs');
       const [servers] = await new Promise.all([
         serverService.get(),
-        getFunctionConfigs().catch((e) => e),
-        dispatch(actionFetchHomeConfigs()),
-        dispatch(getPTokenList()),
-        dispatch(getInternalTokenList()),
         dispatch(actionFetchProfile()),
       ]);
       if (!servers || servers?.length === 0) {
         await serverService.setDefaultList();
       }
-      await dispatch(
-        actionLogEvent({
-          desc: 'CONFIGS',
-        }),
-      );
-      await setStatusConfigs('loading all master keys');
-      await dispatch(loadAllMasterKeys());
-      await dispatch(
-        actionLogEvent({
-          desc: 'LOAD_ALL_MASTER_KEYS',
-        }),
-      );
-      await setStatusConfigs('loading all master keys keychain');
-      await dispatch(loadAllMasterKeyAccounts());
-      await dispatch(
-        actionLogEvent({
-          desc: 'LOAD_ALL_MASTER_KEYS_ACCOUNTS',
-        }),
-      );
       navigation.navigate(routeNames.Home);
     } catch (error) {
       console.log('CONFIGS APP ERROR', error);
-      await setState({
-        ...state,
-        errorMsg: getErrorMsg(error),
-      });
+      await setError(getErrorMsg(error));
       throw error;
+    } finally {
+      setLoading(false);
     }
-    setLoadMasterKeys(true);
   };
 
   const onRetry = async () => {
     try {
       await configsApp();
-      await initApp();
     } catch {
       //
     }
@@ -219,16 +125,10 @@ const enhance = (WrappedComp) => (props) => {
   }, []);
 
   const renderMain = () => {
-    if (!errorMsg) {
-      if (!loadMasterKeys) {
-        return <SubComponent {...{ statusConfigs }} />;
-      }
+    if (loading) {
+      return <SubComponent {...{ statusConfigs }} />;
     }
-    return (
-      <WrappedComp
-        {...{ ...props, errorMsg, isInitialing, isCreating, onRetry }}
-      />
-    );
+    return <WrappedComp {...{ ...props, errorMsg, loading, onRetry }} />;
   };
 
   return (

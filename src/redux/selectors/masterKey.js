@@ -1,7 +1,9 @@
 import { createSelector } from 'reselect';
 
-const masterKeyReducerSelector = (state) => state.masterKey;
-
+const masterKeyReducerSelector = createSelector(
+  (state) => state.masterKey,
+  (masterKey) => masterKey,
+);
 export const masterlessKeyChainSelector = createSelector(
   masterKeyReducerSelector,
   (masterKey) =>
@@ -48,4 +50,9 @@ export const listAllMasterKeyAccounts = createSelector(
 export const switchingMasterKeySelector = createSelector(
   masterKeyReducerSelector,
   (masterKey) => masterKey.switching,
+);
+
+export const initialMasterKeySelector = createSelector(
+  masterKeyReducerSelector,
+  ({ initial }) => initial,
 );

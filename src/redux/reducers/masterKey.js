@@ -8,6 +8,10 @@ const initialState = {
   list: [],
   accounts: [],
   switching: false,
+  initial: {
+    loading: true,
+    masterKeyList: [],
+  },
 };
 
 function createMasterKey(newMasterKey, list) {
@@ -72,6 +76,15 @@ function saveMasterKeys(list) {
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
+  case types.LOADING_INITIAL: {
+    return {
+      ...state,
+      initial: {
+        ...state.initial,
+        ...action.payload,
+      },
+    };
+  }
   case types.LOAD_ALL:
     return {
       ...state,

@@ -25,6 +25,7 @@ import {
 import _ from 'lodash';
 import { clearWalletCaches } from '@services/cache';
 import accountService from '@services/wallet/accountService';
+import uniqBy from 'lodash/uniqBy';
 import { actionLogEvent } from '@src/screens/Performance';
 import { performance } from '@src/screens/Performance/Performance.utils';
 import { getPassphrase } from '@src/services/wallet/passwordService';
@@ -119,14 +120,13 @@ export const initMasterKey = (masterKeyName, mnemonic) => async (dispatch) => {
     defaultMasterKey.wallet = wallet;
     wallet.RootName = masterKeyName;
     const masterKeys = [defaultMasterKey, masterlessMasterKey];
-    await dispatch(initMasterKeySuccess(masterKeys));
-    await dispatch(switchMasterKey(defaultMasterKey.name));
-    await dispatch(followDefaultTokenForWallet(wallet));
     await saveWallet(wallet);
     await Promise.all([
       storeWalletAccountIdsOnAPI(wallet),
+      dispatch(initMasterKeySuccess(masterKeys)),
       saveWallet(masterlessWallet),
     ]);
+    dispatch(switchMasterKey(defaultMasterKey.name));
   } catch (error) {
     throw error;
   }
@@ -211,13 +211,13 @@ export const switchMasterKey = (masterKeyName, accountName) => async (
       .string();
     new Validator('switchMasterKey-accountName', accountName).string();
     clearWalletCaches();
-    await dispatch(switchhingMasterKey(true));
-    await dispatch(switchMasterKeySuccess(masterKeyName));
-    await dispatch(reloadWallet(accountName));
+    dispatch(switchhingMasterKey(true));
+    dispatch(switchMasterKeySuccess(masterKeyName));
+    dispatch(reloadWallet(accountName));
   } catch (error) {
     throw error;
   } finally {
-    await dispatch(switchhingMasterKey(false));
+    dispatch(switchhingMasterKey(false));
   }
 };
 
@@ -407,4 +407,22 @@ export const loadAllMasterKeyAccounts = () => async (dispatch, getState) => {
     }
   }
   await dispatch(loadAllMasterKeyAccountsSuccess(accounts));
+};
+
+export const actionLoadInitial = () => async (dispatch, getState) => {
+  let list = [];
+  try {
+    list = uniqBy(await LocalDatabase.getMasterKeyList(), (item) => item.name);
+    console.log('list', list);
+  } catch (error) {
+    console.log('error-actionLoadInitial', error);
+  } finally {
+    dispatch({
+      type: types.LOADING_INITIAL,
+      payload: {
+        loading: false,
+        masterKeyList: list,
+      },
+    });
+  }
 };
