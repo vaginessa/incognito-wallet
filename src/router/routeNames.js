@@ -195,4 +195,5 @@ export default {
   RemoveLPDetail: 'RemoveLPDetail',
   WithdrawFeeLPDetail: 'WithdrawFeeLPDetail',
   OrdeSwapDetail: 'OrdeSwapDetail',
+  MainTabBar: 'MainTabBar'
 };

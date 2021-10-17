@@ -24,9 +24,6 @@ const AppNavigator = createStackNavigator(
     [ROUTE_NAMES.WhyReceive]: navigationOptionsHandler(WhyReceive, {
       title: 'Receive',
     }),
-    [ROUTE_NAMES.PriceChartCrypto]: navigationOptionsHandler(PriceChartCrypto, {
-      title: 'Price chart',
-    }),
     ...RouteNoHeader,
   },
   {

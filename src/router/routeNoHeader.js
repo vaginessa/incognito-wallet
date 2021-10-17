@@ -136,6 +136,7 @@ import {
   RemovePoolConfirm,
 } from '@screens/PDexV3/features/Liquidity';
 import PairList from '@screens/PDexV3/features/PairList';
+import MainTabBar from '@screens/MainTabBar';
 
 const masterKeyRoutes = [
   {
@@ -319,6 +320,13 @@ const pDexV3Routes = [
   {
     screen: OrdeSwapDetail,
     name: routeNames.OrdeSwapDetail,
+  },
+];
+
+const homeRoutes = [
+  {
+    screen: MainTabBar,
+    name: routeNames.MainTabBar,
   },
 ];
 
@@ -682,6 +690,7 @@ const routes = [
   ...masterKeyRoutes,
   ...devRoutes,
   ...pDexV3Routes,
+  ...homeRoutes
 ];
 
 export const getRoutesNoHeader = () =>
