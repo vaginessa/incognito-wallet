@@ -3,17 +3,17 @@ import {View} from 'react-native';
 import {createMaterialBottomTabNavigator} from 'react-navigation-material-bottom-tabs';
 import {createAppContainer} from 'react-navigation';
 import {COLORS} from '@src/styles';
-import Home from '@screens/Home';
 import Shield from '@screens/Shield';
 import Trade from '@screens/PDexV3/features/Trade';
 import Liquidity from '@screens/PDexV3/features/Home/Home';
 import Wallet from '@screens/Wallet/features/Home/Wallet';
 import {HomeIcon, AssetIcon, LiquidityIcon, TradeIcon, ShieldIcon} from '@screens/MainTabBar/MainTabBar.icons';
+import TabHome from '@screens/MainTabBar/features/Home';
 
 const TabNavigator = createMaterialBottomTabNavigator(
   {
     Home: {
-      screen: Home,
+      screen: TabHome,
       navigationOptions: {
         tabBarIcon: ({ tintColor }) => {
           return (

@@ -18,7 +18,7 @@ const styled = StyleSheet.create({
     maxWidth: 120,
   },
   btnStyle: {
-    backgroundColor: COLORS.colorGrey,
+    backgroundColor: COLORS.lightGrey19,
     height: 40,
     paddingHorizontal: 15,
     width: '100%',
@@ -83,14 +83,14 @@ const SelectAccountButton = ({
       <ButtonBasic
         disabled={disabled}
         onPress={onNavSelectAccount}
-        customContent={
+        customContent={(
           <View style={styled.hook}>
             <Text numberOfLines={1} style={styled.name} ellipsizeMode="tail">
               {account?.accountName}
             </Text>
             <Ionicons name="ios-arrow-down" color={COLORS.black} size={13} />
           </View>
-        }
+        )}
         btnStyle={styled.btnStyle}
       />
     </View>

@@ -52,3 +52,7 @@ export { default as StarIcon } from './icon.star';
 export { default as ChainIcon } from './icon.chain';
 export { default as MaxIcon } from './icon.max';
 export { default as AddGroupIcon } from './icon.addGroup';
+export { default as QRCodeIcon } from './icon.qrCode';
+export { default as ChatIcon } from './icon.chatIcon';
+export { default as SearchThinIcon } from './icon.searchIcon';
+export { default as CircleArrowIcon } from './icon.circleArrow';

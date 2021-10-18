@@ -3,7 +3,7 @@ export default {
   RootSplash: 'RootSplash',
   RootMiner: 'RootMiner',
   // RootTab: 'RootTab',
-  Wallet: 'Wallet',
+  Wallet: 'Assets',
   Setting: 'Setting',
   NetworkSetting: 'NetworkSetting',
   CreateAccount: 'CreateAccount',
