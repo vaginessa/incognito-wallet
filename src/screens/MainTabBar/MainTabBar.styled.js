@@ -13,6 +13,10 @@ export const styled = StyleSheet.create({
 });
 
 export const homeStyled = StyleSheet.create({
+  wrapHeader: {
+    paddingTop: 10,
+    paddingHorizontal: DEFAULT_PADDING,
+  },
   header: {
     height: 56,
   },
@@ -77,5 +81,34 @@ export const homeStyled = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  percentBoxWidth: {
+    width: 68,
+  },
+  percentBox: {
+    height: 24,
+    paddingHorizontal: 10,
+    borderRadius: 4,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  wrapPoolBox: {
+    marginBottom: 24
+  },
+  itemBox: {
+    flex: 0.5
+  },
+  tab: {
+    marginTop: 32
+  },
+  tabDisable: {
+    color: COLORS.lightGrey35
+  },
+  tabHeaderText: {
+    ...FONT.STYLE.medium,
+    fontSize: FONT.SIZE.small,
+    color: COLORS.lightGrey36,
+    lineHeight: FONT.SIZE.small + 6,
+    marginVertical: 16
+  }
 });
 

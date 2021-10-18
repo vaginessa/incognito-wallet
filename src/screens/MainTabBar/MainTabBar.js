@@ -1,6 +1,5 @@
 import React from 'react';
 import {createMaterialBottomTabNavigator} from 'react-navigation-material-bottom-tabs';
-import {createAppContainer} from 'react-navigation';
 import {COLORS} from '@src/styles';
 import Shield from '@screens/Shield';
 import Trade from '@screens/PDexV3/features/Trade';
@@ -65,4 +64,4 @@ const TabNavigator = createMaterialBottomTabNavigator(
   }
 );
 
-export default createAppContainer(TabNavigator);
+export default TabNavigator;

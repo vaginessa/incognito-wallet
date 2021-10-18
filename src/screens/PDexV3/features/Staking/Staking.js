@@ -18,7 +18,6 @@ import {useSelector} from 'react-redux';
 import {defaultAccountSelector} from '@src/redux/selectors/account';
 import {stakingSelector} from '@screens/PDexV3/features/Staking';
 import {NFTTokenBottomBar} from '@screens/PDexV3/features/NFTToken';
-import ErrorBoundary from '@components/ErrorBoundary';
 
 const Reward = React.memo(() => {
   const navigation = useNavigation();

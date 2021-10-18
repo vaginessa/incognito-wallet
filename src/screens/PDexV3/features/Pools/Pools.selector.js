@@ -138,3 +138,8 @@ export const defaultPoolSelector = createSelector(
   listPoolsSelector,
   (pools) => pools[0]?.poolId,
 );
+
+export const listPoolsVerifySelector = createSelector(
+  listPoolsSelector,
+  (pools) => pools.filter(({ isVerify }) => !!isVerify),
+);
