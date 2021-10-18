@@ -13,7 +13,7 @@ import {createForm, RFTradeInputAmount as TradeInputAmount, validator} from '@co
 import styled from '@screens/PDexV3/features/Liquidity/Liquidity.styled';
 import {Field} from 'redux-form';
 import {AddBreakLine} from '@components/core';
-import {useDispatch, useSelector} from 'react-redux';
+import {batch, useDispatch, useSelector} from 'react-redux';
 import {liquidityActions, removePoolSelector} from '@screens/PDexV3/features/Liquidity/index';
 import {ButtonTrade} from '@components/Button';
 import SelectPercentAmount from '@components/SelectPercentAmount';
@@ -22,6 +22,7 @@ import {compose} from 'recompose';
 import withTransaction from '@screens/PDexV3/features/Liquidity/Liquidity.enhanceTransaction';
 import LPHistoryIcon from '@screens/PDexV3/features/Liquidity/Liquidity.iconHistory';
 import {MaxIcon} from '@components/Icons';
+import {useNavigation} from 'react-navigation-hooks';
 
 const initialFormValues = {
   inputToken: '',
@@ -157,13 +158,17 @@ const RemovePool = ({
   visible,
   error,
 }) => {
+  const navigation = useNavigation();
   const isFetching = useSelector(removePoolSelector.isFetchingSelector);
   const onSubmit = (params) => {
     typeof onRemoveContribute === 'function' && onRemoveContribute(params);
   };
   const onClose = () => {
-    onCloseModal();
-    onInitRemovePool();
+    batch(() => {
+      onCloseModal();
+      onInitRemovePool();
+      navigation.goBack();
+    });
   };
 
   const renderContent = () => (

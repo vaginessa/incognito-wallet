@@ -35,6 +35,7 @@ const SuccessModal = ({ onButtonPress, title, content, subContent, buttonText })
       {!!content && (<Text style={styled.content}>{content}</Text>)}
       {!!subContent && (<Text style={styled.content}>{subContent}</Text>)}
       <BTNPrimary title={buttonText} wrapperStyle={styled.button} onPress={onPress} />
+      <View style={{ height: 8 }} />
     </PureModalContent>
   );
 };
@@ -79,7 +80,8 @@ const styled = StyleSheet.create({
   },
   button: {
     width: '100%',
-    marginTop: 37
+    marginTop: 37,
+    marginBottom: 8
   }
 });
 

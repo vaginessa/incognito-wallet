@@ -6,7 +6,6 @@ import {getExchangeRate, getPairRate} from '@screens/PDexV3';
 import {allTokensIDsSelector} from '@src/redux/selectors/token';
 import {filterTokenList, getInputAmount, convertAmount} from '@screens/PDexV3/features/Liquidity/Liquidity.utils';
 import {formConfigsCreatePool} from '@screens/PDexV3/features/Liquidity/Liquidity.constant';
-import format from '@utils/format';
 import {listPoolsPureSelector} from '@screens/PDexV3/features/Pools';
 import {nftTokenDataSelector} from '@src/redux/selectors/account';
 import BigNumber from 'bignumber.js';
@@ -102,13 +101,7 @@ export const ampValueSelector = createSelector(
     };
     const input = inputAmount(formConfigsCreatePool.formName, formConfigsCreatePool.inputToken);
     const output = inputAmount(formConfigsCreatePool.formName, formConfigsCreatePool.outputToken);
-    let rawRate = getPairRate({
-      token1: inputToken,
-      token2: outputToken,
-      token1Value: input.originalInputAmount,
-      token2Value: output.originalInputAmount
-    });
-    rawRate = format.amountFull(rawRate, 0, false);
+    const rawRate = new BigNumber(output.originalInputAmount).dividedBy(input.originalInputAmount);
     let estOutputStr = undefined;
     const estRate = new BigNumber(rawRate).minus(rate).abs();
     const compareValue = 1e-2;

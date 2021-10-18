@@ -22,6 +22,7 @@ export const getPrivacyDataByTokenID = createSelector(
     memoize((tokenID) => {
       try {
         // ‘PRV’ is not a token
+        tokenID = (tokenID || '').toLowerCase();
         const internalTokenData =
           internalTokens?.find(
             (t) => t?.id !== CONSTANT_COMMONS.PRV_TOKEN_ID && t?.id === tokenID,

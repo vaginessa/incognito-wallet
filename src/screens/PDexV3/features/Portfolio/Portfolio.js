@@ -8,6 +8,7 @@ import {ACCOUNT_CONSTANT} from 'incognito-chain-web-js/build/wallet';
 import {RefreshControl} from '@components/core';
 import {actionFetch} from '@screens/PDexV3/features/Portfolio/Portfolio.actions';
 import {EmptyBookIcon} from '@components/Icons';
+import uniq from 'lodash/uniq';
 import {
   getDataShareByPoolIdSelector,
   isFetchingSelector,
@@ -24,14 +25,14 @@ const PortfolioList = withTransaction(React.memo(({ onCreateWithdrawFeeLP }) => 
   const onWithdrawFeeLP = (poolId) => {
     const dataShare = getDataShare(poolId);
     if (!dataShare && typeof onCreateWithdrawFeeLP !== 'function') return;
-    const { token1Reward, token2Reward, nftId, tokenId1, tokenId2 } = dataShare;
+    const { nftId, tokenId1, tokenId2, rewards } = dataShare;
     const params = {
       fee: ACCOUNT_CONSTANT.MAX_FEE_PER_TX,
-      withdrawTokenIDs: [tokenId1, tokenId2],
+      withdrawTokenIDs: uniq([tokenId1, tokenId2].concat(Object.keys(rewards))),
       poolPairID: poolId,
       nftID: nftId,
-      amount1: token1Reward,
-      amount2: token2Reward
+      amount1: 0,
+      amount2: 0
     };
     onCreateWithdrawFeeLP(params);
   };
