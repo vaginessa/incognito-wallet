@@ -14,7 +14,6 @@ export const styled = StyleSheet.create({
 
 export const homeStyled = StyleSheet.create({
   wrapHeader: {
-    paddingTop: 10,
     paddingHorizontal: DEFAULT_PADDING,
   },
   header: {

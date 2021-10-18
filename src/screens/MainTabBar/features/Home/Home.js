@@ -1,5 +1,5 @@
 import React, {memo} from 'react';
-import {ScrollView, View} from 'react-native';
+import {SafeAreaView, ScrollView, View} from 'react-native';
 import {homeStyled} from '@screens/MainTabBar/MainTabBar.styled';
 import {COLORS} from '@src/styles';
 import MainTab from '@screens/MainTabBar/features/Home/Home.tabs';
@@ -9,7 +9,7 @@ import Category from './Home.category';
 
 const TabHome = () => {
   return (
-    <View style={{ backgroundColor: COLORS.white, flex: 1 }}>
+    <SafeAreaView style={{ backgroundColor: COLORS.white, flex: 1 }}>
       <View style={homeStyled.wrapHeader}>
         <Header />
       </View>
@@ -18,7 +18,7 @@ const TabHome = () => {
         <Category />
         <MainTab />
       </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 };
 
