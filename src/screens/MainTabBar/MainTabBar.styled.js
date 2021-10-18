@@ -29,6 +29,8 @@ export const homeStyled = StyleSheet.create({
     paddingBottom: 16,
     paddingHorizontal: 16,
     backgroundColor: COLORS.white,
+  },
+  shadow: {
     shadowColor: COLORS.black,
     borderRadius: 8,
     shadowOffset: {
@@ -36,8 +38,9 @@ export const homeStyled = StyleSheet.create({
       height: 0,
     },
     shadowOpacity: 0.1,
-    shadowRadius: 2,
+    shadowRadius: 3,
     elevation: 2,
+    backgroundColor: COLORS.white
   },
   mediumBlack: {
     ...FONT.STYLE.medium,
@@ -51,13 +54,28 @@ export const homeStyled = StyleSheet.create({
     color: COLORS.lightGrey34,
     lineHeight: FONT.SIZE.superSmall + 3,
   },
+  regularBlack: {
+    ...FONT.STYLE.normal,
+    fontSize: FONT.SIZE.superSmall,
+    color: COLORS.black,
+    lineHeight: FONT.SIZE.superSmall + 6,
+    marginTop: 2,
+  },
   rowImg: {
     marginTop: 16,
     alignItems: 'flex-end'
   },
-  imgMedium: {
-    width: 40,
-    height: 40
-  }
+  paddingTopCategory: {
+    marginTop: 25
+  },
+  wrapCategory: {
+    paddingVertical: 16,
+    marginTop: 8
+  },
+  category: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 });
 

@@ -1,4 +1,5 @@
 import AddGroupIcon from '@components/Icons/icon.addGroup';
+import ProvideIcon from '@components/Icons/icon.provide';
 
 export { default as SearchIcon } from './icon.search';
 export { default as ClearIcon } from './icon.clear';
@@ -56,3 +57,15 @@ export { default as QRCodeIcon } from './icon.qrCode';
 export { default as ChatIcon } from './icon.chatIcon';
 export { default as SearchThinIcon } from './icon.searchIcon';
 export { default as CircleArrowIcon } from './icon.circleArrow';
+export { default as HomeIcon } from './icon.home';
+export { default as ShieldIcon } from './icon.shield';
+export { default as TradeIcon } from './icon.trade';
+export { default as LiquidityIcon } from './icon.liquidity';
+export { default as AssetsIcon } from './icon.assets';
+export { default as StakeIcon } from './icon.stake';
+export { default as ExplorerIcon } from './icon.explorer';
+export { default as FaucetIcon } from './icon.faucet';
+export { default as MintIcon } from './icon.mint';
+export { default as KeyChainIcon } from './icon.keychain';
+export { default as PowerIcon } from './icon.power';
+export { default as ProvideIcon } from './icon.provide';
