@@ -5,20 +5,14 @@ import { useNavigation } from 'react-navigation-hooks';
 import { settingSelector } from '@screens/Setting/Setting.selector';
 import AccountSection from '@screens/Setting/features/AccountSection';
 import routeNames from '@src/router/routeNames';
-import { LoadingContainer, Text } from '@src/components/core';
+import { Text } from '@src/components/core';
 import { SectionItem } from '@screens/Setting/features/Section';
 import {
   currentMasterKeySelector,
   masterlessKeyChainSelector,
-  switchingMasterKeySelector,
 } from '@src/redux/selectors/masterKey';
 import MainLayout from '@components/MainLayout';
 import { THEME } from '@src/styles';
-import {
-  createAccountSelector,
-  importAccountSelector,
-  switchAccountSelector,
-} from '@src/redux/selectors/account';
 import withKeychain from './Keychain.enhance';
 import RightBtn from './RightBtn';
 import BtnInfo from './BtnInfo';

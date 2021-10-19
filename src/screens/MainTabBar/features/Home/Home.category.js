@@ -154,10 +154,10 @@ const CategoryItem = ({ item }) => {
 };
 
 const Category = () => {
-  const renderMainCategory = (item) => <MainItem item={item} />;
-  const renderCategory = (item) => <CategoryItem item={item} />;
+  const renderMainCategory = (item) => <MainItem item={item} key={item.label} />;
+  const renderCategory = (item) => <CategoryItem item={item} key={item.label} />;
   const renderSections = (categories, index) => (
-    <Row style={[index !== 0 && homeStyled.paddingTopCategory]}>
+    <Row style={[index !== 0 && homeStyled.paddingTopCategory]} key={`category-${index}`}>
       {categories.map(renderCategory)}
     </Row>
   );
@@ -174,11 +174,11 @@ const Category = () => {
 };
 
 MainItem.propTypes = {
-  item: PropTypes.func.isRequired
+  item: PropTypes.object.isRequired
 };
 
 CategoryItem.propTypes = {
-  item: PropTypes.func.isRequired
+  item: PropTypes.object.isRequired
 };
 
 export default memo(Category);

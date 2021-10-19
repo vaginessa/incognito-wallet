@@ -46,7 +46,7 @@ const tabStyle = {
 const MainTab = () => {
   const dispatch = useDispatch();
   const pools = useSelector(listPoolsSelector);
-  const renderItem = (pool) => <Item pool={pool} />;
+  const renderItem = (pool) => <Item pool={pool} key={pool.poolId} />;
   React.useEffect(() => {
     dispatch(actionFetchPools());
   }, []);
