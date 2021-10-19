@@ -25,6 +25,7 @@ const SeparatorSection = () => {
   return (
     <Section
       label="Decimal Separator"
+      headerRight={<Switch onValueChange={togglePin} value={decimalSeparator === ','} />}
       customItems={[
         <View
           key="separator"
@@ -34,7 +35,6 @@ const SeparatorSection = () => {
           <Text style={[sectionStyle.desc]}>
             {'Use decimal comma\ninstead of point'}
           </Text>
-          <Switch onValueChange={togglePin} value={decimalSeparator === ','} />
         </View>,
       ]}
     />

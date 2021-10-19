@@ -16,38 +16,53 @@ import { ExHandler } from '@src/services/exception';
 import debounce from 'lodash/debounce';
 import Util from '@src/utils/Util';
 import { COLORS, FONT } from '@src/styles';
-import { SimpleCheckedIcon } from '@components/Icons';
 import Row from '@components/Row';
 import { switchMasterKey } from '@src/redux/actions/masterKey';
+import {CheckBoxIcon} from '@components/Icons';
 
 const itemStyled = StyleSheet.create({
+  wrapper: {
+    borderRadius: 8,
+    marginTop: 8,
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+    backgroundColor: COLORS.white
+  },
+  selected: {
+    borderColor: COLORS.blue5,
+    borderWidth: 1,
+  },
   container: {
     marginLeft: 10,
-    marginBottom: 30,
+  },
+  shadow: {
+    shadowColor: COLORS.black,
+    borderRadius: 8,
+    shadowOffset: {
+      width: 0,
+      height: 0,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 2,
+    elevation: 2,
+    backgroundColor: COLORS.white
   },
   name: {
-    fontFamily: FONT.NAME.bold,
-    fontSize: FONT.SIZE.superMedium,
-    lineHeight: FONT.SIZE.superMedium + 4,
+    fontFamily: FONT.NAME.medium,
+    fontSize: FONT.SIZE.regular,
+    lineHeight: FONT.SIZE.regular + 9,
     color: COLORS.black,
-    maxWidth: '50%',
-    marginBottom: 10,
   },
   address: {
     fontFamily: FONT.NAME.medium,
-    fontSize: FONT.SIZE.medium,
-    lineHeight: FONT.SIZE.medium + 5,
-    color: COLORS.colorGreyBold,
-  },
-  icon: {
-    width: 20,
-    height: 22,
-    justifyContent: 'center',
-    alignItems: 'center',
+    fontSize: FONT.SIZE.small,
+    lineHeight: FONT.SIZE.small + 7,
+    color: COLORS.lightGrey36,
+    marginTop: 4
   },
 });
 
-const AccountItem = ({
+const AccountItem = React.memo(({
   accountName,
   PrivateKey,
   PaymentAddress,
@@ -94,36 +109,43 @@ const AccountItem = ({
     }
   };
 
-  const Component = () => (
-    <View style={itemStyled.container}>
-      <Text style={itemStyled.name} numberOfLines={1}>
-        {accountName}
-      </Text>
-      <Text style={itemStyled.address} numberOfLines={1} ellipsizeMode="middle">
-        {PaymentAddress}
-      </Text>
-    </View>
-  );
-
   const isCurrentAccount = useMemo(() => PrivateKey === account.PrivateKey, [
     PrivateKey,
-    account,
+    account.PrivateKey,
   ]);
+
+  // eslint-disable-next-line react/prop-types
+  const Component = ({ style }) => (
+    <Row style={[itemStyled.wrapper, itemStyled.shadow, style]}>
+      <View style={itemStyled.container}>
+        <Row centerVertical spaceBetween>
+          <Text style={itemStyled.name} numberOfLines={1}>
+            {accountName}
+          </Text>
+          <CheckBoxIcon active={isCurrentAccount} />
+        </Row>
+        <Text style={itemStyled.address} numberOfLines={1} ellipsizeMode="middle">
+          {PaymentAddress}
+        </Text>
+      </View>
+    </Row>
+  );
 
   if (!switchingAccount) {
     return (
       <TouchableOpacity onPress={debounce(onSelectAccount, 100)}>
-        <Row>
-          <View style={itemStyled.icon}>
-            {isCurrentAccount && <SimpleCheckedIcon />}
-          </View>
-          <Component />
-        </Row>
+        <Component
+          style={[isCurrentAccount ? itemStyled.selected : null]}
+        />
       </TouchableOpacity>
     );
   }
 
   return <Component />;
+});
+
+AccountItem.defaultProps = {
+  handleSelectedAccount: null
 };
 
 AccountItem.propTypes = {

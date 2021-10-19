@@ -1,7 +1,6 @@
 import React from 'react';
 import {createMaterialBottomTabNavigator} from 'react-navigation-material-bottom-tabs';
 import {COLORS} from '@src/styles';
-import Liquidity from '@screens/PDexV3/features/Home/Home';
 import TabHome from '@screens/MainTabBar/features/Home';
 import TabShield from '@screens/MainTabBar/features/Shield';
 import TabAssets from '@screens/MainTabBar/features/Assets';

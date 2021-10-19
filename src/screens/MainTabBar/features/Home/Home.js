@@ -13,7 +13,7 @@ const TabHome = () => {
       <View style={homeStyled.wrapHeader}>
         <Header />
       </View>
-      <ScrollView style={homeStyled.wrapHeader}>
+      <ScrollView style={homeStyled.wrapHeader} showsVerticalScrollIndicator={false}>
         <Banner />
         <Category />
         <MainTab />

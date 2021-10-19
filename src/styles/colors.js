@@ -50,6 +50,7 @@ const COLORS = {
   lightGrey34: '#858383',
   lightGrey35: '#C0C0C0',
   lightGrey36: '#9C9C9C',
+  lightGrey37: '#DDDDDD',
   newGrey: '#8A8A8E',
   manateeGrey: '#959599',
 

@@ -63,7 +63,7 @@ const Home = ({ hideBackButton }) => {
   return (
     <>
       <View style={mainStyle.container}>
-        <Header title="Pools" accountSelectable hideBackButton={hideBackButton} />
+        <Header title="Liquidity" accountSelectable hideBackButton={hideBackButton} />
         <HeaderView />
         <Tabs rootTabID={ROOT_TAB_HOME} styledTabs={styled.tab}>
           <View tabID={TAB_POOLS_ID} label="Pools" {...tabStyled}>

@@ -1,6 +1,3 @@
-import AddGroupIcon from '@components/Icons/icon.addGroup';
-import ProvideIcon from '@components/Icons/icon.provide';
-
 export { default as SearchIcon } from './icon.search';
 export { default as ClearIcon } from './icon.clear';
 export { default as DeleteIcon } from './icon.delete';
@@ -69,3 +66,7 @@ export { default as MintIcon } from './icon.mint';
 export { default as KeyChainIcon } from './icon.keychain';
 export { default as PowerIcon } from './icon.power';
 export { default as ProvideIcon } from './icon.provide';
+export { default as ArrowFillIcon } from './icon.arrowFill';
+export { default as CheckBoxIcon } from './icon.checkBox';
+export { default as NetworkIcon } from './icon.network';
+export { default as SecurityIcon } from './icon.security';

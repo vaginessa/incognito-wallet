@@ -15,6 +15,7 @@ const DecimalDigitsSection = () => {
   return (
     <Section
       label="Decimal Digits"
+      headerRight={<Switch onValueChange={onToggleValue} value={toggle} />}
       customItems={[
         <View
           key="decimal-digits"
@@ -24,7 +25,6 @@ const DecimalDigitsSection = () => {
           <Text style={[sectionStyle.desc]}>
             {'Limit main asset\ndisplays to 5 decimal digits'}
           </Text>
-          <Switch onValueChange={onToggleValue} value={toggle} />
         </View>,
       ]}
     />

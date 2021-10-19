@@ -1,4 +1,6 @@
 import { createSelector } from 'reselect';
+import groupBy from 'lodash/groupBy';
+import {flatMap} from 'lodash';
 
 const masterKeyReducerSelector = (state) => state.masterKey;
 
@@ -48,4 +50,34 @@ export const listAllMasterKeyAccounts = createSelector(
 export const switchingMasterKeySelector = createSelector(
   masterKeyReducerSelector,
   (masterKey) => masterKey.switching,
+);
+
+export const groupMasterKeys = createSelector(
+  listAllMasterKeyAccounts,
+  (listAccount) => {
+    if (listAccount && listAccount.length > 0) {
+      const groupedMasterKeys = groupBy(listAccount, (item) => item.MasterKeyName);
+      const groupAccounts = flatMap(groupedMasterKeys, (child, key) => ({
+        name: key,
+        child,
+      }));
+      return groupAccounts.filter(({ name }) => name !== 'Masterless');
+    }
+    return [];
+  },
+);
+
+export const groupMasterless = createSelector(
+  listAllMasterKeyAccounts,
+  (listAccount) => {
+    if (listAccount && listAccount.length > 0) {
+      const groupedMasterKeys = groupBy(listAccount, (item) => item.MasterKeyName);
+      const groupAccounts = flatMap(groupedMasterKeys, (child, key) => ({
+        name: key,
+        child,
+      }));
+      return groupAccounts.filter(({ name }) => name === 'Masterless');
+    }
+    return [];
+  },
 );

@@ -62,9 +62,9 @@ const PINSection = ({ pin }) => {
           style={[sectionStyle.subItem]}
         >
           <Text style={[sectionStyle.desc]}>Passcode</Text>
-          <Switch onValueChange={handlePressToggle} value={!!pin} />
         </View>,
       ]}
+      headerRight={<Switch onValueChange={handlePressToggle} value={!!pin} />}
     />
   );
 };
