@@ -1,11 +1,12 @@
 import React from 'react';
 import {createMaterialBottomTabNavigator} from 'react-navigation-material-bottom-tabs';
 import {COLORS} from '@src/styles';
-import Shield from '@screens/Shield';
-import Trade from '@screens/PDexV3/features/Trade';
 import Liquidity from '@screens/PDexV3/features/Home/Home';
-import Wallet from '@screens/Wallet/features/Home/Wallet';
 import TabHome from '@screens/MainTabBar/features/Home';
+import TabShield from '@screens/MainTabBar/features/Shield';
+import TabAssets from '@screens/MainTabBar/features/Assets';
+import TabTrade from '@screens/MainTabBar/features/Trade';
+import TabHomeLP from '@screens/MainTabBar/features/HomeLP';
 import {HomeIcon, ShieldIcon, TradeIcon, LiquidityIcon, AssetsIcon} from '@components/Icons';
 
 const TabNavigator = createMaterialBottomTabNavigator(
@@ -19,7 +20,7 @@ const TabNavigator = createMaterialBottomTabNavigator(
       },
     },
     Shield: {
-      screen: Shield,
+      screen: TabShield,
       navigationOptions: {
         tabBarIcon: ({ focused }) => (
           <ShieldIcon active={focused} />
@@ -27,7 +28,7 @@ const TabNavigator = createMaterialBottomTabNavigator(
       }
     },
     Trade: {
-      screen: Trade,
+      screen: TabTrade,
       navigationOptions: {
         tabBarIcon: ({ focused }) => (
           <TradeIcon active={focused} />
@@ -35,7 +36,7 @@ const TabNavigator = createMaterialBottomTabNavigator(
       },
     },
     Liquidity: {
-      screen: Liquidity,
+      screen: TabHomeLP,
       navigationOptions: {
         tabBarIcon: ({ focused }) => (
           <LiquidityIcon active={focused} />
@@ -43,7 +44,7 @@ const TabNavigator = createMaterialBottomTabNavigator(
       },
     },
     Assets: {
-      screen: Wallet,
+      screen: TabAssets,
       navigationOptions: {
         tabBarIcon: ({ focused }) => (
           <AssetsIcon active={focused} />

@@ -8,12 +8,13 @@ import { styled } from './Shield.styled';
 import withShield from './Shield.enhance';
 
 const Shield = (props) => {
-  const { handleShield, handleWhyShield, ...rest } = props;
+  const { handleShield, handleWhyShield, hideBackButton, ...rest } = props;
   return (
-    <View style={styled.container}>
+    <View style={[styled.container]}>
       <Header
         title="Search coins"
         canSearch
+        hideBackButton={hideBackButton}
         rightHeader={<BtnQuestionDefault onPress={handleWhyShield} />}
       />
       <ListAllToken
@@ -34,10 +35,15 @@ const Shield = (props) => {
   );
 };
 
+Shield.defaultProps = {
+  hideBackButton: false
+};
+
 Shield.propTypes = {
   handleWhyShield: PropTypes.func.isRequired,
   handleShield: PropTypes.func.isRequired,
   tokensFactories: PropTypes.array.isRequired,
+  hideBackButton: PropTypes.bool
 };
 
 export default withShield(Shield);
