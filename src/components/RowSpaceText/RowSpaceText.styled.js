@@ -5,7 +5,6 @@ const styled = StyleSheet.create({
   hookContainer: {
     justifyContent: 'space-between',
     marginBottom: 8,
-    alignItems: 'center',
   },
   hookLabel: {
     fontFamily: FONT.NAME.medium,
@@ -13,11 +12,18 @@ const styled = StyleSheet.create({
     lineHeight: FONT.SIZE.small + 7,
     color: COLORS.lightGrey34,
   },
+  wrapValue: {
+    flexDirection:'row',
+    flex: 1,
+    flexWrap: 'wrap',
+    justifyContent: 'flex-end'
+  },
   hookValue: {
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.small,
     lineHeight: FONT.SIZE.small + 7,
     color: COLORS.black,
+    textAlign: 'right',
   },
 });
 

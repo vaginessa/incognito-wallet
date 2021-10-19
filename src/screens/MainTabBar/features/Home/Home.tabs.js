@@ -19,7 +19,7 @@ const Item = React.memo(({ pool }) => {
       <Text style={[
         homeStyled.mediumBlack,
         homeStyled.itemBox,
-        { color: perChange24hColor, textAlign: 'center' }]}
+        { color: perChange24hColor, textAlign: 'right', marginRight: 15 }]}
       >
         {formatUtils.toFixed(price, 9)}
       </Text>
@@ -33,7 +33,7 @@ const Item = React.memo(({ pool }) => {
 const Header = React.memo(() => (
   <Row>
     <Text style={[homeStyled.itemBox, homeStyled.tabHeaderText]}>Name</Text>
-    <Text style={[homeStyled.itemBox, homeStyled.tabHeaderText, { textAlign: 'center' }]}>Price</Text>
+    <Text style={[homeStyled.itemBox, homeStyled.tabHeaderText, { textAlign: 'right', marginRight: 15 }]}>Price</Text>
     <Text style={[homeStyled.percentBoxWidth, homeStyled.tabHeaderText, { textAlign: 'right' }]}>Change</Text>
   </Row>
 ));
