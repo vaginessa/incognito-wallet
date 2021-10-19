@@ -3,6 +3,7 @@ import {SafeAreaView, ScrollView, View} from 'react-native';
 import {homeStyled} from '@screens/MainTabBar/MainTabBar.styled';
 import {COLORS} from '@src/styles';
 import MainTab from '@screens/MainTabBar/features/Home/Home.tabs';
+import withHome from '@screens/Home/Home.enhance';
 import Header from './Home.header';
 import Banner from './Home.banner';
 import Category from './Home.category';
@@ -24,4 +25,4 @@ const TabHome = () => {
 
 TabHome.propTypes = {};
 
-export default memo(TabHome);
+export default withHome(memo(TabHome));
