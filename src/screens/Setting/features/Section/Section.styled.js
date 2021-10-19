@@ -39,7 +39,6 @@ export const sectionStyle = StyleSheet.create({
     fontSize: FONT.SIZE.medium,
     lineHeight: FONT.SIZE.medium + 9,
     color: COLORS.black,
-    marginBottom: 4,
   },
   desc: {
     fontFamily: FONT.NAME.medium,
@@ -47,8 +46,16 @@ export const sectionStyle = StyleSheet.create({
     lineHeight: FONT.SIZE.regular + 9,
     color: COLORS.lightGrey33,
     flex: 1,
+    marginLeft: 40
   },
   subDesc: {
     marginTop: 10,
   },
+  wrapIcon: {
+    width: 24,
+    height: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 16
+  }
 });

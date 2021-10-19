@@ -2,31 +2,49 @@ import { Text, TouchableOpacity, View } from '@src/components/core';
 import PropTypes from 'prop-types';
 import React from 'react';
 import {Row} from '@src/components';
+import {ArrowRightGreyIcon} from '@components/Icons';
 import { sectionStyle } from './Section.styled';
 
 export const SectionItem = (
-  { data: { title, desc, handlePress, styleItem = null } },
+  { data: { title, desc, handlePress, styleItem = null, icon: CMPIcon } },
   lastItem,
-) => (
-  <TouchableOpacity
-    style={[sectionStyle.item, lastItem && sectionStyle.lastItem, styleItem]}
-    onPress={handlePress}
-  >
-    <Row>
-      {title && <Text style={sectionStyle.label}>{title}</Text>}
-    </Row>
-    {desc && <Text style={sectionStyle.desc}>{desc}</Text>}
-  </TouchableOpacity>
-);
+) => {
+  return (
+    <TouchableOpacity
+      style={[sectionStyle.item, lastItem && sectionStyle.lastItem, styleItem]}
+      onPress={handlePress}
+    >
+      <Row centerVertical spaceBetween>
+        <Row centerVertical>
+          {!!CMPIcon && (
+            <View style={[sectionStyle.wrapIcon]}>
+              {CMPIcon}
+            </View>
+          )}
+          {title && <Text style={[sectionStyle.label]}>{title}</Text>}
+        </Row>
+        <ArrowRightGreyIcon style={{ width: 6, height: 10 }} />
+      </Row>
+      {desc && <Text style={[sectionStyle.desc]}>{desc}</Text>}
+    </TouchableOpacity>
+  );
+};
 
 const Section = (props) => {
-  const { label, items, customItems, headerRight, labelStyle } = props;
+  const { label, items, customItems, headerRight, labelStyle, headerIcon: HeaderIcon } = props;
   return (
     <View style={sectionStyle.container}>
-      <View style={sectionStyle.header}>
-        <Text style={[sectionStyle.label, labelStyle]}>{label}</Text>
+      <Row style={sectionStyle.header}>
+        <Row centerVertical>
+          {!!HeaderIcon && (
+            <View style={sectionStyle.wrapIcon}>
+              {HeaderIcon}
+            </View>
+          )}
+          <Text style={[sectionStyle.label, labelStyle]}>{label}</Text>
+        </Row>
         {headerRight}
-      </View>
+      </Row>
       {customItems ? (
         customItems
       ) : (
@@ -58,7 +76,8 @@ Section.defaultProps = {
   items: undefined,
   customItems: undefined,
   headerRight: undefined,
-  labelStyle: undefined
+  labelStyle: undefined,
+  headerIcon: undefined
 };
 Section.propTypes = {
   label: PropTypes.string,
@@ -69,6 +88,7 @@ Section.propTypes = {
   ]),
   headerRight: PropTypes.any,
   labelStyle: PropTypes.any,
+  headerIcon: PropTypes.any
 };
 
 SectionItem.defaultProps = {

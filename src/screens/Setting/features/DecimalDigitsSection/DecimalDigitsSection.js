@@ -7,6 +7,7 @@ import {
   decimalDigitsSelector,
   actionToggleDecimalDigits,
 } from '@screens/Setting';
+import {DecimalDigitIcon} from '@components/Icons';
 
 const DecimalDigitsSection = () => {
   const toggle = useSelector(decimalDigitsSelector);
@@ -16,6 +17,7 @@ const DecimalDigitsSection = () => {
     <Section
       label="Decimal Digits"
       headerRight={<Switch onValueChange={onToggleValue} value={toggle} />}
+      headerIcon={<DecimalDigitIcon />}
       customItems={[
         <View
           key="decimal-digits"

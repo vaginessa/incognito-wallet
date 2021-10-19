@@ -4,6 +4,7 @@ import routeNames from '@src/router/routeNames';
 import { SectionItem as Section } from '@screens/Setting/features/Section';
 import {actionConditionConsolidate} from '@screens/Streamline';
 import {useDispatch} from 'react-redux';
+import {ConsolidateIcon} from '@components/Icons';
 
 const UTXOSSection = () => {
   const navigation = useNavigation();
@@ -20,6 +21,7 @@ const UTXOSSection = () => {
         title: 'Consolidate',
         desc: 'Consolidate UTXOs for each keychain',
         handlePress: handleConsolidated,
+        icon: <ConsolidateIcon />
       }}
     />
   );

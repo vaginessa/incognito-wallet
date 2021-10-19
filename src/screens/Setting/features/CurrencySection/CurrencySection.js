@@ -4,6 +4,7 @@ import Section, { sectionStyle } from '@screens/Setting/features/Section';
 import { Text, View } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import { actionToggleCurrency, currencySelector } from '@screens/Setting';
+import {CurrencyIcon} from '@components/Icons';
 
 const CurrencySection = () => {
   const dispatch = useDispatch();
@@ -14,6 +15,7 @@ const CurrencySection = () => {
   return (
     <Section
       label='Currency display'
+      headerIcon={<CurrencyIcon />}
       headerRight={(
         <Switch
           onValueChange={onToggleValue}

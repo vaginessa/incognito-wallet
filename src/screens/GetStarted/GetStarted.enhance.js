@@ -307,7 +307,7 @@ const enhance = (WrappedComp) => (props) => {
         isFetched && //finish splash screen
         !errorMsg //no error
       ) {
-        navigation.navigate(routeNames.SelectAccount);
+        navigation.navigate(routeNames.MainTabBar);
       }
     }, [masterKeys, isInitialing, isCreating, isMigrated, isFetched, errorMsg]),
   );

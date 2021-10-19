@@ -9,6 +9,7 @@ import { sectionStyle } from '@screens/Setting/features/Section/Section.styled';
 import { CONSTANT_KEYS } from '@src/constants';
 import { useNavigation } from 'react-navigation-hooks';
 import Section from '@screens/Setting/features/Section';
+import {SecurityIcon} from '@components/Icons';
 
 const PINSection = ({ pin }) => {
   const [isBackedUpAccount, setBackupAccount] = useState(false);
@@ -55,6 +56,7 @@ const PINSection = ({ pin }) => {
   return (
     <Section
       label="Security"
+      headerIcon={<SecurityIcon />}
       customItems={[
         <View
           key="PIN"

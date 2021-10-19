@@ -9,7 +9,7 @@ import RemoveStorage from '@screens/Setting/features/RemoveStorage/RemoveStorage
 import ConvertCoinsSection from '@screens/Setting/features/ConvertCoinsSection';
 import DeviceInfo from 'react-native-device-info';
 import {ScrollView} from 'react-native';
-import {NetworkIcon} from '@components/Icons';
+import {NetworkIcon, SecurityIcon} from '@components/Icons';
 import PINSection from './features/PINSection';
 import SeparatorSection from './features/SeparatorSection';
 import DevSection from './features/DevSection';
@@ -36,12 +36,13 @@ const Setting = () => {
         navigation?.navigate(routeNames.NetworkSetting, {
           onReloadedNetworks: actionFetchServers,
         }),
-      icon: NetworkIcon
+      icon: <NetworkIcon />
     },
     {
       title: 'NFT Token',
       desc: 'Manage keychain\'s nft token',
       handlePress: () => navigation?.navigate(routeNames.NFTToken),
+      icon: <SecurityIcon />
     },
   ];
 
