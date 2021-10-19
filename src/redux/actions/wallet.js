@@ -3,7 +3,11 @@ import { batch } from 'react-redux';
 import { configsWallet } from '@src/services/wallet/WalletService';
 import accountService from '@src/services/wallet/accountService';
 import type from '@src/redux/types/wallet';
-import { setListAccount, setAccount } from '@src/redux/actions/account';
+import {
+  setListAccount,
+  setAccount,
+  actionUpdateDefaultAccount,
+} from '@src/redux/actions/account';
 import { currentMasterKeySelector } from '@src/redux/selectors/masterKey';
 import { walletSelector } from '@src/redux/selectors/wallet';
 import { updateMasterKey } from '@src/redux/actions/masterKey';
@@ -83,6 +87,7 @@ export const reloadWallet = (accountName = '') => async (
         dispatch(setWallet(wallet));
         dispatch(setListAccount(listAccount));
         dispatch(setAccount(defaultAccount));
+        dispatch(actionUpdateDefaultAccount(defaultAccount));
       });
     }
     return wallet;

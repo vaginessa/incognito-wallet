@@ -21,7 +21,6 @@ const initialState = {
 
 const setAccount = (list, account) => {
   let newList = [...list];
-  // console.log(TAG,'setAccount account = ',account);
   try {
     const foundIndex = list.findIndex(
       (a) => a.PaymentAddress === account.PaymentAddress,
@@ -32,7 +31,6 @@ const setAccount = (list, account) => {
   } catch (e) {
     console.error(e);
   }
-  // console.log(TAG,'setAccount end  = ',newList);
   return newList;
 };
 

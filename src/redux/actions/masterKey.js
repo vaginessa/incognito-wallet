@@ -19,6 +19,7 @@ import {
 import { getWalletAccounts } from '@services/api/masterKey';
 import { defaultPTokensIDsSelector } from '@src/redux/selectors/token';
 import {
+  currentMasterKeySelector,
   masterKeysSelector,
   masterlessKeyChainSelector,
   noMasterLessSelector,
@@ -48,7 +49,9 @@ const updateNetwork = async () => {
     id: 'mainnet',
   };
   const isMainnet = currentServer.id === 'mainnet';
-  MasterKeyModel.network = isMainnet ? 'mainnet' : 'testnet';
+  MasterKeyModel.network = isMainnet
+    ? 'mainnet'
+    : currentServer?.id || 'testnet';
 };
 
 const migrateData = async () => {
@@ -77,30 +80,6 @@ const initMasterKeySuccess = (data) => ({
   type: types.INIT,
   payload: data,
 });
-
-const followDefaultTokenForWallet = (wallet, accounts) => async (
-  dispatch,
-  getState,
-) => {
-  try {
-    const state = getState();
-    const defaultTokens = defaultPTokensIDsSelector(state);
-    let listAccount = [];
-    !accounts
-      ? (listAccount = [...wallet.MasterAccount.child])
-      : (listAccount = [...accounts]);
-    let task = listAccount.map((account) =>
-      accountService.addFollowingTokens(
-        defaultTokens.map((tokenID) => ({ tokenID })),
-        account,
-        wallet,
-      ),
-    );
-    await Promise.all(task);
-  } catch (error) {
-    console.log('WALLET-followDefaultTokens error', error);
-  }
-};
 
 export const initMasterKey = (masterKeyName, mnemonic) => async (dispatch) => {
   try {
@@ -138,8 +117,7 @@ const loadAllMasterKeysSuccess = (data) => ({
   payload: data,
 });
 
-export const loadAllMasterKeys = () => async (dispatch, getState) => {
-  console.time('LOAD ALL MASTER KEYS');
+export const loadAllMasterKeys = () => async (dispatch) => {
   try {
     await updateNetwork();
     let masterKeyList = _.uniqBy(
@@ -149,7 +127,6 @@ export const loadAllMasterKeys = () => async (dispatch, getState) => {
     for (let key of masterKeyList) {
       try {
         await key.loadWallet();
-        console.log('wallet name', toLower(key?.name));
         if (toLower(key?.name) === 'masterless') {
           continue;
         }
@@ -162,7 +139,6 @@ export const loadAllMasterKeys = () => async (dispatch, getState) => {
     console.log('loadAllMasterKeys error', error);
     throw error;
   }
-  console.time('LOAD ALL MASTER KEYS');
 };
 
 const switchMasterKeySuccess = (data) => ({
@@ -213,7 +189,6 @@ export const createMasterKey = (data) => async (dispatch) => {
     wallet.RootName = newMasterKey.name;
     await dispatch(createMasterKeySuccess(newMasterKey));
     await dispatch(switchMasterKey(data.name));
-    await dispatch(followDefaultTokenForWallet(wallet));
     await saveWallet(wallet);
     await storeWalletAccountIdsOnAPI(wallet);
     const listAccount = await wallet.listAccount();
@@ -320,7 +295,6 @@ export const importMasterKey = (data) => async (dispatch, getState) => {
     await dispatch(importMasterKeySuccess(newMasterKey));
     await dispatch(switchMasterKey(data.name));
     await dispatch(syncUnlinkWithNewMasterKey(newMasterKey));
-    await dispatch(followDefaultTokenForWallet(wallet));
     await saveWallet(wallet);
     const listAccount = await wallet.listAccount();
     await dispatch(actionSubmitOTAKeyForListAccount(wallet));
@@ -396,5 +370,48 @@ export const actionLoadInitial = () => async (dispatch, getState) => {
         masterKeyList: list,
       },
     });
+  }
+};
+
+export const actionSyncAccountMasterKey = () => async (dispatch, getState) => {
+  try {
+    const state = getState();
+    const masterKey = currentMasterKeySelector(state);
+    let wallet = masterKey.wallet;
+    await configsWallet(wallet);
+    let masterAccountInfo = await wallet.MasterAccount.getDeserializeInformation();
+    const serverAccounts = await getWalletAccounts(
+      masterAccountInfo.PublicKeyCheckEncode,
+      dispatch,
+    );
+    const accountIds = [];
+    for (const account of wallet.MasterAccount.child) {
+      const accountInfo = await account.getDeserializeInformation();
+      accountIds.push(accountInfo.ID);
+    }
+    const newAccounts = serverAccounts.filter(
+      (item) =>
+        !accountIds.includes(item.id) &&
+        !(masterKey.deletedAccountIds || []).includes(item.id),
+    );
+    if (newAccounts.length > 0) {
+      let accounts = [];
+      for (const account of newAccounts) {
+        try {
+          const newAccount = await wallet.importAccountWithId(
+            account.id,
+            account.name,
+          );
+          if (account?.name) {
+            accounts.push(newAccount);
+          }
+        } catch (error) {
+          console.log('IMPORT ACCOUNT WITH ID FAILED', error);
+        }
+      }
+      await wallet.save();
+    }
+  } catch (error) {
+    throw error;
   }
 };

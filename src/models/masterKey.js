@@ -2,6 +2,7 @@ import { Wallet } from 'incognito-chain-web-js/build/wallet';
 import { initWallet, loadWallet } from '@services/wallet/WalletService';
 import storage from '@services/storage';
 import { getPassphrase } from '@services/wallet/passwordService';
+import toLower from 'lodash/toLower';
 
 class MasterKeyModel {
   static network = 'mainnet';
@@ -40,10 +41,10 @@ class MasterKeyModel {
     this.mnemonic = wallet.Mnemonic;
     this.wallet = wallet;
     wallet.deletedAccountIds = this.deletedAccountIds || [];
-    if (this.name.toLowerCase() === 'unlinked') {
+    if (toLower(this.name) === 'unlinked') {
       this.name = 'Masterless';
       wallet.Name = this.getStorageName();
-      wallet.save();
+      await wallet.save();
     }
     wallet.Name = this.getStorageName();
     return wallet;

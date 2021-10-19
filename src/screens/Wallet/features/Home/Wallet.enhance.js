@@ -11,7 +11,6 @@ import {
 import { actionReloadFollowingToken } from '@src/redux/actions/account';
 import { CONSTANT_KEYS } from '@src/constants';
 import { useFocusEffect } from 'react-navigation-hooks';
-import { isGettingBalance as isGettingBalanceSelector } from '@src/redux/selectors/shared';
 import {
   unShieldStorageDataSelector,
   actionRemoveStorageDataDecentralized,
@@ -19,9 +18,13 @@ import {
 } from '@src/screens/UnShield';
 import { withdraw, updatePTokenFee } from '@src/services/api/withdraw';
 import { accountSelector } from '@src/redux/selectors';
-import { loadAllMasterKeys } from '@src/redux/actions/masterKey';
+import {
+  loadAllMasterKeys,
+  actionSyncAccountMasterKey,
+} from '@src/redux/actions/masterKey';
 import { reloadWallet } from '@src/redux/actions/wallet';
 import { compose } from 'recompose';
+import { accountServices } from '@src/services/wallet';
 
 export const WalletContext = React.createContext({});
 
@@ -91,15 +94,11 @@ const enhance = (WrappedComp) => (props) => {
   const handleFetchWalletData = async () => {
     try {
       await setIsReloading(true);
-      console.time('LOAD LIST TOKEN');
       await dispatch(loadAllMasterKeys());
-      console.timeEnd('LOAD LIST TOKEN');
-      console.time('RELOAD WALLET');
-      await dispatch(reloadWallet());
-      console.timeEnd('RELOAD WALLET');
-      console.time('LOAD BALANCE');
+      await dispatch(actionSyncAccountMasterKey());
+      const defaultAccountName = await accountServices.getDefaultAccountName();
+      await dispatch(reloadWallet(defaultAccountName));
       await dispatch(actionReloadFollowingToken(true));
-      console.timeEnd('LOAD BALANCE');
     } catch (error) {
       new ExHandler(error).showErrorToast();
     } finally {
