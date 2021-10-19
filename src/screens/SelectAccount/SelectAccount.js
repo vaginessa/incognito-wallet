@@ -13,7 +13,6 @@ import MainLayout from '@components/MainLayout';
 const SelectAccount = () => {
   const ignoredAccounts = useNavigationParam('ignoredAccounts') || [];
   const handleSelectedAccount = useNavigationParam('handleSelectedAccount');
-  console.log('handleSelectedAccount', handleSelectedAccount);
   const listAccount = useSelector(listAllMasterKeyAccounts);
   const [result, keySearch] = useSearchBox({
     data: listAccount,

@@ -19,25 +19,6 @@ import {
 import { styled } from './Trade.styled';
 import withTrade from './Trade.enhance';
 
-export const RightHeader = React.memo(
-  ({ callback, visibleBtnHistory, selectAccountable = true } = {}) => {
-    const navigation = useNavigation();
-    const handleNavOrderHistory = () =>
-      navigation.navigate(routeNames.TradeOrderHistory);
-    return (
-      <Row style={styled.rightHeader}>
-        {visibleBtnHistory && (
-          <BtnOrderHistory
-            style={styled.btnOrderHistory}
-            onPress={handleNavOrderHistory}
-          />
-        )}
-        {selectAccountable && <SelectAccountButton callback={callback} />}
-      </Row>
-    );
-  },
-);
-
 const Trade = (props) => {
   const { onRefresh, handlePressPool } = props;
   return (

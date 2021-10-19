@@ -86,11 +86,9 @@ const AccountItem = ({
       ).showErrorToast();
     } finally {
       await dispatch(actionSwitchAccountFetched());
-      console.log('handleSelectedAccount', handleSelectedAccount);
       if (typeof handleSelectedAccount === 'function') {
         handleSelectedAccount();
       }
-      await dispatch(actionSwitchAccountFetched());
     }
   };
 
