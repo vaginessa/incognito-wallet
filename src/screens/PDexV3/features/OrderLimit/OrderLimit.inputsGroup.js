@@ -132,6 +132,7 @@ const SellInput = React.memo(() => {
   const sellInputAmount = inputAmount(formConfigs.selltoken);
   const buyInputAmount = inputAmount(formConfigs.buytoken);
   const sellToken: SelectedPrivacy = sellInputAmount?.tokenData;
+  const { activedTab } = orderLimitData;
   const changeBuyAmount = (sellamount) => {
     let amount = convert.toNumber(sellamount, true) || 0;
     let originalAmount = convert.toOriginalAmount(
@@ -139,10 +140,29 @@ const SellInput = React.memo(() => {
       sellInputAmount?.pDecimals,
     );
     amount = convert.toHumanAmount(originalAmount, sellInputAmount?.pDecimals);
-    const buyAmount = format.toFixed(
-      new BigNumber(amount).multipliedBy(new BigNumber(customRate)).toNumber(),
-      buyInputAmount?.pDecimals,
-    );
+    let buyAmount = '';
+    switch (activedTab) {
+    case TAB_BUY_ID: {
+      buyAmount = format.toFixed(
+        new BigNumber(amount).dividedBy(new BigNumber(customRate)).toNumber(),
+          buyInputAmount?.pDecimals,
+      );
+      break;
+    }
+    case TAB_SELL_ID: {
+      buyAmount = format.toFixed(
+        new BigNumber(amount)
+          .multipliedBy(new BigNumber(customRate))
+          .toNumber(),
+          buyInputAmount?.pDecimals,
+      );
+      break;
+    }
+
+    default:
+      break;
+    }
+
     dispatch(actionSetPercent(0));
     dispatch(change(formConfigs.formName, formConfigs.buytoken, buyAmount));
     dispatch(focus(formConfigs.formName, formConfigs.buytoken));

@@ -3,10 +3,10 @@ import ErrorBoundary from '@src/components/ErrorBoundary';
 import {actionGetPDexV3Inst} from '@screens/PDexV3';
 import {batch, useDispatch} from 'react-redux';
 import {ExHandler} from '@services/exception';
-import Loading from '@screens/Dex/components/Loading';
 import {liquidityHistoryActions} from '@screens/PDexV3/features/LiquidityHistories';
 import {Toast} from '@components/core';
 import {actionFetch} from '@screens/PDexV3/features/Portfolio';
+import LoadingTx from '@components/LoadingTx/LoadingTx';
 
 const withTransaction = WrappedComp => props => {
   const dispatch = useDispatch();
@@ -133,7 +133,7 @@ const withTransaction = WrappedComp => props => {
           error,
         }}
       />
-      <Loading open={loading} />
+      {loading && <LoadingTx open={loading} />}
     </ErrorBoundary>
   );
 };
