@@ -1,4 +1,5 @@
 import React from 'react';
+import toLower from 'lodash/toLower';
 import PropTypes from 'prop-types';
 import { StyleSheet, Text, View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
@@ -55,22 +56,26 @@ const SelectAccountButton = ({
     });
   };
   const checkAccount = async () => {
-    if (ignoredAccounts.includes(account.name.toLowerCase())) {
-      const accountNames = accounts.map((item) => item.accountName);
-      const validAccounts = accountNames.filter(
-        (name) => !ignoredAccounts.includes(name.toLowerCase()),
-      );
-      if (validAccounts && validAccounts.length) {
-        await dispatch(
-          switchMasterKey(
-            validAccounts[0].MasterKeyName,
-            accountService.getAccountName(validAccounts[0]),
-          ),
+    try {
+      if (ignoredAccounts.includes(toLower(account?.name))) {
+        const accountNames = accounts.map((item) => item.accountName);
+        const validAccounts = accountNames.filter(
+          (name) => !ignoredAccounts.includes(toLower(name)),
         );
-        if (typeof callback === 'function') {
-          callback();
+        if (validAccounts && validAccounts.length) {
+          await dispatch(
+            switchMasterKey(
+              validAccounts[0].MasterKeyName,
+              accountService.getAccountName(validAccounts[0]),
+            ),
+          );
+          if (typeof callback === 'function') {
+            callback();
+          }
         }
       }
+    } catch (error) {
+      console.log('CHECK ACCOUNT ERROR', error);
     }
   };
 

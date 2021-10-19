@@ -2,7 +2,9 @@
 import React from 'react';
 import ErrorBoundary from '@src/components/ErrorBoundary';
 import { useDispatch } from 'react-redux';
+import { reset } from 'redux-form';
 import debounce from 'lodash/debounce';
+import { useFocusEffect } from 'react-navigation-hooks';
 import PropTypes from 'prop-types';
 import { ExHandler } from '@src/services/exception';
 import { actionFetchFee } from './EstimateFee.actions';
@@ -41,7 +43,7 @@ const enhance = (WrappedComp) => (props) => {
       if (isPortalToken && screen === 'UnShield') {
         return;
       }
-    
+
       await dispatch(
         actionFetchFee({
           amount,
@@ -63,9 +65,16 @@ const enhance = (WrappedComp) => (props) => {
       memo,
       isExternalAddress,
       isIncognitoAddress,
-      childSelectedPrivacy
+      childSelectedPrivacy,
     );
-  }, [address, amount, memo, isExternalAddress, isIncognitoAddress, childSelectedPrivacy]);
+  }, [
+    address,
+    amount,
+    memo,
+    isExternalAddress,
+    isIncognitoAddress,
+    childSelectedPrivacy,
+  ]);
   React.useEffect(() => {
     if (!isKeyboardVisible && _handleChangeForm && _handleChangeForm.current) {
       _handleChangeForm.current(
@@ -74,10 +83,17 @@ const enhance = (WrappedComp) => (props) => {
         memo,
         isExternalAddress,
         isIncognitoAddress,
-        childSelectedPrivacy
+        childSelectedPrivacy,
       );
     }
   }, [isKeyboardVisible]);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      dispatch(reset('changeFee'));
+    }, []),
+  );
+
   return (
     <ErrorBoundary>
       <WrappedComp {...{ ...props }} />

@@ -6,7 +6,6 @@ import Modal from '@src/components/Modal';
 import { ExHandler } from '@src/services/exception';
 import withFCM from '@src/screens/Notification/Notification.withFCM';
 import { useSelector, useDispatch } from 'react-redux';
-import { useFocusEffect } from 'react-navigation-hooks';
 import { BackHandler } from 'react-native';
 import AppUpdater from '@components/AppUpdater';
 import { useBackHandler } from '@src/components/UseEffect';
@@ -19,25 +18,17 @@ const enhance = (WrappedComp) => (props) => {
   const dispatch = useDispatch();
   const getHomeConfiguration = async () => {
     try {
-      await new Promise.all([
-        dispatch(actionFetchHomeConfigs()),
-        dispatch(actionCheckUnreadNews()),
-      ]);
+      dispatch(actionFetchHomeConfigs());
+      dispatch(actionCheckUnreadNews());
     } catch (error) {
       new ExHandler(error).showErrorToast();
     }
   };
-
   const handleGoBack = () => BackHandler.exitApp();
-
   useBackHandler({ handleGoBack });
-
-  useFocusEffect(
-    React.useCallback(() => {
-      getHomeConfiguration();
-    }, []),
-  );
-
+  React.useEffect(() => {
+    getHomeConfiguration();
+  }, []);
   return (
     <ErrorBoundary>
       <WrappedComp

@@ -14,7 +14,6 @@ const enhance = (WrappedComp) => (props) => {
   React.useEffect(() => {
     handleFetchData();
   }, []);
-  console.log('loading', loading, 'masterKeyList', masterKeyList);
   if (loading) {
     return <LoadingContainer />;
   }

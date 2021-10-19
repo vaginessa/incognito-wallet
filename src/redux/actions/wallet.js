@@ -1,23 +1,12 @@
+/* eslint-disable import/no-cycle */
 import { batch } from 'react-redux';
-import {
-  configsWallet,
-  loadListAccount,
-} from '@src/services/wallet/WalletService';
+import { configsWallet } from '@src/services/wallet/WalletService';
 import accountService from '@src/services/wallet/accountService';
 import type from '@src/redux/types/wallet';
-// eslint-disable-next-line import/no-cycle
-import {
-  setListAccount,
-  setDefaultAccount,
-  actionReloadFollowingToken,
-  setAccount,
-} from '@src/redux/actions/account';
+import { setListAccount, setAccount } from '@src/redux/actions/account';
 import { currentMasterKeySelector } from '@src/redux/selectors/masterKey';
 import { walletSelector } from '@src/redux/selectors/wallet';
-// eslint-disable-next-line import/no-cycle
 import { updateMasterKey } from '@src/redux/actions/masterKey';
-// eslint-disable-next-line import/no-cycle
-import { setListToken } from '@src/redux/actions/token';
 import { Validator } from 'incognito-chain-web-js/build/wallet';
 import { ExHandler } from '@src/services/exception';
 import isEqual from 'lodash/isEqual';
@@ -99,9 +88,5 @@ export const reloadWallet = (accountName = '') => async (
     return wallet;
   } catch (e) {
     new ExHandler(e).showErrorToast();
-  } finally {
-    if (listAccount.length > 0) {
-      await dispatch(actionSubmitOTAKeyForListAccount(wallet));
-    }
   }
 };
