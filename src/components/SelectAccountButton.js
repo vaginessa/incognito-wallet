@@ -40,7 +40,6 @@ const styled = StyleSheet.create({
 const SelectAccountButton = ({
   ignoredAccounts,
   disabled,
-  callback,
   handleSelectedAccount,
 }) => {
   const account = useSelector(accountSelector.defaultAccountSelector);
@@ -67,17 +66,12 @@ const SelectAccountButton = ({
             accountService.getAccountName(validAccounts[0]),
           ),
         );
-        if (typeof callback === 'function') {
-          callback();
-        }
       }
     }
   };
-
   React.useEffect(() => {
     checkAccount();
   }, []);
-
   return (
     <View style={styled.container}>
       <ButtonBasic
