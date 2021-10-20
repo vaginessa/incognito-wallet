@@ -3,6 +3,7 @@ import { initWallet, loadWallet } from '@services/wallet/WalletService';
 import storage from '@services/storage';
 import { getPassphrase } from '@services/wallet/passwordService';
 import toLower from 'lodash/toLower';
+import isEqual from 'lodash/isEqual';
 
 class MasterKeyModel {
   static network = 'mainnet';
@@ -12,6 +13,9 @@ class MasterKeyModel {
     this.mnemonic = data?.passphrase;
     this.isActive = !!data?.isActive;
     this.deletedAccountIds = data?.deletedAccountIds || [];
+    this.isMasterless =
+      isEqual(toLower(this?.name), 'masterless') ||
+      isEqual(toLower(this?.name), 'unlinked');
   }
 
   static getStorageName(name) {

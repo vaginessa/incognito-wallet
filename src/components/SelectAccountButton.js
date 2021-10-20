@@ -12,6 +12,7 @@ import { ButtonBasic } from '@src/components/Button';
 import { listAllMasterKeyAccounts } from '@src/redux/selectors/masterKey';
 import { switchMasterKey } from '@src/redux/actions/masterKey';
 import accountService from '@services/wallet/accountService';
+import { accountServices } from '@src/services/wallet';
 
 const styled = StyleSheet.create({
   container: {
@@ -43,6 +44,7 @@ const SelectAccountButton = ({
   disabled,
   handleSelectedAccount,
 }) => {
+  const [defaultAccountName, setDefaultAccountName] = React.useState('');
   const account = useSelector(accountSelector.defaultAccountSelector);
   const accounts = useSelector(listAllMasterKeyAccounts);
   const navigation = useNavigation();
@@ -53,6 +55,10 @@ const SelectAccountButton = ({
       ignoredAccounts,
       handleSelectedAccount,
     });
+  };
+  const fetchDefaultAccountName = async () => {
+    const accountName = await accountServices.getDefaultAccountName();
+    setDefaultAccountName(accountName);
   };
   const checkAccount = async () => {
     try {
@@ -75,8 +81,10 @@ const SelectAccountButton = ({
     }
   };
   React.useEffect(() => {
+    fetchDefaultAccountName();
     checkAccount();
   }, []);
+  console.log('defaultAccountName', defaultAccountName);
   return (
     <View style={styled.container}>
       <ButtonBasic
@@ -85,7 +93,7 @@ const SelectAccountButton = ({
         customContent={
           <View style={styled.hook}>
             <Text numberOfLines={1} style={styled.name} ellipsizeMode="tail">
-              {account?.accountName}
+              {account?.accountName || defaultAccountName}
             </Text>
             <Ionicons name="ios-arrow-down" color={COLORS.black} size={13} />
           </View>

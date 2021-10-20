@@ -124,14 +124,14 @@ export const loadAllMasterKeys = () => async (dispatch) => {
       await LocalDatabase.getMasterKeyList(),
       (item) => item.name,
     ).map((item) => new MasterKeyModel(item));
-    for (let key of masterKeyList) {
+    for (let masterKey of masterKeyList) {
       try {
-        await key.loadWallet();
-        if (toLower(key?.name) === 'masterless') {
+        await masterKey.loadWallet();
+        if (masterKey.isMasterless) {
           continue;
         }
       } catch (error) {
-        console.log('LOAD WALLET ERROR', key?.name);
+        console.log('LOAD WALLET ERROR', masterKey?.name);
       }
     }
     await dispatch(loadAllMasterKeysSuccess(masterKeyList));
@@ -347,12 +347,19 @@ export const loadAllMasterKeyAccounts = () => async (dispatch, getState) => {
   let accounts = [];
   for (const masterKey of masterKeys) {
     try {
+      await dispatch(actionSyncAccountMasterKey(masterKey));
       const masterKeyAccounts = await masterKey.getAccounts(true);
+      console.log(
+        'masterKeyAccounts',
+        masterKeyAccounts.length,
+        masterKey.name,
+      );
       accounts = [...accounts, ...masterKeyAccounts];
     } catch (error) {
       console.log('ERROR LOAD ACCOUNTS OF MASTER KEYS', error);
     }
   }
+  console.log('accounts', accounts.length);
   await dispatch(loadAllMasterKeyAccountsSuccess(accounts));
 };
 
@@ -373,10 +380,18 @@ export const actionLoadInitial = () => async (dispatch, getState) => {
   }
 };
 
-export const actionSyncAccountMasterKey = () => async (dispatch, getState) => {
+export const actionSyncAccountMasterKey = (defaultMasterKey) => async (
+  dispatch,
+  getState,
+) => {
   try {
     const state = getState();
-    const masterKey = currentMasterKeySelector(state);
+    let masterKey: MasterKeyModel =
+      defaultMasterKey || currentMasterKeySelector(state);
+    console.log('masterKey', masterKey.name, masterKey.isMasterless);
+    if (masterKey.isMasterless) {
+      return;
+    }
     let wallet = masterKey.wallet;
     await configsWallet(wallet);
     let masterAccountInfo = await wallet.MasterAccount.getDeserializeInformation();

@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useSearchBox } from '@src/components/Header';
 import { useNavigationParam } from 'react-navigation-hooks';
 import { flatMap, groupBy } from 'lodash';
@@ -9,11 +9,14 @@ import accountService from '@services/wallet/accountService';
 import GroupItem from '@screens/SelectAccount/GroupItem';
 import AccountItem from '@screens/SelectAccount/AccountItem';
 import MainLayout from '@components/MainLayout';
+import { ExHandler } from '@src/services/exception';
+import { loadAllMasterKeyAccounts } from '@src/redux/actions/masterKey';
 
 const SelectAccount = () => {
   const ignoredAccounts = useNavigationParam('ignoredAccounts') || [];
   const handleSelectedAccount = useNavigationParam('handleSelectedAccount');
   const listAccount = useSelector(listAllMasterKeyAccounts);
+  const dispatch = useDispatch();
   const [result, keySearch] = useSearchBox({
     data: listAccount,
     handleFilter: () => [
@@ -38,9 +41,20 @@ const SelectAccount = () => {
         child,
       }));
     }
-
     return [];
   }, [result, result.length]);
+
+  const handleLoadAllMasterKeyAccounts = () => {
+    try {
+      dispatch(loadAllMasterKeyAccounts());
+    } catch (error) {
+      new ExHandler(error).showErrorToast();
+    }
+  };
+
+  React.useEffect(() => {
+    handleLoadAllMasterKeyAccounts();
+  }, []);
 
   return (
     <MainLayout header="Search keychains" canSearch scrollable>
