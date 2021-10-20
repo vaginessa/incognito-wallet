@@ -12,7 +12,7 @@ import PropTypes from 'prop-types';
 import orderBy from 'lodash/orderBy';
 
 const Item = React.memo(({ pool }) => {
-  const { token1, token2, price, perChange24hToStr, perChange24hColor } = pool;
+  const { token1, token2, price, perChange24hToStr, perChange24hColor, perChange24hBGColor } = pool;
   return (
     <Row centerVertical style={homeStyled.wrapPoolBox}>
       <Text style={[homeStyled.mediumBlack, homeStyled.itemBox]}>{`${token1.symbol} / ${token2.symbol}`}</Text>
@@ -23,8 +23,8 @@ const Item = React.memo(({ pool }) => {
       >
         {formatUtils.toFixed(price, 9)}
       </Text>
-      <View style={[homeStyled.percentBox, homeStyled.percentBoxWidth, { backgroundColor: perChange24hColor }]}>
-        <Text style={[homeStyled.mediumBlack, { color: COLORS.white }]}>{perChange24hToStr}</Text>
+      <View style={[homeStyled.percentBox, homeStyled.percentBoxWidth, { backgroundColor: perChange24hBGColor }]}>
+        <Text style={[homeStyled.mediumBlack, { color: COLORS.white, fontSize: 12 }]}>{perChange24hToStr}</Text>
       </View>
     </Row>
   );

@@ -130,6 +130,13 @@ export const homeStyled = StyleSheet.create({
     alignItems: 'center',
     marginTop: 21,
     marginBottom: 13
+  },
+  mainVolume: {
+    paddingHorizontal: 16,
+    paddingTop: 14,
+    paddingBottom: 18
+  },
+  wrapMainVolume: {
   }
 });
 

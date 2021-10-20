@@ -26,9 +26,7 @@ const NotificationBar = ({ handleFetchNews }) => {
     handleFetchNews();
   }, []);
   if (!latestNew) return;
-
-  console.log('latestNew:::', latestNew);
-
+  
   return (
     <TouchableOpacity
       style={homeStyled.wrapNotify}
