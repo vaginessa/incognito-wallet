@@ -333,6 +333,9 @@ export const actionBookOrder = () => async (dispatch, getState) => {
       tokenId: tokenIDToSell,
       originalAmount: sellAmount,
     } = inputAmountSelector(state)(formConfigs.selltoken);
+    const { tokenId: tokenIDToBuy } = inputAmountSelector(state)(
+      formConfigs.buytoken,
+    );
     const { originalAmount: minAcceptableAmount } = inputAmountSelector(state)(
       formConfigs.buytoken,
     );
@@ -342,6 +345,7 @@ export const actionBookOrder = () => async (dispatch, getState) => {
       sellAmount,
       version: PrivacyVersion.ver2,
       minAcceptableAmount,
+      tokenIDToBuy,
     };
     const tx = await pDexV3Inst.createAndSendOrderRequestTx({ extra });
     return tx;
