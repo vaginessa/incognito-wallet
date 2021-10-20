@@ -2,17 +2,30 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { StyleSheet, Text, View } from 'react-native';
 import { TouchableOpacity } from '@src/components/core';
-import theme from '@src/styles/theme';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import { COLORS, THEME } from '@src/styles';
+import { COLORS, FONT } from '@src/styles';
+import { Row } from '@src/components';
+import { ArrowFillIcon } from '@components/Icons';
 
 const styled = StyleSheet.create({
   title: {
-    ...THEME.text.boldTextStyleSuperMedium,
+    ...FONT.STYLE.medium,
+    color: COLORS.black,
+    fontSize: FONT.SIZE.superMedium,
+    lineHeight: FONT.SIZE.superMedium + 10,
+    marginRight: 4,
   },
   group: {
-    marginBottom: 30
+    marginTop: 24
   },
+  wrapArrow: {
+    width: 16,
+    height: 16,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  child: {
+    marginTop: 16
+  }
 });
 
 const GroupItem = ({ name, child }) => {
@@ -24,17 +37,16 @@ const GroupItem = ({ name, child }) => {
 
   return (
     <View>
-      <TouchableOpacity style={[theme.FLEX.rowSpaceBetweenCenter, styled.group]} onPress={toggleExpand}>
-        <Text style={styled.title}>{name}</Text>
-        <Ionicons
-          name={expand ? 'ios-arrow-up' : 'ios-arrow-down'}
-          color={COLORS.newGrey}
-          size={20}
-          style={styled.arrow}
-        />
+      <TouchableOpacity style={styled.group} onPress={toggleExpand}>
+        <Row centerVertical>
+          <Text style={styled.title}>{name}</Text>
+          <View style={styled.wrapArrow}>
+            <ArrowFillIcon position={expand ? 'DOWN' : 'UP'} />
+          </View>
+        </Row>
       </TouchableOpacity>
       {expand && (
-        <View>
+        <View style={styled.child}>
           {child}
         </View>
       )}

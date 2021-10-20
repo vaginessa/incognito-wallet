@@ -1,3 +1,6 @@
+import AsyncStorage from '@react-native-community/async-storage';
+import {persistReducer} from 'redux-persist';
+import autoMergeLevel1 from 'redux-persist/es/stateReconciler/autoMergeLevel1';
 import {
   ACTION_FETCHING,
   ACTION_FETCHED,
@@ -20,7 +23,7 @@ const initialState = {
   followIds: [],
 };
 
-export default (state = initialState, action) => {
+const poolReducer = (state = initialState, action) => {
   switch (action.type) {
   case ACTION_RESET: {
     return { ...initialState };
@@ -81,3 +84,12 @@ export default (state = initialState, action) => {
     return state;
   }
 };
+
+const persistConfig = {
+  key: 'pools',
+  storage: AsyncStorage,
+  whitelist: ['listPools'],
+  stateReconciler: autoMergeLevel1,
+};
+
+export default persistReducer(persistConfig, poolReducer);

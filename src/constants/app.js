@@ -15,7 +15,19 @@ const DISABLED = {
   UNSHIELD_CENTRALIZED:   'unshield-centralized',
   SHIELD_DECENTRALIZED:   'shield-decentralized',
   SHIELD_CENTRALIZED:     'shield-centralized',
-  CONVERT_COINS_VER1:     'convert_coins_ver1'
+  CONVERT_COINS_VER1:     'convert_coins_ver1',
+  WALLET:                 'wallet',
+  MINT:                   'mint_coin',
+  CONVERT_COIN_VER1:      'convert_coins_ver1',
+  NODE:                   'node',
+  PROVIDE:                'pool',
+  LIQUIDITY:              'invest',
+  COMMUNITY:              'community',
+  STAKING_PDEX3:          'staking',
+  EXPLORER:               'explorer',
+  FAUCET:                 'faucet_prv',
+  KEY_CHAIN:              'keychain',
+  SETTING:                'setting'
 };
 
 const FEATURES_ROUTE_MAP = {

@@ -7,6 +7,7 @@ import { defaultAccountSelector } from '@src/redux/selectors/account';
 import accountServices from '@src/services/wallet/accountService';
 import { walletSelector } from '@src/redux/selectors/wallet';
 import { actionReloadFollowingToken } from '@src/redux/actions/account';
+import {ClearFillIcon} from '@components/Icons/icon.clear';
 
 const RemoveBalanceCached = () => {
   const [visible, setVisible] = React.useState(false);
@@ -44,6 +45,7 @@ const RemoveBalanceCached = () => {
           title: 'Clear balance cached',
           desc: 'Remove locally stored balance',
           handlePress: onPressRemove,
+          icon: <ClearFillIcon />
         }}
       />
     </ErrorBoundary>

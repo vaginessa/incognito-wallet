@@ -4,6 +4,7 @@ import Section, { sectionStyle } from '@screens/Setting/features/Section';
 import { Text, View } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import { actionToggleCurrency, currencySelector } from '@screens/Setting';
+import {CurrencyIcon} from '@components/Icons';
 
 const CurrencySection = () => {
   const dispatch = useDispatch();
@@ -14,6 +15,13 @@ const CurrencySection = () => {
   return (
     <Section
       label='Currency display'
+      headerIcon={<CurrencyIcon />}
+      headerRight={(
+        <Switch
+          onValueChange={onToggleValue}
+          value={toggle}
+        />
+      )}
       customItems={[
         <View
           key='currency-display'
@@ -23,10 +31,7 @@ const CurrencySection = () => {
           <Text style={sectionStyle.desc}>
             Display in USD instead of PRV
           </Text>
-          <Switch
-            onValueChange={onToggleValue}
-            value={toggle}
-          />
+
         </View>,
       ]}
     />

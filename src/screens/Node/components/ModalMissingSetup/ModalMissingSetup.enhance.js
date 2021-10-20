@@ -34,7 +34,7 @@ const enhance = WrappedComp => props => {
       visible: false,
       verifyProductCode
     }));
-    navigation.navigate(routeNames.Home);
+    navigation.navigate(routeNames.MainTabBar);
   };
 
   useFocusEffect(

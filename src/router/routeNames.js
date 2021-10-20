@@ -3,7 +3,7 @@ export default {
   RootSplash: 'RootSplash',
   RootMiner: 'RootMiner',
   // RootTab: 'RootTab',
-  Wallet: 'Wallet',
+  Wallet: 'Assets',
   Setting: 'Setting',
   NetworkSetting: 'NetworkSetting',
   CreateAccount: 'CreateAccount',
@@ -195,4 +195,5 @@ export default {
   RemoveLPDetail: 'RemoveLPDetail',
   WithdrawFeeLPDetail: 'WithdrawFeeLPDetail',
   OrdeSwapDetail: 'OrdeSwapDetail',
+  MainTabBar: 'MainTabBar'
 };

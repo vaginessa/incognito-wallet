@@ -1,6 +1,7 @@
 import React from 'react';
 import { SectionItem as Section } from '@screens/Setting/features/Section';
 import PropTypes from 'prop-types';
+import {ClearFillIcon} from '@components/Icons/icon.clear';
 import enhance from './RemoveStorage.enhance';
 
 const RemoveStorage = (props) => {
@@ -11,6 +12,7 @@ const RemoveStorage = (props) => {
         title: 'Clear history',
         desc: 'Remove locally stored data',
         handlePress: onPressRemove,
+        icon: <ClearFillIcon />
       }}
     />
   );

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import {Row} from '@src/components';
 import styled from '@components/RowSpaceText/RowSpaceText.styled';
 import {Text} from '@components/core';
-import {ActivityIndicator} from 'react-native';
+import {ActivityIndicator, View} from 'react-native';
 
 const RowSpaceText = (props) => {
   const { label, value, loading, style, leftStyle, rightStyle, customLeft, customRight } = props;
@@ -12,15 +12,15 @@ const RowSpaceText = (props) => {
       {customLeft ? customLeft : (
         <Text style={[styled.hookLabel, leftStyle]}>{`${label}:`}</Text>
       )}
-      <Row>
+      <View style={styled.wrapValue}>
         {
           loading ? (
             <ActivityIndicator size="small" />
           ) : (
-            customRight ? customRight : (<Text style={[styled.hookValue, rightStyle]}>{value}</Text>)
+            customRight ? customRight : (<Text style={[styled.hookValue, rightStyle]} numberOfLines={0}>{value}</Text>)
           )
         }
-      </Row>
+      </View>
     </Row>
   );
 };

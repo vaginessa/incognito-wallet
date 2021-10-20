@@ -14,6 +14,7 @@ import {activedTabSelector} from '@components/core/Tabs';
 import ReturnLP from '@screens/PDexV3/features/Share/Share.returnLP';
 import {listPoolsSelector, PoolsList} from '@screens/PDexV3/features/Pools';
 import {NFTTokenBottomBar} from '@screens/PDexV3/features/NFTToken';
+import PropTypes from 'prop-types';
 import withHome from './Home.enhance';
 import { ROOT_TAB_HOME, TAB_POOLS_ID, TAB_PORTFOLIO_ID } from './Home.constant';
 import { styled } from './Home.styled';
@@ -58,11 +59,11 @@ const tabStyled = {
   tabStyledEnabled: styled.tabEnable,
 };
 
-const Home = () => {
+const Home = ({ hideBackButton }) => {
   return (
     <>
       <View style={mainStyle.container}>
-        <Header title="Pools" accountSelectable />
+        <Header title="Liquidity" accountSelectable hideBackButton={hideBackButton} />
         <HeaderView />
         <Tabs rootTabID={ROOT_TAB_HOME} styledTabs={styled.tab}>
           <View tabID={TAB_POOLS_ID} label="Pools" {...tabStyled}>
@@ -78,7 +79,12 @@ const Home = () => {
   );
 };
 
+Home.defaultProps = {
+  hideBackButton: false
+};
+
 Home.propTypes = {
+  hideBackButton: PropTypes.bool
 };
 
 export default withHome(React.memo(Home));

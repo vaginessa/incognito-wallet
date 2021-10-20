@@ -69,16 +69,6 @@ const Home = (props) => {
           ))}
         </View>
       </ScrollView>
-      {/* {outdatedVersion && (
-        <BottomBar
-          text="Update your app to get full functionality"
-          onPress={onUpdateApp}
-        />
-      )} */}
-      {/* <DialogUpdateApp
-        visible={outdatedVersion}
-        onPress={onUpdateApp}
-      /> */}
     </View>
   );
 };
