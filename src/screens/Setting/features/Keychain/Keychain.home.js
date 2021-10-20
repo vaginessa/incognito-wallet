@@ -14,7 +14,6 @@ const Keychain = () => {
   const isMasterless = React.useMemo(() => (
     masterKey === masterlessKey
   ), [masterKey, masterlessKey]);
-  console.log('isMasterless', isMasterless);
 
   const Content = React.useMemo(() => {
     if (isMasterless) return <TabMasterless isMasterless={isMasterless} />;

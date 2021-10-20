@@ -1,3 +1,5 @@
+import LockArrowIcon from '@components/Icons/icon.lockArrow';
+
 export { default as SearchIcon } from './icon.search';
 export { default as ClearIcon } from './icon.clear';
 export { default as DeleteIcon } from './icon.delete';
@@ -76,3 +78,8 @@ export { default as ReportIcon } from './icon.report';
 export { default as ConsolidateIcon } from './icon.consolidate';
 export { default as ConvertIcon } from './icon.convert';
 export { default as SeparatorIcon } from './icon.separator';
+export { default as PaperPlusIcon } from './icon.paperPlus';
+export { default as LockArrowIcon } from './icon.lockArrow';
+export { default as IconDownload } from './icon.download';
+export { default as ArrowCurved } from './icon.arrowCurved';
+export { default as RestoreIcon } from './icon.restore';
