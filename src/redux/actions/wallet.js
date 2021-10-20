@@ -7,6 +7,7 @@ import {
   setListAccount,
   setAccount,
   actionUpdateDefaultAccount,
+  setDefaultAccount,
 } from '@src/redux/actions/account';
 import { currentMasterKeySelector } from '@src/redux/selectors/masterKey';
 import { walletSelector } from '@src/redux/selectors/wallet';
@@ -87,7 +88,7 @@ export const reloadWallet = (accountName = '') => async (
         dispatch(setWallet(wallet));
         dispatch(setListAccount(listAccount));
         dispatch(setAccount(defaultAccount));
-        dispatch(actionUpdateDefaultAccount(defaultAccount));
+        dispatch(setDefaultAccount(defaultAccount));
       });
     }
     return wallet;

@@ -94,10 +94,6 @@ const enhance = (WrappedComp) => (props) => {
   const handleFetchWalletData = async () => {
     try {
       await setIsReloading(true);
-      await dispatch(loadAllMasterKeys());
-      await dispatch(actionSyncAccountMasterKey());
-      const defaultAccountName = await accountServices.getDefaultAccountName();
-      await dispatch(reloadWallet(defaultAccountName));
       await dispatch(actionReloadFollowingToken(true));
     } catch (error) {
       new ExHandler(error).showErrorToast();

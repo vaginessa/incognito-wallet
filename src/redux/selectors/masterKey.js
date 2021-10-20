@@ -6,12 +6,7 @@ const masterKeyReducerSelector = createSelector(
 );
 export const masterlessKeyChainSelector = createSelector(
   masterKeyReducerSelector,
-  (masterKey) =>
-    masterKey.list.find(
-      (item) =>
-        item.name.toLowerCase() === 'unlinked' ||
-        item.name.toLowerCase() === 'masterless',
-    ),
+  (masterKey) => masterKey.list.find((item) => !!item?.isMasterless),
 );
 
 export const masterlessWalletSelector = createSelector(
@@ -23,8 +18,7 @@ export const masterlessWalletSelector = createSelector(
 
 export const noMasterLessSelector = createSelector(
   masterKeyReducerSelector,
-  (masterKey) =>
-    masterKey.list.filter((item) => item.name.toLowerCase() !== 'masterless'),
+  (masterKey) => masterKey.list.filter((item) => !item?.isMasterless),
 );
 
 export const masterKeysSelector = createSelector(

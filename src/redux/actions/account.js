@@ -163,11 +163,6 @@ export const setDefaultAccount = (account) => async (dispatch) => {
       accountService.getAccountName(account),
     );
     await dispatch(actionUpdateDefaultAccount(account));
-    let task = [
-      dispatch(actionSetSignPublicKeyEncode(account)),
-      dispatch(actionSetNFTTokenData(account)),
-    ];
-    await Promise.all(task);
   } catch (e) {
     new ExHandler(e).showErrorToast();
   }

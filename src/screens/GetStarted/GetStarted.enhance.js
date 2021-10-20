@@ -11,6 +11,12 @@ import { actionFetch as actionFetchProfile } from '@screens/Profile';
 import withPin from '@components/pin.enhance';
 import KeepAwake from 'react-native-keep-awake';
 import { getInternalTokenList, getPTokenList } from '@src/redux/actions/token';
+import {
+  actionSyncAccountMasterKey,
+  loadAllMasterKeys,
+} from '@src/redux/actions/masterKey';
+import { accountServices } from '@src/services/wallet';
+import { reloadWallet } from '@src/redux/actions/wallet';
 import withDetectStatusNetwork from './GetStarted.enhanceNetwork';
 import withWizard from './GetStarted.enhanceWizard';
 import withWelcome from './GetStarted.enhanceWelcome';
@@ -29,7 +35,20 @@ const enhance = (WrappedComp) => (props) => {
     )?.writeLog()?.message;
     return errorMessage;
   };
+  const loadWallet = async () => {
+    console.time('LOAD_WALLET');
+    try {
+      await dispatch(loadAllMasterKeys());
+      await dispatch(actionSyncAccountMasterKey());
+      const defaultAccountName = await accountServices.getDefaultAccountName();
+      await dispatch(reloadWallet(defaultAccountName));
+    } catch (error) {
+      throw error;
+    }
+    console.timeEnd('LOAD_WALLET');
+  };
   const configsApp = async () => {
+    console.time('CONFIGS_APP');
     try {
       await setLoading(true);
       await login();
@@ -38,6 +57,7 @@ const enhance = (WrappedComp) => (props) => {
         dispatch(actionFetchProfile()),
         dispatch(getPTokenList()),
         dispatch(getInternalTokenList()),
+        loadWallet(),
       ]);
       if (!servers || servers?.length === 0) {
         await serverService.setDefaultList();
@@ -50,6 +70,7 @@ const enhance = (WrappedComp) => (props) => {
     } finally {
       setLoading(false);
     }
+    console.timeEnd('CONFIGS_APP');
   };
 
   const onRetry = async () => {

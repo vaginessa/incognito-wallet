@@ -349,11 +349,6 @@ export const loadAllMasterKeyAccounts = () => async (dispatch, getState) => {
     try {
       await dispatch(actionSyncAccountMasterKey(masterKey));
       const masterKeyAccounts = await masterKey.getAccounts(true);
-      console.log(
-        'masterKeyAccounts',
-        masterKeyAccounts.length,
-        masterKey.name,
-      );
       accounts = [...accounts, ...masterKeyAccounts];
     } catch (error) {
       console.log('ERROR LOAD ACCOUNTS OF MASTER KEYS', error);
@@ -388,7 +383,6 @@ export const actionSyncAccountMasterKey = (defaultMasterKey) => async (
     const state = getState();
     let masterKey: MasterKeyModel =
       defaultMasterKey || currentMasterKeySelector(state);
-    console.log('masterKey', masterKey.name, masterKey.isMasterless);
     if (masterKey.isMasterless) {
       return;
     }
