@@ -203,7 +203,7 @@ const DevSection = () => {
           onPress={item?.onPress}
           style={[sectionStyle.subItem, index !== 0 ? { marginTop: 10 } : null]}
         >
-          <Text style={sectionStyle.desc}>{item?.desc}</Text>
+          <Text style={[sectionStyle.desc, { marginLeft: 0 }]}>{item?.desc}</Text>
           {!!item?.toggleSwitch && item?.switchComponent}
         </TouchableOpacity>
       ))}

@@ -5,7 +5,7 @@ export const styled = StyleSheet.create({
   container: {
     paddingHorizontal: 25,
     flex: 1,
-    marginTop: 10,
+    backgroundColor: COLORS.white
   },
   fullFlex: {
     flex: 1,

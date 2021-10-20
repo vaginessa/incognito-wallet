@@ -191,12 +191,12 @@ const FollowToken = React.memo((props) => {
     <View style={styledFollow.container}>
       <ScrollView
         showsVerticalScrollIndicator={false}
-        refreshControl={(
+        refreshControl={
           <RefreshControl
             refreshing={isReloading}
             onRefresh={() => onRefresh(true)}
           />
-        )}
+        }
         nestedScrollEnabled
       >
         <Token
@@ -287,13 +287,15 @@ const RightHeader = React.memo(() => {
   );
 });
 
-const Wallet = React.memo(() => {
+const Wallet = React.memo(({ hideBackButton }) => {
   const navigation = useNavigation();
-  const onGoBack = () => navigation.navigate(routeNames.Home);
+  const onGoBack = () => navigation.navigate(routeNames.MainTabBar);
+  const dispatch = useDispatch();
   return (
-    <View style={[styled.container]}>
+    <View style={[styled.container, { backgroundColor: COLORS.white }]}>
       <Header
         title="Assets"
+        hideBackButton={hideBackButton}
         rightHeader={<RightHeader />}
         style={styled.hook}
         onGoBack={onGoBack}
@@ -304,6 +306,12 @@ const Wallet = React.memo(() => {
   );
 });
 
-Wallet.propTypes = {};
+Wallet.defaultProps = {
+  hideBackButton: false,
+};
+
+Wallet.propTypes = {
+  hideBackButton: PropTypes.bool,
+};
 
 export default withWallet(Wallet);

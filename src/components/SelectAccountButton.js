@@ -20,7 +20,7 @@ const styled = StyleSheet.create({
     maxWidth: 120,
   },
   btnStyle: {
-    backgroundColor: COLORS.colorGrey,
+    backgroundColor: COLORS.lightGrey19,
     height: 40,
     paddingHorizontal: 15,
     width: '100%',
@@ -84,7 +84,6 @@ const SelectAccountButton = ({
     fetchDefaultAccountName();
     checkAccount();
   }, []);
-  console.log('defaultAccountName', defaultAccountName);
   return (
     <View style={styled.container}>
       <ButtonBasic

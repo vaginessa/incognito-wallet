@@ -1,28 +1,85 @@
 import React from 'react';
 import ErrorBoundary from '@src/components/ErrorBoundary';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { actionFetchDevices } from '@screens/Setting/Setting.actions';
-import { ExHandler } from '@src/services/exception';
+import { onClickView } from '@utils/ViewUtil';
+import { Alert, Toast } from '@components/core';
+import { actionSwitchAccount, removeAccount } from '@src/redux/actions/account';
+import { ExHandler } from '@services/exception';
+import { defaultAccountSelector } from '@src/redux/selectors/account';
+import ROUTE_NAMES from '@routers/routeNames';
+import { useNavigation } from 'react-navigation-hooks';
 
-const enhance = (WrappedComp) => (props) => {
+const withKeychain = (WrappedComp) => (props) => {
+  const [removing, setRemove] = React.useState(false);
   const dispatch = useDispatch();
-  const handleFetchData = async () => {
+  const navigation = useNavigation();
+  const defaultAccount = useSelector(defaultAccountSelector);
+  const handleFetchDevice = () => dispatch(actionFetchDevices());
+  const handleSwitchAccount = onClickView(async (account) => {
     try {
-      //
-    } catch (error) {
-      new ExHandler(error).showErrorToast();
-    } finally {
-      dispatch(actionFetchDevices());
+      if (defaultAccount?.name === account?.name) {
+        Toast.showInfo(`Your current keychain is "${account?.name}"`);
+        return;
+      }
+      await dispatch(
+        actionSwitchAccount(account?.accountName || account?.name),
+      );
+    } catch (e) {
+      new ExHandler(
+        e,
+        `Can not switch to keychain "${account?.name}", please try again.`,
+      ).showErrorToast();
     }
+  });
+  const handleExportKey = (account) => {
+    navigation.navigate(ROUTE_NAMES.ExportAccount, { account });
   };
-  React.useEffect(() => {
-    handleFetchData();
-  }, []);
+  const handleDelete = async (account) => {
+    Alert.alert(
+      `Delete keychain "${account?.name}"?`,
+      'Add it again using its private key or associated master key.',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'OK, delete it',
+          onPress: async () => {
+            try {
+              await setRemove(true);
+              await dispatch(removeAccount(account));
+              Toast.showSuccess('Keychain removed.');
+            } catch (e) {
+              new ExHandler(
+                e,
+                `Can not delete keychain ${account?.name}, please try again.`,
+              ).showErrorToast();
+            } finally {
+              await setRemove(false);
+            }
+          },
+        },
+      ],
+      { cancelable: false },
+    );
+  };
+
   return (
     <ErrorBoundary>
-      <WrappedComp {...props} />
+      <WrappedComp
+        {...{
+          ...props,
+          handleFetchDevice,
+          handleSwitchAccount,
+          handleExportKey,
+          handleDelete,
+          removing,
+        }}
+      />
     </ErrorBoundary>
   );
 };
 
-export default enhance;
+export default withKeychain;

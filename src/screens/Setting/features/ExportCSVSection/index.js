@@ -1,6 +1,7 @@
 import React from 'react';
 import { SectionItem as Section } from '@screens/Setting/features/Section';
 import PropTypes from 'prop-types';
+import {ReportIcon} from '@components/Icons';
 
 const ExportCSVSection = (props) => {
   const { handlePress } = props;
@@ -10,6 +11,7 @@ const ExportCSVSection = (props) => {
         title: 'Report',
         desc: 'Export balance changes of the current keychain',
         handlePress: handlePress,
+        icon: <ReportIcon />
       }}
     />
   );

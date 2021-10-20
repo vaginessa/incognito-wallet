@@ -93,7 +93,7 @@ const Home = ({
         customHeaderTitle={<BtnInfo />}
         accountSelectable
         onGoBack={() => {
-          navigation.navigate(routeNames.Home);
+          navigation.navigate(routeNames.MainTabBar);
         }}
       />
       {renderContent()}

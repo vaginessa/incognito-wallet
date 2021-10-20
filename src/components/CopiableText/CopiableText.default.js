@@ -32,7 +32,7 @@ const styled = StyleSheet.create({
 });
 
 const CopiableText = props => {
-  const { data } = props;
+  const { data, textStyle } = props;
   const [copied, setCopied] = React.useState(false);
   const handleCopyText = () => {
     Clipboard.setString(data);
@@ -40,7 +40,7 @@ const CopiableText = props => {
   };
   return (
     <View style={styled.container}>
-      <Text style={styled.text} numberOfLines={1} ellipsizeMode="middle">
+      <Text style={[styled.text, textStyle]} numberOfLines={1} ellipsizeMode="middle">
         {data}
       </Text>
       <ButtonBasic
@@ -53,8 +53,13 @@ const CopiableText = props => {
   );
 };
 
+CopiableText.defaultProps = {
+  textStyle: undefined
+};
+
 CopiableText.propTypes = {
   data: PropTypes.string.isRequired,
+  textStyle: PropTypes.any
 };
 
 export default CopiableText;

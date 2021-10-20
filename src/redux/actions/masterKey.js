@@ -354,7 +354,6 @@ export const loadAllMasterKeyAccounts = () => async (dispatch, getState) => {
       console.log('ERROR LOAD ACCOUNTS OF MASTER KEYS', error);
     }
   }
-  console.log('accounts', accounts.length);
   await dispatch(loadAllMasterKeyAccountsSuccess(accounts));
 };
 
