@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, BackHandler } from 'react-native';
+import {View, Text, BackHandler, SafeAreaView} from 'react-native';
 import { BtnCircleBack } from '@src/components/Button';
 import PropTypes from 'prop-types';
 import { useFocusEffect, useNavigation } from 'react-navigation-hooks';
@@ -126,20 +126,22 @@ const Header = ({
         },
       }}
     >
-      <View style={[styled.container, style]}>
-        {!hideBackButton && <BtnCircleBack onPress={_handleGoBack} />}
-        {renderHeaderTitle()}
-        {!!rightHeader && rightHeader}
-        {accountSelectable && (
-          <View>
-            <SelectAccountButton
-              disabled={disableAccountButton}
-              ignoredAccounts={ignoredAccounts}
-              handleSelectedAccount={handleSelectedAccount}
-            />
-          </View>
-        )}
-      </View>
+      <SafeAreaView>
+        <View style={[styled.container, style]}>
+          {!hideBackButton && <BtnCircleBack onPress={_handleGoBack} />}
+          {renderHeaderTitle()}
+          {!!rightHeader && rightHeader}
+          {accountSelectable && (
+            <View>
+              <SelectAccountButton
+                disabled={disableAccountButton}
+                ignoredAccounts={ignoredAccounts}
+                handleSelectedAccount={handleSelectedAccount}
+              />
+            </View>
+          )}
+        </View>
+      </SafeAreaView>
     </HeaderContext.Provider>
   );
 };

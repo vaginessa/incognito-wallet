@@ -5,10 +5,11 @@ import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
 import { useSelector } from 'react-redux';
 import CurrencySection from '@screens/Setting/features/CurrencySection/CurrencySection';
-import MainLayout from '@components/MainLayout/index';
 import RemoveStorage from '@screens/Setting/features/RemoveStorage/RemoveStorage';
 import ConvertCoinsSection from '@screens/Setting/features/ConvertCoinsSection';
 import DeviceInfo from 'react-native-device-info';
+import {ScrollView} from 'react-native';
+import {NetworkIcon, SecurityIcon} from '@components/Icons';
 import PINSection from './features/PINSection';
 import SeparatorSection from './features/SeparatorSection';
 import DevSection from './features/DevSection';
@@ -35,11 +36,13 @@ const Setting = () => {
         navigation?.navigate(routeNames.NetworkSetting, {
           onReloadedNetworks: actionFetchServers,
         }),
+      icon: <NetworkIcon />
     },
     {
       title: 'NFT Token',
       desc: 'Manage keychain\'s nft token',
       handlePress: () => navigation?.navigate(routeNames.NFTToken),
+      icon: <SecurityIcon />
     },
   ];
 
@@ -48,10 +51,10 @@ const Setting = () => {
   };
 
   return (
-    <MainLayout header="Settings" scrollable>
+    <ScrollView style={{ paddingHorizontal: 25 }} showsVerticalScrollIndicator={false}>
       <View>
-        {sectionItemFactories.map((item, id) => (
-          <SectionItem data={item} key={id} />
+        {sectionItemFactories.map((item) => (
+          <SectionItem data={item} key={`${item.title} ${item.desc}`} />
         ))}
         <PINSection />
         <SeparatorSection />
@@ -63,7 +66,6 @@ const Setting = () => {
         <ConvertCoinsSection />
         <RemoveStorage />
         <RemoveBalanceCached />
-
         {global.isDebug() && <DevSection />}
       </View>
       <Text style={settingStyle.textVersion}>
@@ -71,7 +73,7 @@ const Setting = () => {
           global.isDebug() ? ` (${DeviceInfo.getBuildNumber()})` : ''
         }`}
       </Text>
-    </MainLayout>
+    </ScrollView>
   );
 };
 

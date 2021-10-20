@@ -68,7 +68,7 @@ export const actionNavigate = (item, navigation) => async (
 
     switch (type) {
     case 'broadcast': {
-      navigation.navigate(routeNames.Home);
+      navigation.navigate(routeNames.MainTabBar);
       return;
     }
     case 'reward-node':

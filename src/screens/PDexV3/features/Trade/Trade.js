@@ -20,12 +20,13 @@ import { styled } from './Trade.styled';
 import withTrade from './Trade.enhance';
 
 const Trade = (props) => {
-  const { onRefresh, handlePressPool } = props;
+  const { onRefresh, handlePressPool, hideBackButton } = props;
   return (
     <View style={styled.container}>
       <Header
         title="pDex"
         accountSelectable
+        hideBackButton={hideBackButton}
         handleSelectedAccount={onRefresh}
       />
       <Tabs rootTabID={ROOT_TAB_TRADE} styledTabs={styled.styledTabs} useTab1>
@@ -43,10 +44,15 @@ const Trade = (props) => {
   );
 };
 
+Trade.defaultProps = {
+  hideBackButton: false
+};
+
 Trade.propTypes = {
   onRefresh: PropTypes.func.isRequired,
   refreshing: PropTypes.bool.isRequired,
   handlePressPool: PropTypes.func.isRequired,
+  hideBackButton: PropTypes.bool
 };
 
 export default withTrade(React.memo(Trade));

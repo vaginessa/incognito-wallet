@@ -6,6 +6,7 @@ import {
 } from '@src/resources/separator';
 import Section, { sectionStyle } from '@screens/Setting/features/Section';
 import { Text, View } from 'react-native';
+import {SeparatorIcon} from '@components/Icons';
 
 const SeparatorSection = () => {
   const [decimalSeparator, setDecimalSeparator] = useState(
@@ -25,6 +26,8 @@ const SeparatorSection = () => {
   return (
     <Section
       label="Decimal Separator"
+      headerRight={<Switch onValueChange={togglePin} value={decimalSeparator === ','} />}
+      headerIcon={<SeparatorIcon />}
       customItems={[
         <View
           key="separator"
@@ -34,7 +37,6 @@ const SeparatorSection = () => {
           <Text style={[sectionStyle.desc]}>
             {'Use decimal comma\ninstead of point'}
           </Text>
-          <Switch onValueChange={togglePin} value={decimalSeparator === ','} />
         </View>,
       ]}
     />

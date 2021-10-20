@@ -65,10 +65,13 @@ export const listPoolsSelector = createSelector(
         const perChangeSign = perChange24h > 0 ? '+' : '';
         const perChange24hToStr = `${perChangeSign}${perChange24h}%`;
         let perChange24hColor = COLORS.newGrey;
+        let perChange24hBGColor = COLORS.lightGrey35;
         if (perChange24h > 0) {
           perChange24hColor = COLORS.green;
+          perChange24hBGColor = COLORS.green;
         } else if (perChange24h < 0) {
           perChange24hColor = COLORS.red;
+          perChange24hBGColor = COLORS.green;
         }
         const token1 = getPrivacyDataByTokenID(token1Id);
         const token2 = getPrivacyDataByTokenID(token2Id);
@@ -91,6 +94,7 @@ export const listPoolsSelector = createSelector(
           priceChangeToAmount,
           perChange24hToStr,
           perChange24hColor,
+          perChange24hBGColor,
           isFollowed:
             followIds?.findIndex((_poolId) => poolId === _poolId) > -1 || false,
           poolTitle: `${token1?.symbol} / ${token2?.symbol}`,
@@ -137,4 +141,9 @@ export const isFetchingSelector = createSelector(
 export const defaultPoolSelector = createSelector(
   listPoolsSelector,
   (pools) => pools[0]?.poolId,
+);
+
+export const listPoolsVerifySelector = createSelector(
+  listPoolsSelector,
+  (pools) => pools.filter(({ isVerify }) => !!isVerify),
 );

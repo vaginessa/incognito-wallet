@@ -23,6 +23,7 @@ import {
 } from '@src/redux/selectors/account';
 import { currentMasterKeySelector } from '@src/redux/selectors/masterKey';
 import { settingSelector } from '@screens/Setting';
+import AccountItem from '@screens/SelectAccount/SelectAccount.item';
 import { accountSection } from './AccountSection.styled';
 
 const isNodeAccount = (name, devices) => {
@@ -30,6 +31,8 @@ const isNodeAccount = (name, devices) => {
     (device) => device.IsPNode && device.AccountName === name,
   );
 };
+
+
 
 const Item = (props) => {
   const {
