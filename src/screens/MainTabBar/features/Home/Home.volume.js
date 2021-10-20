@@ -29,12 +29,12 @@ const BigVolume = () => {
     return [];
   }, [pools]);
 
-  const renderItem = (item) => <Item item={item} />;
+  const renderItem = (item) => <Item item={item} key={item.poolId} />;
 
   if (!mainVolume || mainVolume.length === 0) return undefined;
   return (
     <Row style={[homeStyled.mainVolume, homeStyled.shadow]} spaceBetween>
-      {pools.map(renderItem)}
+      {mainVolume.map(renderItem)}
     </Row>
   );
 };
