@@ -83,3 +83,5 @@ export { default as LockArrowIcon } from './icon.lockArrow';
 export { default as IconDownload } from './icon.download';
 export { default as ArrowCurved } from './icon.arrowCurved';
 export { default as RestoreIcon } from './icon.restore';
+export { default as SpeakerIcon } from './icon.speaker';
+export { default as HamburgerIcon } from './icon.hamburger';

@@ -108,6 +108,28 @@ export const homeStyled = StyleSheet.create({
     color: COLORS.lightGrey36,
     lineHeight: FONT.SIZE.small + 6,
     marginVertical: 16
+  },
+  notify: {
+    position: 'absolute',
+    width: 8,
+    height: 8,
+    backgroundColor: COLORS.blue5,
+    right: 15,
+    borderRadius: 4
+  },
+  notifyText: {
+    ...FONT.STYLE.medium,
+    fontSize: FONT.SIZE.small,
+    color: COLORS.black,
+    lineHeight: FONT.SIZE.small + 3,
+    marginLeft: 13,
+  },
+  wrapNotify: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 21,
+    marginBottom: 13
   }
 });
 

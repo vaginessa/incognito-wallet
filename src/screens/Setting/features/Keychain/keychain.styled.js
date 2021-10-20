@@ -14,6 +14,8 @@ export const itemStyled = StyleSheet.create({
     backgroundColor: COLORS.red,
     borderTopRightRadius: 8,
     borderBottomRightRadius: 8,
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   mediumBlack: {
     ...FONT.STYLE.medium,

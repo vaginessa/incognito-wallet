@@ -5,11 +5,13 @@ import {defaultAccountSelector, listAccountSelector} from '@src/redux/selectors/
 import PropTypes from 'prop-types';
 import Swipeout from 'react-native-swipeout';
 import {Row} from '@src/components';
-import {ArrowRightGreyIcon, CheckBoxIcon} from '@components/Icons';
+import {ArrowRightGreyIcon, CheckBoxIcon } from '@components/Icons';
 import {isNodeAccount} from '@screens/Setting/features/Keychain/Keychain.ultil';
 import {settingSelector} from '@screens/Setting';
+import {DeleteFillIcon} from '@components/Icons/icon.delete';
 import withKeychain from './Keychain.enhance';
 import { itemStyled } from './keychain.styled';
+
 
 const Item = React.memo(({ account, handleDelete, handleSwitchAccount, handleExportKey }) => {
   const defaultAccount = useSelector(defaultAccountSelector);
@@ -23,7 +25,11 @@ const Item = React.memo(({ account, handleDelete, handleSwitchAccount, handleExp
         ...(handleDelete
           ? [
             {
-              component: <View style={itemStyled.wrapBin} />,
+              component: (
+                <View style={itemStyled.wrapBin}>
+                  <DeleteFillIcon />
+                </View>
+              ),
               backgroundColor: 'transparent',
               onPress: () => handleDelete(account),
             },

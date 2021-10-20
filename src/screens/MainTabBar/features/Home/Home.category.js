@@ -102,8 +102,7 @@ const MainItem = ({ item }) => {
   const Icon = item.icon;
   return (
     <TouchableOpacity
-      disabled={isDisabled}
-      style={[homeStyled.mainCategory, homeStyled.shadow, item.style]}
+      style={[homeStyled.mainCategory, homeStyled.shadow, item.style, isDisabled && { opacity: 0.7 }]}
       onPress={onFeaturePress}
     >
       <Text style={homeStyled.mediumBlack}>{item.label}</Text>
@@ -141,8 +140,7 @@ const CategoryItem = ({ item }) => {
   const Icon = item.icon;
   return (
     <TouchableOpacity
-      disabled={isDisabled}
-      style={homeStyled.category}
+      style={[homeStyled.category, isDisabled && { opacity: 0.7 }]}
       onPress={onFeaturePress}
     >
       <View style={{ height: 32 }}>

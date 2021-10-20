@@ -3,9 +3,28 @@ import {Row} from '@src/components';
 import {homeStyled} from '@screens/MainTabBar/MainTabBar.styled';
 import {ChatIcon, QRCodeIcon, SearchThinIcon as SearchIcon} from '@components/Icons';
 import SelectAccountButton from '@components/SelectAccountButton';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {actionToggleModal} from '@components/Modal';
 import AddressModal from '@screens/MainTabBar/features/Home/Home.qrCode';
+import {newsSelector} from '@screens/News';
+import routeNames from '@routers/routeNames';
+import {useNavigation} from 'react-navigation-hooks';
+import {View} from '@components/core';
+
+
+const Bulletin = React.memo(() => {
+  const navigation = useNavigation();
+  const { data, isReadAll } = useSelector(newsSelector);
+  const handleNavNotification = () => navigation.navigate(routeNames.News, {'lastNewsID': isReadAll});
+  return (
+    <View>
+      <ChatIcon style={homeStyled.headerIcon} onPress={handleNavNotification} />
+      {isReadAll !== 0 && (
+        <View style={homeStyled.notify} />
+      )}
+    </View>
+  );
+});
 
 const Header = React.memo(() => {
   const dispatch = useDispatch();
@@ -13,7 +32,7 @@ const Header = React.memo(() => {
     <Row centerVertical spaceBetween style={homeStyled.header}>
       <Row>
         <SearchIcon style={homeStyled.headerIcon} />
-        <ChatIcon style={homeStyled.headerIcon} />
+        <Bulletin  />
         <QRCodeIcon
           style={homeStyled.headerIcon}
           onPress={() => dispatch(actionToggleModal({

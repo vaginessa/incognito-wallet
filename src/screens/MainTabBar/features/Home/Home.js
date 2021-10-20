@@ -4,6 +4,7 @@ import {homeStyled} from '@screens/MainTabBar/MainTabBar.styled';
 import {COLORS} from '@src/styles';
 import MainTab from '@screens/MainTabBar/features/Home/Home.tabs';
 import withHome from '@screens/Home/Home.enhance';
+import NotificationBar from '@screens/MainTabBar/features/Home/Home.notificationBar';
 import Header from './Home.header';
 import Banner from './Home.banner';
 import Category from './Home.category';
@@ -16,6 +17,7 @@ const TabHome = () => {
       </View>
       <ScrollView style={homeStyled.wrapHeader} showsVerticalScrollIndicator={false}>
         <Banner />
+        <NotificationBar />
         <Category />
         <MainTab />
       </ScrollView>

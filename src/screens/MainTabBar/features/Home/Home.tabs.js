@@ -3,7 +3,7 @@ import {View} from 'react-native';
 import {Tabs, Text} from '@src/components/core';
 import {TABS} from '@screens/MainTabBar/features/Home/Home.constant';
 import {useDispatch, useSelector} from 'react-redux';
-import {actionFetchPools, listPoolsSelector} from '@screens/PDexV3/features/Pools';
+import {actionFetchPools, listPoolsVerifySelector} from '@screens/PDexV3/features/Pools';
 import {Row} from '@src/components';
 import formatUtils from '@utils/format';
 import {homeStyled} from '@screens/MainTabBar/MainTabBar.styled';
@@ -45,11 +45,12 @@ const tabStyle = {
 
 const MainTab = () => {
   const dispatch = useDispatch();
-  const pools = useSelector(listPoolsSelector);
+  const pools = useSelector(listPoolsVerifySelector);
   const renderItem = (pool) => <Item pool={pool} key={pool.poolId} />;
   React.useEffect(() => {
     dispatch(actionFetchPools());
   }, []);
+  if (!pools || pools.length === 0) return null;
   return (
     <Tabs rootTabID={TABS.TAB_HOME_ID} useTab1 styledTabList={homeStyled.tab}>
       <View tabID={TABS.TAB_HOME_INCREASE_ID} label="Increase price" {...tabStyle}>

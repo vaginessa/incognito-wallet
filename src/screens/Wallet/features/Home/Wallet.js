@@ -277,7 +277,7 @@ const RightHeader = React.memo(() => {
 
 const Wallet = React.memo(({ hideBackButton }) => {
   const navigation = useNavigation();
-  const onGoBack = () => navigation.navigate(routeNames.Home);
+  const onGoBack = () => navigation.navigate(routeNames.MainTabBar);
   const dispatch = useDispatch();
   useFocusEffect(
     React.useCallback(() => {
