@@ -3,10 +3,9 @@ import ErrorBoundary from '@src/components/ErrorBoundary';
 import {actionGetPDexV3Inst} from '@screens/PDexV3';
 import {batch, useDispatch} from 'react-redux';
 import {ExHandler} from '@services/exception';
-import {liquidityHistoryActions} from '@screens/PDexV3/features/LiquidityHistories';
 import {Toast} from '@components/core';
 import {actionFetch} from '@screens/PDexV3/features/Portfolio';
-import LoadingTx from '@components/LoadingTx/LoadingTx';
+import Loading from '@screens/DexV2/components/Loading';
 
 const withTransaction = WrappedComp => props => {
   const dispatch = useDispatch();
@@ -18,11 +17,8 @@ const withTransaction = WrappedComp => props => {
   };
   const onClose = () => {
     setVisible(false);
-    setTimeout(() => {
-      dispatch(liquidityHistoryActions.actionGetHistories());
-    }, 500);
   };
-  const onCreateContributes = async ({ fee, tokenId1, tokenId2, amount1, amount2, poolPairID, amp, nftId }) => {
+  const onCreateContributes = async ({ fee, tokenId1, tokenId2, amount1, amount2, poolPairID, amp, nftID }) => {
     if (loading) return;
     try {
       setLoading(true);
@@ -35,7 +31,7 @@ const withTransaction = WrappedComp => props => {
         amount2,
         poolPairID,
         amp,
-        nftId,
+        nftID,
       });
       onShowSuccess();
     } catch (error) {
@@ -133,7 +129,7 @@ const withTransaction = WrappedComp => props => {
           error,
         }}
       />
-      {loading && <LoadingTx open={loading} />}
+      {loading && <Loading open={loading} />}
     </ErrorBoundary>
   );
 };

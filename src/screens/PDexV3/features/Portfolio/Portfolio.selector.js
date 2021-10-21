@@ -51,7 +51,7 @@ export const listShareSelector = createSelector(
       const { amp, apy, token1Value: token1PoolValue, token2Value: token2PoolValue } = poolDetail || {};
       const token1 = getPrivacyDataByTokenID(tokenId1);
       const token2 = getPrivacyDataByTokenID(tokenId2);
-      const shareId = `${amp}-${poolId}`;
+      const shareId = `${nftId}-${poolId}`;
       const exchangeRateStr = getExchangeRate(
         token1,
         token2,
