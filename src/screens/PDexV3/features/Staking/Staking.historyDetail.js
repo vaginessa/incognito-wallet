@@ -12,7 +12,9 @@ import {itemStyle as itemStyled} from '@screens/PDexV3/features/Staking/Staking.
 import {Icon} from '@components/Token/Token.shared';
 
 const HistoryDetail = () => {
-  const { requestTx, respondTx, typeStr, amountStr, statusStr, nftid: nftId, timeStr, token, statusColor } = useNavigationParam('data');
+  const {
+    requestTx, respondTx, typeStr, amountStr, statusStr, nftid: nftId, timeStr, token, statusColor, showRewardList, rewards
+  } = useNavigationParam('data');
   const handleOpenLink = (txID) => {
     if (!txID) return;
     linkingService.openUrl(`${CONSTANT_CONFIGS.EXPLORER_CONSTANT_CHAIN_URL}/tx/${txID}`,);
@@ -56,6 +58,10 @@ const HistoryDetail = () => {
       label: 'Time',
       valueText: timeStr,
     },
+    ...(rewards || []).map((item, index) => ({
+      label: `Reward ${index + 1}`,
+      valueText: item.amountSymbolStr,
+    }))
   ];
   return (
     <View style={mainStyle.container}>
@@ -65,7 +71,9 @@ const HistoryDetail = () => {
           <Icon iconUrl={token.iconUrl} style={itemStyled.image} />
           <Text style={[itemStyled.title, { marginLeft: 12 }]}>{token.symbol}</Text>
         </Row>
-        <Text style={itemStyled.title}>{amountStr}</Text>
+        {!showRewardList && (
+          <Text style={itemStyled.title}>{amountStr}</Text>
+        )}
       </Row>
       <ScrollView>
         {historyFactories.map(data => (

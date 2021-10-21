@@ -8,6 +8,6 @@ export { default as liquidityHistorySelector } from './LiquidityHistories.select
 // eslint-disable-next-line import/no-cycle
 export { default as ContributeHistoryDetail } from './LiquidityHistories.contributeDetail';
 export { default as RemoveLPDetail } from './LiquidityHistories.removePoolDetail';
-export { default as WithdrawFeeLPDetail } from './LiquidityHistories.withdrawFeeDetail';
+export { default as WithdrawFeeLPDetail } from './LiquidityHistories.rewardDetail';
 
 export * from './LiquidityHistories.constant';
