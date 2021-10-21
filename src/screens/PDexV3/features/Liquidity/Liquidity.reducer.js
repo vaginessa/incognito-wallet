@@ -4,6 +4,7 @@ import {ACCOUNT_CONSTANT, PRVIDSTR} from 'incognito-chain-web-js/build/wallet';
 const contributeState = {
   isFetching: false,
   poolId: '',
+  nftId: '',
   data: undefined,
   inputToken: undefined,
   outputToken: undefined,
@@ -24,7 +25,7 @@ const createPoolState = {
 };
 
 const removePoolState = {
-  poolId: '',
+  shareId: '',
   isFetching: false,
   isFetched: false,
   inputToken: undefined,
@@ -47,13 +48,14 @@ const initialState = {
 
 const liquidityReducer = (state = initialState, action) => {
   switch (action.type) {
-  case TYPES.ACTION_SET_CONTRIBUTE_POOL_ID: {
-    const { poolId } = action.payload;
+  case TYPES.ACTION_SET_CONTRIBUTE_ID: {
+    const { poolId, nftId } = action.payload;
     return {
       ...state,
       contribute: {
         ...state.contribute,
         poolId,
+        nftId,
       }
     };
   }
@@ -146,12 +148,12 @@ const liquidityReducer = (state = initialState, action) => {
       }
     };
   }
-  case TYPES.ACTION_SET_REMOVE_POOL_ID: {
+  case TYPES.ACTION_SET_REMOVE_SHARE_ID: {
     return {
       ...state,
       removePool: {
         ...state.removePool,
-        poolId: action.payload,
+        shareId: action.payload,
       }
     };
   }

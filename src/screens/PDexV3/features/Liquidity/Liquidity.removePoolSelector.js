@@ -1,12 +1,13 @@
 import {createSelector} from 'reselect';
 import {liquiditySelector} from '@screens/PDexV3/features/Liquidity/Liquidity.selector';
 import {getPrivacyDataByTokenID as getPrivacyDataByTokenIDSelector} from '@src/redux/selectors/selectedPrivacy';
-import {getDataShareByPoolIdSelector} from '@screens/PDexV3/features/Portfolio/Portfolio.selector';
+import {
+  getDataByShareIdSelector,
+} from '@screens/PDexV3/features/Portfolio/Portfolio.selector';
 import {sharedSelector} from '@src/redux/selectors';
 import {getInputShareAmount} from '@screens/PDexV3/features/Liquidity/Liquidity.utils';
 import BigNumber from 'bignumber.js';
 import format from '@utils/format';
-import uniqBy from 'lodash/uniqBy';
 import convert from '@utils/convert';
 import {formConfigsRemovePool} from '@screens/PDexV3/features/Liquidity/Liquidity.constant';
 import {getValidRealAmountNFTSelector} from '@src/redux/selectors/account';
@@ -28,11 +29,6 @@ export const feeAmountSelector = createSelector(
     ({ feeAmount, feeToken, token: getPrivacyDataByTokenID(feeToken) }),
 );
 
-export const poolIDSelector = createSelector(
-  removePoolSelector,
-  ({ poolId }) => poolId,
-);
-
 export const tokenSelector = createSelector(
   removePoolSelector,
   getPrivacyDataByTokenIDSelector,
@@ -48,30 +44,24 @@ export const tokenSelector = createSelector(
 );
 
 export const shareDataSelector = createSelector(
-  poolIDSelector,
   removePoolSelector,
-  tokenSelector,
-  getDataShareByPoolIdSelector,
-  sharedSelector.isGettingBalance,
-  feeAmountSelector,
-  (poolId, removePool, { inputToken, outputToken }, getDataShareByPoolID, isGettingBalance, { token: feeToken }) => {
-    const shareData = getDataShareByPoolID(poolId);
-    if (!shareData) return {};
-    const { nftId } = shareData;
-    const tokens = uniqBy([inputToken, outputToken, feeToken], (token) => token.tokenId);
-    return {
-      ...shareData,
-      nftId,
-    };
+  getDataByShareIdSelector,
+  ({ shareId }, getDataByShareId) => {
+    const dataShare = getDataByShareId(shareId);
+    return dataShare || {};
   }
+);
+
+export const poolIDSelector = createSelector(
+  shareDataSelector,
+  ({ poolId }) => poolId,
 );
 
 export const maxShareAmountSelector = createSelector(
   poolIDSelector,
-  getDataShareByPoolIdSelector,
+  shareDataSelector,
   tokenSelector,
-  (poolId, getDataShareByPoolID, { inputToken, outputToken }) => {
-    const shareData = getDataShareByPoolID(poolId);
+  (poolId, shareData, { inputToken, outputToken }) => {
     if (!shareData) return {
       share: 0,
       totalShare: 0,
@@ -113,11 +103,9 @@ export const inputAmountSelector = createSelector(
 );
 
 export const nftTokenSelector = createSelector(
-  poolIDSelector,
-  getDataShareByPoolIdSelector,
+  shareDataSelector,
   getValidRealAmountNFTSelector,
-  (poolId, getDataShareByPoolId, getValidRealAmountNFT) => {
-    const { nftId: _nftId } = getDataShareByPoolId(poolId) || {};
+  ({ nftId: _nftId }, getValidRealAmountNFT) => {
     let _nftToken;
     const nftToken = getValidRealAmountNFT(_nftId);
     if (nftToken) {

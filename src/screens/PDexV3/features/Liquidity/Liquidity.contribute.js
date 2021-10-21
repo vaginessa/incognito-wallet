@@ -133,7 +133,7 @@ const ContributeButton = React.memo(({ onSubmit }) => {
       amount2: outputAmount.originalInputAmount,
       poolPairID: poolId,
       amp,
-      nftId: nftToken,
+      nftID: nftToken,
     };
     onSubmit(params);
   };
@@ -202,6 +202,9 @@ const Contribute = ({
 
 ContributeButton.propTypes = {
   onSubmit: PropTypes.func.isRequired,
+};
+
+Contribute.defaultProps = {
   error: ''
 };
 

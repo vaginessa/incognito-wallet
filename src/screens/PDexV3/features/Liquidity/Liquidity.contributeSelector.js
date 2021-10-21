@@ -1,11 +1,10 @@
 import {createSelector} from 'reselect';
 import {liquiditySelector} from '@screens/PDexV3/features/Liquidity/Liquidity.selector';
 import {getPrivacyDataByTokenID as getPrivacyDataByTokenIDSelector} from '@src/redux/selectors/selectedPrivacy';
-import {getDataShareByPoolIdSelector} from '@screens/PDexV3/features/Portfolio/Portfolio.selector';
+import {listShareSelector} from '@screens/PDexV3/features/Portfolio/Portfolio.selector';
 import {sharedSelector} from '@src/redux/selectors';
 import {getPoolSize} from '@screens/PDexV3';
 import {getInputAmount} from '@screens/PDexV3/features/Liquidity/Liquidity.utils';
-import uniqBy from 'lodash/uniqBy';
 import format from '@utils/format';
 import {formConfigsContribute} from '@screens/PDexV3/features/Liquidity/Liquidity.constant';
 import {nftTokenDataSelector} from '@src/redux/selectors/account';
@@ -52,29 +51,25 @@ export const feeAmountSelector = createSelector(
 );
 
 export const mappingDataSelector = createSelector(
-  poolDataSelector,
+  contributeSelector,
   getPrivacyDataByTokenIDSelector,
-  getDataShareByPoolIdSelector,
   tokenSelector,
   sharedSelector.isGettingBalance,
   feeAmountSelector,
   (
-    poolData,
+    { data: poolData, nftId },
     getPrivacyDataByTokenID,
-    getDataShareByPoolId,
     { inputToken, outputToken },
     isGettingBalance,
     { token: feeToken, feeAmount }
   ) => {
     if (!poolData || !inputToken || !outputToken) return {};
-    const { poolId, token1Value: token1PoolValue, token2Value: token2PoolValue } = poolData;
-    const { nftId } = getDataShareByPoolId(poolId) || {};
+    const { token1Value: token1PoolValue, token2Value: token2PoolValue } = poolData;
     const poolSize = getPoolSize(inputToken, outputToken, token1PoolValue, token2PoolValue);
     const isLoadingBalance =
       isGettingBalance.includes(inputToken?.tokenId)
       || isGettingBalance.includes(outputToken?.tokenId)
       || isGettingBalance.includes(feeToken?.tokenId);
-    const tokens = uniqBy([inputToken, outputToken, feeToken], (token) => token.tokenId);
 
     const hookFactories = [
       {
@@ -109,20 +104,31 @@ export const inputAmountSelector = createSelector(
 
 export const nftTokenSelector = createSelector(
   poolIDSelector,
-  getDataShareByPoolIdSelector,
   nftTokenDataSelector,
-  (poolId, getDataShareByPoolId, nftData) => {
-    const { list, nftToken } = nftData;
+  contributeSelector,
+  listShareSelector,
+  (
+    poolId,
+    nftData,
+    { nftId },
+    listShare,
+  ) => {
+    const { nftToken } = nftData;
     let res = {
       nftToken,
     };
-    const { nftId: _nftId } = getDataShareByPoolId(poolId) || {};
-    if (_nftId) {
-      const nft = (list || []).find(({ nftToken: _nftToken }) => _nftId === _nftToken);
-      if (nft) {
-        res.nftToken = nft.nftToken;
+    if (nftId) {
+      res.nftToken = nftId;
+      console.log('SANG TEST: 111', res);
+      return res;
+    }
+    if (listShare && listShare.length > 0) {
+      const pool = listShare.find(share => share.poolId === poolId);
+      if (pool && pool.nftId) {
+        res.nftToken = pool.nftId;
       }
     }
+    console.log('SANG TEST: 222', res);
     return res;
   }
 );
