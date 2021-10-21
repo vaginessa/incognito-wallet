@@ -74,7 +74,6 @@ const PortfolioModal = ({ shareId, onWithdrawFeeLP }) => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const data = useSelector(getDataByShareIdSelector)(shareId);
-  console.log('shareId:::: ', shareId);
   const onClose = () => dispatch(actionToggleModal());
   const onWithdrawPress = () => {
     batch(() => {
