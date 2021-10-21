@@ -25,7 +25,7 @@ const TabPools = React.memo(() => {
   const listPools = useSelector(listPoolsSelector);
   const onNavigateContribute = (poolId) => {
     batch(() => {
-      dispatch(liquidityActions.actionSetContributePoolID({ poolId }));
+      dispatch(liquidityActions.actionSetContributeID({ poolId, nftId: '' }));
       navigation.navigate(routeNames.ContributePool);
     });
   };

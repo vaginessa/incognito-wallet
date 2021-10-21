@@ -35,9 +35,9 @@ const actionFetchingContribute = ({ isFetching }) => ({
   payload: { isFetching }
 });
 
-const actionSetContributePoolID = ({ poolId }) => ({
-  type: TYPES.ACTION_SET_CONTRIBUTE_POOL_ID,
-  payload: { poolId },
+const actionSetContributeID = ({ poolId, nftId }) => ({
+  type: TYPES.ACTION_SET_CONTRIBUTE_ID,
+  payload: { poolId, nftId },
 });
 
 const actionSetContributePoolData = ({ data, inputToken, outputToken }) => ({
@@ -307,8 +307,8 @@ const actionFetchingRemovePool = ({ isFetching }) => ({
   payload: { isFetching },
 });
 
-const actionSetRemovePoolID = (payload) => ({
-  type: TYPES.ACTION_SET_REMOVE_POOL_ID,
+const actionSetRemoveShareID = (payload) => ({
+  type: TYPES.ACTION_SET_REMOVE_SHARE_ID,
   payload,
 });
 
@@ -423,7 +423,7 @@ const actionChangePercentRemovePool = (percent) => async (dispatch, getState) =>
 
 export default ({
   actionGetBalance,
-  actionSetContributePoolID,
+  actionSetContributeID,
   actionInitContribute,
   actionChangeInputContribute,
   actionChangeOutputContribute,
@@ -439,7 +439,7 @@ export default ({
   debouncedGetCreatePoolRate,
   actionSetTypingCreatePool,
 
-  actionSetRemovePoolID,
+  actionSetRemoveShareID,
   actionSetRemovePoolToken,
   actionInitRemovePool,
   actionChangeInputRemovePool,
