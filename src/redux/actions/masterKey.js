@@ -31,6 +31,7 @@ import uniqBy from 'lodash/uniqBy';
 import { actionLogEvent } from '@src/screens/Performance';
 import { performance } from '@src/screens/Performance/Performance.utils';
 import { getPassphrase } from '@src/services/wallet/passwordService';
+import { accountServices } from '@src/services/wallet';
 
 const DEFAULT_MASTER_KEY = new MasterKeyModel({
   name: 'Wallet',
@@ -126,7 +127,9 @@ export const loadAllMasterKeys = () => async (dispatch) => {
     ).map((item) => new MasterKeyModel(item));
     for (let masterKey of masterKeyList) {
       try {
+        console.time(`TIME_LOAD_WALLET_${masterKey.name}_FROM_STORAGE`);
         await masterKey.loadWallet();
+        console.timeEnd(`TIME_LOAD_WALLET_${masterKey.name}_FROM_STORAGE`);
         if (masterKey.isMasterless) {
           continue;
         }
@@ -422,4 +425,23 @@ export const actionSyncAccountMasterKey = (defaultMasterKey) => async (
   } catch (error) {
     throw error;
   }
+};
+
+export const actionLoadDefaultWallet = () => async (dispatch, getState) => {
+  console.time('LOAD_WALLET');
+  try {
+    console.time('LOAD_ALL_MASTER_KEYS');
+    await dispatch(loadAllMasterKeys());
+    console.timeEnd('LOAD_ALL_MASTER_KEYS');
+    console.time('SYNC_ACCOUNT_DEFAUL_WALLET');
+    await dispatch(actionSyncAccountMasterKey());
+    console.timeEnd('SYNC_ACCOUNT_DEFAUL_WALLET');
+    console.time('RELOAD_WALLET');
+    const defaultAccountName = await accountServices.getDefaultAccountName();
+    await dispatch(reloadWallet(defaultAccountName));
+    console.timeEnd('RELOAD_WALLET');
+  } catch (error) {
+    throw error;
+  }
+  console.timeEnd('LOAD_WALLET');
 };

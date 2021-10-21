@@ -45,7 +45,6 @@ export const actionFetchTradingVolume24h = () => async (dispatch, getState) => {
     const account = defaultAccountWalletSelector(state);
     const pDexV3Inst = await getPDexV3Instance({ account });
     const tradingVolume24h = await pDexV3Inst.getTradingVolume24h('all');
-    console.log('tradingVolume24h', tradingVolume24h);
     dispatch(actionFetchedTradingVolume24h(tradingVolume24h));
   } catch (error) {
     new ExHandler(error).showErrorToast();
@@ -115,6 +114,7 @@ export const actionFetchPools = () => async (dispatch) => {
     await dispatch(actionFetchListPools());
     dispatch(actionFetched());
   } catch (error) {
+    console.log('FETCH POOLS ERROR', error);
     new ExHandler(error).showErrorToast();
     dispatch(actionFetchFail());
   }

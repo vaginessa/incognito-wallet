@@ -21,7 +21,7 @@ const GetStarted = React.memo((props) => {
             {'Entering incognito mode\nfor your crypto...'}
           </Text>
         )}
-        {!!errorMsg && (
+        {!!errorMsg && !loading && (
           <>
             <Text style={[style.errorMsg, style.centerText]}>{errorMsg}</Text>
             <ButtonBasic
