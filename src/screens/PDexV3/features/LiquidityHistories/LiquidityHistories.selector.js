@@ -190,28 +190,25 @@ const mapWithdrawFeeLPData = createSelector(
   selectedPrivacy.getPrivacyDataByTokenID,
   (histories, getPrivacyDataByTokenID) => {
     const _histories = histories.map(history => {
-      const { requestTime, tokenId1, tokenId2, amount1, amount2 } = history;
+      const { requestTime } = history;
       const timeStr = format.formatDateTime(requestTime);
-      const tokenIds = [tokenId1, tokenId2];
-      const amounts = [amount1, amount2];
-      const withdrawData = tokenIds.map((tokenId, index) => {
+      const rewardTokens = Object.keys(history.withdrawTokens || {});
+      const rewards = rewardTokens.map(tokenId => {
         const token = getPrivacyDataByTokenID(tokenId);
-        const withdrawAmount = amounts[index] || 0;
-        const withdrawAmountStr = format.amountFull(withdrawAmount, token.pDecimals, true);
-        const withdrawAmountSymbolStr = `${withdrawAmountStr} ${token.symbol}`;
+        const amountStr = format.amountFull(history.withdrawTokens[tokenId], token.pDecimals);
+        const amountSymbolStr = `${amountStr} ${token.symbol}`;
         return {
           token,
-          withdrawAmount,
-          withdrawAmountStr,
-          withdrawAmountSymbolStr,
+          amountStr,
+          amountSymbolStr
         };
       });
-      const withdrawLPAmountDesc = withdrawData.map(item => item.withdrawAmountSymbolStr).join(' + ');
+      const showRewards = rewards && rewards.length > 0;
       return {
         ...history,
         timeStr,
-        withdrawData,
-        withdrawLPAmountDesc,
+        rewards,
+        showRewards
       };
     });
     return _histories;

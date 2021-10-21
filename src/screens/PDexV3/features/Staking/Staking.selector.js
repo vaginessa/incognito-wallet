@@ -553,7 +553,7 @@ export const stakingHistoriesMapperSelector = createSelector(
   selectedPrivacy.getPrivacyDataByTokenID,
   (histories, getPrivacyDataByTokenID) => {
     return (histories || []).map((history) => {
-      const { tokenId, amount, requestTime, status } = history;
+      const { tokenId, amount, requestTime, status, rewardTokens } = history;
       const token = getPrivacyDataByTokenID(tokenId);
       const amountStr = formatUtil.amountFull(amount, token.pDecimals);
       const amountSymbolStr = `${amountStr} ${token.symbol}`;
@@ -566,6 +566,21 @@ export const stakingHistoriesMapperSelector = createSelector(
       } else {
         statusColor = COLORS.red2;
       }
+      let rewards = undefined;
+      if (rewardTokens) {
+        rewards = Object.keys(rewardTokens || {}).map(tokenId => {
+          const token = getPrivacyDataByTokenID(tokenId);
+          const amountStr = formatUtil.amountFull(history.rewardTokens[tokenId], token.pDecimals);
+          const amountSymbolStr = `${amountStr} ${token.symbol}`;
+          return {
+            token,
+            amountStr,
+            amountSymbolStr,
+            rewards
+          };
+        });
+      }
+      const showRewardList = rewards && rewards.length > 0;
       return {
         ...history,
         token,
@@ -573,6 +588,8 @@ export const stakingHistoriesMapperSelector = createSelector(
         amountSymbolStr,
         timeStr,
         statusColor,
+        rewards,
+        showRewardList
       };
     });
   },

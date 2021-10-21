@@ -54,7 +54,7 @@ const TabNavigator = createMaterialBottomTabNavigator(
     },
   },
   {
-    initialRouteName: 'Liquidity',
+    initialRouteName: 'Home',
     activeColor: COLORS.colorBlue,
     inactiveColor: COLORS.lightGrey34,
     barStyle: {

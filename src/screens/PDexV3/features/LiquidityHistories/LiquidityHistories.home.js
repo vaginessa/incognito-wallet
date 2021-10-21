@@ -6,7 +6,7 @@ import {Tabs} from '@components/core';
 import {TABS} from '@screens/PDexV3/features/LiquidityHistories';
 import withHistories from '@screens/PDexV3/features/LiquidityHistories/LiquidityHistories.enhance';
 import {styled as mainStyle} from '@screens/PDexV3/PDexV3.styled';
-import WithdrawRewardHistories from './LiquidityHistories.withdraw';
+import WithdrawRewardHistories from './LiquidityHistories.reward';
 import RemovePoolHistories from './LiquidityHistories.removePool';
 import ContributeHistories from './LiquidityHistories.contribute';
 
