@@ -186,7 +186,6 @@ export const swapInfoSelector = createSelector(
   inputAmountSelector,
   (state) => state,
   getPrivacyDataByTokenIDSelector,
-  slippagetoleranceSelector,
   (
     {
       data,
@@ -203,7 +202,6 @@ export const swapInfoSelector = createSelector(
     getInputAmount,
     state,
     getPrivacyDataByTokenID,
-    slippagetolerance,
   ) => {
     try {
       const sellInputAmount = getInputAmount(formConfigs.selltoken);
@@ -258,18 +256,6 @@ export const swapInfoSelector = createSelector(
       const showPRVBalance = !sellInputAmount?.isMainCrypto;
       const prvBalance = format.amountFull(prv.amount, PRV.pDecimals, false);
       const prvBalanceStr = `${prvBalance} ${PRV.symbol}`;
-      const originalMinAmountExpected = calMintAmountExpected({
-        maxGet,
-        slippagetolerance,
-      });
-      const minAmountExpectedToHumanAmount = convert.toHumanAmount(
-        originalMinAmountExpected,
-        buyInputAmount.pDecimals,
-      );
-      const buyAmountExpectedToFixed = format.toFixed(
-        minAmountExpectedToHumanAmount,
-        buyInputAmount.pDecimals,
-      );
       const maxPriceStr = getExchangeRate(
         sellInputAmount.tokenData,
         buyInputAmount.tokenData,
@@ -298,8 +284,6 @@ export const swapInfoSelector = createSelector(
         swaping,
         allPoolSize,
         maxGet,
-        originalMinAmountExpected,
-        buyAmountExpectedToFixed,
         refreshing: isFetching,
       };
     } catch (error) {

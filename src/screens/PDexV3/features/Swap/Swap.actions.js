@@ -7,7 +7,6 @@ import {
 import { defaultAccountWalletSelector } from '@src/redux/selectors/account';
 import { ExHandler } from '@src/services/exception';
 import { change, reset } from 'redux-form';
-import { delay } from '@src/utils/delay';
 import isEmpty from 'lodash/isEmpty';
 import SelectedPrivacy from '@src/models/selectedPrivacy';
 import { batch } from 'react-redux';
@@ -15,6 +14,8 @@ import { BIG_COINS } from '@src/screens/Dex/constants';
 import uniq from 'lodash/uniq';
 import { PRV, PRV_ID } from '@src/constants/common';
 
+import convert from '@src/utils/convert';
+import format from '@src/utils/format';
 import {
   ACTION_FETCHING,
   ACTION_FETCHED,
@@ -45,7 +46,9 @@ import {
   selltokenSelector,
   orderDetailSelector,
   swapInfoSelector,
+  slippagetoleranceSelector,
 } from './Swap.selector';
+import { calMintAmountExpected } from './Swap.utils';
 
 export const actionSetPercent = (payload) => ({
   type: ACTION_SET_PERCENT,
@@ -152,10 +155,21 @@ export const actionEstimateTrade = () => async (dispatch, getState) => {
     const data = await pDexV3Inst.getEstimateTrade(payload);
     await dispatch(actionFetched(data));
     state = getState();
-    const swapInfo = swapInfoSelector(state);
     const feeTokenData = feetokenDataSelector(state);
+    const slippagetolerance = slippagetoleranceSelector(state);
     const { minFeeAmountFixed } = feeTokenData;
-    const { buyAmountExpectedToFixed } = swapInfo;
+    const originalMinAmountExpected = calMintAmountExpected({
+      maxGet: data?.maxGet || 0,
+      slippagetolerance,
+    });
+    const minAmountExpectedToHumanAmount = convert.toHumanAmount(
+      originalMinAmountExpected,
+      inputtokenDecimals,
+    );
+    const buyAmountExpectedToFixed = format.toFixed(
+      minAmountExpectedToHumanAmount,
+      inputtokenDecimals,
+    );
     batch(() => {
       dispatch(
         change(formConfigs.formName, inputtoken, buyAmountExpectedToFixed),
@@ -410,7 +424,6 @@ export const actionFetchSwap = () => async (dispatch, getState) => {
     if (!sellInputAmount || !buyInputAmount || !feetokenData) {
       return;
     }
-    await delay(2000);
     const pDexV3 = await getPDexV3Instance({ account });
     const {
       tokenId: tokenIDToSell,
