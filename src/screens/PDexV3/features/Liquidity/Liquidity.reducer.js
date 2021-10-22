@@ -157,6 +157,20 @@ const liquidityReducer = (state = initialState, action) => {
       }
     };
   }
+  case TYPES.ACTION_FREE: {
+    return {
+      ...state,
+      contribute: {
+        ...contributeState
+      },
+      createPool: {
+        ...createPoolState
+      },
+      removePool: {
+        ...removePoolState
+      },
+    };
+  }
   default:
     return state;
   }

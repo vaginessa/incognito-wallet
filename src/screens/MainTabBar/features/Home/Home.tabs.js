@@ -1,8 +1,8 @@
 import React, {memo} from 'react';
-import {View} from 'react-native';
+import {TouchableOpacity, View} from 'react-native';
 import {Tabs, Text} from '@src/components/core';
 import {TABS} from '@screens/MainTabBar/features/Home/Home.constant';
-import {useDispatch, useSelector} from 'react-redux';
+import {batch, useDispatch, useSelector} from 'react-redux';
 import {actionFetchPools, listPoolsVerifySelector} from '@screens/PDexV3/features/Pools';
 import {Row} from '@src/components';
 import formatUtils from '@utils/format';
@@ -10,23 +10,30 @@ import {homeStyled} from '@screens/MainTabBar/MainTabBar.styled';
 import {COLORS} from '@src/styles';
 import PropTypes from 'prop-types';
 import orderBy from 'lodash/orderBy';
+import {actionSetPoolSelected} from '@screens/PDexV3/features/OrderLimit';
+import {actionChangeTab} from '@components/core/Tabs/Tabs.actions';
+import {ROOT_TAB_TRADE, TAB_LIMIT_ID} from '@screens/PDexV3/features/Trade/Trade.constant';
+import {useNavigation} from 'react-navigation-hooks';
+import routeNames from '@routers/routeNames';
 
-const Item = React.memo(({ pool }) => {
-  const { token1, token2, price, perChange24hToStr, perChange24hColor, perChange24hBGColor } = pool;
+const Item = React.memo(({ pool, onItemPress }) => {
+  const { token1, token2, price, perChange24hToStr, perChange24hColor, perChange24hBGColor, poolId } = pool;
   return (
-    <Row centerVertical style={homeStyled.wrapPoolBox}>
-      <Text style={[homeStyled.mediumBlack, homeStyled.itemBox]}>{`${token1.symbol} / ${token2.symbol}`}</Text>
-      <Text style={[
-        homeStyled.mediumBlack,
-        homeStyled.itemBox,
-        { color: perChange24hColor, textAlign: 'right', marginRight: 15 }]}
-      >
-        {formatUtils.toFixed(price, 9)}
-      </Text>
-      <View style={[homeStyled.percentBox, homeStyled.percentBoxWidth, { backgroundColor: perChange24hBGColor }]}>
-        <Text style={[homeStyled.mediumBlack, { color: COLORS.white, fontSize: 12 }]}>{perChange24hToStr}</Text>
-      </View>
-    </Row>
+    <TouchableOpacity onPress={() => onItemPress(poolId)}>
+      <Row centerVertical style={homeStyled.wrapPoolBox}>
+        <Text style={[homeStyled.mediumBlack, homeStyled.itemBox]}>{`${token1.symbol} / ${token2.symbol}`}</Text>
+        <Text style={[
+          homeStyled.mediumBlack,
+          homeStyled.itemBox,
+          { color: perChange24hColor, textAlign: 'right', marginRight: 15 }]}
+        >
+          {formatUtils.toFixed(price, 9)}
+        </Text>
+        <View style={[homeStyled.percentBox, homeStyled.percentBoxWidth, { backgroundColor: perChange24hBGColor }]}>
+          <Text style={[homeStyled.mediumBlack, { color: COLORS.white, fontSize: 12 }]}>{perChange24hToStr}</Text>
+        </View>
+      </Row>
+    </TouchableOpacity>
   );
 });
 
@@ -45,8 +52,21 @@ const tabStyle = {
 
 const MainTab = () => {
   const dispatch = useDispatch();
+  const navigation = useNavigation();
   const pools = useSelector(listPoolsVerifySelector);
-  const renderItem = (pool) => <Item pool={pool} key={pool.poolId} />;
+  const onItemPress = (poolId) => {
+    batch(() => {
+      dispatch(
+        actionChangeTab({
+          rootTabID: ROOT_TAB_TRADE,
+          tabID: TAB_LIMIT_ID,
+        }),
+      );
+      dispatch(actionSetPoolSelected(poolId));
+      navigation.navigate(routeNames.Trade);
+    });
+  };
+  const renderItem = (pool) => <Item pool={pool} key={pool.poolId} onItemPress={onItemPress} />;
   React.useEffect(() => {
     dispatch(actionFetchPools());
   }, []);
@@ -70,7 +90,8 @@ const MainTab = () => {
 };
 
 Item.propTypes = {
-  pool: PropTypes.object.isRequired
+  pool: PropTypes.object.isRequired,
+  onItemPress: PropTypes.func.isRequired,
 };
 
 export default memo(MainTab);

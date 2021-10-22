@@ -61,7 +61,7 @@ const Accounts = ({ handleDelete, handleSwitchAccount, handleExportKey }) => {
     return (
       <Item
         account={account}
-        key={account.address}
+        key={account.ValidatorKey}
         handleDelete={isDeletable && handleDelete}
         handleSwitchAccount={handleSwitchAccount}
         handleExportKey={handleExportKey}

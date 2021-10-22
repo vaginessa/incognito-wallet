@@ -1,15 +1,11 @@
 import React, {memo} from 'react';
-import {View} from 'react-native';
 import Home from '@screens/PDexV3/features/Home';
-import Modal from '@components/Modal';
+import withTab from '@screens/MainTabBar/MainTabBar.enhanceTab';
 
 const TabHomeLP = () => {
   return (
-    <View style={{ flex: 1, backgroundColor: 'white' }}>
-      <Home hideBackButton />
-      <Modal />
-    </View>
+    <Home hideBackButton />
   );
 };
 
-export default memo(TabHomeLP);
+export default withTab(memo(TabHomeLP));

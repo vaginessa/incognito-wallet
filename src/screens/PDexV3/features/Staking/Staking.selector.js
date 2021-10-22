@@ -215,7 +215,7 @@ export const stakingPoolSelector = createSelector(
         token,
         disabled,
         apy,
-        apyStr: `${apy}%`
+        apyStr: `${apy || 0}%`
       };
     });
   },
