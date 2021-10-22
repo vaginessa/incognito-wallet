@@ -404,38 +404,29 @@ export const findAccountFromListAccounts = ({ accounts, address }) => {
 };
 
 export const getNodeBLSKey = async (device, listAccount) => {
-  let res = { blsKey: '', account: null, pnode: { isPNodeOnline: false, pnodeIP: '' } };
+  let blsKey = '';
+  let account = null;
   try {
     // account = listAccount.find(item => device?.PaymentAddress && item.PaymentAddress === device?.PaymentAddress);
-    res.account = findAccountFromListAccounts({
+    account = findAccountFromListAccounts({
       accounts: listAccount,
       address: device?.PaymentAddress,
     });
     /** case VNode: first call RPC get blsKey */
     if (!device?.IsPNode) {
-      res.blsKey = await VirtualNodeService.getPublicKeyMining(device);
-      return res;
+      blsKey = await VirtualNodeService.getPublicKeyMining(device);
+      return { blsKey, account };
+    }
+    if (account) {
+      return { blsKey: device.Account.BLSPublicKey, account };
     }
     if (device?.IsPNode) {
       const result = await getPNodeBackLog(device);
-      const now = new Date().getTime();
-      const lastest = result?.updatedAt ? new Date(result?.updatedAt).getTime() : 0;
-      const blsKey = result?.description?.getmininginfo?.Result?.MiningPublickey || device?.Account?.BLSPublicKey || '';
-      const isPNodeOnline = (now - lastest) < 15 * 60000;
-      const pnodeIP = result?.description?.ip?.lan || device.Host || '';
-      res = {
-        ...res,
-        blsKey,
-        pnode: {
-          isPNodeOnline,
-          pnodeIP
-        }
-      };
+      blsKey = result?.description?.getmininginfo?.Result?.MiningPublickey || '';
     }
   } catch (error) {
     console.log(error);
-    throw error;
   }
 
-  return res;
+  return { blsKey, account };
 };

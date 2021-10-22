@@ -215,7 +215,6 @@ export const actionUpdatePNodeItem = (productId) => async (dispatch, getState) =
     let device = {};
     if (deviceIndex > -1 && listDevice.length > deviceIndex) {
       device = listDevice[deviceIndex];
-      const { blsKey, account, pnode } = await getNodeBLSKey(device, listAccount);
       const deviceData = await NodeService.fetchAndSavingInfoNodeStake(device);
       if (!deviceData) return null;
       device = Device.getInstance(deviceData);
@@ -238,11 +237,12 @@ export const actionUpdatePNodeItem = (productId) => async (dispatch, getState) =
           }
         }
       } else {
-        const { isPNodeOnline, pnodeIP } = pnode;
-        device.Host = pnodeIP || '';
-        if (isPNodeOnline) {
+        const ip = await NodeService.pingGetIP(device, 15);
+        if (ip) {
+          device.Host = ip;
           device.setIsOnline(MAX_RETRY);
         } else {
+          device.Host = '';
           device.setIsOnline(Math.max(device.IsOnline - 1, 0));
         }
       }
@@ -261,6 +261,7 @@ export const actionUpdatePNodeItem = (productId) => async (dispatch, getState) =
           console.debug('CHECK VERSION ERROR', device.QRCode, e);
         }
       }
+      const { blsKey, account } = await getNodeBLSKey(device, listAccount);
       if (!isEmpty(blsKey)) {
         device.PublicKeyMining = blsKey;
       }

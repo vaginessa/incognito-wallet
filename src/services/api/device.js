@@ -39,10 +39,9 @@ export const convertPRVFeeToTokenFee = ({ prvAmount, tokenId }) => {
 export const getPNodeBackLog = async (device) => {
   if(!device || !device.QRCode) return null;
   return http3.get(`/device?qrcode=${device.QRCode}`).then((data) => {
-    const description = data?.description ? JSON.parse(data.description) : {};
     return {
       ...data,
-      description
+      description: data?.description ? JSON.parse(data.description) : {}
     };
   });
 };
