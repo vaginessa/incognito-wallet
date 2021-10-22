@@ -1,5 +1,6 @@
 import React, {memo} from 'react';
 import Wallet from '@screens/Wallet/features/Home/Wallet';
+import withTab from '@screens/MainTabBar/MainTabBar.enhanceTab';
 
 const TabAssets = () => {
   return (
@@ -7,4 +8,4 @@ const TabAssets = () => {
   );
 };
 
-export default memo(TabAssets);
+export default withTab(memo(TabAssets));

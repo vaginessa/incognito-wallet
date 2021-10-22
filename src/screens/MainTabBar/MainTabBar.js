@@ -7,46 +7,63 @@ import TabAssets from '@screens/MainTabBar/features/Assets';
 import TabTrade from '@screens/MainTabBar/features/Trade';
 import TabHomeLP from '@screens/MainTabBar/features/HomeLP';
 import {HomeIcon, ShieldIcon, TradeIcon, LiquidityIcon, AssetsIcon} from '@components/Icons';
+import {View, Text} from 'react-native';
+import { styled } from './MainTabBar.styled';
 
 const TabNavigator = createMaterialBottomTabNavigator(
   {
     Home: {
       screen: TabHome,
       navigationOptions: {
-        tabBarIcon: ({ focused }) => (
-          <HomeIcon active={focused} />
-        )
+        tabBarIcon: ({ focused, tintColor }) => (
+          <View style={styled.wrapBar}>
+            <HomeIcon active={focused} />
+            <Text style={[styled.label, { color: tintColor }]}>Home</Text>
+          </View>
+        ),
       },
     },
     Shield: {
       screen: TabShield,
       navigationOptions: {
-        tabBarIcon: ({ focused }) => (
-          <ShieldIcon active={focused} />
+        tabBarIcon: ({ focused, tintColor }) => (
+          <View style={styled.wrapBar}>
+            <ShieldIcon active={focused} />
+            <Text style={[styled.label, { color: tintColor }]}>Shield</Text>
+          </View>
         )
       }
     },
     Trade: {
       screen: TabTrade,
       navigationOptions: {
-        tabBarIcon: ({ focused }) => (
-          <TradeIcon active={focused} />
+        tabBarIcon: ({ focused, tintColor }) => (
+          <View style={styled.wrapBar}>
+            <TradeIcon active={focused} />
+            <Text style={[styled.label, { color: tintColor }]}>Trade</Text>
+          </View>
         ),
       },
     },
     Liquidity: {
       screen: TabHomeLP,
       navigationOptions: {
-        tabBarIcon: ({ focused }) => (
-          <LiquidityIcon active={focused} />
+        tabBarIcon: ({ focused, tintColor }) => (
+          <View style={styled.wrapBar}>
+            <LiquidityIcon active={focused} />
+            <Text style={[styled.label, { color: tintColor }]}>Liquidity</Text>
+          </View>
         ),
       },
     },
     Assets: {
       screen: TabAssets,
       navigationOptions: {
-        tabBarIcon: ({ focused }) => (
-          <AssetsIcon active={focused} />
+        tabBarIcon: ({ focused, tintColor }) => (
+          <View style={styled.wrapBar}>
+            <AssetsIcon active={focused} />
+            <Text style={[styled.label, { color: tintColor }]}>Assets</Text>
+          </View>
         ),
         activeColor: COLORS.colorBlue,
         inactiveColor: COLORS.lightGrey34,
@@ -61,6 +78,7 @@ const TabNavigator = createMaterialBottomTabNavigator(
       backgroundColor: COLORS.white
     },
     shifting: false,
+    labeled: false
   }
 );
 

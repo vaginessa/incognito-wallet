@@ -2,7 +2,6 @@ import React from 'react';
 import ErrorBoundary from '@src/components/ErrorBoundary';
 import { compose } from 'recompose';
 import { withNavigation } from 'react-navigation';
-import Modal from '@src/components/Modal';
 import { ExHandler } from '@src/services/exception';
 import withFCM from '@src/screens/Notification/Notification.withFCM';
 import { useSelector, useDispatch } from 'react-redux';
@@ -42,7 +41,6 @@ const enhance = (WrappedComp) => (props) => {
           },
         }}
       />
-      <Modal />
       <AppUpdater />
     </ErrorBoundary>
   );

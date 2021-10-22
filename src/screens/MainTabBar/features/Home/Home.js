@@ -5,6 +5,8 @@ import { COLORS } from '@src/styles';
 import MainTab from '@screens/MainTabBar/features/Home/Home.tabs';
 import NotificationBar from '@screens/MainTabBar/features/Home/Home.notificationBar';
 import BigVolume from '@screens/MainTabBar/features/Home/Home.volume';
+import withTab from '@screens/MainTabBar/MainTabBar.enhanceTab';
+import {compose} from 'recompose';
 import Header from './Home.header';
 import Banner from './Home.banner';
 import Category from './Home.category';
@@ -30,6 +32,7 @@ const TabHome = () => {
   );
 };
 
-TabHome.propTypes = {};
-
-export default withHome(memo(TabHome));
+export default compose(
+  withHome,
+  withTab
+)(memo(TabHome));
