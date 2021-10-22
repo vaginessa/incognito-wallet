@@ -6,12 +6,17 @@ import type from '@src/redux/types/wallet';
 import {
   setListAccount,
   setAccount,
-  actionUpdateDefaultAccount,
   setDefaultAccount,
+  actionReloadFollowingToken,
+  actionSetNFTTokenData,
+  actionSetSignPublicKeyEncode,
 } from '@src/redux/actions/account';
 import { currentMasterKeySelector } from '@src/redux/selectors/masterKey';
 import { walletSelector } from '@src/redux/selectors/wallet';
-import { updateMasterKey } from '@src/redux/actions/masterKey';
+import {
+  actionSyncAccountMasterKey,
+  updateMasterKey,
+} from '@src/redux/actions/masterKey';
 import { Validator } from 'incognito-chain-web-js/build/wallet';
 import { ExHandler } from '@src/services/exception';
 import isEqual from 'lodash/isEqual';
@@ -89,6 +94,10 @@ export const reloadWallet = (accountName = '') => async (
         dispatch(setListAccount(listAccount));
         dispatch(setAccount(defaultAccount));
         dispatch(setDefaultAccount(defaultAccount));
+        dispatch(actionReloadFollowingToken());
+        dispatch(actionSetNFTTokenData());
+        dispatch(actionSetSignPublicKeyEncode());
+        dispatch(actionSyncAccountMasterKey());
       });
     }
     return wallet;

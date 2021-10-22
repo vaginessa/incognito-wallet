@@ -42,7 +42,7 @@ const ImportMasterKey = () => {
   const redirect = useNavigationParam('redirect');
   const masterKeys = useSelector(masterKeysSelector);
   const isInit = useNavigationParam('init');
-
+  console.log('isInit', isInit);
   const [name, setName] = useState('');
   const [phrase, setPhrase] = useState('');
   const [error, setError] = useState('');
@@ -82,7 +82,7 @@ const ImportMasterKey = () => {
         } else {
           await dispatch(initMasterKey(trimmedName, trimmedPhrase));
           await dispatch(actionLoadInitial());
-          navigation.goBack();
+          navigation.navigate(routeNames.GetStarted);
         }
       } catch (e) {
         setError(e.message);
@@ -96,6 +96,9 @@ const ImportMasterKey = () => {
   useEffect(() => {
     setError('');
     setIncorrect(false);
+    setPhrase(
+      'cancel dust barely mass cost still theory ability silent flush note wheat',
+    );
   }, [phrase, name]);
 
   return (

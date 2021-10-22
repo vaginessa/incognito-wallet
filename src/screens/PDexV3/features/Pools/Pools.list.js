@@ -83,7 +83,10 @@ export const PoolsList = React.memo(({ onPressPool, pools }) => {
         renderItem={({ item }) => (
           <Pool
             poolId={item.poolId}
-            onPressPool={() => onPressPool(item.poolId)}
+            onPressPool={() => {
+              console.log(item.poolId);
+              onPressPool(item.poolId);
+            }}
           />
         )}
         keyExtractor={({ poolId }) => poolId}

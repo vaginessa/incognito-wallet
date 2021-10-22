@@ -130,7 +130,6 @@ export const actionSetSignPublicKeyEncode = (defaultAccount) => async (
       wallet,
       account,
     });
-    console.log('signPublicKeyEncode', signPublicKeyEncode);
     if (signPublicKeyEncode) {
       dispatch(setSignPublicKeyEncode(signPublicKeyEncode));
     }

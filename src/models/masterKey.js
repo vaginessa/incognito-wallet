@@ -31,6 +31,7 @@ class MasterKeyModel {
    * @returns {Promise<Wallet>}
    */
   async loadWallet() {
+    console.time('TIME_LOAD_WALLET_FROM_STORAGE');
     const rootName = this.name;
     const storageName = this.getStorageName();
     const rawData = await storage.getItem(storageName);
@@ -51,6 +52,7 @@ class MasterKeyModel {
       await wallet.save();
     }
     wallet.Name = this.getStorageName();
+    console.time('TIME_LOAD_WALLET_FROM_STORAGE');
     return wallet;
   }
 

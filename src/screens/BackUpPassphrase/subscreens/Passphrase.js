@@ -16,7 +16,7 @@ const styles = StyleSheet.create({
     lineHeight: 24,
   },
   qrCodeContainer: {
-    marginTop: 40,
+    marginTop: 24,
     alignItems: 'center',
   },
   qrCode: {
@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   words: {
-    marginTop: 50,
+    marginTop: 24,
     flexWrap: 'wrap',
     flexDirection: 'row',
     justifyContent: 'center',

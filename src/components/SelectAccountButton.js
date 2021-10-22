@@ -44,7 +44,6 @@ const SelectAccountButton = ({
   disabled,
   handleSelectedAccount,
 }) => {
-  const [defaultAccountName, setDefaultAccountName] = React.useState('');
   const account = useSelector(accountSelector.defaultAccountSelector);
   const accounts = useSelector(listAllMasterKeyAccounts);
   const navigation = useNavigation();
@@ -55,10 +54,6 @@ const SelectAccountButton = ({
       ignoredAccounts,
       handleSelectedAccount,
     });
-  };
-  const fetchDefaultAccountName = async () => {
-    const accountName = await accountServices.getDefaultAccountName();
-    setDefaultAccountName(accountName);
   };
   const checkAccount = async () => {
     try {
@@ -81,7 +76,6 @@ const SelectAccountButton = ({
     }
   };
   React.useEffect(() => {
-    fetchDefaultAccountName();
     checkAccount();
   }, []);
   return (
@@ -92,7 +86,7 @@ const SelectAccountButton = ({
         customContent={
           <View style={styled.hook}>
             <Text numberOfLines={1} style={styled.name} ellipsizeMode="tail">
-              {account?.accountName || defaultAccountName}
+              {account?.accountName || ''}
             </Text>
             <Ionicons name="ios-arrow-down" color={COLORS.black} size={13} />
           </View>

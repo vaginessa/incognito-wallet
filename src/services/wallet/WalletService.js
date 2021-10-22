@@ -141,10 +141,16 @@ export async function updateHistoryStatus(wallet, txId) {
 
 export async function importWallet(mnemonic, name) {
   try {
+    console.time('TIME_GET_PASS_PHRASE');
     const { aesKey } = await getPassphrase();
+    console.timeEnd('TIME_GET_PASS_PHRASE');
     let wallet = new Wallet();
+    console.time('TIME_CONFIGS_WALLET');
     await configsWallet(wallet);
+    console.timeEnd('TIME_CONFIGS_WALLET');
+    console.time('TIME_IMPORT_WALLET');
     await wallet.import(mnemonic, aesKey, name, storage);
+    console.timeEnd('TIME_IMPORT_WALLET');
     return wallet;
   } catch (e) {
     throw e;

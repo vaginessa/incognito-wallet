@@ -1,7 +1,6 @@
-import { actionLogEvent } from '@src/screens/Performance';
 import http from '@src/services/http';
 
-export const getWalletAccounts = async (masterAccountPublicKey, dispatch) => {
+export const getWalletAccounts = async (masterAccountPublicKey) => {
   let result = [];
   try {
     const url = `hd-wallet/recovery?Key=${masterAccountPublicKey}`;
@@ -22,7 +21,6 @@ export const updateWalletAccounts = (masterAccountPublicKey, accounts) => {
     Name: item.name,
     AccountID: item.id,
   }));
-
   return http
     .put('hd-wallet/recovery', {
       Key: masterAccountPublicKey,

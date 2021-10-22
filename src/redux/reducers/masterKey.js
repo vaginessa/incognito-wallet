@@ -17,7 +17,6 @@ const initialState = {
 function createMasterKey(newMasterKey, list) {
   const newList = _.uniqBy([...list, newMasterKey], (item) => item.name);
   LocalDatabase.setMasterKeyList(newList);
-
   return newList;
 }
 
