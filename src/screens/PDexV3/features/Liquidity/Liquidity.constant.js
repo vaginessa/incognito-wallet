@@ -17,6 +17,7 @@ export const TYPES = {
   ACTION_SET_REMOVE_FETCHING: '[pDexV3][liquidity] Set remove pool fetching',
   ACTION_SET_REMOVE_SHARE_ID: '[pDexV3][liquidity] Set remove pool share id',
   ACTION_SET_REMOVE_POOL_TOKEN: '[pDexV3][liquidity] Set remove pool token',
+  ACTION_FREE: '[pDexV3][liquidity] Set free data',
 };
 
 export const LIQUIDITY_MESSAGES = {

@@ -119,7 +119,6 @@ export const nftTokenSelector = createSelector(
     };
     if (nftId) {
       res.nftToken = nftId;
-      console.log('SANG TEST: 111', res);
       return res;
     }
     if (listShare && listShare.length > 0) {
@@ -128,7 +127,6 @@ export const nftTokenSelector = createSelector(
         res.nftToken = pool.nftId;
       }
     }
-    console.log('SANG TEST: 222', res);
     return res;
   }
 );
