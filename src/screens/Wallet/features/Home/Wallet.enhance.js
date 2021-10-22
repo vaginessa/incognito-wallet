@@ -1,7 +1,7 @@
 import React from 'react';
 import ErrorBoundary from '@src/components/ErrorBoundary';
 import { useSelector, useDispatch, batch } from 'react-redux';
-import { CustomError, ErrorCode, ExHandler } from '@src/services/exception';
+import { ExHandler } from '@src/services/exception';
 import withDetectConvert from '@screens/Home/features/Convert/Convert.enhanceDetect';
 import {
   getPTokenList,
@@ -18,13 +18,7 @@ import {
 } from '@src/screens/UnShield';
 import { withdraw, updatePTokenFee } from '@src/services/api/withdraw';
 import { accountSelector } from '@src/redux/selectors';
-import {
-  loadAllMasterKeys,
-  actionSyncAccountMasterKey,
-} from '@src/redux/actions/masterKey';
-import { reloadWallet } from '@src/redux/actions/wallet';
 import { compose } from 'recompose';
-import { accountServices } from '@src/services/wallet';
 
 export const WalletContext = React.createContext({});
 
@@ -80,11 +74,11 @@ const enhance = (WrappedComp) => (props) => {
   const onRefresh = async () => {
     try {
       await setIsReloading(true);
-      await Promise.all([
-        dispatch(actionReloadFollowingToken(true)),
-        dispatch(getPTokenList()),
-        dispatch(getInternalTokenList()),
-      ]);
+      batch(() => {
+        dispatch(getPTokenList());
+        dispatch(getInternalTokenList());
+      });
+      await dispatch(actionReloadFollowingToken(true));
     } catch (error) {
       new ExHandler(error).showErrorToast();
     } finally {
@@ -139,5 +133,5 @@ const enhance = (WrappedComp) => (props) => {
 
 export default compose(
   enhance,
-  // withDetectConvert,
+  withDetectConvert,
 );

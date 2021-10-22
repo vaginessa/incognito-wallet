@@ -88,3 +88,8 @@ export const groupMasterless = createSelector(
     return [];
   },
 );
+
+export const isLoadingAllMasterKeyAccountSelector = createSelector(
+  masterKeyReducerSelector,
+  ({ loadingAll }) => loadingAll,
+);

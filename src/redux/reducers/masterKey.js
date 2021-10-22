@@ -12,6 +12,7 @@ const initialState = {
     loading: true,
     masterKeyList: [],
   },
+  loadingAll: false,
 };
 
 function createMasterKey(newMasterKey, list) {
@@ -127,6 +128,12 @@ const reducer = (state = initialState, action) => {
     return {
       ...state,
       switching: action.payload,
+    };
+  }
+  case types.LOADING_ALL_ACCOUNTS: {
+    return {
+      ...state,
+      loadingAll: action.payload,
     };
   }
   default:

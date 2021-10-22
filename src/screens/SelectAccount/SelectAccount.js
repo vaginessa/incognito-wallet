@@ -1,27 +1,13 @@
 import React, { memo } from 'react';
 import { View } from 'react-native';
-import { useDispatch } from 'react-redux';
 import { Header } from '@src/components';
 import { TABS } from '@screens/SelectAccount/SelectAccount.constant';
 import { Tabs } from '@components/core';
 import MasterKeys from '@screens/SelectAccount/SelectAccount.masterkeys';
 import Masterless from '@screens/SelectAccount/SelectAccount.masterless';
 import Setting from '@screens/Setting';
-import { loadAllMasterKeyAccounts } from '@src/redux/actions/masterKey';
-import { ExHandler } from '@src/services/exception';
 
 const SelectAccount = () => {
-  const dispatch = useDispatch();
-  const handleLoadAllMasterKeyAccounts = () => {
-    try {
-      dispatch(loadAllMasterKeyAccounts());
-    } catch (error) {
-      new ExHandler(error).showErrorToast();
-    }
-  };
-  React.useEffect(() => {
-    handleLoadAllMasterKeyAccounts();
-  }, []);
   return (
     <View style={{ flex: 1 }}>
       <Header title="My account" style={{ paddingHorizontal: 24 }} />

@@ -1,5 +1,4 @@
 /* eslint-disable import/no-cycle */
-import toLower from 'lodash/toLower';
 import { Validator } from 'incognito-chain-web-js/build/wallet';
 import LocalDatabase from '@utils/LocalDatabase';
 import types from '@src/redux/types/masterKey';
@@ -10,14 +9,12 @@ import {
   saveWallet,
   storeWalletAccountIdsOnAPI,
   configsWallet,
-  loadWallet,
 } from '@services/wallet/WalletService';
 import {
   actionSubmitOTAKeyForListAccount,
   reloadWallet,
 } from '@src/redux/actions/wallet';
 import { getWalletAccounts } from '@services/api/masterKey';
-import { defaultPTokensIDsSelector } from '@src/redux/selectors/token';
 import {
   currentMasterKeySelector,
   masterKeysSelector,
@@ -26,13 +23,10 @@ import {
 } from '@src/redux/selectors/masterKey';
 import _ from 'lodash';
 import { clearWalletCaches } from '@services/cache';
-import accountService from '@services/wallet/accountService';
 import uniqBy from 'lodash/uniqBy';
-import { actionLogEvent } from '@src/screens/Performance';
-import { performance } from '@src/screens/Performance/Performance.utils';
-import { getPassphrase } from '@src/services/wallet/passwordService';
 import { accountServices } from '@src/services/wallet';
 import { batch } from 'react-redux';
+import { ExHandler } from '@src/services/exception';
 
 const DEFAULT_MASTER_KEY = new MasterKeyModel({
   name: 'Wallet',
@@ -342,23 +336,34 @@ const loadAllMasterKeyAccountsSuccess = (accounts) => ({
   payload: accounts,
 });
 
+export const actionLoadingAllMasterKeyAccount = (payload) => ({
+  type: types.LOADING_ALL_ACCOUNTS,
+  payload,
+});
+
 export const loadAllMasterKeyAccounts = () => async (dispatch, getState) => {
-  const state = getState();
-  const masterKeys = [
-    ...noMasterLessSelector(state),
-    masterlessKeyChainSelector(state),
-  ];
-  let accounts = [];
-  for (const masterKey of masterKeys) {
-    try {
-      await dispatch(actionSyncAccountMasterKey(masterKey));
-      const masterKeyAccounts = await masterKey.getAccounts(true);
-      accounts = [...accounts, ...masterKeyAccounts];
-    } catch (error) {
-      console.log('ERROR LOAD ACCOUNTS OF MASTER KEYS', error);
+  await dispatch(actionLoadingAllMasterKeyAccount(true));
+  try {
+    const state = getState();
+    const masterKeys = [
+      ...noMasterLessSelector(state),
+      masterlessKeyChainSelector(state),
+    ];
+    let accounts = [];
+    for (const masterKey of masterKeys) {
+      try {
+        await dispatch(actionSyncAccountMasterKey(masterKey));
+        const masterKeyAccounts = await masterKey.getAccounts(true);
+        accounts = [...accounts, ...masterKeyAccounts];
+      } catch (error) {
+        console.log('ERROR LOAD ACCOUNTS OF MASTER KEYS', error);
+      }
     }
+    await dispatch(loadAllMasterKeyAccountsSuccess(accounts));
+  } catch (error) {
+    new ExHandler(error).showErrorToast();
   }
-  await dispatch(loadAllMasterKeyAccountsSuccess(accounts));
+  await dispatch(actionLoadingAllMasterKeyAccount(false));
 };
 
 export const actionLoadInitial = () => async (dispatch, getState) => {
