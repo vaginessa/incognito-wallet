@@ -185,7 +185,7 @@ const Order = React.memo(({ data, visibleDivider }) => {
             Price ({token1?.symbol || ''})
           </Text>
           <Text style={{ ...styled.mainText, color: mainColor }}>
-            {amountStr}
+            {priceStr}
           </Text>
         </View>
         <View style={{ ...styled.orderItem, ...styled.block2 }}>
@@ -193,7 +193,7 @@ const Order = React.memo(({ data, visibleDivider }) => {
           <Text style={{ ...styled.subText, ...styled.mv8 }}>
             Amount ({token2?.symbol || ''})
           </Text>
-          <Text style={styled.mainText}>{priceStr}</Text>
+          <Text style={styled.mainText}>{amountStr}</Text>
         </View>
         <View style={{ ...styled.orderItem, ...styled.block3 }}>
           {renderHook()}

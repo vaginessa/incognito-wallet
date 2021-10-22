@@ -379,17 +379,12 @@ export const mappingOrderHistorySelector = createSelector(
       } = order;
       let type,
         mainColor,
-        pDecimals,
         infoStr,
         amountStr,
         priceStr,
         sellStr,
         buyStr,
-        rateStr,
-        buyToken,
-        sellToken,
-        sellTokenData,
-        buyTokenData;
+        rateStr;
       const sellTokenBalance = new BigNumber(order?.sellTokenBalance);
       const buyTokenBalance = new BigNumber(order?.buyTokenBalance);
       const sellTokenWithdrawed = new BigNumber(order?.sellTokenWithdrawed);
@@ -447,31 +442,25 @@ export const mappingOrderHistorySelector = createSelector(
         ? `${btnTitleClaim}${BTN_WITHDRAW_ORDER[claimTxStatus]}`
         : '';
       const poolStr = `${token1.symbol} / ${token2.symbol}`;
+      const sellToken: SelectedPrivacy = getPrivacyDataByTokenID(sellTokenId);
+      const buyToken: SelectedPrivacy = getPrivacyDataByTokenID(buyTokenId);
       if (sellTokenId === token1.tokenId) {
         type = 'sell';
         mainColor = COLORS.red;
-        pDecimals = token1.pDecimals;
-        amountStr = format.amountFull(amount, pDecimals, false);
-        priceStr = format.amountFull(price, token2.pDecimals, false);
-        sellStr = `${amountStr} ${token1.symbol}`;
-        buyStr = `${priceStr} ${token2.symbol}`;
+        amountStr = format.amountFull(price, buyToken.pDecimals, false);
+        priceStr = format.amountFull(amount, sellToken.pDecimals, false);
+        sellStr = `${priceStr} ${sellToken.symbol}`;
+        buyStr = `${amountStr} ${buyToken.symbol}`;
         infoStr = poolStr;
-        sellTokenData = token1;
-        buyTokenData = token2;
-      } else if (sellTokenId === token2.tokenId) {
+      } else if (buyTokenId === token1.tokenId) {
         type = 'buy';
         mainColor = COLORS.green;
-        pDecimals = token2.pDecimals;
-        amountStr = format.amountFull(amount, pDecimals, false);
-        priceStr = format.amountFull(price, token1.pDecimals, false);
-        buyStr = `${amountStr} ${token2.symbol}`;
-        sellStr = `${priceStr} ${token1.symbol}`;
+        amountStr = format.amountFull(amount, sellToken.pDecimals, false);
+        priceStr = format.amountFull(price, buyToken.pDecimals, false);
+        buyStr = `${priceStr} ${buyToken.symbol}`;
+        sellStr = `${amountStr} ${sellToken.symbol}`;
         infoStr = poolStr;
-        sellTokenData = token2;
-        buyTokenData = token1;
       }
-      sellToken = getPrivacyDataByTokenID(sellTokenId);
-      buyToken = getPrivacyDataByTokenID(buyTokenId);
       const percent = floor(
         new BigNumber(matched)
           .dividedBy(new BigNumber(amount))
@@ -516,8 +505,6 @@ export const mappingOrderHistorySelector = createSelector(
         networkfeeAmountStr: `${format.amountFull(1, PRV.pDecimals, false)} ${
           PRV.symbol
         }`,
-        sellTokenData,
-        buyTokenData,
         token1,
         token2,
         priceStr,
