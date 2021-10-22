@@ -12,9 +12,7 @@ export const getTokenNoCache = async () => {
   try {
     firebaseToken = await getFirebaseToken();
   } catch (error) {
-    // Use this to authenticate app for device without Google Services (Chinese Phone)
     firebaseToken = DeviceInfo.getUniqueId() + new Date().getTime();
-    console.debug('Can not get firebase token');
   }
   const uniqueId =
     (await LocalDatabase.getDeviceId()) || DeviceInfo.getUniqueId() || v4();
@@ -24,10 +22,15 @@ export const getTokenNoCache = async () => {
   return token;
 };
 
-export const getToken = async () =>
-  cachePromise('AUTH_TOKEN', () => getTokenNoCache(), 1e9);
-  
-// if "fresh" is true, dont use savedToken, have to get new one
+export const getToken = async () => {
+  const result = await cachePromise(
+    'AUTH_TOKEN',
+    () => getTokenNoCache(),
+    100000000000,
+  );
+  return result;
+};
+
 export const login = async () => {
   const token = await getToken();
   setTokenHeader(token);

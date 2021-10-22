@@ -34,20 +34,13 @@ class MasterKeyModel {
     const rootName = this.name;
     const storageName = this.getStorageName();
     const rawData = await storage.getItem(storageName);
-    console.time('GET_PASSPHRASE');
     const passphrase = await getPassphrase();
-    console.timeEnd('GET_PASSPHRASE');
-    console.log('passphrase', passphrase);
     let wallet;
     if (rawData) {
-      console.time('TIME_LOAD_WALLET_FROM_STORAGE');
       wallet = await loadWallet(passphrase, storageName, rootName);
-      console.timeEnd('TIME_LOAD_WALLET_FROM_STORAGE');
     }
     if (!wallet) {
-      console.time('TIME_INIT_WALLET');
       wallet = await initWallet(storageName, rootName);
-      console.timeEnd('TIME_INIT_WALLET');
     }
     this.mnemonic = wallet.Mnemonic;
     this.wallet = wallet;

@@ -127,9 +127,7 @@ export const loadAllMasterKeys = () => async (dispatch) => {
     ).map((item) => new MasterKeyModel(item));
     for (let masterKey of masterKeyList) {
       try {
-        console.time(`TIME_LOAD_WALLET_${masterKey.name}_FROM_STORAGE`);
         await masterKey.loadWallet();
-        console.timeEnd(`TIME_LOAD_WALLET_${masterKey.name}_FROM_STORAGE`);
         if (masterKey.isMasterless) {
           continue;
         }

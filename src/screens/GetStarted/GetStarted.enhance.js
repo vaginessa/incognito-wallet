@@ -35,13 +35,13 @@ const enhance = (WrappedComp) => (props) => {
     console.time('CONFIGS_APP');
     try {
       await setLoading(true);
+      await login();
       const [servers] = await new Promise.all([
         serverService.get(),
         dispatch(actionFetchProfile()),
         dispatch(getPTokenList()),
         dispatch(getInternalTokenList()),
         dispatch(actionLoadDefaultWallet()),
-        login(),
       ]);
       if (!servers || servers?.length === 0) {
         await serverService.setDefaultList();

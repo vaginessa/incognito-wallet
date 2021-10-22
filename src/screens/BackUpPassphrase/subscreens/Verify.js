@@ -66,8 +66,11 @@ const VerifyPassphrase = () => {
   const dispatch = useDispatch();
 
   const displayWords = useMemo(() => {
-    const words = data.mnemonic.split(' ');
-    return _.shuffle(words);
+    if (data) {
+      const words = data.mnemonic.split(' ');
+      return _.shuffle(words);
+    }
+    return data;
   }, [data]);
 
   const userWords = useMemo(
