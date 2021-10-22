@@ -421,6 +421,10 @@ const actionChangePercentRemovePool = (percent) => async (dispatch, getState) =>
   }
 };
 
+export const actionFree = () => ({
+  type: TYPES.ACTION_FREE
+});
+
 export default ({
   actionGetBalance,
   actionSetContributeID,
@@ -446,4 +450,6 @@ export default ({
   actionChangeOutputRemovePool,
   actionMaxRemovePool,
   actionChangePercentRemovePool,
+
+  actionFree
 });

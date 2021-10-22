@@ -11,7 +11,7 @@ import {
   ExplorerIcon,
   FaucetIcon,
   MintIcon,
-  KeyChainIcon, PowerIcon, ProvideIcon
+  KeyChainIcon, PowerIcon, ProvideIcon, CommunityIcon
 } from '@components/Icons';
 import PropTypes from 'prop-types';
 import appConstant from '@src/constants/app';
@@ -89,10 +89,10 @@ const Categories = [
       },
     },
     {
-      route: routeNames.Setting,
-      label: routeNames.Setting,
-      icon: ExplorerIcon,
-      key: appConstant.DISABLED.TRADE,
+      route: routeNames.Community,
+      label: routeNames.Community,
+      icon: CommunityIcon,
+      key: appConstant.DISABLED.COMMUNITY,
       params: {
         showHeader: true
       },

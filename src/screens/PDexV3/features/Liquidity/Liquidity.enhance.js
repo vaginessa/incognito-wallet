@@ -18,10 +18,15 @@ const withLiquidity = WrappedComp => props => {
   const _debounceInitCreatePool = React.useCallback(debounce(onInitCreatePool, 300), []);
   const onRefreshPool = () => dispatch(actionRefresh());
   const _debounceRefreshPool = React.useCallback(debounce(onRefreshPool, 300), []);
+  const onFree = () => dispatch(liquidityActions.actionFree());
+  const _debounceFree = React.useCallback(debounce(onFree, 500), []);
   React.useEffect(() => {
     if(switching) return;
     _debounceRefreshPool();
   }, [switching]);
+  React.useEffect(() => {
+    return () => _debounceFree();
+  }, []);
   return (
     <ErrorBoundary>
       <WrappedComp

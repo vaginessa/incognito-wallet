@@ -83,8 +83,8 @@ export const actionFetchListPools = () => async (dispatch, getState) => {
     const payload =
       poolsIDs
         .map((poolId) => pools.find((pool) => pool?.poolId === poolId))
-        .filter((pool) => !!pool) || [];
-    // .filter((pool) => !!pool.isVerify)
+        .filter((pool) => !!pool)
+        .filter((pool) => !!pool.isVerify) || [];
     await dispatch(actionFetchedListPools(payload));
   } catch (error) {
     throw error;

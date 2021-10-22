@@ -85,3 +85,4 @@ export { default as ArrowCurved } from './icon.arrowCurved';
 export { default as RestoreIcon } from './icon.restore';
 export { default as SpeakerIcon } from './icon.speaker';
 export { default as HamburgerIcon } from './icon.hamburger';
+export { default as CommunityIcon } from './icon.community';

@@ -1,5 +1,6 @@
 import {COLORS, FONT} from '@src/styles';
 import {StyleSheet} from 'react-native';
+import {ScreenWidth} from '@utils/devices';
 
 export const DEFAULT_PADDING = 24;
 
@@ -10,6 +11,17 @@ export const styled = StyleSheet.create({
     paddingHorizontal: DEFAULT_PADDING,
     paddingTop: 10
   },
+  wrapBar: {
+    width: ScreenWidth / 5,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  label: {
+    ...FONT.STYLE.normal,
+    fontSize: FONT.SIZE.superSmall,
+    lineHeight: FONT.SIZE.superSmall + 6,
+    marginTop: 2
+  }
 });
 
 export const homeStyled = StyleSheet.create({
