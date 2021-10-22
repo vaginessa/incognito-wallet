@@ -180,7 +180,8 @@ export const totalShareSelector = createSelector(
     const rewardUSD = listShare.reduce((prev, cur) => {
       return prev.plus(cur.totalRewardUSD);
     }, new BigNumber('0')).toNumber();
-    return format.toFixed(rewardUSD, 9, true);
+    const originalAmount = convert.toOriginalAmount(rewardUSD, 9, true);
+    return format.amount(originalAmount, 9);
   }
 );
 

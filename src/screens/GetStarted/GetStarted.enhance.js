@@ -33,6 +33,7 @@ import { COLORS, FONT } from '@src/styles';
 import { accountServices } from '@src/services/wallet';
 import { actionLogEvent } from '@src/screens/Performance';
 import { requestUpdateMetrics } from '@src/redux/actions/app';
+import PropTypes from 'prop-types';
 import {
   wizardSelector,
   isFollowedDefaultPTokensSelector,
@@ -345,6 +346,11 @@ const enhance = (WrappedComp) => (props) => {
       <KeepAwake />
     </ErrorBoundary>
   );
+};
+
+SubComponent.propTypes = {
+  isFetched: PropTypes.bool.isRequired,
+  statusConfigs: PropTypes.string.isRequired
 };
 
 export default compose(

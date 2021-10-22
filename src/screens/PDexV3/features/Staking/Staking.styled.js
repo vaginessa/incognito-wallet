@@ -7,7 +7,7 @@ export const btnStyles = StyleSheet.create({
     marginTop: UTILS.heightScale(25),
     marginHorizontal: 4,
     flex: 1,
-    backgroundColor: COLORS.green2,
+    backgroundColor: COLORS.blue5,
   },
 });
 
@@ -29,7 +29,7 @@ export const coinStyles = StyleSheet.create({
   },
   coinInterest: {
     fontSize: 18,
-    color: COLORS.green2,
+    color: COLORS.blue5,
     fontFamily: FONT.NAME.medium,
     marginBottom: 8,
   },
@@ -45,9 +45,10 @@ export const coinStyles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   button: {
-    backgroundColor: COLORS.green2,
+    backgroundColor: COLORS.blue5,
     marginTop: 40,
     marginBottom: 30,
+    borderRadius: 8
   },
   error: {
     ...FONT.STYLE.normal,
@@ -142,7 +143,7 @@ export const confirmStyle = StyleSheet.create({
     color: COLORS.red,
   },
   bigText: {
-    color: COLORS.green2,
+    color: COLORS.blue5,
     fontSize: 40,
     lineHeight: 55,
     ...FONT.STYLE.bold,
@@ -224,7 +225,7 @@ export const tabStyle = StyleSheet.create({
     color: COLORS.lightGrey31
   },
   tabEnable: {
-    backgroundColor: COLORS.green2
+    backgroundColor: COLORS.blue5
   }
 });
 
@@ -267,8 +268,8 @@ export const itemStyle = StyleSheet.create({
     lineHeight: FONT.SIZE.small + 7,
     color: COLORS.lightGrey33,
   },
-  greenText: {
-    color: COLORS.green2,
+  blueText: {
+    color: COLORS.blue5,
   },
   rightText: {
     textAlign: 'right'

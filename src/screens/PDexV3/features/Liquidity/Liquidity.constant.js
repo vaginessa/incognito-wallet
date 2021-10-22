@@ -25,8 +25,8 @@ export const LIQUIDITY_MESSAGES = {
   createPool : 'Create liquidity',
   removePool : 'Remove liquidity',
   estRate: (onPress) => (
-    <Text style={styled.warning}>The exchange rate between two tokens have been the wrong rate, please update new&nbsp;
-      <Text style={{textDecorationLine: 'underline' }} onPress={onPress}>rate here</Text>.
+    <Text style={styled.warning}>the exchange rate of two tokens is wrong, click here to get suggested&nbsp;
+      <Text style={{textDecorationLine: 'underline' }} onPress={onPress}>rate</Text>.
     </Text>
   )
 };

@@ -193,7 +193,7 @@ const Contribute = ({
         closeSuccessDialog={onClose}
         title={SUCCESS_MODAL.CREATE_POOL.title}
         buttonTitle="Ok"
-        description={SUCCESS_MODAL.CREATE_POOL.desc}
+        extraInfo={SUCCESS_MODAL.CREATE_POOL.desc}
         visible={visible}
       />
     </>

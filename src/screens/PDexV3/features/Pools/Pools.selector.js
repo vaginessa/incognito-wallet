@@ -11,7 +11,7 @@ export const poolsSelector = createSelector(
 
 export const tradingVolume24hSelector = createSelector(
   poolsSelector,
-  ({ tradingVolume24h }) => format.amount(tradingVolume24h, 0, true, true),
+  ({ tradingVolume24h }) => format.amount(tradingVolume24h, 9, true, true),
 );
 
 export const listPoolsIDsSelector = createSelector(
@@ -59,7 +59,7 @@ export const listPoolsSelector = createSelector(
           virtual1Value,
           virtual2Value,
         } = pool;
-        const volumeToAmount = format.amount(volume, 0);
+        const volumeToAmount = format.amount(volume, 9);
         const priceChangeToAmount = format.amount(priceChange, 0);
         const perChange24h = priceChange24H;
         const perChangeSign = perChange24h > 0 ? '+' : (perChange24h === 0 ? '' : '-');

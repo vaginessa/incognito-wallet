@@ -70,7 +70,7 @@ export default StyleSheet.create({
   },
   inputContainer: {
     marginBottom: 8,
-    backgroundColor: COLORS.lightGrey31,
+    backgroundColor: COLORS.colorGrey4,
     paddingHorizontal: 16,
     paddingVertical: 13,
     borderRadius: 8,
