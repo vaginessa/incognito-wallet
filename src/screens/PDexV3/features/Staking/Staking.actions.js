@@ -42,57 +42,6 @@ const actionFetchCoins = () => async (dispatch, getState) => {
     });
     const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
     const data = (await pDexV3Inst.getStakingData()) || [];
-    // const data = [
-    //   {
-    //     id: '0000000000000000000000000000000000000000000000000000000000000004-0ac5376ecb2b9ff2d738c53cd8e917fe2f07ee31126aab579a2fb3e666780d49',
-    //     createdAt: '0001-01-01T00:00:00Z',
-    //     updatedAt: '0001-01-01T00:00:00Z',
-    //     amount: 96700,
-    //     reward: {
-    //       '0000000000000000000000000000000000000000000000000000000000000004': 1e9,
-    //       '497159cf6c9f8d5a7cffd38d392649fee7b61558689ba631b26ef1b2dd8c9a06': 49000,
-    //       'ffd8d42dc40a8d166ea4848baf8b5f6e9fe0e9c30d60062eb7d44a8df9e00854': 2172617,
-    //     },
-    //     tokenId: '0000000000000000000000000000000000000000000000000000000000000004',
-    //     nftId: '0ac5376ecb2b9ff2d738c53cd8e917fe2f07ee31126aab579a2fb3e666780d49'
-    //   },
-    //   {
-    //     id: '497159cf6c9f8d5a7cffd38d392649fee7b61558689ba631b26ef1b2dd8c9a06-0ac5376ecb2b9ff2d738c53cd8e917fe2f07ee31126aab579a2fb3e666780d49',
-    //     createdAt: '0001-01-01T00:00:00Z',
-    //     updatedAt: '0001-01-01T00:00:00Z',
-    //     amount: 1e9,
-    //     reward: {
-    //       '0000000000000000000000000000000000000000000000000000000000000004': 128918,
-    //       '4584d5e9b2fc0337dfb17f4b5bb025e5b82c38cfa4f54e8a3d4fcdd03954ff82': 400
-    //     },
-    //     tokenId: '497159cf6c9f8d5a7cffd38d392649fee7b61558689ba631b26ef1b2dd8c9a06',
-    //     nftId: '0ac5376ecb2b9ff2d738c53cd8e917fe2f07ee31126aab579a2fb3e666780d49'
-    //   },
-    //   {
-    //     id: '0000000000000000000000000000000000000000000000000000000000000004-06031997',
-    //     createdAt: '0001-01-01T00:00:00Z',
-    //     updatedAt: '0001-01-01T00:00:00Z',
-    //     amount: 1e9,
-    //     reward: {
-    //       '0000000000000000000000000000000000000000000000000000000000000004': 1e9,
-    //       '4584d5e9b2fc0337dfb17f4b5bb025e5b82c38cfa4f54e8a3d4fcdd03954ff82': 400
-    //     },
-    //     tokenId: '0000000000000000000000000000000000000000000000000000000000000004',
-    //     nftId: '06031997'
-    //   },
-    //   {
-    //     id: 'ffd8d42dc40a8d166ea4848baf8b5f6e9fe0e9c30d60062eb7d44a8df9e00854-06041997',
-    //     createdAt: '0001-01-01T00:00:00Z',
-    //     updatedAt: '0001-01-01T00:00:00Z',
-    //     amount: 2e9,
-    //     reward: {
-    //       '0000000000000000000000000000000000000000000000000000000000000004': 128918,
-    //       '4584d5e9b2fc0337dfb17f4b5bb025e5b82c38cfa4f54e8a3d4fcdd03954ff82': 400
-    //     },
-    //     tokenId: 'ffd8d42dc40a8d166ea4848baf8b5f6e9fe0e9c30d60062eb7d44a8df9e00854',
-    //     nftId: '06041997'
-    //   },
-    // ];
     const tokenIDs = uniq((data || []).map(({ tokenId }) => tokenId));
     batch(() => {
       dispatch(actionGetBalances(tokenIDs));

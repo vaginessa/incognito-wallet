@@ -3,27 +3,55 @@ import {FlatList, Text, TouchableOpacity, View} from 'react-native';
 import {useNavigation} from 'react-navigation-hooks';
 import routeNames from '@routers/routeNames';
 import styled from '@screens/PDexV3/features/LiquidityHistories/LiquidityHistories.styled';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {liquidityHistorySelector} from '@screens/PDexV3/features/LiquidityHistories/index';
 import PropTypes from 'prop-types';
-import {EmptyBookIcon} from '@components/Icons';
+import {ArrowDown, EmptyBookIcon} from '@components/Icons';
 import {styled as mainStyle} from '@screens/PDexV3/PDexV3.styled';
 import withHistories from '@screens/PDexV3/features/LiquidityHistories/LiquidityHistories.enhance';
+import {Row} from '@src/components';
+import {actionToggleModal} from '@components/Modal';
+import ModalBottomSheet from '@components/Modal/features/ModalBottomSheet';
+import {HeaderRow, OneRowCoin} from '@screens/PDexV3/features/Staking/Staking.item';
 
 const Item = React.memo(({ history, isLast }) => {
   const navigation = useNavigation();
+  const dispatch = useDispatch();
   const onNextPress = () => {
     navigation.navigate(routeNames.WithdrawFeeLPDetail, { history });
+  };
+  const renderModelCell = (data) => <OneRowCoin token={data.token} valueText={data.amountStr} />;
+
+  const onShowReward = () => {
+    if (!history.showRewards) return;
+    dispatch(actionToggleModal({
+      data: (
+        <ModalBottomSheet
+          title='Rewards'
+          headerView={<HeaderRow array={['Name', 'Amount']} />}
+          contentView={<View style={{ marginTop: 24 }}>{history.rewards.map(renderModelCell)}</View>}
+        />
+      ),
+      visible: true,
+      shouldCloseModalWhenTapOverlay: true
+    }));
   };
   return (
     <TouchableOpacity style={[styled.wrapperItem, isLast && { marginBottom: 20 }]} onPress={onNextPress}>
       <View style={styled.topRow}>
-        <Text style={styled.title}>Remove</Text>
+        <Text style={styled.title}>Withdraw</Text>
       </View>
-      <View style={styled.bottomRow}>
-        <Text style={styled.desc}>{history?.withdrawLPAmountDesc}</Text>
-        <Text style={styled.status}>{history?.statusStr}</Text>
-      </View>
+      <Row spaceBetween centerVertical style={styled.bottomRow}>
+        <Text style={styled.desc}>{history?.timeStr}</Text>
+        <TouchableOpacity style={[styled.bottomRow, { alignItems: 'center' }]} onPress={onShowReward}>
+          <Text style={styled.status}>{history?.statusStr}</Text>
+          {history.showRewards && (
+            <View style={{ marginLeft: 10 }}>
+              <ArrowDown />
+            </View>
+          )}
+        </TouchableOpacity>
+      </Row>
     </TouchableOpacity>
   );
 });

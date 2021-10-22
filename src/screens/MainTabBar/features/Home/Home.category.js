@@ -84,13 +84,18 @@ const Categories = [
       label: 'Explorer',
       icon: ExplorerIcon,
       key: appConstant.DISABLED.EXPLORER,
-      url: CONSTANT_CONFIGS.EXPLORER_CONSTANT_CHAIN_URL
+      params: {
+        url: CONSTANT_CONFIGS.EXPLORER_CONSTANT_CHAIN_URL
+      },
     },
     {
-      route: routeNames.Trade,
-      label: routeNames.Trade,
+      route: routeNames.Setting,
+      label: routeNames.Setting,
       icon: ExplorerIcon,
-      key: appConstant.DISABLED.TRADE
+      key: appConstant.DISABLED.TRADE,
+      params: {
+        showHeader: true
+      },
     }
   ]
 ];
@@ -126,13 +131,8 @@ const CategoryItem = ({ item }) => {
         url: CONSTANT_CONFIGS.FAUCET_URL + `address=${account.paymentAddress}`
       };
       break;
-    case appConstant.DISABLED.EXPLORER:
-      params = {
-        url: CONSTANT_CONFIGS.EXPLORER_CONSTANT_CHAIN_URL
-      };
-      break;
     default:
-      params = undefined;
+      params = item.params;
     }
     return navigation.navigate(item.route, params);
   };

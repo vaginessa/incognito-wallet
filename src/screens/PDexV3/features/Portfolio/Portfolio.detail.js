@@ -7,7 +7,9 @@ import {
 } from 'react-native';
 import {COLORS, FONT} from '@src/styles';
 import {batch, useDispatch, useSelector} from 'react-redux';
-import {getDataShareByPoolIdSelector} from '@screens/PDexV3/features/Portfolio/Portfolio.selector';
+import {
+  getDataByShareIdSelector,
+} from '@screens/PDexV3/features/Portfolio/Portfolio.selector';
 import {Hook} from '@screens/Wallet/features/TxHistoryDetail/TxHistoryDetail';
 import {liquidityActions} from '@screens/PDexV3/features/Liquidity';
 import {useNavigation} from 'react-navigation-hooks';
@@ -68,30 +70,30 @@ const styles = StyleSheet.create({
   }
 });
 
-const PortfolioModal = ({ poolId, onWithdrawFeeLP }) => {
+const PortfolioModal = ({ shareId, onWithdrawFeeLP }) => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
-  const data = useSelector(getDataShareByPoolIdSelector)(poolId);
+  const data = useSelector(getDataByShareIdSelector)(shareId);
   const onClose = () => dispatch(actionToggleModal());
   const onWithdrawPress = () => {
     batch(() => {
       onClose();
       dispatch(liquidityActions.actionSetRemovePoolToken({ inputToken: token1.tokenId, outputToken: token2.tokenId }));
-      dispatch(liquidityActions.actionSetRemovePoolID(poolId));
+      dispatch(liquidityActions.actionSetRemoveShareID(data.shareId));
       navigation.navigate(routeNames.RemovePool);
     });
   };
   const onInvestPress = () => {
     batch(() => {
       onClose();
-      dispatch(liquidityActions.actionSetContributePoolID({ poolId }));
+      dispatch(liquidityActions.actionSetContributeID({ poolId: data.poolId, nftId: data.nftId || '' }));
       navigation.navigate(routeNames.ContributePool);
     });
   };
   const onClaimReward = () => {
     onClose();
     setTimeout(() => {
-      onWithdrawFeeLP(poolId);
+      onWithdrawFeeLP({ poolId: data.poolId, shareId });
     }, 500);
   };
   if (!data) return null;
@@ -140,7 +142,7 @@ const PortfolioModal = ({ poolId, onWithdrawFeeLP }) => {
 };
 
 PortfolioModal.propTypes = {
-  poolId: PropTypes.string.isRequired,
+  shareId: PropTypes.string.isRequired,
   onWithdrawFeeLP: PropTypes.func.isRequired
 };
 

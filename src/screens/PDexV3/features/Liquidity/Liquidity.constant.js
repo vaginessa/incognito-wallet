@@ -3,7 +3,7 @@ import {Text} from 'react-native';
 import styled from './Liquidity.styled';
 
 export const TYPES = {
-  ACTION_SET_CONTRIBUTE_POOL_ID: '[pDexV3][liquidity] Set contribute poolID',
+  ACTION_SET_CONTRIBUTE_ID: '[pDexV3][liquidity] Set contribute id',
   ACTION_FETCHING_CONTRIBUTE_DATA: '[pDexV3][liquidity] Fetching contribute data',
   ACTION_SET_CONTRIBUTE_POOL_DATA: '[pDexV3][liquidity] Set contribute pool data',
 
@@ -15,7 +15,7 @@ export const TYPES = {
   ACTION_SET_RATE_CREATE_POOL: '[pDexV3][liquidity] Set rate create pool',
 
   ACTION_SET_REMOVE_FETCHING: '[pDexV3][liquidity] Set remove pool fetching',
-  ACTION_SET_REMOVE_POOL_ID: '[pDexV3][liquidity] Set remove pool poolID',
+  ACTION_SET_REMOVE_SHARE_ID: '[pDexV3][liquidity] Set remove pool share id',
   ACTION_SET_REMOVE_POOL_TOKEN: '[pDexV3][liquidity] Set remove pool token',
 };
 

@@ -10,7 +10,7 @@ import styled from '@screens/PDexV3/features/LiquidityHistories/LiquidityHistori
 const WithdrawFeeLPDetail = () => {
   const history = useNavigationParam('history');
   const hookFactories = React.useMemo(() => {
-    const { requestTx, poolId, nftId, statusStr, timeStr, withdrawData, respondTxs } = history;
+    const { requestTx, poolId, nftId, statusStr, timeStr, rewards, respondTxs } = history;
     const headHook = [
       {
         label: 'PoolID',
@@ -49,10 +49,10 @@ const WithdrawFeeLPDetail = () => {
         openLink(txID);
       }
     }));
-    const amountHook = (withdrawData || []).map(({ withdrawAmountSymbolStr: amount, withdrawAmount }, index) => ({
+    const amountHook = (rewards || []).map(({ amountSymbolStr }, index) => ({
       label: `Amount${index + 1}`,
-      valueText: amount,
-      disabled: !withdrawAmount
+      valueText: amountSymbolStr,
+      disabled: !amountSymbolStr
     }));
     return [...headHook, ...responseHook, ...amountHook];
   }, [history]);

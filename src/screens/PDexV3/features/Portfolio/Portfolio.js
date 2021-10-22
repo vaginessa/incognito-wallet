@@ -10,7 +10,7 @@ import {actionFetch} from '@screens/PDexV3/features/Portfolio/Portfolio.actions'
 import {EmptyBookIcon} from '@components/Icons';
 import uniq from 'lodash/uniq';
 import {
-  getDataShareByPoolIdSelector,
+  getDataByShareIdSelector,
   isFetchingSelector,
   listShareIDsSelector,
 } from './Portfolio.selector';
@@ -21,9 +21,9 @@ const PortfolioList = withTransaction(React.memo(({ onCreateWithdrawFeeLP }) => 
   const isFetching = useSelector(isFetchingSelector);
   const dispatch = useDispatch();
   const data = useSelector(listShareIDsSelector);
-  const getDataShare = useSelector(getDataShareByPoolIdSelector);
-  const onWithdrawFeeLP = (poolId) => {
-    const dataShare = getDataShare(poolId);
+  const getDataShare = useSelector(getDataByShareIdSelector);
+  const onWithdrawFeeLP = ({ poolId, shareId }) => {
+    const dataShare = getDataShare(shareId);
     if (!dataShare && typeof onCreateWithdrawFeeLP !== 'function') return;
     const { nftId, tokenId1, tokenId2, rewards } = dataShare;
     const params = {

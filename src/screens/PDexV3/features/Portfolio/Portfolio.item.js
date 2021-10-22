@@ -52,7 +52,7 @@ const PortfolioItem = ({ shareId, isLast, onWithdrawFeeLP }) => {
           <ModalBottomSheet
             style={{ height: '60%' }}
             customContent={
-              <PortfolioModal poolId={data.poolId} onWithdrawFeeLP={onWithdrawFeeLP} />
+              <PortfolioModal shareId={data.shareId} onWithdrawFeeLP={onWithdrawFeeLP} />
             }
           />
         )})

@@ -740,6 +740,17 @@ export default class Account {
           pDexV3Inst.clearStorage(keyFollowPools),
         ];
         clearAllCaches();
+        if (keyInfo.nftindex) {
+          task = task.concat(
+            Object.keys(keyInfo.nftindex).map((tokenID) => {
+              const params = {
+                tokenID,
+                version,
+              };
+              return account.clearCacheStorage(params);
+            }),
+          );
+        }
         if (keyInfo?.coinindex) {
           task = task.concat(
             Object.keys(keyInfo.coinindex).map((tokenID) => {
@@ -1116,30 +1127,6 @@ export default class Account {
       new Validator('getSignPublicKeyEncode-wallet', wallet).required();
       const accountWallet = getAccountWallet(account, wallet);
       return accountWallet.getSignPublicKeyEncode();
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  static async getNFTTokenData({ account, wallet }) {
-    try {
-      new Validator('getNFTTokenData-account', account).required();
-      new Validator('getNFTTokenData-wallet', wallet).required();
-      const accountWallet = getAccountWallet(account, wallet);
-      // return accountWallet.getNFTTokenData({ version: PrivacyVersion.ver2 });
-      const list = [...Array(5)].map((item) => ({
-        nftToken: v4(),
-        amount: random(0, 1),
-      }));
-      await delay(1000);
-      const result = {
-        nftToken: list.find((i) => i.amount === 1),
-        // nftToken: '',
-        initNFTToken: true,
-        list,
-      };
-      console.log('result', result);
-      return result;
     } catch (error) {
       throw error;
     }
