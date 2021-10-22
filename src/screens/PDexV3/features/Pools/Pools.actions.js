@@ -2,6 +2,7 @@ import { defaultAccountWalletSelector } from '@src/redux/selectors/account';
 import { ExHandler } from '@src/services/exception';
 import { getPDexV3Instance } from '@screens/PDexV3';
 import uniq from 'lodash/uniq';
+import BigNumber from 'bignumber.js';
 import {
   ACTION_FETCHING,
   ACTION_FETCHED,
@@ -39,19 +40,6 @@ export const actionFetchedListPoolsFollowing = (payload) => ({
   payload,
 });
 
-export const actionFetchTradingVolume24h = () => async (dispatch, getState) => {
-  try {
-    const state = getState();
-    const account = defaultAccountWalletSelector(state);
-    const pDexV3Inst = await getPDexV3Instance({ account });
-    const tradingVolume24h = await pDexV3Inst.getTradingVolume24h('all');
-    console.log('tradingVolume24h', tradingVolume24h);
-    dispatch(actionFetchedTradingVolume24h(tradingVolume24h));
-  } catch (error) {
-    new ExHandler(error).showErrorToast();
-  }
-};
-
 export const actionSetFetching = ({ isFetching }) => ({
   type: ACTION_FETCHING,
   payload: { isFetching },
@@ -77,6 +65,7 @@ export const actionFetchListPools = () => async (dispatch, getState) => {
     const account = defaultAccountWalletSelector(state);
     const pDexV3Inst = await getPDexV3Instance({ account });
     const pools = (await pDexV3Inst.getListPools('all')) || [];
+    const volume = pools.reduce((prev, curr) => new BigNumber(curr.volume).plus(prev), new BigNumber(0));
     let poolsIDs = pools.map((pool) => pool?.poolId) || [];
     poolsIDs = [...followIds, ...poolsIDs];
     poolsIDs = uniq(poolsIDs);
@@ -86,6 +75,7 @@ export const actionFetchListPools = () => async (dispatch, getState) => {
         .filter((pool) => !!pool)
         .filter((pool) => !!pool.isVerify) || [];
     await dispatch(actionFetchedListPools(payload));
+    await dispatch(actionFetchedTradingVolume24h(volume.toString()));
   } catch (error) {
     throw error;
   } finally {

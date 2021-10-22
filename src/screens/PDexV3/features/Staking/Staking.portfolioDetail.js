@@ -89,7 +89,7 @@ const PortfolioDetail = ({ onWithdrawReward, error, setError }) => {
                   style={[
                     coinStyled.regularDark,
                     { marginRight: 5  },
-                    !!coin.reward.totalRewardUSD && { color: COLORS.green2 }
+                    !!coin.reward.totalRewardUSD && { color: COLORS.blue5 }
                   ]}
                 >
                   {`+ ${coin.reward.totalRewardUSDStr}`}

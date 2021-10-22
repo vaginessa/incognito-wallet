@@ -64,7 +64,7 @@ export const FormMint = React.memo(() => {
       [
         {
           label: 'Amount',
-          value: 'Free',
+          value: 'Fee',
         },
         {
           label: 'Network fee',

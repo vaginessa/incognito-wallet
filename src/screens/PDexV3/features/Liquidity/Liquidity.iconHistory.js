@@ -3,6 +3,7 @@ import historySrc from '@src/assets/images/new-icons/history-lp.png';
 import {Image, TouchableOpacity, StyleSheet} from 'react-native';
 import {useNavigation} from 'react-navigation-hooks';
 import routeNames from '@routers/routeNames';
+import PropTypes from 'prop-types';
 
 const styled = StyleSheet.create({
   container: {
@@ -20,16 +21,22 @@ const styled = StyleSheet.create({
   }
 });
 
-const LPHistoryIcon = () => {
+const LPHistoryIcon = ({ style }) => {
   const navigation = useNavigation();
   const onPress = () => navigation.navigate(routeNames.LiquidityHistories);
   return (
-    <TouchableOpacity style={styled.container} onPress={onPress}>
+    <TouchableOpacity style={[styled.container, style]} onPress={onPress}>
       <Image style={styled.image} source={historySrc} />
     </TouchableOpacity>
   );
 };
 
-LPHistoryIcon.propTypes = {};
+LPHistoryIcon.defaultProps = {
+  style: null,
+};
+
+LPHistoryIcon.propTypes = {
+  style: PropTypes.any
+};
 
 export default memo(LPHistoryIcon);

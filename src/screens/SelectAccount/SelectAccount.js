@@ -6,7 +6,7 @@ import { flatMap, groupBy } from 'lodash';
 import includes from 'lodash/includes';
 import { listAllMasterKeyAccounts } from '@src/redux/selectors/masterKey';
 import accountService from '@services/wallet/accountService';
-import GroupItem from '@screens/SelectAccount/GroupItem';
+import GroupItem from '@screens/SelectAccount/SelectAccount.groupItem';
 import AccountItem from '@screens/SelectAccount/AccountItem';
 import MainLayout from '@components/MainLayout';
 

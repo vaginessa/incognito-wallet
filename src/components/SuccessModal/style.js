@@ -1,18 +1,18 @@
-import { COLORS, FONT, UTILS } from '@src/styles';
+import { COLORS, FONT } from '@src/styles';
 import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
   dialog: {
     height: 'auto',
-    borderRadius: 20,
-    width: UTILS.screenWidth() - (27 * 2),
   },
   dialogContent: {
-    paddingVertical: 40,
-    paddingHorizontal: 15,
+    borderRadius: 8,
+    paddingTop: 24,
+    paddingBottom: 16,
+    paddingHorizontal: 16,
     justifyContent: 'center',
     alignItems: 'center',
-    width: 'auto',
+    backgroundColor: COLORS.white
   },
   icon: {
     width: 62,
@@ -27,16 +27,20 @@ export default StyleSheet.create({
     resizeMode: 'contain'
   },
   dialogTitle: {
-    fontSize: 20,
-    marginBottom: 15,
     ...FONT.STYLE.bold,
+    fontSize: FONT.SIZE.superMedium,
+    marginBottom: 15,
+    marginTop: 8,
+    lineHeight: FONT.SIZE.superMedium + 5,
     textAlign: 'center',
+    color: COLORS.blue5
   },
   dialogDesc: {
-    fontSize: 18,
-    paddingHorizontal: 30,
-    marginBottom: 20,
-    color: COLORS.dark1,
+    ...FONT.STYLE.medium,
+    fontSize: FONT.SIZE.regular,
+    lineHeight: FONT.SIZE.regular + 8,
+    paddingHorizontal: 14,
+    color: COLORS.black,
     textAlign: 'center',
   },
   dialogButton: {
@@ -46,13 +50,16 @@ export default StyleSheet.create({
     marginBottom: 20,
   },
   extraInfo: {
-    fontSize: 16,
-    marginBottom: 20,
-    color: COLORS.lightGrey16,
+    ...FONT.STYLE.medium,
+    fontSize: FONT.SIZE.regular,
+    lineHeight: FONT.SIZE.regular + 8,
+    paddingHorizontal: 14,
+    color: COLORS.lightGrey34,
     textAlign: 'center',
   },
   button: {
-    marginTop: 10,
+    marginTop: 24,
+    borderRadius: 8
   },
   twoButton: {
     width: '48%',

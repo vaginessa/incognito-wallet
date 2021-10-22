@@ -1,6 +1,6 @@
 import React, {memo} from 'react';
-import {View, Text} from 'react-native';
-import {useSelector} from 'react-redux';
+import {Text, TouchableOpacity} from 'react-native';
+import {batch, useDispatch, useSelector} from 'react-redux';
 import {listPoolsVerifySelector} from '@screens/PDexV3/features/Pools';
 import orderBy from 'lodash/orderBy';
 import {Row} from '@src/components';
@@ -8,11 +8,16 @@ import PropTypes from 'prop-types';
 import {homeStyled} from '@screens/MainTabBar/MainTabBar.styled';
 import formatUtils from '@utils/format';
 import {PriceDownIcon, PriceUpIcon} from '@components/Icons/icon.arrowPrice';
+import {actionChangeTab} from '@components/core/Tabs/Tabs.actions';
+import {ROOT_TAB_TRADE, TAB_LIMIT_ID} from '@screens/PDexV3/features/Trade/Trade.constant';
+import {actionSetPoolSelected} from '@screens/PDexV3/features/OrderLimit';
+import routeNames from '@routers/routeNames';
+import {useNavigation} from 'react-navigation-hooks';
 
-const Item = React.memo(({ item }) => {
-  const { token1, token2, price, perChange24hColor, perChange24hToStr, priceChange24H } = item;
+const Item = React.memo(({ item, onItemPress }) => {
+  const { token1, token2, price, perChange24hColor, perChange24hToStr, priceChange24H, poolId } = item;
   return (
-    <View style={homeStyled.wrapMainVolume}>
+    <TouchableOpacity style={homeStyled.wrapMainVolume} onPress={() => onItemPress(poolId)}>
       <Text style={[homeStyled.mediumBlack, { fontSize: 12 }]}>{`${token1.symbol} / ${token2.symbol}`}</Text>
       <Text style={[homeStyled.mediumBlack, { lineHeight: 24, color: perChange24hColor }]}>
         {
@@ -27,11 +32,13 @@ const Item = React.memo(({ item }) => {
         )}
         <Text style={[homeStyled.regularGray, { fontSize: 10, lineHeight: 15 }]}>{perChange24hToStr}</Text>
       </Row>
-    </View>
+    </TouchableOpacity>
   );
 });
 
 const BigVolume = () => {
+  const dispatch = useDispatch();
+  const navigation = useNavigation();
   const pools = useSelector(listPoolsVerifySelector);
   const mainVolume = React.useMemo(() => {
     const sort = orderBy(pools, 'volume', 'desc');
@@ -41,7 +48,20 @@ const BigVolume = () => {
     return [];
   }, [pools]);
 
-  const renderItem = (item) => <Item item={item} key={item.poolId} />;
+  const onItemPress = (poolId) => {
+    batch(() => {
+      dispatch(
+        actionChangeTab({
+          rootTabID: ROOT_TAB_TRADE,
+          tabID: TAB_LIMIT_ID,
+        }),
+      );
+      dispatch(actionSetPoolSelected(poolId));
+      navigation.navigate(routeNames.Trade);
+    });
+  };
+
+  const renderItem = (item) => <Item item={item} key={item.poolId} onItemPress={onItemPress} />;
 
   if (!mainVolume || mainVolume.length === 0) return undefined;
   return (
@@ -59,7 +79,9 @@ Item.propTypes = {
     perChange24hColor: PropTypes.string.isRequired,
     perChange24hToStr: PropTypes.string.isRequired,
     priceChange24H: PropTypes.number.isRequired,
-  }).isRequired
+    poolId: PropTypes.string.isRequired,
+  }).isRequired,
+  onItemPress: PropTypes.func.isRequired
 };
 
 export default memo(BigVolume);

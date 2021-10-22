@@ -286,7 +286,7 @@ const CreatePool = ({
         closeSuccessDialog={onClose}
         title={SUCCESS_MODAL.ADD_POOL.title}
         buttonTitle="Ok"
-        description={SUCCESS_MODAL.ADD_POOL.desc}
+        extraInfo={SUCCESS_MODAL.ADD_POOL.desc}
         visible={visible}
       />
     </>
