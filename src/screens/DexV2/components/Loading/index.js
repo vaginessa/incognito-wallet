@@ -34,22 +34,25 @@ const Loading = ({ open, showPercent }) => {
   return (
     <Modal animationType="fade" transparent visible={open}>
       <View style={stylesheet.container}>
-        <ActivityIndicator size="large" color={COLORS.primary} />
-        <Text style={stylesheet.desc}>
+        <View style={stylesheet.wrapper}>
+          <ActivityIndicator size="large" color={COLORS.black} />
           {
-            'Completing this action...\n\nPlease do not navigate away from the app.'
+            showPercent && (
+              <>
+                <Text style={[stylesheet.percent, { color: COLORS.black }]}>{`${percent}%`}</Text>
+                {!!global.isDebug() && !!message && (
+                  <Text style={stylesheet.desc}>{message}</Text>
+                )}
+              </>
+            )
           }
-        </Text>
-        {
-          showPercent && (
-            <>
-              <Text style={stylesheet.percent}>{`${percent}%`}</Text>
-              {!!global.isDebug() && !!message && (
-                <Text style={stylesheet.desc}>{message}</Text>
-              )}
-            </>
-          )
-        }
+          <Text style={stylesheet.desc}>
+              Completing this action...
+          </Text>
+          <Text style={stylesheet.desc}>
+            Please do not navigate away from the app.
+          </Text>
+        </View>
         <KeepAwake />
       </View>
     </Modal>

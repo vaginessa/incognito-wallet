@@ -1,23 +1,32 @@
 import { StyleSheet } from 'react-native';
-import { COLORS, FONT } from '@src/styles';
+import {COLORS, FONT, UTILS} from '@src/styles';
 
 export default StyleSheet.create({
   container: {
-    alignItems: 'center',
     backgroundColor: COLORS.overlayBlackDark,
     flex: 1,
     justifyContent: 'center',
+    alignItems: 'center',
+  },
+  wrapper: {
+    backgroundColor: COLORS.white,
+    marginHorizontal: 25,
+    borderRadius: 13,
+    width: UTILS.deviceWidth() - 50,
+    paddingHorizontal: 20,
+    paddingVertical: 50,
+    position: 'relative',
   },
   desc: {
-    color: COLORS.white,
-    fontSize: FONT.SIZE.small,
+    color: COLORS.colorGreyBold,
+    fontFamily: FONT.NAME.medium,
+    fontSize: FONT.SIZE.regular,
+    lineHeight: FONT.SIZE.regular + 5,
     textAlign: 'center',
-    width: 200,
-    marginTop: 20,
-    marginBottom: 10,
+    marginTop: 15,
   },
   percent: {
-    color: COLORS.white,
+    color: COLORS.black,
     fontFamily: FONT.NAME.bold,
     fontSize: FONT.SIZE.superMedium,
     lineHeight: FONT.SIZE.superMedium + 5,

@@ -1,5 +1,3 @@
-import LockArrowIcon from '@components/Icons/icon.lockArrow';
-
 export { default as SearchIcon } from './icon.search';
 export { default as ClearIcon } from './icon.clear';
 export { default as DeleteIcon } from './icon.delete';
@@ -86,3 +84,4 @@ export { default as RestoreIcon } from './icon.restore';
 export { default as SpeakerIcon } from './icon.speaker';
 export { default as HamburgerIcon } from './icon.hamburger';
 export { default as CommunityIcon } from './icon.community';
+export { default as SuccessIcon } from './icon.success';

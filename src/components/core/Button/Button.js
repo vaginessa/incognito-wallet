@@ -58,7 +58,7 @@ const styled = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 8,
-    borderRadius: 25
+    borderRadius: 8
   },
   primaryText: {
     ...FONT.STYLE.medium,
@@ -67,17 +67,17 @@ const styled = StyleSheet.create({
   },
   normalText: {
     ...FONT.STYLE.medium,
-    color: COLORS.green2,
+    color: COLORS.blue5,
     fontSize: FONT.SIZE.medium,
   },
   border: {
-    borderColor: COLORS.green2,
+    borderColor: COLORS.blue5,
     borderWidth: 1
   }
 });
 
 BTNPrimary.defaultProps = {
-  background: COLORS.green2,
+  background: COLORS.blue5,
   wrapperStyle: null,
   textStyle: null,
   disabled: false,

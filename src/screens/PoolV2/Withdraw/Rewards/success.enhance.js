@@ -2,7 +2,6 @@ import React from 'react';
 import { useNavigation } from 'react-navigation-hooks';
 import { SuccessModal } from '@src/components';
 import ROUTE_NAMES from '@routers/routeNames';
-import mainStyle from '@screens/PoolV2/style';
 
 const withSuccess = WrappedComp => (props) => {
   const [success, setSuccess] = React.useState(false);
@@ -33,7 +32,6 @@ const withSuccess = WrappedComp => (props) => {
         description={`${displayFullTotalRewardsNonLock} PRV in provider rewards has been withdrawn to ${account.name || account.AccountName}.`}
         extraInfo="Please wait for your balance to update."
         visible={success}
-        buttonStyle={mainStyle.button}
       />
     </>
   );

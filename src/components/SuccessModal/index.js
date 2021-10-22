@@ -3,73 +3,69 @@ import PropTypes from 'prop-types';
 import {
   Text,
   View,
-  RoundCornerButton, Image,
+  RoundCornerButton,
 } from '@components/core';
 import Row from '@src/components/Row';
-import { Overlay } from 'react-native-elements';
+import Modal from 'react-native-modal';
+import {SuccessIcon} from '@components/Icons';
 import styles from './style';
 
-class SuccessModal extends React.Component {
-  render() {
-    const {
-      visible,
-      title,
-      description,
-      buttonTitle,
-      extraInfo,
-      closeSuccessDialog,
-      buttonStyle,
-      onSuccess,
-      successTitle,
-      icon,
-      iconStyle,
-    } = this.props;
-    return (
-      <Overlay isVisible={visible} overlayStyle={styles.dialog}>
-        <View style={[styles.dialogContent]}>
-          {!!icon && (
-            <Image source={icon} style={[styles.icon, iconStyle]} />
-          )}
-          {!!title && (
-            <Text style={styles.dialogTitle}>
-              {title}
-            </Text>
-          )}
-          {!!description && (
-            <Text style={styles.dialogDesc}>
-              {description}
-            </Text>
-          )}
-          {!!extraInfo && (
-            <Text style={styles.extraInfo}>
-              {extraInfo}
-            </Text>
-          )}
-          {onSuccess ? (
-            <Row spaceBetween center style={styles.twoButtonWrapper}>
-              <RoundCornerButton
-                onPress={closeSuccessDialog}
-                title={buttonTitle}
-                style={[styles.button, buttonStyle, styles.twoButton]}
-              />
-              <RoundCornerButton
-                onPress={onSuccess}
-                title={successTitle}
-                style={[styles.button, buttonStyle, styles.twoButton]}
-              />
-            </Row>
-          ) : (
+const SuccessModal = (props) => {
+  const {
+    visible,
+    title,
+    description,
+    buttonTitle,
+    extraInfo,
+    closeSuccessDialog,
+    buttonStyle,
+    onSuccess,
+    successTitle,
+  } = props;
+
+  return (
+    <Modal isVisible={visible} overlayStyle={styles.dialog}>
+      <View style={[styles.dialogContent]}>
+        <SuccessIcon />
+        {!!title && (
+          <Text style={styles.dialogTitle}>
+            {title}
+          </Text>
+        )}
+        {!!description && (
+          <Text style={styles.dialogDesc}>
+            {description}
+          </Text>
+        )}
+        {!!extraInfo && (
+          <Text style={styles.extraInfo}>
+            {extraInfo}
+          </Text>
+        )}
+        {onSuccess ? (
+          <Row spaceBetween center style={styles.twoButtonWrapper}>
             <RoundCornerButton
               onPress={closeSuccessDialog}
               title={buttonTitle}
-              style={[styles.button, buttonStyle]}
+              style={[styles.button, buttonStyle, styles.twoButton]}
             />
-          )}
-        </View>
-      </Overlay>
-    );
-  }
-}
+            <RoundCornerButton
+              onPress={onSuccess}
+              title={successTitle}
+              style={[styles.button, buttonStyle, styles.twoButton]}
+            />
+          </Row>
+        ) : (
+          <RoundCornerButton
+            onPress={closeSuccessDialog}
+            title={buttonTitle}
+            style={[styles.button, buttonStyle]}
+          />
+        )}
+      </View>
+    </Modal>
+  );
+};
 
 SuccessModal.defaultProps = {
   buttonTitle: 'OK',
@@ -79,8 +75,6 @@ SuccessModal.defaultProps = {
   title: '',
   onSuccess: undefined,
   successTitle: '',
-  icon: undefined,
-  iconStyle: undefined,
 };
 
 SuccessModal.propTypes = {
@@ -93,8 +87,6 @@ SuccessModal.propTypes = {
   buttonTitle: PropTypes.string,
   buttonStyle: PropTypes.object,
   successTitle: PropTypes.string,
-  icon: PropTypes.string,
-  iconStyle: PropTypes.object,
 };
 
 export default SuccessModal;
