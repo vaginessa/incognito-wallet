@@ -1,5 +1,6 @@
 import React, {memo} from 'react';
 import Trade from '@screens/PDexV3/features/Trade';
+import withTab from '@screens/MainTabBar/MainTabBar.enhanceTab';
 
 const TabTrade = () => {
   return (
@@ -7,6 +8,4 @@ const TabTrade = () => {
   );
 };
 
-
-
-export default memo(TabTrade);
+export default withTab(memo(TabTrade));

@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import ErrorBoundary from '@src/components/ErrorBoundary';
 import { compose } from 'recompose';
 import { withNavigation } from 'react-navigation';
-import Modal, { actionToggleModal } from '@src/components/Modal';
+import { actionToggleModal } from '@src/components/Modal';
 import withFCM from '@src/screens/Notification/Notification.withFCM';
 import withWallet from '@screens/Wallet/features/Home/Wallet.enhance';
 import { useSelector, useDispatch } from 'react-redux';
@@ -105,7 +105,6 @@ const enhance = (WrappedComp) => (props) => {
           },
         }}
       />
-      <Modal />
       <AppUpdater />
     </ErrorBoundary>
   );
