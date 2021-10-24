@@ -48,7 +48,8 @@ export const listShareSelector = createSelector(
         nftId
       } = item;
       const poolDetail = shareDetails.find((share) => poolId === share.poolId);
-      const { amp, apy, token1Value: token1PoolValue, token2Value: token2PoolValue } = poolDetail || {};
+      let { amp, apy, token1Value: token1PoolValue, token2Value: token2PoolValue } = poolDetail || {};
+      apy = apy || 0;
       const token1 = getPrivacyDataByTokenID(tokenId1);
       const token2 = getPrivacyDataByTokenID(tokenId2);
       const shareId = `${nftId}-${poolId}`;
@@ -90,7 +91,8 @@ export const listShareSelector = createSelector(
         };
       });
       const totalRewardUSD = mapRewards.reduce((prev, curr) => new BigNumber(prev).plus(curr.rewardUSD).toNumber(), 0);
-      const totalRewardUSDStr = format.toFixed(totalRewardUSD, 9);
+      const totalRewardAmount = Math.ceil(new BigNumber(totalRewardUSD).multipliedBy(Math.pow(10, 9)).toNumber());
+      const totalRewardUSDStr = format.amount(totalRewardAmount, 9);
       const rewardUSDSymbolStr = `${totalRewardUSDStr} $`;
       const hookRewards = mapRewards.map((item, index) => ({
         label: `Reward${index + 1}`,
