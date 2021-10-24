@@ -447,18 +447,42 @@ export const mappingOrderHistorySelector = createSelector(
       if (sellTokenId === token1.tokenId) {
         type = 'sell';
         mainColor = COLORS.red;
-        amountStr = format.amountFull(price, buyToken.pDecimals, false);
-        priceStr = format.amountFull(amount, sellToken.pDecimals, false);
-        sellStr = `${priceStr} ${sellToken.symbol}`;
-        buyStr = `${amountStr} ${buyToken.symbol}`;
+        priceStr = getPairRate({
+          token1Value: amount,
+          token2Value: price,
+          token1: sellToken,
+          token2: buyToken,
+        });
+        rateStr = getExchangeRate(sellToken, buyToken, amount, price);
+        const sellAmount = format.amountFull(
+          amount,
+          sellToken.pDecimals,
+          false,
+        );
+        const buyAmount = format.amountFull(price, buyToken.pDecimals, false);
+        amountStr = sellAmount;
+        sellStr = `${sellAmount} ${sellToken.symbol}`;
+        buyStr = `${buyAmount} ${buyToken.symbol}`;
         infoStr = poolStr;
       } else if (buyTokenId === token1.tokenId) {
         type = 'buy';
         mainColor = COLORS.green;
-        amountStr = format.amountFull(amount, sellToken.pDecimals, false);
-        priceStr = format.amountFull(price, buyToken.pDecimals, false);
-        buyStr = `${priceStr} ${buyToken.symbol}`;
-        sellStr = `${amountStr} ${sellToken.symbol}`;
+        priceStr = getPairRate({
+          token1Value: price,
+          token2Value: amount,
+          token1: buyToken,
+          token2: sellToken,
+        });
+        rateStr = getExchangeRate(buyToken, sellToken, price, amount);
+        const sellAmount = format.amountFull(
+          amount,
+          sellToken.pDecimals,
+          false,
+        );
+        const buyAmount = format.amountFull(price, buyToken.pDecimals, false);
+        amountStr = buyAmount;
+        sellStr = `${sellAmount} ${sellToken.symbol}`;
+        buyStr = `${buyAmount} ${buyToken.symbol}`;
         infoStr = poolStr;
       }
       const percent = floor(
@@ -478,7 +502,6 @@ export const mappingOrderHistorySelector = createSelector(
         token1: sellToken,
         token2: buyToken,
       });
-      rateStr = getExchangeRate(sellToken, buyToken, amount, minAccept);
       const result = {
         ...order,
         type,
