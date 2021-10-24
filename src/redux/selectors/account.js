@@ -131,11 +131,11 @@ export const otaKeyOfDefaultAccountSelector = createSelector(
 export const nftTokenDataSelector = createSelector(
   accountSelector,
   ({ nft }) => {
-    const { initNFTToken, nftToken, nftTokenAvailable } = nft;
+    const { initNFTToken, nftToken, nftTokenAvailable, listNFTToken } = nft;
     let titleStr = '';
     if (!initNFTToken) {
       titleStr = 'Mint a nft token to access all features';
-    } else if (!nftTokenAvailable) {
+    } else if (!nftTokenAvailable && initNFTToken && listNFTToken?.length > 0) {
       titleStr = 'Mint more nft token';
     }
     return {
