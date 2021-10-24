@@ -114,8 +114,6 @@ const Order = React.memo(({ data, visibleDivider }) => {
     amountStr,
     percentStr1,
   } = data;
-  const token1: SelectedPrivacy = data?.token1;
-  const token2: SelectedPrivacy = data?.token2;
   const renderHook = () => {
     let comp = null;
     if (visibleBtnCancel) {
@@ -181,18 +179,14 @@ const Order = React.memo(({ data, visibleDivider }) => {
               {infoStr}
             </Text>
           </Text>
-          <Text style={{ ...styled.subText, ...styled.mv8 }}>
-            Price ({token1?.symbol || ''})
-          </Text>
+          <Text style={{ ...styled.subText, ...styled.mv8 }}>Price</Text>
           <Text style={{ ...styled.mainText, color: mainColor }}>
             {priceStr}
           </Text>
         </View>
         <View style={{ ...styled.orderItem, ...styled.block2 }}>
           <Text style={styled.subText}>{timeStr}</Text>
-          <Text style={{ ...styled.subText, ...styled.mv8 }}>
-            Amount ({token2?.symbol || ''})
-          </Text>
+          <Text style={{ ...styled.subText, ...styled.mv8 }}>Amount</Text>
           <Text style={styled.mainText}>{amountStr}</Text>
         </View>
         <View style={{ ...styled.orderItem, ...styled.block3 }}>
