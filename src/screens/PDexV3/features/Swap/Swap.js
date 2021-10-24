@@ -9,7 +9,7 @@ import LoadingTx from '@src/components/LoadingTx';
 import { Row } from '@src/components';
 import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
-import { ScrollView, RefreshControl } from '@src/components/core';
+import { KeyboardAwareScrollView, RefreshControl } from '@src/components/core';
 import { styled, tabsStyled } from './Swap.styled';
 import {
   ROOT_TAB_ID,
@@ -65,7 +65,7 @@ const Swap = (props) => {
   ];
   return (
     <>
-      <ScrollView
+      <KeyboardAwareScrollView
         style={styled.scrollview}
         refreshControl={
           <RefreshControl
@@ -100,7 +100,7 @@ const Swap = (props) => {
             </>
           )}
         </Form>
-      </ScrollView>
+      </KeyboardAwareScrollView>
       {!!swapInfo.swaping && <LoadingTx />}
     </>
   );
