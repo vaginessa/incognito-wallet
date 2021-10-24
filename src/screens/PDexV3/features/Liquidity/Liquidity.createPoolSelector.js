@@ -10,6 +10,8 @@ import {listPoolsPureSelector} from '@screens/PDexV3/features/Pools';
 import {nftTokenDataSelector} from '@src/redux/selectors/account';
 import BigNumber from 'bignumber.js';
 import convert from '@utils/convert';
+import format from '@utils/format';
+import {isNaN} from 'lodash';
 
 const createPoolSelector = createSelector(
   liquiditySelector,
@@ -101,11 +103,17 @@ export const ampValueSelector = createSelector(
     };
     const input = inputAmount(formConfigsCreatePool.formName, formConfigsCreatePool.inputToken);
     const output = inputAmount(formConfigsCreatePool.formName, formConfigsCreatePool.outputToken);
-    const rawRate = new BigNumber(output.originalInputAmount).dividedBy(input.originalInputAmount);
+    let rawRate = getPairRate({
+      token1: inputToken,
+      token2: outputToken,
+      token1Value: input.originalInputAmount,
+      token2Value: output.originalInputAmount,
+    });
+    rawRate = convert.toNumber(format.amountFull(rawRate, 0, false), true);
     let estOutputStr = undefined;
     const estRate = new BigNumber(rawRate).minus(rate).abs();
     const compareValue = 1e-2;
-    if ((estRate.gt(compareValue) || estRate.lt(-compareValue))) {
+    if (!isNaN(estRate) && (estRate.gt(compareValue) || estRate.lt(-compareValue))) {
       estOutputStr = convertAmount({
         originalNum: convert.toOriginalAmount(
           new BigNumber(input.inputAmount).multipliedBy(rate).toNumber(),

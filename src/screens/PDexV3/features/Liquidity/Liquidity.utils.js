@@ -178,8 +178,10 @@ export const getShareDataValue = ({
   const maxOutputShare = new BigNumber(sharePercent).multipliedBy(token2PoolValue).toNumber() || 0;
   const maxInputHuman = convert.toHumanAmount(maxInputShare, inputToken.pDecimals);
   const maxInputShareStr = format.toFixed(maxInputHuman, inputToken.pDecimals);
+  const maxInputShareDisplayStr = format.amount(maxInputShare, outputToken.pDecimals);
   const maxOutputHuman = convert.toHumanAmount(maxOutputShare, outputToken.pDecimals);
-  const maxOutputShareStr = format.toFixed(maxOutputHuman, outputToken.pDecimals);
+  const maxOutputShareStr = format.toFixed(Math.floor(maxOutputHuman), outputToken.pDecimals);
+  const maxOutputShareDisplayStr = format.amount(Math.floor(maxOutputShare), outputToken.pDecimals);
   return {
     maxInputShare,
     maxOutputShare,
@@ -190,6 +192,8 @@ export const getShareDataValue = ({
     maxOutputShareStr,
     maxInputHuman,
     maxOutputHuman,
+    maxInputShareDisplayStr,
+    maxOutputShareDisplayStr
   };
 };
 

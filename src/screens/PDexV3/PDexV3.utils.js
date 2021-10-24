@@ -42,8 +42,8 @@ export const getExchangeRate = (token1, token2, token1Value, token2Value) => {
 };
 
 export const getPrincipal = ({ token1, token2, shareData }) => {
-  const { maxInputShareStr, maxOutputShareStr } = getShareDataValue({ inputToken: token1, outputToken: token2, shareData });
-  return `${maxInputShareStr} ${token1.symbol} + ${maxOutputShareStr} ${token2.symbol}`;
+  const { maxInputShareDisplayStr, maxOutputShareDisplayStr } = getShareDataValue({ inputToken: token1, outputToken: token2, shareData });
+  return `${maxInputShareDisplayStr} ${token1.symbol} + ${maxOutputShareDisplayStr} ${token2.symbol}`;
 };
 
 export const getShareStr = (share, totalShare) => {
