@@ -262,6 +262,10 @@ export const swapInfoSelector = createSelector(
         sellInputAmount.originalAmount,
         buyInputAmount.originalAmount,
       );
+      const defaultPair = {
+        selltoken: sellInputAmount.tokenId,
+        buytoken: buyInputAmount.tokenId,
+      };
       return {
         balanceStr: sellInputBalanceStr,
         routing,
@@ -285,6 +289,7 @@ export const swapInfoSelector = createSelector(
         allPoolSize,
         maxGet,
         refreshing: isFetching,
+        defaultPair,
       };
     } catch (error) {
       console.log('swapInfoSelector-error', error);
