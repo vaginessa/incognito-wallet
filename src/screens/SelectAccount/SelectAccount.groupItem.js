@@ -28,7 +28,7 @@ const styled = StyleSheet.create({
   }
 });
 
-const GroupItem = ({ name, child }) => {
+const GroupItem = ({ name, child, isLast }) => {
   const [expand, setExpand] = useState(true);
 
   const toggleExpand = () => {
@@ -36,7 +36,7 @@ const GroupItem = ({ name, child }) => {
   };
 
   return (
-    <View>
+    <View style={[isLast && { marginBottom: 30 }]}>
       <TouchableOpacity style={styled.group} onPress={toggleExpand}>
         <Row centerVertical>
           <Text style={styled.title}>{name}</Text>
@@ -57,6 +57,7 @@ const GroupItem = ({ name, child }) => {
 GroupItem.propTypes = {
   name: PropTypes.string.isRequired,
   child: PropTypes.any.isRequired,
+  isLast: PropTypes.bool.isRequired
 };
 
 export default GroupItem;

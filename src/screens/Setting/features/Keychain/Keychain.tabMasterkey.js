@@ -10,12 +10,12 @@ const TabMasterkey = () => {
   return (
     <Tabs rootTabID={TABS.TAB_KEYCHAIN_MASTER_KEY_ID} useTab1 styledTabs={{ paddingHorizontal: 25 }}>
       <View tabID={TABS.TAB_KEYCHAIN_MASTER_KEY_LIST_ID} label="Keychains">
-        <ScrollView style={styled.wrapper}>
+        <ScrollView style={styled.wrapper} showsVerticalScrollIndicator={false}>
           <Accounts />
         </ScrollView>
       </View>
       <View tabID={TABS.TAB_KEYCHAIN_MASTER_KEY_SETTING_ID} label="Settings keychains">
-        <ScrollView style={styled.wrapper}>
+        <ScrollView style={styled.wrapper} showsVerticalScrollIndicator={false}>
           <KeychainSetting />
         </ScrollView>
       </View>
