@@ -39,7 +39,9 @@ const TabNavigator = createMaterialBottomTabNavigator(
       navigationOptions: {
         tabBarIcon: ({ focused, tintColor }) => (
           <View style={styled.wrapBar}>
-            <TradeIcon active={focused} />
+            <View style={{ height: 24 }}>
+              <TradeIcon active={focused} />
+            </View>
             <Text style={[styled.label, { color: tintColor }]}>Trade</Text>
           </View>
         ),

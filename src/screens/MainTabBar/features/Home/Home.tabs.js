@@ -5,7 +5,6 @@ import {TABS} from '@screens/MainTabBar/features/Home/Home.constant';
 import {batch, useDispatch, useSelector} from 'react-redux';
 import {actionFetchPools, listPoolsVerifySelector} from '@screens/PDexV3/features/Pools';
 import {Row} from '@src/components';
-import formatUtils from '@utils/format';
 import {homeStyled} from '@screens/MainTabBar/MainTabBar.styled';
 import {COLORS} from '@src/styles';
 import PropTypes from 'prop-types';
@@ -17,7 +16,7 @@ import {useNavigation} from 'react-navigation-hooks';
 import routeNames from '@routers/routeNames';
 
 const Item = React.memo(({ pool, onItemPress }) => {
-  const { token1, token2, price, perChange24hToStr, perChange24hColor, perChange24hBGColor, poolId } = pool;
+  const { token1, token2, priceStr, perChange24hToStr, perChange24hColor, perChange24hBGColor, poolId } = pool;
   return (
     <TouchableOpacity onPress={() => onItemPress(poolId)}>
       <Row centerVertical style={homeStyled.wrapPoolBox}>
@@ -27,7 +26,7 @@ const Item = React.memo(({ pool, onItemPress }) => {
           homeStyled.itemBox,
           { color: perChange24hColor, textAlign: 'right', marginRight: 15 }]}
         >
-          {formatUtils.toFixed(price, 9)}
+          {priceStr}
         </Text>
         <View style={[homeStyled.percentBox, homeStyled.percentBoxWidth, { backgroundColor: perChange24hBGColor }]}>
           <Text style={[homeStyled.mediumBlack, { color: COLORS.white, fontSize: 12 }]}>{perChange24hToStr}</Text>

@@ -52,7 +52,7 @@ const TradeIcon = React.memo(({ style, active, size }) => (
 TradeIcon.defaultProps = {
   style: null,
   active: true,
-  size: 21
+  size: 24
 };
 
 TradeIcon.propTypes = {
