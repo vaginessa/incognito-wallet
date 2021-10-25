@@ -3,6 +3,8 @@ import format from '@src/utils/format';
 import { getPrivacyDataByTokenID as getPrivacyDataByTokenIDSelector } from '@src/redux/selectors/selectedPrivacy';
 import { COLORS } from '@src/styles';
 import { getExchangeRate } from '@screens/PDexV3';
+import BigNumber from 'bignumber.js';
+import convert from '@utils/convert';
 
 export const poolsSelector = createSelector(
   (state) => state.pDexV3,
@@ -58,6 +60,7 @@ export const listPoolsSelector = createSelector(
           token2Id,
           virtual1Value,
           virtual2Value,
+          price,
         } = pool;
         const volumeToAmount = format.amount(volume, 9);
         const priceChangeToAmount = format.amount(priceChange, 0);
@@ -86,6 +89,8 @@ export const listPoolsSelector = createSelector(
           false,
         );
         const poolSizeStr = `${pool1ValueStr} ${token1?.symbol} + ${pool2ValueStr} ${token2?.symbol}`;
+        const originalPrice = Math.ceil(new BigNumber(price).multipliedBy(Math.pow(10, token2?.pDecimals || 9)).toNumber());
+        const priceStr = format.amount(originalPrice, token2?.pDecimals || 9);
         return {
           ...pool,
           token1,
@@ -113,6 +118,7 @@ export const listPoolsSelector = createSelector(
             [token1Id]: virtual1Value,
             [token2Id]: virtual2Value,
           },
+          priceStr,
         };
       });
     } catch (error) {
