@@ -10,7 +10,7 @@ import { swapInfoSelector } from './Swap.selector';
 const enhance = (WrappedComp) => (props) => {
   const dispatch = useDispatch();
   const swapInfo = useSelector(swapInfoSelector);
-  const initSwapForm = (defaultPair) =>
+  const initSwapForm = (defaultPair = swapInfo?.defaultPair) =>
     dispatch(actionInitSwapForm(defaultPair));
   const handleConfirm = async () => {
     try {
@@ -23,7 +23,7 @@ const enhance = (WrappedComp) => (props) => {
                 title="Order initiated!"
                 desc={`You placed an order to sell\n${swapInfo?.sellInputAmountStr ||
                   ''} for ${swapInfo?.buyInputAmountStr || ''}.`}
-                handleTradeSucesss={() => initSwapForm(swapInfo?.defaultPair)}
+                handleTradeSucesss={() => initSwapForm()}
                 sub={
                   'Your balance will update in a couple of\nminutes after the trade is finalized.'
                 }

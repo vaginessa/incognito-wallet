@@ -111,7 +111,7 @@ export const getInputAmount = (
       loadingBalance: isGettingBalance.includes(token.tokenId),
 
       balance: token.amount,
-      balanceStr: format.amountFull(token.amount, token.pDecimals, false),
+      balanceStr: format.amountFull(token?.amount || 0, token.pDecimals, false),
 
       poolValue,
       poolValueStr,
