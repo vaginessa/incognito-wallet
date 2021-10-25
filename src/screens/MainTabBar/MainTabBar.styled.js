@@ -15,7 +15,6 @@ export const styled = StyleSheet.create({
     width: ScreenWidth / 5,
     alignItems: 'center',
     justifyContent: 'center',
-    height: 56,
   },
   label: {
     ...FONT.STYLE.normal,
