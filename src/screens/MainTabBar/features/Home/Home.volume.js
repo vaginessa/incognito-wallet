@@ -6,7 +6,6 @@ import orderBy from 'lodash/orderBy';
 import {Row} from '@src/components';
 import PropTypes from 'prop-types';
 import {homeStyled} from '@screens/MainTabBar/MainTabBar.styled';
-import formatUtils from '@utils/format';
 import {PriceDownIcon, PriceUpIcon} from '@components/Icons/icon.arrowPrice';
 import {actionChangeTab} from '@components/core/Tabs/Tabs.actions';
 import {ROOT_TAB_TRADE, TAB_LIMIT_ID} from '@screens/PDexV3/features/Trade/Trade.constant';
@@ -15,14 +14,12 @@ import routeNames from '@routers/routeNames';
 import {useNavigation} from 'react-navigation-hooks';
 
 const Item = React.memo(({ item, onItemPress }) => {
-  const { token1, token2, price, perChange24hColor, perChange24hToStr, priceChange24H, poolId } = item;
+  const { token1, token2, priceStr, perChange24hColor, perChange24hToStr, priceChange24H, poolId } = item;
   return (
     <TouchableOpacity style={homeStyled.wrapMainVolume} onPress={() => onItemPress(poolId)}>
       <Text style={[homeStyled.mediumBlack, { fontSize: 12 }]}>{`${token1.symbol} / ${token2.symbol}`}</Text>
       <Text style={[homeStyled.mediumBlack, { lineHeight: 24, color: perChange24hColor }]}>
-        {
-          (price > 0) ? formatUtils.toFixed(price, 4) : formatUtils.toFixed(price, token2.pDecimals)
-        }
+        {priceStr}
       </Text>
       <Row centerVertical>
         {!!priceChange24H && (
@@ -75,7 +72,7 @@ Item.propTypes = {
   item: PropTypes.shape({
     token1: PropTypes.object.isRequired,
     token2: PropTypes.object.isRequired,
-    price: PropTypes.number.isRequired,
+    priceStr: PropTypes.number.isRequired,
     perChange24hColor: PropTypes.string.isRequired,
     perChange24hToStr: PropTypes.string.isRequired,
     priceChange24H: PropTypes.number.isRequired,
