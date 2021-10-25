@@ -33,11 +33,14 @@ const mapContributeData = createSelector(
         const returnAmount = history.returnAmount[index];
         const returnAmountStr = format.amountFull(returnAmount, token.pDecimals, true);
         const returnAmountSymbolStr = `${returnAmountStr} ${token.symbol}`;
+        const respondTxs = history.respondTxs || [];
+        let respondTx = returnAmount && respondTxs && respondTxs[index];
         return {
           token,
           returnAmount,
           returnAmountStr,
           returnAmountSymbolStr,
+          respondTx,
         };
       });
       const contributes = (history['contributeTokens'] || []).map((tokenId, index) => {
