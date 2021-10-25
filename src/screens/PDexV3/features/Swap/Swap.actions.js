@@ -255,7 +255,7 @@ export const actionInitSwapForm = (defaultPair) => async (
     await dispatch(reset(formConfigs.formName));
     let pair = defaultPair;
     await dispatch(actionInitingSwapForm(true));
-    if (isEmpty(pair)) {
+    if (!pair?.selltoken || !pair?.buytoken) {
       const pairs = await dispatch(actionFetchPairs());
       pair = {
         selltoken: PRV_ID,

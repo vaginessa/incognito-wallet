@@ -278,9 +278,14 @@ export const orderLimitDataSelector = createSelector(
     const prv: SelectedPrivacy = getPrivacyDataByTokenID(PRV.id);
     const showPRVBalance =
       !sellInputAmount?.isMainCrypto && !buyInputAmount.isMainCrypto;
-    const prvBalance = format.amountFull(prv.amount, PRV.pDecimals, false);
+    const prvBalance = format.amountFull(
+      prv?.amount || 0,
+      PRV.pDecimals,
+      false,
+    );
     const prvBalanceStr = `${prvBalance} ${PRV.symbol}`;
-    const balanceStr = `${sellInputAmount?.balanceStr} ${sellInputAmount?.symbol}`;
+    const balanceStr = `${sellInputAmount?.balanceStr ||
+      '0'} ${sellInputAmount?.symbol || ''}`;
     const poolSizeStr = `${sellInputAmount?.poolValueStr} ${sellInputAmount?.symbol} + ${buyInputAmount?.poolValueStr} ${buyInputAmount?.symbol}`;
     const editableInput = !initing;
     const calculating = initing;
