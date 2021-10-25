@@ -89,12 +89,24 @@ const ContributeDetail = ({ handleRefund, handleRetry }) => {
         },
       ];
     });
-    const refunds = (returnValue || []).map((item, index) => ({
-      label: `Refund${index + 1}`,
-      valueText: item.returnAmountSymbolStr,
-      disabled: !item.returnAmount,
-    }));
-    return [...headHook, ...flatten(contributeHook), ...refunds];
+    const refunds = (returnValue || []).map((item, index) => ([
+      {
+        label: `RefundTxID${index + 1}`,
+        valueText: item.respondTx,
+        disabled: !item.respondTx,
+        copyable: true,
+        openUrl: true,
+        handleOpenLink: () => {
+          handleOpenLink(item.respondTx);
+        }
+      },
+      {
+        label: `Refund${index + 1}`,
+        valueText: item.returnAmountSymbolStr,
+        disabled: !item.returnAmount,
+      },
+    ]));
+    return [...headHook, ...flatten(contributeHook), ...flatten(refunds)];
   }, [history]);
   return (
     <View style={mainStyle.container}>
