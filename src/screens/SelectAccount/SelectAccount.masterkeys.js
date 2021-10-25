@@ -11,10 +11,11 @@ const MasterKeys = () => {
   const handleSelectedAccount = useNavigationParam('handleSelectedAccount');
   return (
     <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 25 }}>
-      {groupAccounts.map((item) => (
+      {groupAccounts.map((item, index) => (
         <GroupItem
           name={item.name}
           key={item.name}
+          isLast={index === (groupAccounts.length - 1)}
           child={item.child.map((account) => (
             <AccountItem
               key={account?.ValidatorKey}
