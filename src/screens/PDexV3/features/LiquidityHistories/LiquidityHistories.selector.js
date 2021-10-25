@@ -34,7 +34,10 @@ const mapContributeData = createSelector(
         const returnAmountStr = format.amountFull(returnAmount, token.pDecimals, true);
         const returnAmountSymbolStr = `${returnAmountStr} ${token.symbol}`;
         const respondTxs = history.respondTxs || [];
-        let respondTx = returnAmount && respondTxs && respondTxs[index];
+        let respondTx = undefined;
+        if (returnAmount && !isEmpty(respondTxs)) {
+          respondTx = respondTxs[index];
+        }
         return {
           token,
           returnAmount,
