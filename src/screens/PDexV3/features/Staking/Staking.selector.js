@@ -557,7 +557,7 @@ export const stakingHistoriesMapperSelector = createSelector(
       const token = getPrivacyDataByTokenID(tokenId);
       const amountStr = formatUtil.amountFull(amount, token.pDecimals);
       const amountSymbolStr = `${amountStr} ${token.symbol}`;
-      const timeStr = formatUtil.formatDateTime(requestTime);
+      const timeStr = formatUtil.formatDateTime(requestTime * 1000);
       let statusColor;
       if (ACCOUNT_CONSTANT.TX_STAKING_STATUS.TXSTATUS_PENDING === status) {
         statusColor = COLORS.lightGrey33;
