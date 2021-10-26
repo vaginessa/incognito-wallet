@@ -35,6 +35,7 @@ const withTransaction = WrappedComp => props => {
       }));
     }, 500);
   };
+
   const onStaking = async ({ fee, tokenID, tokenAmount, nftID, stakingAmountStr }) => {
     if (loadingTx) return;
     try {

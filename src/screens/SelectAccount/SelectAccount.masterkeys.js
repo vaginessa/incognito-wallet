@@ -6,13 +6,15 @@ import {
   groupMasterKeys,
   isLoadingAllMasterKeyAccountSelector,
 } from '@src/redux/selectors/masterKey';
-import GroupItem from '@screens/SelectAccount/GroupItem';
+import GroupItem from '@screens/SelectAccount/SelectAccount.groupItem';
 import AccountItem from '@screens/SelectAccount/SelectAccount.item';
 import { loadAllMasterKeyAccounts } from '@src/redux/actions/masterKey';
+import { useNavigationParam } from 'react-navigation-hooks';
 
 const MasterKeys = () => {
   const groupAccounts = useSelector(groupMasterKeys);
   const loading = useSelector(isLoadingAllMasterKeyAccountSelector);
+  const handleSelectedAccount = useNavigationParam('handleSelectedAccount');
   const dispatch = useDispatch();
   const handleLoadAllMasterKeyAccounts = () =>
     dispatch(loadAllMasterKeyAccounts());
@@ -30,17 +32,19 @@ const MasterKeys = () => {
       }
       contentContainerStyle={{ paddingHorizontal: 25 }}
     >
-      {groupAccounts.map((item) => (
+      {groupAccounts.map((item, index) => (
         <GroupItem
           name={item.name}
           key={item.name}
+          isLast={index === groupAccounts.length - 1}
           child={item.child.map((account) => (
             <AccountItem
-              key={account?.FullName}
+              key={account?.ValidatorKey}
               accountName={account.AccountName}
               PaymentAddress={account.PaymentAddress}
               PrivateKey={account.PrivateKey}
               MasterKeyName={account.MasterKeyName}
+              handleSelectedAccount={handleSelectedAccount}
             />
           ))}
         />

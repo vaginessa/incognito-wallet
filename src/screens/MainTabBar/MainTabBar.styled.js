@@ -14,7 +14,7 @@ export const styled = StyleSheet.create({
   wrapBar: {
     width: ScreenWidth / 5,
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   label: {
     ...FONT.STYLE.normal,

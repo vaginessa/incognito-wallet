@@ -197,9 +197,9 @@ const RemovePool = ({
       </View>
       <SuccessModal
         closeSuccessDialog={onClose}
-        title={SUCCESS_MODAL.ADD_POOL.title}
-        buttonTitle="Ok"
-        description={SUCCESS_MODAL.ADD_POOL.desc}
+        title={SUCCESS_MODAL.REMOVE_POOL.title}
+        buttonTitle="Back to dashboard"
+        extraInfo={SUCCESS_MODAL.REMOVE_POOL.desc}
         visible={visible}
       />
     </>

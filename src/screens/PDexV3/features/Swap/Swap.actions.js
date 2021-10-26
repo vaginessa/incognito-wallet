@@ -93,54 +93,44 @@ export const actionReset = (payload) => ({
   payload,
 });
 
-export const actionEstimateTrade = () => async (dispatch, getState) => {
+export const actionEstimateTrade = (field = formConfigs.selltoken) => async (
+  dispatch,
+  getState,
+) => {
   try {
     let state = getState();
     const inputAmount = inputAmountSelector(state);
-    const input1Amount = inputAmount(formConfigs.selltoken);
-    const input2Amount = inputAmount(formConfigs.buytoken);
+    let sellInputToken, buyInputToken, inputToken;
+    switch (field) {
+    case formConfigs.selltoken: {
+      sellInputToken = inputAmount(formConfigs.selltoken);
+      buyInputToken = inputAmount(formConfigs.buytoken);
+      inputToken = formConfigs.buytoken;
+      break;
+    }
+    case formConfigs.buytoken: {
+      sellInputToken = inputAmount(formConfigs.buytoken);
+      buyInputToken = inputAmount(formConfigs.selltoken);
+      inputToken = formConfigs.selltoken;
+      break;
+    }
+    default:
+      break;
+    }
     const feetoken = feeSelectedSelector(state);
-    if (isEmpty(input1Amount) || isEmpty(input2Amount) || isEmpty(feetoken)) {
+    if (
+      isEmpty(sellInputToken) ||
+      isEmpty(buyInputToken) ||
+      isEmpty(feetoken)
+    ) {
       return;
     }
     const {
-      focus: focusedInput1,
-      tokenId: tokenId1,
-      originalAmount: originalAmount1,
-      symbol: symbol1,
-      pDecimals: pDecimals1,
-    } = input1Amount;
-    const {
-      focus: focusedInput2,
-      tokenId: tokenId2,
-      originalAmount: originalAmount2,
-      symbol: symbol2,
-      pDecimals: pDecimals2,
-    } = input2Amount;
-    let selltoken,
-      buytoken,
-      amount,
-      sellsymbol,
-      buysymbol,
-      inputtoken,
-      inputtokenDecimals;
-    if (focusedInput2 && !focusedInput1) {
-      selltoken = tokenId2;
-      buytoken = tokenId1;
-      amount = originalAmount2;
-      sellsymbol = symbol2;
-      buysymbol = symbol1;
-      inputtoken = formConfigs.selltoken;
-      inputtokenDecimals = pDecimals1;
-    } else {
-      selltoken = tokenId1;
-      buytoken = tokenId2;
-      amount = originalAmount1;
-      sellsymbol = symbol1;
-      buysymbol = symbol2;
-      inputtoken = formConfigs.buytoken;
-      inputtokenDecimals = pDecimals2;
-    }
+      tokenId: selltoken,
+      symbol: sellSymbol,
+      originalAmount: amount,
+    } = sellInputToken;
+    const { tokenId: buytoken, pDecimals, symbol: buySymbol } = buyInputToken;
     if (!selltoken || !buytoken || !amount) {
       return;
     }
@@ -164,22 +154,21 @@ export const actionEstimateTrade = () => async (dispatch, getState) => {
     });
     const minAmountExpectedToHumanAmount = convert.toHumanAmount(
       originalMinAmountExpected,
-      inputtokenDecimals,
+      pDecimals,
     );
     const buyAmountExpectedToFixed = format.toFixed(
       minAmountExpectedToHumanAmount,
-      inputtokenDecimals,
+      pDecimals,
     );
     batch(() => {
       dispatch(
-        change(formConfigs.formName, inputtoken, buyAmountExpectedToFixed),
+        change(formConfigs.formName, inputToken, buyAmountExpectedToFixed),
       );
       dispatch(
         change(formConfigs.formName, formConfigs.feetoken, minFeeAmountFixed),
       );
     });
   } catch (error) {
-    console.log('ERROR', error);
     await dispatch(actionFetchFail());
     new ExHandler(error, 'Estimate data fail!').showErrorToast();
   } finally {
@@ -266,7 +255,7 @@ export const actionInitSwapForm = (defaultPair) => async (
     await dispatch(reset(formConfigs.formName));
     let pair = defaultPair;
     await dispatch(actionInitingSwapForm(true));
-    if (isEmpty(pair)) {
+    if (!pair?.selltoken || !pair?.buytoken) {
       const pairs = await dispatch(actionFetchPairs());
       pair = {
         selltoken: PRV_ID,

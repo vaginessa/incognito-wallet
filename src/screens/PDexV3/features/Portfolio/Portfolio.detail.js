@@ -41,6 +41,7 @@ const styles = StyleSheet.create({
     height: 28,
     width: 89,
     marginLeft: 5,
+    borderRadius: 14,
     backgroundColor: COLORS.lightGrey19
   },
   row: {
@@ -97,7 +98,7 @@ const PortfolioModal = ({ shareId, onWithdrawFeeLP }) => {
     }, 500);
   };
   if (!data) return null;
-  const { withdrawable, withdrawing, validNFT, disableBtn } = data;
+  const { withdrawable, withdrawing, validNFT, disableBtn, share } = data;
   const { hookFactoriesDetail, token1, token2 } = data || {};
   return (
     <View style={styles.wrapper}>
@@ -109,7 +110,7 @@ const PortfolioModal = ({ shareId, onWithdrawFeeLP }) => {
             textStyle={styles.btnText}
             wrapperStyle={styles.btnSmall}
             onPress={onWithdrawPress}
-            disabled={disableBtn}
+            disabled={disableBtn || !share}
           />
         </Row>
         <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
@@ -123,18 +124,20 @@ const PortfolioModal = ({ shareId, onWithdrawFeeLP }) => {
             <BTNBorder
               title={withdrawing ? 'Claiming' : 'Claim'}
               onPress={onClaimReward}
-              wrapperStyle={{flex: 1, marginRight: 8}}
+              wrapperStyle={[{flex: 1}, !!share && { marginRight: 8 }]}
               textStyle={{color: COLORS.colorBlue}}
               background={COLORS.colorBlue}
               disabled={withdrawing || disableBtn}
             />
           )}
-          <BTNPrimary
-            title="Invest more"
-            onPress={onInvestPress}
-            wrapperStyle={{flex: 1}}
-            background={COLORS.colorBlue}
-          />
+          {!!share && (
+            <BTNPrimary
+              title="Invest more"
+              onPress={onInvestPress}
+              wrapperStyle={{flex: 1}}
+              background={COLORS.colorBlue}
+            />
+          )}
         </Row>
       </View>
     </View>

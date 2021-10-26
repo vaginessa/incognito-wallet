@@ -2,7 +2,6 @@ import React from 'react';
 import { useNavigation } from 'react-navigation-hooks';
 import { SuccessModal } from '@src/components';
 import ROUTE_NAMES from '@routers/routeNames';
-import mainStyle from '@screens/PoolV2/style';
 
 const withSuccess = WrappedComp => (props) => {
   const [success, setSuccess] = React.useState(false);
@@ -34,7 +33,6 @@ const withSuccess = WrappedComp => (props) => {
         description={`${inputText} ${coin.symbol} is being withdrawn to ${account.name}.`}
         extraInfo="You’ll receive a notification when your balance updates."
         visible={success}
-        buttonStyle={mainStyle.button}
       />
     </>
   );

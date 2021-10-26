@@ -48,7 +48,7 @@ const ContributeDetail = ({ handleRefund, handleRetry }) => {
     handleRetry(params);
   };
   const hookFactories = React.useMemo(() => {
-    const { pairId, poolId, statusStr, contributes, storageValue, timeStr } = history;
+    const { pairId, poolId, statusStr, contributes, storageValue, timeStr, returnValue } = history;
     const headHook = [
       {
         label: 'PoolId',
@@ -89,7 +89,24 @@ const ContributeDetail = ({ handleRefund, handleRetry }) => {
         },
       ];
     });
-    return [...headHook, ...flatten(contributeHook)];
+    const refunds = (returnValue || []).map((item, index) => ([
+      {
+        label: `RefundTxID${index + 1}`,
+        valueText: item.respondTx,
+        disabled: !item.respondTx,
+        copyable: true,
+        openUrl: true,
+        handleOpenLink: () => {
+          handleOpenLink(item.respondTx);
+        }
+      },
+      {
+        label: `Refund${index + 1}`,
+        valueText: item.returnAmountSymbolStr,
+        disabled: !item.returnAmount,
+      },
+    ]));
+    return [...headHook, ...flatten(contributeHook), ...flatten(refunds)];
   }, [history]);
   return (
     <View style={mainStyle.container}>

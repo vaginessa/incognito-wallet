@@ -4,11 +4,10 @@ import { Tabs, Text } from '@src/components/core';
 import { TABS } from '@screens/MainTabBar/features/Home/Home.constant';
 import { batch, useDispatch, useSelector } from 'react-redux';
 import {
-  actionFetchListPools,
+  actionFetchPools,
   listPoolsVerifySelector,
 } from '@screens/PDexV3/features/Pools';
 import { Row } from '@src/components';
-import formatUtils from '@utils/format';
 import { homeStyled } from '@screens/MainTabBar/MainTabBar.styled';
 import { COLORS } from '@src/styles';
 import PropTypes from 'prop-types';
@@ -24,8 +23,9 @@ import routeNames from '@routers/routeNames';
 
 const Item = React.memo(({ pool, onItemPress }) => {
   const {
-
-    price,
+    token1,
+    token2,
+    priceStr,
     perChange24hToStr,
     perChange24hColor,
     perChange24hBGColor,
@@ -45,7 +45,7 @@ const Item = React.memo(({ pool, onItemPress }) => {
             { color: perChange24hColor, textAlign: 'right', marginRight: 15 },
           ]}
         >
-          {formatUtils.toFixed(price, 9)}
+          {priceStr}
         </Text>
         <View
           style={[
@@ -117,7 +117,7 @@ const MainTab = () => {
     <Item pool={pool} key={pool.poolId} onItemPress={onItemPress} />
   );
   React.useEffect(() => {
-    dispatch(actionFetchListPools());
+    dispatch(actionFetchPools());
   }, []);
   if (!pools || pools.length === 0) return null;
   return (

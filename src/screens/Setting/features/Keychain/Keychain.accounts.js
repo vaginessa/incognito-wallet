@@ -16,7 +16,7 @@ import withKeychain from './Keychain.enhance';
 import { itemStyled } from './keychain.styled';
 
 const Item = React.memo(
-  ({ account, handleDelete, handleSwitchAccount, handleExportKey }) => {
+  ({ account, handleDelete, handleSwitchAccount, handleExportKey, isLast }) => {
     const defaultAccount = useSelector(defaultAccountSelector);
     const isActive = React.useMemo(
       () => account?.paymentAddress === defaultAccount?.paymentAddress,
@@ -24,7 +24,11 @@ const Item = React.memo(
     );
     return (
       <Swipeout
-        style={[itemStyled.wrap, itemStyled.shadow]}
+        style={[
+          itemStyled.wrap,
+          itemStyled.shadow,
+          isLast && { marginBottom: 50 },
+        ]}
         right={[
           ...(handleDelete
             ? [
@@ -73,7 +77,7 @@ const Item = React.memo(
 const Accounts = ({ handleDelete, handleSwitchAccount, handleExportKey }) => {
   const listAccount = useSelector(listAccountSelector);
   const { devices } = useSelector(settingSelector);
-  const renderItem = (account) => {
+  const renderItem = (account, index) => {
     const isDeletable =
       listAccount.length > 1 && !isNodeAccount(account?.accountName, devices);
     return (
@@ -83,6 +87,7 @@ const Accounts = ({ handleDelete, handleSwitchAccount, handleExportKey }) => {
         handleDelete={isDeletable && handleDelete}
         handleSwitchAccount={handleSwitchAccount}
         handleExportKey={handleExportKey}
+        isLast={index === listAccount.length - 1}
       />
     );
   };
@@ -94,6 +99,7 @@ Item.propTypes = {
   handleDelete: PropTypes.func.isRequired,
   handleSwitchAccount: PropTypes.func.isRequired,
   handleExportKey: PropTypes.func.isRequired,
+  isLast: PropTypes.bool.isRequired,
 };
 
 Accounts.propTypes = {

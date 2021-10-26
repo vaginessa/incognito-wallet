@@ -13,7 +13,6 @@ import {View} from '@components/core';
 import {actionChangeTab} from '@components/core/Tabs/Tabs.actions';
 import {ROOT_TAB_TRADE, TAB_MARKET_ID} from '@screens/PDexV3/features/Trade/Trade.constant';
 
-
 const Bulletin = React.memo(() => {
   const navigation = useNavigation();
   const { isReadAll } = useSelector(newsSelector);

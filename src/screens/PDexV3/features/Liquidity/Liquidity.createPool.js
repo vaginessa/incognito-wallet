@@ -10,7 +10,7 @@ import {
 } from '@screens/PDexV3/features/Liquidity/Liquidity.constant';
 import {createForm, RFTradeInputAmount as TradeInputAmount, validator} from '@components/core/reduxForm';
 import {AddBreakLine} from '@components/core';
-import {batch, useDispatch, useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {change, Field} from 'redux-form';
 import withLiquidity from '@screens/PDexV3/features/Liquidity/Liquidity.enhance';
 import {createPoolSelector, liquidityActions} from '@screens/PDexV3/features/Liquidity';
@@ -20,10 +20,9 @@ import {compose} from 'recompose';
 import withTransaction from '@screens/PDexV3/features/Liquidity/Liquidity.enhanceTransaction';
 import {NFTTokenBottomBar} from '@screens/PDexV3/features/NFTToken';
 import LPHistoryIcon from '@screens/PDexV3/features/Liquidity/Liquidity.iconHistory';
-import {actionToggleModal} from '@components/Modal';
-import ModalBottomSheet from '@components/Modal/features/ModalBottomSheet';
-import {SelectTokenModal} from '@screens/PDexV3/features/SelectToken';
 import {MaxIcon} from '@components/Icons';
+import {useNavigation} from 'react-navigation-hooks';
+import routeNames from '@routers/routeNames';
 
 const initialFormValues = {
   inputToken: '',
@@ -45,6 +44,7 @@ const InputsGroup = () => {
   const isTyping = useSelector(createPoolSelector.isTypingSelector);
   const inputToken = inputAmount(formConfigsCreatePool.formName, formConfigsCreatePool.inputToken);
   const outputToken = inputAmount(formConfigsCreatePool.formName, formConfigsCreatePool.outputToken);
+  const navigation = useNavigation();
   const onChangeText = (text) => dispatch(liquidityActions.actionSetCreatePoolText(text));
   const onFocusToken = (e, focusField) =>  dispatch(liquidityActions.actionSetFocusCreatePool({ focusField }));
   const onGetRate = () => {
@@ -71,24 +71,16 @@ const InputsGroup = () => {
     output: outputToken.loadingBalance || (isTyping && focusField === formConfigsCreatePool.outputToken),
   }), [focusField, isTyping, inputToken.loadingBalance, outputToken.loadingBalance]);
 
-  const onSelectSymbol = (callback, tokens) =>
-    dispatch(
-      actionToggleModal({
-        visible: true,
-        shouldCloseModalWhenTapOverlay: true,
-        data: (
-          <ModalBottomSheet
-            style={{ height: '80%' }}
-            customContent={(
-              <SelectTokenModal
-                data={tokens}
-                onPress={(token) => callback(token.tokenId)}
-              />
-            )}
-          />
-        ),
-      }),
-    );
+  const onSelectSymbol = (callback, tokens) => {
+    navigation.navigate(routeNames.TokenSelectScreen, {
+      onSelectToken: callback,
+      tokens: tokens.map(coin => ({
+        ...coin,
+        id: coin.tokenId,
+      })),
+      placeholder: 'Search coins',
+    });
+  };
 
   React.useEffect(() => {
     onGetRate();
@@ -127,11 +119,10 @@ const InputsGroup = () => {
           loadingBalance={loading.input}
           onPressSymbol={() => {
             if (loading.input) return;
-            onSelectSymbol(((tokenId) => {
-              batch(() => {
-                dispatch(liquidityActions.actionUpdateCreatePoolInputToken(tokenId));
-                dispatch(actionToggleModal());
-              });
+            onSelectSymbol(((token) => {
+              setTimeout(() =>
+                dispatch(liquidityActions.actionUpdateCreatePoolInputToken(token.tokenId)),
+              300);
             }), inputTokens);
           }}
           rightHeader={(!!outputToken && !!outputToken?.balanceStr) && (
@@ -162,11 +153,10 @@ const InputsGroup = () => {
           loadingBalance={loading.output}
           onPressSymbol={() => {
             if (loading.output) return;
-            onSelectSymbol(((tokenId) => {
-              batch(() => {
-                dispatch(liquidityActions.actionUpdateCreatePoolOutputToken(tokenId));
-                dispatch(actionToggleModal());
-              });
+            onSelectSymbol(((token) => {
+              setTimeout(() =>
+                dispatch(liquidityActions.actionUpdateCreatePoolOutputToken(token.tokenId)),
+              300);
             }), outputTokens);
           }}
           onFocus={(e) => onFocusToken(e, formConfigsCreatePool.outputToken)}
@@ -286,7 +276,7 @@ const CreatePool = ({
         closeSuccessDialog={onClose}
         title={SUCCESS_MODAL.ADD_POOL.title}
         buttonTitle="Ok"
-        description={SUCCESS_MODAL.ADD_POOL.desc}
+        extraInfo={SUCCESS_MODAL.ADD_POOL.desc}
         visible={visible}
       />
     </>

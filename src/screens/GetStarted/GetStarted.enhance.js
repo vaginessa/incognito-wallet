@@ -35,9 +35,7 @@ const enhance = (WrappedComp) => (props) => {
     console.time('CONFIGS_APP');
     try {
       await setLoading(true);
-      console.time('LOGIN');
       await login();
-      console.timeEnd('LOGIN');
       const [servers] = await new Promise.all([
         serverService.get(),
         dispatch(actionFetchProfile()),

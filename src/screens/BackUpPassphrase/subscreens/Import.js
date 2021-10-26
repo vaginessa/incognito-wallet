@@ -96,9 +96,6 @@ const ImportMasterKey = () => {
   useEffect(() => {
     setError('');
     setIncorrect(false);
-    setPhrase(
-      'cancel dust barely mass cost still theory ability silent flush note wheat',
-    );
   }, [phrase, name]);
 
   return (

@@ -1,5 +1,5 @@
 import React from 'react';
-import {Image, Text, TouchableOpacity, View} from 'react-native';
+import {Text, TouchableOpacity, View} from 'react-native';
 import PropTypes from 'prop-types';
 import {Row} from '@src/components';
 import {ArrowDown} from '@components/Icons';
@@ -54,7 +54,7 @@ export const PortfolioItem = React.memo(({ item, onPressItem, onPressArrow }) =>
           <Text style={[
             styled.subTitle,
             styled.rightText,
-            reward.totalRewardUSD && styled.greenText
+            reward.totalRewardUSD && styled.blueText
           ]}
           >{`+ ${reward.totalRewardUSDStr}`}
           </Text>

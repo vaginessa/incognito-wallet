@@ -18,6 +18,7 @@ const BaseTextInput = (props: TextInputProps) => {
         style,
         !editable ? { color: COLORS.newGrey } : null,
       ]}
+      editable={editable}
       {...rest}
     />
   );

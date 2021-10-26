@@ -262,6 +262,10 @@ export const swapInfoSelector = createSelector(
         sellInputAmount.originalAmount,
         buyInputAmount.originalAmount,
       );
+      const defaultPair = {
+        selltoken: sellInputAmount.tokenId,
+        buytoken: buyInputAmount.tokenId,
+      };
       return {
         balanceStr: sellInputBalanceStr,
         routing,
@@ -285,6 +289,7 @@ export const swapInfoSelector = createSelector(
         allPoolSize,
         maxGet,
         refreshing: isFetching,
+        defaultPair,
       };
     } catch (error) {
       console.log('swapInfoSelector-error', error);
@@ -305,17 +310,26 @@ export const mappingOrderHistorySelector = createSelector(
         sellTokenId,
         amount,
         buyTokenId,
-        minAccept: price,
         requestime,
         status,
         minAccept,
         fee,
         feeToken: feeTokenId,
         fromStorage,
+        respondTokens,
+        respondAmounts,
+        isCompleted,
       } = order;
       const sellToken: SelectedPrivacy = getPrivacyDataByTokenID(sellTokenId);
       const buyToken: SelectedPrivacy = getPrivacyDataByTokenID(buyTokenId);
       const feeToken: SelectedPrivacy = getPrivacyDataByTokenID(feeTokenId);
+      let price = 0;
+      if (!isCompleted) {
+        price = minAccept;
+      } else {
+        const indexBuyToken = respondTokens.findIndex((t) => t === buyTokenId);
+        price = respondAmounts[indexBuyToken];
+      }
       const amountStr = format.amountFull(amount, sellToken.pDecimals, false);
       const priceStr = format.amountFull(price, buyToken.pDecimals, false);
       const sellStr = `${amountStr} ${sellToken.symbol}`;
@@ -325,11 +339,11 @@ export const mappingOrderHistorySelector = createSelector(
       );
       const rate = getPairRate({
         token1Value: amount,
-        token2Value: minAccept,
+        token2Value: price,
         token1: sellToken,
         token2: buyToken,
       });
-      const rateStr = getExchangeRate(sellToken, buyToken, amount, minAccept);
+      const rateStr = getExchangeRate(sellToken, buyToken, amount, price);
       let totalFee = fee;
       let networkFee = ACCOUNT_CONSTANT.MAX_FEE_PER_TX;
       if (feeToken.isMainCrypto) {

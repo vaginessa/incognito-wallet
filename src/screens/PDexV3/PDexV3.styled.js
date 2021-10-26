@@ -14,6 +14,7 @@ export const styled = StyleSheet.create({
     marginTop: 24,
     marginBottom: 40,
     height: 50,
+    borderRadius: 8
   },
   scrollView: {
     marginBottom: 70,

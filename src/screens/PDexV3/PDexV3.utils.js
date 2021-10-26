@@ -1,4 +1,3 @@
-
 /* eslint-disable import/no-cycle */
 import BigNumber from 'bignumber.js';
 import format from '@src/utils/format';
@@ -6,7 +5,7 @@ import convertUtil from '@utils/convert';
 import isNumber from 'lodash/isNumber';
 import isNaN from 'lodash/isNaN';
 import SelectedPrivacy from '@src/models/selectedPrivacy';
-import {getShareDataValue} from '@screens/PDexV3/features/Liquidity/Liquidity.utils';
+import { getShareDataValue } from '@screens/PDexV3/features/Liquidity/Liquidity.utils';
 
 export const getPairRate = ({ token1, token2, token1Value, token2Value }) => {
   try {
@@ -34,16 +33,28 @@ export const getPairRate = ({ token1, token2, token1Value, token2Value }) => {
 
 export const getExchangeRate = (token1, token2, token1Value, token2Value) => {
   try {
+    if (!token1 || !token2 || !token1Value || !token2Value) {
+      return '';
+    }
     const rawRate = getPairRate({ token1, token2, token1Value, token2Value });
-    return `1 ${token1?.symbol} = ${format.amountFull(rawRate, 0, false)} ${token2?.symbol}`;
+    return `1 ${token1?.symbol} = ${format.amountFull(rawRate, 0, false)} ${
+      token2?.symbol
+    }`;
   } catch (error) {
     console.log('getExchangeRate-error', error);
   }
 };
 
 export const getPrincipal = ({ token1, token2, shareData }) => {
-  const { maxInputShareStr, maxOutputShareStr } = getShareDataValue({ inputToken: token1, outputToken: token2, shareData });
-  return `${maxInputShareStr} ${token1.symbol} + ${maxOutputShareStr} ${token2.symbol}`;
+  const {
+    maxInputShareDisplayStr,
+    maxOutputShareDisplayStr,
+  } = getShareDataValue({
+    inputToken: token1,
+    outputToken: token2,
+    shareData,
+  });
+  return `${maxInputShareDisplayStr} ${token1.symbol} + ${maxOutputShareDisplayStr} ${token2.symbol}`;
 };
 
 export const getShareStr = (share, totalShare) => {
@@ -76,12 +87,12 @@ export const getPoolSize = (
   const formattedToken1Pool = format.amountFull(
     token1PoolValue,
     token1?.pDecimals,
-    false
+    false,
   );
   const formattedToken2Pool = format.amountFull(
     token2PoolValue,
     token2?.pDecimals,
-    false
+    false,
   );
   return `${formattedToken1Pool} ${token1?.symbol} + ${formattedToken2Pool} ${token2?.symbol}`;
 };
@@ -111,7 +122,10 @@ export const calculateContributeValue = ({
   ) {
     return '';
   }
-  const number = new BigNumber(inputValue).multipliedBy(outputPool).dividedBy(inputPool).toNumber();
+  const number = new BigNumber(inputValue)
+    .multipliedBy(outputPool)
+    .dividedBy(inputPool)
+    .toNumber();
   const amount = convertUtil.toHumanAmount(number, outputToken.pDecimals);
   return format.toFixed(amount, outputToken.pDecimals);
 };

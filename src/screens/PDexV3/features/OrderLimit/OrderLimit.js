@@ -3,7 +3,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { View } from 'react-native';
 import { useSelector } from 'react-redux';
-import { ScrollView, RefreshControl } from '@src/components/core';
+import { KeyboardAwareScrollView, RefreshControl } from '@src/components/core';
 import { createForm } from '@src/components/core/reduxForm';
 import { ButtonBasic } from '@src/components/Button';
 import LoadingTx from '@src/components/LoadingTx';
@@ -39,7 +39,7 @@ const OrderLimit = (props) => {
   const { tabsFactories, handleConfirm, onRefresh, callback } = props;
   return (
     <>
-      <ScrollView
+      <KeyboardAwareScrollView
         style={styled.container}
         refreshControl={
           <RefreshControl refreshing={calculating} onRefresh={onRefresh} />
@@ -72,7 +72,7 @@ const OrderLimit = (props) => {
           onPress={handleConfirm}
         />
         <GroupSubInfo />
-      </ScrollView>
+      </KeyboardAwareScrollView>
       {!!ordering && <LoadingTx />}
     </>
   );
