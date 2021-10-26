@@ -5,6 +5,7 @@ import SelectedPrivacy from '@src/models/selectedPrivacy';
 import { COLORS } from '@src/styles';
 import orderBy from 'lodash/orderBy';
 import floor from 'lodash/floor';
+import format from '@src/utils/format';
 import { mappingOrderBook } from './Chart.utils';
 
 export const chartSelector = createSelector(
@@ -12,31 +13,38 @@ export const chartSelector = createSelector(
   (chart) => chart,
 );
 
+export const poolSelectedSelector = createSelector(
+  chartSelector,
+  getDataByPoolIdSelector,
+  ({ poolid }, getDataByPoolId) => getDataByPoolId(poolid),
+);
+
 export const priceHistorySelector = createSelector(
   chartSelector,
-  ({ priceHistory, poolid }) => {
+  poolSelectedSelector,
+  ({ priceHistory, poolid }, pool) => {
+    // const token1: SelectedPrivacy = pool?.token1;
+    const token2: SelectedPrivacy = pool?.token2;
     const { data } = priceHistory;
-    let history = data.map(({ open, close, timestamp }) => ({
-      x: timestamp,
-      y: floor(
-        new BigNumber(open)
-          .plus(close)
-          .dividedBy(2)
-          .toNumber(),
-      ),
-    }));
+    let history = data.map(({ open, close, timestamp }) => {
+      const x = timestamp;
+      const y = new BigNumber(open)
+        .plus(close)
+        .dividedBy(2)
+        .toNumber();
+      const yFormat = format.amountFull(y, 0, false);
+      return {
+        x,
+        y,
+        yFormat,
+      };
+    });
     return {
       ...priceHistory,
       poolid,
       history,
     };
   },
-);
-
-export const poolSelectedSelector = createSelector(
-  chartSelector,
-  getDataByPoolIdSelector,
-  ({ poolid }, getDataByPoolId) => getDataByPoolId(poolid),
 );
 
 export const orderBookSelector = createSelector(

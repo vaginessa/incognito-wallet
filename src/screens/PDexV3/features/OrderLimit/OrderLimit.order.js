@@ -11,7 +11,6 @@ import LoadingTx from '@src/components/LoadingTx';
 import RemoveSuccessDialog from '@src/screens/Setting/features/RemoveStorage/RemoveStorage.Dialog';
 import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
-import SelectedPrivacy from '@src/models/selectedPrivacy';
 import {
   actionWithdrawOrder,
   actionInit,

@@ -21,7 +21,7 @@ const styled = StyleSheet.create({
     flex: 1,
   },
   flatlist: {
-    paddingTop: 32,
+    paddingVertical: 24,
   },
   order: {
     flex: 1,
@@ -124,7 +124,7 @@ const OrderHistory = () => {
         renderItem={({ item, index }) => (
           <Order data={item} visibleDivider={index !== history.length - 1} />
         )}
-        style={styled.flatlist}
+        contentContainerStyle={styled.flatlist}
       />
     </View>
   );
