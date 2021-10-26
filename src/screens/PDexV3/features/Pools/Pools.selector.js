@@ -4,7 +4,6 @@ import { getPrivacyDataByTokenID as getPrivacyDataByTokenIDSelector } from '@src
 import { COLORS } from '@src/styles';
 import { getExchangeRate } from '@screens/PDexV3';
 import BigNumber from 'bignumber.js';
-import convert from '@utils/convert';
 
 export const poolsSelector = createSelector(
   (state) => state.pDexV3,
@@ -65,8 +64,7 @@ export const listPoolsSelector = createSelector(
         const volumeToAmount = format.amount(volume, 9);
         const priceChangeToAmount = format.amount(priceChange, 0);
         const perChange24h = priceChange24H;
-        const perChangeSign = perChange24h > 0 ? '+' : (perChange24h === 0 ? '' : '-');
-        const perChange24hToStr = `${perChangeSign}${perChange24h}%`;
+        const perChange24hToStr = `${format.toFixed(perChange24h, 2)}%`;
         let perChange24hColor = COLORS.newGrey;
         let perChange24hBGColor = COLORS.lightGrey35;
         if (perChange24h > 0) {
@@ -74,7 +72,7 @@ export const listPoolsSelector = createSelector(
           perChange24hBGColor = COLORS.green;
         } else if (perChange24h < 0) {
           perChange24hColor = COLORS.red;
-          perChange24hBGColor = COLORS.green;
+          perChange24hBGColor = COLORS.red;
         }
         const token1 = getPrivacyDataByTokenID(token1Id);
         const token2 = getPrivacyDataByTokenID(token2Id);
