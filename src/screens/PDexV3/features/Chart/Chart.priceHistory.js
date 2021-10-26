@@ -92,9 +92,41 @@ const PriceHistory = () => {
             x: 'time',
             y: 'linear',
           }}
-          containerComponent={
-            <VictoryVoronoiContainer labels={({ datum }) => datum.y} />
-          }
+          containerComponent={(
+            <VictoryVoronoiContainer
+              labels={({ datum }) => {
+                const { x, y, yFormat } = datum;
+                let time = '';
+                switch (period) {
+                case '15m':
+                  time = format.formatDateTime(x, 'HH:mm');
+                  break;
+                case '1h':
+                  time = format.formatDateTime(x, 'HH:mm');
+                  break;
+                case '4h':
+                  time = format.formatDateTime(x, 'HH:mm');
+                  break;
+                case '1d':
+                  time = format.formatDateTime(x, 'DD/MM');
+                  break;
+                case 'W':
+                  time = format.formatDateTime(x, 'DD/MM');
+                  break;
+                case 'M':
+                  time = format.formatDateTime(x, 'MM/YY');
+                  break;
+                case 'Y':
+                  time = format.formatDateTime(x, 'YYYY');
+                  break;
+                default:
+                  time = format.formatDateTime(x, '');
+                  break;
+                }
+                return `Price: ${yFormat}\nTime: ${time}`;
+              }}
+            />
+          )}
           padding={{ top: 60, bottom: 30, left: 0, right: 0 }}
         >
           <VictoryLine
@@ -111,27 +143,28 @@ const PriceHistory = () => {
           <VictoryAxis
             tickValues={history.map((h) => h.x)}
             tickFormat={(x, index, arr) => {
-              if (index % 2 !== 0 || index === arr.length - 1) {
-                return '';
-              }
-              switch (period) {
-              case '15m':
-                return format.formatDateTime(x, 'HH:mm');
-              case '1h':
-                return format.formatDateTime(x, 'HH:mm');
-              case '4h':
-                return format.formatDateTime(x, 'HH:mm');
-              case '1d':
-                return format.formatDateTime(x, 'DD/MM');
-              case 'W':
-                return format.formatDateTime(x, 'DD/MM');
-              case 'M':
-                return format.formatDateTime(x, 'MM/YY');
-              case 'Y':
-                return format.formatDateTime(x, 'YYYY');
-              default:
-                return format.formatDateTime(x, '');
-              }
+              return '';
+              // if (index % 2 === 0 || index === arr.length - 1) {
+              //   return '';
+              // }
+              // switch (period) {
+              // case '15m':
+              //   return format.formatDateTime(x, 'HH:mm');
+              // case '1h':
+              //   return format.formatDateTime(x, 'HH:mm');
+              // case '4h':
+              //   return format.formatDateTime(x, 'HH:mm');
+              // case '1d':
+              //   return format.formatDateTime(x, 'DD/MM');
+              // case 'W':
+              //   return format.formatDateTime(x, 'DD/MM');
+              // case 'M':
+              //   return format.formatDateTime(x, 'MM/YY');
+              // case 'Y':
+              //   return format.formatDateTime(x, 'YYYY');
+              // default:
+              //   return format.formatDateTime(x, '');
+              // }
             }}
           />
         </VictoryChart>
