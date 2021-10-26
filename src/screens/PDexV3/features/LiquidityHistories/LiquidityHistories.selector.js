@@ -61,7 +61,7 @@ const mapContributeData = createSelector(
         };
       });
       const key = (history.requestTxs || []).join('-');
-      const timeStr = format.formatDateTime(history.requestTime);
+      const timeStr = format.formatDateTime(history.requestTime * 1000);
       const contributeAmountDesc = contributes.map(item => item.contributeAmountSymbolStr).join(' + ');
 
       const storageValue = (history['storageContribute'] || []).map((item) => {
@@ -104,7 +104,7 @@ const mapContributeData = createSelector(
           tokenId,
           amount,
           token,
-          title: 'Refund',
+          title: 'Retry',
           pairHash,
           nftId,
           amp,
@@ -149,7 +149,7 @@ const mapRemoveLPData = createSelector(
   (histories, getPrivacyDataByTokenID) => {
     const _histories = histories.map(history => {
       const { requestTime, tokenId1, tokenId2, amount1, amount2 } = history;
-      const timeStr = format.formatDateTime(requestTime);
+      const timeStr = format.formatDateTime(requestTime * 1000);
       const tokenIds = [tokenId1, tokenId2];
       const amounts = [amount1, amount2];
       const removeData = tokenIds.map((tokenId, index) => {
@@ -197,7 +197,7 @@ const mapWithdrawFeeLPData = createSelector(
   (histories, getPrivacyDataByTokenID) => {
     const _histories = histories.map(history => {
       const { requestTime } = history;
-      const timeStr = format.formatDateTime(requestTime);
+      const timeStr = format.formatDateTime(requestTime * 1000);
       const rewardTokens = Object.keys(history.withdrawTokens || {});
       const rewards = rewardTokens.map(tokenId => {
         const token = getPrivacyDataByTokenID(tokenId);
