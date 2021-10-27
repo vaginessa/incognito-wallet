@@ -1,5 +1,5 @@
 import React, {memo} from 'react';
-import {Text, TouchableOpacity} from 'react-native';
+import {Text, TouchableOpacity, View} from 'react-native';
 import {batch, useDispatch, useSelector} from 'react-redux';
 import {listPoolsVerifySelector} from '@screens/PDexV3/features/Pools';
 import orderBy from 'lodash/orderBy';
@@ -16,11 +16,13 @@ import {useNavigation} from 'react-navigation-hooks';
 const Item = React.memo(({ item, onItemPress }) => {
   const { token1, token2, priceStr, perChange24hColor, perChange24hToStr, priceChange24H, poolId } = item;
   return (
-    <TouchableOpacity style={homeStyled.wrapMainVolume} onPress={() => onItemPress(poolId)}>
+    <TouchableOpacity style={[homeStyled.wrapMainVolume, { flex: 1 }]} onPress={() => onItemPress(poolId)}>
       <Text style={[homeStyled.mediumBlack, { fontSize: 12 }]}>{`${token1.symbol} / ${token2.symbol}`}</Text>
-      <Text style={[homeStyled.mediumBlack, { lineHeight: 24, color: perChange24hColor }]}>
-        {priceStr}
-      </Text>
+      <View style={{ flex: 1 }}>
+        <Text style={[homeStyled.mediumBlack, { lineHeight: 24, color: perChange24hColor }]}>
+          {priceStr}
+        </Text>
+      </View>
       <Row centerVertical>
         {!!priceChange24H && (
           <Row centerVertical style={{ marginRight: 2 }}>
