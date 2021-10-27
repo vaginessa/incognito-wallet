@@ -12,7 +12,7 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 20,
     padding: 24,
     paddingBottom: 0,
-    height: '50%',
+    height: '75%',
     position: 'absolute',
     right: 0,
     bottom: 0,
@@ -37,24 +37,10 @@ const ModalBottomSheet = ({
   customContent,
   style,
 }) => {
-  const [stylesheet, setStyle] = React.useState({});
-  const [isKeyboardVisible] = useKeyboard();
-  const debounceHandleEnhanceHeight = debounce(
-    React.useCallback(() => setStyle({ height: '80%' }), []),
-    100,
-  );
-  React.useEffect(() => {
-    if (isKeyboardVisible) {
-      debounceHandleEnhanceHeight();
-    } else {
-      setStyle({});
-    }
-  }, [isKeyboardVisible]);
   return (
     <View
       style={{
         ...styles.container,
-        ...stylesheet,
         ...style,
       }}
     >
