@@ -86,7 +86,7 @@ export const orderBookSelector = createSelector(
     const { data } = orderBook;
     const { buy = [], sell = [] } = data;
     const _buy = orderBy(
-      mappingOrderBook({ data: buy, token1, token2 }).map((o) => ({
+      mappingOrderBook({ data: buy, token1, token2, isBuy: true }).map((o) => ({
         ...o,
         color: COLORS.green,
       })),
@@ -94,10 +94,12 @@ export const orderBookSelector = createSelector(
       'desc',
     );
     const _sell = orderBy(
-      mappingOrderBook({ data: sell, token1, token2 }).map((o) => ({
-        ...o,
-        color: COLORS.red,
-      })),
+      mappingOrderBook({ data: sell, token1, token2, isSell: true }).map(
+        (o) => ({
+          ...o,
+          color: COLORS.red,
+        }),
+      ),
       'price',
       'asc',
     );
