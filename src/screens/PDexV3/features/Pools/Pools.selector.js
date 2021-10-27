@@ -76,19 +76,19 @@ export const listPoolsSelector = createSelector(
         }
         const token1 = getPrivacyDataByTokenID(token1Id);
         const token2 = getPrivacyDataByTokenID(token2Id);
-        let pool1ValueStr = format.amountFull(
+        let pool1ValueStr = format.amount(
           token1Value,
           token1.pDecimals,
           false,
         );
-        let pool2ValueStr = format.amountFull(
+        let pool2ValueStr = format.amount(
           token2Value,
           token2.pDecimals,
           false,
         );
         const poolSizeStr = `${pool1ValueStr} ${token1?.symbol} + ${pool2ValueStr} ${token2?.symbol}`;
-        const originalPrice = Math.ceil(new BigNumber(price).multipliedBy(Math.pow(10, token2?.pDecimals || 9)).toNumber());
-        const priceStr = format.amount(originalPrice, token2?.pDecimals || 9);
+        const originalPrice = new BigNumber(price).multipliedBy(Math.pow(10, 9));
+        const priceStr = format.amount(Math.floor(originalPrice.toNumber()), 9);
         return {
           ...pool,
           token1,
