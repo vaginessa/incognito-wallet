@@ -283,7 +283,7 @@ export const actionWithdrawingOrder = (payload) => ({
   payload,
 });
 
-export const actionWithdrawOrder = ({ requestTx, txType }) => async (
+export const actionWithdrawOrder = ({ requestTx, txType, nftid }) => async (
   dispatch,
   getState,
 ) => {
@@ -304,6 +304,7 @@ export const actionWithdrawOrder = ({ requestTx, txType }) => async (
       amount: 0,
       version: PrivacyVersion.ver2,
       txType,
+      nftID: nftid,
     };
     await pDexV3Inst.createAndSendWithdrawOrderRequestTx({ extra: data });
     await dispatch(actionFetchWithdrawOrderTxs());
