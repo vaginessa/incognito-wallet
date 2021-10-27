@@ -46,16 +46,16 @@ export const homeStyled = StyleSheet.create({
     backgroundColor: COLORS.white,
   },
   shadow: {
-    shadowColor: COLORS.black,
-    borderRadius: 8,
     shadowOffset: {
       width: 0,
       height: 0,
     },
     shadowOpacity: 0.1,
     shadowRadius: 3,
-    elevation: 2,
-    backgroundColor: COLORS.white
+    borderRadius: 8,
+    backgroundColor: COLORS.white,
+    borderWidth: 1,
+    borderColor: COLORS.colorGrey4,
   },
   mediumBlack: {
     ...FONT.STYLE.medium,
@@ -109,7 +109,7 @@ export const homeStyled = StyleSheet.create({
     flex: 0.5
   },
   tab: {
-    marginTop: 32
+    marginTop: 15
   },
   tabDisable: {
     color: COLORS.lightGrey35

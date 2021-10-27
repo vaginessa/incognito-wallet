@@ -254,7 +254,8 @@ export const itemStyle = StyleSheet.create({
   title: {
     ...FONT.STYLE.medium,
     fontSize: FONT.SIZE.medium,
-    lineHeight: FONT.SIZE.medium + 9
+    lineHeight: FONT.SIZE.medium + 9,
+    color: COLORS.black
   },
   subTitle: {
     ...FONT.STYLE.normal,
