@@ -148,6 +148,7 @@
     "react-native-settings": "^0.2.3",
     "react-native-share": "^5.1.4",
     "react-native-size-matters": "^0.2.1",
+    "react-native-snap-carousel": "^3.9.1",
     "react-native-splash-screen": "^3.2.0",
     "react-native-ssh-sftp": "https://github.com/incognitochain/react-native-ssh-sftp",
     "react-native-step-indicator": "^0.0.11",
