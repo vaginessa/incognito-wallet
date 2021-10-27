@@ -13,9 +13,10 @@ import { batch } from 'react-redux';
 import { BIG_COINS } from '@src/screens/Dex/constants';
 import uniq from 'lodash/uniq';
 import { PRV, PRV_ID } from '@src/constants/common';
-
 import convert from '@src/utils/convert';
 import format from '@src/utils/format';
+import BigNumber from 'bignumber.js';
+import floor from 'lodash/floor';
 import {
   ACTION_FETCHING,
   ACTION_FETCHED,
@@ -100,69 +101,89 @@ export const actionEstimateTrade = (field = formConfigs.selltoken) => async (
   try {
     let state = getState();
     const inputAmount = inputAmountSelector(state);
-    let sellInputToken, buyInputToken, inputToken;
+    let sellInputToken, buyInputToken, inputToken, inputPDecimals;
+    sellInputToken = inputAmount(formConfigs.selltoken);
+    buyInputToken = inputAmount(formConfigs.buytoken);
+    const {
+      tokenId: selltoken,
+      originalAmount: sellAmount,
+      pDecimals: sellPDecimals,
+    } = sellInputToken;
+    const {
+      tokenId: buytoken,
+      originalAmount: buyAmount,
+      pDecimals: buyPDecimals,
+    } = buyInputToken;
+    let payload = {
+      selltoken,
+      buytoken,
+    };
+    const slippagetolerance = slippagetoleranceSelector(state);
     switch (field) {
     case formConfigs.selltoken: {
-      sellInputToken = inputAmount(formConfigs.selltoken);
-      buyInputToken = inputAmount(formConfigs.buytoken);
       inputToken = formConfigs.buytoken;
+      payload.sellamount = sellAmount;
+      inputPDecimals = buyPDecimals;
       break;
     }
     case formConfigs.buytoken: {
-      sellInputToken = inputAmount(formConfigs.buytoken);
-      buyInputToken = inputAmount(formConfigs.selltoken);
       inputToken = formConfigs.selltoken;
+      payload.buyamount = floor(
+        new BigNumber(buyAmount)
+          .multipliedBy(100 / (100 - slippagetolerance))
+          .toNumber(),
+      );
+      inputPDecimals = sellPDecimals;
       break;
     }
     default:
       break;
     }
     const feetoken = feeSelectedSelector(state);
+    payload.feetoken = feetoken;
     if (
       isEmpty(sellInputToken) ||
       isEmpty(buyInputToken) ||
-      isEmpty(feetoken)
+      isEmpty(feetoken) ||
+      (!sellAmount && !buyAmount)
     ) {
-      return;
-    }
-    const {
-      tokenId: selltoken,
-      symbol: sellSymbol,
-      originalAmount: amount,
-    } = sellInputToken;
-    const { tokenId: buytoken, pDecimals, symbol: buySymbol } = buyInputToken;
-    if (!selltoken || !buytoken || !amount) {
       return;
     }
     await dispatch(actionFetching());
     const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
-    const payload = {
-      selltoken,
-      buytoken,
-      feetoken,
-      amount,
-    };
     const data = await pDexV3Inst.getEstimateTrade(payload);
     await dispatch(actionFetched(data));
     state = getState();
     const feeTokenData = feetokenDataSelector(state);
-    const slippagetolerance = slippagetoleranceSelector(state);
     const { minFeeAmountFixed } = feeTokenData;
+    let maxGet = 0;
+    switch (field) {
+    case formConfigs.selltoken: {
+      maxGet = data?.maxGet || 0;
+      break;
+    }
+    case formConfigs.buytoken: {
+      maxGet = data?.sellAmount || 0;
+      break;
+    }
+    default:
+      break;
+    }
     const originalMinAmountExpected = calMintAmountExpected({
-      maxGet: data?.maxGet || 0,
+      maxGet,
       slippagetolerance,
     });
     const minAmountExpectedToHumanAmount = convert.toHumanAmount(
       originalMinAmountExpected,
-      pDecimals,
+      inputPDecimals,
     );
-    const buyAmountExpectedToFixed = format.toFixed(
+    const minAmountExpectedToFixed = format.toFixed(
       minAmountExpectedToHumanAmount,
-      pDecimals,
+      inputPDecimals,
     );
     batch(() => {
       dispatch(
-        change(formConfigs.formName, inputToken, buyAmountExpectedToFixed),
+        change(formConfigs.formName, inputToken, minAmountExpectedToFixed),
       );
       dispatch(
         change(formConfigs.formName, formConfigs.feetoken, minFeeAmountFixed),
@@ -170,7 +191,7 @@ export const actionEstimateTrade = (field = formConfigs.selltoken) => async (
     });
   } catch (error) {
     await dispatch(actionFetchFail());
-    new ExHandler(error, 'Estimate data fail!').showErrorToast();
+    new ExHandler(error, 'Estimate fail!').showErrorToast();
   } finally {
     dispatch(actionSetFocusToken(''));
   }
