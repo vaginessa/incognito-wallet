@@ -179,7 +179,7 @@ const SwapInputsGroup = React.memo(() => {
         onEndEditing={() => onEndEditing(formConfigs.buytoken)}
         validate={[...validator.combinedAmount]}
         loadingBalance={!!buyInputAmount?.loadingBalance}
-        editableInput={false}
+        editableInput={!!swapInfo?.editableInput}
         visibleHeader
         label="To"
         onChange={(value) => onChange(formConfigs.buytoken, value)}

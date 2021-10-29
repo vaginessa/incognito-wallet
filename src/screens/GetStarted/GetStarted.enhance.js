@@ -1,7 +1,7 @@
 import React from 'react';
 import { compose } from 'recompose';
 import ErrorBoundary from '@src/components/ErrorBoundary';
-import { useDispatch } from 'react-redux';
+import { batch, useDispatch } from 'react-redux';
 import { login } from '@src/services/auth';
 import routeNames from '@src/router/routeNames';
 import { ExHandler } from '@src/services/exception';
@@ -11,7 +11,10 @@ import { actionFetch as actionFetchProfile } from '@screens/Profile';
 import withPin from '@components/pin.enhance';
 import KeepAwake from 'react-native-keep-awake';
 import { getInternalTokenList, getPTokenList } from '@src/redux/actions/token';
-import { actionLoadDefaultWallet } from '@src/redux/actions/masterKey';
+import { actionLoadDefaultWallet, loadAllMasterKeyAccounts } from '@src/redux/actions/masterKey';
+import { getBanners } from '@src/redux/actions/settings';
+import { requestUpdateMetrics } from '@src/redux/actions/app';
+import { ANALYTICS } from '@src/constants';
 import withDetectStatusNetwork from './GetStarted.enhanceNetwork';
 import withWizard from './GetStarted.enhanceWizard';
 import withWelcome from './GetStarted.enhanceWelcome';
@@ -48,10 +51,14 @@ const enhance = (WrappedComp) => (props) => {
       }
       navigation.navigate(routeNames.Home);
     } catch (error) {
-      console.log('CONFIGS APP ERROR', error);
       await setError(getErrorMsg(error));
       throw error;
     } finally {
+      batch(() => {
+        dispatch(getBanners());
+        dispatch(requestUpdateMetrics(ANALYTICS.ANALYTIC_DATA_TYPE.OPEN_APP));
+        dispatch(loadAllMasterKeyAccounts());
+      });
       setLoading(false);
     }
     console.timeEnd('CONFIGS_APP');

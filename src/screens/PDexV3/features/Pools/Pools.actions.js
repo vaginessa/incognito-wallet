@@ -66,9 +66,12 @@ export const actionFetchListPools = () => async (dispatch, getState) => {
     const pDexV3Inst = await getPDexV3Instance({ account });
     const pools = (await pDexV3Inst.getListPools('all')) || [];
     const volume = pools.reduce(
-      (prev, curr) => new BigNumber(curr.volume).plus(prev),
+      (prev, curr) => new BigNumber(Math.ceil(curr.volume)).plus(prev),
       new BigNumber(0),
     );
+    const originalVolume = new BigNumber(volume)
+      .multipliedBy(Math.pow(10, 9))
+      .toNumber();
     let poolsIDs = pools.map((pool) => pool?.poolId) || [];
     poolsIDs = [...followIds, ...poolsIDs];
     poolsIDs = uniq(poolsIDs);
@@ -78,7 +81,7 @@ export const actionFetchListPools = () => async (dispatch, getState) => {
         .filter((pool) => !!pool)
         .filter((pool) => !!pool.isVerify) || [];
     await dispatch(actionFetchedListPools(payload));
-    await dispatch(actionFetchedTradingVolume24h(volume.toString()));
+    await dispatch(actionFetchedTradingVolume24h(originalVolume));
   } catch (error) {
     throw error;
   } finally {

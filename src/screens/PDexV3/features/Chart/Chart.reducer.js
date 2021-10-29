@@ -25,7 +25,7 @@ const initialState = {
   priceHistory: {
     data: [],
     period: '15m',
-    datapoint: 50,
+    datapoint: 100,
     fetching: false,
   },
   tradingVolume24: '',

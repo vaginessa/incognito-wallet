@@ -1,4 +1,5 @@
 /* eslint-disable import/no-cycle */
+import { actionInit as actionInitNotification } from '@src/screens/Notification';
 import { Validator } from 'incognito-chain-web-js/build/wallet';
 import LocalDatabase from '@utils/LocalDatabase';
 import types from '@src/redux/types/masterKey';
@@ -45,9 +46,7 @@ const updateNetwork = async () => {
     id: 'mainnet',
   };
   const isMainnet = currentServer.id === 'mainnet';
-  MasterKeyModel.network = isMainnet
-    ? 'mainnet'
-    : currentServer?.id || 'testnet';
+  MasterKeyModel.network = isMainnet ? 'mainnet' : 'testnet';
 };
 
 const migrateData = async () => {
@@ -362,6 +361,8 @@ export const loadAllMasterKeyAccounts = () => async (dispatch, getState) => {
     await dispatch(loadAllMasterKeyAccountsSuccess(accounts));
   } catch (error) {
     new ExHandler(error).showErrorToast();
+  } finally {
+    dispatch(actionInitNotification());
   }
   await dispatch(actionLoadingAllMasterKeyAccount(false));
 };

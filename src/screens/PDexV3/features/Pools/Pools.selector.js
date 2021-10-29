@@ -4,7 +4,6 @@ import { getPrivacyDataByTokenID as getPrivacyDataByTokenIDSelector } from '@src
 import { COLORS } from '@src/styles';
 import { getExchangeRate } from '@screens/PDexV3';
 import BigNumber from 'bignumber.js';
-import convert from '@utils/convert';
 
 export const poolsSelector = createSelector(
   (state) => state.pDexV3,
@@ -13,7 +12,7 @@ export const poolsSelector = createSelector(
 
 export const tradingVolume24hSelector = createSelector(
   poolsSelector,
-  ({ tradingVolume24h }) => format.amount(tradingVolume24h, 9, true, true),
+  ({ tradingVolume24h }) => format.amount(tradingVolume24h, 9),
 );
 
 export const listPoolsIDsSelector = createSelector(
@@ -62,11 +61,10 @@ export const listPoolsSelector = createSelector(
           virtual2Value,
           price,
         } = pool;
-        const volumeToAmount = format.amount(volume, 9);
+        const volumeToAmount = format.amount(Math.ceil(volume), 9);
         const priceChangeToAmount = format.amount(priceChange, 0);
         const perChange24h = priceChange24H;
-        const perChangeSign = perChange24h > 0 ? '+' : (perChange24h === 0 ? '' : '-');
-        const perChange24hToStr = `${perChangeSign}${perChange24h}%`;
+        const perChange24hToStr = `${format.toFixed(perChange24h, 2)}%`;
         let perChange24hColor = COLORS.newGrey;
         let perChange24hBGColor = COLORS.lightGrey35;
         if (perChange24h > 0) {
@@ -74,23 +72,23 @@ export const listPoolsSelector = createSelector(
           perChange24hBGColor = COLORS.green;
         } else if (perChange24h < 0) {
           perChange24hColor = COLORS.red;
-          perChange24hBGColor = COLORS.green;
+          perChange24hBGColor = COLORS.red;
         }
         const token1 = getPrivacyDataByTokenID(token1Id);
         const token2 = getPrivacyDataByTokenID(token2Id);
-        let pool1ValueStr = format.amountFull(
+        let pool1ValueStr = format.amount(
           token1Value,
           token1.pDecimals,
           false,
         );
-        let pool2ValueStr = format.amountFull(
+        let pool2ValueStr = format.amount(
           token2Value,
           token2.pDecimals,
           false,
         );
         const poolSizeStr = `${pool1ValueStr} ${token1?.symbol} + ${pool2ValueStr} ${token2?.symbol}`;
-        const originalPrice = Math.ceil(new BigNumber(price).multipliedBy(Math.pow(10, token2?.pDecimals || 9)).toNumber());
-        const priceStr = format.amount(originalPrice, token2?.pDecimals || 9);
+        const originalPrice = new BigNumber(price).multipliedBy(Math.pow(10, 9));
+        const priceStr = format.amount(Math.floor(originalPrice.toNumber()), 9);
         return {
           ...pool,
           token1,

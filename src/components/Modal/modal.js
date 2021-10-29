@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import Modal from 'react-native-modal';
+import {COLORS} from '@src/styles';
 import { modalSelector, modalLoadingSelector } from './modal.selector';
 import { actionToggleModal } from './modal.actions';
 import LoadingModal from './features/LoadingModal';
@@ -44,6 +45,8 @@ const ModalComponent = () => {
       onBackdropPress={handleToggle}
       onModalWillHide={onRequestClose}
       style={styled.container}
+      backdropColor={COLORS.black}
+      backdropOpacity={0.4}
     >
       {data}
       {toggleLoading && (
