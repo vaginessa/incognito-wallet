@@ -61,6 +61,7 @@
     "@tradle/react-native-http": "^2.0.1",
     "@walletconnect/react-native-dapp": "^1.6.5",
     "@zilliqa-js/zilliqa": "^0.9.0",
+    "add": "^2.0.6",
     "assert": "^1.5.0",
     "axios": "^0.18.0",
     "base-64": "^0.1.0",
@@ -81,7 +82,7 @@
     "formik": "^1.5.3",
     "https-browserify": "0.0.1",
     "immutability-helper": "^3.0.1",
-    "incognito-chain-web-js": "https://github.com/incognitochain/incognito-chain-web-js#4.2.17.96",
+    "incognito-chain-web-js": "https://github.com/incognitochain/incognito-chain-web-js#4.2.17.97",
     "intl": "^1.2.5",
     "jetifier": "^1.6.5",
     "json-2-csv": "^3.10.2",
@@ -114,6 +115,7 @@
     "react-native-dotenv": "^0.2.0",
     "react-native-easy-toast": "^1.2.0",
     "react-native-elements": "^1.1.0",
+    "react-native-fast-image": "^8.5.11",
     "react-native-file-type": "^0.0.8",
     "react-native-firebase": "https://github.com/incognitochain/react-native-firebase.git#feature/fix_crash_ios",
     "react-native-fs": "^2.16.2",
@@ -193,6 +195,7 @@
     "vm-browserify": "0.0.4",
     "wallet-address-validator": "^0.2.4",
     "web3": "1.3.4",
+    "yarn": "^1.22.17",
     "yup": "^0.27.0"
   },
   "devDependencies": {
