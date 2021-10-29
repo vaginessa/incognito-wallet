@@ -238,6 +238,7 @@ android {
 }
 
 dependencies {
+    implementation project(':react-native-fast-image')
     addUnimodulesDependencies()
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "com.android.support:appcompat-v7:${rootProject.ext.supportLibVersion}"

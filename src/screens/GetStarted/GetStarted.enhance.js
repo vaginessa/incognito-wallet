@@ -34,6 +34,7 @@ import { accountServices } from '@src/services/wallet';
 import { actionLogEvent } from '@src/screens/Performance';
 import { requestUpdateMetrics } from '@src/redux/actions/app';
 import PropTypes from 'prop-types';
+import {getBanners} from '@src/redux/actions/settings';
 import {
   wizardSelector,
   isFollowedDefaultPTokensSelector,
@@ -233,6 +234,7 @@ const enhance = (WrappedComp) => (props) => {
         }),
       );
       await setStatusConfigs('getting configs');
+      dispatch(getBanners());
       const [servers] = await new Promise.all([
         serverService.get(),
         getFunctionConfigs().catch((e) => e),
