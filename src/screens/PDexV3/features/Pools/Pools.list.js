@@ -116,9 +116,6 @@ const PoolsListContainer = (props) => {
     setPools(listPools);
     setText('');
   }, [listPools]);
-  React.useEffect(() => {
-    dispatch(actionFetchPools());
-  }, []);
   return (
     <View style={[styled.container, style]}>
       <BaseTextInputCustom

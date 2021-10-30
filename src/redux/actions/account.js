@@ -255,19 +255,23 @@ export const actionReloadFollowingToken = () => async (dispatch, getState) => {
         ? Object.keys(keyInfo.coinindex).map((tokenID) => tokenID)
         : [];
       const pTokensIDs = defaultPTokensIDsSelector(state);
-      let tokenIDs = [...pTokensIDs, ...coinIDs];
-      await accountWallet.followingDefaultTokens({
-        tokenIDs,
-      });
-      followed = await accountService.getFollowingTokens(account, wallet);
-    }
-    dispatch(getBalance(account));
-    followed.forEach((token) => {
-      try {
-        dispatch(getTokenBalance(token?.id));
-      } catch (error) {
-        console.log('error', token?.id);
+      if (pTokensIDs.length > 0) {
+        let tokenIDs = [...pTokensIDs, ...coinIDs];
+        await accountWallet.followingDefaultTokens({
+          tokenIDs,
+        });
+        followed = await accountService.getFollowingTokens(account, wallet);
       }
+    }
+    batch(() => {
+      dispatch(getBalance(account));
+      followed.forEach((token) => {
+        try {
+          dispatch(getTokenBalance(token?.id));
+        } catch (error) {
+          console.log('error', token?.id);
+        }
+      });
     });
     dispatch(setListToken(followed));
     return followed;

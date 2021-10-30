@@ -24,8 +24,8 @@ import { isGettingBalance as isGettingMainCryptoBalanceSelector } from '@src/red
 import { useBtnTrade } from '@src/components/UseEffect/useBtnTrade';
 import useFeatureConfig from '@src/shared/hooks/featureConfig';
 import { pTokenSelector } from '@src/redux/selectors/shared';
+import { useHistoryEffect } from '@screens/Wallet/features/History';
 import appConstant from '@src/constants/app';
-import withDetail from './Detail.enhance';
 import {
   styled,
   groupBtnStyled,
@@ -37,7 +37,10 @@ const GroupButton = React.memo(() => {
   const navigation = useNavigation();
   const handleSend = () => navigation.navigate(routeNames.Send);
   const handleReceive = () => navigation.navigate(routeNames.ReceiveCrypto);
-  const [onPressSend, isSendDisabled] = useFeatureConfig(appConstant.DISABLED.SEND, handleSend);
+  const [onPressSend, isSendDisabled] = useFeatureConfig(
+    appConstant.DISABLED.SEND,
+    handleSend,
+  );
   return (
     <View style={groupBtnStyled.groupButton}>
       <ButtonBasic
@@ -58,10 +61,8 @@ const GroupButton = React.memo(() => {
 });
 
 const Balance = React.memo(() => {
-  const selected  = useSelector(selectedPrivacySelector.selectedPrivacy);
-  const {
-    isToggleUSD
-  } = useSelector(pTokenSelector);
+  const selected = useSelector(selectedPrivacySelector.selectedPrivacy);
+  const { isToggleUSD } = useSelector(pTokenSelector);
 
   const isGettingBalance = useSelector(
     sharedSelector.isGettingBalance,
@@ -88,10 +89,11 @@ const Balance = React.memo(() => {
     <View style={balanceStyled.container}>
       <Amount {...amountProps} />
       <View style={balanceStyled.hook}>
-        { isToggleUSD
-          ? (<AmountBaseUSDT {...amountBaseUSDTProps} />)
-          : (<AmountBasePRV {...amountBaseUSDTProps} />)
-        }
+        {isToggleUSD ? (
+          <AmountBaseUSDT {...amountBaseUSDTProps} />
+        ) : (
+          <AmountBasePRV {...amountBaseUSDTProps} />
+        )}
         <ChangePrice {...changePriceProps} />
       </View>
     </View>
@@ -125,6 +127,7 @@ const Detail = (props) => {
       : isGettingTokenBalance.length > 0 || !token;
   const onGoBack = () => navigation.navigate(routeNames.Wallet);
   const [BtnTrade, hasTradeBtn] = useBtnTrade();
+  const { onRefresh } = useHistoryEffect();
   return (
     <>
       <View style={[styled.container, { marginHorizontal: 25 }]}>
@@ -136,6 +139,7 @@ const Detail = (props) => {
           styledContainerHeaderTitle={
             hasTradeBtn && styled.styledContainerHeaderTitle
           }
+          handleSelectedAccount={onRefresh}
         />
         <Balance />
         <GroupButton />
@@ -149,4 +153,4 @@ Detail.propTypes = {};
 
 History.propTypes = {};
 
-export default withDetail(React.memo(Detail));
+export default React.memo(Detail);

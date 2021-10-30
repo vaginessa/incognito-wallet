@@ -3,11 +3,8 @@ import ErrorBoundary from '@src/components/ErrorBoundary';
 import { useSelector, useDispatch, batch } from 'react-redux';
 import { ExHandler } from '@src/services/exception';
 import withDetectConvert from '@screens/Home/features/Convert/Convert.enhanceDetect';
-import {
-  getPTokenList,
-  getInternalTokenList,
-  actionFreeHistory,
-} from '@src/redux/actions/token';
+import { getPTokenList, getInternalTokenList } from '@src/redux/actions/token';
+import { actionFree } from '@src/redux/actions/history';
 import { actionReloadFollowingToken } from '@src/redux/actions/account';
 import { CONSTANT_KEYS } from '@src/constants';
 import { useFocusEffect } from 'react-navigation-hooks';
@@ -29,7 +26,7 @@ const enhance = (WrappedComp) => (props) => {
     accountSelector.signPublicKeyEncodeSelector,
   );
   const dispatch = useDispatch();
-  const [isReloading, setIsReloading] = React.useState(true);
+  const [isReloading, setIsReloading] = React.useState(false);
   const retryLastTxsUnshieldDecentralized = async () => {
     try {
       const keyUnshieldDecentralized =
@@ -77,33 +74,19 @@ const enhance = (WrappedComp) => (props) => {
       batch(() => {
         dispatch(getPTokenList());
         dispatch(getInternalTokenList());
+        dispatch(actionReloadFollowingToken(true));
+        retryLastTxsUnshieldDecentralized();
+        retryLastTxsUnshieldCentralized();
       });
-      await dispatch(actionReloadFollowingToken(true));
     } catch (error) {
       new ExHandler(error).showErrorToast();
     } finally {
       await setIsReloading(false);
     }
   };
-  const handleFetchWalletData = async () => {
-    try {
-      await setIsReloading(true);
-      await dispatch(actionReloadFollowingToken(true));
-    } catch (error) {
-      new ExHandler(error).showErrorToast();
-    } finally {
-      retryLastTxsUnshieldDecentralized();
-      retryLastTxsUnshieldCentralized();
-      await setIsReloading(false);
-    }
-  };
-  React.useEffect(() => {
-    handleFetchWalletData();
-    return () => {};
-  }, []);
   useFocusEffect(
     React.useCallback(() => {
-      dispatch(actionFreeHistory());
+      dispatch(actionFree());
     }, []),
   );
   return (
