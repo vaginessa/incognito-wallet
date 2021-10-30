@@ -11,7 +11,10 @@ import { actionFetch as actionFetchProfile } from '@screens/Profile';
 import withPin from '@components/pin.enhance';
 import KeepAwake from 'react-native-keep-awake';
 import { getInternalTokenList, getPTokenList } from '@src/redux/actions/token';
-import { actionLoadDefaultWallet, loadAllMasterKeyAccounts } from '@src/redux/actions/masterKey';
+import {
+  actionLoadDefaultWallet,
+  loadAllMasterKeyAccounts,
+} from '@src/redux/actions/masterKey';
 import { getBanners } from '@src/redux/actions/settings';
 import { requestUpdateMetrics } from '@src/redux/actions/app';
 import { ANALYTICS } from '@src/constants';
@@ -38,7 +41,6 @@ const enhance = (WrappedComp) => (props) => {
     console.time('CONFIGS_APP');
     try {
       await setLoading(true);
-      await login();
       const [servers] = await new Promise.all([
         serverService.get(),
         dispatch(actionFetchProfile()),
@@ -54,6 +56,7 @@ const enhance = (WrappedComp) => (props) => {
       await setError(getErrorMsg(error));
       throw error;
     } finally {
+      login();
       batch(() => {
         dispatch(getBanners());
         dispatch(requestUpdateMetrics(ANALYTICS.ANALYTIC_DATA_TYPE.OPEN_APP));

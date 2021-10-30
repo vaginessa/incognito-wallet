@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import types from '@src/redux/types/masterKey';
+import typesAccount from '@src/redux/types/account';
 import LocalDatabase from '@src/utils/LocalDatabase';
 import storage from '@services/storage';
 import { accountServices } from '@src/services/wallet';
@@ -24,16 +25,12 @@ function createMasterKey(newMasterKey, list) {
 function updateMasterKey(newMasterKey, list) {
   const newList = list.map((item) => {
     const found = item.name === newMasterKey.name;
-
     if (found) {
       return newMasterKey;
     }
-
     return item;
   });
-
   LocalDatabase.setMasterKeyList(newList);
-
   return newList;
 }
 
@@ -134,6 +131,17 @@ const reducer = (state = initialState, action) => {
     return {
       ...state,
       loadingAll: action.payload,
+    };
+  }
+  case typesAccount.REMOVE_BY_PRIVATE_KEY: {
+    const { accounts: oldAccounts } = state;
+    const privateKey = action.data;
+    const accounts = oldAccounts.filter(
+      (account) => account?.PrivateKey !== privateKey,
+    );
+    return {
+      ...state,
+      accounts,
     };
   }
   default:

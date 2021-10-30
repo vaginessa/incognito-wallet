@@ -18,9 +18,6 @@ const MasterKeys = () => {
   const dispatch = useDispatch();
   const handleLoadAllMasterKeyAccounts = () =>
     dispatch(loadAllMasterKeyAccounts());
-  React.useEffect(() => {
-    handleLoadAllMasterKeyAccounts();
-  }, []);
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}

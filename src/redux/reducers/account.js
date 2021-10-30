@@ -1,7 +1,6 @@
 import type from '@src/redux/types/account';
 import _, { cloneDeep } from 'lodash';
 
-const TAG = 'reducers-account';
 const initialState = {
   list: [],
   defaultAccountName: '',
@@ -168,13 +167,13 @@ const reducer = (state = initialState, action) => {
     return {
       ...state,
       nft: { ...action.payload },
-      isFetchingNFT: false
+      isFetchingNFT: false,
     };
   }
   case type.ACTION_FETCHING_NFT: {
     return {
       ...state,
-      isFetchingNFT: true
+      isFetchingNFT: true,
     };
   }
   default:
