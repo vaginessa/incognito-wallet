@@ -107,25 +107,27 @@ const Order = React.memo(({ data, visibleDivider }) => {
     btnTitleClaim,
     btnCancel,
     withdrawing,
-    nftTokenAvailable,
     type,
     priceStr,
     amountStr,
     percentStr1,
+    visibleBtnAction,
+    nftid,
   } = data;
   const renderHook = () => {
     let comp = null;
     if (visibleBtnCancel) {
       comp = (
         <ButtonBasic
-          disabled={!nftTokenAvailable}
+          disabled={!visibleBtnAction}
           btnStyle={styled.btnWithdraw}
           title={btnTitleCancel}
           titleStyle={styled.btnTitleWithdraw}
           onPress={() =>
-            !!nftTokenAvailable &&
+            !!visibleBtnAction &&
             onPressWithdrawOrder({
               requestTx,
+              nftid,
               txType: ACCOUNT_CONSTANT.TX_TYPE.CANCEL_ORDER_LIMIT,
               subTitle:
                 'This will cancel your order. Are your sure to continute?',
@@ -136,15 +138,16 @@ const Order = React.memo(({ data, visibleDivider }) => {
     } else if (visibleBtnClaim) {
       comp = (
         <ButtonBasic
-          disabled={!nftTokenAvailable}
+          disabled={!visibleBtnAction}
           btnStyle={styled.btnWithdraw}
           titleStyle={styled.btnTitleWithdraw}
           title={btnTitleClaim}
           onPress={() =>
-            !!nftTokenAvailable &&
+            !!visibleBtnAction &&
             onWithdrawOrder({
               requestTx,
               txType: ACCOUNT_CONSTANT.TX_TYPE.CLAIM_ORDER_LIMIT,
+              nftid,
             })
           }
         />

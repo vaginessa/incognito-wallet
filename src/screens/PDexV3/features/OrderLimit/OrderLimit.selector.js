@@ -359,7 +359,7 @@ export const mappingOrderHistorySelector = createSelector(
   (
     { withdrawingOrderTxs, withdrawOrderTxs },
     pool,
-    { nftTokenAvailable },
+    { nftTokenAvailable, list },
     getPrivacyDataByTokenID,
   ) => (order) => {
     try {
@@ -381,6 +381,7 @@ export const mappingOrderHistorySelector = createSelector(
         minAccept,
         buyTokenId,
         fromStorage,
+        nftid,
       } = order;
       let type,
         mainColor,
@@ -438,14 +439,27 @@ export const mappingOrderHistorySelector = createSelector(
       const { status: cancelTxStatus, withdrawTxId: cancelTxId } =
         cancelTx || {};
       const { status: claimTxStatus, withdrawTxId: claimTxId } = claimTx || {};
+      let visibleBtnAction = false;
+      const foundNFT = list.find((nft) => nft?.nftToken === nftid);
+      if (new BigNumber(foundNFT?.realAmount).eq(1)) {
+        visibleBtnAction = true;
+      }
       visibleBtnCancel = visibleBtnCancel && !cancelTxId;
       visibleBtnClaim = visibleBtnClaim && !claimTxId;
-      let btnCancel = BTN_WITHDRAW_ORDER[cancelTxStatus]
-        ? `${btnTitleCancel}${BTN_WITHDRAW_ORDER[cancelTxStatus]}`
-        : '';
-      let btnClaim = BTN_WITHDRAW_ORDER[claimTxStatus]
-        ? `${btnTitleClaim}${BTN_WITHDRAW_ORDER[claimTxStatus]}`
-        : '';
+      let btnCancel = '';
+      let btnClaim = '';
+      if (cancelTxId) {
+        btnCancel = BTN_WITHDRAW_ORDER[cancelTxStatus]
+          ? `${btnTitleCancel}${BTN_WITHDRAW_ORDER[cancelTxStatus]}`
+          : '';
+        statusStr = btnCancel || statusStr;
+      }
+      if (claimTxId) {
+        btnClaim = BTN_WITHDRAW_ORDER[claimTxStatus]
+          ? `${btnTitleClaim}${BTN_WITHDRAW_ORDER[claimTxStatus]}`
+          : '';
+        statusStr = btnClaim || statusStr;
+      }
       const poolStr = `${token1.symbol} / ${token2.symbol}`;
       const sellToken: SelectedPrivacy = getPrivacyDataByTokenID(sellTokenId);
       const buyToken: SelectedPrivacy = getPrivacyDataByTokenID(buyTokenId);
@@ -537,6 +551,7 @@ export const mappingOrderHistorySelector = createSelector(
         token2,
         priceStr,
         amountStr,
+        visibleBtnAction,
       };
       return result;
     } catch (error) {
