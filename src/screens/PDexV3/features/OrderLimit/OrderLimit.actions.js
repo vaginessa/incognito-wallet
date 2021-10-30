@@ -7,6 +7,7 @@ import { ExHandler } from '@src/services/exception';
 import {
   actionFetchPools,
   defaultPoolSelector,
+  listPoolsIDsSelector,
 } from '@screens/PDexV3/features/Pools';
 import { actionSetNFTTokenData } from '@src/redux/actions/account';
 import isEmpty from 'lodash/isEmpty';
@@ -147,19 +148,27 @@ export const actionSetDefaultPool = () => async (dispatch, getState) => {
   }
 };
 
-export const actionInit = () => async (dispatch, getState) => {
+export const actionInit = (refresh = true) => async (dispatch, getState) => {
   try {
     await dispatch(actionIniting(true));
-    await Promise.all([
-      dispatch(actionFetchPools()),
-      dispatch(actionSetNFTTokenData()),
-    ]);
+    batch(() => {
+      dispatch(actionSetPercent(0));
+      dispatch(reset(formConfigs.formName));
+    });
     let state = getState();
+    const pools = listPoolsIDsSelector(state);
     const poolSelected = poolSelectedDataSelector(state);
     if (!poolSelected?.poolId) {
       const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
-      let defaultPoolId = await pDexV3Inst.getDefaultPool();
-      if (!defaultPoolId) {
+      let defaultPoolId;
+      try {
+        defaultPoolId = await pDexV3Inst.getDefaultPool();
+      } catch {
+        //
+      }
+      const isValidPool =
+        pools?.findIndex((poolId) => poolId === defaultPoolId) > -1;
+      if (!defaultPoolId || !isValidPool) {
         defaultPoolId = defaultPoolSelector(state);
         await dispatch(actionSetDefaultPool());
       }
@@ -167,15 +176,17 @@ export const actionInit = () => async (dispatch, getState) => {
     }
     state = getState();
     const pool = poolSelectedDataSelector(state);
-    dispatch(actionFetchWithdrawOrderTxs());
-    dispatch(actionFetchOrdersHistory());
-    dispatch(actionFetchOrderBook());
     if (isEmpty(pool)) {
       return;
     }
     batch(() => {
-      dispatch(actionSetPercent(0));
-      dispatch(reset(formConfigs.formName));
+      if (refresh) {
+        dispatch(actionFetchPools()),
+        dispatch(actionSetNFTTokenData()),
+        dispatch(actionFetchWithdrawOrderTxs());
+        dispatch(actionFetchOrdersHistory());
+        dispatch(actionFetchOrderBook());
+      }
     });
     const activedTab = activedTabSelector(state)(ROOT_TAB_ORDER_LIMIT);
     const token1: SelectedPrivacy = pool?.token1;
