@@ -16,6 +16,8 @@ import {listPoolsSelector, PoolsList} from '@screens/PDexV3/features/Pools';
 import {NFTTokenBottomBar} from '@screens/PDexV3/features/NFTToken';
 import PropTypes from 'prop-types';
 import LPHistoryIcon from '@screens/PDexV3/features/Liquidity/Liquidity.iconHistory';
+import withLazy from '@components/LazyHoc/LazyHoc';
+import {compose} from 'recompose';
 import withHome from './Home.enhance';
 import { ROOT_TAB_HOME, TAB_POOLS_ID, TAB_PORTFOLIO_ID } from './Home.constant';
 import { styled } from './Home.styled';
@@ -89,4 +91,7 @@ Home.propTypes = {
   hideBackButton: PropTypes.bool
 };
 
-export default withHome(React.memo(Home));
+export default compose(
+  withLazy,
+  withHome,
+)(React.memo(Home));

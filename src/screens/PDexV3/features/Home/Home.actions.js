@@ -28,6 +28,7 @@ export const actionFreeHomePDexV3 = () => ({
 });
 
 export const actionRefresh = () => async (dispatch, getState) => {
+  console.log('SANG TEST: 11111');
   try {
     const state = getState();
     const { isFetching } = homePDexV3Selector(state);
