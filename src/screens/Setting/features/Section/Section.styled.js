@@ -5,7 +5,9 @@ const HEADER_HEIGHT = 35;
 
 export const sectionStyle = StyleSheet.create({
   container: {
-    marginBottom: 30,
+    paddingVertical: 16,
+    borderBottomColor: COLORS.colorGrey4,
+    borderBottomWidth: 1
   },
   header: {
     flexDirection: 'row',
@@ -19,8 +21,9 @@ export const sectionStyle = StyleSheet.create({
   },
   infoContainer: {},
   item: {
-    flexDirection: 'row',
-    marginBottom: 30,
+    paddingVertical: 16,
+    borderBottomColor: COLORS.colorGrey4,
+    borderBottomWidth: 1
   },
   subItem: {
     flexDirection: 'row',
@@ -32,20 +35,27 @@ export const sectionStyle = StyleSheet.create({
     backgroundColor: COLORS.white,
   },
   label: {
-    fontFamily: FONT.NAME.bold,
-    fontSize: FONT.SIZE.superMedium,
-    lineHeight: FONT.SIZE.superMedium + 4,
+    fontFamily: FONT.NAME.medium,
+    fontSize: FONT.SIZE.medium,
+    lineHeight: FONT.SIZE.medium + 9,
     color: COLORS.black,
-    marginBottom: 10,
   },
   desc: {
     fontFamily: FONT.NAME.medium,
-    fontSize: FONT.SIZE.medium,
-    lineHeight: FONT.SIZE.medium + 4,
-    color: COLORS.colorGreyBold,
+    fontSize: FONT.SIZE.regular,
+    lineHeight: FONT.SIZE.regular + 9,
+    color: COLORS.lightGrey33,
     flex: 1,
+    marginLeft: 40
   },
   subDesc: {
     marginTop: 10,
   },
+  wrapIcon: {
+    width: 24,
+    height: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 16
+  }
 });

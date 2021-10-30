@@ -23,6 +23,10 @@ import {
   getAccountWallet,
 } from '@src/services/wallet/Wallet.shared';
 import { cachePromise, clearAllCaches } from '@src/services/cache';
+import { getPDexV3Instance } from '@src/screens/PDexV3';
+import { delay } from '@src/utils/delay';
+import { v4 } from 'uuid';
+import random from 'lodash/random';
 import { CustomError, ErrorCode, ExHandler } from '../exception';
 import { loadListAccountWithBLSPubKey, saveWallet } from './WalletService';
 
@@ -314,6 +318,13 @@ export default class Account {
     new Validator('wallet', wallet).required();
     const account = this.getAccount(defaultAccount, wallet);
     return account.getProgressTx();
+  }
+
+  static async resetProgressTx(defaultAccount, wallet) {
+    new Validator('defaultAccount', defaultAccount).required();
+    new Validator('wallet', wallet).required();
+    const account = this.getAccount(defaultAccount, wallet);
+    return account.resetProgressTx();
   }
 
   static async getDebugMessage(defaultAccount, wallet) {
@@ -717,13 +728,29 @@ export default class Account {
       if (account) {
         const keyInfo = (await account.getKeyInfo({ version })) || {};
         const otaKey = account.getOTAKey();
+        const pDexV3Inst = await getPDexV3Instance({ account });
+        const keyFollowPoolsDefault = pDexV3Inst.getKeyFollowedDefaultPools();
+        const keyFollowPools = pDexV3Inst.getKeyFollowPools();
         const followedDefaultTokensKey = account.getKeyFollowedDefaultTokens();
         let task = [
           account.removeStorageCoinsV1(),
           account.clearAccountStorage(otaKey),
           account.clearAccountStorage(followedDefaultTokensKey),
+          pDexV3Inst.clearStorage(keyFollowPoolsDefault),
+          pDexV3Inst.clearStorage(keyFollowPools),
         ];
         clearAllCaches();
+        if (keyInfo.nftindex) {
+          task = task.concat(
+            Object.keys(keyInfo.nftindex).map((tokenID) => {
+              const params = {
+                tokenID,
+                version,
+              };
+              return account.clearCacheStorage(params);
+            }),
+          );
+        }
         if (keyInfo?.coinindex) {
           task = task.concat(
             Object.keys(keyInfo.coinindex).map((tokenID) => {
@@ -732,6 +759,15 @@ export default class Account {
                 version,
               };
               return account.clearCacheStorage(params);
+            }),
+          );
+          task = task.concat(
+            Object.keys(keyInfo.coinindex).map((tokenID) => {
+              const params = {
+                tokenID,
+                version,
+              };
+              return account.getKeyTxHistoryByTokenId(params);
             }),
           );
         }

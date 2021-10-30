@@ -245,7 +245,7 @@ workflows:
             filters:
               branches:
                 only:
-                  - privacy-v2
+                  - inc-next
         - generate_data:
             requires:
               - checkout_code

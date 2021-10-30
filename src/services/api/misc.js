@@ -47,5 +47,5 @@ export const getFunctionConfigsNoCache = () => {
 };
 
 export const getFunctionConfigs = () => {
-  return cachePromise(KEYS.FeatureConfigs, getFunctionConfigsNoCache, 30000);
+  return cachePromise(KEYS.FeatureConfigs, getFunctionConfigsNoCache, 40000);
 };

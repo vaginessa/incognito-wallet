@@ -1,14 +1,16 @@
 import { Text, View } from '@src/components/core';
 import React from 'react';
 import AppUpdater from '@components/AppUpdater/index';
-import { useNavigation } from 'react-navigation-hooks';
+import {useNavigation, useNavigationParam} from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
 import { useSelector } from 'react-redux';
 import CurrencySection from '@screens/Setting/features/CurrencySection/CurrencySection';
-import MainLayout from '@components/MainLayout/index';
 import RemoveStorage from '@screens/Setting/features/RemoveStorage/RemoveStorage';
 import ConvertCoinsSection from '@screens/Setting/features/ConvertCoinsSection';
 import DeviceInfo from 'react-native-device-info';
+import {SafeAreaView, ScrollView} from 'react-native';
+import {NetworkIcon, SecurityIcon} from '@components/Icons';
+import {Header} from '@src/components';
 import PINSection from './features/PINSection';
 import SeparatorSection from './features/SeparatorSection';
 import DevSection from './features/DevSection';
@@ -25,6 +27,7 @@ import RemoveBalanceCached from './features/RemoveBalanceCached';
 
 const Setting = () => {
   const navigation = useNavigation();
+  const showHeader = useNavigationParam('showHeader');
   const { server } = useSelector(settingSelector);
   const sectionItemFactories = [
     {
@@ -35,6 +38,13 @@ const Setting = () => {
         navigation?.navigate(routeNames.NetworkSetting, {
           onReloadedNetworks: actionFetchServers,
         }),
+      icon: <NetworkIcon />
+    },
+    {
+      title: 'NFT Token',
+      desc: 'Manage keychain\'s nft token',
+      handlePress: () => navigation?.navigate(routeNames.NFTToken),
+      icon: <SecurityIcon />
     },
   ];
 
@@ -43,27 +53,34 @@ const Setting = () => {
   };
 
   return (
-    <MainLayout header="Settings" scrollable>
-      <View>
-        {sectionItemFactories.map((item, id) => (
-          <SectionItem data={item} key={id} />
-        ))}
-        <PINSection />
-        <SeparatorSection />
-        <DecimalDigitsSection />
-        <CurrencySection />
-        <AddressBookSection />
-        <ExportCSVSection handlePress={handlePressExportCSV} />
-        <UTXOSection />
-        <ConvertCoinsSection />
-        <RemoveStorage />
-        <RemoveBalanceCached />
-        {global.isDebug() && <DevSection />}
-      </View>
-      <Text style={settingStyle.textVersion}>
-        {`v${AppUpdater.appVersion}${global.isDebug() ? ` (${DeviceInfo.getBuildNumber()})` : ''}`}
-      </Text>
-    </MainLayout>
+    <SafeAreaView>
+      {!!showHeader && (
+        <Header title="Setting" style={{  paddingHorizontal: 25 }} />
+      )}
+      <ScrollView style={{ paddingHorizontal: 25 }} showsVerticalScrollIndicator={false}>
+        <View>
+          {sectionItemFactories.map((item) => (
+            <SectionItem data={item} key={`${item.title} ${item.desc}`} />
+          ))}
+          <PINSection />
+          <SeparatorSection />
+          <DecimalDigitsSection />
+          <CurrencySection />
+          <AddressBookSection />
+          <ExportCSVSection handlePress={handlePressExportCSV} />
+          <UTXOSection />
+          <ConvertCoinsSection />
+          <RemoveStorage />
+          <RemoveBalanceCached />
+          {global.isDebug() && <DevSection />}
+        </View>
+        <Text style={[settingStyle.textVersion]}>
+          {`v${AppUpdater.appVersion}${
+            global.isDebug() ? ` (${DeviceInfo.getBuildNumber()})` : ''
+          }`}
+        </Text>
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 

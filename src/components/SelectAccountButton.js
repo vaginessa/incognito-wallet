@@ -18,7 +18,7 @@ const styled = StyleSheet.create({
     maxWidth: 120,
   },
   btnStyle: {
-    backgroundColor: COLORS.colorGrey,
+    backgroundColor: COLORS.lightGrey19,
     height: 40,
     paddingHorizontal: 15,
     width: '100%',
@@ -37,7 +37,11 @@ const styled = StyleSheet.create({
   },
 });
 
-const SelectAccountButton = ({ ignoredAccounts, disabled }) => {
+const SelectAccountButton = ({
+  ignoredAccounts,
+  disabled,
+  handleSelectedAccount,
+}) => {
   const account = useSelector(accountSelector.defaultAccountSelector);
   const accounts = useSelector(listAllMasterKeyAccounts);
   const navigation = useNavigation();
@@ -46,23 +50,28 @@ const SelectAccountButton = ({ ignoredAccounts, disabled }) => {
     if (disabled) return;
     navigation.navigate(routeNames.SelectAccount, {
       ignoredAccounts,
+      handleSelectedAccount,
     });
   };
-
   const checkAccount = async () => {
     if (ignoredAccounts.includes(account.name.toLowerCase())) {
-      const accountNames = accounts.map(item => item.accountName);
-      const validAccounts = accountNames.filter(name => !ignoredAccounts.includes(name.toLowerCase()));
+      const accountNames = accounts.map((item) => item.accountName);
+      const validAccounts = accountNames.filter(
+        (name) => !ignoredAccounts.includes(name.toLowerCase()),
+      );
       if (validAccounts && validAccounts.length) {
-        await dispatch(switchMasterKey(validAccounts[0].MasterKeyName, accountService.getAccountName(validAccounts[0])));
+        await dispatch(
+          switchMasterKey(
+            validAccounts[0].MasterKeyName,
+            accountService.getAccountName(validAccounts[0]),
+          ),
+        );
       }
     }
   };
-
   React.useEffect(() => {
     checkAccount();
   }, []);
-
   return (
     <View style={styled.container}>
       <ButtonBasic
@@ -85,11 +94,12 @@ const SelectAccountButton = ({ ignoredAccounts, disabled }) => {
 SelectAccountButton.propTypes = {
   ignoredAccounts: PropTypes.array,
   disabled: PropTypes.bool,
+  handleSelectedAccount: PropTypes.func,
 };
 
 SelectAccountButton.defaultProps = {
   ignoredAccounts: [],
-  disabled: false
+  disabled: false,
 };
 
 export default SelectAccountButton;

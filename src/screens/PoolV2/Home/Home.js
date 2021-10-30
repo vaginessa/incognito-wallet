@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { compose } from 'recompose';
 import { View } from '@components/core';
-import TotalReward from '@screens/PoolV2/Home/TotalReward';
 import { withLayout_2 } from '@components/Layout';
 import Actions from '@screens/PoolV2/Home/Actions';
 import CoinList from '@screens/PoolV2/Home/CoinList';
@@ -11,9 +10,10 @@ import withDefaultAccount from '@components/Hoc/withDefaultAccount';
 import { Header, LoadingContainer } from '@src/components';
 import withHistories from '@screens/PoolV2/Home/histories.enhance';
 import withRetry from '@screens/PoolV2/Home/retry.enhance';
-import {InfoIcon} from '@components/Icons';
-import {TouchableOpacity} from 'react-native';
-import {useNavigation} from 'react-navigation-hooks';
+import TotalReward from '@components/core/TotalReward';
+import { InfoIcon } from '@components/Icons';
+import { TouchableOpacity } from 'react-native';
+import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@routers/routeNames';
 import helperConst from '@src/constants/helper';
 import styles from './style';
@@ -23,7 +23,7 @@ const BtnInfo = React.memo(() => {
   const onPress = () => {
     navigation.navigate(routeNames.Helper, {
       ...helperConst.HELPER_CONSTANT.PROVIDE,
-      style: { paddingTop: 0 }
+      style: { paddingTop: 0 },
     });
   };
   return (
@@ -47,7 +47,7 @@ const Home = ({
   isLoadingHistories,
   nativeToken,
   totalRewardsNonLock,
-  displayFullTotalRewardsNonLock
+  displayFullTotalRewardsNonLock,
 }) => {
   const navigation = useNavigation();
   const renderContent = () => {
@@ -60,6 +60,7 @@ const Home = ({
         <TotalReward
           total={displayClipTotalRewards}
           nativeToken={nativeToken}
+          subTitle="Compounding Rewards"
         />
         <Actions
           buy={!withdrawable}
@@ -92,7 +93,7 @@ const Home = ({
         customHeaderTitle={<BtnInfo />}
         accountSelectable
         onGoBack={() => {
-          navigation.navigate(routeNames.Home);
+          navigation.navigate(routeNames.MainTabBar);
         }}
       />
       {renderContent()}
@@ -121,7 +122,7 @@ Home.defaultProps = {
   config: null,
   userData: null,
   groupedUserData: null,
-  groupedCoins: null
+  groupedCoins: null,
 };
 
 export default compose(

@@ -52,17 +52,16 @@ const AccountItem = ({
   PrivateKey,
   PaymentAddress,
   MasterKeyName,
+  handleSelectedAccount,
 }) => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const onSelect = useNavigationParam('onSelect');
   const account = useSelector(defaultAccount);
   const switchingAccount = useSelector(switchAccountSelector);
-
   if (!accountName) {
     return null;
   }
-
   const onSelectAccount = async () => {
     try {
       if (switchingAccount) {
@@ -87,6 +86,9 @@ const AccountItem = ({
       ).showErrorToast();
     } finally {
       await dispatch(actionSwitchAccountFetched());
+      if (typeof handleSelectedAccount === 'function') {
+        handleSelectedAccount();
+      }
     }
   };
 
@@ -127,6 +129,7 @@ AccountItem.propTypes = {
   PaymentAddress: PropTypes.string.isRequired,
   PrivateKey: PropTypes.string.isRequired,
   MasterKeyName: PropTypes.string.isRequired,
+  handleSelectedAccount: PropTypes.func,
 };
 
 export default AccountItem;

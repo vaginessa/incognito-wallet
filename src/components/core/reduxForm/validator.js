@@ -350,6 +350,9 @@ const combinedNanoAmount = [
   minValue(1, { message: 'Please enter an amount greater than 1.' }),
 ];
 
+const combinedNumber = [required(), number(), minValue(0)];
+const combinedNanoNumber = [required(), number(), minValue(0), isInteger()];
+
 const combinedIncognitoAddress = [required(), incognitoAddress()];
 const combinedETHAddress = [required(), ethAddress()];
 const combinedTOMOAddress = [required(), tomoAddress()];
@@ -494,4 +497,6 @@ export default {
   isBNBAddress,
   isZILAddress,
   invalidAddress,
+  combinedNumber,
+  combinedNanoNumber,
 };

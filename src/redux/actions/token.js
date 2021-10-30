@@ -1,5 +1,7 @@
+/* eslint-disable no-unreachable */
 /* eslint-disable import/no-cycle */
 import type from '@src/redux/types/token';
+import { walletSelector } from '@src/redux/selectors/wallet';
 import {
   accountSelector,
   selectedPrivacySelector,
@@ -20,7 +22,6 @@ import {
 } from '@src/redux/utils/token';
 import internalTokenModel from '@models/token';
 import { getReceiveHistoryByRPC } from '@src/services/wallet/RpcClientService';
-// import { actionLogEvent } from '@src/screens/Performance';
 import { ConfirmedTx } from '@src/services/wallet/WalletService';
 import { CONSTANT_COMMONS } from '@src/constants';
 import { uniqBy } from 'lodash';
@@ -31,13 +32,10 @@ import {
 } from '@src/redux/selectors/token';
 import { MAX_LIMIT_RECEIVE_HISTORY_ITEM } from '@src/redux/reducers/token';
 import { PRV_ID } from '@screens/DexV2/constants';
-import { devSelector } from '@src/screens/Dev';
 import { Validator, PrivacyVersion } from 'incognito-chain-web-js/build/wallet';
 import { EXPIRED_TIME } from '@services/cache';
 import Util from '@utils/Util';
 import { setWallet } from './wallet';
-import { getDefaultAccountWalletSelector } from '../selectors/shared';
-import { walletSelector } from '../selectors/wallet';
 
 export const setToken = (
   token = throw new Error('Token object is required'),
@@ -117,56 +115,37 @@ export const getBalanceFinish = (tokenSymbol) => ({
 export const getBalance = (tokenId) => async (dispatch, getState) => {
   new Validator('tokenId', tokenId).required().string();
   const state = getState();
-  const wallet = state?.wallet;
-  // const isDev = devSelector(state);
-  const account = accountSelector.defaultAccount(getState());
-  const token = selectedPrivacySelector.findTokenFollowedByIdSelector(state)(
-    tokenId,
-  );
-  if (!token) {
-    return;
-  }
+  const wallet = walletSelector(state);
+  const account = accountSelector.defaultAccountSelector(state);
+  let balance = 0;
   try {
     await dispatch(getBalanceStart(tokenId));
-    const balance = await accountService.getBalance({
+    await dispatch(actionAddFollowToken(tokenId));
+    balance = await accountService.getBalance({
       account,
       wallet,
       tokenID: tokenId,
       version: PrivacyVersion.ver2,
     });
-    // if (isDev) {
-    //   const accountWallet = getDefaultAccountWalletSelector(state);
-    //   const coinsStorage = await accountWallet.getCoinsStorage({
-    //     tokenID: tokenId,
-    //     version: PrivacyVersion.ver2,
-    //   });
-    //   if (coinsStorage) {
-    //     await dispatch(
-    //       actionLogEvent({
-    //         desc: coinsStorage,
-    //       }),
-    //     );
-    //   }
-    // }
     dispatch(
       setToken({
-        ...token,
+        id: tokenId,
         amount: balance,
         loading: false,
       }),
     );
-    return balance;
   } catch (e) {
     dispatch(
       setToken({
-        ...token,
-        amount: null,
+        id: tokenId,
+        amount: 0,
       }),
     );
     throw e;
   } finally {
     dispatch(getBalanceFinish(tokenId));
   }
+  return balance ?? 0;
 };
 
 export const getPTokenList = ({ expiredTime = EXPIRED_TIME } = {}) => async (
@@ -209,12 +188,14 @@ export const actionAddFollowTokenSuccess = (payload) => ({
 });
 
 export const actionAddFollowToken = (tokenID) => async (dispatch, getState) => {
-  const state = getState();
-  let wallet = state.wallet;
-  if (!tokenID || tokenID === PRV_ID) {
-    return;
-  }
+
   try {
+    const state = getState();
+    let wallet = walletSelector(state);
+    const tokenData = selectedPrivacySelector.getPrivacyDataByTokenID(state)(tokenID);
+    if (!tokenID || tokenID === PRV_ID || tokenData.isFollowed) {
+      return;
+    }    
     const account = accountSelector.defaultAccount(state);
     const pTokens = pTokensSelector(state);
     const internalTokens = internalTokensSelector(state);

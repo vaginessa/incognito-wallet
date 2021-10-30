@@ -2,7 +2,6 @@ import React from 'react';
 import { useNavigation } from 'react-navigation-hooks';
 import { SuccessModal } from '@src/components';
 import ROUTE_NAMES from '@routers/routeNames';
-import mainStyles from '@screens/PoolV2/style';
 
 const withSuccess = WrappedComp => (props) => {
   const { coins } = props;
@@ -30,7 +29,6 @@ const withSuccess = WrappedComp => (props) => {
         closeSuccessDialog={closeSuccess}
         title={`You migrated ${migrate} ${coin.symbol}`}
         buttonTitle="Sure thing"
-        buttonStyle={mainStyles.button}
         description='Thank you.'
         visible={success}
       />

@@ -275,9 +275,9 @@ const RightHeader = React.memo(() => {
   );
 });
 
-const Wallet = React.memo(() => {
+const Wallet = React.memo(({ hideBackButton }) => {
   const navigation = useNavigation();
-  const onGoBack = () => navigation.navigate(routeNames.Home);
+  const onGoBack = () => navigation.navigate(routeNames.MainTabBar);
   const dispatch = useDispatch();
   useFocusEffect(
     React.useCallback(() => {
@@ -285,9 +285,10 @@ const Wallet = React.memo(() => {
     }, []),
   );
   return (
-    <View style={[styled.container]}>
+    <View style={[styled.container, { backgroundColor: COLORS.white }]}>
       <Header
         title="Assets"
+        hideBackButton={hideBackButton}
         rightHeader={<RightHeader />}
         style={styled.hook}
         onGoBack={onGoBack}
@@ -298,7 +299,13 @@ const Wallet = React.memo(() => {
   );
 });
 
-Wallet.propTypes = {};
+Wallet.defaultProps = {
+  hideBackButton: false
+};
+
+Wallet.propTypes = {
+  hideBackButton: PropTypes.bool
+};
 
 export default compose(
   withDetectConvert,

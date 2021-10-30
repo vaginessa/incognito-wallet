@@ -33,6 +33,8 @@ import { COLORS, FONT } from '@src/styles';
 import { accountServices } from '@src/services/wallet';
 import { actionLogEvent } from '@src/screens/Performance';
 import { requestUpdateMetrics } from '@src/redux/actions/app';
+import PropTypes from 'prop-types';
+import {getBanners} from '@src/redux/actions/settings';
 import {
   wizardSelector,
   isFollowedDefaultPTokensSelector,
@@ -232,6 +234,7 @@ const enhance = (WrappedComp) => (props) => {
         }),
       );
       await setStatusConfigs('getting configs');
+      dispatch(getBanners());
       const [servers] = await new Promise.all([
         serverService.get(),
         getFunctionConfigs().catch((e) => e),
@@ -307,7 +310,7 @@ const enhance = (WrappedComp) => (props) => {
         isFetched && //finish splash screen
         !errorMsg //no error
       ) {
-        navigation.navigate(routeNames.Home);
+        navigation.navigate(routeNames.MainTabBar);
       }
     }, [masterKeys, isInitialing, isCreating, isMigrated, isFetched, errorMsg]),
   );
@@ -345,6 +348,11 @@ const enhance = (WrappedComp) => (props) => {
       <KeepAwake />
     </ErrorBoundary>
   );
+};
+
+SubComponent.propTypes = {
+  isFetched: PropTypes.bool.isRequired,
+  statusConfigs: PropTypes.string.isRequired
 };
 
 export default compose(

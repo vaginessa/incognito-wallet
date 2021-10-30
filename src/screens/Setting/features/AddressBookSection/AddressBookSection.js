@@ -6,6 +6,7 @@ import { SectionItem as Section } from '@screens/Setting/features/Section';
 import { isKeychainAddressSelector } from '@src/redux/selectors/receivers';
 import { useSelector, useDispatch } from 'react-redux';
 import { actionSelectedReceiver } from '@src/redux/actions/receivers';
+import {AddressBookFillIcon} from '@components/Icons/icon.addressBook';
 
 const AddressBookSection = () => {
   const navigation = useNavigation();
@@ -41,6 +42,7 @@ const AddressBookSection = () => {
         title: 'Address Book',
         desc: 'Manage your saved addresses',
         handlePress: handleNavigateFrequentReceivers,
+        icon: <AddressBookFillIcon />
       }}
     />
   );

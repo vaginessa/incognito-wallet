@@ -14,7 +14,6 @@ import ReceiveCrypto from '@screens/Wallet/features/ReceiveCrypto';
 import Send from '@screens/Send';
 import UnshieldPortal from '@screens/UnshieldPortal';
 import TokenSelectScreen from '@components/TokenSelectScreen';
-import Trade from '@screens/DexV2';
 import TradeConfirm from '@screens/DexV2/components/TradeConfirm';
 import TradeHistory from '@screens/DexV2/components/History';
 import TradeHistoryDetail from '@screens/DexV2/components/HistoryDetail';
@@ -89,14 +88,55 @@ import ShieldDecentralizeDescription from '@screens/Shield/features/ShieldDecent
 import Convert from '@screens/Home/features/Convert';
 import ConfirmLiquidity from '@screens/Dex/components/Confirm';
 import HistoriesLiquidity from '@screens/Dex/features/Histories';
-import HistoryContributeDetail from '@screens/Dex/features/HistoryContributeDetail';
 import HistoryWithdrawDetail from '@screens/Dex/features/HistoryWithdrawDetail';
 import ConfirmRetryLiquidity from '@screens/Dex/features/ConfirmRetry';
 import TwoTokensSelect from '@screens/Dex/features/TwoTokensSelect';
 import SelectTokenStreamline from '@screens/Streamline/features/SelectTokens';
 import ConvertTokenList from '@screens/Home/features/ConvertTokenList';
 import HistoryConvert from '@src/screens/Home/features/HistoryConvert';
+import HomePDexV3 from '@screens/PDexV3/features/Home';
+import { PoolsList } from '@screens/PDexV3/features/Pools';
+import { ReviewOrderSwap, OrdeSwapDetail } from '@screens/PDexV3/features/Swap';
+import Trade, {
+  ReviewOrder,
+  TradeOrderHistory,
+} from '@screens/PDexV3/features/Trade';
+import NFTToken, { MintNFTToken } from '@screens/PDexV3/features/NFTToken';
+import OrderLimit, {
+  ReviewOrderLimit,
+  OrderLimitDetail,
+} from '@src/screens/PDexV3/features/OrderLimit';
+import SelectTokenTrade from '@screens/PDexV3/features/SelectToken';
+import Chart from '@screens/PDexV3/features/Chart';
 import WebView from '@screens/WebView';
+import {
+  LiquidityHistories,
+  ContributeHistoryDetail,
+  RemoveLPDetail,
+  WithdrawFeeLPDetail,
+} from '@screens/PDexV3/features/LiquidityHistories';
+import {
+  Staking,
+  StakingMoreCoins,
+  StakingMoreInput,
+  StakingDetail,
+  StakingMoreConfirm,
+  StakingWithdrawCoins,
+  StakingWithdrawInvest,
+  StakingWithdrawReward,
+  StakingHistories,
+  StakingHistoryDetail,
+} from '@screens/PDexV3/features/Staking';
+import {
+  Contribute,
+  CreatePool,
+  RemovePool,
+  ContributeConfirm,
+  CreatePoolConfirm,
+  RemovePoolConfirm,
+} from '@screens/PDexV3/features/Liquidity';
+import PairList from '@screens/PDexV3/features/PairList';
+import MainTabBar from '@screens/MainTabBar';
 
 const masterKeyRoutes = [
   {
@@ -137,6 +177,156 @@ const devRoutes = [
   {
     screen: RestoreAll,
     name: routeNames.RestoreAllData,
+  },
+];
+
+const pDexV3Routes = [
+  {
+    screen: HomePDexV3,
+    name: routeNames.HomePDexV3,
+  },
+  {
+    screen: PoolsList,
+    name: routeNames.PoolsList,
+  },
+  {
+    screen: Trade,
+    name: routeNames.Trade,
+  },
+  {
+    screen: CreatePool,
+    name: routeNames.CreatePool,
+  },
+  {
+    screen: Contribute,
+    name: routeNames.ContributePool,
+  },
+  {
+    screen: RemovePool,
+    name: routeNames.RemovePool,
+  },
+  {
+    screen: ReviewOrder,
+    name: routeNames.ReviewOrder,
+  },
+  {
+    screen: OrderLimit,
+    name: routeNames.OrderLimit,
+  },
+  {
+    screen: SelectTokenTrade,
+    name: routeNames.SelectTokenTrade,
+  },
+  {
+    screen: Chart,
+    name: routeNames.Chart,
+  },
+  {
+    screen: NFTToken,
+    name: routeNames.NFTToken,
+  },
+  {
+    screen: MintNFTToken,
+    name: routeNames.MintNFTToken,
+  },
+  {
+    screen: ReviewOrderSwap,
+    name: routeNames.ReviewOrderSwap,
+  },
+  {
+    screen: LiquidityHistories,
+    name: routeNames.LiquidityHistories,
+  },
+  {
+    screen: ContributeHistoryDetail,
+    name: routeNames.ContributeHistoryDetail,
+  },
+  {
+    screen: RemoveLPDetail,
+    name: routeNames.RemoveLPDetail,
+  },
+  {
+    screen: WithdrawFeeLPDetail,
+    name: routeNames.WithdrawFeeLPDetail,
+  },
+  {
+    screen: Staking,
+    name: routeNames.Staking,
+  },
+  {
+    screen: StakingMoreCoins,
+    name: routeNames.StakingMoreCoins,
+  },
+  {
+    screen: StakingMoreInput,
+    name: routeNames.StakingMoreInput,
+  },
+  {
+    screen: StakingMoreConfirm,
+    name: routeNames.StakingMoreConfirm,
+  },
+  {
+    screen: StakingDetail,
+    name: routeNames.StakingDetail,
+  },
+  {
+    screen: StakingWithdrawCoins,
+    name: routeNames.StakingWithdrawCoins,
+  },
+  {
+    screen: StakingWithdrawInvest,
+    name: routeNames.StakingWithdrawInvest,
+  },
+  {
+    screen: StakingWithdrawReward,
+    name: routeNames.StakingWithdrawReward,
+  },
+  {
+    screen: StakingHistories,
+    name: routeNames.StakingHistories,
+  },
+  {
+    screen: StakingHistoryDetail,
+    name: routeNames.StakingHistoryDetail,
+  },
+  {
+    screen: TradeOrderHistory,
+    name: routeNames.TradeOrderHistory,
+  },
+  {
+    screen: PairList,
+    name: routeNames.PairList,
+  },
+  {
+    screen: ReviewOrderLimit,
+    name: routeNames.ReviewOrderLimit,
+  },
+  {
+    screen: OrderLimitDetail,
+    name: routeNames.OrderLimitDetail,
+  },
+  {
+    screen: ContributeConfirm,
+    name: routeNames.ContributeConfirm,
+  },
+  {
+    screen: CreatePoolConfirm,
+    name: routeNames.CreatePoolConfirm,
+  },
+  {
+    screen: RemovePoolConfirm,
+    name: routeNames.RemovePoolConfirm,
+  },
+  {
+    screen: OrdeSwapDetail,
+    name: routeNames.OrdeSwapDetail,
+  },
+];
+
+const homeRoutes = [
+  {
+    screen: MainTabBar,
+    name: routeNames.MainTabBar,
   },
 ];
 
@@ -204,10 +394,6 @@ const routes = [
   {
     screen: pApp,
     name: routeNames.pApp,
-  },
-  {
-    screen: Trade,
-    name: routeNames.Trade,
   },
   {
     screen: TradeConfirm,
@@ -437,8 +623,6 @@ const routes = [
     screen: Helper,
     name: routeNames.Helper,
   },
-  ...masterKeyRoutes,
-  ...devRoutes,
   {
     screen: UpdateFirmware,
     name: routeNames.UpdateNodeFirmware,
@@ -472,10 +656,6 @@ const routes = [
     name: routeNames.HistoriesLiquidity,
   },
   {
-    screen: HistoryContributeDetail,
-    name: routeNames.HistoryContributeDetail,
-  },
-  {
     screen: HistoryWithdrawDetail,
     name: routeNames.HistoryWithdrawDetail,
   },
@@ -507,6 +687,10 @@ const routes = [
     screen: WebView,
     name: routeNames.WebView,
   },
+  ...masterKeyRoutes,
+  ...devRoutes,
+  ...pDexV3Routes,
+  ...homeRoutes
 ];
 
 export const getRoutesNoHeader = () =>

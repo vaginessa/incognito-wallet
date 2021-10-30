@@ -1,34 +1,50 @@
 import { Text, TouchableOpacity, View } from '@src/components/core';
 import PropTypes from 'prop-types';
 import React from 'react';
+import {Row} from '@src/components';
+import {ArrowRightGreyIcon} from '@components/Icons';
 import { sectionStyle } from './Section.styled';
 
 export const SectionItem = (
-  { data: { title, desc, handlePress, subDesc, styleItem = null } },
+  { data: { title, desc, handlePress, styleItem = null, icon: CMPIcon } },
   lastItem,
-) => (
-  <TouchableOpacity
-    style={[sectionStyle.item, lastItem && sectionStyle.lastItem, styleItem]}
-    onPress={handlePress}
-  >
-    <View style={sectionStyle.infoContainer}>
-      {title && <Text style={sectionStyle.label}>{title}</Text>}
-      {desc && <Text style={sectionStyle.desc}>{desc}</Text>}
-      {subDesc && (
-        <Text style={[sectionStyle.desc, sectionStyle.subDesc]}>{subDesc}</Text>
-      )}
-    </View>
-  </TouchableOpacity>
-);
+) => {
+  return (
+    <TouchableOpacity
+      style={[sectionStyle.item, lastItem && sectionStyle.lastItem, styleItem]}
+      onPress={handlePress}
+    >
+      <Row centerVertical spaceBetween>
+        <Row centerVertical>
+          {!!CMPIcon && (
+            <View style={[sectionStyle.wrapIcon]}>
+              {CMPIcon}
+            </View>
+          )}
+          {title && <Text style={[sectionStyle.label]}>{title}</Text>}
+        </Row>
+        <ArrowRightGreyIcon style={{ width: 6, height: 10 }} />
+      </Row>
+      {desc && <Text style={[sectionStyle.desc]}>{desc}</Text>}
+    </TouchableOpacity>
+  );
+};
 
 const Section = (props) => {
-  const { label, items, customItems, headerRight, labelStyle } = props;
+  const { label, items, customItems, headerRight, labelStyle, headerIcon: HeaderIcon } = props;
   return (
     <View style={sectionStyle.container}>
-      <View style={sectionStyle.header}>
-        <Text style={[sectionStyle.label, labelStyle]}>{label}</Text>
+      <Row style={sectionStyle.header}>
+        <Row centerVertical>
+          {!!HeaderIcon && (
+            <View style={sectionStyle.wrapIcon}>
+              {HeaderIcon}
+            </View>
+          )}
+          <Text style={[sectionStyle.label, labelStyle]}>{label}</Text>
+        </Row>
         {headerRight}
-      </View>
+      </Row>
       {customItems ? (
         customItems
       ) : (
@@ -36,7 +52,7 @@ const Section = (props) => {
           {items &&
             items.map((item, index) => (
               <SectionItem
-                key={index}
+                key={`${item.title || item.desc}`}
                 data={item}
                 lastItem={index === items.length - 1}
               />
@@ -52,12 +68,16 @@ const itemShape = PropTypes.shape({
   title: PropTypes.string,
   desc: PropTypes.string,
   handlePress: PropTypes.func,
+  subDesc: PropTypes.string
 });
 
 Section.defaultProps = {
   label: '',
   items: undefined,
   customItems: undefined,
+  headerRight: undefined,
+  labelStyle: undefined,
+  headerIcon: undefined
 };
 Section.propTypes = {
   label: PropTypes.string,
@@ -66,6 +86,9 @@ Section.propTypes = {
     PropTypes.arrayOf(PropTypes.element),
     PropTypes.element,
   ]),
+  headerRight: PropTypes.any,
+  labelStyle: PropTypes.any,
+  headerIcon: PropTypes.any
 };
 
 SectionItem.defaultProps = {

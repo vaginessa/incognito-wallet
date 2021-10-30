@@ -5,10 +5,6 @@ import WhyReceive from '@screens/WhyReceive';
 import pApps from '@screens/Papps';
 import HeaderBar from '@src/components/HeaderBar';
 import AddPIN from '@src/screens/AddPIN';
-import PriceChartCrypto from '@src/screens/PriceChartCrypto';
-import DexHistory from '@screens/DexHistory';
-import DexHistoryDetail from '@screens/DexHistoryDetail';
-import Dex from '@screens/Dex';
 import { navigationOptionsHandler } from '@src/utils/router';
 import { getRoutesNoHeader } from './routeNoHeader';
 import ROUTE_NAMES from './routeNames';
@@ -27,16 +23,10 @@ const AppNavigator = createStackNavigator(
     [ROUTE_NAMES.WhyReceive]: navigationOptionsHandler(WhyReceive, {
       title: 'Receive',
     }),
-    [ROUTE_NAMES.PriceChartCrypto]: navigationOptionsHandler(PriceChartCrypto, {
-      title: 'Price chart',
-    }),
-    [ROUTE_NAMES.DexHistory]: navigationOptionsHandler(DexHistory, { header: () => null }),
-    [ROUTE_NAMES.DexHistoryDetail]: navigationOptionsHandler(DexHistoryDetail, { header: () => null }),
-    [ROUTE_NAMES.Dex]: navigationOptionsHandler(Dex, { title: 'pDex', header: () => null }),
     ...RouteNoHeader,
   },
   {
-    initialRouteName: ROUTE_NAMES.Home,
+    initialRouteName: ROUTE_NAMES.MainTabBar,
     defaultNavigationOptions: ({ navigation }) => {
       const { routeName } = navigation.state;
       // You can do whatever you like here to pick the title based on the route name
