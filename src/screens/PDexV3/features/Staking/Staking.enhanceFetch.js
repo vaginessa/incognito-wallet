@@ -6,11 +6,11 @@ import {stakingActions} from '@screens/PDexV3/features/Staking/index';
 const enhanceFetch = WrappedComp => props => {
   const dispatch = useDispatch();
   const handleFetchCoins = () => dispatch(stakingActions.actionFetchCoins());
-  const handleChangeAccount = () => dispatch(stakingActions.actionChangeAccount());
+  const onFreeData = () => dispatch(stakingActions.actionChangeAccount());
   const handleFetchStakingPools = () => dispatch(stakingActions.actionFetchStakingPools());
   const handleFetchData = () => {
     batch(() => {
-      handleChangeAccount();
+      onFreeData();
       handleFetchCoins();
       dispatch(stakingActions.actionFetchStakingPools());
     });
@@ -21,7 +21,7 @@ const enhanceFetch = WrappedComp => props => {
         {...{
           ...props,
           handleFetchCoins,
-          handleChangeAccount,
+          onFreeData,
           handleFetchStakingPools,
           handleFetchData,
         }}

@@ -2,7 +2,6 @@ import React from 'react';
 import ErrorBoundary from '@src/components/ErrorBoundary';
 import { useSelector, useDispatch, batch } from 'react-redux';
 import { ExHandler } from '@src/services/exception';
-import withDetectConvert from '@screens/Home/features/Convert/Convert.enhanceDetect';
 import { getPTokenList, getInternalTokenList } from '@src/redux/actions/token';
 import { actionFree } from '@src/redux/actions/history';
 import { actionReloadFollowingToken } from '@src/redux/actions/account';
@@ -116,5 +115,4 @@ const enhance = (WrappedComp) => (props) => {
 
 export default compose(
   enhance,
-  withDetectConvert,
 );

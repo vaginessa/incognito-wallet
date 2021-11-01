@@ -9,6 +9,7 @@ import routeNames from '@src/router/routeNames';
 import PropTypes from 'prop-types';
 import { selectedPrivacySelector } from '@src/redux/selectors';
 import { withTokenVerified } from '@src/components/Token';
+import withLazy from '@components/LazyHoc/LazyHoc';
 
 const enhance = (WrappedComp) => (props) => {
   const navigation = useNavigation();
@@ -50,6 +51,7 @@ enhance.propTypes = {
   allTokens: PropTypes.array.isRequired,
 };
 export default compose(
+  withLazy,
   withLayout_2,
   (Comp) => (props) => <Comp {...{ ...props, onlyPToken: true }} />,
   withTokenSelect,

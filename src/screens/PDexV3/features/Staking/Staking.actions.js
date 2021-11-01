@@ -70,7 +70,7 @@ const actionSetWithdrawRewardCoin = ({ tokenID }) => ({
 });
 
 const actionChangeAccount = () => ({
-  type: TYPES.ACTION_CHANGE_ACCOUNT,
+  type: TYPES.ACTION_FREE_STAKING,
 });
 
 const actionUpdateFetchingHistories = () => ({

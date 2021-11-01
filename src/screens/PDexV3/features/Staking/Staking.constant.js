@@ -9,7 +9,7 @@ const TYPES = {
   ACTION_SET_INVEST_COIN: '[pDexV3][staking] Action set invest coin',
   ACTION_SET_WITHDRAW_INVEST_COIN: '[pDexV3][staking] Action set withdraw invest coin',
   ACTION_SET_WITHDRAW_REWARD_COIN: '[pDexV3][staking] Action set withdraw reward coin',
-  ACTION_CHANGE_ACCOUNT: '[pDexV3][staking] Action change account',
+  ACTION_FREE_STAKING: '[pDexV3][staking] Action free staking',
   ACTION_FETCHING_HISTORIES: '[pDexV3][staking] Action update fetching histories',
   ACTION_FETCHED_HISTORIES: '[pDexV3][staking] Action update fetched histories',
   ACTION_UPDATE_HISTORIES: '[pDexV3][staking] Action update histories',
