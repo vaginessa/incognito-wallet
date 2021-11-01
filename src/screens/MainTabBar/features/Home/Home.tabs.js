@@ -23,8 +23,6 @@ import routeNames from '@routers/routeNames';
 
 const Item = React.memo(({ pool, onItemPress }) => {
   const {
-    token1,
-    token2,
     priceStr,
     perChange24hToStr,
     perChange24hColor,
@@ -124,17 +122,17 @@ const MainTab = () => {
     <Tabs rootTabID={TABS.TAB_HOME_ID} useTab1 styledTabList={homeStyled.tab}>
       <View
         tabID={TABS.TAB_HOME_INCREASE_ID}
-        label="Increase price"
+        label="Gainers"
         {...tabStyle}
       >
         <Header />
         {orderBy(pools, 'priceChange24H', 'desc').map(renderItem)}
       </View>
-      <View tabID={TABS.TAB_HOME_REDUCE_ID} label="Reduced price" {...tabStyle}>
+      <View tabID={TABS.TAB_HOME_REDUCE_ID} label="Losers" {...tabStyle}>
         <Header />
         {orderBy(pools, 'priceChange24H', 'asc').map(renderItem)}
       </View>
-      <View tabID={TABS.TAB_HOME_POPULAR_ID} label="Popular" {...tabStyle}>
+      <View tabID={TABS.TAB_HOME_POPULAR_ID} label="24h Vol" {...tabStyle}>
         <Header />
         {orderBy(pools, 'volume', 'desc').map(renderItem)}
       </View>

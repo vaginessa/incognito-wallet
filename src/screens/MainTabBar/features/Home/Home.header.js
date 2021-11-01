@@ -1,17 +1,15 @@
 import React from 'react';
 import {Row} from '@src/components';
 import {homeStyled} from '@screens/MainTabBar/MainTabBar.styled';
-import {ChatIcon, QRCodeIcon, SearchThinIcon as SearchIcon} from '@components/Icons';
+import {ChatIcon, QRCodeIcon, SettingIcon} from '@components/Icons';
 import SelectAccountButton from '@components/SelectAccountButton';
-import {batch, useDispatch, useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {actionToggleModal} from '@components/Modal';
 import AddressModal from '@screens/MainTabBar/features/Home/Home.qrCode';
 import {newsSelector} from '@screens/News';
 import routeNames from '@routers/routeNames';
 import {useNavigation} from 'react-navigation-hooks';
 import {View} from '@components/core';
-import {actionChangeTab} from '@components/core/Tabs/Tabs.actions';
-import {ROOT_TAB_TRADE, TAB_MARKET_ID} from '@screens/PDexV3/features/Trade/Trade.constant';
 
 const Bulletin = React.memo(() => {
   const navigation = useNavigation();
@@ -32,19 +30,11 @@ const Header = React.memo(() => {
   const dispatch = useDispatch();
   return (
     <Row centerVertical spaceBetween style={homeStyled.header}>
-      <Row>
-        <SearchIcon
+      <Row centerVertical>
+        <SettingIcon
           style={homeStyled.headerIcon}
           onPress={() => {
-            batch(() => {
-              dispatch(
-                actionChangeTab({
-                  rootTabID: ROOT_TAB_TRADE,
-                  tabID: TAB_MARKET_ID,
-                }),
-              );
-              navigation.navigate(routeNames.Trade);
-            });
+            navigation.navigate(routeNames.Setting, { showHeader: true });
           }}
         />
         <Bulletin  />
