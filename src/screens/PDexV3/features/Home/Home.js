@@ -64,18 +64,24 @@ const tabStyled = {
 };
 
 const Home = ({ hideBackButton }) => {
+  const _TabPools = React.useMemo(() => (
+    <View tabID={TAB_POOLS_ID} label="Pools" {...tabStyled}>
+      <TabPools />
+    </View>
+  ), []);
+  const _TabPortfolio = React.useMemo(() => (
+    <View tabID={TAB_PORTFOLIO_ID} label="Your portfolio" {...tabStyled}>
+      <Portfolio />
+    </View>
+  ), []);
   return (
     <>
       <View style={mainStyle.container}>
         <Header title="Liquidity" accountSelectable hideBackButton={hideBackButton} />
         <HeaderView />
         <Tabs rootTabID={ROOT_TAB_HOME} styledTabs={styled.tab}>
-          <View tabID={TAB_POOLS_ID} label="Pools" {...tabStyled}>
-            <TabPools />
-          </View>
-          <View tabID={TAB_PORTFOLIO_ID} label="Your portfolio" {...tabStyled}>
-            <Portfolio />
-          </View>
+          {_TabPools}
+          {_TabPortfolio}
         </Tabs>
       </View>
       <NFTTokenBottomBar />

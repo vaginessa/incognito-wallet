@@ -80,7 +80,7 @@ const stakingReducer = (state = initialState, action) => {
       }
     };
   }
-  case TYPES.ACTION_CHANGE_ACCOUNT: {
+  case TYPES.ACTION_FREE_STAKING: {
     return {
       ...state,
       ...stakingState,
