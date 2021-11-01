@@ -51,7 +51,7 @@ const ModalBottomSheet = ({
           <>
             {!!title && <Text style={styles.title}>{title}</Text>}
             {!!headerView && headerView}
-            {!!contentView && <ScrollView>{contentView}</ScrollView>}
+            {!!contentView && <ScrollView showsVerticalScrollIndicator={false}>{contentView}</ScrollView>}
           </>
         )}
       </SafeAreaView>

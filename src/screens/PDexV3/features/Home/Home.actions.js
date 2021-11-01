@@ -1,5 +1,5 @@
 import { ExHandler } from '@src/services/exception';
-import { actionFetch as actionFetchListShare } from '@screens/PDexV3/features/Portfolio';
+import {actionFetch as actionFetchListShare} from '@screens/PDexV3/features/Portfolio';
 import {
   actionFetchPools,
 } from '@screens/PDexV3/features/Pools';
@@ -28,7 +28,6 @@ export const actionFreeHomePDexV3 = () => ({
 });
 
 export const actionRefresh = () => async (dispatch, getState) => {
-  console.log('SANG TEST: 11111');
   try {
     const state = getState();
     const { isFetching } = homePDexV3Selector(state);

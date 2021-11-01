@@ -54,6 +54,7 @@ export const actionFetch = () => async (dispatch, getState) => {
       await pDexV3Inst.getListShare(),
       await dispatch(actionSetNFTTokenData()),
     ]);
+    console.log('SANG TEST:::: ', listShare);
     const poolIds = (listShare || []).map(({ poolId }) => poolId);
     let poolDetails = [];
     if (poolIds.length > 0) {

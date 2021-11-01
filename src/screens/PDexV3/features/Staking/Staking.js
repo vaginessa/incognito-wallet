@@ -78,7 +78,7 @@ const Staking = ({ handleFetchData, onFreeData }) => {
         <Header title={STAKING_MESSAGES.staking} accountSelectable />
         <Reward />
         <View style={homeStyle.wrapper}>
-          <Tabs rootTabID={TABS.ROOT_ID} styledTabList={{ padding: 0 }}>
+          <Tabs rootTabID={TABS.ROOT_ID} styledTabList={{ padding: 0 }} defaultTabIndex={1}>
             {TabPools}
             {TabPortfolio}
           </Tabs>

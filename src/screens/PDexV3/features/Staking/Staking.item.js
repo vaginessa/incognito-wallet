@@ -14,10 +14,10 @@ export const HeaderRow = React.memo(({ array, style }) => (
   </Row>
 ));
 
-export const PoolItem = React.memo(({ item, onPress }) => {
+export const PoolItem = React.memo(({ item, onPress, isLast }) => {
   const { token } = item;
   return (
-    <TouchableOpacity style={styled.wrapper} onPress={() => typeof onPress === 'function' && onPress(token.tokenId)}>
+    <TouchableOpacity style={[styled.wrapper, isLast && { marginBottom: 29 }]} onPress={() => typeof onPress === 'function' && onPress(token.tokenId)}>
       <Row>
         <View style={styled.wrapImage}>
           <Icon iconUrl={token.iconUrl} style={styled.image} />

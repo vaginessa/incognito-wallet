@@ -112,7 +112,7 @@ export const ampValueSelector = createSelector(
     rawRate = convert.toNumber(format.amountFull(rawRate, 0, false), true);
     let estOutputStr = undefined;
     const estRate = new BigNumber(rawRate).minus(rate).abs();
-    const compareValue = 1e-2;
+    const compareValue = Math.pow(10, -(outputToken.pDecimals || 9));
     if (!isNaN(estRate) && (estRate.gt(compareValue) || estRate.lt(-compareValue))) {
       estOutputStr = convertAmount({
         originalNum: convert.toOriginalAmount(
