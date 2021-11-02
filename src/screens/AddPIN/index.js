@@ -4,11 +4,13 @@ import TouchID from 'react-native-touch-id';
 import PropTypes from 'prop-types';
 import { View, Text, TouchableOpacity, Image } from '@src/components/core';
 import { connect } from 'react-redux';
-import { updatePin } from '@src/redux/actions/pin';
+import { updatePin, actionAuthen } from '@src/redux/actions/pin';
 import { Icon } from 'react-native-elements';
 import convertUtil from '@utils/convert';
 import icFaceId from '@src/assets/images/icons/ic_faceid.png';
 import routeNames from '@src/router/routeNames';
+import { withNavigation } from 'react-navigation';
+import { compose } from 'recompose';
 import styles from './styles';
 
 export const TAG = 'AddPIN';
@@ -35,15 +37,14 @@ const initialState = {
   nextPin: false,
   bioSupportedType: null,
   action: null,
-  appState: ''
+  appState: '',
 };
 
 class AddPIN extends React.Component {
   static waiting = false;
-
   constructor(props) {
     super(props);
-    const { action } = props.navigation?.state?.params;
+    const { action } = props.navigation?.state?.params || props;
     this.state = {
       ...initialState,
       action,
@@ -76,7 +77,7 @@ class AddPIN extends React.Component {
     ) {
       this.setState({ pin1: '', pin2: '' });
     }
-    if(appState === '' && nextAppState === 'active') {
+    if (appState === '' && nextAppState === 'active') {
       this.handleBioAuth();
     }
     await this.setState({ appState: nextAppState });
@@ -108,12 +109,12 @@ class AddPIN extends React.Component {
 
   checkTouchSupported() {
     const { action } = this.state;
-    const {currentScreen, prevScreen} = this.props;
+    const { currentScreen, prevScreen } = this.props;
     if (action === 'login' || action === 'remove') {
       TouchID.isSupported(optionalConfigObject)
         .then((biometryType) => {
           this.setState({ bioSupportedType: biometryType });
-          if(currentScreen === '' && prevScreen === '') {
+          if (currentScreen === '' && prevScreen === '') {
             this.handleBioAuth();
           }
         })
@@ -145,7 +146,6 @@ class AddPIN extends React.Component {
     const { pin } = this.props;
     const { pin1, action, nextPin, pin2 } = this.state;
     const currentPin = (nextPin ? pin2 : pin1) + key;
-
     if (nextPin) {
       this.setState({ pin2: currentPin });
     } else {
@@ -189,9 +189,10 @@ class AddPIN extends React.Component {
     }
   }
 
-  loginSuccess = () => {
-    const { navigation } = this.props;
-    const { redirectRoute } = navigation?.state?.params;
+  loginSuccess = async () => {
+    const { navigation, actionAuthen } = this.props;
+    const { redirectRoute } = navigation?.state?.params || {};
+    await actionAuthen();
     if (redirectRoute) {
       navigation.navigate(redirectRoute, {});
     } else {
@@ -242,7 +243,7 @@ class AddPIN extends React.Component {
     const { pin1, action, nextPin, pin2, bioSupportedType } = this.state;
     const { navigation } = this.props;
     const userPin = nextPin ? pin2 : pin1;
-
+    console.log('this.state', this.state);
     return (
       <View style={styles.container}>
         {(action === 'login' || action === 'remove') && bioSupportedType && (
@@ -347,24 +348,27 @@ AddPIN.propTypes = {
   updatePin: PropTypes.func.isRequired,
   pin: PropTypes.string,
   currentScreen: PropTypes.string,
-  prevScreen: PropTypes.string
+  prevScreen: PropTypes.string,
 };
 
 AddPIN.defaultProps = {
   pin: '',
   currentScreen: '',
-  prevScreen: ''
+  prevScreen: '',
 };
 
 const mapStateToProps = (state) => ({
   pin: state.pin.pin,
   currentScreen: state.navigation.currentScreen,
-  prevScreen: state.navigation.prevScreen
+  prevScreen: state.navigation.prevScreen,
 });
 
-const mapDispatchToProps = { updatePin };
+const mapDispatchToProps = { updatePin, actionAuthen };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
+export default compose(
+  withNavigation,
+  connect(
+    mapStateToProps,
+    mapDispatchToProps,
+  ),
 )(AddPIN);

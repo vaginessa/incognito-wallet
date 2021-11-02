@@ -199,11 +199,10 @@ export const actionEstimateTrade = (field = formConfigs.selltoken) => async (
 
 export const actionSetSellToken = (selltoken) => async (dispatch, getState) => {
   try {
-    if (!selltoken) {
-      return;
-    }
-    dispatch(actionSetSellTokenFetched(selltoken));
-    await dispatch(getBalance(selltoken));
+    batch(() => {
+      dispatch(actionSetSellTokenFetched(selltoken));
+      dispatch(getBalance(selltoken));
+    });
   } catch (error) {
     new ExHandler(error).showErrorToast();
   }
@@ -211,8 +210,10 @@ export const actionSetSellToken = (selltoken) => async (dispatch, getState) => {
 
 export const actionSetBuyToken = (buytoken) => async (dispatch, getState) => {
   try {
-    dispatch(actionSetBuyTokenFetched(buytoken));
-    await dispatch(getBalance(buytoken));
+    batch(() => {
+      dispatch(actionSetBuyTokenFetched(buytoken));
+      dispatch(getBalance(buytoken));
+    });
   } catch (error) {
     new ExHandler(error).showErrorToast();
   }
@@ -230,14 +231,11 @@ export const actionSetInputToken = ({ selltoken, buytoken }) => async (
     return;
   }
   try {
-    let task = [
-      dispatch(actionSetSellToken(selltoken)),
-      dispatch(actionSetBuyToken(buytoken)),
-    ];
-    if (selltoken !== PRV.id && buytoken !== PRV.id) {
-      task.push(dispatch(getBalance(PRV.id)));
-    }
-    await Promise.all(task);
+    batch(() => {
+      dispatch(actionSetSellToken(selltoken));
+      dispatch(actionSetBuyToken(buytoken));
+      dispatch(getBalance(PRV.id));
+    });
   } catch (error) {
     throw error;
   }
@@ -296,9 +294,8 @@ export const actionInitSwapForm = (defaultPair) => async (
         change(formConfigs.formName, formConfigs.slippagetolerance, '1'),
       );
       dispatch(actionSetFeeToken(PRV.id));
+      dispatch(actionSetInputToken({ selltoken, buytoken }));
     });
-    await dispatch(actionSetInputToken({ selltoken, buytoken }));
-    await dispatch(actionEstimateTrade());
   } catch (error) {
     new ExHandler(error).showErrorToast();
   } finally {

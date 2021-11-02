@@ -1,14 +1,14 @@
 import React from 'react';
 import ErrorBoundary from '@src/components/ErrorBoundary';
-import {useDispatch, useSelector} from 'react-redux';
-import {actionFetchDevices} from '@screens/Setting/Setting.actions';
-import {onClickView} from '@utils/ViewUtil';
-import {Alert, Toast} from '@components/core';
-import {actionSwitchAccount, removeAccount} from '@src/redux/actions/account';
-import {ExHandler} from '@services/exception';
-import {defaultAccountSelector} from '@src/redux/selectors/account';
+import { useDispatch, useSelector } from 'react-redux';
+import { actionFetchDevices } from '@screens/Setting/Setting.actions';
+import { onClickView } from '@utils/ViewUtil';
+import { Alert, Toast } from '@components/core';
+import { actionSwitchAccount, removeAccount } from '@src/redux/actions/account';
+import { ExHandler } from '@services/exception';
+import { defaultAccountSelector } from '@src/redux/selectors/account';
 import ROUTE_NAMES from '@routers/routeNames';
-import {useNavigation} from 'react-navigation-hooks';
+import { useNavigation } from 'react-navigation-hooks';
 
 const withKeychain = (WrappedComp) => (props) => {
   const [removing, setRemove] = React.useState(false);
@@ -68,14 +68,15 @@ const withKeychain = (WrappedComp) => (props) => {
 
   return (
     <ErrorBoundary>
-      <WrappedComp {...{
-        ...props,
-        handleFetchDevice,
-        handleSwitchAccount,
-        handleExportKey,
-        handleDelete,
-        removing
-      }}
+      <WrappedComp
+        {...{
+          ...props,
+          handleFetchDevice,
+          handleSwitchAccount,
+          handleExportKey,
+          handleDelete,
+          removing,
+        }}
       />
     </ErrorBoundary>
   );

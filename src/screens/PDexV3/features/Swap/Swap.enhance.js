@@ -4,12 +4,19 @@ import { useDispatch, useSelector } from 'react-redux';
 import { actionToggleModal } from '@src/components/Modal';
 import { TradeSuccessModal } from '@src/screens/PDexV3/features/Trade';
 import { useFocusEffect } from 'react-navigation-hooks';
-import { actionInitSwapForm, actionFetchSwap } from './Swap.actions';
+import {
+  actionInitSwapForm,
+  actionReset,
+  actionFetchSwap,
+} from './Swap.actions';
 import { swapInfoSelector } from './Swap.selector';
 
 const enhance = (WrappedComp) => (props) => {
   const dispatch = useDispatch();
   const swapInfo = useSelector(swapInfoSelector);
+  const unmountSwap = () => {
+    dispatch(actionReset());
+  };
   const initSwapForm = (defaultPair = swapInfo?.defaultPair) =>
     dispatch(actionInitSwapForm(defaultPair));
   const handleConfirm = async () => {
@@ -37,11 +44,13 @@ const enhance = (WrappedComp) => (props) => {
       //
     }
   };
-  useFocusEffect(
-    React.useCallback(() => {
-      initSwapForm();
-    }, []),
-  );
+  React.useEffect(() => {
+    initSwapForm();
+    return () => {
+      unmountSwap();
+    };
+  }, []);
+
   return (
     <ErrorBoundary>
       <WrappedComp {...{ ...props, handleConfirm, initSwapForm }} />

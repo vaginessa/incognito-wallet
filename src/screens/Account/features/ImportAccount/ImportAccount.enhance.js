@@ -75,7 +75,6 @@ const enhance = (WrappedComponent) => (props) => {
   const handleCheckPrivateKey = async (data) => {
     const { privateKey } = data;
     const accountName = data.accountName || randomName;
-
     try {
       setChecking(true);
       Keyboard.dismiss();

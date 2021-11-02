@@ -1,5 +1,5 @@
 import { ExHandler } from '@src/services/exception';
-import { actionFetch as actionFetchListShare } from '@screens/PDexV3/features/Portfolio';
+import {actionFetch as actionFetchListShare} from '@screens/PDexV3/features/Portfolio';
 import {
   actionFetchPools,
 } from '@screens/PDexV3/features/Pools';

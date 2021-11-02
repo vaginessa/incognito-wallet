@@ -62,16 +62,16 @@ const OrderLimit = (props) => {
                 ))}
               </Tabs>
               <OrderLimitInputsGroup />
-              <ButtonBasic
-                btnStyle={{ backgroundColor: mainColor }}
-                title={btnActionTitle}
-                disabled={disabledBtn}
-                onPress={handleConfirm}
-              />
-              <GroupSubInfo />
             </View>
           )}
         </Form>
+        <ButtonBasic
+          btnStyle={{ backgroundColor: mainColor }}
+          title={btnActionTitle}
+          disabled={disabledBtn}
+          onPress={handleConfirm}
+        />
+        <GroupSubInfo />
       </KeyboardAwareScrollView>
       {!!ordering && <LoadingTx />}
     </>

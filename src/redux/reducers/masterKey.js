@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import types from '@src/redux/types/masterKey';
+import typesAccount from '@src/redux/types/account';
 import LocalDatabase from '@src/utils/LocalDatabase';
 import storage from '@services/storage';
 import { accountServices } from '@src/services/wallet';
@@ -8,28 +9,28 @@ const initialState = {
   list: [],
   accounts: [],
   switching: false,
+  initial: {
+    loading: true,
+    masterKeyList: [],
+  },
+  loadingAll: false,
 };
 
 function createMasterKey(newMasterKey, list) {
   const newList = _.uniqBy([...list, newMasterKey], (item) => item.name);
   LocalDatabase.setMasterKeyList(newList);
-
   return newList;
 }
 
 function updateMasterKey(newMasterKey, list) {
   const newList = list.map((item) => {
     const found = item.name === newMasterKey.name;
-
     if (found) {
       return newMasterKey;
     }
-
     return item;
   });
-
   LocalDatabase.setMasterKeyList(newList);
-
   return newList;
 }
 
@@ -72,6 +73,15 @@ function saveMasterKeys(list) {
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
+  case types.LOADING_INITIAL: {
+    return {
+      ...state,
+      initial: {
+        ...state.initial,
+        ...action.payload,
+      },
+    };
+  }
   case types.LOAD_ALL:
     return {
       ...state,
@@ -115,6 +125,23 @@ const reducer = (state = initialState, action) => {
     return {
       ...state,
       switching: action.payload,
+    };
+  }
+  case types.LOADING_ALL_ACCOUNTS: {
+    return {
+      ...state,
+      loadingAll: action.payload,
+    };
+  }
+  case typesAccount.REMOVE_BY_PRIVATE_KEY: {
+    const { accounts: oldAccounts } = state;
+    const privateKey = action.data;
+    const accounts = oldAccounts.filter(
+      (account) => account?.PrivateKey !== privateKey,
+    );
+    return {
+      ...state,
+      accounts,
     };
   }
   default:

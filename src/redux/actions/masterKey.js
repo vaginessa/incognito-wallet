@@ -1,4 +1,5 @@
 /* eslint-disable import/no-cycle */
+import { actionInit as actionInitNotification } from '@src/screens/Notification';
 import { Validator } from 'incognito-chain-web-js/build/wallet';
 import LocalDatabase from '@utils/LocalDatabase';
 import types from '@src/redux/types/masterKey';
@@ -9,25 +10,24 @@ import {
   saveWallet,
   storeWalletAccountIdsOnAPI,
   configsWallet,
-  loadWallet,
 } from '@services/wallet/WalletService';
 import {
   actionSubmitOTAKeyForListAccount,
   reloadWallet,
 } from '@src/redux/actions/wallet';
 import { getWalletAccounts } from '@services/api/masterKey';
-import { defaultPTokensIDsSelector } from '@src/redux/selectors/token';
 import {
+  currentMasterKeySelector,
   masterKeysSelector,
   masterlessKeyChainSelector,
   noMasterLessSelector,
 } from '@src/redux/selectors/masterKey';
 import _ from 'lodash';
 import { clearWalletCaches } from '@services/cache';
-import accountService from '@services/wallet/accountService';
-import { actionLogEvent } from '@src/screens/Performance';
-import { performance } from '@src/screens/Performance/Performance.utils';
-import { getPassphrase } from '@src/services/wallet/passwordService';
+import uniqBy from 'lodash/uniqBy';
+import { accountServices } from '@src/services/wallet';
+import { batch } from 'react-redux';
+import { ExHandler } from '@src/services/exception';
 
 const DEFAULT_MASTER_KEY = new MasterKeyModel({
   name: 'Wallet',
@@ -76,31 +76,8 @@ const initMasterKeySuccess = (data) => ({
   payload: data,
 });
 
-const followDefaultTokenForWallet = (wallet, accounts) => async (
-  dispatch,
-  getState,
-) => {
-  try {
-    const state = getState();
-    const defaultTokens = defaultPTokensIDsSelector(state);
-    let listAccount = [];
-    !accounts
-      ? (listAccount = [...wallet.MasterAccount.child])
-      : (listAccount = [...accounts]);
-    let task = listAccount.map((account) =>
-      accountService.addFollowingTokens(
-        defaultTokens.map((tokenID) => ({ tokenID })),
-        account,
-        wallet,
-      ),
-    );
-    await Promise.all(task);
-  } catch (error) {
-    console.log('WALLET-followDefaultTokens error', error);
-  }
-};
-
 export const initMasterKey = (masterKeyName, mnemonic) => async (dispatch) => {
+  console.time('TOTAL_TIME_INIT_MASTER_KEY');
   try {
     await updateNetwork();
     const isMigrated = await migrateData();
@@ -115,22 +92,23 @@ export const initMasterKey = (masterKeyName, mnemonic) => async (dispatch) => {
       mnemonic,
       defaultMasterKey.getStorageName(),
     );
-    await syncServerAccounts(wallet);
     defaultMasterKey.mnemonic = wallet.Mnemonic;
     defaultMasterKey.wallet = wallet;
     wallet.RootName = masterKeyName;
     const masterKeys = [defaultMasterKey, masterlessMasterKey];
-    await dispatch(initMasterKeySuccess(masterKeys));
-    await dispatch(switchMasterKey(defaultMasterKey.name));
-    await dispatch(followDefaultTokenForWallet(wallet));
     await saveWallet(wallet);
-    await Promise.all([
-      storeWalletAccountIdsOnAPI(wallet),
-      saveWallet(masterlessWallet),
-    ]);
+    await saveWallet(masterlessWallet);
+    batch(async () => {
+      await dispatch(initMasterKeySuccess(masterKeys));
+      await dispatch(switchMasterKeySuccess(defaultMasterKey.name));
+      dispatch(reloadWallet());
+      storeWalletAccountIdsOnAPI(wallet);
+      dispatch(actionSubmitOTAKeyForListAccount(wallet));
+    });
   } catch (error) {
     throw error;
   }
+  console.timeEnd('TOTAL_TIME_INIT_MASTER_KEY');
 };
 
 const loadAllMasterKeysSuccess = (data) => ({
@@ -138,52 +116,18 @@ const loadAllMasterKeysSuccess = (data) => ({
   payload: data,
 });
 
-export const loadAllMasterKeys = () => async (dispatch, getState) => {
+export const loadAllMasterKeys = () => async (dispatch) => {
   try {
     await updateNetwork();
     let masterKeyList = _.uniqBy(
       await LocalDatabase.getMasterKeyList(),
       (item) => item.name,
     ).map((item) => new MasterKeyModel(item));
-    for (let key of masterKeyList) {
-      await key.loadWallet();
-      if (key.name.toLowerCase() === 'masterless') {
-        continue;
-      }
-      let wallet = key.wallet;
-      await configsWallet(wallet);
-      let masterAccountInfo = await wallet.MasterAccount.getDeserializeInformation();
-      const serverAccounts = await getWalletAccounts(
-        masterAccountInfo.PublicKeyCheckEncode,
-        dispatch,
-      );
-      const accountIds = [];
-      for (const account of wallet.MasterAccount.child) {
-        const accountInfo = await account.getDeserializeInformation();
-        accountIds.push(accountInfo.ID);
-      }
-      const newAccounts = serverAccounts.filter(
-        (item) =>
-          !accountIds.includes(item.id) &&
-          !(key.deletedAccountIds || []).includes(item.id),
-      );
-      if (newAccounts.length > 0) {
-        let accounts = [];
-        for (const account of newAccounts) {
-          try {
-            const newAccount = await wallet.importAccountWithId(
-              account.id,
-              account.name,
-            );
-            if (account?.name) {
-              accounts.push(newAccount);
-            }
-          } catch (error) {
-            console.log('IMPORT ACCOUNT WITH ID FAILED', error);
-          }
-        }
-        await dispatch(followDefaultTokenForWallet(wallet, accounts));
-        await wallet.save();
+    for (let masterKey of masterKeyList) {
+      try {
+        await masterKey.loadWallet();
+      } catch (error) {
+        console.log('LOAD WALLET ERROR', masterKey?.name);
       }
     }
     await dispatch(loadAllMasterKeysSuccess(masterKeyList));
@@ -212,13 +156,13 @@ export const switchMasterKey = (masterKeyName, accountName) => async (
       .string();
     new Validator('switchMasterKey-accountName', accountName).string();
     clearWalletCaches();
-    await dispatch(switchhingMasterKey(true));
-    await dispatch(switchMasterKeySuccess(masterKeyName));
-    await dispatch(reloadWallet(accountName));
+    dispatch(switchhingMasterKey(true));
+    dispatch(switchMasterKeySuccess(masterKeyName));
+    dispatch(reloadWallet(accountName));
   } catch (error) {
     throw error;
   } finally {
-    await dispatch(switchhingMasterKey(false));
+    dispatch(switchhingMasterKey(false));
   }
 };
 
@@ -228,24 +172,23 @@ const createMasterKeySuccess = (newMasterKey) => ({
 });
 
 export const createMasterKey = (data) => async (dispatch) => {
+  let newMasterKey, wallet;
   try {
-    const newMasterKey = new MasterKeyModel({
+    newMasterKey = new MasterKeyModel({
       ...data,
     });
-    let wallet = await importWallet(
-      data.mnemonic,
-      newMasterKey.getStorageName(),
-    );
+    wallet = await importWallet(data.mnemonic, newMasterKey.getStorageName());
     newMasterKey.wallet = wallet;
     newMasterKey.mnemonic = wallet.Mnemonic;
     wallet.RootName = newMasterKey.name;
-    await dispatch(createMasterKeySuccess(newMasterKey));
-    await dispatch(switchMasterKey(data.name));
-    await dispatch(followDefaultTokenForWallet(wallet));
     await saveWallet(wallet);
-    await storeWalletAccountIdsOnAPI(wallet);
-    const listAccount = await wallet.listAccount();
-    await dispatch(reloadWallet(listAccount[0]?.accountName));
+    batch(async () => {
+      await dispatch(createMasterKeySuccess(newMasterKey));
+      await dispatch(switchMasterKeySuccess(data.name));
+      dispatch(reloadWallet());
+      dispatch(actionSubmitOTAKeyForListAccount(wallet));
+      storeWalletAccountIdsOnAPI(wallet);
+    });
   } catch (error) {
     throw error;
   }
@@ -256,12 +199,11 @@ const importMasterKeySuccess = (newMasterKey) => ({
   payload: newMasterKey,
 });
 
-export const syncServerAccounts = async (wallet, dispatch) => {
+export const syncServerAccounts = async (wallet) => {
   try {
     const masterAccountInfo = await wallet.MasterAccount.getDeserializeInformation();
     const accounts = await getWalletAccounts(
       masterAccountInfo.PublicKeyCheckEncode,
-      dispatch,
     );
     if (accounts.length > 0) {
       wallet.MasterAccount.child = [];
@@ -332,31 +274,32 @@ const syncUnlinkWithNewMasterKey = (newMasterKey) => async (
   await dispatch(updateMasterKey(masterless));
 };
 
-export const importMasterKey = (data) => async (dispatch, getState) => {
+export const importMasterKey = (data) => async (dispatch) => {
+  console.time('TOTAL_TIME_IMPORT_MASTER_KEY');
   try {
     const newMasterKey = new MasterKeyModel({
       ...data,
     });
-    const wallet = await importWallet(
+    let wallet = await importWallet(
       data.mnemonic,
       newMasterKey.getStorageName(),
     );
-    await syncServerAccounts(wallet, dispatch);
+    await syncServerAccounts(wallet);
     newMasterKey.wallet = wallet;
     newMasterKey.mnemonic = wallet.Mnemonic;
     wallet.RootName = newMasterKey.name;
-    await dispatch(importMasterKeySuccess(newMasterKey));
-    await dispatch(switchMasterKey(data.name));
-    await dispatch(syncUnlinkWithNewMasterKey(newMasterKey));
-    await dispatch(followDefaultTokenForWallet(wallet));
     await saveWallet(wallet);
-    const listAccount = await wallet.listAccount();
-    await dispatch(actionSubmitOTAKeyForListAccount(wallet));
-    await dispatch(reloadWallet(listAccount[0]?.name));
+    batch(async () => {
+      await dispatch(importMasterKeySuccess(newMasterKey));
+      await dispatch(switchMasterKeySuccess(data.name));
+      dispatch(reloadWallet());
+      dispatch(actionSubmitOTAKeyForListAccount(wallet));
+      dispatch(syncUnlinkWithNewMasterKey(newMasterKey));
+    });
   } catch (error) {
-    console.log('importMasterKey error', error);
     throw error;
   }
+  console.timeEnd('TOTAL_TIME_IMPORT_MASTER_KEY');
 };
 
 const updateMasterKeySuccess = (masterKey) => ({
@@ -392,20 +335,117 @@ const loadAllMasterKeyAccountsSuccess = (accounts) => ({
   payload: accounts,
 });
 
+export const actionLoadingAllMasterKeyAccount = (payload) => ({
+  type: types.LOADING_ALL_ACCOUNTS,
+  payload,
+});
+
 export const loadAllMasterKeyAccounts = () => async (dispatch, getState) => {
-  const state = getState();
-  const masterKeys = [
-    ...noMasterLessSelector(state),
-    masterlessKeyChainSelector(state),
-  ];
-  let accounts = [];
-  for (const masterKey of masterKeys) {
-    try {
-      const masterKeyAccounts = await masterKey.getAccounts(true);
-      accounts = [...accounts, ...masterKeyAccounts];
-    } catch (error) {
-      console.log('ERROR LOAD ACCOUNTS OF MASTER KEYS', error);
+  await dispatch(actionLoadingAllMasterKeyAccount(true));
+  try {
+    const state = getState();
+    const masterKeys = [
+      ...noMasterLessSelector(state),
+      masterlessKeyChainSelector(state),
+    ];
+    let accounts = [];
+    for (const masterKey of masterKeys) {
+      try {
+        await dispatch(actionSyncAccountMasterKey(masterKey));
+        const masterKeyAccounts = await masterKey.getAccounts(true);
+        accounts = [...accounts, ...masterKeyAccounts];
+      } catch (error) {
+        console.log('ERROR LOAD ACCOUNTS OF MASTER KEYS', error);
+      }
     }
+    await dispatch(loadAllMasterKeyAccountsSuccess(accounts));
+  } catch (error) {
+    new ExHandler(error).showErrorToast();
+  } finally {
+    dispatch(actionInitNotification());
   }
-  await dispatch(loadAllMasterKeyAccountsSuccess(accounts));
+  await dispatch(actionLoadingAllMasterKeyAccount(false));
+};
+
+export const actionLoadInitial = () => async (dispatch, getState) => {
+  let list = [];
+  try {
+    list = uniqBy(await LocalDatabase.getMasterKeyList(), (item) => item.name);
+  } catch (error) {
+    console.log('error-actionLoadInitial', error);
+  } finally {
+    dispatch({
+      type: types.LOADING_INITIAL,
+      payload: {
+        loading: false,
+        masterKeyList: list,
+      },
+    });
+  }
+};
+
+export const actionSyncAccountMasterKey = (defaultMasterKey) => async (
+  dispatch,
+  getState,
+) => {
+  try {
+    const state = getState();
+    let masterKey: MasterKeyModel =
+      defaultMasterKey || currentMasterKeySelector(state);
+    if (masterKey.isMasterless) {
+      return;
+    }
+    let wallet = masterKey.wallet;
+    await configsWallet(wallet);
+    let masterAccountInfo = await wallet.MasterAccount.getDeserializeInformation();
+    const serverAccounts = await getWalletAccounts(
+      masterAccountInfo.PublicKeyCheckEncode,
+      dispatch,
+    );
+    const accountIds = [];
+    for (const account of wallet.MasterAccount.child) {
+      const accountInfo = await account.getDeserializeInformation();
+      accountIds.push(accountInfo.ID);
+    }
+    const newAccounts = serverAccounts.filter(
+      (item) =>
+        !accountIds.includes(item.id) &&
+        !(masterKey.deletedAccountIds || []).includes(item.id),
+    );
+    if (newAccounts.length > 0) {
+      let accounts = [];
+      for (const account of newAccounts) {
+        try {
+          const newAccount = await wallet.importAccountWithId(
+            account.id,
+            account.name,
+          );
+          if (account?.name) {
+            accounts.push(newAccount);
+          }
+        } catch (error) {
+          console.log('IMPORT ACCOUNT WITH ID FAILED', error);
+        }
+      }
+      await wallet.save();
+    }
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const actionLoadDefaultWallet = () => async (dispatch, getState) => {
+  console.time('TOTAL_TIME_LOAD_DEFAULT_WALLET');
+  try {
+    console.time('LOAD_ALL_MASTER_KEYS');
+    await dispatch(loadAllMasterKeys());
+    console.timeEnd('LOAD_ALL_MASTER_KEYS');
+    console.time('RELOAD_WALLET');
+    const defaultAccountName = await accountServices.getDefaultAccountName();
+    await dispatch(reloadWallet(defaultAccountName));
+    console.timeEnd('RELOAD_WALLET');
+  } catch (error) {
+    throw error;
+  }
+  console.timeEnd('TOTAL_TIME_LOAD_DEFAULT_WALLET');
 };

@@ -7,8 +7,8 @@ export const MAX_LIMIT_RECEIVE_HISTORY_ITEM = 50;
 
 const initialState = {
   followed: [],
-  pTokens: null,
-  internalTokens: null,
+  pTokens: [],
+  internalTokens: [],
   isGettingBalance: [],
   history: {
     isFetching: false,

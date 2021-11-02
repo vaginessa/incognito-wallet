@@ -10,7 +10,7 @@ import Tab from './Tabs.tab';
 import Tab1 from './Tabs.tab1';
 
 const enhance = (WrappedComp) => (props) => {
-  const { children, rootTabID, useTab1 = false } = props;
+  const { children, rootTabID, useTab1 = false, defaultTabIndex } = props;
   const activeTab = useSelector(activedTabSelector)(rootTabID);
   const dispatch = useDispatch();
   const onClickTabItem = (tab) => {
@@ -61,7 +61,7 @@ const enhance = (WrappedComp) => (props) => {
   };
   React.useEffect(() => {
     if (children) {
-      const { tabID, onChangeTab } = children[0].props || {};
+      const { tabID, onChangeTab } = children[defaultTabIndex ?? 0].props || {};
       dispatch(
         actionChangeTab({
           rootTabID,
@@ -72,7 +72,7 @@ const enhance = (WrappedComp) => (props) => {
         onChangeTab();
       }
     }
-  }, []);
+  }, [defaultTabIndex]);
   return (
     <ErrorBoundary>
       <WrappedComp {...{ ...props, onClickTabItem, renderTabs }} />

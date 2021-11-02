@@ -101,8 +101,10 @@ export const actionSetSellToken = (selltokenId) => async (dispatch) => {
     if (!selltokenId) {
       return;
     }
-    dispatch(actionSetSellTokenFetched(selltokenId));
-    await dispatch(getBalance(selltokenId));
+    batch(() => {
+      dispatch(actionSetSellTokenFetched(selltokenId));
+      dispatch(getBalance(selltokenId));
+    });
   } catch (error) {
     new ExHandler(error).showErrorToast();
   }
@@ -110,8 +112,10 @@ export const actionSetSellToken = (selltokenId) => async (dispatch) => {
 
 export const actionSetBuyToken = (buytoken) => async (dispatch, getState) => {
   try {
-    dispatch(actionSetBuyTokenFetched(buytoken));
-    await dispatch(getBalance(buytoken));
+    batch(() => {
+      dispatch(actionSetBuyTokenFetched(buytoken));
+      dispatch(getBalance(buytoken));
+    });
   } catch (error) {
     new ExHandler(error).showErrorToast();
   }
@@ -125,11 +129,13 @@ export const actionSetInputToken = ({ selltoken, buytoken }) => async (
     return;
   }
   try {
-    await dispatch(actionSetSellToken(selltoken));
-    await dispatch(actionSetBuyToken(buytoken));
-    if (selltoken !== PRV.id && buytoken !== PRV.id) {
-      dispatch(getBalance(PRV.id));
-    }
+    batch(() => {
+      dispatch(actionSetSellToken(selltoken));
+      dispatch(actionSetBuyToken(buytoken));
+      if (selltoken !== PRV.id && buytoken !== PRV.id) {
+        dispatch(getBalance(PRV.id));
+      }
+    });
   } catch (error) {
     throw error;
   }
@@ -210,12 +216,14 @@ export const actionInit = (refresh = true) => async (dispatch, getState) => {
     default:
       break;
     }
-    await dispatch(
-      actionSetInputToken({ selltoken: selltokenId, buytoken: buytokenId }),
-    );
-    state = getState();
-    const { defaultRate } = rateDataSelector(state);
-    dispatch(change(formConfigs.formName, formConfigs.rate, defaultRate));
+    batch(() => {
+      dispatch(
+        actionSetInputToken({ selltoken: selltokenId, buytoken: buytokenId }),
+      );
+      state = getState();
+      const { defaultRate } = rateDataSelector(state);
+      dispatch(change(formConfigs.formName, formConfigs.rate, defaultRate));
+    });
   } catch (error) {
     new ExHandler(error).showErrorToast;
   } finally {

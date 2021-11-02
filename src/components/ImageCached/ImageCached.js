@@ -20,7 +20,7 @@ const ImageCached = (props) => {
     );
   }
   return (
-    <>
+    <View style={style}>
       <FastImage
         style={style}
         source={{
@@ -38,7 +38,7 @@ const ImageCached = (props) => {
           <ActivityIndicator />
         </View>
       )}
-    </>
+    </View>
   );
 };
 

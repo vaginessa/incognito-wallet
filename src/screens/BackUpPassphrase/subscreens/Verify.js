@@ -7,7 +7,11 @@ import { Text, TouchableOpacity, View } from '@components/core';
 import { COLORS, FONT, THEME } from '@src/styles';
 import { useNavigation, useNavigationParam } from 'react-navigation-hooks';
 import { CustomError, ErrorCode } from '@services/exception';
-import { createMasterKey, initMasterKey } from '@src/redux/actions/masterKey';
+import {
+  actionLoadInitial,
+  createMasterKey,
+  initMasterKey,
+} from '@src/redux/actions/masterKey';
 import { useDispatch } from 'react-redux';
 import routeNames from '@routers/routeNames';
 
@@ -62,13 +66,16 @@ const VerifyPassphrase = () => {
   const dispatch = useDispatch();
 
   const displayWords = useMemo(() => {
-    const words = data.mnemonic.split(' ');
-    return _.shuffle(words);
+    if (data) {
+      const words = data.mnemonic.split(' ');
+      return _.shuffle(words);
+    }
+    return data;
   }, [data]);
 
-  const userWords = useMemo(() => wordsIndex.map(
-    index => displayWords[index]).join(' '),
-  [wordsIndex]
+  const userWords = useMemo(
+    () => wordsIndex.map((index) => displayWords[index]).join(' '),
+    [wordsIndex],
   );
 
   const validateWords = () => {
@@ -91,26 +98,30 @@ const VerifyPassphrase = () => {
     }
   };
 
-  const handleCreate = useCallback(_.debounce(async (data) => {
-    try {
-      if (data.isInit) {
-        await dispatch(initMasterKey(data.name, data.mnemonic));
-        navigation.navigate(routeNames.GetStarted);
-      } else {
-        await dispatch(createMasterKey(data));
-        navigation.navigate(routeNames.MasterKeys);
+  const handleCreate = useCallback(
+    _.debounce(async (data) => {
+      try {
+        if (data.isInit) {
+          await dispatch(initMasterKey(data.name, data.mnemonic));
+          await dispatch(actionLoadInitial());
+          navigation.navigate(routeNames.GetStarted);
+        } else {
+          await dispatch(createMasterKey(data));
+          navigation.navigate(routeNames.MasterKeys);
+        }
+      } catch (e) {
+        setError(e.message);
+      } finally {
+        setCreating(false);
       }
-    } catch (e) {
-      setError(e.message);
-    } finally {
-      setCreating(false);
-    }
-  }, 1000), []);
+    }, 1000),
+    [],
+  );
 
   const handleToggleWord = (index) => {
     let newWordsIndex;
     if (wordsIndex.includes(index)) {
-      newWordsIndex = _.remove(wordsIndex, item => item !== index);
+      newWordsIndex = _.remove(wordsIndex, (item) => item !== index);
     } else {
       newWordsIndex = [...wordsIndex, index];
     }
@@ -123,17 +134,12 @@ const VerifyPassphrase = () => {
 
   return (
     <MainLayout header="Verify phrase" scrollable>
-      <Text style={styles.desc}>
-        Tap on these words in the correct order.
-      </Text>
+      <Text style={styles.desc}>Tap on these words in the correct order.</Text>
       <View style={styles.words}>
         {displayWords.map((word, index) => (
           <TouchableOpacity
             key={`${word}-${index}`}
-            style={[
-              styles.word,
-              wordsIndex.includes(index) && styles.selected
-            ]}
+            style={[styles.word, wordsIndex.includes(index) && styles.selected]}
             onPress={() => handleToggleWord(index)}
           >
             <Text
@@ -148,14 +154,8 @@ const VerifyPassphrase = () => {
           </TouchableOpacity>
         ))}
       </View>
-      <Text style={[styles.desc, styles.userWords]}>
-        {userWords}
-      </Text>
-      {!!error && (
-        <Text style={styles.error}>
-          {error}
-        </Text>
-      )}
+      <Text style={[styles.desc, styles.userWords]}>{userWords}</Text>
+      {!!error && <Text style={styles.error}>{error}</Text>}
       <Button
         label={creating ? 'Creating...' : 'Create master key'}
         onPress={handleNext}

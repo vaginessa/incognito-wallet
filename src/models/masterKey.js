@@ -2,6 +2,8 @@ import { Wallet } from 'incognito-chain-web-js/build/wallet';
 import { initWallet, loadWallet } from '@services/wallet/WalletService';
 import storage from '@services/storage';
 import { getPassphrase } from '@services/wallet/passwordService';
+import toLower from 'lodash/toLower';
+import isEqual from 'lodash/isEqual';
 
 class MasterKeyModel {
   static network = 'mainnet';
@@ -11,6 +13,9 @@ class MasterKeyModel {
     this.mnemonic = data?.passphrase;
     this.isActive = !!data?.isActive;
     this.deletedAccountIds = data?.deletedAccountIds || [];
+    this.isMasterless =
+      isEqual(toLower(this?.name), 'masterless') ||
+      isEqual(toLower(this?.name), 'unlinked');
   }
 
   static getStorageName(name) {
@@ -26,6 +31,7 @@ class MasterKeyModel {
    * @returns {Promise<Wallet>}
    */
   async loadWallet() {
+    console.time('TIME_LOAD_WALLET_FROM_STORAGE');
     const rootName = this.name;
     const storageName = this.getStorageName();
     const rawData = await storage.getItem(storageName);
@@ -40,12 +46,13 @@ class MasterKeyModel {
     this.mnemonic = wallet.Mnemonic;
     this.wallet = wallet;
     wallet.deletedAccountIds = this.deletedAccountIds || [];
-    if (this.name.toLowerCase() === 'unlinked') {
+    if (toLower(this.name) === 'unlinked') {
       this.name = 'Masterless';
       wallet.Name = this.getStorageName();
-      wallet.save();
+      await wallet.save();
     }
     wallet.Name = this.getStorageName();
+    console.time('TIME_LOAD_WALLET_FROM_STORAGE');
     return wallet;
   }
 

@@ -51,7 +51,7 @@ const Keychain = () => {
     });
   } else {
     sectionItemFactories.push({
-      title: `Reveal ${masterKey.name} recovery phrase`,
+      title: `Reveal ${masterKey?.name} recovery phrase`,
       desc:
         'Back up this phrase so that even if you lose your device, you will always have access to your funds',
       handlePress: () =>
@@ -79,7 +79,7 @@ const Keychain = () => {
     <MainLayout
       header="Keychain"
       scrollable
-      rightHeader={<RightBtn title={masterKey.name} />}
+      rightHeader={<RightBtn title={masterKey?.name} />}
       customHeaderTitle={<BtnInfo />}
       noPadding
     >

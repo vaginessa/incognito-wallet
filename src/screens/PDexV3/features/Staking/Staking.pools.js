@@ -21,7 +21,7 @@ const StakingPools = ({ handleFetchStakingPools }) => {
       navigation.navigate(routeNames.StakingMoreInput);
     });
   };
-  const renderItem = (data) => <PoolItem item={data.item} onPress={onInvestCoin} />;
+  const renderItem = (data) => <PoolItem item={data.item} onPress={onInvestCoin} isLast={data.index === (pools.length - 1)} />;
   return (
     <View style={mainStyle.fullFlex}>
       <HeaderRow array={['Name', 'APY']} style={{ marginTop: 10 }} />

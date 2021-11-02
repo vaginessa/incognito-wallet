@@ -18,6 +18,8 @@ import {useSelector} from 'react-redux';
 import {defaultAccountSelector} from '@src/redux/selectors/account';
 import {stakingSelector} from '@screens/PDexV3/features/Staking';
 import {NFTTokenBottomBar} from '@screens/PDexV3/features/NFTToken';
+import {compose} from 'recompose';
+import withLazy from '@components/LazyHoc/LazyHoc';
 
 const Reward = React.memo(() => {
   const navigation = useNavigation();
@@ -44,27 +46,41 @@ const tabStyled = {
   tabStyledEnabled: tabStyle.tabEnable,
 };
 
-const Staking = ({ handleFetchData }) => {
+const Staking = ({ handleFetchData, onFreeData }) => {
   const navigation = useNavigation();
   const account = useSelector(defaultAccountSelector);
   const isStaking = useSelector(stakingSelector.isExistStakingSelector);
   const onStakingMore = () => navigation.navigate(routeNames.StakingMoreCoins);
   React.useEffect(() => {
-    typeof handleFetchData === 'function' && handleFetchData();
+    setTimeout(() => {
+      typeof handleFetchData === 'function' && handleFetchData();
+    }, 300);
+    return () => {
+      onFreeData();
+    };
   }, [account.paymentAddress]);
+
+  const TabPools = React.useMemo(() => (
+    <View tabID={TABS.TAB_COINS} label={STAKING_MESSAGES.listCoins} {...tabStyled}>
+      <StakingPools />
+    </View>
+  ), []);
+
+  const TabPortfolio = React.useMemo(() => (
+    <View tabID={TABS.TAB_PORTFOLIO} label={STAKING_MESSAGES.portfolio} {...tabStyled}>
+      <StakingPortfolio />
+    </View>
+  ), []);
+
   return (
     <>
       <View style={mainStyle.container}>
         <Header title={STAKING_MESSAGES.staking} accountSelectable />
         <Reward />
         <View style={homeStyle.wrapper}>
-          <Tabs rootTabID={TABS.ROOT_ID} styledTabList={{ padding: 0 }}>
-            <View tabID={TABS.TAB_COINS} label={STAKING_MESSAGES.listCoins} {...tabStyled}>
-              <StakingPools />
-            </View>
-            <View tabID={TABS.TAB_PORTFOLIO} label={STAKING_MESSAGES.portfolio} {...tabStyled}>
-              <StakingPortfolio />
-            </View>
+          <Tabs rootTabID={TABS.ROOT_ID} styledTabList={{ padding: 0 }} defaultTabIndex={1}>
+            {TabPools}
+            {TabPortfolio}
           </Tabs>
         </View>
         <SafeAreaView>
@@ -81,6 +97,10 @@ const Staking = ({ handleFetchData }) => {
 
 Staking.propTypes = {
   handleFetchData: PropTypes.func.isRequired,
+  onFreeData: PropTypes.func.isRequired,
 };
 
-export default withFetch(memo(Staking));
+export default compose(
+  withLazy,
+  withFetch
+)(memo(Staking));

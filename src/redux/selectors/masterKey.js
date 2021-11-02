@@ -1,17 +1,14 @@
 import { createSelector } from 'reselect';
 import groupBy from 'lodash/groupBy';
-import {flatMap} from 'lodash';
+import { flatMap } from 'lodash';
 
-const masterKeyReducerSelector = (state) => state.masterKey;
-
+const masterKeyReducerSelector = createSelector(
+  (state) => state.masterKey,
+  (masterKey) => masterKey,
+);
 export const masterlessKeyChainSelector = createSelector(
   masterKeyReducerSelector,
-  (masterKey) =>
-    masterKey.list.find(
-      (item) =>
-        item.name.toLowerCase() === 'unlinked' ||
-        item.name.toLowerCase() === 'masterless',
-    ),
+  (masterKey) => masterKey.list.find((item) => !!item?.isMasterless),
 );
 
 export const masterlessWalletSelector = createSelector(
@@ -23,8 +20,7 @@ export const masterlessWalletSelector = createSelector(
 
 export const noMasterLessSelector = createSelector(
   masterKeyReducerSelector,
-  (masterKey) =>
-    masterKey.list.filter((item) => item.name.toLowerCase() !== 'masterless'),
+  (masterKey) => masterKey.list.filter((item) => !item?.isMasterless),
 );
 
 export const masterKeysSelector = createSelector(
@@ -52,11 +48,19 @@ export const switchingMasterKeySelector = createSelector(
   (masterKey) => masterKey.switching,
 );
 
+export const initialMasterKeySelector = createSelector(
+  masterKeyReducerSelector,
+  ({ initial }) => initial,
+);
+
 export const groupMasterKeys = createSelector(
   listAllMasterKeyAccounts,
   (listAccount) => {
     if (listAccount && listAccount.length > 0) {
-      const groupedMasterKeys = groupBy(listAccount, (item) => item.MasterKeyName);
+      const groupedMasterKeys = groupBy(
+        listAccount,
+        (item) => item.MasterKeyName,
+      );
       const groupAccounts = flatMap(groupedMasterKeys, (child, key) => ({
         name: key,
         child,
@@ -71,7 +75,10 @@ export const groupMasterless = createSelector(
   listAllMasterKeyAccounts,
   (listAccount) => {
     if (listAccount && listAccount.length > 0) {
-      const groupedMasterKeys = groupBy(listAccount, (item) => item.MasterKeyName);
+      const groupedMasterKeys = groupBy(
+        listAccount,
+        (item) => item.MasterKeyName,
+      );
       const groupAccounts = flatMap(groupedMasterKeys, (child, key) => ({
         name: key,
         child,
@@ -80,4 +87,9 @@ export const groupMasterless = createSelector(
     }
     return [];
   },
+);
+
+export const isLoadingAllMasterKeyAccountSelector = createSelector(
+  masterKeyReducerSelector,
+  ({ loadingAll }) => loadingAll,
 );

@@ -1,3 +1,4 @@
+/* eslint-disable import/no-cycle */
 import { ExHandler } from '@src/services/exception';
 import routeNames from '@src/router/routeNames';
 import { selectedPrivacySelector } from '@src/redux/selectors';

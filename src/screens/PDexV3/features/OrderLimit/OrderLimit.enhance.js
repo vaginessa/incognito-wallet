@@ -1,5 +1,5 @@
 import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { batch, useSelector, useDispatch } from 'react-redux';
 import ErrorBoundary from '@src/components/ErrorBoundary';
 import { compose } from 'recompose';
 import { COLORS, FONT } from '@src/styles';
@@ -11,6 +11,7 @@ import {
   actionSetDefaultPool,
   actionBookOrder,
   actionSetPoolSelected,
+  actionReset,
 } from './OrderLimit.actions';
 import { TAB_BUY_ID, TAB_SELL_ID } from './OrderLimit.constant';
 
@@ -18,7 +19,10 @@ const enhance = (WrappedComp) => (props) => {
   const dispatch = useDispatch();
   const handleInitOrderLimit = (refresh) => dispatch(actionInit(refresh));
   const handleUnmount = async () => {
-    await dispatch(actionSetDefaultPool());
+    batch(() => {
+      dispatch(actionSetDefaultPool());
+      dispatch(actionReset());
+    });
   };
   const actionChangeTab = () => handleInitOrderLimit(false);
   const { sellColor, buyColor, cfmTitle } = useSelector(orderLimitDataSelector);

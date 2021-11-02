@@ -5,7 +5,7 @@ import { ButtonBasic, BtnQRCode, BtnClose } from '@src/components/Button';
 import { tokenSelector } from '@src/redux/selectors';
 import { useSelector, useDispatch } from 'react-redux';
 import Token from '@src/components/Token';
-import { useFocusEffect, useNavigation } from 'react-navigation-hooks';
+import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
 import { CONSTANT_COMMONS } from '@src/constants';
 import {
@@ -22,6 +22,7 @@ import {
   ScrollView,
   TouchableOpacity,
   Image,
+  Toast,
 } from '@src/components/core';
 import useFeatureConfig from '@src/shared/hooks/featureConfig';
 import { PRV } from '@services/wallet/tokenService';
@@ -32,10 +33,9 @@ import { actionUpdateShowWalletBlance } from '@src/screens/Setting/Setting.actio
 import srcHideBlanceIcon from '@src/assets/images/icons/ic_hide_blance.png';
 import srcShowBlanceIcon from '@src/assets/images/icons/ic_show_blance.png';
 import appConstant from '@src/constants/app';
-import { actionFree as actionFreeHistory } from '@src/redux/actions/history';
-import withDetectConvert from '@screens/Home/features/Convert/Convert.enhanceDetect';
-import { compose } from 'recompose';
 import StreamLineBottomBar from '@screens/Streamline/features/StreamLineBottomBar';
+import { actionRemoveFollowToken } from '@src/redux/actions/token';
+import { setSelectedPrivacy } from '@src/redux/actions/selectedPrivacy';
 import {
   styled,
   styledHook,
@@ -172,23 +172,31 @@ Balance.propTypes = {
 const FollowToken = React.memo((props) => {
   const { hideBlance } = props;
   const followed = useSelector(tokenSelector.tokensFollowedSelector);
+  const navigation = useNavigation();
+  const dispatch = useDispatch();
   const { walletProps } = React.useContext(WalletContext);
-  const {
-    handleSelectToken,
-    handleRemoveToken,
-    isReloading,
-    fetchData,
-  } = walletProps;
+  const { isReloading, onRefresh } = walletProps;
+  const handleSelectToken = async (tokenId) => {
+    if (!tokenId) return;
+    await dispatch(setSelectedPrivacy(tokenId));
+    navigation.navigate(routeNames.WalletDetail);
+  };
+  const handleRemoveToken = async (tokenId) => {
+    await dispatch(actionRemoveFollowToken(tokenId));
+    Toast.showSuccess('Add coin again to restore balance.', {
+      duration: 500,
+    });
+  };
   return (
     <View style={styledFollow.container}>
       <ScrollView
         showsVerticalScrollIndicator={false}
-        refreshControl={(
+        refreshControl={
           <RefreshControl
             refreshing={isReloading}
-            onRefresh={() => fetchData(true)}
+            onRefresh={() => onRefresh(true)}
           />
-        )}
+        }
         nestedScrollEnabled
       >
         <Token
@@ -262,8 +270,12 @@ const Extra = React.memo(() => {
 });
 
 const RightHeader = React.memo(() => {
-  const { walletProps } = React.useContext(WalletContext);
-  const { handleExportKey } = walletProps;
+  const navigation = useNavigation();
+  const dispatch = useDispatch();
+  const handleExportKey = async () => {
+    navigation.navigate(routeNames.ReceiveCrypto);
+    await dispatch(setSelectedPrivacy(CONSTANT_COMMONS.PRV.id));
+  };
   return (
     <View style={rightHeaderStyled.container}>
       <BtnQRCode
@@ -279,11 +291,6 @@ const Wallet = React.memo(({ hideBackButton }) => {
   const navigation = useNavigation();
   const onGoBack = () => navigation.navigate(routeNames.MainTabBar);
   const dispatch = useDispatch();
-  useFocusEffect(
-    React.useCallback(() => {
-      dispatch(actionFreeHistory());
-    }, []),
-  );
   return (
     <View style={[styled.container, { backgroundColor: COLORS.white }]}>
       <Header
@@ -300,14 +307,11 @@ const Wallet = React.memo(({ hideBackButton }) => {
 });
 
 Wallet.defaultProps = {
-  hideBackButton: false
+  hideBackButton: false,
 };
 
 Wallet.propTypes = {
-  hideBackButton: PropTypes.bool
+  hideBackButton: PropTypes.bool,
 };
 
-export default compose(
-  withDetectConvert,
-  withWallet,
-)(Wallet);
+export default withWallet(Wallet);

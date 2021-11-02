@@ -85,3 +85,4 @@ export { default as SpeakerIcon } from './icon.speaker';
 export { default as HamburgerIcon } from './icon.hamburger';
 export { default as CommunityIcon } from './icon.community';
 export { default as SuccessIcon } from './icon.success';
+export { default as SettingIcon } from './icon.setting';

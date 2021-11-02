@@ -5,7 +5,11 @@ import MainLayout from '@components/MainLayout';
 import Input from '@screens/BackUpPassphrase/components/Input';
 import Button from '@screens/BackUpPassphrase/components/Button';
 import { useDispatch, useSelector } from 'react-redux';
-import { importMasterKey, initMasterKey } from '@src/redux/actions/masterKey';
+import {
+  actionLoadInitial,
+  importMasterKey,
+  initMasterKey,
+} from '@src/redux/actions/masterKey';
 import routeNames from '@routers/routeNames';
 import { useNavigation, useNavigationParam } from 'react-navigation-hooks';
 import { BtnScanQrCode } from '@components/Button/index';
@@ -38,7 +42,7 @@ const ImportMasterKey = () => {
   const redirect = useNavigationParam('redirect');
   const masterKeys = useSelector(masterKeysSelector);
   const isInit = useNavigationParam('init');
-
+  console.log('isInit', isInit);
   const [name, setName] = useState('');
   const [phrase, setPhrase] = useState('');
   const [error, setError] = useState('');
@@ -60,28 +64,34 @@ const ImportMasterKey = () => {
     }
   };
 
-  const handleImport = useCallback(_.debounce(async (trimmedPhrase, trimmedName, masterKeys) => {
-    try {
-      if (!isInit) {
-        validateMnemonicWithOtherKeys(trimmedPhrase, masterKeys);
-        validateName(trimmedName, masterKeys);
-        await dispatch(importMasterKey({
-          name: trimmedName,
-          mnemonic: trimmedPhrase,
-        }));
-        navigation.navigate(redirect || routeNames.MasterKeys, {
-          refresh: new Date().getTime(),
-        });
-      } else {
-        await dispatch(initMasterKey(trimmedName, trimmedPhrase));
-        navigation.goBack();
+  const handleImport = useCallback(
+    _.debounce(async (trimmedPhrase, trimmedName, masterKeys) => {
+      try {
+        if (!isInit) {
+          validateMnemonicWithOtherKeys(trimmedPhrase, masterKeys);
+          validateName(trimmedName, masterKeys);
+          await dispatch(
+            importMasterKey({
+              name: trimmedName,
+              mnemonic: trimmedPhrase,
+            }),
+          );
+          navigation.navigate(redirect || routeNames.MasterKeys, {
+            refresh: new Date().getTime(),
+          });
+        } else {
+          await dispatch(initMasterKey(trimmedName, trimmedPhrase));
+          await dispatch(actionLoadInitial());
+          navigation.navigate(routeNames.GetStarted);
+        }
+      } catch (e) {
+        setError(e.message);
+      } finally {
+        setImporting(false);
       }
-    } catch (e) {
-      setError(e.message);
-    } finally {
-      setImporting(false);
-    }
-  }, 1000), []);
+    }, 1000),
+    [],
+  );
 
   useEffect(() => {
     setError('');
@@ -103,18 +113,20 @@ const ImportMasterKey = () => {
         value={phrase}
         style={styles.input}
         autoCapitalize="none"
-        rightComponent={(
+        rightComponent={
           <BtnScanQrCode
             style={styles.btn}
             onPress={() => {
               openQrScanner(setPhrase);
             }}
           />
-        )}
+        }
       />
       {!!error && <Text style={styles.error}>{error}</Text>}
       <Button
-        label={incorrect ? 'Incorrect phrase' : importing ? 'Importing...' : 'Import'}
+        label={
+          incorrect ? 'Incorrect phrase' : importing ? 'Importing...' : 'Import'
+        }
         onPress={handleNext}
         disabled={
           !!error ||
