@@ -191,7 +191,7 @@ export const actionEstimateTrade = (field = formConfigs.selltoken) => async (
     });
   } catch (error) {
     await dispatch(actionFetchFail());
-    new ExHandler(error, 'Estimate fail!').showErrorToast();
+    new ExHandler(error).showErrorToast();
   } finally {
     dispatch(actionSetFocusToken(''));
   }
