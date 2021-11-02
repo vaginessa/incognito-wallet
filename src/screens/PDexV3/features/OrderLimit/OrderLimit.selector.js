@@ -196,11 +196,14 @@ export const rateDataSelector = createSelector(
         x: pool?.token1,
         y: pool?.token2,
         x0: convert.toOriginalAmount(1, pool?.token1?.pDecimals, true),
-      }).rate;
+      });
+      const { rateStr: _rateStr, rate: _rate } = defaultRate;
+      rateStr = _rateStr;
+      rate = _rate;
       const selector = formValueSelector(formConfigs.formName);
       customRate = selector(state, formConfigs.rate);
-      customRate = customRate || defaultRate;
-      rateStr = format.amountFull(defaultRate, 0, false);
+      customRate = customRate || rate;
+      customRate = convert.toNumber(customRate, true);
     } catch (error) {
       console.log('rateSelector-error', error);
     }
@@ -208,7 +211,6 @@ export const rateDataSelector = createSelector(
       rate,
       rateStr,
       customRate,
-      defaultRate,
       rateToken,
     };
   },

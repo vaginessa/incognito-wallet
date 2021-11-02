@@ -31,15 +31,39 @@ export const getPairRate = ({ token1, token2, token1Value, token2Value }) => {
   }
 };
 
+export const getOriginalPairRate = ({
+  token1,
+  token2,
+  token1Value,
+  token2Value,
+}) => {
+  let originalRate = 0;
+  try {
+    const rate = getPairRate({ token1, token2, token1Value, token2Value });
+    originalRate = convertUtil.toOriginalAmount(rate, token2?.pDecimals);
+  } catch (error) {
+    originalRate = 0;
+    console.log('getOriginalPairRate-error', error);
+  }
+  return originalRate;
+};
+
 export const getExchangeRate = (token1, token2, token1Value, token2Value) => {
   try {
     if (!token1 || !token2 || !token1Value || !token2Value) {
       return '';
     }
-    const rawRate = getPairRate({ token1, token2, token1Value, token2Value });
-    return `1 ${token1?.symbol} = ${format.amountFull(rawRate, 0, false)} ${
-      token2?.symbol
-    }`;
+    const originalRate = getOriginalPairRate({
+      token1,
+      token2,
+      token1Value,
+      token2Value,
+    });
+    return `1 ${token1?.symbol} = ${format.amountFull(
+      originalRate,
+      token2?.pDecimals,
+      false,
+    )} ${token2?.symbol}`;
   } catch (error) {
     console.log('getExchangeRate-error', error);
   }

@@ -70,7 +70,6 @@ const amountCreator = (maxDigits) => (
     if (_amount > 0 && _amount < 1) {
       _maxDigits = undefined;
     }
-
     return _amount
       ? removeTrailingZeroes(
         new BigNumber(_amount).toFormat(
@@ -178,12 +177,17 @@ const formatWithNotation = (number, noOfDigits = 2) => {
 
 const fixedNumber = (number, digits = 3) => {
   if (isNaN(number) || isNaN(digits)) return 0;
-  return Math.trunc(new BigNumber(number).multipliedBy(Math.pow(10, digits)).dividedBy(Math.pow(10, digits)).toNumber());
+  return Math.trunc(
+    new BigNumber(number)
+      .multipliedBy(Math.pow(10, digits))
+      .dividedBy(Math.pow(10, digits))
+      .toNumber(),
+  );
 };
 
 const convertDecimalsToPDecimals = ({ number, decimals, pDecimals }) => {
-  return BigNumber(number).dividedBy(BigNumber(10)
-    .pow(decimals))
+  return BigNumber(number)
+    .dividedBy(BigNumber(10).pow(decimals))
     .multipliedBy(BigNumber(10).pow(pDecimals))
     .dividedToIntegerBy(1)
     .toNumber();
@@ -193,7 +197,8 @@ const convertDecimalsHumanAmount = ({ number, decimals, pDecimals }) => {
   if (typeof number === 'string') {
     number = convertUtil.toNumber(number, true) || 0;
   }
-  const originalAmount = convertDecimalsToPDecimals({ number, decimals, pDecimals }) || 0;
+  const originalAmount =
+    convertDecimalsToPDecimals({ number, decimals, pDecimals }) || 0;
   return amount(originalAmount, pDecimals, true);
 };
 

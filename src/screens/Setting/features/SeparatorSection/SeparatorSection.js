@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { Switch } from '@components/core';
+import RNRestart from 'react-native-restart';
 import {
   getDecimalSeparator,
   setDecimalSeparator as saveDecimalSeparator,
 } from '@src/resources/separator';
 import Section, { sectionStyle } from '@screens/Setting/features/Section';
 import { Text, View } from 'react-native';
-import {SeparatorIcon} from '@components/Icons';
+import { SeparatorIcon } from '@components/Icons';
 
 const SeparatorSection = () => {
   const [decimalSeparator, setDecimalSeparator] = useState(
@@ -21,12 +22,15 @@ const SeparatorSection = () => {
       setDecimalSeparator('.');
       saveDecimalSeparator('.');
     }
+    RNRestart.Restart();
   };
 
   return (
     <Section
       label="Decimal Separator"
-      headerRight={<Switch onValueChange={togglePin} value={decimalSeparator === ','} />}
+      headerRight={
+        <Switch onValueChange={togglePin} value={decimalSeparator === ','} />
+      }
       headerIcon={<SeparatorIcon />}
       customItems={[
         <View

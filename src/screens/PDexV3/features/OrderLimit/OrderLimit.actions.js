@@ -96,32 +96,41 @@ export const actionSetBuyTokenFetched = (payload) => ({
   payload,
 });
 
-export const actionSetSellToken = (selltokenId) => async (dispatch) => {
+export const actionSetSellToken = (selltokenId, refresh) => async (
+  dispatch,
+) => {
   try {
     if (!selltokenId) {
       return;
     }
     batch(() => {
       dispatch(actionSetSellTokenFetched(selltokenId));
-      dispatch(getBalance(selltokenId));
+      if (refresh) {
+        dispatch(getBalance(selltokenId));
+      }
     });
   } catch (error) {
     new ExHandler(error).showErrorToast();
   }
 };
 
-export const actionSetBuyToken = (buytoken) => async (dispatch, getState) => {
+export const actionSetBuyToken = (buytokenId, refresh) => async (dispatch) => {
   try {
+    if (!buytokenId) {
+      return;
+    }
     batch(() => {
-      dispatch(actionSetBuyTokenFetched(buytoken));
-      dispatch(getBalance(buytoken));
+      dispatch(actionSetBuyTokenFetched(buytokenId));
+      if (refresh) {
+        dispatch(getBalance(buytokenId));
+      }
     });
   } catch (error) {
     new ExHandler(error).showErrorToast();
   }
 };
 
-export const actionSetInputToken = ({ selltoken, buytoken }) => async (
+export const actionSetInputToken = ({ selltoken, buytoken, refresh }) => async (
   dispatch,
   getState,
 ) => {
@@ -130,9 +139,9 @@ export const actionSetInputToken = ({ selltoken, buytoken }) => async (
   }
   try {
     batch(() => {
-      dispatch(actionSetSellToken(selltoken));
-      dispatch(actionSetBuyToken(buytoken));
-      if (selltoken !== PRV.id && buytoken !== PRV.id) {
+      dispatch(actionSetSellToken(selltoken, refresh));
+      dispatch(actionSetBuyToken(buytoken, refresh));
+      if (selltoken !== PRV.id && buytoken !== PRV.id && refresh) {
         dispatch(getBalance(PRV.id));
       }
     });
@@ -218,11 +227,15 @@ export const actionInit = (refresh = true) => async (dispatch, getState) => {
     }
     batch(() => {
       dispatch(
-        actionSetInputToken({ selltoken: selltokenId, buytoken: buytokenId }),
+        actionSetInputToken({
+          selltoken: selltokenId,
+          buytoken: buytokenId,
+          refresh,
+        }),
       );
       state = getState();
-      const { defaultRate } = rateDataSelector(state);
-      dispatch(change(formConfigs.formName, formConfigs.rate, defaultRate));
+      const { rate } = rateDataSelector(state);
+      dispatch(change(formConfigs.formName, formConfigs.rate, rate));
     });
   } catch (error) {
     new ExHandler(error).showErrorToast;

@@ -188,14 +188,15 @@ export const actionAddFollowTokenSuccess = (payload) => ({
 });
 
 export const actionAddFollowToken = (tokenID) => async (dispatch, getState) => {
-
   try {
     const state = getState();
     let wallet = walletSelector(state);
-    const tokenData = selectedPrivacySelector.getPrivacyDataByTokenID(state)(tokenID);
+    const tokenData = selectedPrivacySelector.getPrivacyDataByTokenID(state)(
+      tokenID,
+    );
     if (!tokenID || tokenID === PRV_ID || tokenData.isFollowed) {
       return;
-    }    
+    }
     const account = accountSelector.defaultAccount(state);
     const pTokens = pTokensSelector(state);
     const internalTokens = internalTokensSelector(state);
@@ -203,8 +204,7 @@ export const actionAddFollowToken = (tokenID) => async (dispatch, getState) => {
     const foundInternalToken =
       !foundPToken &&
       internalTokens?.find((token) => token.tokenID === tokenID);
-    const token = foundPToken || foundInternalToken;
-    if (!token) throw new Error('Can not follow empty coin');
+    const token = foundPToken || foundInternalToken || { tokenID };
     await accountService.addFollowingTokens([token], account, wallet);
     dispatch(setWallet(wallet));
     const followed = await accountService.getFollowingTokens(account, wallet);

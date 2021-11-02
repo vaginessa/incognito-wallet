@@ -1,4 +1,5 @@
 import { createSelector } from 'reselect';
+import isNaN from 'lodash/isNaN';
 import { getPrivacyDataByTokenID as getPrivacyDataByTokenIDSelector } from '@src/redux/selectors/selectedPrivacy';
 import format from '@src/utils/format';
 import { ACCOUNT_CONSTANT } from 'incognito-chain-web-js/build/wallet';
@@ -13,7 +14,7 @@ import { getExchangeRate, getPairRate, getPoolSize } from '@screens/PDexV3';
 import { PRIORITY_LIST } from '@screens/Dex/constants';
 import BigNumber from 'bignumber.js';
 import { formConfigs } from './Swap.constant';
-import { calMintAmountExpected, getInputAmount } from './Swap.utils';
+import { getInputAmount } from './Swap.utils';
 
 export const swapSelector = createSelector(
   (state) => state.pDexV3,
@@ -175,8 +176,12 @@ export const slippagetoleranceSelector = createSelector(
   (state) => state,
   (state) => {
     const selector = formValueSelector(formConfigs.formName);
-    const slippagetolerance = selector(state, formConfigs.slippagetolerance);
-    return Number(slippagetolerance) || 1;
+    let slippagetolerance = selector(state, formConfigs.slippagetolerance);
+    slippagetolerance = Number(slippagetolerance);
+    if (isNaN(slippagetolerance)) {
+      return 0;
+    }
+    return slippagetolerance;
   },
 );
 
