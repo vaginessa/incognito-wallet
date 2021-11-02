@@ -2,6 +2,8 @@ import React from 'react';
 import ErrorBoundary from '@src/components/ErrorBoundary';
 import { SafeAreaView, StyleSheet, View } from 'react-native';
 import { COLORS } from '@src/styles';
+import withLazy from '@components/LazyHoc/LazyHoc';
+import {compose} from 'recompose';
 
 const styled = StyleSheet.create({
   container: {
@@ -27,4 +29,7 @@ const enhance = (WrappedComp) => (props) => {
   );
 };
 
-export default enhance;
+export default compose(
+  withLazy,
+  enhance
+);
