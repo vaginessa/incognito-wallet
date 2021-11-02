@@ -31,11 +31,14 @@ const isValidException = (exception) => {
   if (exception instanceof Error) {
     return true;
   }
-
   if (exception?.message && exception?.name && exception?.stack) {
     return true;
   }
-
+  for (const [key, value] of Object.entries(CustomError.TYPES)) {
+    if (exception?.name === value) {
+      return true;
+    }
+  }
   return false;
 };
 
@@ -53,14 +56,16 @@ class Exception {
   ) {
     if (isValidException(exception)) {
       this.exception = exception;
-
       // find friendly message
       if (exception.name === CustomError.TYPES.KNOWN_ERROR) {
         this.message = exception?.message;
         this.debugMessage = exception?.rawError?.stack;
       } else if (exception.name === CustomError.TYPES.API_ERROR) {
-        Message[(this.exception?.code)] &&
-          (this.message = Message[this.exception.code]);
+        if (Message[(this.exception?.code)]) {
+          this.message = Message[this.exception.code];
+        } else {
+          this.message = `${exception?.error}\n${exception.name}[${exception?.code}]`;
+        }
       } else if (exception.name === CustomError.TYPES.WEB_JS_ERROR) {
         if (Message[(this.exception?.code)]) {
           this.message = Message[this.exception.code];
@@ -70,7 +75,7 @@ class Exception {
         }
       }
     } else if (typeof exception === 'string') {
-      this.exception = new Error(exception);
+      this.message = exception;
     }
     if (!this.exception) {
       this.exception = new Error('Unknown error');
@@ -85,16 +90,13 @@ class Exception {
     this.message =
       this.message ??
       this._getUnexpectedMessageError(exception, defaultMessage);
-    this._log2Console();
   }
 
   _getUnexpectedMessageError(exception, defaultMessage) {
-    const message = exception?.message || '';
-
+    let message = exception?.message || '';
     if (message) {
       return `${defaultMessage}\n${message ? message : ''}`;
     }
-
     return defaultMessage;
   }
 
@@ -172,10 +174,6 @@ class Exception {
       return;
     }
     let msg = this.message;
-    if (__DEV__) {
-      msg = `${msg}\n****** DEBUG ******\n(${this.debugMessage})`;
-    }
-
     if (showCode) {
       return Toast.showError(this.getMessage(msg));
     }

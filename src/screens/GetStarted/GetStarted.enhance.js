@@ -39,32 +39,35 @@ const enhance = (WrappedComp) => (props) => {
 
   const configsApp = async () => {
     console.time('CONFIGS_APP');
+    let hasError;
+    await setLoading(true);
     try {
-      await setLoading(true);
       const [servers] = await new Promise.all([
         serverService.get(),
-        dispatch(actionFetchProfile()),
-        dispatch(getPTokenList()),
-        dispatch(getInternalTokenList()),
         dispatch(actionLoadDefaultWallet()),
       ]);
       if (!servers || servers?.length === 0) {
         await serverService.setDefaultList();
       }
-      navigation.navigate(routeNames.Home);
-    } catch (error) {
-      await setError(getErrorMsg(error));
-      throw error;
-    } finally {
       login();
       batch(() => {
+        dispatch(actionFetchProfile());
+        dispatch(getPTokenList());
+        dispatch(getInternalTokenList());
         dispatch(getBanners());
         dispatch(requestUpdateMetrics(ANALYTICS.ANALYTIC_DATA_TYPE.OPEN_APP));
         dispatch(loadAllMasterKeyAccounts());
       });
-      setLoading(false);
+    } catch (error) {
+      hasError = !!error;
+      await setError(getErrorMsg(error));
+      throw error;
     }
+    await setLoading(false);
     console.timeEnd('CONFIGS_APP');
+    if (!hasError) {
+      navigation.navigate(routeNames.Home);
+    }
   };
 
   const onRetry = async () => {
