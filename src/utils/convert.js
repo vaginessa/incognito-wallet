@@ -66,25 +66,31 @@ export default {
      * Convert human readable amount (display on frontend) to original amount
      */
   },
+
   toOriginalAmount(humanAmount, decimals, round = true) {
-    const amount = toNumber(humanAmount);
-    checkAmount(amount);
-
-    // Use big number to solve float calculation problem
-    // For example: 0.5000001 * 1e9 = 500000099.99999994
-    // The result should be 500000100
-    const decision_rate = Number(decimals) ? 10 ** Number(decimals) : 1;
-    if (round) {
-      return Math.floor(
-        BigNumber(amount)
-          .multipliedBy(BigNumber(decision_rate))
-          .toNumber(),
-      );
+    let originalAmount = 0;
+    try {
+      const amount = toNumber(humanAmount);
+      checkAmount(amount);
+      // Use big number to solve float calculation problem
+      // For example: 0.5000001 * 1e9 = 500000099.99999994
+      // The result should be 500000100
+      const decision_rate = Number(decimals) ? 10 ** Number(decimals) : 1;
+      if (round) {
+        return Math.floor(
+          BigNumber(amount)
+            .multipliedBy(BigNumber(decision_rate))
+            .toNumber(),
+        );
+      }
+      originalAmount = BigNumber(amount)
+        .multipliedBy(BigNumber(decision_rate))
+        .toNumber();
+    } catch (error) {
+      originalAmount = 0;
+      console.log('toOriginalAmount-error', error);
     }
-
-    return BigNumber(amount)
-      .multipliedBy(BigNumber(decision_rate))
-      .toNumber();
+    return originalAmount;
   },
 
   toRealTokenValue(tokens, tokenId, value) {

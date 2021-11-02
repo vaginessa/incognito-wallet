@@ -91,6 +91,12 @@ export const getInputAmount = (
       poolValue = pool?.token2Value;
     }
     let poolValueStr = format.amountFull(poolValue, token.pDecimals, false);
+    console.log(
+      'isGettingBalance',
+      isGettingBalance,
+      'loading balance',
+      isGettingBalance.includes(token.tokenId),
+    );
     const data = {
       tokenId: token.tokenId,
       symbol: token.symbol,
@@ -172,6 +178,8 @@ export const calDefaultPairOrderLimit = ({ pool, x, y, x0 }) => {
   let y0 = new BigNumber(0);
   let rate = '';
   let y0Fixed = '';
+  let rawRate = 0;
+  let rateStr = '';
   try {
     if (pool) {
       const { virtualValue } = pool;
@@ -195,17 +203,21 @@ export const calDefaultPairOrderLimit = ({ pool, x, y, x0 }) => {
         const x0ToHumanAmount = new BigNumber(
           convert.toHumanAmount(x0, x?.pDecimals),
         );
-        let rawRate = y0ToHumanAmount.dividedBy(x0ToHumanAmount);
+        rawRate = y0ToHumanAmount.dividedBy(x0ToHumanAmount);
         rawRate = rawRate.isNaN() ? 0 : rawRate.toNumber();
         rate = format.toFixed(rawRate, y?.pDecimals);
+        const originalRate = convert.toOriginalAmount(rate, y?.pDecimals);
+        rateStr = format.amountFull(originalRate, y?.pDecimals, false);
       }
     }
   } catch (error) {
-    console.log('error', error);
+    console.log('calDefaultPairOrderLimit-error', error);
   }
   return {
     y0,
-    rate,
     y0Fixed,
+    rate,
+    rawRate,
+    rateStr,
   };
 };

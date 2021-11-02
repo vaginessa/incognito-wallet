@@ -1,13 +1,19 @@
 import React from 'react';
-import {createMaterialBottomTabNavigator} from 'react-navigation-material-bottom-tabs';
-import {COLORS} from '@src/styles';
+import { createMaterialBottomTabNavigator } from 'react-navigation-material-bottom-tabs';
+import { COLORS } from '@src/styles';
 import TabHome from '@screens/MainTabBar/features/Home';
 import TabShield from '@screens/MainTabBar/features/Shield';
 import TabAssets from '@screens/MainTabBar/features/Assets';
 import TabTrade from '@screens/MainTabBar/features/Trade';
 import TabHomeLP from '@screens/MainTabBar/features/HomeLP';
-import {HomeIcon, ShieldIcon, TradeIcon, LiquidityIcon, AssetsIcon} from '@components/Icons';
-import {View, Text} from 'react-native';
+import {
+  HomeIcon,
+  ShieldIcon,
+  TradeIcon,
+  LiquidityIcon,
+  AssetsIcon,
+} from '@components/Icons';
+import { View, Text } from 'react-native';
 import { styled } from './MainTabBar.styled';
 
 const TabNavigator = createMaterialBottomTabNavigator(
@@ -31,8 +37,8 @@ const TabNavigator = createMaterialBottomTabNavigator(
             <ShieldIcon active={focused} />
             <Text style={[styled.label, { color: tintColor }]}>Shield</Text>
           </View>
-        )
-      }
+        ),
+      },
     },
     Trade: {
       screen: TabTrade,
@@ -77,11 +83,11 @@ const TabNavigator = createMaterialBottomTabNavigator(
     activeColor: COLORS.colorBlue,
     inactiveColor: COLORS.lightGrey34,
     barStyle: {
-      backgroundColor: COLORS.white
+      backgroundColor: COLORS.white,
     },
     shifting: false,
-    labeled: false
-  }
+    labeled: false,
+  },
 );
 
 export default TabNavigator;

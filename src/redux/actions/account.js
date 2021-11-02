@@ -272,8 +272,8 @@ export const actionReloadFollowingToken = () => async (dispatch, getState) => {
           console.log('error', token?.id);
         }
       });
+      dispatch(setListToken(followed));
     });
-    dispatch(setListToken(followed));
     return followed;
   } catch (error) {
     throw error;
