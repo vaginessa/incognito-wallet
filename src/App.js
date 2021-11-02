@@ -27,7 +27,16 @@ import {
 
 const isShowDeviceLog = false;
 const {store, persistor} = configureStore();
-const codePushOptions = {checkFrequency: codePush.CheckFrequency.MANUAL};
+const codePushOptions = {
+  checkFrequency: codePush.CheckFrequency.ON_APP_RESUME,
+  installMode: codePush.InstallMode.ON_NEXT_SUSPEND,
+  mandatoryInstallMode: codePush.InstallMode.IMMEDIATE,
+  minimumBackgroundDuration: 1,
+  rollbackRetryOptions: {
+    delayInHours: 0.5,
+    maxRetryAttempts: 5
+  }
+};
 
 // gets the current screen from navigation state
 function getActiveRouteName(navigationState) {
