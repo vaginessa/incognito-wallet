@@ -1,17 +1,20 @@
 /* eslint-disable import/no-cycle */
 import { PrivacyVersion, Validator } from 'incognito-chain-web-js/build/wallet';
 import type from '@src/redux/types/account';
-import walletType from '@src/redux/types/wallet';
 import accountService from '@src/services/wallet/accountService';
 import { getPassphrase } from '@src/services/wallet/passwordService';
-import { reloadAccountList, reloadWallet } from '@src/redux/actions/wallet';
+import { reloadWallet } from '@src/redux/actions/wallet';
 import AccountModel from '@src/models/account';
 import {
   currentMasterKeySelector,
   masterlessKeyChainSelector,
   noMasterLessSelector,
 } from '@src/redux/selectors/masterKey';
-import { switchMasterKey, updateMasterKey } from '@src/redux/actions/masterKey';
+import {
+  switchMasterKey,
+  updateMasterKey,
+  loadAllMasterKeyAccounts,
+} from '@src/redux/actions/masterKey';
 import { storeWalletAccountIdsOnAPI } from '@services/wallet/WalletService';
 import { accountSelector } from '@src/redux/selectors';
 import { walletSelector } from '@src/redux/selectors/wallet';
@@ -77,6 +80,7 @@ export const removeAccount = (account) => async (dispatch, getState) => {
         data: PrivateKey,
       });
       dispatch(reloadWallet());
+      dispatch(loadAllMasterKeyAccounts());
     });
     console.timeEnd('TOTAL_TIME_REMOVE_ACCOUNT');
     return true;
@@ -324,16 +328,18 @@ export const actionFetchCreateAccount = ({ accountName }) => async (
       accountService.toSerializedAccountObj(account),
     );
     storeWalletAccountIdsOnAPI(wallet);
-    dispatch(actionFetchedCreateAccount());
+    batch(() => {
+      dispatch(actionFetchedCreateAccount());
+      if (serializedAccount?.name) {
+        dispatch(switchMasterKey(masterKey?.name, serializedAccount?.name));
+        dispatch(loadAllMasterKeyAccounts());
+      }
+    });
     console.timeEnd('TOTAL_TIME_CREATE_ACCOUNT');
     return serializedAccount;
   } catch (error) {
     dispatch(actionFetchFailCreateAccount());
     throw error;
-  } finally {
-    if (serializedAccount?.name) {
-      dispatch(switchMasterKey(masterKey?.name, serializedAccount?.name));
-    }
   }
 };
 
@@ -391,8 +397,11 @@ export const actionFetchImportAccount = ({ accountName, privateKey }) => async (
       if (selectedMasterKey !== masterless) {
         storeWalletAccountIdsOnAPI(wallet);
       }
-      dispatch(switchMasterKey(selectedMasterKey.name, accountName));
-      dispatch(actionFetchedImportAccount());
+      batch(() => {
+        dispatch(switchMasterKey(selectedMasterKey.name, accountName));
+        dispatch(actionFetchedImportAccount());
+        dispatch(loadAllMasterKeyAccounts());
+      });
     } else {
       throw new Error('Import keychain error');
     }
