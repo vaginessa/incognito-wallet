@@ -8,7 +8,6 @@ import { TradeSuccessModal } from '@screens/PDexV3/features/Trade';
 import { orderLimitDataSelector } from './OrderLimit.selector';
 import {
   actionInit,
-  actionSetDefaultPool,
   actionBookOrder,
   actionSetPoolSelected,
   actionReset,
@@ -18,12 +17,7 @@ import { TAB_BUY_ID, TAB_SELL_ID } from './OrderLimit.constant';
 const enhance = (WrappedComp) => (props) => {
   const dispatch = useDispatch();
   const handleInitOrderLimit = (refresh) => dispatch(actionInit(refresh));
-  const handleUnmount = async () => {
-    batch(() => {
-      dispatch(actionSetDefaultPool());
-      dispatch(actionReset());
-    });
-  };
+  const handleUnmount = () => dispatch(actionReset());
   const actionChangeTab = () => handleInitOrderLimit(false);
   const { sellColor, buyColor, cfmTitle } = useSelector(orderLimitDataSelector);
   const tabsFactories = [

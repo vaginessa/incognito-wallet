@@ -91,12 +91,6 @@ export const getInputAmount = (
       poolValue = pool?.token2Value;
     }
     let poolValueStr = format.amountFull(poolValue, token.pDecimals, false);
-    console.log(
-      'isGettingBalance',
-      isGettingBalance,
-      'loading balance',
-      isGettingBalance.includes(token.tokenId),
-    );
     const data = {
       tokenId: token.tokenId,
       symbol: token.symbol,

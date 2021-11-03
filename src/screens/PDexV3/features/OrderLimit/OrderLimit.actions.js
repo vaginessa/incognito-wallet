@@ -15,6 +15,7 @@ import { change, reset } from 'redux-form';
 import { actionGetPDexV3Inst } from '@screens/PDexV3';
 import { batch } from 'react-redux';
 import { actionFetchOrderBook } from '@screens/PDexV3/features/Chart';
+import { actionSetDefaultPair } from '@screens/PDexV3/features/Swap';
 import {
   ACTION_FETCHING,
   ACTION_FETCHED,
@@ -76,11 +77,6 @@ export const actionSetFeeToken = (payload) => ({
   payload,
 });
 
-export const actionSetPoolSelected = (payload) => ({
-  type: ACTION_SET_POOL_ID,
-  payload,
-});
-
 export const actionIniting = (payload) => ({
   type: ACTION_SET_INITIING,
   payload,
@@ -95,6 +91,19 @@ export const actionSetBuyTokenFetched = (payload) => ({
   type: ACTION_SET_BUY_TOKEN,
   payload,
 });
+
+export const actionSetPoolSelected = (payload) => async (
+  dispatch,
+  getState,
+) => {
+  batch(async () => {
+    await dispatch({
+      type: ACTION_SET_POOL_ID,
+      payload,
+    });
+    dispatch(actionSetDefaultPool());
+  });
+};
 
 export const actionSetSellToken = (selltokenId, refresh) => async (
   dispatch,
@@ -157,7 +166,13 @@ export const actionSetDefaultPool = () => async (dispatch, getState) => {
     if (!pool) {
       return;
     }
-    await pDexV3Inst.setDefaultPool(pool?.poolId);
+    const { token1, token2 } = pool;
+    pDexV3Inst.setDefaultPool(pool?.poolId);
+    const defaultPair = {
+      selltoken: token1?.tokenId,
+      buytoken: token2?.tokenId,
+    };
+    dispatch(actionSetDefaultPair(defaultPair));
   } catch (error) {
     new ExHandler(error).showErrorToast();
   }
