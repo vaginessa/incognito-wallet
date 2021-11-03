@@ -17,8 +17,10 @@ const enhance = (WrappedComp) => (props) => {
   const unmountSwap = () => {
     dispatch(actionReset());
   };
-  const initSwapForm = (defaultPair = swapInfo?.defaultPair) =>
-    dispatch(actionInitSwapForm(defaultPair));
+  const initSwapForm = (refresh = false) =>
+    dispatch(
+      actionInitSwapForm({ defaultPair: swapInfo?.defaultPair, refresh }),
+    );
   const handleConfirm = async () => {
     try {
       const tx = await dispatch(actionFetchSwap());
@@ -45,7 +47,7 @@ const enhance = (WrappedComp) => (props) => {
     }
   };
   React.useEffect(() => {
-    initSwapForm();
+    initSwapForm(true);
     return () => {
       unmountSwap();
     };

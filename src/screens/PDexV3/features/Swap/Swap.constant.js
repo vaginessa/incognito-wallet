@@ -28,6 +28,7 @@ export const ACTION_FETCHING_ORDER_DETAIL =
   '[pDexV3][swap] Fetching order detail';
 export const ACTION_FETCHED_ORDER_DETAIL =
   '[pDexV3][swap] Fetched order detail';
+export const ACTION_SET_DEFAULT_PAIR = '[pDexV3][swap] Set default pair';
 
 export const TAB_SIMPLE_ID = 'simple';
 export const TAB_PRO_ID = 'pro';

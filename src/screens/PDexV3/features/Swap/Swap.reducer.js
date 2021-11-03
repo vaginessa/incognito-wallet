@@ -19,6 +19,7 @@ import {
   ACTION_FETCH_FAIL_ORDERS_HISTORY,
   ACTION_FETCHING_ORDER_DETAIL,
   ACTION_FETCHED_ORDER_DETAIL,
+  ACTION_SET_DEFAULT_PAIR,
 } from './Swap.constant';
 
 const initialState = {
@@ -50,6 +51,14 @@ const initialState = {
 
 export default (state = initialState, action) => {
   switch (action.type) {
+  case ACTION_SET_DEFAULT_PAIR: {
+    const { selltoken, buytoken } = action.payload;
+    return {
+      ...state,
+      selltoken,
+      buytoken,
+    };
+  }
   case ACTION_FETCHING_ORDER_DETAIL: {
     const { orderDetail } = state;
     return {

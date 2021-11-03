@@ -17,6 +17,7 @@ import convert from '@src/utils/convert';
 import format from '@src/utils/format';
 import BigNumber from 'bignumber.js';
 import floor from 'lodash/floor';
+import difference from 'lodash/difference';
 import {
   ACTION_FETCHING,
   ACTION_FETCHED,
@@ -38,6 +39,7 @@ import {
   ACTION_FETCH_FAIL_ORDERS_HISTORY,
   ACTION_FETCHING_ORDER_DETAIL,
   ACTION_FETCHED_ORDER_DETAIL,
+  ACTION_SET_DEFAULT_PAIR,
 } from './Swap.constant';
 import {
   buytokenSelector,
@@ -48,6 +50,7 @@ import {
   orderDetailSelector,
   swapInfoSelector,
   slippagetoleranceSelector,
+  swapSelector,
 } from './Swap.selector';
 import { calMintAmountExpected } from './Swap.utils';
 
@@ -246,12 +249,16 @@ export const actionFetchedPairs = (payload) => ({
   type: ACTION_FETCHED_LIST_PAIRS,
 });
 
-export const actionFetchPairs = () => async (dispatch, getState) => {
+export const actionFetchPairs = (refresh) => async (dispatch, getState) => {
   let pairs = [];
   try {
     let state = getState();
     const account = defaultAccountWalletSelector(state);
     const pDexV3Inst = await getPDexV3Instance({ account });
+    const { pairs: listPairs } = swapSelector(state);
+    if (!refresh && listPairs.length > 0) {
+      return listPairs;
+    }
     pairs = (await pDexV3Inst.getListPair()) || [];
     pairs = pairs.reduce(
       (prev, current) =>
@@ -266,16 +273,18 @@ export const actionFetchPairs = () => async (dispatch, getState) => {
   return pairs;
 };
 
-export const actionInitSwapForm = (defaultPair) => async (
+export const actionInitSwapForm = ({ defaultPair, refresh }) => async (
   dispatch,
   getState,
 ) => {
   try {
+    await dispatch(actionInitingSwapForm(true));
     await dispatch(reset(formConfigs.formName));
     let pair = defaultPair;
-    await dispatch(actionInitingSwapForm(true));
-    if (!pair?.selltoken || !pair?.buytoken) {
-      const pairs = await dispatch(actionFetchPairs());
+    const pairs = await dispatch(actionFetchPairs(refresh));
+    const isDefaultPairExisted =
+      difference([pair?.selltoken, pair?.buytoken], pairs).length === 0;
+    if (!pair?.selltoken || !pair?.buytoken || !isDefaultPairExisted) {
       pair = {
         selltoken: PRV_ID,
         buytoken:
@@ -526,3 +535,8 @@ export const actionFetchDataOrderDetail = () => async (dispatch, getState) => {
     await dispatch(actionFetchedOrderDetail(_order));
   }
 };
+
+export const actionSetDefaultPair = (payload) => ({
+  type: ACTION_SET_DEFAULT_PAIR,
+  payload,
+});
