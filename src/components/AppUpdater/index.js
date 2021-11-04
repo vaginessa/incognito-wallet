@@ -25,7 +25,6 @@ import styles from './styles';
 
 let displayedNews = false;
 let ignored = false;
-let data;
 
 class AppUpdater extends PureComponent {
   static instance = null;
@@ -148,7 +147,14 @@ class AppUpdater extends PureComponent {
           updateDialog: {
             optionalInstallButtonLabel: 'Update',
           },
-          installMode: codePush.InstallMode.IMMEDIATE,
+          checkFrequency: codePush.CheckFrequency.ON_APP_RESUME,
+          installMode: codePush.InstallMode.ON_NEXT_SUSPEND,
+          mandatoryInstallMode: codePush.InstallMode.IMMEDIATE,
+          minimumBackgroundDuration: 1,
+          rollbackRetryOptions: {
+            delayInHours: 0.5,
+            maxRetryAttempts: 5
+          }
         },
         this.handleStatusChange,
         this.handleDownload,
