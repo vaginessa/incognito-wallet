@@ -273,10 +273,10 @@ export const actionFetchPairs = (refresh) => async (dispatch, getState) => {
   return pairs;
 };
 
-export const actionInitSwapForm = ({ defaultPair, refresh }) => async (
-  dispatch,
-  getState,
-) => {
+export const actionInitSwapForm = ({
+  refresh = true,
+  defaultPair = {},
+} = {}) => async (dispatch, getState) => {
   try {
     await dispatch(actionInitingSwapForm(true));
     await dispatch(reset(formConfigs.formName));
@@ -328,8 +328,11 @@ export const actionSwapToken = () => async (dispatch, getState) => {
     await dispatch(actionSetSwapingToken(true));
     await dispatch(
       actionInitSwapForm({
-        selltoken: buytoken,
-        buytoken: selltoken,
+        defaultPair: {
+          selltoken: buytoken,
+          buytoken: selltoken,
+        },
+        refresh: false,
       }),
     );
   } catch (error) {
