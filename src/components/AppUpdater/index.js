@@ -19,11 +19,13 @@ import {
   isToggleBackupAllKeysSelector,
   actionToggleBackupAllKeys,
 } from '@src/screens/Setting';
+import {actionLogEvent} from '@screens/Performance';
 import { BtnClose, ButtonBasic } from '../Button';
 import styles from './styles';
 
 let displayedNews = false;
 let ignored = false;
+let data;
 
 class AppUpdater extends PureComponent {
   static instance = null;
@@ -75,6 +77,33 @@ class AppUpdater extends PureComponent {
   }
 
   handleStatusChange = (newStatus) => {
+    const { logEvent } = this.props;
+    switch(newStatus) {
+    case codePush.SyncStatus.CHECKING_FOR_UPDATE:
+      logEvent('[SANG] Checking for update.');
+      break;
+    case codePush.SyncStatus.DOWNLOADING_PACKAGE:
+      logEvent('[SANG] Downloading package.');
+      break;
+    case codePush.SyncStatus.AWAITING_USER_ACTION:
+      logEvent('[SANG] Awaiting user action.');
+      break;
+    case codePush.SyncStatus.INSTALLING_UPDATE:
+      logEvent('[SANG] Installing update.');
+      break;
+    case codePush.SyncStatus.UP_TO_DATE:
+      logEvent('[SANG] App up to date.');
+      break;
+    case codePush.SyncStatus.UPDATE_IGNORED:
+      logEvent('[SANG] Update cancelled by user.');
+      break;
+    case codePush.SyncStatus.UPDATE_INSTALLED:
+      logEvent('[SANG] Update installed and will be applied on restart.');
+      break;
+    case codePush.SyncStatus.UNKNOWN_ERROR:
+      logEvent('[SANG] An unknown error occurred.');
+      break;
+    }
     switch (newStatus) {
     case codePush.SyncStatus.DOWNLOADING_PACKAGE:
       this.setState({ downloading: true });
@@ -103,9 +132,13 @@ class AppUpdater extends PureComponent {
   };
 
   async checkNewVersion() {
+    const { logEvent } = this.props;
     if (ignored) {
       return;
     }
+
+    const metadata = await codePush.getUpdateMetadata();
+    logEvent(JSON.stringify(metadata));
 
     try {
       await codePush.sync(
@@ -229,6 +262,7 @@ const mapState = (state) => ({
 const mapDispatch = (dispatch) => ({
   toggleBackupAllKeys: (payload) =>
     dispatch(actionToggleBackupAllKeys(payload)),
+  logEvent: (message) => dispatch(actionLogEvent({ desc: message }))
 });
 
 export default compose(
