@@ -19,11 +19,13 @@ import {
   isToggleBackupAllKeysSelector,
   actionToggleBackupAllKeys,
 } from '@src/screens/Setting';
+import {actionLogEvent} from '@screens/Performance';
 import { BtnClose, ButtonBasic } from '../Button';
 import styles from './styles';
 
 let displayedNews = false;
 let ignored = false;
+let data;
 
 class AppUpdater extends PureComponent {
   static instance = null;
@@ -59,7 +61,9 @@ class AppUpdater extends PureComponent {
     }
 
     try {
+      const { logEvent } = this.props;
       const metadata = await codePush.getUpdateMetadata();
+      logEvent(JSON.stringify(metadata));
       const { isFirstRun, description, appVersion } = metadata || {};
       if (isFirstRun && description) {
         displayedNews = true;
@@ -75,6 +79,33 @@ class AppUpdater extends PureComponent {
   }
 
   handleStatusChange = (newStatus) => {
+    const { logEvent } = this.props;
+    switch(newStatus) {
+    case codePush.SyncStatus.CHECKING_FOR_UPDATE:
+      logEvent('[CODE_PUSH] Checking for update.');
+      break;
+    case codePush.SyncStatus.DOWNLOADING_PACKAGE:
+      logEvent('[CODE_PUSH] Downloading package.');
+      break;
+    case codePush.SyncStatus.AWAITING_USER_ACTION:
+      logEvent('[CODE_PUSH] Awaiting user action.');
+      break;
+    case codePush.SyncStatus.INSTALLING_UPDATE:
+      logEvent('[CODE_PUSH] Installing update.');
+      break;
+    case codePush.SyncStatus.UP_TO_DATE:
+      logEvent('[CODE_PUSH] App up to date.');
+      break;
+    case codePush.SyncStatus.UPDATE_IGNORED:
+      logEvent('[CODE_PUSH] Update cancelled by user.');
+      break;
+    case codePush.SyncStatus.UPDATE_INSTALLED:
+      logEvent('[CODE_PUSH] Update installed and will be applied on restart.');
+      break;
+    case codePush.SyncStatus.UNKNOWN_ERROR:
+      logEvent('[CODE_PUSH] An unknown error occurred.');
+      break;
+    }
     switch (newStatus) {
     case codePush.SyncStatus.DOWNLOADING_PACKAGE:
       this.setState({ downloading: true });
@@ -96,16 +127,22 @@ class AppUpdater extends PureComponent {
   };
 
   handleDownload = (progress) => {
+    const { logEvent } = this.props;
     const percent = Math.floor(
       (progress.receivedBytes / progress.totalBytes) * 100,
     );
+    logEvent(JSON.stringify({ percent, progress }));
     this.setState({ percent });
   };
 
   async checkNewVersion() {
+    const { logEvent } = this.props;
     if (ignored) {
       return;
     }
+
+    const metadata = await codePush.getUpdateMetadata();
+    logEvent(JSON.stringify(metadata));
 
     try {
       await codePush.sync(
@@ -113,7 +150,14 @@ class AppUpdater extends PureComponent {
           updateDialog: {
             optionalInstallButtonLabel: 'Update',
           },
-          installMode: codePush.InstallMode.IMMEDIATE,
+          checkFrequency: codePush.CheckFrequency.ON_APP_RESUME,
+          installMode: codePush.InstallMode.ON_NEXT_SUSPEND,
+          mandatoryInstallMode: codePush.InstallMode.IMMEDIATE,
+          minimumBackgroundDuration: 1,
+          rollbackRetryOptions: {
+            delayInHours: 0.5,
+            maxRetryAttempts: 5
+          }
         },
         this.handleStatusChange,
         this.handleDownload,
@@ -161,7 +205,7 @@ class AppUpdater extends PureComponent {
   render() {
     const { downloading, updating, news, appVersion } = this.state;
     const { isToggleBackupAllKeys } = this.props;
-    const disabled = !(updating || downloading) && !news;
+    const disabled = !(updating || downloading || !!news) && !news;
     return (
       <View>
         <Dialog visible={updating || downloading} dialogStyle={styles.dialog}>
@@ -229,6 +273,7 @@ const mapState = (state) => ({
 const mapDispatch = (dispatch) => ({
   toggleBackupAllKeys: (payload) =>
     dispatch(actionToggleBackupAllKeys(payload)),
+  logEvent: (message) => dispatch(actionLogEvent({ desc: message }))
 });
 
 export default compose(

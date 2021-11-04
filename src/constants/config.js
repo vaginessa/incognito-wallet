@@ -27,7 +27,7 @@ const BSCSCAN_URL = isMainnet
   : 'https://testnet.bscscan.com';
 const BTC_EXPLORER_URL = isMainnet
   ? 'https://live.blockcypher.com/btc'
-  : 'https://live.blockcypher.com/btc-testnet';  
+  : 'https://live.blockcypher.com/btc-testnet';
 const DEX_BINANCE_TOKEN_URL = isMainnet
   ? 'https://dex.binance.org/api/v1/tokens'
   : 'https://testnet-dex.binance.org/api/v1/tokens';
@@ -55,7 +55,7 @@ const ETH_TOKEN_ID = isMainnet
   : 'ffd8d42dc40a8d166ea4848baf8b5f6e9fe0e9c30d60062eb7d44a8df9e00854';
 
 const CRYPTO_ICON_URL =
-  'https://s3.amazonaws.com/incognito-org/wallet/cryptocurrency-icons/32@2x/color';
+  'https://statics.incognito.org/wallet/cryptocurrency-icons/32@2x/color';
 
 const HOME_CONFIG_DATA =
   global.homeConfig !== 'staging'

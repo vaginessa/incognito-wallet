@@ -7,6 +7,7 @@ const initialState = {
   data: [],
   error: null,
   banners: [],
+  codepushVersion: ''
 };
 
 const reducer = (state = initialState, action) => {
@@ -21,6 +22,11 @@ const reducer = (state = initialState, action) => {
       ...state,
       banners: action.payload || []
     };
+  case type.SET_CODE_PUSH_VERSION:
+    return {
+      ...state,
+      codepushVer: action.payload || ''
+    };
   default:
     return state;
   }
@@ -31,6 +37,7 @@ const persistConfig = {
   storage: AsyncStorage,
   whitelist: [
     'banners',
+    'codepushVersion'
   ],
   stateReconciler: autoMergeLevel2,
 };
