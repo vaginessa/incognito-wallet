@@ -29,3 +29,9 @@ export const getBanners = () => async dispatch => {
     console.log('getBanners errors: ', e);
   }
 };
+
+
+export const setCodePushVersion = (data) => ({
+  type: type.SET_CODE_PUSH_VERSION,
+  payload: data
+});
