@@ -188,6 +188,7 @@ export const createMasterKey = (data) => async (dispatch) => {
       dispatch(reloadWallet());
       dispatch(actionSubmitOTAKeyForListAccount(wallet));
       storeWalletAccountIdsOnAPI(wallet);
+      dispatch(loadAllMasterKeyAccounts());
     });
   } catch (error) {
     throw error;
@@ -295,6 +296,7 @@ export const importMasterKey = (data) => async (dispatch) => {
       dispatch(reloadWallet());
       dispatch(actionSubmitOTAKeyForListAccount(wallet));
       dispatch(syncUnlinkWithNewMasterKey(newMasterKey));
+      dispatch(loadAllMasterKeyAccounts());
     });
   } catch (error) {
     throw error;
@@ -317,17 +319,27 @@ const removeMasterKeySuccess = (history) => ({
 });
 
 export const removeMasterKey = (name) => async (dispatch, getState) => {
-  const state = getState();
-  const list = masterKeysSelector(state);
-  const newList = _.remove([...list], (item) => item.name !== name);
-  const activeItem = newList.find((item) => item.isActive);
-  if (!activeItem) {
-    const firstItem = newList.filter(
-      (item) => item.name.toLowerCase() !== 'masterless',
-    )[0];
-    await dispatch(switchMasterKey(firstItem.name));
+  try {
+    const state = getState();
+    const list = masterKeysSelector(state);
+    const newList = _.remove([...list], (item) => item.name !== name);
+    const activeItem = newList.find((item) => item.isActive);
+    if (!activeItem) {
+      const firstItem = newList.filter(
+        (item) => item.name.toLowerCase() !== 'masterless',
+      )[0];
+      batch(() => {
+        dispatch(switchMasterKey(firstItem.name));
+      });
+    }
+    batch(() => {
+      dispatch(removeMasterKeySuccess(name));
+      dispatch(loadAllMasterKeys());
+      dispatch(loadAllMasterKeyAccounts());
+    });
+  } catch (error) {
+    new ExHandler(error).showErrorToast();
   }
-  await dispatch(removeMasterKeySuccess(name));
 };
 
 const loadAllMasterKeyAccountsSuccess = (accounts) => ({

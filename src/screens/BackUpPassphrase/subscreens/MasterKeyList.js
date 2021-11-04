@@ -2,16 +2,13 @@ import React, { useCallback } from 'react';
 import MainLayout from '@components/MainLayout/index';
 import { VirtualizedList, StyleSheet } from 'react-native';
 import MasterKey from '@screens/BackUpPassphrase/components/MasterKey';
-import {
-  useDispatch,
-  useSelector,
-} from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   masterlessKeyChainSelector,
   noMasterLessSelector,
 } from '@src/redux/selectors/masterKey';
 import Action from '@screens/BackUpPassphrase/components/Action';
-import { View , Text} from '@components/core';
+import { View, Text } from '@components/core';
 import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@routers/routeNames';
 import { removeMasterKey, switchMasterKey } from '@src/redux/actions/masterKey';
@@ -38,18 +35,20 @@ const MasterKeyList = () => {
   const dispatch = useDispatch();
   const list = useSelector(noMasterLessSelector);
   const masterlessKeyChains = useSelector(masterlessKeyChainSelector);
-
-  const renderItem = useCallback(({ item }) => {
-    return (
-      <MasterKey
-        number={item.noOfKeychains}
-        name={item.name}
-        onPress={() => handleSwitch(item.name)}
-        onDelete={list.length === 1 ? undefined : handleDelete}
-        isActive={item.isActive}
-      />
-    );
-  }, [list]);
+  const renderItem = useCallback(
+    ({ item }) => {
+      return (
+        <MasterKey
+          number={item.noOfKeychains}
+          name={item.name}
+          onPress={() => handleSwitch(item.name)}
+          onDelete={list.length === 1 ? undefined : handleDelete}
+          isActive={item.isActive}
+        />
+      );
+    },
+    [list],
+  );
 
   const handleCreate = useCallback(() => {
     navigation.navigate(routeNames.CreateMasterKey);
@@ -75,15 +74,17 @@ const MasterKeyList = () => {
           data={list}
           renderItem={renderItem}
           getItem={(data, index) => data[index]}
-          getItemCount={data => data.length}
+          getItemCount={(data) => data.length}
           keyExtractor={(item) => item.name}
           showsVerticalScrollIndicator={false}
           showsHorizontalScrollIndicator={false}
         />
       </View>
-      { masterlessKeyChains.noOfKeychains > 0 && (
+      {masterlessKeyChains.noOfKeychains > 0 && (
         <View style={styles.actions}>
-          <Text style={[styles.padding, styles.title]}>Masterless keychains</Text>
+          <Text style={[styles.padding, styles.title]}>
+            Masterless keychains
+          </Text>
           <MasterKey
             name="Tap to manage"
             number={masterlessKeyChains.noOfKeychains}
