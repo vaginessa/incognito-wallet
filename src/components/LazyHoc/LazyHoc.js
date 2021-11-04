@@ -17,7 +17,7 @@ const withLazy = WrappedComp => props => {
     InteractionManager.runAfterInteractions(() => {
       setTimeout(() => {
         setHidden(false);
-      }, 300);
+      }, 100);
     });
   }, []);
 
