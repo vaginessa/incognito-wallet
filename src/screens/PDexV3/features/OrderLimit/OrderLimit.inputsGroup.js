@@ -315,7 +315,9 @@ const SelectPercentAmountInput = React.memo(() => {
   const sellInputAmount = inputAmount(formConfigs.selltoken);
   const buyInputAmount = inputAmount(formConfigs.buytoken);
   const { customRate } = useSelector(rateDataSelector);
-  const { mainColor, percent: selected } = useSelector(orderLimitDataSelector);
+  const { mainColor, percent: selected, activedTab } = useSelector(
+    orderLimitDataSelector,
+  );
   const onPressPercent = (percent) => {
     let _percent;
     if (percent === selected) {
@@ -337,10 +339,27 @@ const SelectPercentAmountInput = React.memo(() => {
     );
     amount = convert.toHumanAmount(originalAmount, sellInputAmount?.pDecimals);
     const amounText = format.toFixed(amount, sellInputAmount?.pDecimals);
-    const buyAmount = format.toFixed(
-      new BigNumber(amount).multipliedBy(new BigNumber(customRate)).toNumber(),
-      buyInputAmount?.pDecimals,
-    );
+    let buyAmount = '';
+    switch (activedTab) {
+    case TAB_BUY_ID: {
+      buyAmount = format.toFixed(
+        new BigNumber(amount).dividedBy(new BigNumber(customRate)).toNumber(),
+          buyInputAmount?.pDecimals,
+      );
+      break;
+    }
+    case TAB_SELL_ID: {
+      buyAmount = format.toFixed(
+        new BigNumber(amount)
+          .multipliedBy(new BigNumber(customRate))
+          .toNumber(),
+          buyInputAmount?.pDecimals,
+      );
+      break;
+    }
+    default:
+      break;
+    }
     dispatch(change(formConfigs.formName, formConfigs.buytoken, buyAmount));
     dispatch(change(formConfigs.formName, formConfigs.selltoken, amounText));
     dispatch(focus(formConfigs.formName, formConfigs.selltoken));
