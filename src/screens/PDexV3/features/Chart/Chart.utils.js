@@ -14,16 +14,27 @@ export const mappingOrderBook = (params) => {
         token1Balance,
         token2Balance,
       }) => {
-        const priceStr = getPairRate({
+        const rate = getPairRate({
           token1,
           token2,
           token1Value,
           token2Value,
         });
-        const price = convert.toNumber(priceStr, true);
+        const price = convert.toNumber(rate, true);
         let volumeOriginalAmount = 0,
+          priceOriginalAmount = 0,
           volume,
           volumeStr;
+        priceOriginalAmount = convert.toOriginalAmount(
+          price,
+          token2?.pDecimals,
+          true,
+        );
+        const priceStr = format.amountFull(
+          priceOriginalAmount,
+          token2?.pDecimals,
+          true,
+        );
         if (isBuy) {
           volumeOriginalAmount = token2Balance;
           volume = convert.toHumanAmount(
@@ -37,7 +48,11 @@ export const mappingOrderBook = (params) => {
             volume,
             token2.pDecimals,
           );
-          volumeStr = format.amountFull(volumeOriginalAmount, token2?.pDecimals, true);
+          volumeStr = format.amountFull(
+            volumeOriginalAmount,
+            token2?.pDecimals,
+            true,
+          );
         } else if (isSell) {
           volumeOriginalAmount = token1Balance;
           volume = convert.toHumanAmount(

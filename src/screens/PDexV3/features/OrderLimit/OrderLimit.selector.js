@@ -10,7 +10,11 @@ import { formValueSelector, isValid } from 'redux-form';
 import isEmpty from 'lodash/isEmpty';
 import { createSelector } from 'reselect';
 import SelectedPrivacy from '@src/models/selectedPrivacy';
-import { getExchangeRate, getPairRate } from '@screens/PDexV3';
+import {
+  getExchangeRate,
+  getPairRate,
+  getOriginalPairRate,
+} from '@screens/PDexV3';
 import { getDataByPoolIdSelector } from '@screens/PDexV3/features/Pools';
 import { activedTabSelector } from '@src/components/core/Tabs/Tabs.selector';
 import { nftTokenDataSelector } from '@src/redux/selectors/account';
@@ -468,12 +472,13 @@ export const mappingOrderHistorySelector = createSelector(
       if (sellTokenId === token1.tokenId) {
         type = 'sell';
         mainColor = COLORS.red;
-        priceStr = getPairRate({
+        const originalPrice = getOriginalPairRate({
           token1Value: amount,
           token2Value: price,
           token1: sellToken,
           token2: buyToken,
         });
+        priceStr = format.amountFull(originalPrice, buyToken?.pDecimals, true);
         rateStr = getExchangeRate(sellToken, buyToken, amount, price);
         const sellAmount = format.amountFull(
           amount,
@@ -488,12 +493,13 @@ export const mappingOrderHistorySelector = createSelector(
       } else if (buyTokenId === token1.tokenId) {
         type = 'buy';
         mainColor = COLORS.green;
-        priceStr = getPairRate({
+        const originalPrice = getOriginalPairRate({
           token1Value: price,
           token2Value: amount,
           token1: buyToken,
           token2: sellToken,
         });
+        priceStr = format.amountFull(originalPrice, sellToken?.pDecimals, true);
         rateStr = getExchangeRate(buyToken, sellToken, price, amount);
         const sellAmount = format.amountFull(
           amount,

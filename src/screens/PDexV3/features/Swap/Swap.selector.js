@@ -265,7 +265,7 @@ export const swapInfoSelector = createSelector(
         sellInputAmount.tokenData,
         buyInputAmount.tokenData,
         sellInputAmount.originalAmount,
-        buyInputAmount.originalAmount,
+        maxGet,
       );
       const defaultPair = {
         selltoken: sellInputAmount.tokenId,
