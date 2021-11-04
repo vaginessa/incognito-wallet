@@ -1,8 +1,11 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
+import { useNavigationParam, useNavigation } from 'react-navigation-hooks';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Tabs } from '@src/components/core';
+import { withLayout_2 } from '@src/components/Layout';
+import { Header } from '@src/components';
 import PoolsList from './Pools.list';
 import {
   listPoolsSelector,
@@ -27,16 +30,24 @@ const TabMarket = React.memo(({ onPressPool }) => {
   return <PoolsList listPools={listPools} onPressPool={onPressPool} />;
 });
 
-const PoolsTab = (props) => {
-  const { onPressPool } = props;
+const PoolsTab = () => {
+  const onPressPoolParam = useNavigationParam('onPressPool');
+  const { goBack } = useNavigation();
+  const onPressPool = (poolId) => {
+    if (typeof onPressPoolParam === 'function') {
+      onPressPoolParam(poolId);
+    }
+    goBack();
+  };
   return (
     <View style={styled.container}>
-      <Tabs rootTabID={ROOT_TAB_POOLS} styledTabs={styled.styledTabs} useTab1>
-        <View tabID={TAB_MARKET} label="Favorites" onChangeTab={() => null}>
-          <TabFollowing onPressPool={onPressPool} />
-        </View>
+      <Header title="Select coins" />
+      <Tabs rootTabID={ROOT_TAB_POOLS} useTab1 style={styled.tabs}>
         <View tabID={TAB_FOLLOWING} label="All" onChangeTab={() => null}>
           <TabMarket onPressPool={onPressPool} />
+        </View>
+        <View tabID={TAB_MARKET} label="Favorites" onChangeTab={() => null}>
+          <TabFollowing onPressPool={onPressPool} />
         </View>
       </Tabs>
     </View>
@@ -47,4 +58,4 @@ PoolsTab.propTypes = {
   onPressPool: PropTypes.func.isRequired,
 };
 
-export default React.memo(PoolsTab);
+export default withLayout_2(React.memo(PoolsTab));

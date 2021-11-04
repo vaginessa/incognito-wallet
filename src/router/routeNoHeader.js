@@ -95,7 +95,7 @@ import SelectTokenStreamline from '@screens/Streamline/features/SelectTokens';
 import ConvertTokenList from '@screens/Home/features/ConvertTokenList';
 import HistoryConvert from '@src/screens/Home/features/HistoryConvert';
 import HomePDexV3 from '@screens/PDexV3/features/Home';
-import { PoolsList } from '@screens/PDexV3/features/Pools';
+import { PoolsList, PoolsTab } from '@screens/PDexV3/features/Pools';
 import { ReviewOrderSwap, OrdeSwapDetail } from '@screens/PDexV3/features/Swap';
 import Trade, {
   ReviewOrder,
@@ -106,7 +106,9 @@ import OrderLimit, {
   ReviewOrderLimit,
   OrderLimitDetail,
 } from '@src/screens/PDexV3/features/OrderLimit';
-import SelectTokenTrade from '@screens/PDexV3/features/SelectToken';
+import SelectTokenTrade, {
+  SelectTokenModal,
+} from '@screens/PDexV3/features/SelectToken';
 import Chart from '@screens/PDexV3/features/Chart';
 import WebView from '@screens/WebView';
 import {
@@ -320,6 +322,14 @@ const pDexV3Routes = [
   {
     screen: OrdeSwapDetail,
     name: routeNames.OrdeSwapDetail,
+  },
+  {
+    screen: PoolsTab,
+    name: routeNames.PoolsTab,
+  },
+  {
+    screen: SelectTokenModal,
+    name: routeNames.SelectTokenModal,
   },
 ];
 
@@ -690,7 +700,7 @@ const routes = [
   ...masterKeyRoutes,
   ...devRoutes,
   ...pDexV3Routes,
-  ...homeRoutes
+  ...homeRoutes,
 ];
 
 export const getRoutesNoHeader = () =>

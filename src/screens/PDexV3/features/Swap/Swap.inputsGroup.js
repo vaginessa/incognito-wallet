@@ -12,8 +12,9 @@ import { Row } from '@src/components';
 import { ButtonTrade } from '@src/components/Button';
 import { COLORS, FONT } from '@src/styles';
 import { actionToggleModal } from '@src/components/Modal';
-import ModalBottomSheet from '@src/components/Modal/features/ModalBottomSheet';
-import { SelectTokenModal } from '@screens/PDexV3/features/SelectToken';
+import { Hook } from '@screens/PDexV3/features/Extra';
+import { useNavigation } from 'react-navigation-hooks';
+import routeNames from '@src/router/routeNames';
 import { maxAmountValidatorForSellInput } from './Swap.utils';
 import { formConfigs } from './Swap.constant';
 import {
@@ -31,10 +32,10 @@ import {
   actionSwapToken,
 } from './Swap.actions';
 import { inputGroupStyled as styled } from './Swap.styled';
-import { Hook } from '../Extra';
 
 const SwapInputsGroup = React.memo(() => {
   const dispatch = useDispatch();
+  const navigation = useNavigation();
   const swapInfo = useSelector(swapInfoSelector);
   const swap = useSelector(swapSelector);
   const pairsToken = useSelector(listPairsSelector);
@@ -48,46 +49,21 @@ const SwapInputsGroup = React.memo(() => {
     dispatch(actionToggleModal());
   };
   const onSelectSellToken = () => {
-    dispatch(
-      actionToggleModal({
-        visible: true,
-        shouldCloseModalWhenTapOverlay: true,
-        data: (
-          <ModalBottomSheet
-            customContent={(
-              <SelectTokenModal
-                data={pairsToken.filter(
-                  (token: SelectedPrivacy) =>
-                    token?.tokenId !== selltoken?.tokenId,
-                )}
-                onPress={(token) => onSelectToken(token, formConfigs.selltoken)}
-              />
-            )}
-          />
-        ),
-      }),
-    );
+    navigation.navigate(routeNames.SelectTokenModal, {
+      data: pairsToken.filter(
+        (token: SelectedPrivacy) => token?.tokenId !== selltoken?.tokenId,
+      ),
+      onPress: (token) => onSelectToken(token, formConfigs.selltoken),
+    });
   };
-  const onSelectBuyToken = () =>
-    dispatch(
-      actionToggleModal({
-        visible: true,
-        shouldCloseModalWhenTapOverlay: true,
-        data: (
-          <ModalBottomSheet
-            customContent={(
-              <SelectTokenModal
-                data={pairsToken.filter(
-                  (token: SelectedPrivacy) =>
-                    token?.tokenId !== buytoken?.tokenId,
-                )}
-                onPress={(token) => onSelectToken(token, formConfigs.buytoken)}
-              />
-            )}
-          />
-        ),
-      }),
-    );
+  const onSelectBuyToken = () => {
+    navigation.navigate(routeNames.SelectTokenModal, {
+      data: pairsToken.filter(
+        (token: SelectedPrivacy) => token?.tokenId !== buytoken?.tokenId,
+      ),
+      onPress: (token) => onSelectToken(token, formConfigs.buytoken),
+    });
+  };
   const onFocusToken = (e, field) => dispatch(actionSetFocusToken(swap[field]));
   const onEndEditing = (field) => dispatch(actionEstimateTrade(field));
   const onSwapButtons = () => dispatch(actionSwapToken());
