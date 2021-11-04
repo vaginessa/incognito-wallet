@@ -61,7 +61,8 @@ export const listPoolsSelector = createSelector(
           virtual2Value,
           price,
         } = pool;
-        const volumeToAmount = format.amount(Math.ceil(volume), 9);
+        const volumeOriginal = Math.ceil(new BigNumber(volume || 0).multipliedBy(Math.pow(10, 9)));
+        const volumeToAmount = format.amount(volumeOriginal, 9);
         const priceChangeToAmount = format.amount(priceChange, 0);
         const perChange24h = priceChange24H;
         const perChange24hToStr = `${format.toFixed(perChange24h, 2)}%`;
