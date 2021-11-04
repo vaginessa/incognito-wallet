@@ -12,7 +12,13 @@ export const bannersSelector = createSelector(
   ({ banners }) => banners
 );
 
+export const codepushVersionSelector = createSelector(
+  settingsSelector,
+  ({ codepushVer }) => codepushVer
+);
+
 export default {
   settings,
   bannersSelector,
+  codepushVersionSelector,
 };

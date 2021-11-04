@@ -73,7 +73,7 @@ const App = (props) => {
           }
         }}
       />
-      {logApp && <Performance />}
+      <Performance />
     </>
   );
 };

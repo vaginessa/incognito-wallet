@@ -10,7 +10,7 @@ const COLORS = {
   blue2: '#01828A',
   blue3: '#ACE9EC',
   blue4: '#004AA9',
-  blue5: '#5995F0',
+  blue5: '#4C8BF5',
   blue6: '#00407E',
   red: '#FF443A',
   red2: '#FF443A',
@@ -76,12 +76,12 @@ const COLORS = {
   colorGrey3: '#858383',
   colorGrey4: '#F7F7F7',
 
-  colorBlue: '#5995F0',
+  colorBlue: '#4C8BF5',
   green2: '#64A121',
   green3: '#018775',
   green4: '#6DD400',
 
-  colorTradeBlue: '#5995F0',
+  colorTradeBlue: '#4C8BF5',
 };
 
 export default {
