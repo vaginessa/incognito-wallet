@@ -60,7 +60,9 @@ class AppUpdater extends PureComponent {
     }
 
     try {
+      const { logEvent } = this.props;
       const metadata = await codePush.getUpdateMetadata();
+      logEvent(JSON.stringify(metadata));
       const { isFirstRun, description, appVersion } = metadata || {};
       if (isFirstRun && description) {
         displayedNews = true;
