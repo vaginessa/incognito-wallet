@@ -42,13 +42,6 @@ const enhance = (WrappedComp) => (props) => {
     let hasError;
     await setLoading(true);
     try {
-      const [servers] = await new Promise.all([
-        serverService.get(),
-        dispatch(actionLoadDefaultWallet()),
-      ]);
-      if (!servers || servers?.length === 0) {
-        await serverService.setDefaultList();
-      }
       login();
       batch(() => {
         dispatch(actionFetchProfile());
@@ -56,8 +49,15 @@ const enhance = (WrappedComp) => (props) => {
         dispatch(getInternalTokenList());
         dispatch(getBanners());
         dispatch(requestUpdateMetrics(ANALYTICS.ANALYTIC_DATA_TYPE.OPEN_APP));
-        dispatch(loadAllMasterKeyAccounts());
       });
+      const [servers] = await new Promise.all([
+        serverService.get(),
+        dispatch(actionLoadDefaultWallet()),
+      ]);
+      if (!servers || servers?.length === 0) {
+        await serverService.setDefaultList();
+      }
+      dispatch(loadAllMasterKeyAccounts());
     } catch (error) {
       hasError = !!error;
       await setError(getErrorMsg(error));
