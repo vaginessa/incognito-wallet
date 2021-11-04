@@ -35,7 +35,7 @@ SVGComponent.propTypes = {
 };
 
 AddGroupIcon.defaultProps = {
-  color: '#5995F0',
+  color: '#4C8BF5',
   size: 24,
 };
 
