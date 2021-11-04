@@ -80,28 +80,28 @@ class AppUpdater extends PureComponent {
     const { logEvent } = this.props;
     switch(newStatus) {
     case codePush.SyncStatus.CHECKING_FOR_UPDATE:
-      logEvent('[SANG] Checking for update.');
+      logEvent('[CODE_PUSH] Checking for update.');
       break;
     case codePush.SyncStatus.DOWNLOADING_PACKAGE:
-      logEvent('[SANG] Downloading package.');
+      logEvent('[CODE_PUSH] Downloading package.');
       break;
     case codePush.SyncStatus.AWAITING_USER_ACTION:
-      logEvent('[SANG] Awaiting user action.');
+      logEvent('[CODE_PUSH] Awaiting user action.');
       break;
     case codePush.SyncStatus.INSTALLING_UPDATE:
-      logEvent('[SANG] Installing update.');
+      logEvent('[CODE_PUSH] Installing update.');
       break;
     case codePush.SyncStatus.UP_TO_DATE:
-      logEvent('[SANG] App up to date.');
+      logEvent('[CODE_PUSH] App up to date.');
       break;
     case codePush.SyncStatus.UPDATE_IGNORED:
-      logEvent('[SANG] Update cancelled by user.');
+      logEvent('[CODE_PUSH] Update cancelled by user.');
       break;
     case codePush.SyncStatus.UPDATE_INSTALLED:
-      logEvent('[SANG] Update installed and will be applied on restart.');
+      logEvent('[CODE_PUSH] Update installed and will be applied on restart.');
       break;
     case codePush.SyncStatus.UNKNOWN_ERROR:
-      logEvent('[SANG] An unknown error occurred.');
+      logEvent('[CODE_PUSH] An unknown error occurred.');
       break;
     }
     switch (newStatus) {
@@ -125,9 +125,11 @@ class AppUpdater extends PureComponent {
   };
 
   handleDownload = (progress) => {
+    const { logEvent } = this.props;
     const percent = Math.floor(
       (progress.receivedBytes / progress.totalBytes) * 100,
     );
+    logEvent(JSON.stringify({ percent, progress }));
     this.setState({ percent });
   };
 
