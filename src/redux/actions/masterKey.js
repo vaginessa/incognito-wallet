@@ -435,17 +435,11 @@ export const actionSyncAccountMasterKey = (defaultMasterKey) => async (
 };
 
 export const actionLoadDefaultWallet = () => async (dispatch, getState) => {
-  console.time('TOTAL_TIME_LOAD_DEFAULT_WALLET');
   try {
-    console.time('LOAD_ALL_MASTER_KEYS');
     await dispatch(loadAllMasterKeys());
-    console.timeEnd('LOAD_ALL_MASTER_KEYS');
-    console.time('RELOAD_WALLET');
     const defaultAccountName = await accountServices.getDefaultAccountName();
     await dispatch(reloadWallet(defaultAccountName));
-    console.timeEnd('RELOAD_WALLET');
   } catch (error) {
     throw error;
   }
-  console.timeEnd('TOTAL_TIME_LOAD_DEFAULT_WALLET');
 };
