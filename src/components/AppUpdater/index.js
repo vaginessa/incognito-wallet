@@ -200,7 +200,7 @@ class AppUpdater extends PureComponent {
   render() {
     const { downloading, updating, news, appVersion } = this.state;
     const { isToggleBackupAllKeys } = this.props;
-    const disabled = !(updating || downloading) && !news;
+    const disabled = !(updating || downloading || !!news) && !news;
     return (
       <View>
         <Dialog visible={updating || downloading} dialogStyle={styles.dialog}>
