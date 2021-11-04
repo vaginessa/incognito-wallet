@@ -50,13 +50,11 @@ const enhance = (WrappedComp) => (props) => {
         dispatch(getBanners());
         dispatch(requestUpdateMetrics(ANALYTICS.ANALYTIC_DATA_TYPE.OPEN_APP));
       });
-      const [servers] = await new Promise.all([
-        serverService.get(),
-        dispatch(actionLoadDefaultWallet()),
-      ]);
+      const servers = await serverService.get();
       if (!servers || servers?.length === 0) {
         await serverService.setDefaultList();
       }
+      await dispatch(actionLoadDefaultWallet());
       dispatch(loadAllMasterKeyAccounts());
     } catch (error) {
       hasError = !!error;

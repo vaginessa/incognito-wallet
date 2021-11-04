@@ -57,12 +57,8 @@ export async function loadWallet(passphrase, name = 'Wallet', rootName = '') {
     let wallet = new Wallet();
     wallet.Name = name;
     wallet.RootName = rootName;
-    console.time('TIME_CONFIGS_WALLET');
     await configsWallet(wallet);
-    console.timeEnd('TIME_CONFIGS_WALLET');
-    console.time('TIME_LOAD_WALLET_LOCAL');
     wallet = await wallet.loadWallet(passphrase);
-    console.timeEnd('TIME_LOAD_WALLET_LOCAL');
     return wallet?.Name ? wallet : false;
   } catch (error) {
     console.log('ERROR WHEN LOAD WALLET', error);
@@ -75,6 +71,7 @@ export async function configsWallet(wallet) {
       return;
     }
     const server = await Server.getDefault();
+    console.log('defualt server', server?.id);
     wallet.RpcClient = server.address;
     wallet.RpcCoinService = server?.coinServices;
     wallet.Storage = storage;
