@@ -1,24 +1,19 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Text } from '@components/core';
-import { Row } from '@src/components';
+import { Row, Header } from '@src/components';
 import {
   handleFilterTokenByKeySearch,
   TokenTrade,
 } from '@src/components/Token';
 import { BaseTextInputCustom } from '@src/components/core/BaseTextInput';
 import { COLORS, FONT } from '@src/styles';
+import { withLayout_2 } from '@src/components/Layout';
+import { useNavigation, useNavigationParam } from 'react-navigation-hooks';
 import { ListAllTokenSelectable } from './SelectToken';
 
 const styled = StyleSheet.create({
   container: { flex: 1 },
-  title: {
-    color: COLORS.black,
-    fontSize: FONT.SIZE.superMedium,
-    lineHeight: FONT.SIZE.superMedium + 5,
-    fontFamily: FONT.NAME.medium,
-    marginBottom: 16,
-  },
   input: {
     fontSize: FONT.SIZE.small,
     lineHeight: FONT.SIZE.small + 5,
@@ -32,10 +27,15 @@ const styled = StyleSheet.create({
     marginTop: 16,
     flex: 1,
   },
+  header: {
+    marginBottom: 10,
+  },
 });
 
 const SelectTokenModal = (props) => {
-  const { data, onPress } = props;
+  const data = useNavigationParam('data');
+  const onPress = useNavigationParam('onPress');
+  const { goBack } = useNavigation();
   const [text, setText] = React.useState(text);
   const [availableTokens, setAvailableTokens] = React.useState([]);
   const onChange = (text) => {
@@ -58,7 +58,7 @@ const SelectTokenModal = (props) => {
   }
   return (
     <View style={styled.container}>
-      <Text style={styled.title}>Select coins</Text>
+      <Header title="Select coins" style={styled.header} />
       <BaseTextInputCustom
         inputProps={{
           onChangeText: onChange,
@@ -74,7 +74,15 @@ const SelectTokenModal = (props) => {
         <ListAllTokenSelectable
           availableTokens={availableTokens}
           renderItem={({ item }) => (
-            <TokenTrade onPress={() => onPress(item)} tokenId={item?.tokenId} />
+            <TokenTrade
+              onPress={() => {
+                if (typeof onPress === 'function') {
+                  onPress(item);
+                }
+                goBack();
+              }}
+              tokenId={item?.tokenId}
+            />
           )}
         />
       </View>
@@ -84,4 +92,4 @@ const SelectTokenModal = (props) => {
 
 SelectTokenModal.propTypes = {};
 
-export default React.memo(SelectTokenModal);
+export default withLayout_2(React.memo(SelectTokenModal));

@@ -41,9 +41,7 @@ export const priceHistorySelector = createSelector(
       case '15m':
       case '1h':
       case '4h':
-        xFormat = isBeforeCurDate
-          ? format.formatDateTime(x, 'DD/MM HH:mm')
-          : format.formatDateTime(x, 'HH:mm');
+        xFormat = format.formatDateTime(x, 'HH:mm');
         break;
       case '1d':
         xFormat = format.formatDateTime(x, 'DD/MM/YY');

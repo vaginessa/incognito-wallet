@@ -53,7 +53,7 @@ const enhance = (WrappedComp) => (props) => {
     {
       data: _verifiedTokens,
       visible: true,
-      styledListToken: { paddingTop: 27 },
+      styledListToken: { paddingTop: 0 },
     },
     {
       data: _unVerifiedTokens,

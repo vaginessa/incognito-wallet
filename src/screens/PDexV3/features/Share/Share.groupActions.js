@@ -79,32 +79,18 @@ export const GroupActions = ({
     colorPriceChange24h,
   } = useSelector(orderLimitDataSelector);
   const { rateStr } = useSelector(rateDataSelector);
-  const dispatch = useDispatch();
   const onPressChart = () =>
     navigation.navigate(routeNames.Chart, {
       poolId,
     });
   const handleSelectPool = () => {
-    dispatch(
-      actionToggleModal({
-        visible: true,
-        shouldCloseModalWhenTapOverlay: true,
-        data: (
-          <ModalBottomSheet
-            customContent={
-              <PoolsTab
-                onPressPool={async (poolId) => {
-                  dispatch(actionToggleModal());
-                  if (typeof callback === 'function') {
-                    callback(poolId);
-                  }
-                }}
-              />
-            }
-          />
-        ),
-      }),
-    );
+    navigation.navigate(routeNames.PoolsTab, {
+      onPressPool: (poolId) => {
+        if (typeof callback === 'function') {
+          callback(poolId);
+        }
+      },
+    });
   };
   return (
     <View style={styled.container}>
