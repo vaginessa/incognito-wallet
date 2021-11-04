@@ -31,9 +31,13 @@ export const mappingOrderBook = (params) => {
             token2?.pDecimals,
           );
           volume = new BigNumber(volume)
-            .dividedBy(new BigNumber(priceStr))
+            .dividedBy(new BigNumber(price))
             .toNumber();
-          volumeStr = format.amountFull(volume, 0, true);
+          volumeOriginalAmount = convert.toOriginalAmount(
+            volume,
+            token2.pDecimals,
+          );
+          volumeStr = format.amountFull(volumeOriginalAmount, token2?.pDecimals, true);
         } else if (isSell) {
           volumeOriginalAmount = token1Balance;
           volume = convert.toHumanAmount(
