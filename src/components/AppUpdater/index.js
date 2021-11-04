@@ -61,7 +61,9 @@ class AppUpdater extends PureComponent {
     }
 
     try {
+      const { logEvent } = this.props;
       const metadata = await codePush.getUpdateMetadata();
+      logEvent(JSON.stringify(metadata));
       const { isFirstRun, description, appVersion } = metadata || {};
       if (isFirstRun && description) {
         displayedNews = true;
@@ -148,7 +150,14 @@ class AppUpdater extends PureComponent {
           updateDialog: {
             optionalInstallButtonLabel: 'Update',
           },
-          installMode: codePush.InstallMode.IMMEDIATE,
+          checkFrequency: codePush.CheckFrequency.ON_APP_RESUME,
+          installMode: codePush.InstallMode.ON_NEXT_SUSPEND,
+          mandatoryInstallMode: codePush.InstallMode.IMMEDIATE,
+          minimumBackgroundDuration: 1,
+          rollbackRetryOptions: {
+            delayInHours: 0.5,
+            maxRetryAttempts: 5
+          }
         },
         this.handleStatusChange,
         this.handleDownload,
@@ -196,7 +205,7 @@ class AppUpdater extends PureComponent {
   render() {
     const { downloading, updating, news, appVersion } = this.state;
     const { isToggleBackupAllKeys } = this.props;
-    const disabled = !(updating || downloading) && !news;
+    const disabled = !(updating || downloading || !!news) && !news;
     return (
       <View>
         <Dialog visible={updating || downloading} dialogStyle={styles.dialog}>

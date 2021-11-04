@@ -1,5 +1,5 @@
 import { Text, View } from '@src/components/core';
-import React from 'react';
+import React, {useState} from 'react';
 import AppUpdater from '@components/AppUpdater/index';
 import {useNavigation, useNavigationParam} from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
@@ -11,6 +11,7 @@ import DeviceInfo from 'react-native-device-info';
 import {SafeAreaView, ScrollView} from 'react-native';
 import {NetworkIcon, SecurityIcon} from '@components/Icons';
 import {Header} from '@src/components';
+import codePush from 'react-native-code-push';
 import PINSection from './features/PINSection';
 import SeparatorSection from './features/SeparatorSection';
 import DevSection from './features/DevSection';
@@ -29,6 +30,7 @@ const Setting = () => {
   const navigation = useNavigation();
   const showHeader = useNavigationParam('showHeader');
   const { server } = useSelector(settingSelector);
+  const [codepushVersion, setCodepushVersion] = useState('');
   const sectionItemFactories = [
     {
       title: 'Network',
@@ -51,6 +53,17 @@ const Setting = () => {
   const handlePressExportCSV = () => {
     navigation?.navigate(routeNames.ExportCSV);
   };
+
+  const getCodePushVer = async () => {
+    const { label } = await codePush.getUpdateMetadata() || {};
+    if (label) {
+      setCodepushVersion(label);
+    }
+  };
+
+  React.useEffect(() => {
+    getCodePushVer().then();
+  }, []);
 
   return (
     <SafeAreaView>
