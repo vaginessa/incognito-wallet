@@ -4,12 +4,7 @@ import { Hook } from '@screens/PDexV3/features/Extra';
 import { useSelector } from 'react-redux';
 import isEmpty from 'lodash/isEmpty';
 import { ButtonTrade } from '@src/components/Button';
-import {
-  feetokenDataSelector,
-  swapInfoSelector,
-  inputAmountSelector,
-} from './Swap.selector';
-import { formConfigs } from './Swap.constant';
+import { feetokenDataSelector, swapInfoSelector } from './Swap.selector';
 import SwapInputsGroup from './Swap.inputsGroup';
 
 const styled = StyleSheet.create({
@@ -29,9 +24,6 @@ const styled = StyleSheet.create({
 export const useTabFactories = () => {
   const swapInfo = useSelector(swapInfoSelector);
   const feeTokenData = useSelector(feetokenDataSelector);
-  const sellInputAmount = useSelector(inputAmountSelector)(
-    formConfigs.selltoken,
-  );
   const hooksFactories = React.useMemo(() => {
     let result = [
       swapInfo?.showPRVBalance
@@ -40,12 +32,6 @@ export const useTabFactories = () => {
           value: swapInfo?.prvBalanceStr ?? '',
         }
         : {},
-      {
-        label: 'Max price',
-        hasQuestionIcon: true,
-        onPressQuestionIcon: () => null,
-        value: swapInfo?.maxPriceStr,
-      },
     ];
     if (feeTokenData.isMainCrypto) {
       result.push({

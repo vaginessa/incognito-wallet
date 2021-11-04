@@ -11,7 +11,7 @@ export const styled = StyleSheet.create({
     fontFamily: FONT.NAME.medium,
     color: COLORS.colorGrey3,
     fontSize: FONT.SIZE.small,
-    width: 120,
+    width: 100,
   },
   row: {
     justifyContent: 'space-between',

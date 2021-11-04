@@ -106,7 +106,6 @@ const AccountItem = React.memo(
         ).showErrorToast();
       } finally {
         await dispatch(actionSwitchAccountFetched());
-        console.log('handleSelectedAccount', handleSelectedAccount);
         if (typeof handleSelectedAccount === 'function') {
           handleSelectedAccount();
         }

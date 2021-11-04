@@ -71,7 +71,6 @@ export async function configsWallet(wallet) {
       return;
     }
     const server = await Server.getDefault();
-    console.log('defualt server', server?.id);
     wallet.RpcClient = server.address;
     wallet.RpcCoinService = server?.coinServices;
     wallet.Storage = storage;
