@@ -108,15 +108,13 @@ export const getPoolSize = (
   token1PoolValue = 0,
   token2PoolValue = 0,
 ) => {
-  const formattedToken1Pool = format.amountFull(
+  const formattedToken1Pool = format.amount(
     token1PoolValue,
     token1?.pDecimals,
-    false,
   );
-  const formattedToken2Pool = format.amountFull(
+  const formattedToken2Pool = format.amount(
     token2PoolValue,
     token2?.pDecimals,
-    false,
   );
   return `${formattedToken1Pool} ${token1?.symbol} + ${formattedToken2Pool} ${token2?.symbol}`;
 };
