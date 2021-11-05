@@ -168,7 +168,7 @@ export const availablePayFeeByPRVValidator = ({
   return undefined;
 };
 
-export const calDefaultPairOrderLimit = ({ pool, x, y, x0 }) => {
+export const calDefaultPairOrderLimit = ({ pool, x, y,  }) => {
   let y0 = new BigNumber(0);
   let rate = '';
   let y0Fixed = '';
@@ -177,7 +177,8 @@ export const calDefaultPairOrderLimit = ({ pool, x, y, x0 }) => {
   try {
     if (pool) {
       const { virtualValue } = pool;
-      const x_v = new BigNumber(virtualValue[(x?.tokenId)]);
+      const x_v = new BigNumber(virtualValue[(x?.tokenId)]); 
+      const x0 = x_v.dividedBy(100);
       const y_v = new BigNumber(virtualValue[(y?.tokenId)]);
       const L = x_v.multipliedBy(y_v);
       y0 = y_v.minus(L.dividedBy(x_v.plus(x0)));
