@@ -6,6 +6,7 @@ import { COLORS } from '@src/styles';
 import orderBy from 'lodash/orderBy';
 import moment from 'moment';
 import format from '@src/utils/format';
+import convert from '@src/utils/convert';
 import { mappingOrderBook } from './Chart.utils';
 
 export const chartSelector = createSelector(
@@ -27,15 +28,27 @@ export const priceHistorySelector = createSelector(
     const size = data.length;
     const space = 4;
     const xSpace = Math.ceil(size / space);
+    const token2: SelectedPrivacy = pool?.token2;
     let history = data.map(({ open, close, timestamp }, index) => {
       const x = timestamp * 1000;
       const isBeforeCurDate = moment(x).isBefore(moment(), 'date');
       const y = new BigNumber(open)
         .plus(close)
         .dividedBy(2)
+        .abs()
         .toNumber();
-      const yFormat = format.amountFull(y, 0, false);
+      const yOriginalAmount = convert.toOriginalAmount(
+        y,
+        token2?.pDecimals,
+        true,
+      );
+      const yFormat = format.amountFull(
+        yOriginalAmount,
+        token2?.pDecimals,
+        true,
+      );
       let xFormat = '';
+      let _xFormat = '';
       let xVisible = index % xSpace === 0;
       switch (period) {
       case '15m':
@@ -59,12 +72,25 @@ export const priceHistorySelector = createSelector(
         xFormat = format.formatDateTime(x, '');
         break;
       }
+      _xFormat = xFormat;
+      switch (period) {
+      case '15m':
+      case '1h':
+      case '4h':
+        isBeforeCurDate
+          ? (_xFormat = format.formatDateTime(x, 'DD/MM HH:mm'))
+          : false;
+        break;
+      default:
+        break;
+      }
       return {
         x,
         y,
         xFormat,
         yFormat,
         xVisible,
+        _xFormat,
       };
     });
     return {

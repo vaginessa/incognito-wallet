@@ -359,7 +359,6 @@ export const actionFetchImportAccount = ({ accountName, privateKey }) => async (
   dispatch,
   getState,
 ) => {
-  console.time('TOTAL_TIME_IMPORT_KEYCHAIN');
   const state = getState();
   const importAccount = accountSelector.importAccountSelector(state);
   const masterless = masterlessKeyChainSelector(state);
@@ -373,9 +372,7 @@ export const actionFetchImportAccount = ({ accountName, privateKey }) => async (
     const { aesKey } = await getPassphrase();
     for (const masterKey of masterKeys) {
       try {
-        console.time('TIME_CHECK_IS_CREATED');
         const isCreated = await masterKey.wallet.hasCreatedAccount(privateKey);
-        console.timeEnd('TIME_CHECK_IS_CREATED');
         if (isCreated) {
           selectedMasterKey = masterKey;
           break;
@@ -385,14 +382,12 @@ export const actionFetchImportAccount = ({ accountName, privateKey }) => async (
       }
     }
     let wallet = selectedMasterKey.wallet;
-    console.time('TIME_IMPORT');
     const isImported = await accountService.importAccount(
       privateKey,
       accountName,
       aesKey,
       wallet,
     );
-    console.timeEnd('TIME_IMPORT');
     if (isImported) {
       if (selectedMasterKey !== masterless) {
         storeWalletAccountIdsOnAPI(wallet);
@@ -405,7 +400,6 @@ export const actionFetchImportAccount = ({ accountName, privateKey }) => async (
     } else {
       throw new Error('Import keychain error');
     }
-    console.timeEnd('TOTAL_TIME_IMPORT_KEYCHAIN');
     return isImported;
   } catch (error) {
     dispatch(actionFetchFailImportAccount());

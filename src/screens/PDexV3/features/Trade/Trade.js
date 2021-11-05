@@ -1,14 +1,10 @@
-import { Header, Row } from '@src/components';
+import { Header } from '@src/components';
 import PropTypes from 'prop-types';
 import { Tabs } from '@src/components/core';
 import React from 'react';
 import { View } from 'react-native';
 import TabSwap from '@screens/PDexV3/features/Swap';
 import OrderLimit from '@screens/PDexV3/features/OrderLimit';
-import { BtnOrderHistory } from '@src/components/Button';
-import SelectAccountButton from '@src/components/SelectAccountButton';
-import { useNavigation } from 'react-navigation-hooks';
-import routeNames from '@src/router/routeNames';
 import TabMarket from '@screens/PDexV3/features/MarketList';
 import {
   ROOT_TAB_TRADE,
@@ -45,14 +41,14 @@ const Trade = (props) => {
 };
 
 Trade.defaultProps = {
-  hideBackButton: false
+  hideBackButton: false,
 };
 
 Trade.propTypes = {
   onRefresh: PropTypes.func.isRequired,
   refreshing: PropTypes.bool.isRequired,
   handlePressPool: PropTypes.func.isRequired,
-  hideBackButton: PropTypes.bool
+  hideBackButton: PropTypes.bool,
 };
 
 export default withTrade(React.memo(Trade));
