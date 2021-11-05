@@ -26,10 +26,7 @@ import {
   TAB_BUY_ID,
   TAB_SELL_ID,
 } from './OrderLimit.constant';
-import {
-  calDefaultPairOrderLimit,
-  getInputAmount as getInputTokenAmount,
-} from './OrderLimit.utils';
+import { getInputAmount as getInputTokenAmount } from './OrderLimit.utils';
 
 const BTN_WITHDRAW_ORDER = {
   [ACCOUNT_CONSTANT.TX_STATUS.PROCESSING]: 'ing',
@@ -182,7 +179,6 @@ export const rateDataSelector = createSelector(
     let rate = '';
     let rateStr = '';
     let customRate = '';
-    let defaultRate = {};
     let rateToken = {};
     try {
       const sellInputAmount = getInputAmount(formConfigs.selltoken);
@@ -195,15 +191,18 @@ export const rateDataSelector = createSelector(
         };
       }
       rateToken = pool?.token2;
-      defaultRate = calDefaultPairOrderLimit({
-        pool,
-        x: pool?.token1,
-        y: pool?.token2,
-        x0: convert.toOriginalAmount(1, pool?.token1?.pDecimals, true),
-      });
-      const { rateStr: _rateStr, rate: _rate } = defaultRate;
-      rateStr = _rateStr;
-      rate = _rate;
+      const rateAmount = pool?.price || 0;
+      const originalRateAmount = convert.toOriginalAmount(
+        rateAmount,
+        rateToken?.pDecimals,
+        true,
+      );
+      rate = format.toFixed(rateAmount, rateToken?.pDecimals);
+      rateStr = format.amountFull(
+        originalRateAmount,
+        rateToken?.pDecimals,
+        false,
+      );
       const selector = formValueSelector(formConfigs.formName);
       customRate = selector(state, formConfigs.rate);
       customRate = customRate || rate;
