@@ -95,8 +95,8 @@ const PriceHistory = () => {
           containerComponent={
             <VictoryVoronoiContainer
               labels={({ datum }) => {
-                const { xFormat = '', yFormat = '' } = datum;
-                return `Price: ${yFormat}\nTime: ${xFormat}`;
+                const { _xFormat = '', yFormat = '' } = datum;
+                return `Price: ${yFormat}\nTime: ${_xFormat}`;
               }}
             />
           }

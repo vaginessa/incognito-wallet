@@ -98,7 +98,6 @@ export const PoolsList = React.memo(({ onPressPool, pools }) => {
 
 const PoolsListContainer = (props) => {
   const { onPressPool, listPools, style } = props;
-  const dispatch = useDispatch();
   const [text, setText] = React.useState(text);
   const [pools, setPools] = React.useState([]);
   const onChange = (text) => {

@@ -43,7 +43,7 @@ export const PoolItem = React.memo((props) => {
           <Text style={styled.subText}>{`Vol: ${volumeToAmountStr}`}</Text>
         </View>
         <View style={styled.block2}>
-          <Text style={styled.subText}> {apyStr}</Text>
+          <Text style={styled.subText}>{apyStr}</Text>
         </View>
         <View style={styled.block3}>
           <BtnStar onPress={handleToggleFollowingPool} isBlue={isFollowed} />
