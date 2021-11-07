@@ -4,28 +4,28 @@ import Section, { sectionStyle } from '@screens/Setting/features/Section';
 import { Text, View } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import {
-  decimalDigitsSelector,
-  actionToggleDecimalDigits,
+  actionToggleUsePRVToPayFee,
+  isUsePRVToPayFeeSelector,
 } from '@screens/Setting';
-import { DecimalDigitIcon } from '@components/Icons';
+import { ConvertIcon } from '@components/Icons';
 
-const DecimalDigitsSection = () => {
-  const toggle = useSelector(decimalDigitsSelector);
+const PayFeeByPRVSection = () => {
+  const toggle = useSelector(isUsePRVToPayFeeSelector);
   const dispatch = useDispatch();
-  const onToggleValue = async () => await dispatch(actionToggleDecimalDigits());
+  const onToggleValue = async () => await dispatch(actionToggleUsePRVToPayFee());
   return (
     <Section
-      label="Decimal Digits"
+      label="Use PRV to pay fee"
       headerRight={<Switch onValueChange={onToggleValue} value={toggle} />}
-      headerIcon={<DecimalDigitIcon />}
+      headerIcon={<ConvertIcon />}
       customItems={[
         <View
-          key="decimal-digits"
+          key="use-prv-to-pay-fee"
           onPress={toggle}
           style={[sectionStyle.subItem]}
         >
           <Text style={[sectionStyle.desc]}>
-            {'Limit main asset\ndisplays to 5 decimal digits'}
+            Enjoy discount when trading
           </Text>
         </View>,
       ]}
@@ -33,4 +33,4 @@ const DecimalDigitsSection = () => {
   );
 };
 
-export default React.memo(DecimalDigitsSection);
+export default React.memo(PayFeeByPRVSection);
