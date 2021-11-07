@@ -10,7 +10,9 @@ import { BtnCopy } from '@src/components/Button';
 import { ExHandler } from '@src/services/exception';
 import LinkingService from '@src/services/linking';
 import ClipboardService from '@src/services/clipboard';
-import OrderItem from '@screens/PDexV3/features/Trade/Trade.orderDetail';
+import OrderItem, {
+  styled as orderItemStyled,
+} from '@screens/PDexV3/features/Trade/Trade.orderDetail';
 import { CONSTANT_CONFIGS } from '@src/constants';
 import { orderDetailSelector } from './OrderLimit.selector';
 import { actionFetchDataOrderDetail } from './OrderLimit.actions';
@@ -75,7 +77,11 @@ const OrderDetail = () => {
       },
       {
         label: 'Rate',
-        value: order?.rateStr,
+        customValue: (
+          <Row style={orderItemStyled.rowValue}>
+            <Text style={orderItemStyled.value}>{order?.rateStr}</Text>
+          </Row>
+        ),
       },
       {
         label: 'Network fee',
