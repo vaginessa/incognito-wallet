@@ -12,6 +12,7 @@ import { CONSTANT_CONFIGS } from '@src/constants';
 import TradeOrderDetail, {
   styled as orderDetailStyled,
 } from '@screens/PDexV3/features/Trade/Trade.orderDetail';
+import { Row } from '@src/components';
 import { orderDetailSelector } from './Swap.selector';
 import { actionFetchDataOrderDetail } from './Swap.actions';
 
@@ -59,7 +60,11 @@ const SwapOrderDetail = () => {
       },
       {
         label: 'Rate',
-        value: order?.rateStr,
+        customValue: (
+          <Row style={orderDetailStyled.rowValue}>
+            <Text style={orderDetailStyled.value}>{order?.rateStr}</Text>
+          </Row>
+        ),
       },
       {
         label: 'Fee',
