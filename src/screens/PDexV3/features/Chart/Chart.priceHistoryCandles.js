@@ -66,7 +66,7 @@ export const Period = React.memo(({ handleFetchData }) => {
   );
 });
 
-const PriceHistoryCandles = (props) => {
+const PriceHistoryCandles = () => {
   const [initted, setInitted] = React.useState(false);
   const [uri, setURI] = React.useState('');
   const ref = React.useRef({});
@@ -83,7 +83,6 @@ const PriceHistoryCandles = (props) => {
   const handleOnLoad = () => {
     if (ref?.current) {
       let width = Number(ScreenWidth) - 50;
-      console.log('configs');
       handlePostMessage(
         `chartConfigs|${JSON.stringify({
           lwChartConfigs: {
