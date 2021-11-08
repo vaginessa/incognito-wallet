@@ -17,7 +17,8 @@ import { poolSelectedSelector } from './Chart.selector';
 const styled = StyleSheet.create({
   container: {
     flex: 1,
-    minHeight: 300,
+    minHeight: 250,
+    marginBottom: 16,
   },
   btnStyle: {
     minWidth: 40,
@@ -75,37 +76,7 @@ const PriceHistoryCandles = () => {
   const token2: SelectedPrivacy = pool?.token2;
   const handlePostMessage = (message) => {
     if (ref?.current) {
-      setTimeout(() => {
-        ref.current.postMessage(message);
-      }, 200);
-    }
-  };
-  const handleOnLoad = () => {
-    if (ref?.current) {
-      let width = Number(ScreenWidth) - 50;
-      handlePostMessage(
-        `chartConfigs|${JSON.stringify({
-          lwChartConfigs: {
-            width,
-            height: 250,
-          },
-          lwChartOptions: {
-            timeScale: {
-              timeVisible: true,
-            },
-          },
-          candlesStickConfigs: {
-            upColor: '#53B987',
-            downColor: '#EC4D5C',
-          },
-          candlesStickOptions: {
-            priceFormat: {
-              precision: token2?.pDecimals,
-              minMove: convert.toHumanAmount(1, token2?.pDecimals),
-            },
-          },
-        })}`,
-      );
+      ref.current.postMessage(message);
     }
   };
   const handleFetchData = async (actived) => {
@@ -165,6 +136,30 @@ const PriceHistoryCandles = () => {
     const parseData = JSON.parse(data);
     if (parseData?.initted) {
       setInitted(true);
+      let width = Number(ScreenWidth) - 50;
+      handlePostMessage(
+        `chartConfigs|${JSON.stringify({
+          lwChartConfigs: {
+            width,
+            height: 250,
+          },
+          lwChartOptions: {
+            timeScale: {
+              timeVisible: true,
+            },
+          },
+          candlesStickConfigs: {
+            upColor: '#53B987',
+            downColor: '#EC4D5C',
+          },
+          candlesStickOptions: {
+            priceFormat: {
+              precision: token2?.pDecimals,
+              minMove: convert.toHumanAmount(1, token2?.pDecimals),
+            },
+          },
+        })}`,
+      );
       handleFetchData(periods[0]);
     }
   };
@@ -182,19 +177,16 @@ const PriceHistoryCandles = () => {
   return (
     <View style={styled.container}>
       {!initted && <ActivityIndicator />}
-      <View>
-        <WebView
-          ref={ref}
-          style={{
-            width: '100%',
-            height: 250,
-          }}
-          source={{ uri }}
-          onLoadEnd={handleOnLoad}
-          onMessage={handleOnMessage}
-        />
-        <Period {...{ handleFetchData }} />
-      </View>
+      <WebView
+        ref={ref}
+        style={{
+          width: '100%',
+          height: 250,
+        }}
+        source={{ uri }}
+        onMessage={handleOnMessage}
+      />
+      <Period {...{ handleFetchData }} />
     </View>
   );
 };
