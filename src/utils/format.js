@@ -86,7 +86,41 @@ const amountCreator = (maxDigits) => (
 
 const amountFull = amountCreator();
 
-const amount = amountCreator(CONSTANT_COMMONS.AMOUNT_MAX_FRACTION_DIGITS);
+const amount = (amount, decimals) => {
+  try {
+    const fmt = {
+      decimalSeparator: getDecimalSeparator(),
+      groupSeparator: getGroupSeparator(),
+      groupSize: 3,
+    };
+    let _maxDigits;
+    let _amount = convertUtil.toHumanAmount(amount, decimals);
+    if (_amount > 1e3) {
+      _maxDigits = 1;
+    } else if (_amount > 1e2) {
+      _maxDigits = 2;
+    } else if (_amount > 10) {
+      _maxDigits = 3;
+    } else if (_amount > 1) {
+      _maxDigits = 4;
+    } else if (_amount > 0.1) {
+      _maxDigits = 5;
+    } else {
+      _maxDigits = 6;
+    }
+    return _amount
+      ? removeTrailingZeroes(
+        new BigNumber(_amount).toFormat(
+          _maxDigits,
+          BigNumber.ROUND_DOWN,
+          fmt,
+        ),
+      )
+      : 0;
+  } catch (e) {
+    return amount;
+  }
+};
 
 const amountSuffix = (
   amount,
