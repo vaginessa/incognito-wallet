@@ -14,7 +14,11 @@ const Chart = ({ onRefresh, callback }) => {
     <View style={styled.container}>
       <Header title="Order Book" />
       <ScrollView style={styled.scrollview}>
-        <GroupActions onPressRefresh={onRefresh} callback={callback} />
+        <GroupActions
+          canSelectPool={false}
+          onPressRefresh={onRefresh}
+          callback={callback}
+        />
         <PriceHistoryCandles />
         <Details />
         <OrderBook />

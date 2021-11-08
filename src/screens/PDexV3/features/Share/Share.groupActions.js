@@ -70,6 +70,7 @@ export const GroupActions = ({
   callback,
   onPressRefresh,
   hasChart = false,
+  canSelectPool = true,
 }) => {
   const navigation = useNavigation();
   const {
@@ -97,10 +98,10 @@ export const GroupActions = ({
       <Row style={styled.top}>
         <TouchableOpacity
           style={styled.block1}
-          onPress={() => handleSelectPool()}
+          onPress={() => canSelectPool && handleSelectPool()}
         >
           <Text style={styled.pool}>{poolStr}</Text>
-          <ArrowGreyDown />
+          {canSelectPool && <ArrowGreyDown />}
         </TouchableOpacity>
         {hasChart && (
           <Row style={styled.block2}>
@@ -148,6 +149,7 @@ GroupActions.propTypes = {
   callback: PropTypes.func.isRequired,
   onPressRefresh: PropTypes.func,
   hasChart: PropTypes.bool,
+  canSelectPool: PropTypes.bool,
 };
 
 export default React.memo(GroupActions);
