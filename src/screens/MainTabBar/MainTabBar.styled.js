@@ -68,7 +68,7 @@ export const homeStyled = StyleSheet.create({
     color: COLORS.lightGrey36,
     alignSelf: 'flex-end',
     width: '100%',
-    lineHeight: FONT.SIZE.regular,
+    fontSize: FONT.SIZE.regular,
   },
   regularGray: {
     ...FONT.STYLE.normal,

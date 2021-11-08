@@ -32,7 +32,7 @@ const HEADER_FACTORIES = [
   {
     text: '#Name / Vol',
     style: {
-      flex: 0.7,
+      flex: 1,
       marginRight: 15,
       justifyContent: 'flex-start',
       alignItems: 'flex-start',
@@ -41,7 +41,7 @@ const HEADER_FACTORIES = [
   {
     text: '#APY',
     style: {
-      flex: 0.2,
+      width: 80,
       flexDirection: 'row',
       alignItems: 'flex-end',
       marginRight: 5,
@@ -51,7 +51,7 @@ const HEADER_FACTORIES = [
   {
     text: ' ',
     style: {
-      flex: 0.1,
+      width: 30,
     },
   },
 ];

@@ -12,7 +12,7 @@ export const poolsSelector = createSelector(
 
 export const tradingVolume24hSelector = createSelector(
   poolsSelector,
-  ({ tradingVolume24h }) => format.amount(tradingVolume24h, 9),
+  ({ tradingVolume24h }) => format.amountSuffix(tradingVolume24h, 9),
 );
 
 export const listPoolsIDsSelector = createSelector(
@@ -63,6 +63,7 @@ export const listPoolsSelector = createSelector(
         } = pool;
         const volumeOriginal = Math.ceil(new BigNumber(volume || 0).multipliedBy(Math.pow(10, 9)));
         const volumeToAmount = format.amount(volumeOriginal, 9);
+        const volumeSuffix = format.amountSuffix(volumeOriginal, 9);
         const priceChangeToAmount = format.amount(priceChange, 0);
         const perChange24h = priceChange24H;
         const perChange24hToStr = `${format.toFixed(perChange24h, 2)}%`;
@@ -110,8 +111,10 @@ export const listPoolsSelector = createSelector(
             token2Value,
           ),
           volumeToAmountStr: `${volumeToAmount}$`,
+          volumeSuffix,
+          volumeSuffixStr: `${volumeSuffix}$`,
           ampStr: `${amp}`,
-          apyStr: `${apy}%`,
+          apyStr: `${format.amount(apy, 0)}%`,
           priceChangeToAmountStr: `$${priceChangeToAmount}`,
           virtualValue: {
             [token1Id]: virtual1Value,

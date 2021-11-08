@@ -183,7 +183,7 @@ export const totalShareSelector = createSelector(
       return prev.plus(cur.totalRewardUSD);
     }, new BigNumber('0')).toNumber();
     const originalAmount = convert.toOriginalAmount(rewardUSD, 9, true);
-    return format.amount(originalAmount, 9);
+    return format.amountSuffix(originalAmount, 9);
   }
 );
 
