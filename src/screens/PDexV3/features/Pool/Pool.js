@@ -1,5 +1,4 @@
 import { Row } from '@src/components';
-import { TokenVerifiedIcon } from '@src/components/Icons';
 import React from 'react';
 import { View, Text } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
@@ -19,7 +18,6 @@ export const PoolItem = React.memo((props) => {
     return null;
   }
   const {
-    isVerify,
     volumeSuffixStr,
     isFollowed,
     poolTitle,
@@ -38,7 +36,6 @@ export const PoolItem = React.memo((props) => {
         <View style={styled.block1}>
           <Row style={styled.rowName}>
             <Text style={styled.name}>{poolTitle}</Text>
-            {!!isVerify && <TokenVerifiedIcon />}
           </Row>
           <Text style={styled.subText}>{`Vol: ${volumeSuffixStr}`}</Text>
         </View>
