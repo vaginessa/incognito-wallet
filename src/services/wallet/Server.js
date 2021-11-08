@@ -73,7 +73,7 @@ const TEST_NET_SERVER = {
   IncBSCContractAddress: '0x2f6F03F1b43Eab22f7952bd617A24AB46E970dF7',
   explorer: 'https://testnet.incognito.org',
   tradeServices: 'https://api-coinservice-staging.incognito.org',
-  portalServices: 'http://139.162.55.124:8020',
+  portalServices: 'http://51.161.119.66:8020',
 };
 
 const LOCAL_SERVER = {
