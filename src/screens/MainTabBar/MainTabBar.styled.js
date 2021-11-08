@@ -65,7 +65,7 @@ export const homeStyled = StyleSheet.create({
   },
   volText: {
     textAlign: 'right',
-    color: COLORS.lightGrey36,
+    color: COLORS.newGrey,
     alignSelf: 'flex-end',
     width: '100%',
     fontSize: FONT.SIZE.regular,
