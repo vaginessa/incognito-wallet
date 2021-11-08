@@ -29,7 +29,7 @@ const Item = React.memo(({ pool, onItemPress, popular }) => {
     perChange24hBGColor,
     poolId,
     poolTitle,
-    volumeToAmountStr
+    volumeSuffix
   } = pool;
   return (
     <TouchableOpacity onPress={() => onItemPress(poolId)}>
@@ -65,7 +65,7 @@ const Item = React.memo(({ pool, onItemPress, popular }) => {
             ]}
             numberOfLines={0}
           >
-            {popular ? volumeToAmountStr : perChange24hToStr}
+            {popular ? volumeSuffix : perChange24hToStr}
           </Text>
         </View>
       </Row>
