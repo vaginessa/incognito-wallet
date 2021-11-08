@@ -1,6 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, Text } from 'react-native';
-import PropTypes from 'prop-types';
+import { View, StyleSheet } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import { WebView } from 'react-native-webview';
 import { ButtonBasic } from '@src/components/Button';
@@ -11,12 +10,14 @@ import { ExHandler } from '@src/services/exception';
 import convert from '@src/utils/convert';
 import { actionGetPDexV3Inst } from '@screens/PDexV3';
 import { ScreenWidth } from '@src/utils/devices';
+import Server from '@src/services/wallet/Server';
 import { ActivityIndicator } from '@src/components/core';
 import { poolSelectedSelector } from './Chart.selector';
 
 const styled = StyleSheet.create({
   container: {
     flex: 1,
+    minHeight: 300,
   },
   btnStyle: {
     minWidth: 40,
@@ -67,6 +68,7 @@ export const Period = React.memo(({ handleFetchData }) => {
 
 const PriceHistoryCandles = (props) => {
   const [initted, setInitted] = React.useState(false);
+  const [uri, setURI] = React.useState('');
   const ref = React.useRef({});
   const pool = useSelector(poolSelectedSelector);
   const dispatch = useDispatch();
@@ -81,6 +83,7 @@ const PriceHistoryCandles = (props) => {
   const handleOnLoad = () => {
     if (ref?.current) {
       let width = Number(ScreenWidth) - 50;
+      console.log('configs');
       handlePostMessage(
         `chartConfigs|${JSON.stringify({
           lwChartConfigs: {
@@ -166,20 +169,33 @@ const PriceHistoryCandles = (props) => {
       handleFetchData(periods[0]);
     }
   };
+  const handleInit = async () => {
+    try {
+      const server = await Server.getDefault();
+      setURI(server?.webviewChartServices);
+    } catch (error) {
+      new ExHandler(error).showErrorToast();
+    }
+  };
+  React.useEffect(() => {
+    handleInit();
+  }, []);
   return (
     <View style={styled.container}>
       {!initted && <ActivityIndicator />}
-      <WebView
-        ref={ref}
-        style={{
-          width: '100%',
-          height: 250,
-        }}
-        source={{ uri: 'https://chart-webview.incognito.org' }}
-        onLoadEnd={handleOnLoad}
-        onMessage={handleOnMessage}
-      />
-      <Period {...{ handleFetchData }} />
+      <View>
+        <WebView
+          ref={ref}
+          style={{
+            width: '100%',
+            height: 250,
+          }}
+          source={{ uri }}
+          onLoadEnd={handleOnLoad}
+          onMessage={handleOnMessage}
+        />
+        <Period {...{ handleFetchData }} />
+      </View>
     </View>
   );
 };
