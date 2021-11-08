@@ -95,30 +95,24 @@ const amountVer2 = (amount, decimals) => {
       groupSeparator: getGroupSeparator(),
       groupSize: 3,
     };
-    let maxDigits;
-    let _amount = convertUtil.toHumanAmount(amount, decimals);
+    let _decimals = decimals;
+    let _amount = convertUtil.toHumanAmount(amount, _decimals);
     if (_amount > 1e3) {
-      maxDigits = 1;
+      _decimals = 1;
     } else if (_amount > 1e2) {
-      maxDigits = 2;
+      _decimals = 2;
     } else if (_amount > 10) {
-      maxDigits = 3;
+      _decimals = 3;
     } else if (_amount > 1) {
-      maxDigits = 4;
-    } else if (_amount > 0.1) {
-      maxDigits = 5;
-    } else if (_amount >= 0.000001) {
-      maxDigits = 6;
-    } else {
-      maxDigits = undefined;
+      _decimals = 4;
+    } else if (_amount > 1e-1) {
+      _decimals = 5;
+    } else if (_amount >= 1e-6) {
+      _decimals = 6;
     }
     return _amount
       ? removeTrailingZeroes(
-        new BigNumber(_amount).toFormat(
-          maxDigits,
-          BigNumber.ROUND_DOWN,
-          fmt,
-        ),
+        new BigNumber(_amount).toFormat(_decimals, BigNumber.ROUND_DOWN, fmt),
       )
       : 0;
   } catch (e) {
@@ -126,10 +120,7 @@ const amountVer2 = (amount, decimals) => {
   }
 };
 
-const amountSuffix = (
-  amount,
-  decimals
-) => {
+const amountSuffix = (amount, decimals) => {
   try {
     const fmt = {
       decimalSeparator: getDecimalSeparator(),
@@ -158,15 +149,17 @@ const amountSuffix = (
     if (_amount > 0 && _amount < 1) {
       _maxDigits = 5;
     }
-    return (_amount
-      ? removeTrailingZeroes(
-        new BigNumber(_amount).toFormat(
-          _maxDigits,
-          BigNumber.ROUND_DOWN,
-          fmt,
-        ),
-      )
-      : 0) + _suffix;
+    return (
+      (_amount
+        ? removeTrailingZeroes(
+          new BigNumber(_amount).toFormat(
+            _maxDigits,
+            BigNumber.ROUND_DOWN,
+            fmt,
+          ),
+        )
+        : 0) + _suffix
+    );
   } catch {
     return amount;
   }
