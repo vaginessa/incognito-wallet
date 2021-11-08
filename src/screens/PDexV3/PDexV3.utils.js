@@ -93,10 +93,10 @@ export const getShareStr = (share, totalShare) => {
 };
 
 export const getReward = (token1, token2, token1Value, token2Value) => {
-  const token1Str = `${format.amount(token1Value, token1.pDecimals)} ${
+  const token1Str = `${format.amountVer2(token1Value, token1.pDecimals)} ${
     token1.symbol
   }`;
-  const token2Str = `${format.amount(token2Value, token2.pDecimals)} ${
+  const token2Str = `${format.amountVer2(token2Value, token2.pDecimals)} ${
     token2.symbol
   }`;
   return `${token1Str} + ${token2Str}`;
@@ -108,11 +108,11 @@ export const getPoolSize = (
   token1PoolValue = 0,
   token2PoolValue = 0,
 ) => {
-  const formattedToken1Pool = format.amount(
+  const formattedToken1Pool = format.amountVer2(
     token1PoolValue,
     token1?.pDecimals,
   );
-  const formattedToken2Pool = format.amount(
+  const formattedToken2Pool = format.amountVer2(
     token2PoolValue,
     token2?.pDecimals,
   );
@@ -160,10 +160,10 @@ export const formatBalance = (token1, token2, token1Value, token2Value) => {
     token2Value === undefined
   )
     return '';
-  const token1Str = `${format.amount(token1Value, token1.pDecimals)} ${
+  const token1Str = `${format.amountVer2(token1Value, token1.pDecimals)} ${
     token1.symbol
   }`;
-  const token2Str = `${format.amount(token2Value, token2.pDecimals)} ${
+  const token2Str = `${format.amountVer2(token2Value, token2.pDecimals)} ${
     token2.symbol
   }`;
   return `${token1Str} + ${token2Str}`;

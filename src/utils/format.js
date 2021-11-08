@@ -86,7 +86,9 @@ const amountCreator = (maxDigits) => (
 
 const amountFull = amountCreator();
 
-const amount = (amount, decimals) => {
+const amount = amountCreator(CONSTANT_COMMONS.AMOUNT_MAX_FRACTION_DIGITS);
+
+const amountVer2 = (amount, decimals) => {
   try {
     const fmt = {
       decimalSeparator: getDecimalSeparator(),
@@ -298,4 +300,5 @@ export default {
   convertDecimalsToPDecimals,
   convertDecimalsHumanAmount,
   amountSuffix,
+  amountVer2,
 };

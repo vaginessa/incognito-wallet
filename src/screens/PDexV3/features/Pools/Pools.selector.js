@@ -62,9 +62,9 @@ export const listPoolsSelector = createSelector(
           price,
         } = pool;
         const volumeOriginal = Math.ceil(new BigNumber(volume || 0).multipliedBy(Math.pow(10, 9)));
-        const volumeToAmount = format.amount(volumeOriginal, 9);
+        const volumeToAmount = format.amountVer2(volumeOriginal, 9);
         const volumeSuffix = format.amountSuffix(volumeOriginal, 9);
-        const priceChangeToAmount = format.amount(priceChange, 0);
+        const priceChangeToAmount = format.amountVer2(priceChange, 0);
         const perChange24h = priceChange24H;
         const perChange24hToStr = `${format.toFixed(perChange24h, 2)}%`;
         let perChange24hColor = COLORS.newGrey;
@@ -78,19 +78,19 @@ export const listPoolsSelector = createSelector(
         }
         const token1 = getPrivacyDataByTokenID(token1Id);
         const token2 = getPrivacyDataByTokenID(token2Id);
-        let pool1ValueStr = format.amount(
+        let pool1ValueStr = format.amountVer2(
           token1Value,
           token1.pDecimals,
           false,
         );
-        let pool2ValueStr = format.amount(
+        let pool2ValueStr = format.amountVer2(
           token2Value,
           token2.pDecimals,
           false,
         );
         const poolSizeStr = `${pool1ValueStr} ${token1?.symbol} + ${pool2ValueStr} ${token2?.symbol}`;
         const originalPrice = new BigNumber(price).multipliedBy(Math.pow(10, 9));
-        const priceStr = format.amount(Math.floor(originalPrice.toNumber()), 9);
+        const priceStr = format.amountVer2(Math.floor(originalPrice.toNumber()), 9);
         return {
           ...pool,
           token1,
@@ -114,7 +114,7 @@ export const listPoolsSelector = createSelector(
           volumeSuffix,
           volumeSuffixStr: `${volumeSuffix}$`,
           ampStr: `${amp}`,
-          apyStr: `${format.amount(apy, 0)}%`,
+          apyStr: `${format.amountVer2(apy, 0)}%`,
           priceChangeToAmountStr: `$${priceChangeToAmount}`,
           virtualValue: {
             [token1Id]: virtual1Value,
