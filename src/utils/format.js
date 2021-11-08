@@ -95,8 +95,8 @@ const amountVer2 = (amount, decimals) => {
       groupSeparator: getGroupSeparator(),
       groupSize: 3,
     };
-    let _decimals = decimals;
-    let _amount = convertUtil.toHumanAmount(amount, _decimals);
+    let _decimals;
+    let _amount = convertUtil.toHumanAmount(amount, decimals);
     if (_amount > 1e3) {
       _decimals = 1;
     } else if (_amount > 1e2) {
@@ -109,6 +109,8 @@ const amountVer2 = (amount, decimals) => {
       _decimals = 5;
     } else if (_amount >= 1e-6) {
       _decimals = 6;
+    } else {
+      _decimals = undefined;
     }
     return _amount
       ? removeTrailingZeroes(
