@@ -95,25 +95,27 @@ const amountVer2 = (amount, decimals) => {
       groupSeparator: getGroupSeparator(),
       groupSize: 3,
     };
-    let _maxDigits;
+    let maxDigits;
     let _amount = convertUtil.toHumanAmount(amount, decimals);
     if (_amount > 1e3) {
-      _maxDigits = 1;
+      maxDigits = 1;
     } else if (_amount > 1e2) {
-      _maxDigits = 2;
+      maxDigits = 2;
     } else if (_amount > 10) {
-      _maxDigits = 3;
+      maxDigits = 3;
     } else if (_amount > 1) {
-      _maxDigits = 4;
+      maxDigits = 4;
     } else if (_amount > 0.1) {
-      _maxDigits = 5;
+      maxDigits = 5;
+    } else if (_amount >= 0.000001) {
+      maxDigits = 6;
     } else {
-      _maxDigits = 6;
+      maxDigits = undefined;
     }
     return _amount
       ? removeTrailingZeroes(
         new BigNumber(_amount).toFormat(
-          _maxDigits,
+          maxDigits,
           BigNumber.ROUND_DOWN,
           fmt,
         ),
