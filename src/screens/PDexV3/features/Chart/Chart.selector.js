@@ -30,7 +30,7 @@ export const priceHistorySelector = createSelector(
     const xSpace = Math.ceil(size / space);
     const token2: SelectedPrivacy = pool?.token2;
     let history = data.map(({ open, close, timestamp }, index) => {
-      const x = timestamp * 1000;
+      const x = timestamp;
       const isBeforeCurDate = moment(x).isBefore(moment(), 'date');
       const y = new BigNumber(open)
         .plus(close)
@@ -97,6 +97,22 @@ export const priceHistorySelector = createSelector(
       ...priceHistory,
       poolid,
       history,
+    };
+  },
+);
+
+export const priceHistoryCandlesSelector = createSelector(
+  chartSelector,
+  poolSelectedSelector,
+  ({ priceHistory }, pool) => {
+    const { data } = priceHistory;
+    let history = data.map(({ timestamp, ...rest }) => ({
+      ...rest,
+      time: timestamp,
+    }));
+    return {
+      history,
+      pool,
     };
   },
 );
