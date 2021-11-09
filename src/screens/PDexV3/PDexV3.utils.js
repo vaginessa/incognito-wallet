@@ -59,10 +59,9 @@ export const getExchangeRate = (token1, token2, token1Value, token2Value) => {
       token1Value,
       token2Value,
     });
-    return `1 ${token1?.symbol} = ${format.amountFull(
+    return `1 ${token1?.symbol} = ${format.amountVer2(
       originalRate,
       token2?.pDecimals,
-      false,
     )} ${token2?.symbol}`;
   } catch (error) {
     console.log('getExchangeRate-error', error);

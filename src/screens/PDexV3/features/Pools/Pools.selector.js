@@ -4,6 +4,7 @@ import { getPrivacyDataByTokenID as getPrivacyDataByTokenIDSelector } from '@src
 import { COLORS } from '@src/styles';
 import { getExchangeRate } from '@screens/PDexV3';
 import BigNumber from 'bignumber.js';
+import convert from '@src/utils/convert';
 
 export const poolsSelector = createSelector(
   (state) => state.pDexV3,
@@ -61,7 +62,9 @@ export const listPoolsSelector = createSelector(
           virtual2Value,
           price,
         } = pool;
-        const volumeOriginal = Math.ceil(new BigNumber(volume || 0).multipliedBy(Math.pow(10, 9)));
+        const volumeOriginal = Math.ceil(
+          new BigNumber(volume || 0).multipliedBy(Math.pow(10, 9)),
+        );
         const volumeToAmount = format.amountVer2(volumeOriginal, 9);
         const volumeSuffix = format.amountSuffix(volumeOriginal, 9);
         const priceChangeToAmount = format.amountVer2(priceChange, 0);
@@ -83,14 +86,14 @@ export const listPoolsSelector = createSelector(
           token1.pDecimals,
           false,
         );
-        let pool2ValueStr = format.amountVer2(
-          token2Value,
-          token2.pDecimals,
-          false,
-        );
+        let pool2ValueStr = format.amountVer2(token2Value, token2.pDecimals);
         const poolSizeStr = `${pool1ValueStr} ${token1?.symbol} + ${pool2ValueStr} ${token2?.symbol}`;
-        const originalPrice = new BigNumber(price).multipliedBy(Math.pow(10, 9));
-        const priceStr = format.amountVer2(Math.floor(originalPrice.toNumber()), 9);
+        const originalPrice = convert.toOriginalAmount(
+          price,
+          token2?.pDecimals,
+          true,
+        );
+        const priceStr = format.amountVer2(originalPrice, token2?.pDecimals);
         return {
           ...pool,
           token1,
