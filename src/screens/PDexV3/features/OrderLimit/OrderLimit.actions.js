@@ -40,6 +40,7 @@ import {
   ACTION_FETCH_FAIL_ORDERS_HISTORY,
   ACTION_FETCHING_ORDER_DETAIL,
   ACTION_FETCHED_ORDER_DETAIL,
+  ACTION_RESET_ORDERS_HISTORY,
 } from './OrderLimit.constant';
 import {
   poolSelectedDataSelector,
@@ -47,7 +48,12 @@ import {
   orderLimitDataSelector,
   orderDetailSelector,
   rateDataSelector,
+  orderHistorySelector,
 } from './OrderLimit.selector';
+
+export const actionResetOrdersHistory = () => ({
+  type: ACTION_RESET_ORDERS_HISTORY,
+});
 
 export const actionSetPercent = (payload) => ({
   type: ACTION_SET_PERCENT,
@@ -307,7 +313,8 @@ export const actionFetchOrdersHistory = () => async (dispatch, getState) => {
     const state = getState();
     const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
     const pool = poolSelectedDataSelector(state);
-    if (!pool) {
+    const { isFetching } = orderHistorySelector(state);
+    if (!pool || isFetching) {
       return;
     }
     const orders =
