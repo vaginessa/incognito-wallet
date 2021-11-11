@@ -3,12 +3,12 @@ import { TouchableOpacity, View } from 'react-native';
 import { Tabs, Text } from '@src/components/core';
 import { TABS } from '@screens/MainTabBar/features/Home/Home.constant';
 import { batch, useDispatch, useSelector } from 'react-redux';
-import {listPoolsSelector, listPoolsVerifySelector, PoolsList} from '@screens/PDexV3/features/Pools';
+import { listPoolsVerifySelector } from '@screens/PDexV3/features/Pools';
 import { Row } from '@src/components';
 import { homeStyled } from '@screens/MainTabBar/MainTabBar.styled';
 import PropTypes from 'prop-types';
 import orderBy from 'lodash/orderBy';
-import { actionInitSwapForm } from '@screens/PDexV3/features/Swap';
+import { actionSetDefaultPair } from '@screens/PDexV3/features/Swap';
 import { actionChangeTab } from '@components/core/Tabs/Tabs.actions';
 import {
   ROOT_TAB_TRADE,
@@ -16,7 +16,7 @@ import {
 } from '@screens/PDexV3/features/Trade/Trade.constant';
 import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@routers/routeNames';
-import { COLORS } from '@src/styles';
+import {COLORS} from '@src/styles';
 
 const Item = React.memo(({ pool, onItemPress, popular }) => {
   const {
@@ -72,7 +72,11 @@ const Header = React.memo(({ popular }) => (
   <Row>
     <Text style={[homeStyled.itemBox, homeStyled.tabHeaderText]}>Name</Text>
     <Text
-      style={[homeStyled.itemBox, homeStyled.tabHeaderText, homeStyled.right]}
+      style={[
+        homeStyled.itemBox,
+        homeStyled.tabHeaderText,
+        homeStyled.right,
+      ]}
     >
       Price
     </Text>
@@ -90,10 +94,8 @@ const Header = React.memo(({ popular }) => (
 ));
 
 const tabStyle = {
-  titleStyled: homeStyled.titleStyled,
+  titleStyled: homeStyled.mediumBlack,
   titleDisabledStyled: homeStyled.tabDisable,
-  tabStyled: homeStyled.tabStyled,
-  tabStyledEnabled: homeStyled.tabStyledEnabled
 };
 
 const MainTab = () => {
@@ -102,28 +104,20 @@ const MainTab = () => {
   const pools = useSelector(listPoolsVerifySelector);
   const onItemPress = async (pool) => {
     navigation.navigate(routeNames.Trade, { tabIndex: 0 });
-    setTimeout(() => {
-      batch(() => {
-        dispatch(
-          actionInitSwapForm({
-            refresh: true,
-            defaultPair: {
-              selltoken: pool?.token1?.tokenId,
-              buytoken: pool?.token2?.tokenId,
-            },
-          }),
-        );
-        dispatch(
-          actionChangeTab({
-            rootTabID: ROOT_TAB_TRADE,
-            tabID: TAB_SWAP_ID,
-          }),
-        );
-      });
-    }, 200);
-  };
-  const onPressPoolCell = (_, pool) => {
-    onItemPress(pool);
+    batch(() => {
+      dispatch(
+        actionSetDefaultPair({
+          selltoken: pool?.token1?.tokenId,
+          buytoken: pool?.token2?.tokenId,
+        }),
+      );
+      dispatch(
+        actionChangeTab({
+          rootTabID: ROOT_TAB_TRADE,
+          tabID: TAB_SWAP_ID,
+        }),
+      );
+    });
   };
   const renderItem = (pool, popular) => (
     <Item
@@ -151,9 +145,6 @@ const MainTab = () => {
       <View tabID={TABS.TAB_HOME_POPULAR_ID} label="24h Vol" {...tabStyle}>
         <Header popular />
         {orderBy(pools, 'volume', 'desc').map((item) => renderItem(item, true))}
-      </View>
-      <View tabID={TABS.TAB_HOME_FAVORITE_ID} label="Favorites" {...tabStyle}>
-        <PoolsList onPressPool={onPressPoolCell} listPools={pools} />
       </View>
     </Tabs>
   );
