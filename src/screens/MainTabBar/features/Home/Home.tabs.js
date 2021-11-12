@@ -25,6 +25,7 @@ const Item = React.memo(({ pool, onItemPress, popular }) => {
     perChange24hColor,
     poolTitle,
     volumeSuffix,
+    priceChange24H,
   } = pool;
   return (
     <TouchableOpacity onPress={() => onItemPress(pool)}>
@@ -56,17 +57,12 @@ const Item = React.memo(({ pool, onItemPress, popular }) => {
             ]}
             numberOfLines={0}
           >
-            {popular ? volumeSuffix : perChange24hToStr}
+            {popular ? volumeSuffix : `${priceChange24H > 0 ? '+' : ''}${perChange24hToStr}`}
           </Text>
         </View>
-        {!popular && (
-          <TouchableOpacity
-            style={[homeStyled.btnTrade]}
-            onPress={() => onItemPress(pool)}
-          >
-            <Text style={homeStyled.labelTrade}>Trade</Text>
-          </TouchableOpacity>
-        )}
+        <TouchableOpacity style={[homeStyled.btnTrade]} onPress={() => onItemPress(pool)}>
+          <Text style={homeStyled.labelTrade}>Trade</Text>
+        </TouchableOpacity>
       </Row>
     </TouchableOpacity>
   );
@@ -89,9 +85,7 @@ const Header = React.memo(({ popular }) => (
     >
       {popular ? 'Vol(USD)' : 'Change'}
     </Text>
-    {!popular && (
-      <View style={[homeStyled.btnTrade, { backgroundColor: COLORS.white }]} />
-    )}
+    <View style={[homeStyled.btnTrade, { backgroundColor: COLORS.white }]} />
   </Row>
 ));
 
