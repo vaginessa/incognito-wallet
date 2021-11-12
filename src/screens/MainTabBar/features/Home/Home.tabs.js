@@ -3,15 +3,12 @@ import { TouchableOpacity, View } from 'react-native';
 import { Tabs, Text } from '@src/components/core';
 import { TABS } from '@screens/MainTabBar/features/Home/Home.constant';
 import { batch, useDispatch, useSelector } from 'react-redux';
-import {
-  actionFetchPools,
-  listPoolsVerifySelector,
-} from '@screens/PDexV3/features/Pools';
+import { listPoolsVerifySelector } from '@screens/PDexV3/features/Pools';
 import { Row } from '@src/components';
 import { homeStyled } from '@screens/MainTabBar/MainTabBar.styled';
 import PropTypes from 'prop-types';
 import orderBy from 'lodash/orderBy';
-import { actionSetDefaultPair } from '@screens/PDexV3/features/Swap';
+import { actionInitSwapForm } from '@screens/PDexV3/features/Swap';
 import { actionChangeTab } from '@components/core/Tabs/Tabs.actions';
 import {
   ROOT_TAB_TRADE,
@@ -19,7 +16,7 @@ import {
 } from '@screens/PDexV3/features/Trade/Trade.constant';
 import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@routers/routeNames';
-import {COLORS} from '@src/styles';
+import { COLORS } from '@src/styles';
 
 const Item = React.memo(({ pool, onItemPress, popular }) => {
   const {
@@ -75,11 +72,7 @@ const Header = React.memo(({ popular }) => (
   <Row>
     <Text style={[homeStyled.itemBox, homeStyled.tabHeaderText]}>Name</Text>
     <Text
-      style={[
-        homeStyled.itemBox,
-        homeStyled.tabHeaderText,
-        homeStyled.right,
-      ]}
+      style={[homeStyled.itemBox, homeStyled.tabHeaderText, homeStyled.right]}
     >
       Price
     </Text>
@@ -105,19 +98,22 @@ const MainTab = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const pools = useSelector(listPoolsVerifySelector);
-  const onItemPress = (pool) => {
+  const onItemPress = async (pool) => {
     navigation.navigate(routeNames.Trade, { tabIndex: 0 });
     batch(() => {
+      dispatch(
+        actionInitSwapForm({
+          refresh: true,
+          defaultPair: {
+            selltoken: pool?.token1?.tokenId,
+            buytoken: pool?.token2?.tokenId,
+          },
+        }),
+      );
       dispatch(
         actionChangeTab({
           rootTabID: ROOT_TAB_TRADE,
           tabID: TAB_SWAP_ID,
-        }),
-      );
-      dispatch(
-        actionSetDefaultPair({
-          selltoken: pool?.token1?.tokenId,
-          buytoken: pool?.token2?.tokenId,
         }),
       );
     });
@@ -130,9 +126,6 @@ const MainTab = () => {
       popular={popular}
     />
   );
-  React.useEffect(() => {
-    dispatch(actionFetchPools());
-  }, []);
   if (!pools || pools.length === 0) return null;
   return (
     <Tabs rootTabID={TABS.TAB_HOME_ID} useTab1 styledTabList={homeStyled.tab}>
