@@ -1,11 +1,11 @@
 import { PRV } from '@src/constants/common';
-import uniqBy from 'lodash/uniqBy';
 import { sharedSelector } from '@src/redux/selectors';
 import { ACCOUNT_CONSTANT } from 'incognito-chain-web-js/build/wallet';
 import { getPrivacyDataByTokenID as getPrivacyDataByTokenIDSelector } from '@src/redux/selectors/selectedPrivacy';
 import { COLORS } from '@src/styles';
 import convert from '@src/utils/convert';
 import format from '@src/utils/format';
+import floor from 'lodash/floor';
 import { formValueSelector, isValid } from 'redux-form';
 import isEmpty from 'lodash/isEmpty';
 import { createSelector } from 'reselect';
@@ -15,22 +15,17 @@ import {
   getPairRate,
   getOriginalPairRate,
 } from '@screens/PDexV3';
-import {
-  getDataByPoolIdSelector,
-  listPoolsVerifySelector,
-} from '@screens/PDexV3/features/Pools';
+import { getDataByPoolIdSelector } from '@screens/PDexV3/features/Pools';
 import { activedTabSelector } from '@src/components/core/Tabs/Tabs.selector';
 import { nftTokenDataSelector } from '@src/redux/selectors/account';
 import BigNumber from 'bignumber.js';
 import isEqual from 'lodash/isEqual';
 import {
-  ROOT_TAB_TRADE,
-  TAB_BUY_LIMIT_ID,
-  TAB_SELL_LIMIT_ID,
-} from '@screens/PDexV3/features/Trade/Trade.constant';
-import orderBy from 'lodash/orderBy';
-import differenceBy from 'lodash/differenceBy';
-import { formConfigs } from './OrderLimit.constant';
+  formConfigs,
+  ROOT_TAB_ORDER_LIMIT,
+  TAB_BUY_ID,
+  TAB_SELL_ID,
+} from './OrderLimit.constant';
 import { getInputAmount as getInputTokenAmount } from './OrderLimit.utils';
 
 const BTN_WITHDRAW_ORDER = {
@@ -52,7 +47,7 @@ export const poolIdSelector = createSelector(
 export const poolSelectedDataSelector = createSelector(
   orderLimitSelector,
   getDataByPoolIdSelector,
-  ({ poolId }, getDataByPoolId) => getDataByPoolId(poolId),
+  ({ poolId }, getDataByPoolId) => getDataByPoolId(poolId) || {},
 );
 
 // group inputs
@@ -170,16 +165,6 @@ export const inputAmountSelector = createSelector(
   getInputTokenAmount,
 );
 
-export const sellInputAmountSelector = createSelector(
-  inputAmountSelector,
-  (getInputAmount) => getInputAmount(formConfigs.selltoken),
-);
-
-export const buyInputAmountSelector = createSelector(
-  inputAmountSelector,
-  (getInputAmount) => getInputAmount(formConfigs.buytoken),
-);
-
 export const rateDataSelector = createSelector(
   (state) => state,
   inputAmountSelector,
@@ -237,18 +222,18 @@ export const orderLimitDataSelector = createSelector(
   nftTokenDataSelector,
   (
     state,
-    { networkfee, isFetching, percent, ordering },
+    { networkfee, initing, percent, ordering },
     getActivedTab,
     getPrivacyDataByTokenID,
     getInputAmount,
     feeTokenData,
     rateData,
     pool,
+    { nftTokenAvailable },
   ) => {
-    const { customRate } = rateData;
     const sellInputAmount = getInputAmount(formConfigs.selltoken);
     const buyInputAmount = getInputAmount(formConfigs.buytoken);
-    const activedTab = getActivedTab(ROOT_TAB_TRADE);
+    const activedTab = getActivedTab(ROOT_TAB_ORDER_LIMIT);
     let btnActionTitle;
     const buyColor = COLORS.green;
     const sellColor = COLORS.red;
@@ -257,110 +242,57 @@ export const orderLimitDataSelector = createSelector(
     let reviewOrderDesc = '';
     let reviewOrderDescValue = '';
     let cfmTitle = '';
-    let totalAmountData = {};
-    let totalOriginalAmount = 0,
-      totalAmount = 0,
-      totalAmountStr = '',
-      totalAmountToken = {};
-    const calculating = isFetching;
-    let disabledBtn = calculating || !isValid(formConfigs.formName)(state);
     switch (activedTab) {
-    case TAB_BUY_LIMIT_ID: {
-      mainColor = buyColor;
-      btnActionTitle = `Buy ${buyInputAmount?.symbol}`;
-      reviewOrderTitle = `Buy ${buyInputAmount?.amountText} ${buyInputAmount?.symbol}`;
-      reviewOrderDesc = 'Pay with';
-      totalAmountToken = sellInputAmount?.tokenData;
-      let buyAmount = buyInputAmount?.amount;
-      const originalbuyAmount = convert.toOriginalAmount(
-        buyAmount,
-          sellInputAmount?.pDecimals,
-      );
-      buyAmount = convert.toHumanAmount(
-        originalbuyAmount,
-          sellInputAmount?.pDecimals,
-      );
-      totalAmount = new BigNumber(buyAmount)
-        .multipliedBy(new BigNumber(customRate))
-        .toNumber();
-      totalOriginalAmount = convert.toOriginalAmount(
-        totalAmount,
-          totalAmountToken?.pDecimals,
-      );
-      totalAmountStr = format.amountVer2(
-        totalOriginalAmount,
-          totalAmountToken?.pDecimals,
-      );
-      reviewOrderDescValue = `${totalAmountStr} ${totalAmountToken?.symbol}`;
-      cfmTitle = `You placed an order to buy ${buyInputAmount?.amountText} ${buyInputAmount?.symbol} for ${reviewOrderDescValue}`;
-      disabledBtn = !originalbuyAmount && disabledBtn;
-      break;
-    }
-    case TAB_SELL_LIMIT_ID: {
+    case TAB_SELL_ID: {
       mainColor = sellColor;
       btnActionTitle = `Sell ${sellInputAmount?.symbol}`;
       reviewOrderTitle = `Sell ${sellInputAmount?.amountText} ${sellInputAmount?.symbol}`;
       reviewOrderDesc = 'Receive';
-      totalAmountToken = buyInputAmount?.tokenData;
-      let sellAmount = sellInputAmount?.amount;
-      const originalSellAmount = convert.toOriginalAmount(
-        sellAmount,
-          sellInputAmount?.pDecimals,
-      );
-      sellAmount = convert.toHumanAmount(
-        originalSellAmount,
-          sellInputAmount?.pDecimals,
-      );
-      totalAmount = new BigNumber(sellAmount)
-        .multipliedBy(new BigNumber(customRate))
-        .toNumber();
-      totalOriginalAmount = convert.toOriginalAmount(
-        totalAmount,
-          totalAmountToken?.pDecimals,
-      );
-      totalAmountStr = format.amountVer2(
-        totalOriginalAmount,
-          totalAmountToken?.pDecimals,
-      );
-      reviewOrderDescValue = `${totalAmountStr} ${totalAmountToken?.symbol}`;
+      reviewOrderDescValue = `${buyInputAmount?.amountText} ${buyInputAmount?.symbol}`;
       cfmTitle = `You placed an order to sell ${sellInputAmount?.amountText} ${sellInputAmount?.symbol} for ${reviewOrderDescValue}`;
-      disabledBtn = !originalSellAmount && disabledBtn;
+      break;
+    }
+    case TAB_BUY_ID: {
+      mainColor = buyColor;
+      btnActionTitle = `Buy ${buyInputAmount?.symbol}`;
+      reviewOrderTitle = `Buy ${buyInputAmount?.amountText} ${buyInputAmount?.symbol}`;
+      reviewOrderDesc = 'Pay with';
+      reviewOrderDescValue = `${sellInputAmount?.amountText} ${sellInputAmount?.symbol}`;
+      cfmTitle = `You placed an order to buy ${buyInputAmount?.amountText} ${buyInputAmount?.symbol} for ${reviewOrderDescValue}`;
       break;
     }
     default:
       break;
     }
-    totalAmountData = {
-      totalAmountToken,
-      totalOriginalAmount,
-      totalAmountStr,
-      totalAmount,
-      totalStr: `${totalAmountStr} ${totalAmountToken?.symbol}`,
-    };
     const token1: SelectedPrivacy = pool?.token1;
     const token2: SelectedPrivacy = pool?.token2;
     const networkfeeAmount = format.toFixed(
       convert.toHumanAmount(networkfee, PRV.pDecimals),
       PRV.pDecimals,
     );
-    const networkfeeAmountStr = `${format.amountVer2(
-      networkfee,
-      PRV.pDecimals,
-    )} ${PRV.symbol}`;
+    const networkfeeAmountStr = `${networkfeeAmount} ${PRV.symbol}`;
     const prv: SelectedPrivacy = getPrivacyDataByTokenID(PRV.id);
     const showPRVBalance =
       !sellInputAmount?.isMainCrypto && !buyInputAmount.isMainCrypto;
     const prvBalance = format.amountVer2(prv?.amount || 0, PRV.pDecimals);
     const prvBalanceStr = `${prvBalance} ${PRV.symbol}`;
-    const balanceStr = sellInputAmount?.balanceStr;
+    const balanceStr = `${sellInputAmount?.balanceStr ||
+      '0'} ${sellInputAmount?.symbol || ''}`;
     const poolSizeStr = `${sellInputAmount?.poolValueStr} ${sellInputAmount?.symbol} + ${buyInputAmount?.poolValueStr} ${buyInputAmount?.symbol}`;
-    const editableInput = !isFetching;
-
+    const editableInput = !initing;
+    const calculating = initing;
+    const disabledBtn =
+      calculating ||
+      !isValid(formConfigs.formName)(state) ||
+      !nftTokenAvailable;
+    if (!nftTokenAvailable) {
+      btnActionTitle = 'Not enough NFT token';
+    }
     if (calculating) {
       btnActionTitle = 'Calculating...';
     }
     const tradingFeeStr = `${feeTokenData?.feeAmountText} ${feeTokenData?.symbol}`;
-    const refreshing = isFetching;
+    const refreshing = initing;
     const poolStr = `${token1?.symbol || ''} / ${token2?.symbol || ''}`;
     const priceChange24h = pool?.priceChange24h || 0;
     let colorPriceChange24h = COLORS.green;
@@ -399,7 +331,6 @@ export const orderLimitDataSelector = createSelector(
       priceChange24hStr: `${priceChange24h}%`,
       colorPriceChange24h,
       calculating,
-      totalAmountData,
     };
   },
 );
@@ -554,20 +485,15 @@ export const mappingOrderHistorySelector = createSelector(
         infoStr = poolStr;
       }
 
-      let percentToNumber = new BigNumber(matched)
+      const percentToNumber = new BigNumber(matched)
         .dividedBy(new BigNumber(amount))
-        .multipliedBy(100);
-      percentToNumber = percentToNumber.isNaN()
-        ? 0
-        : percentToNumber.toNumber();
+        .multipliedBy(100)
+        .toNumber();
       const percent = format.toFixed(percentToNumber, 2);
       const percentStr = `Filled ${percent}%`;
       const percentStr1 = `${percent}%`;
       const time = fromStorage ? requestime : requestime * 1000;
-      const timeStr = format.formatDateTime(
-        new Date(time).getTime(),
-        'DD MMM HH:mm',
-      );
+      const timeStr = format.formatDateTime(new Date(time).getTime());
       const withdrawing = withdrawingOrderTxs.includes(requestTx);
       const rate = getPairRate({
         token1Value: amount,
@@ -579,7 +505,6 @@ export const mappingOrderHistorySelector = createSelector(
         ...order,
         type,
         mainColor,
-        time,
         timeStr,
         percent,
         percentStr,
@@ -607,7 +532,6 @@ export const mappingOrderHistorySelector = createSelector(
         priceStr,
         amountStr,
         visibleBtnAction,
-        cancelTxId,
       };
       return result;
     } catch (error) {
@@ -627,11 +551,6 @@ export const orderHistorySelector = createSelector(
       return history;
     }
     history = data.map((order) => mappingOrderHistory(order));
-    let openOrders = history.filter((h) => !h?.isCompleted);
-    openOrders = orderBy(openOrders, ['time'], ['desc']);
-    let remainOrders = differenceBy(history, openOrders, ['requestTx']);
-    remainOrders = orderBy(remainOrders, ['time'], ['desc']);
-    history = [...openOrders, ...remainOrders];
     return { history, isFetching, isFetched };
   },
 );
@@ -663,34 +582,5 @@ export const orderDetailSelector = createSelector(
       fetching,
       order: mappingOrderHistory(order),
     };
-  },
-);
-
-export const selectableTokens1Selector = createSelector(
-  listPoolsVerifySelector,
-  (pools) =>
-    uniqBy(pools.map(({ token1 }) => token1), (token) => token?.tokenId),
-);
-
-export const selectableTokens2Selector = createSelector(
-  listPoolsVerifySelector,
-  poolSelectedDataSelector,
-  (pools, poolSelected) => {
-    const { tokenId: token1Id } = poolSelected?.token1;
-    return pools
-      .filter(({ token1 }) => token1?.tokenId === token1Id)
-      .map(({ token2 }) => token2);
-  },
-);
-
-export const visibleBtnChartSelector = createSelector(
-  poolIdSelector,
-  activedTabSelector,
-  (poolId, getActivedTab) => {
-    const activedTab = getActivedTab(ROOT_TAB_TRADE);
-    return (
-      !!poolId &&
-      (activedTab === TAB_BUY_LIMIT_ID || activedTab === TAB_SELL_LIMIT_ID)
-    );
   },
 );
