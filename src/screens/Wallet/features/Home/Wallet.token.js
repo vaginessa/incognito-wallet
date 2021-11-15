@@ -15,15 +15,15 @@ import round from 'lodash/round';
 import { COLORS, FONT } from '@src/styles';
 import { ActivityIndicator } from '@components/core';
 import { NormalText } from '@components/Token/Token';
-import {actionInitSwapForm, actionSelectToken} from '@screens/PDexV3/features/Swap';
-import {formConfigs} from '@screens/PDexV3/features/Swap/Swap.constant';
+import {actionInitSwapForm} from '@screens/PDexV3/features/Swap';
 import {useNavigation} from 'react-navigation-hooks';
 import routeNames from '@routers/routeNames';
 import {actionChangeTab} from '@components/core/Tabs/Tabs.actions';
 import {ROOT_TAB_TRADE, TAB_SWAP_ID} from '@screens/PDexV3/features/Trade/Trade.constant';
+import {CONSTANT_CONFIGS} from '@src/constants';
 
 const TokenDefault = React.memo((props) => {
-  const { symbol, name, priceUsd, amount, pDecimals, decimalDigits, pricePrv, tokenId, change, onPress, isVerified, isGettingBalance, showGettingBalance, token } = props;
+  const { symbol, name, priceUsd, amount, pDecimals, decimalDigits, pricePrv, change, onPress, tokenId, isGettingBalance, showGettingBalance } = props;
   const shouldShowGettingBalance = isGettingBalance || showGettingBalance;
   const dispatch = useDispatch();
   const navigation = useNavigation();
@@ -49,7 +49,12 @@ const TokenDefault = React.memo((props) => {
     navigation.navigate(routeNames.Trade);
     setTimeout(() => {
       batch(() => {
-        dispatch(actionSelectToken(props, formConfigs.buytoken));
+        dispatch(actionInitSwapForm({
+          defaultPair: {
+            selltoken: CONSTANT_CONFIGS.USDT_TOKEN_ID,
+            buytoken: tokenId,
+          }
+        }));
         dispatch(
           actionChangeTab({
             rootTabID: ROOT_TAB_TRADE,
@@ -184,7 +189,10 @@ TokenDefault.propTypes = {
   pDecimals: PropTypes.string.isRequired,
   decimalDigits: PropTypes.string.isRequired,
   pricePrv: PropTypes.string.isRequired,
-  tokenId: PropTypes.string.isRequired,
+  change: PropTypes.string.isRequired,
+  onPress: PropTypes.func.isRequired,
+  isGettingBalance: PropTypes.bool.isRequired,
+  showGettingBalance: PropTypes.bool.isRequired,
 };
 
 export default withToken(memo(Token));
