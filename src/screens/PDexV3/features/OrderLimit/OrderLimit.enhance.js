@@ -20,7 +20,7 @@ import {
 
 const enhance = (WrappedComp) => (props) => {
   const dispatch = useDispatch();
-  const { cfmTitle } = useSelector(orderLimitDataSelector);
+  const { cfmTitle, disabledBtn } = useSelector(orderLimitDataSelector);
   const { nftTokenAvailable } = useSelector(nftTokenDataSelector);
   const { isFetching, isFetched } = useSelector(orderLimitSelector);
   const handleConfirm = async () => {
@@ -33,6 +33,9 @@ const enhance = (WrappedComp) => (props) => {
             data: <NFTTokenModal />,
           }),
         );
+      }
+      if (disabledBtn) {
+        return;
       }
       const tx = await dispatch(actionBookOrder());
       if (tx) {
