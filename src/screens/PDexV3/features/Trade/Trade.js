@@ -1,16 +1,18 @@
-import { batch, useDispatch } from 'react-redux';
+import { batch, useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Tabs } from '@src/components/core';
+import Row from '@src/components/Row';
 import React from 'react';
 import { View } from 'react-native';
 import TabSwap from '@screens/PDexV3/features/Swap';
 import OrderLimit, {
   actionInit,
-  actionSetPoolSelected,
+  visibleBtnChartSelector,
 } from '@screens/PDexV3/features/OrderLimit';
-import { useNavigationParam } from 'react-navigation-hooks';
+import { ButtonChart } from '@src/components/Button';
+import { useNavigationParam, useNavigation } from 'react-navigation-hooks';
 import SelectAccountButton from '@src/components/SelectAccountButton';
-import { actionChangeTab } from '@src/components/core/Tabs/Tabs.actions';
+import routeNames from '@src/router/routeNames';
 import {
   ROOT_TAB_TRADE,
   TAB_SWAP_ID,
@@ -22,18 +24,9 @@ import withTrade from './Trade.enhance';
 
 const Trade = () => {
   const tabIndex = useNavigationParam('tabIndex');
+  const navigation = useNavigation();
   const dispatch = useDispatch();
-  const onPressPool = (poolId) => {
-    batch(() => {
-      dispatch(actionSetPoolSelected(poolId));
-      dispatch(
-        actionChangeTab({
-          rootTabID: ROOT_TAB_TRADE,
-          tabID: TAB_BUY_LIMIT_ID,
-        }),
-      );
-    });
-  };
+  const visibleBtnChart = useSelector(visibleBtnChartSelector);
   return (
     <View style={styled.container}>
       <Tabs
@@ -42,7 +35,17 @@ const Trade = () => {
         useTab1
         defaultTabIndex={tabIndex}
         styledTabList={styled.styledTabList}
-        rightCustom={<SelectAccountButton />}
+        rightCustom={
+          <Row style={styled.rightHeader}>
+            {visibleBtnChart && (
+              <ButtonChart
+                onPress={() => navigation.navigate(routeNames.Chart)}
+                style={{ marginRight: 15 }}
+              />
+            )}
+            <SelectAccountButton />
+          </Row>
+        }
       >
         <View
           tabID={TAB_BUY_LIMIT_ID}
