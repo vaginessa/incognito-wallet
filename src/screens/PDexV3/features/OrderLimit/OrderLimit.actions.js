@@ -12,7 +12,7 @@ import {
 } from '@screens/PDexV3/features/Pools';
 import { actionSetNFTTokenData } from '@src/redux/actions/account';
 import isEmpty from 'lodash/isEmpty';
-import { change, destroy, reset } from 'redux-form';
+import { change, focus } from 'redux-form';
 import { actionGetPDexV3Inst } from '@screens/PDexV3';
 import { batch } from 'react-redux';
 import { actionSetDefaultPair } from '@screens/PDexV3/features/Swap';
@@ -187,9 +187,8 @@ export const actionSetDefaultPool = () => async (dispatch, getState) => {
 
 export const actionInit = (refresh = true) => async (dispatch, getState) => {
   try {
-    dispatch(actionFetching());
     batch(() => {
-      dispatch(reset(formConfigs.formName));
+      dispatch(actionFetching());
       dispatch(actionSetPercent(0));
     });
     let state = getState();
@@ -252,6 +251,7 @@ export const actionInit = (refresh = true) => async (dispatch, getState) => {
       state = getState();
       const { rate } = rateDataSelector(state);
       dispatch(change(formConfigs.formName, formConfigs.rate, rate));
+      dispatch(focus(formConfigs.formName, formConfigs.rate));
     });
   } catch (error) {
     new ExHandler(error).showErrorToast;
