@@ -262,6 +262,8 @@ export const orderLimitDataSelector = createSelector(
       totalAmount = 0,
       totalAmountStr = '',
       totalAmountToken = {};
+    const calculating = isFetching;
+    let disabledBtn = calculating || !isValid(formConfigs.formName)(state);
     switch (activedTab) {
     case TAB_BUY_LIMIT_ID: {
       mainColor = buyColor;
@@ -291,6 +293,7 @@ export const orderLimitDataSelector = createSelector(
       );
       reviewOrderDescValue = `${totalAmountStr} ${totalAmountToken?.symbol}`;
       cfmTitle = `You placed an order to buy ${buyInputAmount?.amountText} ${buyInputAmount?.symbol} for ${reviewOrderDescValue}`;
+      disabledBtn = !originalbuyAmount && disabledBtn;
       break;
     }
     case TAB_SELL_LIMIT_ID: {
@@ -321,9 +324,9 @@ export const orderLimitDataSelector = createSelector(
       );
       reviewOrderDescValue = `${totalAmountStr} ${totalAmountToken?.symbol}`;
       cfmTitle = `You placed an order to sell ${sellInputAmount?.amountText} ${sellInputAmount?.symbol} for ${reviewOrderDescValue}`;
+      disabledBtn = !originalSellAmount && disabledBtn;
       break;
     }
-
     default:
       break;
     }
@@ -352,8 +355,7 @@ export const orderLimitDataSelector = createSelector(
     const balanceStr = sellInputAmount?.balanceStr;
     const poolSizeStr = `${sellInputAmount?.poolValueStr} ${sellInputAmount?.symbol} + ${buyInputAmount?.poolValueStr} ${buyInputAmount?.symbol}`;
     const editableInput = !isFetching;
-    const calculating = isFetching;
-    const disabledBtn = calculating || !isValid(formConfigs.formName)(state);
+
     if (calculating) {
       btnActionTitle = 'Calculating...';
     }
