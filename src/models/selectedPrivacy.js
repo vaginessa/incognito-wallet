@@ -169,7 +169,7 @@ class SelectedPrivacy {
     this.amount = this.amount || 0;
     this.listChildToken = pTokenData?.listChildToken;
     this.iconUrl = getIconUrl.call(this, token?.image);
-    this.change = convert.toNumber(pTokenData?.change || '0');
+    this.change = pTokenData?.change;
     this.defaultPoolPair = pTokenData?.defaultPoolPair;
     this.defaultPairToken = pTokenData?.defaultPairToken;
   }

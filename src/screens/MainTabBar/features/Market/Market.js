@@ -5,7 +5,6 @@ import {TokenFollow} from '@components/Token';
 import MarketList from '@components/Token/Token.marketList';
 import withMarket from '@screens/MainTabBar/features/Market/Market.enhance';
 import {FollowHeader} from '@components/Token/Token.follow';
-import {actionSetDefaultPair} from '@screens/PDexV3/features/Swap';
 import {useDispatch} from 'react-redux';
 import {useNavigation} from 'react-navigation-hooks';
 import routeNames from '@routers/routeNames';
@@ -18,6 +17,24 @@ const Market = React.memo((props) => {
   const { handleToggleFollowToken, keySearch, onFilter, ...rest } = props;
   const dispatch = useDispatch();
   const navigation = useNavigation();
+  const onOrderPress = (item) => {
+    const sellToken = item.defaultPairToken;
+    if (sellToken) {
+      const buyToken = item.tokenId;
+      navigation.navigate(routeNames.Trade, { tabIndex: 0 });
+      dispatch(
+        actionChangeTab({ rootTabID: ROOT_TAB_TRADE, tabID: TAB_BUY_LIMIT_ID }),
+      );
+      dispatch(actionSetInputToken({
+        selltoken: sellToken,
+        buytoken: buyToken,
+      }));
+    } else {
+      Toast.showInfo('Pair is not exist.', {
+        duration: 500,
+      });
+    }
+  };
   return (
     <>
       <Header onFilter={onFilter} />
@@ -31,24 +48,7 @@ const Market = React.memo((props) => {
             key={item.tokenId}
             hideStar={!keySearch}
             handleToggleFollowToken={handleToggleFollowToken}
-            onPress={() => {
-              const sellToken = item.defaultPairToken;
-              if (sellToken) {
-                const buyToken = item.tokenId;
-                navigation.navigate(routeNames.Trade, { tabIndex: 0 });
-                dispatch(
-                  actionChangeTab({ rootTabID: ROOT_TAB_TRADE, tabID: TAB_BUY_LIMIT_ID }),
-                );
-                dispatch(actionSetInputToken({
-                  selltoken: sellToken,
-                  buytoken: buyToken,
-                }));
-              } else {
-                Toast.showInfo('Pair is not exist.', {
-                  duration: 500,
-                });
-              }
-            }}
+            onPress={() => onOrderPress(item)}
           />
         )}
       />
