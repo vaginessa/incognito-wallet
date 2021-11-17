@@ -26,7 +26,6 @@ const styled = StyleSheet.create({
 const BaseTextInputCustom = (props) => {
   const inputProps: TextInputProps = props?.inputProps;
   const { canSearch, renderCustom, style } = props;
-  console.log('SANG TEST::: 222', style);
   const handleRenderCustom = () => {
     if (renderCustom) {
       return renderCustom;

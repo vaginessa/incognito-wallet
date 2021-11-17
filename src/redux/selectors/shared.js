@@ -62,6 +62,34 @@ export const availableTokensSelector = createSelector(
   },
 );
 
+export const marketTokens = createSelector(
+  pTokensSelector,
+  internalTokensSelector,
+  tokensFollowedSelector,
+  selectedPrivacySelector.getPrivacyDataByTokenID,
+  (pTokens, internalTokens, followedTokens, getPrivacyDataByTokenID) => {
+    const followedTokenIds = followedTokens.map((t) => t?.id) || [];
+    const allTokenIds = Object.keys(
+      fromPairs([
+        ...internalTokens?.map((t) => [t?.id]),
+        ...pTokens?.map((t) => [t?.tokenId]),
+      ]),
+    );
+    const tokens = [];
+    allTokenIds?.forEach((tokenId) => {
+      const token = getPrivacyDataByTokenID(tokenId);
+      if (token?.name && token?.symbol && token.tokenId) {
+        let _token = { ...token };
+        if (followedTokenIds.includes(token.tokenId)) {
+          _token.isFollowed = true;
+        }
+        tokens.push(_token);
+      }
+    });
+    return uniqBy(tokens, 'tokenId') || [];
+  },
+);
+
 export const pTokenSelector = createSelector(
   selectedPrivacySelector.getPrivacyDataByTokenID,
   currencySelector,

@@ -51,6 +51,8 @@ const enhance = (WrappedComp) => (props) => {
   }, [availableTokens]);
 
   const tokensFactories = React.useMemo(() => {
+    let marketTokens = _verifiedTokens.concat(_unVerifiedTokens.filter(item => item.isFollowed));
+    marketTokens = orderBy(marketTokens, 'isFollowed', 'desc');
     return [
       {
         data: _verifiedTokens,
@@ -63,7 +65,7 @@ const enhance = (WrappedComp) => (props) => {
         styledListToken: { paddingTop: 15 },
       },
       {
-        data: orderBy(_verifiedTokens.concat(_unVerifiedTokens.filter(item => item.isFollowed), 'isFollowed', 'desc')),
+        data: marketTokens,
         visible: true,
         styledListToken: { paddingTop: 15 },
       }
@@ -75,6 +77,7 @@ const enhance = (WrappedComp) => (props) => {
       onToggleUnVerifiedTokens();
     }
   }, [keySearch]);
+
   return (
     <ErrorBoundary>
       <WrappedComp
@@ -89,9 +92,14 @@ const enhance = (WrappedComp) => (props) => {
     </ErrorBoundary>
   );
 };
-
+enhance.defaultProps = {
+  filterField: 'change',
+  orderField: 'desc'
+};
 enhance.propTypes = {
   availableTokens: PropTypes.array.isRequired,
+  filterField: PropTypes.string,
+  orderField: PropTypes.string
 };
 
 export default enhance;

@@ -2,15 +2,15 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Header from '@screens/MainTabBar/features/Market/Market.header';
 import {TokenFollow} from '@components/Token';
-import withFollowToken from '@screens/FollowToken/FollowToken.enhance';
 import MarketList from '@components/Token/Token.marketList';
+import withMarket from '@screens/MainTabBar/features/Market/Market.enhance';
 
 const Market = React.memo((props) => {
-  const { handleToggleFollowToken, keySearch, ...rest } = props;
+  const { handleToggleFollowToken, keySearch, onFilter, ...rest } = props;
 
   return (
     <>
-      <Header />
+      <Header onFilter={onFilter} />
       <MarketList
         {...rest}
         renderItem={(item) => (
@@ -27,7 +27,9 @@ const Market = React.memo((props) => {
 });
 
 Market.propTypes = {
-  handleToggleFollowToken: PropTypes.func.isRequired
+  handleToggleFollowToken: PropTypes.func.isRequired,
+  keySearch: PropTypes.string.isRequired,
+  onFilter: PropTypes.func.isRequired
 };
 
-export default withFollowToken(Market);
+export default withMarket(Market);
