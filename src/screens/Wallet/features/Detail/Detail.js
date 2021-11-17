@@ -27,7 +27,7 @@ import { useHistoryEffect } from '@screens/Wallet/features/History';
 import appConstant from '@src/constants/app';
 import {actionChangeTab} from '@components/core/Tabs/Tabs.actions';
 import {ROOT_TAB_TRADE, TAB_BUY_LIMIT_ID, TAB_SELL_LIMIT_ID} from '@screens/PDexV3/features/Trade/Trade.constant';
-import {actionSetInputToken} from '@screens/PDexV3/features/OrderLimit';
+import {actionInit, actionSetInputToken, actionSetPoolSelected} from '@screens/PDexV3/features/OrderLimit';
 import {Toast} from '@components/core';
 import {BTNBorder, BTNPrimary} from '@components/core/Button';
 import {COLORS} from '@src/styles';
@@ -47,17 +47,16 @@ const GroupButton = React.memo(() => {
   const dispatch = useDispatch();
   const selected = useSelector(selectedPrivacySelector.selectedPrivacy);
   const handleSend = () => {
-    const sellToken = selected.defaultPairToken;
-    if (sellToken) {
-      const buyToken = selected.tokenId;
+    const poolId = selected.defaultPoolPair;
+    if (poolId) {
       navigation.navigate(routeNames.Trade, { tabIndex: 0 });
       dispatch(
         actionChangeTab({ rootTabID: ROOT_TAB_TRADE, tabID: TAB_BUY_LIMIT_ID }),
       );
-      dispatch(actionSetInputToken({
-        selltoken: sellToken,
-        buytoken: buyToken,
-      }));
+      dispatch(actionSetPoolSelected(poolId));
+      setTimeout(() => {
+        dispatch(actionInit());
+      }, 200);
     } else {
       Toast.showInfo('Pair is not exist.', {
         duration: 500,
@@ -65,17 +64,16 @@ const GroupButton = React.memo(() => {
     }
   };
   const handleReceive = () => {
-    const sellToken = selected.defaultPairToken;
-    if (sellToken) {
-      const buyToken = selected.tokenId;
+    const poolId = selected.defaultPoolPair;
+    if (poolId) {
       navigation.navigate(routeNames.Trade, { tabIndex: 1 });
       dispatch(
         actionChangeTab({ rootTabID: ROOT_TAB_TRADE, tabID: TAB_SELL_LIMIT_ID }),
       );
-      dispatch(actionSetInputToken({
-        selltoken: sellToken,
-        buytoken: buyToken,
-      }));
+      dispatch(actionSetPoolSelected(poolId));
+      setTimeout(() => {
+        dispatch(actionInit());
+      }, 200);
     } else {
       Toast.showInfo('Pair is not exist.', {
         duration: 500,
