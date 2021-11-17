@@ -42,7 +42,7 @@ const Header = () => {
         onPress={onShowAddress}
       />
       <Row centerVertical>
-        <Notification />
+        {/*<Notification />*/}
         <SelectAccountButton />
       </Row>
     </Row>
