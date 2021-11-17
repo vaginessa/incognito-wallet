@@ -26,7 +26,7 @@ const Header = ({ onFilter }) => {
         defaultValueByIndex={0}
         dropdownStyle={headerStyled.dropdownStyle}
         onSelect={(selectedItem) => {
-          onFilter && onFilter({ filterField: selectedItem.field, orderField: selectedItem.orderField });
+          onFilter && onFilter({ filterField: selectedItem.filterField, orderField: selectedItem.orderField });
         }}
         buttonTextAfterSelection={(selectedItem) => selectedItem.name}
         rowTextForSelection={(item) => item.name}

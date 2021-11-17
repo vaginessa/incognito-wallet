@@ -24,6 +24,8 @@ class PToken {
     this.pairPrv = pairPrv;
     this.change = data?.PercentChange24h || '';
     this.pricePrv = data?.PricePrv || 0;
+    this.defaultPoolPair = data?.DefaultPoolPair;
+    this.defaultPairToken = data?.DefaultPairToken;
 
     if (data && data.ListChildToken instanceof Array) {
       this.listChildToken = data.ListChildToken.map((item) => {

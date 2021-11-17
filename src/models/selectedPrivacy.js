@@ -68,6 +68,9 @@ function getIconUrl(chainTokenImageUri) {
 class SelectedPrivacy {
   constructor(account = {}, token = {}, pTokenData: PToken = {}, _tokenID) {
     const tokenId = pTokenData?.tokenId || token?.id;
+    if (_tokenID === PRV_ID) {
+      console.log('TEST::::', token, pTokenData);
+    }
 
     const isUnknown = _tokenID !== PRV_ID && !tokenId;
     const unknownText = 'Incognito Token';
@@ -168,6 +171,8 @@ class SelectedPrivacy {
     this.amount = this.amount || 0;
     this.listChildToken = pTokenData?.listChildToken;
     this.iconUrl = getIconUrl.call(this, token?.image);
+    this.defaultPoolPair = pTokenData?.defaultPoolPair;
+    this.defaultPairToken = pTokenData?.defaultPairToken;
   }
 }
 
