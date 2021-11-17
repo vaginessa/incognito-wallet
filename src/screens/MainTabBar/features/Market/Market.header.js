@@ -5,19 +5,27 @@ import { headerStyled } from '@screens/MainTabBar/features/Market/Market.styled'
 import { Row } from '@src/components';
 import { BaseTextInputCustom } from '@components/core/BaseTextInput';
 import {ArrowDownLine} from '@components/Icons/icon.arrowDown';
+import SearchBox from '@components/Header/Header.searchBox';
 
 const headers = ['Gainer', 'Loser', 'Vol(24h)'];
 
 const Header = ({ onChange }) => {
   return (
     <Row spaceBetween>
-      <BaseTextInputCustom
+      {/*<BaseTextInputCustom*/}
+      {/*  style={headerStyled.wrapInput}*/}
+      {/*  inputProps={{*/}
+      {/*    onChangeText: onChange,*/}
+      {/*    placeholder: 'Search an asset',*/}
+      {/*    style: headerStyled.input,*/}
+      {/*    autFocus: true,*/}
+      {/*  }}*/}
+      {/*/>*/}
+      <SearchBox
+        customSearchBox
         style={headerStyled.wrapInput}
         inputProps={{
-          onChangeText: onChange,
-          placeholder: 'Search an asset',
-          style: headerStyled.input,
-          autFocus: true,
+          style: headerStyled.input
         }}
       />
       <SelectDropdown

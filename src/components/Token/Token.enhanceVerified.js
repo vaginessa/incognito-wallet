@@ -50,23 +50,25 @@ const enhance = (WrappedComp) => (props) => {
     }
   }, [availableTokens]);
 
-  const tokensFactories = [
-    {
-      data: _verifiedTokens,
-      visible: !!keySearch,
-      styledListToken: { paddingTop: 0 },
-    },
-    {
-      data: _unVerifiedTokens,
-      visible: !!keySearch && toggleUnVerified,
-      styledListToken: { paddingTop: 15 },
-    },
-    {
-      data: orderBy(_verifiedTokens.concat(_unVerifiedTokens.filter(item => item.isFollowed), 'isFollowed', 'desc')),
-      visible: !keySearch,
-      styledListToken: { paddingTop: 15 },
-    }
-  ];
+  const tokensFactories = React.useMemo(() => {
+    return [
+      {
+        data: _verifiedTokens,
+        visible: true,
+        styledListToken: { paddingTop: 0 },
+      },
+      {
+        data: _unVerifiedTokens,
+        visible: toggleUnVerified,
+        styledListToken: { paddingTop: 15 },
+      },
+      {
+        data: orderBy(_verifiedTokens.concat(_unVerifiedTokens.filter(item => item.isFollowed), 'isFollowed', 'desc')),
+        visible: true,
+        styledListToken: { paddingTop: 15 },
+      }
+    ];
+  }, [_unVerifiedTokens, _verifiedTokens, toggleUnVerified]);
 
   React.useEffect(() => {
     if (toggleUnVerified && !keySearch) {

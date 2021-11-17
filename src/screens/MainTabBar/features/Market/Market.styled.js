@@ -7,6 +7,7 @@ export const styled = StyleSheet.create({
 
 export const headerStyled = StyleSheet.create({
   input: {
+    height: 50
   },
   wrapInput: {
     flex: 1,

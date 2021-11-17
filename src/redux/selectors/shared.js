@@ -6,7 +6,7 @@ import {
   tokensFollowedSelector,
 } from '@src/redux/selectors/token';
 import { selectedPrivacySelector } from '@src/redux/selectors';
-import { uniqBy, isNaN, compact, fromPairs, create } from 'lodash';
+import { uniqBy, isNaN, compact, fromPairs } from 'lodash';
 import convert from '@src/utils/convert';
 import { BIG_COINS } from '@src/screens/DexV2/constants';
 import { currencySelector, decimalDigitsSelector } from '@screens/Setting';
