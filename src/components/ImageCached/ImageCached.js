@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import FastImage from 'react-native-fast-image';
 import { ActivityIndicator } from '@components/core';
@@ -10,7 +10,7 @@ const ImageCached = (props) => {
     loading: false,
     error: false,
   });
-  if (!!error && !!defaultImage) {
+  if ((!!error || !uri) && !!defaultImage) {
     return <Image source={defaultImage} style={style} {...rest} />;
   }
   return (

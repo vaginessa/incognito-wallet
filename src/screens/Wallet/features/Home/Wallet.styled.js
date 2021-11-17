@@ -119,6 +119,7 @@ export const groupButtonStyled = StyleSheet.create({
 export const tokenStyled = StyleSheet.create({
   container: {
     flexDirection: 'row',
+    alignItems: 'center',
   },
   wrapFirst: {
     flex: 1,
@@ -126,11 +127,10 @@ export const tokenStyled = StyleSheet.create({
   },
   wrapSecond: {
     flex: 1,
-    paddingRight: 10
+    alignItems: 'flex-end'
   },
   wrapThird: {
     flex: 1,
-    paddingRight: 10
   },
   rowHeight: {
     height: FONT.SIZE.regular + 8,
@@ -151,28 +151,14 @@ export const tokenStyled = StyleSheet.create({
   centerVertical: {
     justifyContent: 'center'
   },
-  icon: {
+  iconVerify: {
     width: 12,
     height: 12
   },
-  btnTrade: {
-    backgroundColor: COLORS.blue5,
-    height: 32,
-    width: 55,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 4
-  },
-  labelTrade: {
-    ...FONT.STYLE.medium,
-    fontSize: FONT.SIZE.small,
-    color: COLORS.white
-  },
-  headerLabel: {
-    ...FONT.STYLE.medium,
-    fontSize: FONT.SIZE.small,
-    lineHeight: FONT.SIZE.regular,
-    color: COLORS.lightGrey36,
+  icon: {
+    width: 40,
+    height: 40,
+    marginRight: 16,
   },
   wrapHeader: {
     marginTop: 5,

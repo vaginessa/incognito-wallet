@@ -7,7 +7,7 @@ import {currencySelector, hideWalletBalanceSelector} from '@screens/Setting';
 import Swipeout from 'react-native-swipeout';
 import { BtnDelete } from '@components/Button';
 import { tokenStyled } from '@screens/Wallet/features/Home/Wallet.styled';
-import { Row } from '@src/components';
+import {ImageCached, Row} from '@src/components';
 import { formatAmount, formatPrice } from '@components/Token';
 import format from '@utils/format';
 import replace from 'lodash/replace';
@@ -23,9 +23,13 @@ import {ROOT_TAB_TRADE, TAB_SWAP_ID} from '@screens/PDexV3/features/Trade/Trade.
 import {CONSTANT_CONFIGS} from '@src/constants';
 import difference from 'lodash/difference';
 import {PRVIDSTR} from 'incognito-chain-web-js/build/wallet';
+import {itemStyled} from '@screens/Setting/features/Keychain/keychain.styled';
+import {DeleteFillIcon} from '@components/Icons/icon.delete';
+import {TokenVerifiedIcon} from '@components/Icons';
+import incognito from '@assets/images/new-icons/incognito.png';
 
 const TokenDefault = React.memo((props) => {
-  const { symbol, name, priceUsd, amount, pDecimals, decimalDigits, pricePrv, change, onPress, tokenId, isGettingBalance, showGettingBalance } = props;
+  const { symbol, name, priceUsd, amount, pDecimals, decimalDigits, pricePrv, change, onPress, tokenId, isGettingBalance, showGettingBalance, isVerified, iconUrl } = props;
   const pairs = useSelector(purePairsSelector);
   const shouldShowGettingBalance = isGettingBalance || showGettingBalance;
   const dispatch = useDispatch();
@@ -84,10 +88,14 @@ const TokenDefault = React.memo((props) => {
   };
   return (
     <TouchableOpacity style={tokenStyled.container} onPress={onPress}>
+      <ImageCached style={tokenStyled.icon} uri={iconUrl} defaultImage={incognito} />
       <View style={tokenStyled.wrapFirst}>
         <Row centerVertical>
-          <Text numberOfLines={1} style={tokenStyled.blackText}>{symbol}</Text>
-          {/*{isVerified && <TokenVerifiedIcon style={tokenStyled.icon} />}*/}
+          <NormalText
+            style={tokenStyled.blackText}
+            text={symbol}
+          />
+          {isVerified && <TokenVerifiedIcon style={tokenStyled.iconVerify} />}
         </Row>
         <NormalText
           text={name}
@@ -116,21 +124,18 @@ const TokenDefault = React.memo((props) => {
           symbol={symbol}
         />
       </View>
-      <View style={tokenStyled.wrapThird}>
-        <NormalText
-          text={balance.price}
-          hasPSymbol
-          style={tokenStyled.blackText}
-          stylePSymbol={[
-            tokenStyled.blackText,
-            { fontFamily: FONT.NAME.specialRegular, }
-          ]}
-        />
-        <Text numberOfLines={1} style={[tokenStyled.grayText, { color: balance.changeColor }]}>{balance.changeStr}</Text>
-      </View>
-      <TouchableOpacity style={tokenStyled.btnTrade} onPress={onPressTrade}>
-        <Text style={tokenStyled.labelTrade}>Trade</Text>
-      </TouchableOpacity>
+      {/*<View style={tokenStyled.wrapThird}>*/}
+      {/*  <NormalText*/}
+      {/*    text={balance.price}*/}
+      {/*    hasPSymbol*/}
+      {/*    style={tokenStyled.blackText}*/}
+      {/*    stylePSymbol={[*/}
+      {/*      tokenStyled.blackText,*/}
+      {/*      { fontFamily: FONT.NAME.specialRegular, }*/}
+      {/*    ]}*/}
+      {/*  />*/}
+      {/*  <Text numberOfLines={1} style={[tokenStyled.grayText, { color: balance.changeColor }]}>{balance.changeStr}</Text>*/}
+      {/*</View>*/}
     </TouchableOpacity>
   );
 });
@@ -148,15 +153,11 @@ const Token = (props) => {
         right={[
           {
             component: (
-              <BtnDelete
-                showIcon={false}
-                onPress={
-                  typeof handleRemoveToken === 'function'
-                    ? handleRemoveToken
-                    : null
-                }
-              />
+              <View style={itemStyled.wrapBin}>
+                <DeleteFillIcon />
+              </View>
             ),
+            onPress: handleRemoveToken,
           },
         ]}
       >

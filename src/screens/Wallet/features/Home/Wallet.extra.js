@@ -11,7 +11,7 @@ import {
 import isNaN from 'lodash/isNaN';
 import { Amount } from '@components/Token/Token';
 import { PRV } from '@services/wallet/tokenService';
-import { BTNBorder } from '@components/core/Button';
+import {BTNPrimary} from '@components/core/Button';
 import { useNavigation } from 'react-navigation-hooks';
 import { shieldStorageSelector } from '@screens/Shield/Shield.selector';
 import routeNames from '@routers/routeNames';
@@ -108,7 +108,7 @@ const GroupButton = React.memo(() => {
           triangleStyle={groupButtonStyled.triangleStyle}
         />
       )}
-      <BTNBorder
+      <BTNPrimary
         disabled={isDisabled}
         onPress={onFeaturePress}
         title="Deposit"
