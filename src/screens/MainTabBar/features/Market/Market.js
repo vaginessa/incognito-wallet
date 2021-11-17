@@ -12,6 +12,7 @@ const Market = React.memo((props) => {
     <>
       <Header onFilter={onFilter} />
       <MarketList
+        keySearch={keySearch}
         {...rest}
         renderItem={(item) => (
           <TokenFollow

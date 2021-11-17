@@ -10,7 +10,7 @@ import {NormalText} from '@components/Token/Token';
 import incognito from '@assets/images/new-icons/incognito.png';
 import {BtnStar} from '@components/Button';
 
-const TokenFollow = ({ item, hideStar }) => {
+const TokenFollow = ({ item, hideStar, handleToggleFollowToken }) => {
   const { symbol, priceUsd, change, tokenId, isFollowed } = item;
   const balance = React.useMemo(() => {
     const price = priceUsd;
@@ -48,7 +48,7 @@ const TokenFollow = ({ item, hideStar }) => {
             style={styled.blackLabel}
           />
         </View>
-        {!hideStar && <BtnStar onPress={() => {}} isBlue={isFollowed} />}
+        {!hideStar && <BtnStar onPress={() => handleToggleFollowToken(item)} isBlue={isFollowed} />}
       </Row>
     </TouchableOpacity>
   );
@@ -93,6 +93,7 @@ TokenFollow.propTypes = {
     isFollowed: PropTypes.bool.isRequired
   }).isRequired,
   hideStar: PropTypes.bool.isRequired,
+  handleToggleFollowToken: PropTypes.func.isRequired,
 };
 
 export default memo(TokenFollow);
