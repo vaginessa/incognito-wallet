@@ -12,6 +12,7 @@ import { SafeAreaView, ScrollView } from 'react-native';
 import { NetworkIcon, SecurityIcon } from '@components/Icons';
 import { Header } from '@src/components';
 import codePush from 'react-native-code-push';
+import HideBalance from '@screens/Setting/features/HideBalance';
 import PINSection from './features/PINSection';
 import SeparatorSection from './features/SeparatorSection';
 import DevSection from './features/DevSection';
@@ -90,6 +91,7 @@ const Setting = () => {
           <ConvertCoinsSection />
           <RemoveStorage />
           <RemoveBalanceCached />
+          <HideBalance />
           {global.isDebug() && <DevSection />}
         </View>
         <Text style={[settingStyle.textVersion]}>
