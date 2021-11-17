@@ -53,7 +53,7 @@ const enhance = (WrappedComp) => (props) => {
 
   const tokensFactories = React.useMemo(() => {
     let marketTokens = _verifiedTokens.concat(_unVerifiedTokens.filter(item => item.isFollowed));
-    marketTokens = orderBy(marketTokens, [filterField, 'isVerified', 'isFollowed'], [orderField, 'desc', 'desc']);
+    marketTokens = orderBy(marketTokens, ['isVerified', filterField, 'isFollowed'], ['desc', orderField, 'desc']);
     const __verifiedTokens = orderBy(_verifiedTokens, [filterField], [orderField]);
     const __unVerifiedTokens = orderBy(_unVerifiedTokens, [filterField], [orderField]);
     return [
@@ -73,7 +73,7 @@ const enhance = (WrappedComp) => (props) => {
         styledListToken: { paddingTop: 15 },
       }
     ];
-  }, [_unVerifiedTokens, _verifiedTokens, toggleUnVerified]);
+  }, [_unVerifiedTokens, _verifiedTokens, toggleUnVerified, filterField, orderField]);
 
   React.useEffect(() => {
     if (toggleUnVerified && !keySearch) {
