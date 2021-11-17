@@ -4,6 +4,7 @@ import {compose} from 'recompose';
 import withFollowToken from '@screens/FollowToken/FollowToken.enhance';
 import {useSelector} from 'react-redux';
 import {marketTokens} from '@src/redux/selectors/shared';
+import withHome from '@screens/MainTabBar/features/Home/Home.enhance';
 
 const withMarket = WrappedComp => props => {
   const [filter, setFilter] = React.useState({
@@ -26,6 +27,7 @@ const withMarket = WrappedComp => props => {
 };
 
 export default compose(
+  withHome,
   withMarket,
   withFollowToken,
 );

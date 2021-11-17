@@ -52,14 +52,35 @@ const TokenFollow = ({ item, hideStar, handleToggleFollowToken }) => {
           <NormalText
             containerStyle={styled.containerStyle}
             text={balance.changeStr}
-            style={styled.blackLabel}
+            style={[styled.blackLabel, { color: balance.changeColor }]}
           />
         </View>
-        {!hideStar && <BtnStar onPress={() => handleToggleFollowToken(item)} isBlue={isFollowed} />}
+        {!hideStar && (
+          <View style={styled.iconStar}>
+            <BtnStar onPress={() => handleToggleFollowToken(item)} isBlue={isFollowed} />
+          </View>
+        )}
       </Row>
     </TouchableOpacity>
   );
 };
+
+export const FollowHeader = React.memo(({ hideStar }) => {
+  return (
+    <Row style={styled.wrapHeader}>
+      <View centerVertical style={styled.sectionFirst}>
+        <Text style={styled.headerLabel}>Assets</Text>
+      </View>
+      <View centerVertical style={styled.sectionSecond}>
+        <Text style={styled.headerLabel}>Price</Text>
+      </View>
+      <View centerVertical style={styled.sectionThird}>
+        <Text style={styled.headerLabel}>Change</Text>
+      </View>
+      {!hideStar && <View style={styled.iconStar} />}
+    </Row>
+  );
+});
 
 export const styled = StyleSheet.create({
   wrapItem: {
@@ -104,6 +125,19 @@ export const styled = StyleSheet.create({
   verifyIcon: {
     width: 12,
     height: 12
+  },
+  headerLabel: {
+    ...FONT.STYLE.normal,
+    fontSize: FONT.SIZE.small,
+    color: COLORS.colorGrey1
+  },
+  wrapHeader: {
+    marginTop: 24,
+    marginBottom: 5
+  },
+  iconStar: {
+    width: 24,
+    alignItems: 'flex-end'
   }
 });
 
@@ -114,10 +148,16 @@ TokenFollow.propTypes = {
     priceUsd: PropTypes.number.isRequired,
     change: PropTypes.string,
     tokenId: PropTypes.string.isRequired,
-    isFollowed: PropTypes.bool.isRequired
+    isFollowed: PropTypes.bool.isRequired,
+    name: PropTypes.string.isRequired,
+    isVerified: PropTypes.bool.isRequired,
   }).isRequired,
   hideStar: PropTypes.bool.isRequired,
   handleToggleFollowToken: PropTypes.func.isRequired,
+};
+
+FollowHeader.propTypes = {
+  hideStar: PropTypes.bool.isRequired,
 };
 
 export default memo(TokenFollow);

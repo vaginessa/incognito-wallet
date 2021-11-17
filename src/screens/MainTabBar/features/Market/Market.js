@@ -4,6 +4,7 @@ import Header from '@screens/MainTabBar/features/Market/Market.header';
 import {TokenFollow} from '@components/Token';
 import MarketList from '@components/Token/Token.marketList';
 import withMarket from '@screens/MainTabBar/features/Market/Market.enhance';
+import {FollowHeader} from '@components/Token/Token.follow';
 
 const Market = React.memo((props) => {
   const { handleToggleFollowToken, keySearch, onFilter, ...rest } = props;
@@ -11,6 +12,7 @@ const Market = React.memo((props) => {
   return (
     <>
       <Header onFilter={onFilter} />
+      <FollowHeader hideStar={!keySearch} />
       <MarketList
         keySearch={keySearch}
         {...rest}
