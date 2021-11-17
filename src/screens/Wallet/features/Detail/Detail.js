@@ -34,7 +34,6 @@ import {COLORS} from '@src/styles';
 import {ThreeDotsVerIcon} from '@components/Icons';
 import {actionToggleModal} from '@components/Modal';
 import ModalBottomSheet from '@components/Modal/features/ModalBottomSheet';
-import {HeaderRow} from '@screens/PDexV3/features/Staking/Staking.item';
 import {Row} from '@src/components';
 import {
   styled,
@@ -152,9 +151,16 @@ const History = React.memo(() => {
 });
 
 const CustomRightHeader = () => {
+  const navigation = useNavigation();
   const dispatch = useDispatch();
-  const handleSend = () => {};
-  const handleReceive = () => {};
+  const handleSend = () => {
+    navigation.navigate(routeNames.Send);
+    dispatch(actionToggleModal({ visible: false }));
+  };
+  const handleReceive = () => {
+    navigation.navigate(routeNames.ReceiveCrypto);
+    dispatch(actionToggleModal({ visible: false }));
+  };
   const [onPressSend, isSendDisabled] = useFeatureConfig(
     appConstant.DISABLED.SEND,
     handleSend,
