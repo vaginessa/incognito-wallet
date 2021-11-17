@@ -130,6 +130,7 @@ export const actionEstimateTrade = (field = formConfigs.selltoken) => async (
     case formConfigs.selltoken: {
       inputToken = formConfigs.buytoken;
       payload.sellamount = sellAmount;
+      payload.sellamount = String(payload.sellamount);
       inputPDecimals = buyPDecimals;
       break;
     }
@@ -140,6 +141,7 @@ export const actionEstimateTrade = (field = formConfigs.selltoken) => async (
           .multipliedBy(100 / (100 - slippagetolerance))
           .toNumber(),
       );
+      payload.buyamount = String(payload.buyamount);
       inputPDecimals = sellPDecimals;
       break;
     }
