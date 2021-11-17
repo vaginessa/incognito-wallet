@@ -5,9 +5,11 @@ import { availableTokensSelector } from '@src/redux/selectors/shared';
 import { useSearchBox } from '@src/components/Header';
 import { handleFilterTokenByKeySearch } from '@src/components/Token';
 import PropTypes from 'prop-types';
+import orderBy from 'lodash/orderBy';
 import { useTokenList } from './Token.useEffect';
 
 const enhance = (WrappedComp) => (props) => {
+  const { filterField, orderField } = props;
   const availableTokens =
     props?.availableTokens || useSelector(availableTokensSelector);
   let verifiedTokens = [];
@@ -49,24 +51,36 @@ const enhance = (WrappedComp) => (props) => {
     }
   }, [availableTokens]);
 
-  const tokensFactories = [
-    {
-      data: _verifiedTokens,
-      visible: true,
-      styledListToken: { paddingTop: 0 },
-    },
-    {
-      data: _unVerifiedTokens,
-      visible: toggleUnVerified,
-      styledListToken: { paddingTop: 15 },
-    },
-  ];
+  const tokensFactories = React.useMemo(() => {
+    let marketTokens = _verifiedTokens.concat(_unVerifiedTokens.filter(item => item.isFollowed));
+    marketTokens = orderBy(marketTokens, [filterField, 'isFollowed'], [orderField, 'desc']);
+    const __verifiedTokens = orderBy(_verifiedTokens, [filterField], [orderField]);
+    const __unVerifiedTokens = orderBy(_unVerifiedTokens, [filterField], [orderField]);
+    return [
+      {
+        data: __verifiedTokens,
+        visible: true,
+        styledListToken: { paddingTop: 0 },
+      },
+      {
+        data: __unVerifiedTokens,
+        visible: toggleUnVerified,
+        styledListToken: { paddingTop: 15 },
+      },
+      {
+        data: marketTokens,
+        visible: true,
+        styledListToken: { paddingTop: 15 },
+      }
+    ];
+  }, [_unVerifiedTokens, _verifiedTokens, toggleUnVerified, filterField, orderField]);
 
   React.useEffect(() => {
     if (toggleUnVerified && !keySearch) {
       onToggleUnVerifiedTokens();
     }
   }, [keySearch]);
+
   return (
     <ErrorBoundary>
       <WrappedComp
@@ -75,14 +89,20 @@ const enhance = (WrappedComp) => (props) => {
           tokensFactories,
           toggleUnVerified,
           onToggleUnVerifiedTokens,
+          keySearch
         }}
       />
     </ErrorBoundary>
   );
 };
-
+enhance.defaultProps = {
+  filterField: 'change',
+  orderField: 'desc'
+};
 enhance.propTypes = {
   availableTokens: PropTypes.array.isRequired,
+  filterField: PropTypes.string,
+  orderField: PropTypes.string
 };
 
 export default enhance;

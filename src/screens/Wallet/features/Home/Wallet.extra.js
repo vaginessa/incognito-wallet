@@ -1,5 +1,5 @@
 import React, { memo } from 'react';
-import {Text, TouchableOpacity, View} from 'react-native';
+import {Text, View} from 'react-native';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { actionUpdateShowWalletBalance, hideWalletBalanceSelector } from '@screens/Setting';
@@ -11,7 +11,7 @@ import {
 import isNaN from 'lodash/isNaN';
 import { Amount } from '@components/Token/Token';
 import { PRV } from '@services/wallet/tokenService';
-import { BTNBorder } from '@components/core/Button';
+import {BTNPrimary} from '@components/core/Button';
 import { useNavigation } from 'react-navigation-hooks';
 import { shieldStorageSelector } from '@screens/Shield/Shield.selector';
 import routeNames from '@routers/routeNames';
@@ -21,14 +21,9 @@ import appConstant from '@src/constants/app';
 import Tooltip from '@components/Tooltip/Tooltip';
 import { BtnClose } from '@components/Button';
 import {Row} from '@src/components';
-import {EyeIcon} from '@components/Icons';
 
 const Balance = React.memo(({ hideBalance }) => {
-  const dispatch = useDispatch();
   let totalShielded = useSelector(totalShieldedTokensSelector);
-  const updateShowWalletBalance = () => {
-    dispatch(actionUpdateShowWalletBalance());
-  };
   const isGettingTotalBalance =
     useSelector(isGettingTotalBalanceSelector).length > 0;
   if (isNaN(totalShielded)) {
@@ -38,10 +33,6 @@ const Balance = React.memo(({ hideBalance }) => {
     <View style={styledBalance.container}>
       <Row centerVertical>
         <Text style={styledBalance.title}>Balance</Text>
-        <View style={styledBalance.iconHide}>
-          <EyeIcon hideEye={!hideBalance} />
-        </View>
-        <TouchableOpacity style={styledBalance.btnHideBalance} onPress={updateShowWalletBalance} />
       </Row>
       <Row style={styledBalance.wrapBalance} center>
         <Amount
@@ -108,7 +99,7 @@ const GroupButton = React.memo(() => {
           triangleStyle={groupButtonStyled.triangleStyle}
         />
       )}
-      <BTNBorder
+      <BTNPrimary
         disabled={isDisabled}
         onPress={onFeaturePress}
         title="Deposit"

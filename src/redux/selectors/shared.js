@@ -6,7 +6,7 @@ import {
   tokensFollowedSelector,
 } from '@src/redux/selectors/token';
 import { selectedPrivacySelector } from '@src/redux/selectors';
-import { uniqBy, isNaN, compact, fromPairs, create } from 'lodash';
+import { uniqBy, isNaN, compact, fromPairs } from 'lodash';
 import convert from '@src/utils/convert';
 import { BIG_COINS } from '@src/screens/DexV2/constants';
 import { currencySelector, decimalDigitsSelector } from '@screens/Setting';
@@ -59,6 +59,34 @@ export const availableTokensSelector = createSelector(
     });
     const excludeRPV = (token) => token?.tokenId !== CONSTANT_COMMONS.PRV.id;
     return uniqBy(tokens.filter(excludeRPV), 'tokenId') || [];
+  },
+);
+
+export const marketTokens = createSelector(
+  pTokensSelector,
+  internalTokensSelector,
+  tokensFollowedSelector,
+  selectedPrivacySelector.getPrivacyDataByTokenID,
+  (pTokens, internalTokens, followedTokens, getPrivacyDataByTokenID) => {
+    const followedTokenIds = followedTokens.map((t) => t?.id) || [];
+    const allTokenIds = Object.keys(
+      fromPairs([
+        ...internalTokens?.map((t) => [t?.id]),
+        ...pTokens?.map((t) => [t?.tokenId]),
+      ]),
+    );
+    const tokens = [];
+    allTokenIds?.forEach((tokenId) => {
+      const token = getPrivacyDataByTokenID(tokenId);
+      if (token?.name && token?.symbol && token.tokenId) {
+        let _token = { ...token };
+        if (followedTokenIds.includes(token.tokenId)) {
+          _token.isFollowed = true;
+        }
+        tokens.push(_token);
+      }
+    });
+    return uniqBy(tokens, 'tokenId') || [];
   },
 );
 

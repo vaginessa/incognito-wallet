@@ -4,11 +4,11 @@ import { StyleSheet } from 'react-native';
 import { createForm } from '@components/core/reduxForm';
 import { Field } from 'redux-form';
 import PropTypes from 'prop-types';
-import { ScreenWidth } from '@src/utils/devices';
+import {BaseTextInputCustom} from '@components/core/BaseTextInput';
+import {ScreenWidth} from '@utils/devices';
 
 const styled = StyleSheet.create({
   searchBox: {
-    marginRight: 30,
     flex: 1,
   },
   searchBoxNormal: {
@@ -23,7 +23,8 @@ export const searchBoxConfig = {
 };
 const Form = createForm(searchBoxConfig.form);
 const SearchBox = (props) => {
-  if (props?.isNormalSearch && props?.isNormalSearch) {
+  const { isNormalSearch, customSearchBox, style } = props;
+  if (isNormalSearch) {
     return (
       <TextInput
         style={styled.searchBoxNormal}
@@ -42,6 +43,24 @@ const SearchBox = (props) => {
         name={searchBoxConfig.searchBox}
         component={componentProps => {
           const { input, ...rest } = componentProps;
+          if (customSearchBox) {
+            return (
+              <BaseTextInputCustom
+                onBlur={input?.onBlur}
+                onFocus={input?.onFocus}
+                value={input?.value}
+                autoFocus
+                placeholder={props?.title || ''}
+                inputProps={{
+                  onChangeText: input?.onChange,
+                  placeholder: 'Search an asset',
+                  autFocus: true,
+                }}
+                style={style}
+                {...rest}
+              />
+            );
+          }
           return (
             <TextInput
               onChangeText={input?.onChange}
@@ -58,9 +77,16 @@ const SearchBox = (props) => {
     </Form>
   );
 };
+
+SearchBox.defaultProps = {
+  isNormalSearch: false,
+  customSearchBox: false,
+  style: null
+};
 SearchBox.propTypes = {
+  isNormalSearch: PropTypes.bool,
   title: PropTypes.string.isRequired,
-  onChange: PropTypes.func,
-  onSubmit: PropTypes.func,
+  customSearchBox: PropTypes.bool,
+  style: PropTypes.any
 };
 export default React.memo(SearchBox);

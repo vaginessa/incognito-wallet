@@ -3,6 +3,7 @@ import { CONSTANT_COMMONS, CONSTANT_CONFIGS } from '@src/constants';
 import { BIG_COINS } from '@src/screens/DexV2/constants';
 import { PRV_ID } from '@screens/Dex/constants';
 import { detectToken } from '@src/utils/misc';
+import convert from '@utils/convert';
 import PToken from './pToken';
 
 function getNetworkName() {
@@ -68,6 +69,7 @@ function getIconUrl(chainTokenImageUri) {
 class SelectedPrivacy {
   constructor(account = {}, token = {}, pTokenData: PToken = {}, _tokenID) {
     const tokenId = pTokenData?.tokenId || token?.id;
+
 
     const isUnknown = _tokenID !== PRV_ID && !tokenId;
     const unknownText = 'Incognito Token';
@@ -148,7 +150,6 @@ class SelectedPrivacy {
       !isUnknown,
     ); // PRV always is verified
     this.priceUsd = pTokenData?.priceUsd || 0;
-    this.change = pTokenData?.change || '0';
     this.pricePrv = pTokenData?.pricePrv || 0;
     this.pairWithPrv = pTokenData?.pairPrv;
     const { networkName, rootNetworkName } = getNetworkName.call(this);
@@ -168,6 +169,9 @@ class SelectedPrivacy {
     this.amount = this.amount || 0;
     this.listChildToken = pTokenData?.listChildToken;
     this.iconUrl = getIconUrl.call(this, token?.image);
+    this.change = pTokenData?.change;
+    this.defaultPoolPair = pTokenData?.defaultPoolPair;
+    this.defaultPairToken = pTokenData?.defaultPairToken;
   }
 }
 

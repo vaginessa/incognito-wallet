@@ -17,7 +17,7 @@ import { styled } from './Token.styled';
 
 export const NormalText = (props) => {
   const prefix = useSelector(prefixCurrency);
-  const { style, stylePSymbol, containerStyle, text, hasPSymbol, showBalance, symbol } = props;
+  const { style, stylePSymbol, containerStyle, text, hasPSymbol, showBalance, symbol, rightIcon } = props;
   return (
     <View style={[styled.normalText, containerStyle]}>
       {hasPSymbol && showBalance && (
@@ -26,6 +26,7 @@ export const NormalText = (props) => {
       <Text numberOfLines={1} style={[styled.text, style]} ellipsizeMode="tail">
         {showBalance ? trim(text) : `••• ${symbol}`}
       </Text>
+      {!!rightIcon && rightIcon}
     </View>
   );
 };
@@ -38,6 +39,7 @@ NormalText.propTypes = {
   hasPSymbol: PropTypes.bool,
   showBalance: PropTypes.bool,
   symbol: PropTypes.string,
+  rightIcon: PropTypes.any
 };
 
 NormalText.defaultProps = {
@@ -47,7 +49,8 @@ NormalText.defaultProps = {
   text: '',
   hasPSymbol: false,
   showBalance: true,
-  symbol: ''
+  symbol: '',
+  rightIcon: null
 };
 
 export const Name = (props) => {

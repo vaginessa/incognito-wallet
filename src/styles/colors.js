@@ -75,6 +75,7 @@ const COLORS = {
   colorGrey2: '#ECECEC',
   colorGrey3: '#858383',
   colorGrey4: '#F7F7F7',
+  colorGrey5: '#f9f9f9',
 
   colorBlue: '#4C8BF5',
   green2: '#64A121',

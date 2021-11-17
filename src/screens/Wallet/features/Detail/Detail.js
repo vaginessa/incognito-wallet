@@ -1,5 +1,5 @@
 import React from 'react';
-import { View } from 'react-native';
+import {TouchableOpacity, View} from 'react-native';
 import Header from '@src/components/Header';
 import {
   selectedPrivacySelector,
@@ -7,8 +7,8 @@ import {
   tokenSelector,
   accountSelector,
 } from '@src/redux/selectors';
-import { useSelector } from 'react-redux';
-import { ButtonBasic, BtnInfo } from '@src/components/Button';
+import {useDispatch, useSelector} from 'react-redux';
+import { BtnInfo } from '@src/components/Button';
 import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
 import {
@@ -21,11 +21,20 @@ import HistoryToken from '@screens/Wallet/features/HistoryToken';
 import MainCryptoHistory from '@screens/Wallet/features/MainCryptoHistory';
 import { isGettingBalance as isGettingTokenBalanceSelector } from '@src/redux/selectors/token';
 import { isGettingBalance as isGettingMainCryptoBalanceSelector } from '@src/redux/selectors/account';
-import { useBtnTrade } from '@src/components/UseEffect/useBtnTrade';
 import useFeatureConfig from '@src/shared/hooks/featureConfig';
 import { pTokenSelector } from '@src/redux/selectors/shared';
 import { useHistoryEffect } from '@screens/Wallet/features/History';
 import appConstant from '@src/constants/app';
+import {actionChangeTab} from '@components/core/Tabs/Tabs.actions';
+import {ROOT_TAB_TRADE, TAB_BUY_LIMIT_ID, TAB_SELL_LIMIT_ID} from '@screens/PDexV3/features/Trade/Trade.constant';
+import {actionSetInputToken} from '@screens/PDexV3/features/OrderLimit';
+import {Toast} from '@components/core';
+import {BTNBorder, BTNPrimary} from '@components/core/Button';
+import {COLORS} from '@src/styles';
+import {ThreeDotsVerIcon} from '@components/Icons';
+import {actionToggleModal} from '@components/Modal';
+import ModalBottomSheet from '@components/Modal/features/ModalBottomSheet';
+import {Row} from '@src/components';
 import {
   styled,
   groupBtnStyled,
@@ -35,25 +44,57 @@ import {
 
 const GroupButton = React.memo(() => {
   const navigation = useNavigation();
-  const handleSend = () => navigation.navigate(routeNames.Send);
-  const handleReceive = () => navigation.navigate(routeNames.ReceiveCrypto);
-  const [onPressSend, isSendDisabled] = useFeatureConfig(
-    appConstant.DISABLED.SEND,
-    handleSend,
-  );
+  const dispatch = useDispatch();
+  const selected = useSelector(selectedPrivacySelector.selectedPrivacy);
+  const handleSend = () => {
+    const sellToken = selected.defaultPairToken;
+    if (sellToken) {
+      const buyToken = selected.tokenId;
+      navigation.navigate(routeNames.Trade, { tabIndex: 0 });
+      dispatch(
+        actionChangeTab({ rootTabID: ROOT_TAB_TRADE, tabID: TAB_BUY_LIMIT_ID }),
+      );
+      dispatch(actionSetInputToken({
+        selltoken: sellToken,
+        buytoken: buyToken,
+      }));
+    } else {
+      Toast.showInfo('Pair is not exist.', {
+        duration: 500,
+      });
+    }
+  };
+  const handleReceive = () => {
+    const sellToken = selected.defaultPairToken;
+    if (sellToken) {
+      const buyToken = selected.tokenId;
+      navigation.navigate(routeNames.Trade, { tabIndex: 1 });
+      dispatch(
+        actionChangeTab({ rootTabID: ROOT_TAB_TRADE, tabID: TAB_SELL_LIMIT_ID }),
+      );
+      dispatch(actionSetInputToken({
+        selltoken: sellToken,
+        buytoken: buyToken,
+      }));
+    } else {
+      Toast.showInfo('Pair is not exist.', {
+        duration: 500,
+      });
+    }
+  };
+
   return (
     <View style={groupBtnStyled.groupButton}>
-      <ButtonBasic
-        title="Send"
-        btnStyle={groupBtnStyled.btnStyle}
-        titleStyle={groupBtnStyled.titleStyle}
-        onPress={onPressSend}
-        disabled={isSendDisabled}
+      <BTNPrimary
+        title="Buy"
+        wrapperStyle={groupBtnStyled.btnStyle}
+        background={COLORS.green}
+        onPress={handleSend}
       />
-      <ButtonBasic
-        title="Receive"
-        btnStyle={groupBtnStyled.btnStyle}
-        titleStyle={groupBtnStyled.titleStyle}
+      <BTNPrimary
+        title="Sell"
+        wrapperStyle={groupBtnStyled.btnStyle}
+        background={COLORS.red2}
         onPress={handleReceive}
       />
     </View>
@@ -109,6 +150,54 @@ const History = React.memo(() => {
   );
 });
 
+const CustomRightHeader = () => {
+  const navigation = useNavigation();
+  const dispatch = useDispatch();
+  const handleSend = () => {
+    navigation.navigate(routeNames.Send);
+    dispatch(actionToggleModal({ visible: false }));
+  };
+  const handleReceive = () => {
+    navigation.navigate(routeNames.ReceiveCrypto);
+    dispatch(actionToggleModal({ visible: false }));
+  };
+  const [onPressSend, isSendDisabled] = useFeatureConfig(
+    appConstant.DISABLED.SEND,
+    handleSend,
+  );
+  const onToggle = () => {
+    dispatch(actionToggleModal({
+      data: (
+        <ModalBottomSheet
+          style={{ height: '15%' }}
+          contentView={(
+            <Row style={groupBtnStyled.groupButton}>
+              <BTNBorder
+                title="Send"
+                wrapperStyle={groupBtnStyled.btnStyle}
+                onPress={onPressSend}
+                disabled={isSendDisabled}
+              />
+              <BTNPrimary
+                title="Receive"
+                wrapperStyle={groupBtnStyled.btnStyle}
+                onPress={handleReceive}
+              />
+            </Row>
+          )}
+        />
+      ),
+      visible: true,
+      shouldCloseModalWhenTapOverlay: true
+    }));
+  };
+  return (
+    <TouchableOpacity style={{ height: 30, justifyContent: 'center' }} onPress={onToggle}>
+      <ThreeDotsVerIcon />
+    </TouchableOpacity>
+  );
+};
+
 const Detail = (props) => {
   const navigation = useNavigation();
   const selected = useSelector(selectedPrivacySelector.selectedPrivacy);
@@ -126,7 +215,6 @@ const Detail = (props) => {
       ? isGettingMainCryptoBalance.length > 0 || !defaultAccount
       : isGettingTokenBalance.length > 0 || !token;
   const onGoBack = () => navigation.navigate(routeNames.Wallet);
-  const [BtnTrade, hasTradeBtn] = useBtnTrade();
   const { onRefresh } = useHistoryEffect();
   return (
     <>
@@ -134,11 +222,8 @@ const Detail = (props) => {
         <Header
           title={selected?.name}
           customHeaderTitle={<BtnInfo />}
-          rightHeader={<BtnTrade />}
+          rightHeader={<CustomRightHeader />}
           onGoBack={onGoBack}
-          styledContainerHeaderTitle={
-            hasTradeBtn && styled.styledContainerHeaderTitle
-          }
           handleSelectedAccount={onRefresh}
         />
         <Balance />
