@@ -9,7 +9,7 @@ import {
   MoreIcon,
   TradeIcon,
   LiquidityIcon,
-  AssetsIcon,
+  AssetsIcon, ShieldIcon,
 } from '@components/Icons';
 import { View, Text } from 'react-native';
 import Market from '@screens/MainTabBar/features/Market';
@@ -49,7 +49,7 @@ const TabNavigator = createMaterialBottomTabNavigator(
         tabBarIcon: ({ focused, tintColor }) => (
           <View style={styled.wrapBar}>
             <View style={{ height: 24 }}>
-              <TradeIcon active={focused} />
+              <ShieldIcon active={focused} />
             </View>
             <Text style={[styled.label, { color: tintColor }]}>Trade</Text>
           </View>
