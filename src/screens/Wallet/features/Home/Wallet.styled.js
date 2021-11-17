@@ -137,8 +137,8 @@ export const tokenStyled = StyleSheet.create({
   },
   blackText: {
     ...FONT.STYLE.medium,
-    fontSize: FONT.SIZE.small,
-    lineHeight: FONT.SIZE.regular + 8,
+    fontSize: FONT.SIZE.medium,
+    lineHeight: FONT.SIZE.medium + 9,
     textAlign: 'left',
     color: COLORS.black
   },
