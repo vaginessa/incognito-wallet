@@ -5,6 +5,7 @@ import { headerStyled } from '@screens/MainTabBar/features/Market/Market.styled'
 import { Row } from '@src/components';
 import {ArrowDownLine} from '@components/Icons/icon.arrowDown';
 import SearchBox from '@components/Header/Header.searchBox';
+import {COLORS} from '@src/styles';
 
 const headers = [
   { name: 'Gainer', filterField: 'change', orderField: 'desc' },
@@ -13,7 +14,7 @@ const headers = [
 
 const Header = ({ onFilter }) => {
   return (
-    <Row spaceBetween>
+    <Row spaceBetween style={{ backgroundColor: COLORS.white }}>
       <SearchBox
         customSearchBox
         style={headerStyled.wrapInput}

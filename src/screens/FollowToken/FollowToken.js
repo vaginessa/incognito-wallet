@@ -47,7 +47,7 @@ const FollowTokenList = React.memo((props) => {
       <ListAllToken
         {...rest}
         renderItem={({ item }) => (
-          <TokenFollow item={item} handleToggleFollowToken={handleToggleFollowToken} />
+          <TokenFollow item={item} handleToggleFollowToken={handleToggleFollowToken} onPress={() => handleToggleFollowToken(item)} />
         )}
       />
       <AddManually />
