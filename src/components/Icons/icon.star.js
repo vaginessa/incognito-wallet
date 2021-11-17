@@ -10,7 +10,7 @@ const styled = StyleSheet.create({
   },
 });
 
-const IconCopy = (props) => {
+const IconStar = (props) => {
   const { isBlue = false } = props;
   return (
     <Image
@@ -20,6 +20,6 @@ const IconCopy = (props) => {
   );
 };
 
-IconCopy.propTypes = {};
+IconStar.propTypes = {};
 
-export default IconCopy;
+export default IconStar;

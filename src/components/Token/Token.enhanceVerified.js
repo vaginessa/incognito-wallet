@@ -5,6 +5,7 @@ import { availableTokensSelector } from '@src/redux/selectors/shared';
 import { useSearchBox } from '@src/components/Header';
 import { handleFilterTokenByKeySearch } from '@src/components/Token';
 import PropTypes from 'prop-types';
+import orderBy from 'lodash/orderBy';
 import { useTokenList } from './Token.useEffect';
 
 const enhance = (WrappedComp) => (props) => {
@@ -52,14 +53,19 @@ const enhance = (WrappedComp) => (props) => {
   const tokensFactories = [
     {
       data: _verifiedTokens,
-      visible: true,
+      visible: !!keySearch,
       styledListToken: { paddingTop: 0 },
     },
     {
       data: _unVerifiedTokens,
-      visible: toggleUnVerified,
+      visible: !!keySearch && toggleUnVerified,
       styledListToken: { paddingTop: 15 },
     },
+    {
+      data: orderBy(_verifiedTokens.concat(_unVerifiedTokens.filter(item => item.isFollowed), 'isFollowed', 'desc')),
+      visible: !keySearch,
+      styledListToken: { paddingTop: 15 },
+    }
   ];
 
   React.useEffect(() => {
@@ -75,6 +81,7 @@ const enhance = (WrappedComp) => (props) => {
           tokensFactories,
           toggleUnVerified,
           onToggleUnVerifiedTokens,
+          keySearch
         }}
       />
     </ErrorBoundary>

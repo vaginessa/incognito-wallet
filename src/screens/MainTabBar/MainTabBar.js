@@ -12,10 +12,24 @@ import {
   AssetsIcon,
 } from '@components/Icons';
 import { View, Text } from 'react-native';
+import Market from '@screens/MainTabBar/features/Market';
 import { styled } from './MainTabBar.styled';
 
 const TabNavigator = createMaterialBottomTabNavigator(
   {
+    Market: {
+      screen: Market,
+      navigationOptions: {
+        tabBarIcon: ({ focused, tintColor }) => (
+          <View style={styled.wrapBar}>
+            <TradeIcon active={focused} />
+            <Text style={[styled.label, { color: tintColor }]}>Market</Text>
+          </View>
+        ),
+        activeColor: COLORS.colorBlue,
+        inactiveColor: COLORS.lightGrey34,
+      },
+    },
     Assets: {
       screen: TabAssets,
       navigationOptions: {
@@ -66,7 +80,7 @@ const TabNavigator = createMaterialBottomTabNavigator(
     }
   },
   {
-    initialRouteName: 'Assets',
+    initialRouteName: 'Market',
     activeColor: COLORS.colorBlue,
     inactiveColor: COLORS.lightGrey34,
     barStyle: {

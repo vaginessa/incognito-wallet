@@ -26,7 +26,7 @@ const AddManually = () => {
   );
 };
 
-const Item = ({ item, handleToggleFollowToken }) =>
+export const Item = ({ item, handleToggleFollowToken }) =>
   React.useMemo(() => {
     return (
       <Token

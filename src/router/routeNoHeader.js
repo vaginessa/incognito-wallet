@@ -139,6 +139,7 @@ import {
 import PairList from '@screens/PDexV3/features/PairList';
 import MainTabBar from '@screens/MainTabBar';
 import More from '@screens/MainTabBar/features/More';
+import Market from '@screens/MainTabBar/features/Market';
 
 const masterKeyRoutes = [
   {
@@ -333,6 +334,10 @@ const homeRoutes = [
   {
     screen: More,
     name: routeNames.More,
+  },
+  {
+    screen: Market,
+    name: routeNames.Market,
   },
 ];
 
