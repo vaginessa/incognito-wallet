@@ -9,6 +9,7 @@ import orderBy from 'lodash/orderBy';
 import { useTokenList } from './Token.useEffect';
 
 const enhance = (WrappedComp) => (props) => {
+  const { filterField, orderField } = props;
   const availableTokens =
     props?.availableTokens || useSelector(availableTokensSelector);
   let verifiedTokens = [];
@@ -52,7 +53,7 @@ const enhance = (WrappedComp) => (props) => {
 
   const tokensFactories = React.useMemo(() => {
     let marketTokens = _verifiedTokens.concat(_unVerifiedTokens.filter(item => item.isFollowed));
-    marketTokens = orderBy(marketTokens, 'isFollowed', 'desc');
+    marketTokens = orderBy(marketTokens, ['isFollowed', filterField], ['desc', orderField]);
     return [
       {
         data: _verifiedTokens,
