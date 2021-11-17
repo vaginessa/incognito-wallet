@@ -12,6 +12,7 @@ import routeNames from '@routers/routeNames';
 import {actionChangeTab} from '@components/core/Tabs/Tabs.actions';
 import {ROOT_TAB_TRADE, TAB_BUY_LIMIT_ID} from '@screens/PDexV3/features/Trade/Trade.constant';
 import {actionSetInputToken} from '@screens/PDexV3/features/OrderLimit';
+import {Toast} from '@components/core';
 
 const Market = React.memo((props) => {
   const { handleToggleFollowToken, keySearch, onFilter, ...rest } = props;
@@ -42,6 +43,10 @@ const Market = React.memo((props) => {
                   selltoken: sellToken,
                   buytoken: buyToken,
                 }));
+              } else {
+                Toast.showInfo('Pair is not exist.', {
+                  duration: 500,
+                });
               }
             }}
           />
