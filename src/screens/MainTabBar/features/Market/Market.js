@@ -10,7 +10,7 @@ import {useNavigation} from 'react-navigation-hooks';
 import routeNames from '@routers/routeNames';
 import {actionChangeTab} from '@components/core/Tabs/Tabs.actions';
 import {ROOT_TAB_TRADE, TAB_BUY_LIMIT_ID} from '@screens/PDexV3/features/Trade/Trade.constant';
-import {actionSetInputToken} from '@screens/PDexV3/features/OrderLimit';
+import {actionInit, actionSetPoolSelected} from '@screens/PDexV3/features/OrderLimit';
 import {Toast} from '@components/core';
 
 const Market = React.memo((props) => {
@@ -18,17 +18,16 @@ const Market = React.memo((props) => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const onOrderPress = (item) => {
-    const sellToken = item.defaultPairToken;
-    if (sellToken) {
-      const buyToken = item.tokenId;
+    const poolId = item.defaultPoolPair;
+    if (poolId) {
       navigation.navigate(routeNames.Trade, { tabIndex: 0 });
       dispatch(
         actionChangeTab({ rootTabID: ROOT_TAB_TRADE, tabID: TAB_BUY_LIMIT_ID }),
       );
-      dispatch(actionSetInputToken({
-        selltoken: sellToken,
-        buytoken: buyToken,
-      }));
+      dispatch(actionSetPoolSelected(poolId));
+      setTimeout(() => {
+        dispatch(actionInit());
+      }, 200);
     } else {
       Toast.showInfo('Pair is not exist.', {
         duration: 500,
