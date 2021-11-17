@@ -124,18 +124,6 @@ const TokenDefault = React.memo((props) => {
           symbol={symbol}
         />
       </View>
-      {/*<View style={tokenStyled.wrapThird}>*/}
-      {/*  <NormalText*/}
-      {/*    text={balance.price}*/}
-      {/*    hasPSymbol*/}
-      {/*    style={tokenStyled.blackText}*/}
-      {/*    stylePSymbol={[*/}
-      {/*      tokenStyled.blackText,*/}
-      {/*      { fontFamily: FONT.NAME.specialRegular, }*/}
-      {/*    ]}*/}
-      {/*  />*/}
-      {/*  <Text numberOfLines={1} style={[tokenStyled.grayText, { color: balance.changeColor }]}>{balance.changeStr}</Text>*/}
-      {/*</View>*/}
     </TouchableOpacity>
   );
 });

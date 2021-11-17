@@ -35,8 +35,13 @@ import {
 
 const GroupButton = React.memo(() => {
   const navigation = useNavigation();
-  const handleSend = () => navigation.navigate(routeNames.Send);
-  const handleReceive = () => navigation.navigate(routeNames.ReceiveCrypto);
+  const selected = useSelector(selectedPrivacySelector.selectedPrivacy);
+  const handleSend = () => {
+    navigation.navigate(routeNames.Trade, { tabIndex: 0 });
+  };
+  const handleReceive = () => {
+    navigation.navigate(routeNames.Trade, { tabIndex: 0 });
+  };
   const [onPressSend, isSendDisabled] = useFeatureConfig(
     appConstant.DISABLED.SEND,
     handleSend,

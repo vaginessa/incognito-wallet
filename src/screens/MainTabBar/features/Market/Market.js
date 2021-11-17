@@ -11,6 +11,7 @@ import {useNavigation} from 'react-navigation-hooks';
 import routeNames from '@routers/routeNames';
 import {actionChangeTab} from '@components/core/Tabs/Tabs.actions';
 import {ROOT_TAB_TRADE, TAB_BUY_LIMIT_ID} from '@screens/PDexV3/features/Trade/Trade.constant';
+import {actionSetInputToken} from '@screens/PDexV3/features/OrderLimit';
 
 const Market = React.memo((props) => {
   const { handleToggleFollowToken, keySearch, onFilter, ...rest } = props;
@@ -33,15 +34,14 @@ const Market = React.memo((props) => {
               const sellToken = item.defaultPairToken;
               if (sellToken) {
                 const buyToken = item.tokenId;
-                const defaultPair = {
-                  selltoken: sellToken,
-                  buytoken: buyToken,
-                };
                 navigation.navigate(routeNames.Trade, { tabIndex: 0 });
                 dispatch(
                   actionChangeTab({ rootTabID: ROOT_TAB_TRADE, tabID: TAB_BUY_LIMIT_ID }),
                 );
-                dispatch(actionSetDefaultPair(defaultPair));
+                dispatch(actionSetInputToken({
+                  selltoken: sellToken,
+                  buytoken: buyToken,
+                }));
               }
             }}
           />
