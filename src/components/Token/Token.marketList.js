@@ -6,6 +6,21 @@ import {KeyboardAwareScrollView} from '@components/core';
 import {BtnChecked} from '@components/Button';
 import {COLORS, FONT} from '@src/styles';
 
+const styled = StyleSheet.create({
+  hook: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 35,
+  },
+  hookText: {
+    fontFamily: FONT.NAME.medium,
+    fontSize: FONT.SIZE.small,
+    lineHeight: FONT.SIZE.small + 5,
+    color: COLORS.black,
+    marginLeft: 5,
+  },
+});
+
 const MarketList = (props) => {
   const {
     tokensFactories,
@@ -16,30 +31,36 @@ const MarketList = (props) => {
     tokensMarket
   } = props;
 
-  // const AlList = React.useMemo(() => {
-  //   return (
-  //     <>
-  //       <ListView visible={keySearch} {...tokensFactories[0]} renderItem={renderItem} />
-  //       <BtnChecked
-  //         btnStyle={[
-  //           styled.hook,
-  //         tokensFactories[1]?.visible ? null : { marginBottom: 50 },
-  //         ]}
-  //         onPress={onToggleUnVerifiedTokens}
-  //         checked={toggleUnVerified}
-  //         hook={<Text style={styled.hookText}>Show unverified coins</Text>}
-  //       />
-  //       <ListView visible={keySearch} {...tokensFactories[1]} renderItem={renderItem} />
-  //     </>
-  //   );
-  // }, [keySearch, toggleUnVerified, tokensFactories]);
+  const AlList = React.useMemo(() => {
+    return (
+      <>
+        <ListView visible={keySearch} {...tokensFactories[0]} renderItem={renderItem} />
+        <BtnChecked
+          btnStyle={[
+            styled.hook,
+          tokensFactories[9]?.visible ? null : { marginBottom: 50 },
+          ]}
+          onPress={onToggleUnVerifiedTokens}
+          checked={toggleUnVerified}
+          hook={<Text style={styled.hookText}>Show unverified coins</Text>}
+        />
+        <ListView visible={keySearch} {...tokensFactories[1]} renderItem={renderItem} />
+      </>
+    );
+  }, [toggleUnVerified, tokensFactories]);
 
 
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
     >
-      <ListView {...tokensFactories[2]} renderItem={renderItem} />
+      {!keySearch && (
+        <ListView {...tokensFactories[2]} renderItem={renderItem} />
+      )}
+
+      {!!keySearch && (
+        AlList
+      )}
     </ScrollView>
   );
 };
