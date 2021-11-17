@@ -1,9 +1,11 @@
 import React, {memo} from 'react';
-import {ScrollView, StyleSheet, Text} from 'react-native';
+import {RefreshControl, ScrollView, StyleSheet, Text} from 'react-native';
 import PropTypes from 'prop-types';
 import {ListView} from '@components/Token/index';
 import {BtnChecked} from '@components/Button';
 import {COLORS, FONT} from '@src/styles';
+import {useDispatch} from 'react-redux';
+import {getPTokenList} from '@src/redux/actions/token';
 
 const styled = StyleSheet.create({
   hook: {
@@ -28,6 +30,20 @@ const MarketList = (props) => {
     renderItem,
     keySearch,
   } = props;
+  const dispatch = useDispatch();
+
+  const [loading, setLoading] = React.useState(false);
+
+  const onRefresh = async () => {
+    try {
+      setLoading(true);
+      await dispatch(getPTokenList);
+      setLoading(false);
+    } catch (e) {
+      console.log('MarketList: error', );
+      setLoading(false);
+    }
+  };
 
   const AlList = React.useMemo(() => {
     return (
@@ -50,6 +66,9 @@ const MarketList = (props) => {
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
+      refreshControl={
+        <RefreshControl refreshing={loading} onRefresh={onRefresh} />
+      }
     >
       {!keySearch && (
         <ListView {...tokensFactories[2]} renderItem={renderItem} />
