@@ -39,6 +39,7 @@ const Followed = () => {
           onRefresh={() => onRefresh(true)}
         />
       )}
+      style={{ paddingTop: 15 }}
       nestedScrollEnabled
     >
       <Token

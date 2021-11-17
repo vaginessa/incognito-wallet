@@ -11,7 +11,7 @@ import incognito from '@assets/images/new-icons/incognito.png';
 import {BtnStar} from '@components/Button';
 import {TokenVerifiedIcon} from '@components/Icons';
 
-const TokenFollow = ({ item, hideStar, handleToggleFollowToken }) => {
+const TokenFollow = ({ item, hideStar, handleToggleFollowToken, onPress }) => {
   const { symbol, priceUsd, change, tokenId, isFollowed, name, isVerified } = item;
   const balance = React.useMemo(() => {
     const price = priceUsd;
@@ -26,7 +26,7 @@ const TokenFollow = ({ item, hideStar, handleToggleFollowToken }) => {
     };
   }, [priceUsd]);
   return (
-    <TouchableOpacity key={tokenId}>
+    <TouchableOpacity key={tokenId} onPress={onPress}>
       <Row style={styled.wrapItem}>
         <View centerVertical style={styled.sectionFirst}>
           <Row centerVertical>
@@ -154,6 +154,7 @@ TokenFollow.propTypes = {
   }).isRequired,
   hideStar: PropTypes.bool.isRequired,
   handleToggleFollowToken: PropTypes.func.isRequired,
+  onPress: PropTypes.func.isRequired,
 };
 
 FollowHeader.propTypes = {

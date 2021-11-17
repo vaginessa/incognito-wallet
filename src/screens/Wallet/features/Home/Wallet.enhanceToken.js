@@ -12,6 +12,8 @@ const enhance = (WrappedComp) => (props) => {
     tokenId,
   );
 
+  console.log('SANG TEST:::: ', token);
+
   const gettingBalance = useSelector(sharedSelector.isGettingBalance);
   const isGettingBalance = gettingBalance.includes(tokenId);
   const tokenProps = {

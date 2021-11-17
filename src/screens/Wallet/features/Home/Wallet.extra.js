@@ -1,5 +1,5 @@
 import React, { memo } from 'react';
-import {Text, TouchableOpacity, View} from 'react-native';
+import {Text, View} from 'react-native';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { actionUpdateShowWalletBalance, hideWalletBalanceSelector } from '@screens/Setting';
@@ -21,14 +21,9 @@ import appConstant from '@src/constants/app';
 import Tooltip from '@components/Tooltip/Tooltip';
 import { BtnClose } from '@components/Button';
 import {Row} from '@src/components';
-import {EyeIcon} from '@components/Icons';
 
 const Balance = React.memo(({ hideBalance }) => {
-  const dispatch = useDispatch();
   let totalShielded = useSelector(totalShieldedTokensSelector);
-  const updateShowWalletBalance = () => {
-    dispatch(actionUpdateShowWalletBalance());
-  };
   const isGettingTotalBalance =
     useSelector(isGettingTotalBalanceSelector).length > 0;
   if (isNaN(totalShielded)) {
@@ -38,10 +33,6 @@ const Balance = React.memo(({ hideBalance }) => {
     <View style={styledBalance.container}>
       <Row centerVertical>
         <Text style={styledBalance.title}>Balance</Text>
-        <View style={styledBalance.iconHide}>
-          <EyeIcon hideEye={!hideBalance} />
-        </View>
-        <TouchableOpacity style={styledBalance.btnHideBalance} onPress={updateShowWalletBalance} />
       </Row>
       <Row style={styledBalance.wrapBalance} center>
         <Amount
