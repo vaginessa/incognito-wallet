@@ -5,7 +5,9 @@ import { useTabFactories } from './Swap.simpleTab';
 import { Hook } from '../Extra';
 
 const styled = StyleSheet.create({
-  container: {},
+  container: {
+    marginTop: 40,
+  },
 });
 
 const SwapDetails = () => {

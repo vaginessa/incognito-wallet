@@ -8,7 +8,7 @@ export const styled = StyleSheet.create({
     marginRight: 12,
   },
   btnTrade: {
-    marginBottom: 40,
+    marginBottom: 16,
     borderRadius: 8,
     marginTop: 24,
   },

@@ -10,6 +10,7 @@ import {
 import { createForm } from '@src/components/core/reduxForm';
 import { ButtonBasic } from '@src/components/Button';
 import LoadingTx from '@src/components/LoadingTx';
+import { NetworkFee } from '@screens/PDexV3/features/Share';
 import GroupSubInfo from './OrderLimit.groupSubInfo';
 import { formConfigs } from './OrderLimit.constant';
 import { styled } from './OrderLimit.styled';
@@ -67,11 +68,7 @@ const OrderLimit = (props) => {
           disabled={disabledBtn}
           onPress={handleConfirm}
         />
-        <Text style={styled.subText}>
-          {
-            'Incognito collects a small network fee of PRV to pay the miners\nwho help power the network.'
-          }
-        </Text>
+        <NetworkFee />
         <GroupSubInfo />
       </KeyboardAwareScrollView>
       {!!ordering && <LoadingTx />}

@@ -9,6 +9,7 @@ import routeNames from '@src/router/routeNames';
 import { KeyboardAwareScrollView, RefreshControl } from '@src/components/core';
 import ToggleArrow from '@src/components/ToggleArrow';
 import { COLORS, FONT } from '@src/styles';
+import { NetworkFee } from '@screens/PDexV3/features/Share';
 import { styled, tabsStyled } from './Swap.styled';
 import {
   ROOT_TAB_ID,
@@ -85,6 +86,7 @@ const Swap = (props) => {
                 title={swapInfo?.btnSwapText || ''}
                 disabled={!!swapInfo?.disabledBtnSwap}
               />
+              <NetworkFee />
               <SwapDetails />
             </>
           )}
