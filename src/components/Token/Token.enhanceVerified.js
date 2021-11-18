@@ -52,10 +52,10 @@ const enhance = (WrappedComp) => (props) => {
   }, [availableTokens]);
 
   const tokensFactories = React.useMemo(() => {
-    let marketTokens = _verifiedTokens.concat(_unVerifiedTokens.filter(item => item.isFollowed));
-    marketTokens = orderBy(marketTokens, [filterField, 'isFollowed'], [orderField, 'desc']);
-    const __verifiedTokens = orderBy(_verifiedTokens, [filterField], [orderField]);
-    const __unVerifiedTokens = orderBy(_unVerifiedTokens, [filterField], [orderField]);
+    let marketTokens = _verifiedTokens.concat(_unVerifiedTokens.filter(item => item.isFollowed)).filter(token => !!token.defaultPoolPair);
+    marketTokens = orderBy(marketTokens, item => Number(item[filterField] || '0'), [orderField]);
+    const __verifiedTokens = orderBy(_verifiedTokens, item => Number(item[filterField] || '0'), [orderField]);
+    const __unVerifiedTokens = orderBy(_unVerifiedTokens, item => Number(item[filterField] || '0'), [orderField]);
     return [
       {
         data: __verifiedTokens,

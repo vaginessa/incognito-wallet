@@ -27,9 +27,8 @@ import { useHistoryEffect } from '@screens/Wallet/features/History';
 import appConstant from '@src/constants/app';
 import {actionChangeTab} from '@components/core/Tabs/Tabs.actions';
 import {ROOT_TAB_TRADE, TAB_BUY_LIMIT_ID, TAB_SELL_LIMIT_ID} from '@screens/PDexV3/features/Trade/Trade.constant';
-import {actionInit, actionSetInputToken, actionSetPoolSelected} from '@screens/PDexV3/features/OrderLimit';
-import {Toast} from '@components/core';
-import {BTNBorder, BTNPrimary} from '@components/core/Button';
+import {actionInit, actionSetPoolSelected} from '@screens/PDexV3/features/OrderLimit';
+import {BTNPrimary} from '@components/core/Button';
 import {COLORS} from '@src/styles';
 import {ThreeDotsVerIcon} from '@components/Icons';
 import {actionToggleModal} from '@components/Modal';
@@ -47,6 +46,7 @@ const GroupButton = React.memo(() => {
   const dispatch = useDispatch();
   const selected = useSelector(selectedPrivacySelector.selectedPrivacy);
   const handleSend = () => {
+    navigation.navigate(routeNames.Trade, { tabIndex: 0 });
     const poolId = selected.defaultPoolPair;
     if (poolId) {
       navigation.navigate(routeNames.Trade, { tabIndex: 0 });
@@ -57,16 +57,12 @@ const GroupButton = React.memo(() => {
       setTimeout(() => {
         dispatch(actionInit());
       }, 200);
-    } else {
-      Toast.showInfo('Pair is not exist.', {
-        duration: 500,
-      });
     }
   };
   const handleReceive = () => {
     const poolId = selected.defaultPoolPair;
+    navigation.navigate(routeNames.Trade, { tabIndex: 1 });
     if (poolId) {
-      navigation.navigate(routeNames.Trade, { tabIndex: 1 });
       dispatch(
         actionChangeTab({ rootTabID: ROOT_TAB_TRADE, tabID: TAB_SELL_LIMIT_ID }),
       );
@@ -74,10 +70,6 @@ const GroupButton = React.memo(() => {
       setTimeout(() => {
         dispatch(actionInit());
       }, 200);
-    } else {
-      Toast.showInfo('Pair is not exist.', {
-        duration: 500,
-      });
     }
   };
 
@@ -170,7 +162,7 @@ const CustomRightHeader = () => {
           style={{ height: '15%' }}
           contentView={(
             <Row style={groupBtnStyled.groupButton}>
-              <BTNBorder
+              <BTNPrimary
                 title="Send"
                 wrapperStyle={groupBtnStyled.btnStyle}
                 onPress={onPressSend}
