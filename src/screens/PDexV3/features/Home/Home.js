@@ -15,6 +15,7 @@ import {listPoolsSelector, PoolsList} from '@screens/PDexV3/features/Pools';
 import {NFTTokenBottomBar} from '@screens/PDexV3/features/NFTToken';
 import PropTypes from 'prop-types';
 import {nftTokenDataSelector} from '@src/redux/selectors/account';
+import SelectAccountButton from '@components/SelectAccountButton';
 import withHome from './Home.enhance';
 import { ROOT_TAB_HOME, TAB_POOLS_ID, TAB_PORTFOLIO_ID } from './Home.constant';
 import { styled } from './Home.styled';
@@ -43,38 +44,26 @@ const TabPools = React.memo(() => {
 });
 
 const HeaderView = React.memo(() => {
-  const activedTab = useSelector(activedTabSelector)(ROOT_TAB_HOME);
-  const renderContent = () => {
-    if (activedTab === TAB_PORTFOLIO_ID) return (
-      <Row spaceBetween style={styled.headerRow}>
-        <ReturnLP />
-      </Row>
-    );
-    return (
-      <Row spaceBetween style={styled.headerRow}>
-        <TradingVol24h />
-      </Row>
-    );
-  };
+  const renderContent = () => (
+    <Row spaceBetween style={styled.headerRow}>
+      <ReturnLP />
+    </Row>
+  );
   return renderContent();
 });
 
-const tabStyled = {
-  titleStyled: styled.title,
-  titleDisabledStyled: styled.disabledText,
-  tabStyledEnabled: styled.tabEnable,
-};
-
-const Home = ({ hideBackButton }) => {
+const Home = () => {
   const navigation = useNavigation();
   const { titleStr } = useSelector(nftTokenDataSelector);
   const _TabPools = React.useMemo(() => (
-    <View tabID={TAB_POOLS_ID} label="Pools" {...tabStyled}>
+    <View tabID={TAB_POOLS_ID} label="Pools">
+      <HeaderView />
       <TabPools />
     </View>
   ), []);
   const _TabPortfolio = React.useMemo(() => (
-    <View tabID={TAB_PORTFOLIO_ID} label="My Portfolio" {...tabStyled}>
+    <View tabID={TAB_PORTFOLIO_ID} label="Portfolio">
+      <HeaderView />
       <Portfolio />
       {!titleStr && (
         <BottomView
@@ -89,9 +78,18 @@ const Home = ({ hideBackButton }) => {
   return (
     <>
       <View style={mainStyle.container}>
-        <Header title="Earn" accountSelectable hideBackButton={hideBackButton} />
-        <HeaderView />
-        <Tabs rootTabID={ROOT_TAB_HOME} styledTabs={styled.tab} defaultTabIndex={1}>
+        <Tabs
+          rootTabID={ROOT_TAB_HOME}
+          styledTabs={styled.tab}
+          styledTabList={styled.styledTabList}
+          defaultTabIndex={1}
+          useTab1
+          rightCustom={(
+            <Row>
+              <SelectAccountButton />
+            </Row>
+          )}
+        >
           {_TabPools}
           {_TabPortfolio}
         </Tabs>

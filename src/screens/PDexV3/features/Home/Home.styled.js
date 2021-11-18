@@ -26,7 +26,16 @@ export const styled = StyleSheet.create({
     marginTop: 13
   },
   tab: {
-    marginTop: 24
+    marginTop: 24,
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    borderBottomColor: COLORS.colorGrey2,
+    borderBottomWidth: 1,
+  },
+  styledTabList: {
+    borderBottomWidth: 0,
   },
   title: {
     ...FontStyle.medium,

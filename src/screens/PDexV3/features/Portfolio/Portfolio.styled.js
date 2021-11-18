@@ -4,6 +4,7 @@ import { COLORS, FONT } from '@src/styles';
 export const styled = StyleSheet.create({
   container: {
     flex: 1,
+    paddingTop: 10
   },
   list: {
     paddingBottom: 50,
