@@ -56,9 +56,9 @@ const TokenFollow = ({ item, hideStar, handleToggleFollowToken, onPress }) => {
           />
         </View>
         {!hideStar && (
-          <View style={styled.iconStar}>
+          <TouchableOpacity style={styled.iconStar} onPress={() => handleToggleFollowToken(item)}>
             <BtnStar onPress={() => handleToggleFollowToken(item)} isBlue={isFollowed} />
-          </View>
+          </TouchableOpacity>
         )}
       </Row>
     </TouchableOpacity>
@@ -137,7 +137,8 @@ export const styled = StyleSheet.create({
   },
   iconStar: {
     width: 24,
-    alignItems: 'flex-end'
+    paddingTop: 2,
+    alignItems: 'flex-end',
   }
 });
 

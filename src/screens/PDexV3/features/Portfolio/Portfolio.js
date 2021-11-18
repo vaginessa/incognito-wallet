@@ -40,7 +40,7 @@ const PortfolioList = withTransaction(React.memo(({ onCreateWithdrawFeeLP }) => 
     <FlatList
       data={data}
       refreshControl={
-        <RefreshControl refreshing={isFetching} onRefresh={() => dispatch(actionFetch())} />
+        <RefreshControl refreshing={false} onRefresh={() => dispatch(actionFetch())} />
       }
       renderItem={({ item, index }) => (
         <PortfolioItem
