@@ -21,6 +21,7 @@ import withTransaction from '@screens/PDexV3/features/Liquidity/Liquidity.enhanc
 import {NFTTokenBottomBar} from '@screens/PDexV3/features/NFTToken';
 import {useNavigation} from 'react-navigation-hooks';
 import routeNames from '@routers/routeNames';
+import {NetworkFee} from '@screens/PDexV3/features/Share';
 
 const initialFormValues = {
   inputToken: '',
@@ -95,8 +96,6 @@ const InputsGroup = () => {
         component={TradeInputAmount}
         name={formConfigsCreatePool.inputToken}
         canSelectSymbol
-        visibleHeader
-        label="Amount"
         symbol={inputToken && inputToken?.symbol}
         validate={[
           _validateInput,
@@ -125,7 +124,6 @@ const InputsGroup = () => {
         name={formConfigsCreatePool.outputToken}
         canSelectSymbol
         visibleHeader
-        label="Amount"
         symbol={outputToken && outputToken?.symbol}
         hasInfinityIcon={!!outputToken && !!outputToken?.balanceStr}
         validate={[
@@ -158,9 +156,9 @@ export const Extra = React.memo(() => {
     return hooks.map(item => <RowSpaceText {...item} key={item?.label} />);
   };
   return(
-    <>
+    <View style={{ marginTop: 20 }}>
       {renderHooks()}
-    </>
+    </View>
   );
 });
 
@@ -189,7 +187,7 @@ const ButtonCreatePool = React.memo(({ onSubmit }) => {
   return (
     <>
       {!!estOutputStr && (
-        <View style={{ marginTop: 15 }}>
+        <View style={mainStyle.extra}>
           {LIQUIDITY_MESSAGES.estRate(changeEstRate)}
         </View>
       )}
@@ -199,6 +197,7 @@ const ButtonCreatePool = React.memo(({ onSubmit }) => {
         disabled={disabled}
         onPress={handleSubmit}
       />
+      <NetworkFee />
     </>
   );
 });
