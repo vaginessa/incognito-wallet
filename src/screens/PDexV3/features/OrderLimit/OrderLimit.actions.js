@@ -101,10 +101,10 @@ export const actionSetBuyTokenFetched = (payload) => ({
 
 export const actionSetPoolSelected = (payload) => async (
   dispatch,
-  getState,
 ) => {
   batch(async () => {
-    await dispatch({
+    dispatch(actionResetOrdersHistory());
+    dispatch({
       type: ACTION_SET_POOL_ID,
       payload,
     });

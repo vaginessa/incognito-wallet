@@ -13,7 +13,7 @@ const COLORS = {
   blue5: '#4C8BF5',
   blue6: '#00407E',
   red: '#F6465D',
-  red2: '#F6465D',
+  red2: '#FF443A',
   red1: '#FF443A',
   green: '#0ECB81',
   pink: '#E5006D',
@@ -76,7 +76,7 @@ const COLORS = {
   colorGrey3: '#858383',
   colorGrey4: '#F7F7F7',
   colorGrey5: '#f9f9f9',
-
+  colorGrey6: '#C0C0C0',
   colorBlue: '#4C8BF5',
   green2: '#64A121',
   green3: '#018775',
