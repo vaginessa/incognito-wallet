@@ -31,7 +31,7 @@ const MaxIcon = React.memo(({ onPress, color, style }) => {
 });
 
 MaxIcon.defaultProps = {
-  color: COLORS.colorBlue,
+  color: COLORS.colorGrey1,
   style: { marginLeft: 14 }
 };
 
