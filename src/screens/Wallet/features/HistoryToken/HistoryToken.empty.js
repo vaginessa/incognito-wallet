@@ -34,7 +34,7 @@ const EmptyHistory = () => {
       <View style={styles.container}>
         <Image source={noTransaction} style={styles.image} />
         <Text style={styles.text}>
-          {`Shield some ${selectedPrivacy?.externalSymbol ||
+          {`Trade some ${selectedPrivacy?.externalSymbol ||
             selectedPrivacy?.symbol} to start\ntransacting anonymously.`}
         </Text>
       </View>
