@@ -163,6 +163,10 @@ export const tokenStyled = StyleSheet.create({
   wrapHeader: {
     marginTop: 5,
     marginBottom: 10
+  },
+  wrapLoader: {
+    height: FONT.SIZE.medium + 9,
+    justifyContent: 'center'
   }
 });
 

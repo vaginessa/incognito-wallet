@@ -39,7 +39,7 @@ const Followed = () => {
           onRefresh={() => onRefresh(true)}
         />
       )}
-      style={{ paddingTop: 15 }}
+      style={{ paddingTop: 25 }}
       nestedScrollEnabled
     >
       <Token
@@ -65,7 +65,7 @@ const Followed = () => {
           showGettingBalance={token?.loading}
         />
       ))}
-      <View style={{ height: 50 }} />
+      <View style={{ height: 70 }} />
     </ScrollView>
   );
 };
