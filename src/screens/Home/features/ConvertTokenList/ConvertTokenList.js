@@ -118,7 +118,7 @@ const ConvertTokenList = React.memo(
       <View style={styles.container}>
         <Image source={noTransaction} style={styles.image} />
         <Text style={styles.text}>
-          {'Shield some coins to start\ntransacting anonymously.'}
+          {'Trade some coins to start\ntransacting anonymously.'}
         </Text>
       </View>
     );

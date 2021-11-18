@@ -37,7 +37,7 @@ const MarketList = (props) => {
   const onRefresh = async () => {
     try {
       setLoading(true);
-      await dispatch(getPTokenList({ expiredTime: 0 }));
+      await dispatch(getPTokenList());
       setLoading(false);
     } catch (e) {
       console.log('MarketList: error', );
