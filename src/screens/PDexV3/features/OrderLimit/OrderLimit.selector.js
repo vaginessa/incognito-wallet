@@ -1,4 +1,3 @@
-
 import { PRV } from '@src/constants/common';
 import uniqBy from 'lodash/uniqBy';
 import { sharedSelector } from '@src/redux/selectors';
@@ -275,22 +274,22 @@ export const orderLimitDataSelector = createSelector(
       let buyAmount = buyInputAmount?.amount;
       const originalbuyAmount = convert.toOriginalAmount(
         buyAmount,
-        sellInputAmount?.pDecimals,
+          sellInputAmount?.pDecimals,
       );
       buyAmount = convert.toHumanAmount(
         originalbuyAmount,
-        sellInputAmount?.pDecimals,
+          sellInputAmount?.pDecimals,
       );
       totalAmount = new BigNumber(buyAmount)
         .multipliedBy(new BigNumber(customRate))
         .toNumber();
       totalOriginalAmount = convert.toOriginalAmount(
         totalAmount,
-        totalAmountToken?.pDecimals,
+          totalAmountToken?.pDecimals,
       );
       totalAmountStr = format.amountVer2(
         totalOriginalAmount,
-        totalAmountToken?.pDecimals,
+          totalAmountToken?.pDecimals,
       );
       reviewOrderDescValue = `${totalAmountStr} ${totalAmountToken?.symbol}`;
       cfmTitle = `You placed an order to buy ${buyInputAmount?.amountText} ${buyInputAmount?.symbol} for ${reviewOrderDescValue}`;
@@ -306,22 +305,22 @@ export const orderLimitDataSelector = createSelector(
       let sellAmount = sellInputAmount?.amount;
       const originalSellAmount = convert.toOriginalAmount(
         sellAmount,
-        sellInputAmount?.pDecimals,
+          sellInputAmount?.pDecimals,
       );
       sellAmount = convert.toHumanAmount(
         originalSellAmount,
-        sellInputAmount?.pDecimals,
+          sellInputAmount?.pDecimals,
       );
       totalAmount = new BigNumber(sellAmount)
         .multipliedBy(new BigNumber(customRate))
         .toNumber();
       totalOriginalAmount = convert.toOriginalAmount(
         totalAmount,
-        totalAmountToken?.pDecimals,
+          totalAmountToken?.pDecimals,
       );
       totalAmountStr = format.amountVer2(
         totalOriginalAmount,
-        totalAmountToken?.pDecimals,
+          totalAmountToken?.pDecimals,
       );
       reviewOrderDescValue = `${totalAmountStr} ${totalAmountToken?.symbol}`;
       cfmTitle = `You placed an order to sell ${sellInputAmount?.amountText} ${sellInputAmount?.symbol} for ${reviewOrderDescValue}`;
@@ -451,6 +450,9 @@ export const mappingOrderHistorySelector = createSelector(
       const buyTokenBalance = new BigNumber(order?.buyTokenBalance);
       const sellTokenWithdrawed = new BigNumber(order?.sellTokenWithdrawed);
       let statusStr = status;
+      if (fromStorage) {
+        statusStr = 'Processing';
+      }
       let visibleBtnCancel = false;
       let visibleBtnClaim = false;
       const isWithdrawing = statusCode === 3 || status === 'withdrawing';
@@ -493,7 +495,7 @@ export const mappingOrderHistorySelector = createSelector(
       const btnTitleClaim = 'Claim';
       const btnTitleCancel = 'Cancel';
       const { status: cancelTxStatus, withdrawTxId: cancelTxId } =
-      cancelTx || {};
+        cancelTx || {};
       const { status: claimTxStatus, withdrawTxId: claimTxId } = claimTx || {};
       let visibleBtnAction = false;
       const foundNFT = list.find((nft) => nft?.nftToken === nftid);
@@ -522,6 +524,7 @@ export const mappingOrderHistorySelector = createSelector(
       if (sellTokenId === token1.tokenId) {
         type = 'sell';
         mainColor = COLORS.red;
+
         const originalPrice = getOriginalPairRate({
           token1Value: amount,
           token2Value: price,

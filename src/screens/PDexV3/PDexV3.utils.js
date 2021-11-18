@@ -40,7 +40,7 @@ export const getOriginalPairRate = ({
   let originalRate = 0;
   try {
     const rate = getPairRate({ token1, token2, token1Value, token2Value });
-    originalRate = convertUtil.toOriginalAmount(rate, token2?.pDecimals);
+    originalRate = convertUtil.toOriginalAmount(rate, token2?.pDecimals, true);
   } catch (error) {
     originalRate = 0;
     console.log('getOriginalPairRate-error', error);

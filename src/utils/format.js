@@ -88,22 +88,18 @@ const amountFull = amountCreator();
 
 const amount = amountCreator(CONSTANT_COMMONS.AMOUNT_MAX_FRACTION_DIGITS);
 
-const getDecimalsFromHumanAmount = (humanAmount) => {
+const getDecimalsFromHumanAmount = (humanAmount, defaultDecimals) => {
   let decimals;
-  if (humanAmount > 1e3) {
-    decimals = 1;
-  } else if (humanAmount > 1e2) {
+  if (humanAmount > 10) {
     decimals = 2;
-  } else if (humanAmount > 10) {
-    decimals = 3;
   } else if (humanAmount > 1) {
-    decimals = 4;
+    decimals = 3;
   } else if (humanAmount > 1e-1) {
+    decimals = 4;
+  } else if (humanAmount > 1e-2) {
     decimals = 5;
-  } else if (humanAmount >= 1e-6) {
-    decimals = 6;
   } else {
-    decimals = undefined;
+    decimals = Math.max(defaultDecimals, 6);
   }
   return decimals;
 };
@@ -116,7 +112,7 @@ const amountVer2 = (amount, decimals) => {
       groupSize: 3,
     };
     let _amount = convertUtil.toHumanAmount(amount, decimals);
-    const _decimals = getDecimalsFromHumanAmount(_amount);
+    const _decimals = getDecimalsFromHumanAmount(_amount, decimals);
     return _amount
       ? removeTrailingZeroes(
         new BigNumber(_amount).toFormat(_decimals, BigNumber.ROUND_DOWN, fmt),

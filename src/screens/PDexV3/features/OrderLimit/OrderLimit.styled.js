@@ -14,10 +14,4 @@ export const styled = StyleSheet.create({
   inputGroups: {
     marginVertical: 30,
   },
-  subText: {
-    fontSize: FONT.SIZE.superSmall,
-    fontFamily: FONT.NAME.regular,
-    color: COLORS.colorGrey3,
-    textAlign: 'center'
-  },
 });

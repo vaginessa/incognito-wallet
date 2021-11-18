@@ -27,12 +27,6 @@ export const useTabFactories = () => {
         label: `${selltoken?.symbol} Balance`,
         value: swapInfo?.balanceStr,
       },
-      swapInfo?.showPRVBalance
-        ? {
-          label: 'PRV Balance',
-          value: swapInfo?.prvBalanceStr ?? '',
-        }
-        : {},
     ];
     if (feeTokenData.isMainCrypto) {
       result.push({
@@ -44,14 +38,8 @@ export const useTabFactories = () => {
     } else {
       result.push(
         {
-          label: 'Trading fee',
+          label: 'Fee',
           value: feeTokenData?.feeAmountText ?? '',
-          hasQuestionIcon: true,
-          onPressQuestionIcon: () => null,
-        },
-        {
-          label: 'Network fee',
-          value: swapInfo?.networkfeeAmountStr ?? '',
           hasQuestionIcon: true,
           onPressQuestionIcon: () => null,
         },

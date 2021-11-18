@@ -23,7 +23,7 @@ export const swapSelector = createSelector(
 
 export const purePairsSelector = createSelector(
   swapSelector,
-  ({ pairs }) => (pairs || [])
+  ({ pairs }) => pairs || [],
 );
 
 export const listPairsSelector = createSelector(
@@ -101,7 +101,16 @@ export const feetokenDataSelector = createSelector(
       const fee = selector(state, formConfigs.feetoken);
       const { fee: minFeeOriginal = 0 } = data;
       let feeAmount = convert.toNumber(fee, true) || 0;
-      const feeAmountText = `${fee} ${feeTokenData.symbol}`;
+      const feeToNumber = convert.toNumber(fee, true);
+      const feeToOriginal = convert.toOriginalAmount(
+        feeToNumber,
+        feeTokenData?.pDecimals,
+      );
+      const feeAmountText = `${format.amountFull(
+        new BigNumber(feeToOriginal),
+        feeTokenData?.pDecimals,
+        false,
+      )} ${feeTokenData.symbol}`;
       const origininalFeeAmount =
         convert.toOriginalAmount(feeAmount, feeTokenData?.pDecimals, false) ||
         0;
