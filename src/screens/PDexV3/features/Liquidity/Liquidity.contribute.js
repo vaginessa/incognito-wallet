@@ -2,7 +2,7 @@ import React, {memo} from 'react';
 import {RefreshControl, ScrollView, Text, View} from 'react-native';
 import PropTypes from 'prop-types';
 import {styled as mainStyle} from '@screens/PDexV3/PDexV3.styled';
-import {Header, Row, RowSpaceText, SuccessModal} from '@src/components';
+import {Header, RowSpaceText, SuccessModal} from '@src/components';
 import {
   LIQUIDITY_MESSAGES,
   formConfigsContribute,
@@ -12,15 +12,14 @@ import {createForm, RFTradeInputAmount as TradeInputAmount, validator} from '@co
 import {useDispatch, useSelector} from 'react-redux';
 import styled from '@screens/PDexV3/features/Liquidity/Liquidity.styled';
 import {Field} from 'redux-form';
-import {AddBreakLine} from '@components/core';
+import {AddBreakLine, KeyboardAwareScrollView} from '@components/core';
 import withLiquidity from '@screens/PDexV3/features/Liquidity/Liquidity.enhance';
 import {contributeSelector, liquidityActions} from '@screens/PDexV3/features/Liquidity';
 import {ButtonTrade} from '@components/Button';
 import {NFTTokenBottomBar} from '@screens/PDexV3/features/NFTToken';
 import {compose} from 'recompose';
 import withTransaction from '@screens/PDexV3/features/Liquidity/Liquidity.enhanceTransaction';
-import {MaxIcon} from '@components/Icons';
-import LPHistoryIcon from '@screens/PDexV3/features/Liquidity/Liquidity.iconHistory';
+import {NetworkFee} from '@screens/PDexV3/features/Share';
 
 const initialFormValues = {
   inputToken: '',
@@ -61,7 +60,6 @@ const InputsGroup = React.memo(() => {
           ...validator.combinedAmount,
         ]}
         visibleHeader
-        label="Amount"
         hasInfinityIcon
         onChange={onChangeInput}
         editableInput={!inputAmount.loadingBalance}
@@ -80,7 +78,6 @@ const InputsGroup = React.memo(() => {
           ...validator.combinedAmount,
         ]}
         visibleHeader
-        label="Amount"
         onChange={onChangeOutput}
         editableInput={!outputAmount.loadingBalance}
         loadingBalance={outputAmount.loadingBalance}
@@ -97,9 +94,9 @@ export const Extra = React.memo(() => {
     return (data?.hookFactories || []).map(item => <RowSpaceText {...item} key={item?.label} />);
   };
   return(
-    <>
+    <View style={mainStyle.extra}>
       {renderHooks()}
-    </>
+    </View>
   );
 });
 
@@ -170,6 +167,7 @@ const Contribute = ({
                 <View style={styled.padding}>
                   {!!error && <Text style={styled.warning}>{error}</Text>}
                   <ContributeButton onSubmit={onSubmit} />
+                  <NetworkFee />
                   <Extra />
                 </View>
               </>

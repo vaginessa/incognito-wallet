@@ -12,7 +12,7 @@ export const styled = StyleSheet.create({
   },
   button: {
     marginTop: 24,
-    marginBottom: 40,
+    marginBottom: 16,
     height: 50,
     borderRadius: 8
   },
@@ -31,5 +31,8 @@ export const styled = StyleSheet.create({
   error: {
     color: COLORS.red,
     lineHeight: 22,
+  },
+  extra: {
+    marginTop: 25
   }
 });

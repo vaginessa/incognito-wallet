@@ -17,6 +17,7 @@ import {stakingSelector} from '@screens/PDexV3/features/Staking/index';
 import {BTNPrimary} from '@components/core/Button';
 import isEmpty from 'lodash/isEmpty';
 import withTransaction from '@screens/PDexV3/features/Staking/Staking.transaction';
+import {NetworkFee} from '@screens/PDexV3/features/Share';
 
 const initialFormValues = {
   input: ''
@@ -86,6 +87,7 @@ const StakingWithdrawInvest = React.memo(({ onUnStaking, error }) => {
               disabled={disabled || error}
               onPress={onSubmit}
             />
+            <NetworkFee />
           </>
         </ScrollView>
       </View>

@@ -23,6 +23,7 @@ import withTransaction from '@screens/PDexV3/features/Liquidity/Liquidity.enhanc
 import LPHistoryIcon from '@screens/PDexV3/features/Liquidity/Liquidity.iconHistory';
 import {MaxIcon} from '@components/Icons';
 import {useNavigation} from 'react-navigation-hooks';
+import {NetworkFee} from '@screens/PDexV3/features/Share';
 
 const initialFormValues = {
   inputToken: '',
@@ -157,6 +158,7 @@ const RemovePool = ({
       <View style={styled.padding}>
         {!!error && <Text style={styled.warning}>{error}</Text>}
         <RemoveLPButton onSubmit={onSubmit} />
+        <NetworkFee />
       </View>
     </>
   );

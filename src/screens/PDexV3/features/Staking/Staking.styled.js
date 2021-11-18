@@ -16,7 +16,6 @@ export const coinStyles = StyleSheet.create({
     flex: 1,
   },
   coinContainer: {
-    marginTop: 25,
     flex: 1,
   },
   coin: {
@@ -47,7 +46,7 @@ export const coinStyles = StyleSheet.create({
   button: {
     backgroundColor: COLORS.blue5,
     marginTop: 40,
-    marginBottom: 30,
+    marginBottom: 16,
     borderRadius: 8
   },
   error: {

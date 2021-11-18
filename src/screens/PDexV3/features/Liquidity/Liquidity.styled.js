@@ -24,7 +24,6 @@ const styled = StyleSheet.create({
     minHeight: FONT.SIZE.medium + 9,
   },
   inputBox: {
-    marginTop: 16,
     marginHorizontal: 25,
   },
   padding: {

@@ -52,7 +52,7 @@ const StakingMoreCoins = ({ handleFetchStakingPools }) => {
         refreshControl={(
           <RefreshControl refreshing={isFetching} onRefresh={onRefresh} />
         )}
-        style={coinStyled.coinContainer}
+        style={[coinStyled.coinContainer, { marginTop: 25 }]}
       >
         {coins.map(renderItem)}
       </ScrollView>

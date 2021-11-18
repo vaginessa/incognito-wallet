@@ -85,10 +85,6 @@ export const mappingDataSelector = createSelector(
 
     const hookFactories = [
       {
-        label: 'Fee',
-        value: `${format.amountVer2(feeAmount, feeToken.pDecimals)} ${feeToken.symbol}`,
-      },
-      {
         label: 'Pool size',
         value: poolSize,
       },
