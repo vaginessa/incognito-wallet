@@ -18,7 +18,7 @@ const TokenFollow = ({ item, hideStar, handleToggleFollowToken, onPress }) => {
     const isTokenDecrease = change && change[0] === '-';
     const changeToNumber = Number(replace(change, '-', ''));
     const changeStr = changeToNumber === 0 ? '0%' : `${isTokenDecrease ? '-' : '+'}${round(changeToNumber, 2)}%`;
-    const changeColor = changeToNumber === 0 ? COLORS.lightGrey34 : (isTokenDecrease ? COLORS.red2 : COLORS.green);
+    const changeColor = changeToNumber === 0 ? COLORS.lightGrey34 : (isTokenDecrease ? COLORS.red : COLORS.green);
     return {
       price: formatPrice(price),
       changeStr,
