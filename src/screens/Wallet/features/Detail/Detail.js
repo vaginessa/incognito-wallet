@@ -15,7 +15,7 @@ import {
   Amount,
   AmountBasePRV,
   AmountBaseUSDT,
-  ChangePrice,
+  ChangePrice, Price,
 } from '@src/components/Token/Token';
 import HistoryToken from '@screens/Wallet/features/HistoryToken';
 import MainCryptoHistory from '@screens/Wallet/features/MainCryptoHistory';
@@ -28,7 +28,7 @@ import appConstant from '@src/constants/app';
 import {actionChangeTab} from '@components/core/Tabs/Tabs.actions';
 import {ROOT_TAB_TRADE, TAB_BUY_LIMIT_ID, TAB_SELL_LIMIT_ID} from '@screens/PDexV3/features/Trade/Trade.constant';
 import {actionInit, actionSetPoolSelected} from '@screens/PDexV3/features/OrderLimit';
-import {BTNPrimary} from '@components/core/Button';
+import {BTNBorder, BTNPrimary} from '@components/core/Button';
 import {COLORS} from '@src/styles';
 import {ThreeDotsVerIcon} from '@components/Icons';
 import {actionToggleModal} from '@components/Modal';
@@ -93,8 +93,6 @@ const GroupButton = React.memo(() => {
 
 const Balance = React.memo(() => {
   const selected = useSelector(selectedPrivacySelector.selectedPrivacy);
-  const { isToggleUSD } = useSelector(pTokenSelector);
-
   const isGettingBalance = useSelector(
     sharedSelector.isGettingBalance,
   ).includes(selected?.tokenId);
@@ -107,11 +105,6 @@ const Balance = React.memo(() => {
     ...tokenData,
     showSymbol: false,
   };
-  const amountBaseUSDTProps = {
-    customStyle: balanceStyled.amountBasePRV,
-    customPSymbolStyle: [balanceStyled.pSymbol],
-    ...tokenData,
-  };
   const changePriceProps = {
     customStyle: balanceStyled.changePrice,
     ...tokenData,
@@ -120,11 +113,7 @@ const Balance = React.memo(() => {
     <View style={balanceStyled.container}>
       <Amount {...amountProps} />
       <View style={balanceStyled.hook}>
-        {isToggleUSD ? (
-          <AmountBaseUSDT {...amountBaseUSDTProps} />
-        ) : (
-          <AmountBasePRV {...amountBaseUSDTProps} />
-        )}
+        <Price pricePrv={selected.pricePrv} priceUsd={selected.priceUsd} />
         <ChangePrice {...changePriceProps} />
       </View>
     </View>
@@ -162,16 +151,16 @@ const CustomRightHeader = () => {
           style={{ height: '15%' }}
           contentView={(
             <Row style={groupBtnStyled.groupButton}>
+              <BTNBorder
+                title="Receive"
+                wrapperStyle={groupBtnStyled.btnStyle}
+                onPress={handleReceive}
+              />
               <BTNPrimary
                 title="Send"
                 wrapperStyle={groupBtnStyled.btnStyle}
                 onPress={onPressSend}
                 disabled={isSendDisabled}
-              />
-              <BTNPrimary
-                title="Receive"
-                wrapperStyle={groupBtnStyled.btnStyle}
-                onPress={handleReceive}
               />
             </Row>
           )}

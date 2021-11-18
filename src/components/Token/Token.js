@@ -147,7 +147,7 @@ export const AmountBaseUSDT = React.memo((props) => {
 
   return (
     <NormalText
-      hasPSymbol={hideBalance ? false : true}
+      hasPSymbol={!hideBalance}
       text={hideBalance ? '•••' : `${currentAmount}`}
       style={[styled.rightText, customStyle]}
       stylePSymbol={[customPSymbolStyle]}
@@ -187,7 +187,7 @@ ChangePrice.defaultProps = {
   customStyle: null,
 };
 
-const Price = (props) => {
+export const Price = (props) => {
   const { priceUsd, pricePrv } = props;
   const { isToggleUSD } = useSelector(pTokenSelector);
 
