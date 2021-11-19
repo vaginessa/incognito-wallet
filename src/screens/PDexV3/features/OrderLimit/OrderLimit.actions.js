@@ -212,7 +212,6 @@ export const actionInit = (refresh = true) => async (dispatch, getState) => {
     }
     state = getState();
     const pool = poolSelectedDataSelector(state);
-    console.log('SANG TEST::: pool', pool?.poolStr);
     if (isEmpty(pool)) {
       return;
     }
