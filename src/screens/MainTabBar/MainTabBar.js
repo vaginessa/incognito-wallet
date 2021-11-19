@@ -23,11 +23,11 @@ const TabNavigator = createMaterialBottomTabNavigator(
         tabBarIcon: ({ focused, tintColor }) => (
           <View style={styled.wrapBar}>
             <TradeIcon active={focused} />
-            <Text style={[styled.label, { color: tintColor }]}>Market</Text>
+            {focused && (
+              <Text style={[styled.label, { color: tintColor }]}>Market</Text>
+            )}
           </View>
         ),
-        activeColor: COLORS.colorBlue,
-        inactiveColor: COLORS.lightGrey34,
       },
     },
     Assets: {
@@ -36,11 +36,11 @@ const TabNavigator = createMaterialBottomTabNavigator(
         tabBarIcon: ({ focused, tintColor }) => (
           <View style={styled.wrapBar}>
             <AssetsIcon active={focused} />
-            <Text style={[styled.label, { color: tintColor }]}>Portfolio</Text>
+            {focused && (
+              <Text style={[styled.label, { color: tintColor }]}>Portfolio</Text>
+            )}
           </View>
         ),
-        activeColor: COLORS.colorBlue,
-        inactiveColor: COLORS.lightGrey34,
       },
     },
     Trade: {
@@ -51,7 +51,9 @@ const TabNavigator = createMaterialBottomTabNavigator(
             <View style={{ height: 24 }}>
               <ShieldIcon active={focused} />
             </View>
-            <Text style={[styled.label, { color: tintColor }]}>Trade</Text>
+            {focused && (
+              <Text style={[styled.label, { color: tintColor }]}>Trade</Text>
+            )}
           </View>
         ),
       },
@@ -62,7 +64,9 @@ const TabNavigator = createMaterialBottomTabNavigator(
         tabBarIcon: ({ focused, tintColor }) => (
           <View style={styled.wrapBar}>
             <LiquidityIcon active={focused} />
-            <Text style={[styled.label, { color: tintColor }]}>Earn</Text>
+            {focused && (
+              <Text style={[styled.label, { color: tintColor }]}>Earn</Text>
+            )}
           </View>
         ),
       },
@@ -73,7 +77,9 @@ const TabNavigator = createMaterialBottomTabNavigator(
         tabBarIcon: ({ focused, tintColor }) => (
           <View style={styled.wrapBar}>
             <MoreIcon active={focused} />
-            <Text style={[styled.label, { color: tintColor }]}>More</Text>
+            {focused && (
+              <Text style={[styled.label, { color: tintColor }]}>More</Text>
+            )}
           </View>
         ),
       },

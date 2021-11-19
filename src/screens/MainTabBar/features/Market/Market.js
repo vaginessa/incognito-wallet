@@ -4,7 +4,6 @@ import Header from '@screens/MainTabBar/features/Market/Market.header';
 import {TokenFollow} from '@components/Token';
 import MarketList from '@components/Token/Token.marketList';
 import withMarket from '@screens/MainTabBar/features/Market/Market.enhance';
-import {FollowHeader} from '@components/Token/Token.follow';
 import {useDispatch} from 'react-redux';
 import {useNavigation} from 'react-navigation-hooks';
 import routeNames from '@routers/routeNames';
@@ -20,14 +19,12 @@ const Market = React.memo((props) => {
   const onOrderPress = (item) => {
     const poolId = item.defaultPoolPair;
     if (poolId) {
-      navigation.navigate(routeNames.Trade, { tabIndex: 0 });
-      dispatch(
-        actionChangeTab({ rootTabID: ROOT_TAB_TRADE, tabID: TAB_BUY_LIMIT_ID }),
-      );
       dispatch(actionSetPoolSelected(poolId));
+      dispatch(actionChangeTab({ rootTabID: ROOT_TAB_TRADE, tabID: TAB_BUY_LIMIT_ID }));
       setTimeout(() => {
+        navigation.navigate(routeNames.Trade, { tabIndex: 0 });
         dispatch(actionInit());
-      }, 200);
+      }, 100);
     } else {
       Toast.showInfo('Pair is not exist.', {
         duration: 500,
@@ -37,7 +34,6 @@ const Market = React.memo((props) => {
   return (
     <>
       <Header onFilter={onFilter} />
-      <FollowHeader hideStar={!keySearch} />
       <MarketList
         keySearch={keySearch}
         {...rest}

@@ -73,6 +73,6 @@ export const balanceStyled = StyleSheet.create({
 export const historyStyled = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: 35,
+    marginTop: 25,
   },
 });

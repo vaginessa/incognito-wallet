@@ -1,13 +1,12 @@
 import React, {memo} from 'react';
-import {Text, TouchableOpacity, View} from 'react-native';
+import { TouchableOpacity, View } from 'react-native';
 import PropTypes from 'prop-types';
 import withToken from '@screens/Wallet/features/Home/Wallet.enhanceToken';
-import {batch, useDispatch, useSelector} from 'react-redux';
+import { useSelector } from 'react-redux';
 import {currencySelector, hideWalletBalanceSelector} from '@screens/Setting';
 import Swipeout from 'react-native-swipeout';
-import { BtnDelete } from '@components/Button';
 import { tokenStyled } from '@screens/Wallet/features/Home/Wallet.styled';
-import {ImageCached, Row} from '@src/components';
+import { ImageCached } from '@src/components';
 import { formatAmount, formatPrice } from '@components/Token';
 import format from '@utils/format';
 import replace from 'lodash/replace';
@@ -15,25 +14,13 @@ import round from 'lodash/round';
 import { COLORS, FONT } from '@src/styles';
 import { ActivityIndicator } from '@components/core';
 import { NormalText } from '@components/Token/Token';
-import {actionInitSwapForm, purePairsSelector} from '@screens/PDexV3/features/Swap';
-import {useNavigation} from 'react-navigation-hooks';
-import routeNames from '@routers/routeNames';
-import {actionChangeTab} from '@components/core/Tabs/Tabs.actions';
-import {ROOT_TAB_TRADE, TAB_SWAP_ID} from '@screens/PDexV3/features/Trade/Trade.constant';
-import {CONSTANT_CONFIGS} from '@src/constants';
-import difference from 'lodash/difference';
-import {PRVIDSTR} from 'incognito-chain-web-js/build/wallet';
-import {itemStyled} from '@screens/Setting/features/Keychain/keychain.styled';
-import {DeleteFillIcon} from '@components/Icons/icon.delete';
-import {TokenVerifiedIcon} from '@components/Icons';
+import { itemStyled } from '@screens/Setting/features/Keychain/keychain.styled';
+import { DeleteFillIcon } from '@components/Icons/icon.delete';
 import incognito from '@assets/images/new-icons/incognito.png';
 
 const TokenDefault = React.memo((props) => {
-  const { symbol, name, priceUsd, amount, pDecimals, decimalDigits, pricePrv, change, onPress, tokenId, isGettingBalance, showGettingBalance, isVerified, iconUrl } = props;
-  const pairs = useSelector(purePairsSelector);
+  const { symbol, priceUsd, amount, pDecimals, decimalDigits, pricePrv, change, onPress, isGettingBalance, showGettingBalance, iconUrl } = props;
   const shouldShowGettingBalance = isGettingBalance || showGettingBalance;
-  const dispatch = useDispatch();
-  const navigation = useNavigation();
   const isToggleUSD = useSelector(currencySelector);
   const hideBalance = useSelector(hideWalletBalanceSelector);
   const balance = React.useMemo(() => {
@@ -53,58 +40,27 @@ const TokenDefault = React.memo((props) => {
     };
   }, [priceUsd, pricePrv, amount, isToggleUSD]);
 
-  const onPressTrade = () => {
-    const isPairUSDTExisted =
-      difference([CONSTANT_CONFIGS.USDT_TOKEN_ID, tokenId], pairs).length === 0;
-    let params = {
-      buytoken: tokenId,
-      selltoken: PRVIDSTR,
-    };
-    if (tokenId === CONSTANT_CONFIGS.USDT_TOKEN_ID) {
-      params = {
-        buytoken: PRVIDSTR,
-        selltoken: CONSTANT_CONFIGS.USDT_TOKEN_ID,
-      };
-    } else if (isPairUSDTExisted) {
-      params = {
-        buytoken: tokenId,
-        selltoken: CONSTANT_CONFIGS.USDT_TOKEN_ID,
-      };
-    }
-    navigation.navigate(routeNames.Trade);
-    setTimeout(() => {
-      batch(() => {
-        dispatch(actionInitSwapForm({
-          defaultPair: params
-        }));
-        dispatch(
-          actionChangeTab({
-            rootTabID: ROOT_TAB_TRADE,
-            tabID: TAB_SWAP_ID,
-          }),
-        );
-      });
-    }, 200);
-  };
   return (
     <TouchableOpacity style={tokenStyled.container} onPress={onPress}>
       <ImageCached style={tokenStyled.icon} uri={iconUrl} defaultImage={incognito} />
       <View style={tokenStyled.wrapFirst}>
-        <Row centerVertical>
-          <NormalText
-            style={tokenStyled.blackText}
-            text={symbol}
-          />
-          {isVerified && <TokenVerifiedIcon style={tokenStyled.iconVerify} />}
-        </Row>
         <NormalText
-          text={name}
+          style={tokenStyled.blackText}
+          text={symbol}
+        />
+        <NormalText
+          text={`${balance.tokenAmount} ${symbol}`}
           style={tokenStyled.grayText}
+          showBalance={!hideBalance}
+          symbol={symbol}
         />
       </View>
       <View style={tokenStyled.wrapSecond}>
-        {shouldShowGettingBalance ?
-          <ActivityIndicator />
+        {shouldShowGettingBalance ? (
+          <View style={tokenStyled.wrapLoader}>
+            <ActivityIndicator />
+          </View>
+        )
           : (
             <NormalText
               text={balance.amountCompare}
@@ -117,12 +73,6 @@ const TokenDefault = React.memo((props) => {
               showBalance={!hideBalance}
             />
           )}
-        <NormalText
-          text={`${balance.tokenAmount}${symbol}`}
-          style={tokenStyled.grayText}
-          showBalance={!hideBalance}
-          symbol={symbol}
-        />
       </View>
     </TouchableOpacity>
   );
@@ -196,7 +146,6 @@ Token.propTypes = {
 };
 TokenDefault.propTypes = {
   symbol: PropTypes.string.isRequired,
-  name: PropTypes.string.isRequired,
   priceUsd: PropTypes.number.isRequired,
   amount: PropTypes.number.isRequired,
   pDecimals: PropTypes.string.isRequired,
@@ -206,6 +155,7 @@ TokenDefault.propTypes = {
   onPress: PropTypes.func.isRequired,
   isGettingBalance: PropTypes.bool.isRequired,
   showGettingBalance: PropTypes.bool.isRequired,
+  iconUrl: PropTypes.string.isRequired
 };
 
 export default withToken(memo(Token));

@@ -201,7 +201,7 @@ export const stakingPoolSelector = createSelector(
       const userBalance = token.amount;
       const userBalanceStr = formatUtil.amountFull(token.amount, token.pDecimals);
       const userBalanceSymbolStr = `${userBalanceStr} ${token.symbol}`;
-      const userBalanceDisplay = formatUtil.amountVer2(token.amount, token.pDecimal);
+      const userBalanceDisplay = formatUtil.amountVer2(token.amount, token.pDecimals);
       const poolAmountStr = formatUtil.amountFull(poolAmount, token.pDecimals);
       const isLoadingBalance = isGettingBalance.includes(tokenId);
       const disabled = isLoadingBalance || userBalance === 0;

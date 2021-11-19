@@ -22,7 +22,6 @@ const MaxIcon = React.memo(({ onPress, style }) => {
 MaxIcon.defaultProps = {};
 
 MaxIcon.propTypes = {
-  color: PropTypes.string,
   onPress: PropTypes.func.isRequired,
   style: PropTypes.any,
 };

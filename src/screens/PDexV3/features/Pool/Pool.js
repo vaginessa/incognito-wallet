@@ -18,7 +18,6 @@ export const PoolItem = React.memo((props) => {
     return null;
   }
   const {
-    volumeSuffixStr,
     isFollowed,
     poolTitle,
     apyStr,
@@ -37,7 +36,7 @@ export const PoolItem = React.memo((props) => {
           <Row style={styled.rowName}>
             <Text style={styled.name}>{poolTitle}</Text>
           </Row>
-          <Text style={styled.subText}>{`Vol: ${volumeSuffixStr}`}</Text>
+          {/*<Text style={styled.subText}>{`Vol: ${volumeSuffixStr}`}</Text>*/}
         </View>
         <View style={styled.block2}>
           <Text style={styled.subText}>{apyStr}</Text>

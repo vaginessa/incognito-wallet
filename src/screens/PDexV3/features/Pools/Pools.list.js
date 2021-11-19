@@ -84,6 +84,7 @@ export const PoolsList = React.memo(({ onPressPool, pools }) => {
     >
       <FlatList
         data={data}
+        style={{ paddingTop: 30 }}
         renderItem={({ item }) => (
           <Pool
             poolId={item.poolId}
@@ -129,7 +130,7 @@ const PoolsListContainer = (props) => {
           autFocus: true,
         }}
       />
-      <PoolsListHeader />
+      {/*<PoolsListHeader />*/}
       <PoolsList onPressPool={onPressPool} pools={pools} />
     </View>
   );

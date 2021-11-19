@@ -19,8 +19,6 @@ export const styled = StyleSheet.create({
     padding: 0,
     alignItems: 'center',
     justifyContent: 'flex-start',
-    borderBottomColor: COLORS.colorGrey2,
-    borderBottomWidth: 1,
   },
   tabContent: {
     flex: 1,

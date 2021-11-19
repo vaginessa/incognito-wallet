@@ -231,7 +231,6 @@ export const tabStyle = StyleSheet.create({
 export const homeStyle = StyleSheet.create({
   wrapper: {
     flex: 1,
-    paddingTop: 24
   }
 });
 
