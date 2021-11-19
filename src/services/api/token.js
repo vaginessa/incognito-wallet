@@ -13,7 +13,7 @@ let BEP2Tokens = [];
 
 const getTokenListNoCache = () => {
   return http1.get('coins/tokenlist')
-    .then(res => res.map(token => new PToken(token)));
+    .then(res => res.map(token => new PToken(token, res)));
 };
 
 export const getTokenList = ({ expiredTime = EXPIRED_TIME } ={}) => {

@@ -59,7 +59,6 @@ const InputsGroup = React.memo(() => {
           _validateInput,
           ...validator.combinedAmount,
         ]}
-        visibleHeader
         hasInfinityIcon
         onChange={onChangeInput}
         editableInput={!inputAmount.loadingBalance}
