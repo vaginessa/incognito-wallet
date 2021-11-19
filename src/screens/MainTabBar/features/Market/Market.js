@@ -19,14 +19,12 @@ const Market = React.memo((props) => {
   const onOrderPress = (item) => {
     const poolId = item.defaultPoolPair;
     if (poolId) {
-      navigation.navigate(routeNames.Trade, { tabIndex: 0 });
-      dispatch(
-        actionChangeTab({ rootTabID: ROOT_TAB_TRADE, tabID: TAB_BUY_LIMIT_ID }),
-      );
       dispatch(actionSetPoolSelected(poolId));
+      dispatch(actionChangeTab({ rootTabID: ROOT_TAB_TRADE, tabID: TAB_BUY_LIMIT_ID }));
       setTimeout(() => {
+        navigation.navigate(routeNames.Trade, { tabIndex: 0 });
         dispatch(actionInit());
-      }, 200);
+      }, 100);
     } else {
       Toast.showInfo('Pair is not exist.', {
         duration: 500,
