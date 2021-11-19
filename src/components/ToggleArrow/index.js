@@ -15,7 +15,7 @@ const styled = StyleSheet.create({
   label: {
     marginRight: 10,
     fontFamily: FONT.NAME.medium,
-    fontSize: FONT.SIZE.regular,
+    fontSize: FONT.SIZE.medium,
   },
   rightArrowRow: {
     justifyContent: 'flex-start',
@@ -62,7 +62,7 @@ const ToggleArrow = (props) => {
 
 ToggleArrow.propTypes = {
   toggle: PropTypes.bool.isRequired,
-  label: PropTypes.bool.isRequired,
+  label: PropTypes.string.isRequired,
   handlePressToggle: PropTypes.func.isRequired,
   useRightArrow: PropTypes.bool,
   labelStyle: PropTypes.object,

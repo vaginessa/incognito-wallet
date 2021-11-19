@@ -29,10 +29,14 @@ export const ACTION_FETCHING_ORDER_DETAIL =
 export const ACTION_FETCHED_ORDER_DETAIL =
   '[pDexV3][swap] Fetched order detail';
 export const ACTION_SET_DEFAULT_PAIR = '[pDexV3][swap] Set default pair';
+export const ACTION_TOGGLE_PRO_TAB = '[pDexV3][swap] Toggle pro tab';
 
-export const TAB_SIMPLE_ID = 'simple';
-export const TAB_PRO_ID = 'pro';
-export const ROOT_TAB_ID = '[swap] Root tab swap';
+export const TAB_SIMPLE_ID = '[swap] simple';
+export const TAB_PRO_ID = '[swap] pro';
+export const ROOT_TAB_ID = 'ROOT_TAB_SWAP';
+
+export const ROOT_TAB_SUB_INFO = 'ROOT_TAB_SUB_INFO';
+export const TAB_HISTORY_ID = '[swap_sub_info] history order';
 
 export const formConfigs = {
   formName: 'FORM_SWAP',

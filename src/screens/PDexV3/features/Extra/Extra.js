@@ -114,12 +114,13 @@ const Extra = (props) => {
     hasQuestionIcon,
     onPressQuestionIcon,
     containerStyle,
+    titleStyle,
   } = props;
   return (
     <View style={{ ...styled.container, ...containerStyle }}>
       {title && (
         <Row style={styled.titleContainer}>
-          <Text style={styled.title}>{title}</Text>
+          <Text style={{...styled.title, ...titleStyle}}>{title}</Text>
           {hasQuestionIcon && (
             <BtnQuestionDefault
               icon={srcQuestionIcon}
@@ -141,6 +142,7 @@ Hook.propTypes = {
   hasQuestionIcon: PropTypes.bool,
   onPressQuestionIcon: PropTypes.func,
   customValue: PropTypes.any,
+  titleStyle: PropTypes.any,
 };
 
 Extra.propTypes = {

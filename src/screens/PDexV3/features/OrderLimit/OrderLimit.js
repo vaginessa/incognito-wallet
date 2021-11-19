@@ -36,7 +36,6 @@ const OrderLimit = (props) => {
   const {
     mainColor,
     btnActionTitle,
-    disabledBtn,
     ordering,
     calculating,
   } = useSelector(orderLimitDataSelector);
@@ -49,13 +48,7 @@ const OrderLimit = (props) => {
           <RefreshControl refreshing={calculating} onRefresh={onRefresh} />
         }
       >
-        <Form>
-          {() => (
-            <View>
-              <OrderLimitInputsGroup />
-            </View>
-          )}
-        </Form>
+        <Form>{() => <OrderLimitInputsGroup />}</Form>
         <OrderDetails />
         <ButtonBasic
           btnStyle={{
@@ -65,7 +58,6 @@ const OrderLimit = (props) => {
             marginBottom: 16,
           }}
           title={btnActionTitle}
-          disabled={disabledBtn}
           onPress={handleConfirm}
         />
         <NetworkFee />

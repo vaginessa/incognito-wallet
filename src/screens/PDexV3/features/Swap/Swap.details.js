@@ -6,7 +6,7 @@ import { Hook } from '../Extra';
 
 const styled = StyleSheet.create({
   container: {
-    marginTop: 40,
+    marginTop: 24,
   },
 });
 

@@ -12,7 +12,7 @@ export const decimalDigitsSelector = createSelector(
 
 export const currencySelector = createSelector(
   settingSelector,
-  () => true // setting?.isToggleUSD,
+  () => true, // setting?.isToggleUSD,
 );
 
 export const hideWalletBalanceSelector = createSelector(
@@ -27,5 +27,6 @@ export const isToggleBackupAllKeysSelector = createSelector(
 
 export const isUsePRVToPayFeeSelector = createSelector(
   settingSelector,
-  ({ usePRVToPayFee }) => usePRVToPayFee,
+  // ({ usePRVToPayFee }) => usePRVToPayFee,
+  () => true,
 );

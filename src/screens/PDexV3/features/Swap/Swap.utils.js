@@ -1,4 +1,4 @@
-import { PRV } from '@src/constants/common';
+import { PRV, PRV_ID } from '@src/constants/common';
 import SelectedPrivacy from '@src/models/selectedPrivacy';
 import isNaN from 'lodash/isNaN';
 import convert from '@src/utils/convert';
@@ -19,15 +19,57 @@ export const minFeeValidator = (feetokenData) => {
       symbol,
       minFeeAmountText,
     } = feetokenData;
-    if (
-      new BigNumber(origininalFeeAmount).isLessThan(
-        new BigNumber(minFeeOriginal),
-      )
-    ) {
+    if (new BigNumber(origininalFeeAmount).lt(minFeeOriginal)) {
       return `Amount must be larger than ${minFeeAmountText} ${symbol}`;
     }
   } catch (error) {
     console.log('minFeeValidator-error', error);
+  }
+  return undefined;
+};
+
+export const maxFeeValidator = ({
+  originalAmount,
+  availableOriginalAmount,
+  selltoken,
+
+  feetoken,
+  origininalFeeAmount,
+
+  prvBalance,
+  networkfee,
+}) => {
+  try {
+    const sellTokenIsPRV = selltoken === PRV.id;
+    const payFeeByPRV = feetoken === PRV.id;
+    let msg = 'Your balance is insufficient';
+    if (sellTokenIsPRV) {
+      let availableOriginalPRVFeeAmount = new BigNumber(prvBalance)
+        .minus(originalAmount)
+        .minus(origininalFeeAmount)
+        .minus(networkfee);
+      if (availableOriginalPRVFeeAmount.lt(0)) {
+        return msg;
+      }
+    } else {
+      if (payFeeByPRV) {
+        let availableOriginalPRVFeeAmount = new BigNumber(prvBalance)
+          .minus(origininalFeeAmount)
+          .minus(networkfee);
+        if (availableOriginalPRVFeeAmount.lt(0)) {
+          return msg;
+        }
+      } else {
+        let availableOriginalFeeAmount = new BigNumber(availableOriginalAmount)
+          .minus(originalAmount)
+          .minus(origininalFeeAmount);
+        if (availableOriginalFeeAmount.lt(0)) {
+          return msg;
+        }
+      }
+    }
+  } catch (error) {
+    console.log('maxFeeValidator-error', error);
   }
   return undefined;
 };
@@ -65,12 +107,13 @@ export const maxAmountValidatorForSellInput = (sellInputAmount) => {
       symbol,
       availableAmountText,
     } = sellInputAmount || {};
+    if (!availableOriginalAmount) {
+      return 'Your balance is insufficient';
+    }
     if (
       new BigNumber(originalAmount).gt(new BigNumber(availableOriginalAmount))
     ) {
-      return new BigNumber(availableOriginalAmount).gt(0)
-        ? `Max amount you can swap is ${availableAmountText} ${symbol}`
-        : `Your ${symbol} balance is insufficient.`;
+      return `Max amount you can convert is ${availableAmountText} ${symbol}`;
     }
   } catch (error) {
     console.log('maxAmountValidatorForSellInput-error', error);
@@ -120,30 +163,16 @@ export const getInputAmount = (
     let amount = convert.toNumber(amountText, true) || 0;
     const originalAmount = convert.toOriginalAmount(amount, token.pDecimals);
     let availableOriginalAmount = token.amount || 0;
-    let availableAmountNumber = 0;
-    let availableAmountText = '';
+    let availableAmountNumber = convert.toHumanAmount(
+      availableOriginalAmount,
+      token.pDecimals,
+    );
+    let availableAmountText = format.toFixed(
+      availableAmountNumber,
+      token.pDecimals,
+    );
     const usingFee =
       token.tokenId === feeData.feetoken && field === formConfigs.selltoken;
-    if (usingFee) {
-      availableOriginalAmount = new BigNumber(availableOriginalAmount)
-        .minus(new BigNumber(feeData.origininalFeeAmount))
-        .toNumber();
-    }
-    if (usingFee && token.isMainCrypto) {
-      availableOriginalAmount = new BigNumber(availableOriginalAmount)
-        .minus(networkfee)
-        .toNumber();
-    }
-    if (new BigNumber(availableOriginalAmount).isGreaterThan(0)) {
-      availableAmountNumber = convert.toHumanAmount(
-        availableOriginalAmount,
-        token.pDecimals,
-      );
-      availableAmountText = format.toFixed(
-        availableAmountNumber,
-        token.pDecimals,
-      );
-    }
     const focus = token.tokenId === focustoken;
     return {
       focus,

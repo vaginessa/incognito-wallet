@@ -73,7 +73,7 @@ const Order = React.memo(({ data, visibleDivider }) => {
   if (!data?.requestTx) {
     return null;
   }
-  const { rateStr, statusStr, swapStr, requestTx } = data;
+  const { statusStr, swapStr, requestTx } = data;
   const handleNavOrderDetail = async () => {
     await dispatch(actionFetchedOrderDetail(data));
     navigation.navigate(routeNames.OrdeSwapDetail);
@@ -105,7 +105,6 @@ const Order = React.memo(({ data, visibleDivider }) => {
 
 const OrderHistory = () => {
   const dispatch = useDispatch();
-  const onRefresh = () => dispatch(actionFetchHistory());
   const { isFetching, history = [] } = useSelector(swapHistorySelector);
   useFocusEffect(
     React.useCallback(() => {
@@ -114,11 +113,8 @@ const OrderHistory = () => {
   );
   return (
     <View style={styled.container}>
-      <Header title="Swap history" />
       <FlatList
-        refreshControl={
-          <RefreshControl refreshing={isFetching} onRefresh={onRefresh} />
-        }
+        refreshControl={<RefreshControl refreshing={isFetching} />}
         data={history}
         keyExtractor={(item) => item?.requestTx}
         renderItem={({ item, index }) => (
