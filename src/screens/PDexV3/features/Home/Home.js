@@ -1,19 +1,16 @@
 import React from 'react';
-import {BottomView, Header, Row} from '@src/components';
+import {BottomView, Row} from '@src/components';
 import { Tabs } from '@src/components/core';
 import Portfolio from '@src/screens/PDexV3/features/Portfolio';
 import { View } from 'react-native';
 import { batch, useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
-import { TradingVol24h } from '@screens/PDexV3/features/Share';
 import { liquidityActions } from '@screens/PDexV3/features/Liquidity';
 import {styled as mainStyle} from '@screens/PDexV3/PDexV3.styled';
-import {activedTabSelector} from '@components/core/Tabs';
 import ReturnLP from '@screens/PDexV3/features/Share/Share.returnLP';
 import {listPoolsSelector, PoolsList} from '@screens/PDexV3/features/Pools';
 import {NFTTokenBottomBar} from '@screens/PDexV3/features/NFTToken';
-import PropTypes from 'prop-types';
 import {nftTokenDataSelector} from '@src/redux/selectors/account';
 import SelectAccountButton from '@components/SelectAccountButton';
 import withHome from './Home.enhance';
@@ -80,8 +77,8 @@ const Home = () => {
       <View style={mainStyle.container}>
         <Tabs
           rootTabID={ROOT_TAB_HOME}
-          styledTabs={styled.tab}
-          styledTabList={styled.styledTabList}
+          styledTabs={mainStyle.tab1}
+          styledTabList={mainStyle.styledTabList1}
           defaultTabIndex={1}
           useTab1
           rightCustom={(
@@ -97,14 +94,6 @@ const Home = () => {
       <NFTTokenBottomBar />
     </>
   );
-};
-
-Home.defaultProps = {
-  hideBackButton: false
-};
-
-Home.propTypes = {
-  hideBackButton: PropTypes.bool
 };
 
 export default withHome(React.memo(Home));

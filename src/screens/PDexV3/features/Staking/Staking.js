@@ -1,11 +1,11 @@
 import React, {memo} from 'react';
 import {SafeAreaView, View} from 'react-native';
 import {styled as mainStyle} from '@screens/PDexV3/PDexV3.styled';
-import {Header, Row} from '@src/components';
+import { Row } from '@src/components';
 import {Tabs} from '@components/core';
 import routeNames from '@routers/routeNames';
 import {useNavigation} from 'react-navigation-hooks';
-import {homeStyle, tabStyle} from '@screens/PDexV3/features/Staking/Staking.styled';
+import { homeStyle } from '@screens/PDexV3/features/Staking/Staking.styled';
 import {STAKING_MESSAGES, TABS} from '@screens/PDexV3/features/Staking/Staking.constant';
 import AmountGroup from '@components/core/AmountGroup';
 import {CalendarClockIcon as CalendarIcon} from '@components/Icons';
@@ -20,6 +20,7 @@ import {stakingSelector} from '@screens/PDexV3/features/Staking';
 import {NFTTokenBottomBar} from '@screens/PDexV3/features/NFTToken';
 import {compose} from 'recompose';
 import withLazy from '@components/LazyHoc/LazyHoc';
+import SelectAccountButton from '@components/SelectAccountButton';
 
 const Reward = React.memo(() => {
   const navigation = useNavigation();
@@ -40,12 +41,6 @@ const Reward = React.memo(() => {
   );
 });
 
-const tabStyled = {
-  titleStyled: tabStyle.title,
-  titleDisabledStyled: tabStyle.disabledText,
-  tabStyledEnabled: tabStyle.tabEnable,
-};
-
 const Staking = ({ handleFetchData, onFreeData }) => {
   const navigation = useNavigation();
   const account = useSelector(defaultAccountSelector);
@@ -61,13 +56,15 @@ const Staking = ({ handleFetchData, onFreeData }) => {
   }, [account.paymentAddress]);
 
   const TabPools = React.useMemo(() => (
-    <View tabID={TABS.TAB_COINS} label={STAKING_MESSAGES.listCoins} {...tabStyled}>
+    <View tabID={TABS.TAB_COINS} label={STAKING_MESSAGES.listCoins}>
+      <Reward />
       <StakingPools />
     </View>
   ), []);
 
   const TabPortfolio = React.useMemo(() => (
-    <View tabID={TABS.TAB_PORTFOLIO} label={STAKING_MESSAGES.portfolio} {...tabStyled}>
+    <View tabID={TABS.TAB_PORTFOLIO} label={STAKING_MESSAGES.portfolio}>
+      <Reward />
       <StakingPortfolio />
     </View>
   ), []);
@@ -75,10 +72,21 @@ const Staking = ({ handleFetchData, onFreeData }) => {
   return (
     <>
       <View style={mainStyle.container}>
-        <Header title={STAKING_MESSAGES.staking} accountSelectable />
-        <Reward />
+        {/*<Header title={STAKING_MESSAGES.staking} accountSelectable />*/}
         <View style={homeStyle.wrapper}>
-          <Tabs rootTabID={TABS.ROOT_ID} styledTabList={{ padding: 0 }} defaultTabIndex={1}>
+          <Tabs
+            rootTabID={TABS.ROOT_ID}
+            styledTabs={mainStyle.tab1}
+            styledTabList={mainStyle.styledTabList1}
+            defaultTabIndex={1}
+            useTab1
+            hideBackButton={false}
+            rightCustom={(
+              <Row>
+                <SelectAccountButton />
+              </Row>
+            )}
+          >
             {TabPools}
             {TabPortfolio}
           </Tabs>

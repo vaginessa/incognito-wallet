@@ -39,7 +39,7 @@ const INCOGNITO_TOKEN_ICON_URL = isMainnet
   : 'https://storage.googleapis.com/incognito/wallet-testnet/tokens/icons';
 const BUILD_VERSION = pkg.version;
 const EXPLORER_CONSTANT_CHAIN_URL = isMainnet
-  ? 'https://incscan.io'
+  ? 'https://explorer.incognito.org'
   : global.severDefault
     ? global.severDefault.explorer
     : 'https://testnet.incognito.org'; // Change explorer

@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux';
 import {currencySelector, hideWalletBalanceSelector} from '@screens/Setting';
 import Swipeout from 'react-native-swipeout';
 import { tokenStyled } from '@screens/Wallet/features/Home/Wallet.styled';
-import {ImageCached, Row} from '@src/components';
+import { ImageCached } from '@src/components';
 import { formatAmount, formatPrice } from '@components/Token';
 import format from '@utils/format';
 import replace from 'lodash/replace';
@@ -16,11 +16,10 @@ import { ActivityIndicator } from '@components/core';
 import { NormalText } from '@components/Token/Token';
 import { itemStyled } from '@screens/Setting/features/Keychain/keychain.styled';
 import { DeleteFillIcon } from '@components/Icons/icon.delete';
-import { TokenVerifiedIcon } from '@components/Icons';
 import incognito from '@assets/images/new-icons/incognito.png';
 
 const TokenDefault = React.memo((props) => {
-  const { symbol, name, priceUsd, amount, pDecimals, decimalDigits, pricePrv, change, onPress, isGettingBalance, showGettingBalance, isVerified, iconUrl } = props;
+  const { symbol, priceUsd, amount, pDecimals, decimalDigits, pricePrv, change, onPress, isGettingBalance, showGettingBalance, iconUrl } = props;
   const shouldShowGettingBalance = isGettingBalance || showGettingBalance;
   const isToggleUSD = useSelector(currencySelector);
   const hideBalance = useSelector(hideWalletBalanceSelector);
@@ -45,16 +44,15 @@ const TokenDefault = React.memo((props) => {
     <TouchableOpacity style={tokenStyled.container} onPress={onPress}>
       <ImageCached style={tokenStyled.icon} uri={iconUrl} defaultImage={incognito} />
       <View style={tokenStyled.wrapFirst}>
-        <Row centerVertical>
-          <NormalText
-            style={tokenStyled.blackText}
-            text={symbol}
-          />
-          {isVerified && <TokenVerifiedIcon style={tokenStyled.iconVerify} />}
-        </Row>
         <NormalText
-          text={name}
+          style={tokenStyled.blackText}
+          text={symbol}
+        />
+        <NormalText
+          text={`${balance.tokenAmount} ${symbol}`}
           style={tokenStyled.grayText}
+          showBalance={!hideBalance}
+          symbol={symbol}
         />
       </View>
       <View style={tokenStyled.wrapSecond}>
@@ -75,12 +73,6 @@ const TokenDefault = React.memo((props) => {
               showBalance={!hideBalance}
             />
           )}
-        <NormalText
-          text={`${balance.tokenAmount}${symbol}`}
-          style={tokenStyled.grayText}
-          showBalance={!hideBalance}
-          symbol={symbol}
-        />
       </View>
     </TouchableOpacity>
   );
@@ -154,7 +146,6 @@ Token.propTypes = {
 };
 TokenDefault.propTypes = {
   symbol: PropTypes.string.isRequired,
-  name: PropTypes.string.isRequired,
   priceUsd: PropTypes.number.isRequired,
   amount: PropTypes.number.isRequired,
   pDecimals: PropTypes.string.isRequired,
@@ -164,8 +155,7 @@ TokenDefault.propTypes = {
   onPress: PropTypes.func.isRequired,
   isGettingBalance: PropTypes.bool.isRequired,
   showGettingBalance: PropTypes.bool.isRequired,
-  isVerified: PropTypes.bool.isRequired,
-  iconUrl: PropTypes.string
+  iconUrl: PropTypes.string.isRequired
 };
 
 export default withToken(memo(Token));

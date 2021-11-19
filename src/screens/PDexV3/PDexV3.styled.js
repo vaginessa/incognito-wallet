@@ -34,5 +34,17 @@ export const styled = StyleSheet.create({
   },
   extra: {
     marginTop: 25
-  }
+  },
+  tab1: {
+    marginTop: 24,
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    borderBottomColor: COLORS.colorGrey2,
+    borderBottomWidth: 1,
+  },
+  styledTabList1: {
+    borderBottomWidth: 0,
+  },
 });

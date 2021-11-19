@@ -98,7 +98,7 @@ class PappView extends Component {
       nextProps?.url?.replace(' ', '') != ''
     ) {
       return {
-        url: nextProps?.url || 'https://incscan.io',
+        url: nextProps?.url || 'https://explorer.incognito.org',
         hasWebViewError: isLoaded && false,
       };
     }
@@ -418,6 +418,7 @@ PappView.propTypes = {
   onChangeUrl: PropTypes.func.isRequired,
   onLoadError: PropTypes.oneOfType([PropTypes.func, PropTypes.number]),
   onLoadEnd: PropTypes.oneOfType([PropTypes.func, PropTypes.number]),
+  account: PropTypes.any
 };
 
 PappView.defaultProps = {

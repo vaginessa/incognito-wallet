@@ -123,11 +123,13 @@ export const tokenStyled = StyleSheet.create({
   },
   wrapFirst: {
     flex: 1,
-    paddingRight: 10
+    paddingRight: 10,
+    justifyContent: 'space-between',
   },
   wrapSecond: {
     flex: 1,
-    alignItems: 'flex-end'
+    alignItems: 'flex-end',
+    height: '100%'
   },
   wrapThird: {
     flex: 1,
@@ -138,14 +140,12 @@ export const tokenStyled = StyleSheet.create({
   blackText: {
     ...FONT.STYLE.medium,
     fontSize: FONT.SIZE.medium,
-    lineHeight: FONT.SIZE.medium + 9,
     textAlign: 'left',
     color: COLORS.black
   },
   grayText: {
     ...FONT.STYLE.medium,
     fontSize: FONT.SIZE.small,
-    lineHeight: FONT.SIZE.regular + 8,
     color: COLORS.lightGrey36
   },
   centerVertical: {

@@ -4,7 +4,6 @@ import Header from '@src/components/Header';
 import { BtnQuestionDefault } from '@src/components/Button';
 import PropTypes from 'prop-types';
 import {ListAllToken, TokenFollow} from '@src/components/Token';
-import {FollowHeader} from '@components/Token/Token.follow';
 import { styled } from './Shield.styled';
 import withShield from './Shield.enhance';
 
@@ -18,7 +17,6 @@ const Shield = (props) => {
         hideBackButton={hideBackButton}
         rightHeader={<BtnQuestionDefault onPress={handleWhyShield} />}
       />
-      <FollowHeader hideStar />
       <ListAllToken
         {...rest}
         renderItem={({ item }) => (

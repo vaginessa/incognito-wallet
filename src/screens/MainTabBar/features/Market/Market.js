@@ -4,7 +4,6 @@ import Header from '@screens/MainTabBar/features/Market/Market.header';
 import {TokenFollow} from '@components/Token';
 import MarketList from '@components/Token/Token.marketList';
 import withMarket from '@screens/MainTabBar/features/Market/Market.enhance';
-import {FollowHeader} from '@components/Token/Token.follow';
 import {useDispatch} from 'react-redux';
 import {useNavigation} from 'react-navigation-hooks';
 import routeNames from '@routers/routeNames';
@@ -37,7 +36,6 @@ const Market = React.memo((props) => {
   return (
     <>
       <Header onFilter={onFilter} />
-      <FollowHeader hideStar={!keySearch} />
       <MarketList
         keySearch={keySearch}
         {...rest}
