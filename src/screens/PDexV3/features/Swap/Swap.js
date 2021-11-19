@@ -30,9 +30,6 @@ const Form = createForm(formConfigs.formName, {
 
 const Swap = (props) => {
   const { initSwapForm, handleConfirm } = props;
-  const navigation = useNavigation();
-  const handleNavOrderHistory = () =>
-    navigation.navigate(routeNames.TradeOrderHistory);
   const swapInfo = useSelector(swapInfoSelector);
   return (
     <>
@@ -53,7 +50,6 @@ const Swap = (props) => {
                 btnStyle={styled.btnTrade}
                 onPress={handleConfirm}
                 title={swapInfo?.btnSwapText || ''}
-                disabled={!!swapInfo?.disabledBtnSwap}
               />
               <NetworkFee />
             </>

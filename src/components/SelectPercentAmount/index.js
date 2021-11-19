@@ -10,18 +10,16 @@ const styled = StyleSheet.create({
     alignItems: 'center',
   },
   btnContainer: {
-    flex: 1,
     marginRight: 15,
   },
   percent: {
-    fontSize: FONT.SIZE.small,
-    lineHeight: FONT.SIZE.small + 4,
+    fontSize: FONT.SIZE.superSmall,
     color: COLORS.black,
     fontFamily: FONT.NAME.regular,
     textAlign: 'center',
   },
   percentBtn: {
-    height: 10,
+    height: 8,
     borderRadius: 20,
     width: '100%',
     marginBottom: 10,
@@ -32,7 +30,7 @@ const styled = StyleSheet.create({
 });
 
 const SelectPercentAmount = (props) => {
-  const { selected, onPressPercent } = props;
+  const { selected, onPressPercent, lastPercent } = props;
   const {
     size = 4,
     percentBtnColor = COLORS.colorTradeBlue,
@@ -43,24 +41,40 @@ const SelectPercentAmount = (props) => {
       const percent = (((index + 1) / size) * 100).toFixed(0);
       const lastChild = index === arr.length - 1;
       const isFilled = Number(percent) <= Number(selected);
+      const percentStr = `${percent}%`;
       return (
-        <View
+        <TouchableOpacity
+          style={[
+            {
+              flex: index + 1,
+            },
+            styled.btnContainer,
+            lastChild && styled.btnLastChild,
+          ]}
+          onPress={() => onPressPercent(percent)}
           key={percent}
-          style={[styled.btnContainer, lastChild && styled.btnLastChild]}
         >
-          <TouchableOpacity
+          <View
             style={[
               styled.percentBtn,
               {
                 backgroundColor: isFilled
                   ? percentBtnColor
-                  : COLORS.lightGrey18,
+                  : COLORS.colorGrey2,
               },
             ]}
-            onPress={() => onPressPercent(percent)}
           />
-          <Text style={styled.percent}>{percent}%</Text>
-        </View>
+          <Text
+            style={{
+              ...styled.percent,
+              ...(isFilled ? { fontFamily: FONT.NAME.medium } : {}),
+            }}
+            numberOfLines={1}
+            ellipsizeMode="tail"
+          >
+            {lastChild ? lastPercent || percentStr : percentStr}
+          </Text>
+        </TouchableOpacity>
       );
     });
   };
@@ -73,6 +87,7 @@ SelectPercentAmount.propTypes = {
   containerStyled: PropTypes.any,
   selected: PropTypes.number.isRequired,
   onPressPercent: PropTypes.func.isRequired,
+  lastPercent: PropTypes.string,
 };
 
 export default React.memo(SelectPercentAmount);

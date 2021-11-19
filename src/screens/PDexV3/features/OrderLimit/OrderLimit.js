@@ -36,7 +36,6 @@ const OrderLimit = (props) => {
   const {
     mainColor,
     btnActionTitle,
-    disabledBtn,
     ordering,
     calculating,
   } = useSelector(orderLimitDataSelector);
@@ -59,7 +58,6 @@ const OrderLimit = (props) => {
             marginBottom: 16,
           }}
           title={btnActionTitle}
-          disabled={disabledBtn}
           onPress={handleConfirm}
         />
         <NetworkFee />

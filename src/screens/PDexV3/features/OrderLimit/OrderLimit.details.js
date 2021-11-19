@@ -5,21 +5,15 @@ import { Hook } from '@screens/PDexV3/features/Extra';
 import { orderLimitDataSelector } from './OrderLimit.selector';
 
 const styled = StyleSheet.create({
-  container: {
-  },
+  container: {},
 });
 
 const OrderDetails = () => {
   const orderLimitData = useSelector(orderLimitDataSelector);
   const {
     totalAmountData: { totalStr },
-    balanceStr
   } = orderLimitData;
   const factories = [
-    {
-      label: 'Balance',
-      value: balanceStr,
-    },
     {
       label: 'Trading fee',
       value: 'Free',

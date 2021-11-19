@@ -396,7 +396,7 @@ const SelectPercentAmountInput = React.memo(() => {
   const buyToken: SelectedPrivacy = buyInputAmount?.tokenData;
   const sellToken: SelectedPrivacy = sellInputAmount?.tokenData;
   const { customRate } = useSelector(rateDataSelector);
-  const { mainColor, percent: selected, activedTab } = useSelector(
+  const { mainColor, percent: selected, activedTab, balanceStr } = useSelector(
     orderLimitDataSelector,
   );
   const onPressPercent = (percent) => {
@@ -472,6 +472,7 @@ const SelectPercentAmountInput = React.memo(() => {
       percentBtnColor={mainColor}
       selected={selected}
       onPressPercent={onPressPercent}
+      lastPercent={balanceStr}
     />
   );
 });
@@ -487,7 +488,6 @@ const InputsGroup = React.memo(() => {
           <RateInput />
           <Divider dividerStyled={styled.dividerStyled} />
           <SellInput />
-          <SelectPercentAmountInput />
         </>
       );
     }
@@ -497,7 +497,6 @@ const InputsGroup = React.memo(() => {
           <RateInput />
           <Divider dividerStyled={styled.dividerStyled} />
           <BuyInput />
-          <SelectPercentAmountInput />
         </>
       );
     }
@@ -508,7 +507,12 @@ const InputsGroup = React.memo(() => {
   if (!poolSelected) {
     return null;
   }
-  return <View style={styled.container}>{renderMain()}</View>;
+  return (
+    <View style={styled.container}>
+      {renderMain()}
+      <SelectPercentAmountInput />
+    </View>
+  );
 });
 
 export default InputsGroup;

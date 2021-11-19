@@ -404,12 +404,10 @@ export const mappingOrderHistorySelector = createSelector(
 export const swapHistorySelector = createSelector(
   swapSelector,
   mappingOrderHistorySelector,
-  ({ swapHistory, selltoken }, mappingOrderHistory) => {
-    const history = swapHistory?.data
-      ?.map((order) => mappingOrderHistory(order))
-      .filter((h) =>
-        selltoken ? h?.sellTokenId === selltoken : h?.sellTokenId === PRV.id,
-      );
+  ({ swapHistory }, mappingOrderHistory) => {
+    const history = swapHistory?.data?.map((order) =>
+      mappingOrderHistory(order),
+    );
     return {
       ...swapHistory,
       history,
