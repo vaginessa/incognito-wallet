@@ -13,6 +13,8 @@ import {listPoolsSelector, PoolsList} from '@screens/PDexV3/features/Pools';
 import {NFTTokenBottomBar} from '@screens/PDexV3/features/NFTToken';
 import {nftTokenDataSelector} from '@src/redux/selectors/account';
 import SelectAccountButton from '@components/SelectAccountButton';
+import {compose} from 'recompose';
+import {withLayout_2} from '@components/Layout';
 import withHome from './Home.enhance';
 import { ROOT_TAB_HOME, TAB_POOLS_ID, TAB_PORTFOLIO_ID } from './Home.constant';
 import { styled } from './Home.styled';
@@ -74,26 +76,27 @@ const Home = () => {
   ), [titleStr]);
   return (
     <>
-      <View style={mainStyle.container}>
-        <Tabs
-          rootTabID={ROOT_TAB_HOME}
-          styledTabs={mainStyle.tab1}
-          styledTabList={mainStyle.styledTabList1}
-          defaultTabIndex={1}
-          useTab1
-          rightCustom={(
-            <Row>
-              <SelectAccountButton />
-            </Row>
-          )}
-        >
-          {_TabPools}
-          {_TabPortfolio}
-        </Tabs>
-      </View>
+      <Tabs
+        rootTabID={ROOT_TAB_HOME}
+        styledTabs={mainStyle.tab1}
+        styledTabList={mainStyle.styledTabList1}
+        defaultTabIndex={1}
+        useTab1
+        rightCustom={(
+          <Row>
+            <SelectAccountButton />
+          </Row>
+        )}
+      >
+        {_TabPools}
+        {_TabPortfolio}
+      </Tabs>
       <NFTTokenBottomBar />
     </>
   );
 };
 
-export default withHome(React.memo(Home));
+export default compose(
+  withHome,
+  withLayout_2
+)(React.memo(Home));

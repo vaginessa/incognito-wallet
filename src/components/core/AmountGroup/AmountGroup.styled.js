@@ -15,7 +15,7 @@ export default StyleSheet.create({
   baseAmount: {
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.superLarge,
-    lineHeight: FONT.SIZE.superLarge + 8,
+    lineHeight: FONT.SIZE.superLarge + 12,
     color: COLORS.black,
     textAlign: 'center',
   },

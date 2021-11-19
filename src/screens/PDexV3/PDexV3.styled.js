@@ -36,7 +36,6 @@ export const styled = StyleSheet.create({
     marginTop: 25
   },
   tab1: {
-    marginTop: 24,
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',

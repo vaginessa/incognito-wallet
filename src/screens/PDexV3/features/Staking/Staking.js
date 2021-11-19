@@ -19,15 +19,15 @@ import {defaultAccountSelector} from '@src/redux/selectors/account';
 import {stakingSelector} from '@screens/PDexV3/features/Staking';
 import {NFTTokenBottomBar} from '@screens/PDexV3/features/NFTToken';
 import {compose} from 'recompose';
-import withLazy from '@components/LazyHoc/LazyHoc';
 import SelectAccountButton from '@components/SelectAccountButton';
+import {withLayout_2} from '@components/Layout';
 
 const Reward = React.memo(() => {
   const navigation = useNavigation();
   const { rewardUSDStr, rewardPRVStr } = useSelector(stakingSelector.stakingRewardSelector);
   const isFetching = useSelector(stakingSelector.isFetchingCoinsSelector);
   return (
-    <Row center style={{ marginTop: 27 }}>
+    <Row center style={{ marginTop: 15 }}>
       <AmountGroup
         amountStr={rewardUSDStr}
         subAmountStr={rewardPRVStr}
@@ -71,33 +71,29 @@ const Staking = ({ handleFetchData, onFreeData }) => {
 
   return (
     <>
-      <View style={mainStyle.container}>
-        {/*<Header title={STAKING_MESSAGES.staking} accountSelectable />*/}
-        <View style={homeStyle.wrapper}>
-          <Tabs
-            rootTabID={TABS.ROOT_ID}
-            styledTabs={mainStyle.tab1}
-            styledTabList={mainStyle.styledTabList1}
-            defaultTabIndex={1}
-            useTab1
-            hideBackButton={false}
-            rightCustom={(
-              <Row>
-                <SelectAccountButton />
-              </Row>
-            )}
-          >
-            {TabPools}
-            {TabPortfolio}
-          </Tabs>
-        </View>
-        <SafeAreaView>
-          <BTNBorder
-            title={isStaking ? STAKING_MESSAGES.stakeMore : STAKING_MESSAGES.stakeNow}
-            onPress={onStakingMore}
-          />
-        </SafeAreaView>
-      </View>
+      {/*<Header title={STAKING_MESSAGES.staking} accountSelectable />*/}
+      <Tabs
+        rootTabID={TABS.ROOT_ID}
+        styledTabs={mainStyle.tab1}
+        styledTabList={mainStyle.styledTabList1}
+        defaultTabIndex={1}
+        useTab1
+        hideBackButton={false}
+        rightCustom={(
+          <Row>
+            <SelectAccountButton />
+          </Row>
+        )}
+      >
+        {TabPools}
+        {TabPortfolio}
+      </Tabs>
+      <SafeAreaView>
+        <BTNBorder
+          title={isStaking ? STAKING_MESSAGES.stakeMore : STAKING_MESSAGES.stakeNow}
+          onPress={onStakingMore}
+        />
+      </SafeAreaView>
       <NFTTokenBottomBar />
     </>
   );
@@ -109,6 +105,6 @@ Staking.propTypes = {
 };
 
 export default compose(
-  withLazy,
-  withFetch
+  withLayout_2,
+  withFetch,
 )(memo(Staking));
