@@ -1,7 +1,6 @@
 import React, {memo} from 'react';
 import {View} from 'react-native';
 import PropTypes from 'prop-types';
-import {Header} from '@src/components';
 import {Tabs} from '@components/core';
 import {TABS} from '@screens/PDexV3/features/LiquidityHistories';
 import withHistories from '@screens/PDexV3/features/LiquidityHistories/LiquidityHistories.enhance';
@@ -16,8 +15,13 @@ const Home = ({ onRefresh }) => {
   }, []);
   return (
     <View style={mainStyle.container}>
-      <Header title="Histories" />
-      <Tabs rootTabID={TABS.ROOT_TAB_HOME_LIQUIDITY_HISTORIES} useTab1>
+      <Tabs
+        rootTabID={TABS.ROOT_TAB_HOME_LIQUIDITY_HISTORIES}
+        useTab1
+        hideBackButton={false}
+        styledTabs={mainStyle.tab1}
+        styledTabList={mainStyle.styledTabList1}
+      >
         <View tabID={TABS.TAB_CONTRIBUTE_HISTORIES_ID} label="Add">
           <ContributeHistories />
         </View>

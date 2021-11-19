@@ -79,14 +79,17 @@ export const groupButtonStyled = StyleSheet.create({
     marginTop: 24
   },
   tooltip: {
-    backgroundColor: COLORS.black,
+    // backgroundColor: COLORS.colorBlue,
     borderRadius: 11,
     marginBottom: 20,
+    borderColor: COLORS.colorBlue,
+    borderWidth: 1,
   },
   triangleStyle: {
     bottom: -30,
     left: '48%',
-    borderBottomColor: COLORS.black,
+    borderBottomColor: COLORS.colorBlue,
+    borderBottomWidth: 10,
   },
   btnClose: {
     position: 'absolute',
@@ -101,14 +104,14 @@ export const groupButtonStyled = StyleSheet.create({
     fontFamily: FONT.NAME.bold,
     fontSize: FONT.SIZE.medium,
     lineHeight: FONT.SIZE.medium + 3,
-    color: COLORS.white,
+    color: COLORS.black,
     marginBottom: 5,
   },
   desc: {
     fontFamily: FONT.NAME.regular,
     fontSize: FONT.SIZE.small + 1,
     lineHeight: FONT.SIZE.small + 6,
-    color: COLORS.white,
+    color: COLORS.black,
   },
   wrapHook: {
     padding: 20,
@@ -140,12 +143,14 @@ export const tokenStyled = StyleSheet.create({
   blackText: {
     ...FONT.STYLE.medium,
     fontSize: FONT.SIZE.medium,
+    lineHeight: FONT.SIZE.medium + 7,
     textAlign: 'left',
     color: COLORS.black
   },
   grayText: {
     ...FONT.STYLE.medium,
     fontSize: FONT.SIZE.small,
+    lineHeight: FONT.SIZE.small + 5,
     color: COLORS.lightGrey36
   },
   centerVertical: {

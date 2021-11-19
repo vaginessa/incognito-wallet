@@ -11,7 +11,7 @@ import incognito from '@assets/images/new-icons/incognito.png';
 import {BtnStar} from '@components/Button';
 
 const TokenFollow = ({ item, hideStar, handleToggleFollowToken, onPress }) => {
-  const { symbol, priceUsd, change, tokenId, isFollowed } = item;
+  const { symbol, priceUsd, change, tokenId, isFollowed, dupNetwork } = item;
   const balance = React.useMemo(() => {
     const price = priceUsd;
     const isTokenDecrease = change && change[0] === '-';
@@ -31,7 +31,8 @@ const TokenFollow = ({ item, hideStar, handleToggleFollowToken, onPress }) => {
           <Row centerVertical>
             <ImageCached uri={item.iconUrl} style={styled.icon} defaultImage={incognito} />
             <Row style={styled.flexEnd}>
-              <NormalText style={styled.blackLabel} text={symbol} />
+              <Text style={styled.blackLabel}>{symbol}</Text>
+              {!!dupNetwork && <Text style={styled.networkName}>{dupNetwork}</Text>}
             </Row>
           </Row>
         </View>
@@ -89,7 +90,8 @@ export const styled = StyleSheet.create({
     ...FONT.STYLE.medium,
     fontSize: FONT.SIZE.medium,
     textAlign: 'left',
-    color: COLORS.black
+    color: COLORS.black,
+    lineHeight: FONT.SIZE.medium + 5,
   },
   icon: {
     marginRight: 12,
@@ -99,6 +101,7 @@ export const styled = StyleSheet.create({
   sectionFirst: {
     flex: 0.65,
     paddingRight: 5,
+    height: '100%',
   },
   sectionSecond: {
     flex: 0.35,
@@ -109,13 +112,14 @@ export const styled = StyleSheet.create({
     width: 90,
     alignItems: 'flex-end',
   },
-  // networkName: {
-  //   ...FONT.STYLE.normal,
-  //   fontSize: FONT.SIZE.small,
-  //   textAlign: 'left',
-  //   marginLeft: 6,
-  //   color: COLORS.colorGrey1
-  // },
+  networkName: {
+    ...FONT.STYLE.normal,
+    fontSize: FONT.SIZE.small,
+    textAlign: 'left',
+    marginLeft: 6,
+    color: COLORS.colorGrey1,
+    lineHeight: FONT.SIZE.small + 5,
+  },
   containerStyle: {
     minHeight: 20,
     justifyContent: 'center'

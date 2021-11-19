@@ -41,10 +41,7 @@ export const styled = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    borderBottomColor: COLORS.colorGrey2,
-    borderBottomWidth: 1,
   },
   styledTabList1: {
-    borderBottomWidth: 0,
   },
 });

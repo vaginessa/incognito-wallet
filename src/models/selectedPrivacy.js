@@ -172,6 +172,7 @@ class SelectedPrivacy {
     this.change = pTokenData?.change;
     this.defaultPoolPair = pTokenData?.defaultPoolPair;
     this.defaultPairToken = pTokenData?.defaultPairToken;
+    this.dupNetwork = pTokenData.dupNetwork;
   }
 }
 
