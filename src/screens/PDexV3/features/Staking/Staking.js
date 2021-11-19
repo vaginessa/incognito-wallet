@@ -5,7 +5,6 @@ import { Row } from '@src/components';
 import {Tabs} from '@components/core';
 import routeNames from '@routers/routeNames';
 import {useNavigation} from 'react-navigation-hooks';
-import { homeStyle } from '@screens/PDexV3/features/Staking/Staking.styled';
 import {STAKING_MESSAGES, TABS} from '@screens/PDexV3/features/Staking/Staking.constant';
 import AmountGroup from '@components/core/AmountGroup';
 import {CalendarClockIcon as CalendarIcon} from '@components/Icons';

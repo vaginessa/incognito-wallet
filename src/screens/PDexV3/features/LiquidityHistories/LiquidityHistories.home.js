@@ -5,6 +5,8 @@ import {Tabs} from '@components/core';
 import {TABS} from '@screens/PDexV3/features/LiquidityHistories';
 import withHistories from '@screens/PDexV3/features/LiquidityHistories/LiquidityHistories.enhance';
 import {styled as mainStyle} from '@screens/PDexV3/PDexV3.styled';
+import {compose} from 'recompose';
+import {withLayout_2} from '@components/Layout';
 import WithdrawRewardHistories from './LiquidityHistories.reward';
 import RemovePoolHistories from './LiquidityHistories.removePool';
 import ContributeHistories from './LiquidityHistories.contribute';
@@ -14,7 +16,7 @@ const Home = ({ onRefresh }) => {
     onRefresh();
   }, []);
   return (
-    <View style={mainStyle.container}>
+    <>
       <Tabs
         rootTabID={TABS.ROOT_TAB_HOME_LIQUIDITY_HISTORIES}
         useTab1
@@ -32,7 +34,7 @@ const Home = ({ onRefresh }) => {
           <WithdrawRewardHistories />
         </View>
       </Tabs>
-    </View>
+    </>
   );
 };
 
@@ -40,4 +42,7 @@ Home.propTypes = {
   onRefresh: PropTypes.func.isRequired
 };
 
-export default withHistories(memo(Home));
+export default compose(
+  withLayout_2,
+  withHistories,
+)(memo(Home));

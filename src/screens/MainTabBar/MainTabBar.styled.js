@@ -219,10 +219,10 @@ export const moreStyled = StyleSheet.create({
     marginBottom: 20
   },
   regularBlack: {
-    ...FONT.STYLE.normal,
-    fontSize: FONT.SIZE.superSmall,
+    ...FONT.STYLE.medium,
+    fontSize: FONT.SIZE.small,
     color: COLORS.black,
-    lineHeight: FONT.SIZE.superSmall + 6,
+    lineHeight: FONT.SIZE.small + 6,
     marginTop: 2,
   },
   wrapCategory: {
@@ -230,7 +230,7 @@ export const moreStyled = StyleSheet.create({
   },
   sectionLabel: {
     ...FONT.STYLE.medium,
-    fontSize: FONT.SIZE.regular,
+    fontSize: FONT.SIZE.medium,
     color: COLORS.black,
     marginBottom: 20,
   }
