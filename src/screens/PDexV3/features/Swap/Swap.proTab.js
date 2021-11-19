@@ -1,11 +1,7 @@
 import React from 'react';
 import { Text } from '@src/components/core';
-import isEmpty from 'lodash/isEmpty';
 import { View, StyleSheet } from 'react-native';
-import Extra, {
-  Hook,
-  styled as extraStyled,
-} from '@screens/PDexV3/features/Extra';
+import Extra, { styled as extraStyled } from '@screens/PDexV3/features/Extra';
 import { useDispatch, useSelector } from 'react-redux';
 import { change, Field } from 'redux-form';
 import {
@@ -18,22 +14,23 @@ import { getPrivacyDataByTokenID } from '@src/redux/selectors/selectedPrivacy';
 import { PRV } from '@src/constants/common';
 import format from '@src/utils/format';
 import convert from '@src/utils/convert';
+import { FONT } from '@src/styles';
 import {
   feetokenDataSelector,
   feeTypesSelector,
   inputAmountSelector,
   slippagetoleranceSelector,
   swapInfoSelector,
+  swapSelector,
 } from './Swap.selector';
 import { actionEstimateTrade, actionSetFeeToken } from './Swap.actions';
 import { formConfigs } from './Swap.constant';
 import {
   minFeeValidator,
-  availablePayFeeByPRVValidator,
   maxAmountValidatorForSlippageTolerance,
   calMintAmountExpected,
+  maxFeeValidator,
 } from './Swap.utils';
-import { useTabFactories } from './Swap.simpleTab';
 
 const styled = StyleSheet.create({
   container: {
@@ -43,8 +40,9 @@ const styled = StyleSheet.create({
 });
 
 const TabPro = React.memo(() => {
+  const { networkfee } = useSelector(swapSelector);
   const swapInfo = useSelector(swapInfoSelector);
-  const { maxGet } = swapInfo;
+  const { maxGet, toggleProTab } = swapInfo;
   const feeTypes = useSelector(feeTypesSelector);
   const slippagetolerance = useSelector(slippagetoleranceSelector);
   const feetokenData = useSelector(feetokenDataSelector);
@@ -78,19 +76,25 @@ const TabPro = React.memo(() => {
       feetokenData?.minFeeAmountText,
     ],
   );
-  let _availablePayFeeByPRVValidator = React.useCallback(
+  let _maxFeeValidator = React.useCallback(
     () =>
-      availablePayFeeByPRVValidator({
-        prvBalance: prv?.amount || 0,
-        usingFeeBySellToken: sellinputAmount?.usingFee,
+      maxFeeValidator({
+        originalAmount: sellinputAmount?.originalAmount,
+        availableOriginalAmount: sellinputAmount?.availableOriginalAmount,
+        selltoken: sellinputAmount?.tokenId,
+        feetoken: feetokenData?.feetoken,
         origininalFeeAmount: feetokenData?.origininalFeeAmount,
-        networkfee: swapInfo?.networkfee,
+        networkfee,
+        prvBalance: prv?.amount || 0,
       }),
     [
-      sellinputAmount?.usingFee,
-      prv?.amount,
+      sellinputAmount?.originalAmount,
+      sellinputAmount?.availableOriginalAmount,
+      sellinputAmount?.tokenId,
+      feetokenData?.feetoken,
       feetokenData?.origininalFeeAmount,
-      swapInfo?.networkfee,
+      prv?.amount,
+      networkfee,
     ],
   );
   let _maxAmountValidatorForSlippageTolerance = React.useCallback(
@@ -100,6 +104,9 @@ const TabPro = React.memo(() => {
   let extraFactories = [
     {
       title: 'Slippage tolerance',
+      titleStyle: {
+        fontSize: FONT.SIZE.small,
+      },
       hasQuestionIcon: true,
       onPressQuestionIcon: () => null,
       hooks: (
@@ -126,6 +133,9 @@ const TabPro = React.memo(() => {
     {
       title: 'Trading fee',
       hasQuestionIcon: true,
+      titleStyle: {
+        fontSize: FONT.SIZE.small,
+      },
       onPressQuestionIcon: () => null,
       hooks: (
         <Field
@@ -139,7 +149,7 @@ const TabPro = React.memo(() => {
               ? validator.combinedNanoAmount
               : validator.combinedAmount),
             _minFeeValidator,
-            _availablePayFeeByPRVValidator,
+            _maxFeeValidator,
           ]}
           editableInput={!!swapInfo?.editableInput}
         />
@@ -148,7 +158,12 @@ const TabPro = React.memo(() => {
     },
   ];
   return (
-    <View style={styled.container}>
+    <View
+      style={{
+        ...styled.container,
+        ...(toggleProTab ? {} : { display: 'none' }),
+      }}
+    >
       {extraFactories.map((extra) => (
         <Extra {...extra} key={extra.label} />
       ))}

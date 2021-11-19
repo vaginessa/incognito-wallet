@@ -7,6 +7,7 @@ import {
   actionInitSwapForm,
   actionReset,
   actionFetchSwap,
+  actionToggleProTab,
 } from './Swap.actions';
 import { swapInfoSelector } from './Swap.selector';
 
@@ -23,6 +24,7 @@ const enhance = (WrappedComp) => (props) => {
   const handleConfirm = async () => {
     try {
       if (swapInfo?.disabledBtnSwap) {
+        dispatch(actionToggleProTab(true));
         return;
       }
       const tx = await dispatch(actionFetchSwap());

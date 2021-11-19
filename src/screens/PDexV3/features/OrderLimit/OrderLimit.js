@@ -49,13 +49,7 @@ const OrderLimit = (props) => {
           <RefreshControl refreshing={calculating} onRefresh={onRefresh} />
         }
       >
-        <Form>
-          {() => (
-            <View>
-              <OrderLimitInputsGroup />
-            </View>
-          )}
-        </Form>
+        <Form>{() => <OrderLimitInputsGroup />}</Form>
         <OrderDetails />
         <ButtonBasic
           btnStyle={{

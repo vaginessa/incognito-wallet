@@ -26,7 +26,7 @@ import withSetting from './Setting.enhance';
 import DecimalDigitsSection from './features/DecimalDigitsSection';
 import ExportCSVSection from './features/ExportCSVSection';
 import RemoveBalanceCached from './features/RemoveBalanceCached';
-import PayFeeByPRV from './features/PayFeeByPRV';
+// import PayFeeByPRV from './features/PayFeeByPRV';
 
 const Setting = () => {
   const navigation = useNavigation();
@@ -80,7 +80,7 @@ const Setting = () => {
           {sectionItemFactories.map((item) => (
             <SectionItem data={item} key={`${item.title} ${item.desc}`} />
           ))}
-          <PayFeeByPRV />
+          {/* <PayFeeByPRV /> */}
           <PINSection />
           <SeparatorSection />
           <DecimalDigitsSection />

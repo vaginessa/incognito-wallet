@@ -43,6 +43,7 @@ import {
   ACTION_FETCHING_ORDER_DETAIL,
   ACTION_FETCHED_ORDER_DETAIL,
   ACTION_SET_DEFAULT_PAIR,
+  ACTION_TOGGLE_PRO_TAB,
 } from './Swap.constant';
 import {
   buytokenSelector,
@@ -57,6 +58,11 @@ import {
   defaultPairSelector,
 } from './Swap.selector';
 import { calMintAmountExpected } from './Swap.utils';
+
+export const actionToggleProTab = (payload) => ({
+  type: ACTION_TOGGLE_PRO_TAB,
+  payload,
+});
 
 export const actionSetPercent = (payload) => ({
   type: ACTION_SET_PERCENT,
@@ -101,21 +107,29 @@ export const actionReset = (payload) => ({
   payload,
 });
 
-export const actionEstimateTrade = (field = formConfigs.selltoken) => async (
-  dispatch,
-  getState,
-) => {
+export const actionEstimateTrade = ({
+  field = formConfigs.selltoken,
+  useMax = false,
+} = {}) => async (dispatch, getState) => {
   try {
     let state = getState();
     const inputAmount = inputAmountSelector(state);
+    const { networkfee } = swapSelector(state);
     let sellInputToken, buyInputToken, inputToken, inputPDecimals;
     sellInputToken = inputAmount(formConfigs.selltoken);
     buyInputToken = inputAmount(formConfigs.buytoken);
     const {
       tokenId: selltoken,
-      originalAmount: sellAmount,
+      originalAmount: sellOriginalAmount,
       pDecimals: sellPDecimals,
+      availableOriginalAmount: availableSellOriginalAmount,
+      availableAmountText: availableSellAmountText,
     } = sellInputToken;
+    let sellAmount = useMax ? availableSellOriginalAmount : sellOriginalAmount;
+    if (new BigNumber(availableSellOriginalAmount).eq(sellOriginalAmount)) {
+      sellAmount = availableSellOriginalAmount;
+      useMax = true;
+    }
     const {
       tokenId: buytoken,
       originalAmount: buyAmount,
@@ -154,7 +168,7 @@ export const actionEstimateTrade = (field = formConfigs.selltoken) => async (
       isEmpty(sellInputToken) ||
       isEmpty(buyInputToken) ||
       isEmpty(feetoken) ||
-      (!sellAmount && !buyAmount)
+      !sellAmount
     ) {
       return;
     }
@@ -164,7 +178,7 @@ export const actionEstimateTrade = (field = formConfigs.selltoken) => async (
     await dispatch(actionFetched(data));
     state = getState();
     const feeTokenData = feetokenDataSelector(state);
-    const { minFeeAmountFixed } = feeTokenData;
+    const { minFeeAmountFixed, payFeeByPRV } = feeTokenData;
     let maxGet = 0;
     switch (field) {
     case formConfigs.selltoken: {
@@ -190,14 +204,104 @@ export const actionEstimateTrade = (field = formConfigs.selltoken) => async (
       minAmountExpectedToHumanAmount,
       inputPDecimals,
     );
-    batch(() => {
+    if (useMax) {
+      const prvBalance = await dispatch(getBalance(PRV.id));
+      const { feePrv: feeOriginalPRV, feeToken: feeOriginalToken = 0 } = data;
+      const feePRVHuman = convert.toHumanAmount(feeOriginalPRV, PRV.pDecimals);
+      const feePRVFixed = format.toFixed(feePRVHuman, PRV.pDecimals);
+      const feeTokenHuman = convert.toHumanAmount(
+        feeOriginalToken,
+        sellPDecimals,
+      );
+      const feeTokenFixed = format.toFixed(feeTokenHuman, sellPDecimals);
+      let availableOriginalPRVAmount = new BigNumber(prvBalance)
+        .minus(feeOriginalPRV)
+        .minus(networkfee);
+      const canPayFeeByPRV = availableOriginalPRVAmount.gt(0);
+      const sellTokenIsPRV = selltoken === PRV.id;
+      if (sellTokenIsPRV) {
+        availableOriginalPRVAmount = availableOriginalPRVAmount.gt(0)
+          ? availableOriginalPRVAmount.toNumber()
+          : 0;
+        const availableHunmanAmount = convert.toHumanAmount(
+          availableOriginalPRVAmount,
+          PRV.pDecimals,
+        );
+        const availableFixedSellAmount = format.toFixed(
+          availableHunmanAmount,
+          PRV.pDecimals,
+        );
+        batch(() => {
+          dispatch(
+            change(
+              formConfigs.formName,
+              formConfigs.selltoken,
+              availableFixedSellAmount,
+            ),
+          );
+          dispatch(
+            change(formConfigs.formName, formConfigs.feetoken, feePRVFixed),
+          );
+        });
+      } else {
+        // sellTokenIsToken
+        if (canPayFeeByPRV && payFeeByPRV) {
+          batch(() => {
+            dispatch(
+              change(
+                formConfigs.formName,
+                formConfigs.selltoken,
+                availableSellAmountText,
+              ),
+            );
+            dispatch(
+              change(formConfigs.formName, formConfigs.feetoken, feePRVFixed),
+            );
+          });
+        } else {
+          const tokenBalance = await dispatch(getBalance(selltoken));
+          let availableOriginalTokenAmount = new BigNumber(tokenBalance).minus(
+            feeOriginalToken,
+          );
+          availableOriginalTokenAmount = availableOriginalTokenAmount.gt(0)
+            ? availableOriginalTokenAmount.toNumber()
+            : 0;
+          const availableHunmanAmount = convert.toHumanAmount(
+            availableOriginalTokenAmount,
+            sellPDecimals,
+          );
+          const availableFixedSellAmount = format.toFixed(
+            availableHunmanAmount,
+            sellPDecimals,
+          );
+          batch(() => {
+            dispatch(
+              change(
+                formConfigs.formName,
+                formConfigs.selltoken,
+                availableFixedSellAmount,
+              ),
+            );
+            dispatch(
+              change(formConfigs.formName, formConfigs.feetoken, feeTokenFixed),
+            );
+            dispatch(actionSetFeeToken(selltoken));
+          });
+        }
+      }
       dispatch(
         change(formConfigs.formName, inputToken, minAmountExpectedToFixed),
       );
-      dispatch(
-        change(formConfigs.formName, formConfigs.feetoken, minFeeAmountFixed),
-      );
-    });
+    } else {
+      batch(() => {
+        dispatch(
+          change(formConfigs.formName, inputToken, minAmountExpectedToFixed),
+        );
+        dispatch(
+          change(formConfigs.formName, formConfigs.feetoken, minFeeAmountFixed),
+        );
+      });
+    }
   } catch (error) {
     await dispatch(actionFetchFail());
     new ExHandler(error).showErrorToast();

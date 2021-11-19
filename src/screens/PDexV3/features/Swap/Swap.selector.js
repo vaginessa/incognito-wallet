@@ -99,7 +99,9 @@ export const feetokenDataSelector = createSelector(
       const feeTokenData: SelectedPrivacy = getPrivacyDataByTokenID(feetoken);
       const selector = formValueSelector(formConfigs.formName);
       const fee = selector(state, formConfigs.feetoken);
-      const { fee: minFeeOriginal = 0 } = data;
+      const { feePrv, feeToken } = data;
+      const payFeeByPRV = feetoken === PRV.id;
+      const minFeeOriginal = payFeeByPRV ? feePrv : feeToken;
       let feeAmount = convert.toNumber(fee, true) || 0;
       const feeToNumber = convert.toNumber(fee, true);
       const feeToOriginal = convert.toOriginalAmount(
@@ -112,8 +114,7 @@ export const feetokenDataSelector = createSelector(
         false,
       )} ${feeTokenData.symbol}`;
       const origininalFeeAmount =
-        convert.toOriginalAmount(feeAmount, feeTokenData?.pDecimals, false) ||
-        0;
+        convert.toOriginalAmount(feeAmount, feeTokenData?.pDecimals, true) || 0;
       const minFeeAmount = convert.toHumanAmount(
         minFeeOriginal,
         feeTokenData?.pDecimals,
@@ -147,6 +148,7 @@ export const feetokenDataSelector = createSelector(
         totalFeePRV,
         totalFeePRVText,
         minFeeAmountFixed,
+        payFeeByPRV,
       };
     } catch (error) {
       console.log('feetokenDataSelector-error', error);
@@ -216,6 +218,7 @@ export const swapInfoSelector = createSelector(
       isFetched,
       percent,
       swaping,
+      toggleProTab,
     },
     feeTokenData,
     getInputAmount,
@@ -307,8 +310,9 @@ export const swapInfoSelector = createSelector(
         swaping,
         allPoolSize,
         maxGet,
-        refreshing: isFetching,
+        refreshing: initing,
         defaultPair,
+        toggleProTab,
       };
     } catch (error) {
       console.log('swapInfoSelector-error', error);
@@ -400,10 +404,12 @@ export const mappingOrderHistorySelector = createSelector(
 export const swapHistorySelector = createSelector(
   swapSelector,
   mappingOrderHistorySelector,
-  ({ swapHistory }, mappingOrderHistory) => {
-    const history = swapHistory?.data?.map((order) =>
-      mappingOrderHistory(order),
-    );
+  ({ swapHistory, selltoken }, mappingOrderHistory) => {
+    const history = swapHistory?.data
+      ?.map((order) => mappingOrderHistory(order))
+      .filter((h) =>
+        selltoken ? h?.sellTokenId === selltoken : h?.sellTokenId === PRV.id,
+      );
     return {
       ...swapHistory,
       history,
@@ -414,6 +420,7 @@ export const swapHistorySelector = createSelector(
 export const orderDetailSelector = createSelector(
   swapSelector,
   mappingOrderHistorySelector,
+
   ({ orderDetail }, mappingOrderHistory) => {
     const { fetching, order } = orderDetail;
     return {
