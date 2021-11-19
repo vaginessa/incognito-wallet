@@ -31,7 +31,7 @@ export const STAKING_MESSAGES = {
   reward: 'Reward',
   histories: 'Histories',
   history: 'History',
-  portfolio: 'My portfolio',
+  portfolio: 'Portfolio',
   listCoins: 'Coins',
   stakeMore: 'Stake more',
   stakeNow: 'Stake now',

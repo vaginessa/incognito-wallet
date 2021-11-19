@@ -26,6 +26,7 @@ class PToken {
     this.pricePrv = data?.PricePrv || 0;
     this.defaultPoolPair = data?.DefaultPoolPair;
     this.defaultPairToken = data?.DefaultPairToken;
+    this.dupNetwork = data?.Network;
 
     if (data && data.ListChildToken instanceof Array) {
       this.listChildToken = data.ListChildToken.map((item) => {

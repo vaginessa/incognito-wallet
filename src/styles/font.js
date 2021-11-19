@@ -64,7 +64,7 @@ const fontSizes = {
   medium: 18,
   superMedium: 20,
   large: 22,
-  avgLarge: 30,
+  avgLarge: 28,
   veryLarge: 38,
   superLarge: 40,
 };

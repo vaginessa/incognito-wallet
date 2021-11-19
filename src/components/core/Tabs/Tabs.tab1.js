@@ -9,17 +9,15 @@ const styled = StyleSheet.create({
     backgroundColor: 'transparent',
     borderRadius: 0,
     padding: 0,
-    marginRight: 32,
+    marginRight: 24,
   },
   btnStyleEnabled: {
     borderBottomColor: COLORS.colorBlue,
-    borderBottomWidth: 4,
   },
   btnStyleDisabled: {
     backgroundColor: 'transparent',
     borderColor: 'transparent',
     borderBottomColor: 'transparent',
-    borderBottomWidth: 4,
   },
   titleStyle: {
     color: COLORS.black,
@@ -30,7 +28,7 @@ const styled = StyleSheet.create({
     lineHeight: FONT.SIZE.regular + 5,
   },
   titleDisabledStyle: {
-    color: COLORS.colorGrey1,
+    color: COLORS.colorGreyLight,
   },
 });
 
@@ -50,7 +48,7 @@ const Tab1 = (props) => {
   const disabled = tabID !== activeTab;
   return (
     <ButtonBasic
-      title={label}
+      title={label.toUpperCase()}
       onPress={onClick}
       btnStyle={
         tabStyled
