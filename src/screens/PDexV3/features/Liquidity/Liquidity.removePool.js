@@ -69,13 +69,11 @@ const InputsGroup = () => {
             _validateInput,
             ...validator.combinedAmount,
           ]}
-          visibleHeader
           editableInput={!inputToken.loadingBalance}
           srcIcon={inputToken && inputToken?.iconUrl}
           symbol={inputToken && inputToken?.symbol}
           onChange={onChangeInput}
           onPressInfinityIcon={onMaxPress}
-          label="Amount"
           hasInfinityIcon
         />
         <AddBreakLine />
@@ -86,7 +84,6 @@ const InputsGroup = () => {
             _validateOutput,
             ...validator.combinedAmount,
           ]}
-          label="Amount"
           symbol={outputToken && outputToken?.symbol}
           srcIcon={outputToken && outputToken?.iconUrl}
           editableInput={!outputToken.loadingBalance}
@@ -167,7 +164,7 @@ const RemovePool = ({
   return (
     <>
       <View style={styled.container}>
-        <Header style={styled.padding} title={LIQUIDITY_MESSAGES.removePool} />
+        <Header style={styled.padding} />
         <ScrollView
           refreshControl={(<RefreshControl refreshing={isFetching} onRefresh={onInitRemovePool} />)}
           showsVerticalScrollIndicator={false}

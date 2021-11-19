@@ -25,6 +25,7 @@ const styled = StyleSheet.create({
   },
   inputBox: {
     marginHorizontal: 25,
+    paddingTop: 20
   },
   padding: {
     paddingHorizontal: 25,
