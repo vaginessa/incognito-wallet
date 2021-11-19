@@ -11,7 +11,7 @@ import incognito from '@assets/images/new-icons/incognito.png';
 import {BtnStar} from '@components/Button';
 
 const TokenFollow = ({ item, hideStar, handleToggleFollowToken, onPress }) => {
-  const { symbol, priceUsd, change, tokenId, isFollowed, dupNetwork } = item;
+  const { symbol, priceUsd, change, tokenId, isFollowed, network, hasSameSymbol } = item;
   const balance = React.useMemo(() => {
     const price = priceUsd;
     const isTokenDecrease = change && change[0] === '-';
@@ -32,7 +32,7 @@ const TokenFollow = ({ item, hideStar, handleToggleFollowToken, onPress }) => {
             <ImageCached uri={item.iconUrl} style={styled.icon} defaultImage={incognito} />
             <Row style={styled.flexEnd}>
               <Text style={styled.blackLabel}>{symbol}</Text>
-              {!!dupNetwork && <Text style={styled.networkName}>{dupNetwork}</Text>}
+              {!!network && !!hasSameSymbol && <Text style={styled.networkName}>{network}</Text>}
             </Row>
           </Row>
         </View>
@@ -152,6 +152,8 @@ TokenFollow.propTypes = {
     tokenId: PropTypes.string.isRequired,
     isFollowed: PropTypes.bool.isRequired,
     name: PropTypes.string.isRequired,
+    network: PropTypes.string,
+    hasSameSymbol: PropTypes.bool
   }).isRequired,
   hideStar: PropTypes.bool.isRequired,
   handleToggleFollowToken: PropTypes.func.isRequired,
