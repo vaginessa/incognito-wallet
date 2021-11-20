@@ -194,7 +194,6 @@ const ButtonCreatePool = React.memo(({ onSubmit }) => {
       <ButtonTrade
         btnStyle={mainStyle.button}
         title={LIQUIDITY_MESSAGES.createPool}
-        disabled={disabled}
         onPress={handleSubmit}
       />
       <NetworkFee />

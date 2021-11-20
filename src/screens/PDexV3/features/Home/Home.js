@@ -75,24 +75,21 @@ const Home = () => {
     </View>
   ), [titleStr]);
   return (
-    <>
-      <Tabs
-        rootTabID={ROOT_TAB_HOME}
-        styledTabs={mainStyle.tab1}
-        styledTabList={mainStyle.styledTabList1}
-        defaultTabIndex={1}
-        useTab1
-        rightCustom={(
-          <Row>
-            <SelectAccountButton />
-          </Row>
-        )}
-      >
-        {_TabPools}
-        {_TabPortfolio}
-      </Tabs>
-      <NFTTokenBottomBar />
-    </>
+    <Tabs
+      rootTabID={ROOT_TAB_HOME}
+      styledTabs={mainStyle.tab1}
+      styledTabList={mainStyle.styledTabList1}
+      defaultTabIndex={1}
+      useTab1
+      rightCustom={(
+        <Row>
+          <SelectAccountButton />
+        </Row>
+      )}
+    >
+      {_TabPools}
+      {_TabPortfolio}
+    </Tabs>
   );
 };
 
