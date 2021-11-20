@@ -123,7 +123,6 @@ const RemoveLPButton = React.memo(({ onSubmit }) => {
     <ButtonTrade
       btnStyle={mainStyle.button}
       title={LIQUIDITY_MESSAGES.removePool}
-      disabled={disabled}
       onPress={handleSubmit}
     />
   );

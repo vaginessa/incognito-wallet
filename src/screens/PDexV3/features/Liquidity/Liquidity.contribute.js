@@ -127,7 +127,6 @@ const ContributeButton = React.memo(({ onSubmit }) => {
     <ButtonTrade
       btnStyle={mainStyle.button}
       title={LIQUIDITY_MESSAGES.addLiquidity}
-      disabled={isDisabled}
       onPress={createContributes}
     />
   );

@@ -16,10 +16,10 @@ import withFetch from '@screens/PDexV3/features/Staking/Staking.enhanceFetch';
 import {useSelector} from 'react-redux';
 import {defaultAccountSelector} from '@src/redux/selectors/account';
 import {stakingSelector} from '@screens/PDexV3/features/Staking';
-import {NFTTokenBottomBar} from '@screens/PDexV3/features/NFTToken';
 import {compose} from 'recompose';
 import SelectAccountButton from '@components/SelectAccountButton';
 import {withLayout_2} from '@components/Layout';
+import enhance from '@screens/PDexV3/features/Staking/Staking.enhance';
 
 const Reward = React.memo(() => {
   const navigation = useNavigation();
@@ -93,7 +93,6 @@ const Staking = ({ handleFetchData, onFreeData }) => {
           onPress={onStakingMore}
         />
       </SafeAreaView>
-      <NFTTokenBottomBar />
     </>
   );
 };
@@ -104,6 +103,7 @@ Staking.propTypes = {
 };
 
 export default compose(
+  enhance,
   withLayout_2,
   withFetch,
 )(memo(Staking));
