@@ -32,7 +32,7 @@ const Balance = React.memo(({ hideBalance }) => {
   return (
     <View style={styledBalance.container}>
       <Row centerVertical>
-        <Text style={styledBalance.title}>Balance</Text>
+        <Text style={styledBalance.title}>Total Portfolio Value</Text>
       </Row>
       <Row style={styledBalance.wrapBalance} center>
         <Amount
