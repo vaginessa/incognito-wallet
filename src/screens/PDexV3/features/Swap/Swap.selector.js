@@ -4,7 +4,11 @@ import { getPrivacyDataByTokenID as getPrivacyDataByTokenIDSelector } from '@src
 import format from '@src/utils/format';
 import { ACCOUNT_CONSTANT } from 'incognito-chain-web-js/build/wallet';
 import capitalize from 'lodash/capitalize';
-import { formValueSelector, isValid } from 'redux-form';
+import {
+  formValueSelector,
+  isValid,
+  getFormSyncErrors,
+} from 'redux-form';
 import convert from '@src/utils/convert';
 import SelectedPrivacy from '@src/models/selectedPrivacy';
 import { PRV } from '@src/constants/common';
@@ -94,9 +98,15 @@ export const feetokenDataSelector = createSelector(
   swapSelector,
   feeSelectedSelector,
   getPrivacyDataByTokenIDSelector,
-  (state, { data, networkfee }, feetoken, getPrivacyDataByTokenID) => {
+  (
+    state,
+    { data, networkfee, selltoken },
+    feetoken,
+    getPrivacyDataByTokenID,
+  ) => {
     try {
       const feeTokenData: SelectedPrivacy = getPrivacyDataByTokenID(feetoken);
+      const sellTokenData: SelectedPrivacy = getPrivacyDataByTokenID(selltoken);
       const selector = formValueSelector(formConfigs.formName);
       const fee = selector(state, formConfigs.feetoken);
       const { feePrv, feeToken } = data;
@@ -135,6 +145,27 @@ export const feetokenDataSelector = createSelector(
         false,
       );
       const totalFeePRVText = `${totalFeePRV} ${PRV.symbol}`;
+
+      const minFeeOriginalToken = feeToken;
+      const minFeeTokenAmount = convert.toHumanAmount(
+        minFeeOriginalToken,
+        sellTokenData.pDecimals,
+      );
+      const minFeeTokenFixed = format.toFixed(
+        minFeeTokenAmount,
+        sellTokenData?.pDecimals,
+      );
+
+      const minFeeOriginalPRV = feePrv;
+      const minFeePRVAmount = convert.toHumanAmount(
+        minFeeOriginalPRV,
+        PRV.pDecimals,
+      );
+      const minFeePRVFixed = format.toFixed(minFeePRVAmount, PRV.pDecimals);
+
+      const canNotPayFeeByPRV =
+        !sellTokenData.isMainCrypto && payFeeByPRV && feeToken && !feePrv;
+
       return {
         ...feeTokenData,
         feetoken,
@@ -149,6 +180,9 @@ export const feetokenDataSelector = createSelector(
         totalFeePRVText,
         minFeeAmountFixed,
         payFeeByPRV,
+        minFeeTokenFixed,
+        minFeePRVFixed,
+        canNotPayFeeByPRV,
       };
     } catch (error) {
       console.log('feetokenDataSelector-error', error);
@@ -186,6 +220,16 @@ export const inputAmountSelector = createSelector(
   swapSelector,
   sharedSelector.isGettingBalance,
   getInputAmount,
+);
+
+export const sellInputTokenSeletor = createSelector(
+  inputAmountSelector,
+  (getInputAmount) => getInputAmount(formConfigs.selltoken),
+);
+
+export const buyInputTokenSeletor = createSelector(
+  inputAmountSelector,
+  (getInputAmount) => getInputAmount(formConfigs.buytoken),
 );
 
 export const slippagetoleranceSelector = createSelector(
@@ -313,6 +357,8 @@ export const swapInfoSelector = createSelector(
         refreshing: initing,
         defaultPair,
         toggleProTab,
+        isFetching,
+        isFetched,
       };
     } catch (error) {
       console.log('swapInfoSelector-error', error);
@@ -404,10 +450,10 @@ export const mappingOrderHistorySelector = createSelector(
 export const swapHistorySelector = createSelector(
   swapSelector,
   mappingOrderHistorySelector,
-  ({ swapHistory }, mappingOrderHistory) => {
-    const history = swapHistory?.data?.map((order) =>
-      mappingOrderHistory(order),
-    );
+  ({ swapHistory, selltoken }, mappingOrderHistory) => {
+    const history = swapHistory?.data
+      ?.map((order) => mappingOrderHistory(order))
+      .filter((order) => order?.sellTokenId === selltoken);
     return {
       ...swapHistory,
       history,
@@ -431,4 +477,9 @@ export const orderDetailSelector = createSelector(
 export const defaultPairSelector = createSelector(
   swapSelector,
   ({ selltoken, buytoken }) => ({ selltoken, buytoken }),
+);
+
+export const swapFormErrorSelector = createSelector(
+  (state) => state,
+  (state) => getFormSyncErrors(formConfigs.formName)(state),
 );

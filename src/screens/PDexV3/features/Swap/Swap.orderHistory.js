@@ -8,11 +8,11 @@ import {
   TouchableOpacity,
 } from '@src/components/core';
 import { useDispatch, useSelector } from 'react-redux';
-import { Header, Row } from '@src/components';
+import { Row } from '@src/components';
 import { COLORS, FONT } from '@src/styles';
-import { useFocusEffect, useNavigation } from 'react-navigation-hooks';
+import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
-import { actionFetchHistory, actionFetchedOrderDetail } from './Swap.actions';
+import { actionFetchedOrderDetail } from './Swap.actions';
 import { swapHistorySelector } from './Swap.selector';
 
 const styled = StyleSheet.create({
@@ -104,13 +104,7 @@ const Order = React.memo(({ data, visibleDivider }) => {
 });
 
 const OrderHistory = () => {
-  const dispatch = useDispatch();
   const { isFetching, history = [] } = useSelector(swapHistorySelector);
-  useFocusEffect(
-    React.useCallback(() => {
-      dispatch(actionFetchHistory());
-    }, []),
-  );
   return (
     <View style={styled.container}>
       <FlatList
