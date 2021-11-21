@@ -114,20 +114,17 @@ export const actionEstimateTradeForMax = () => async (dispatch, getState) => {
     const { data, networkfee } = swapSelector(state);
     const { feePrv: feeOriginalPRV = 0, feeToken: feeOriginalToken = 0 } = data;
     const feeTokenData = feetokenDataSelector(state);
-    const { payFeeByPRV } = feeTokenData;
+    const {
+      payFeeByPRV,
+      minFeePRVFixed,
+      minFeeTokenFixed,
+    } = feeTokenData;
     const {
       tokenId: selltoken,
       pDecimals: sellPDecimals,
       availableAmountText: availableSellAmountText,
     } = sellInputTokenSeletor(state);
     const prvBalance = await dispatch(getBalance(PRV.id));
-    const feePRVHuman = convert.toHumanAmount(feeOriginalPRV, PRV.pDecimals);
-    const feePRVFixed = format.toFixed(feePRVHuman, PRV.pDecimals);
-    const feeTokenHuman = convert.toHumanAmount(
-      feeOriginalToken,
-      sellPDecimals,
-    );
-    const feeTokenFixed = format.toFixed(feeTokenHuman, sellPDecimals);
     let availableOriginalPRVAmount = new BigNumber(prvBalance)
       .minus(feeOriginalPRV)
       .minus(networkfee);
@@ -154,7 +151,7 @@ export const actionEstimateTradeForMax = () => async (dispatch, getState) => {
           ),
         );
         dispatch(
-          change(formConfigs.formName, formConfigs.feetoken, feePRVFixed),
+          change(formConfigs.formName, formConfigs.feetoken, minFeePRVFixed),
         );
       });
     } else {
@@ -169,7 +166,7 @@ export const actionEstimateTradeForMax = () => async (dispatch, getState) => {
             ),
           );
           dispatch(
-            change(formConfigs.formName, formConfigs.feetoken, feePRVFixed),
+            change(formConfigs.formName, formConfigs.feetoken, minFeePRVFixed),
           );
         });
       } else {
@@ -197,7 +194,11 @@ export const actionEstimateTradeForMax = () => async (dispatch, getState) => {
             ),
           );
           dispatch(
-            change(formConfigs.formName, formConfigs.feetoken, feeTokenFixed),
+            change(
+              formConfigs.formName,
+              formConfigs.feetoken,
+              minFeeTokenFixed,
+            ),
           );
           dispatch(actionSetFeeToken(selltoken));
         });
