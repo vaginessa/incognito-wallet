@@ -183,6 +183,7 @@ export const feetokenDataSelector = createSelector(
         minFeeTokenFixed,
         minFeePRVFixed,
         canNotPayFeeByPRV,
+        minFeeOriginalPRV,
       };
     } catch (error) {
       console.log('feetokenDataSelector-error', error);
