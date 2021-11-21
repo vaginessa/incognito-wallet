@@ -2,7 +2,7 @@ import React from 'react';
 import { Text } from '@src/components/core';
 import { View, StyleSheet } from 'react-native';
 import Extra, { styled as extraStyled } from '@screens/PDexV3/features/Extra';
-import { useDispatch, useSelector } from 'react-redux';
+import { batch, useDispatch, useSelector } from 'react-redux';
 import { change, Field } from 'redux-form';
 import {
   RFBaseInput,
@@ -23,7 +23,11 @@ import {
   swapInfoSelector,
   swapSelector,
 } from './Swap.selector';
-import { actionEstimateTrade, actionSetFeeToken } from './Swap.actions';
+import {
+  actionFetched,
+  actionEstimateTrade,
+  actionSetFeeToken,
+} from './Swap.actions';
 import { formConfigs } from './Swap.constant';
 import {
   minFeeValidator,
@@ -53,8 +57,11 @@ const TabPro = React.memo(() => {
   const dispatch = useDispatch();
   const onChangeTypeFee = async (type) => {
     const { tokenId } = type;
-    await dispatch(actionSetFeeToken(tokenId));
-    dispatch(actionEstimateTrade());
+    batch(() => {
+      dispatch(actionSetFeeToken(tokenId));
+      dispatch(actionFetched({}));
+      dispatch(actionEstimateTrade());
+    });
   };
   const onEndEditing = () => {
     if (Number(slippagetolerance) > 100 || slippagetolerance < 0) {
@@ -132,7 +139,6 @@ const TabPro = React.memo(() => {
     },
     {
       title: 'Trading fee',
-      hasQuestionIcon: true,
       titleStyle: {
         fontSize: FONT.SIZE.small,
       },
