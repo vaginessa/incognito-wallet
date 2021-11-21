@@ -4,13 +4,12 @@ import Header from '@screens/MainTabBar/features/Market/Market.header';
 import {TokenFollow} from '@components/Token';
 import MarketList from '@components/Token/Token.marketList';
 import withMarket from '@screens/MainTabBar/features/Market/Market.enhance';
-import {useDispatch} from 'react-redux';
+import {batch, useDispatch} from 'react-redux';
 import {useNavigation} from 'react-navigation-hooks';
 import routeNames from '@routers/routeNames';
 import {actionChangeTab} from '@components/core/Tabs/Tabs.actions';
 import {ROOT_TAB_TRADE, TAB_BUY_LIMIT_ID} from '@screens/PDexV3/features/Trade/Trade.constant';
 import {actionInit, actionSetPoolSelected} from '@screens/PDexV3/features/OrderLimit';
-import {Toast} from '@components/core';
 
 const Market = React.memo((props) => {
   const { handleToggleFollowToken, keySearch, onFilter, ...rest } = props;
@@ -19,17 +18,13 @@ const Market = React.memo((props) => {
   const onOrderPress = (item) => {
     const poolId = item.defaultPoolPair;
     if (poolId) {
-      dispatch(actionSetPoolSelected(poolId));
-      dispatch(actionChangeTab({ rootTabID: ROOT_TAB_TRADE, tabID: TAB_BUY_LIMIT_ID }));
-      setTimeout(() => {
-        navigation.navigate(routeNames.Trade, { tabIndex: 0 });
+      batch(() => {
+        dispatch(actionSetPoolSelected(poolId));
         dispatch(actionInit());
-      }, 100);
-    } else {
-      Toast.showInfo('Pair is not exist.', {
-        duration: 500,
+        dispatch(actionChangeTab({ rootTabID: ROOT_TAB_TRADE, tabID: TAB_BUY_LIMIT_ID }));
       });
     }
+    navigation.navigate(routeNames.Trade, { tabIndex: 0 });
   };
   return (
     <>
