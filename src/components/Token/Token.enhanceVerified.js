@@ -6,12 +6,16 @@ import { useSearchBox } from '@src/components/Header';
 import { handleFilterTokenByKeySearch } from '@src/components/Token';
 import PropTypes from 'prop-types';
 import orderBy from 'lodash/orderBy';
+import {marketTabSelector} from '@screens/Setting';
+import {MarketTabs} from '@screens/MainTabBar/features/Market/Market.header';
+import {PRVIDSTR} from 'incognito-chain-web-js/build/wallet';
 import { useTokenList } from './Token.useEffect';
 
 const enhance = (WrappedComp) => (props) => {
   const { filterField, orderField } = props;
   const availableTokens =
     props?.availableTokens || useSelector(availableTokensSelector);
+  const activeTab = useSelector(marketTabSelector);
   let verifiedTokens = [];
   let unVerifiedTokens = [];
   availableTokens.map((token) =>
@@ -52,7 +56,17 @@ const enhance = (WrappedComp) => (props) => {
   }, [availableTokens]);
 
   const tokensFactories = React.useMemo(() => {
-    let marketTokens = _verifiedTokens.concat(_unVerifiedTokens.filter(item => item.isFollowed)).filter(token => !!token.defaultPoolPair);
+    let marketTokens = [];
+    if (activeTab === MarketTabs.ALL) {
+      marketTokens = _verifiedTokens
+        .concat(_unVerifiedTokens.filter(item => item.isFollowed))
+        .filter(token => !!token.defaultPoolPair);
+    } else {
+      marketTokens = _verifiedTokens
+        .filter(item => item.isFollowed || item.tokenId === PRVIDSTR)
+        .concat(_unVerifiedTokens.filter(item => item.isFollowed))
+        .filter(token => !!token.defaultPoolPair);
+    }
     marketTokens = orderBy(marketTokens, item => Number(item[filterField] || '0'), [orderField]);
     const __verifiedTokens = orderBy(_verifiedTokens, item => Number(item[filterField] || '0'), [orderField]);
     const __unVerifiedTokens = orderBy(_unVerifiedTokens, item => Number(item[filterField] || '0'), [orderField]);
@@ -73,7 +87,7 @@ const enhance = (WrappedComp) => (props) => {
         styledListToken: { paddingTop: 15 },
       }
     ];
-  }, [_unVerifiedTokens, _verifiedTokens, toggleUnVerified, filterField, orderField]);
+  }, [_unVerifiedTokens, _verifiedTokens, toggleUnVerified, filterField, orderField, activeTab]);
 
   React.useEffect(() => {
     if (toggleUnVerified && !keySearch) {

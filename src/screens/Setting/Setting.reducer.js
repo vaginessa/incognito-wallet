@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-community/async-storage';
 import autoMergeLevel2 from 'redux-persist/es/stateReconciler/autoMergeLevel2';
 import { persistReducer } from 'redux-persist';
+import {MarketTabs} from '@screens/MainTabBar/features/Market/Market.header';
 import {
   ACTION_FETCHED_SERVER,
   ACTION_FETCHED_DEVICES,
@@ -8,7 +9,7 @@ import {
   ACTION_TOGGLE_CURRENCY,
   ACTION_UPDATE_SHOW_WALLET_BALANCE,
   ACTION_TOGGLE_BACKUP_ALL_KEYS,
-  ACTION_TOGGLE_USE_PRV_TO_PAY_FEE,
+  ACTION_TOGGLE_USE_PRV_TO_PAY_FEE, ACTION_UPDATE_MARKET_TAB,
 } from './Setting.constant';
 
 const initialState = {
@@ -20,6 +21,7 @@ const initialState = {
   showWalletBalance: false,
   toggleBackupAllKeys: true,
   usePRVToPayFee: false,
+  marketTab: MarketTabs.ALL,
 };
 
 const settingReducer = (state = initialState, action) => {
@@ -66,6 +68,12 @@ const settingReducer = (state = initialState, action) => {
       showWalletBalance: !state?.showWalletBalance,
     };
   }
+  case ACTION_UPDATE_MARKET_TAB: {
+    return {
+      ...state,
+      marketTab: action.payload,
+    };
+  }
   default:
     return state;
   }
@@ -79,6 +87,7 @@ const persistConfig = {
     'isToggleUSD',
     'toggleBackupAllKeys',
     'usePRVToPayFee',
+    'marketTab',
   ],
   stateReconciler: autoMergeLevel2,
 };

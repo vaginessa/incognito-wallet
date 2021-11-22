@@ -69,7 +69,7 @@ const MarketList = (props) => {
       refreshControl={
         <RefreshControl refreshing={loading} onRefresh={onRefresh} />
       }
-      contentContainerStyle={{ paddingTop: 32 }}
+      contentContainerStyle={{ paddingTop: 20 }}
     >
       {!keySearch && (
         <ListView {...tokensFactories[2]} renderItem={renderItem} />
