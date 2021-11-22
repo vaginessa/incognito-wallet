@@ -267,7 +267,7 @@ export const orderLimitDataSelector = createSelector(
     switch (activedTab) {
     case TAB_BUY_LIMIT_ID: {
       mainColor = buyColor;
-      btnActionTitle = `Buy ${buyInputAmount?.symbol}`;
+      btnActionTitle = 'Place buy order';
       reviewOrderTitle = `Buy ${buyInputAmount?.amountText} ${buyInputAmount?.symbol}`;
       reviewOrderDesc = 'Pay with';
       totalAmountToken = sellInputAmount?.tokenData;
@@ -298,7 +298,7 @@ export const orderLimitDataSelector = createSelector(
     }
     case TAB_SELL_LIMIT_ID: {
       mainColor = sellColor;
-      btnActionTitle = `Sell ${sellInputAmount?.symbol}`;
+      btnActionTitle = 'Place sell order';
       reviewOrderTitle = `Sell ${sellInputAmount?.amountText} ${sellInputAmount?.symbol}`;
       reviewOrderDesc = 'Receive';
       totalAmountToken = buyInputAmount?.tokenData;

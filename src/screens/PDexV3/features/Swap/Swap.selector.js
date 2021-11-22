@@ -161,7 +161,7 @@ export const feetokenDataSelector = createSelector(
       const minFeePRVFixed = format.toFixed(minFeePRVAmount, PRV.pDecimals);
 
       const canNotPayFeeByPRV =
-        !sellTokenData.isMainCrypto && payFeeByPRV && feeToken && !feePrv;
+        !sellTokenData.isMainCrypto && feeToken && !feePrv;
 
       return {
         ...feeTokenData,
