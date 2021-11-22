@@ -111,8 +111,8 @@ const Extra = (props) => {
   const {
     title,
     hooks,
-    hasQuestionIcon,
-    onPressQuestionIcon,
+    // hasQuestionIcon,
+    // onPressQuestionIcon,
     containerStyle,
     titleStyle,
   } = props;
@@ -121,12 +121,12 @@ const Extra = (props) => {
       {title && (
         <Row style={styled.titleContainer}>
           <Text style={{...styled.title, ...titleStyle}}>{title}</Text>
-          {hasQuestionIcon && (
+          {/* {hasQuestionIcon && (
             <BtnQuestionDefault
               icon={srcQuestionIcon}
               onPress={onPressQuestionIcon}
             />
-          )}
+          )} */}
         </Row>
       )}
       {hooks}
