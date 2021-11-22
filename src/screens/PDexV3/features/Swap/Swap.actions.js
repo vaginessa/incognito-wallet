@@ -124,7 +124,7 @@ export const actionEstimateTradeForMax = () => async (dispatch, getState) => {
     let availableOriginalPRVAmount = new BigNumber(prvBalance)
       .minus(feeOriginalPRV)
       .minus(networkfee);
-    const canPayFeeByPRV = availableOriginalPRVAmount.gt(0);
+    const canPayFeeByPRV = feeOriginalPRV && availableOriginalPRVAmount.gt(0);
     const sellTokenIsPRV = selltoken === PRV.id;
     if (sellTokenIsPRV) {
       availableOriginalPRVAmount = availableOriginalPRVAmount.gt(0)
