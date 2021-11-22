@@ -21,7 +21,7 @@ import withTransaction from '@screens/PDexV3/features/Liquidity/Liquidity.enhanc
 import {NFTTokenBottomBar} from '@screens/PDexV3/features/NFTToken';
 import {useNavigation} from 'react-navigation-hooks';
 import routeNames from '@routers/routeNames';
-import {NetworkFee} from '@screens/PDexV3/features/Share';
+import NetworkFee from '@src/components/NetworkFee';
 
 const initialFormValues = {
   inputToken: '',

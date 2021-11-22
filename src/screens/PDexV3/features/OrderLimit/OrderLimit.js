@@ -1,16 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { View } from 'react-native';
 import { useSelector } from 'react-redux';
-import {
-  KeyboardAwareScrollView,
-  RefreshControl,
-  Text,
-} from '@src/components/core';
+import { KeyboardAwareScrollView, RefreshControl } from '@src/components/core';
 import { createForm } from '@src/components/core/reduxForm';
 import { ButtonBasic } from '@src/components/Button';
 import LoadingTx from '@src/components/LoadingTx';
-import { NetworkFee } from '@screens/PDexV3/features/Share';
+import NetworkFee from '@src/components/NetworkFee';
 import GroupSubInfo from './OrderLimit.groupSubInfo';
 import { formConfigs } from './OrderLimit.constant';
 import { styled } from './OrderLimit.styled';
@@ -33,12 +28,9 @@ const Form = createForm(formConfigs.formName, {
 });
 
 const OrderLimit = (props) => {
-  const {
-    mainColor,
-    btnActionTitle,
-    ordering,
-    calculating,
-  } = useSelector(orderLimitDataSelector);
+  const { mainColor, btnActionTitle, ordering, calculating } = useSelector(
+    orderLimitDataSelector,
+  );
   const { handleConfirm, onRefresh } = props;
   return (
     <>

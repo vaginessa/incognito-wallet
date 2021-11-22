@@ -35,6 +35,9 @@ import { PRV_ID } from '@screens/DexV2/constants';
 import { Validator, PrivacyVersion } from 'incognito-chain-web-js/build/wallet';
 import { EXPIRED_TIME } from '@services/cache';
 import Util from '@utils/Util';
+import { PRV } from '@src/constants/common';
+import BigNumber from 'bignumber.js';
+import { actionToggleModal } from '@src/components/Modal';
 import { setWallet } from './wallet';
 
 export const setToken = (
@@ -474,4 +477,24 @@ export const actionFetchReceiveHistory = (refreshing = false) => async (
     await dispatch(actionFetchFailReceiveHistory());
   }
   return data;
+};
+
+export const actionCheckNeedFaucetPRV = (data) => async (dispatch) => {
+  let needFaucet = false;
+  try {
+    const prvBalance = await dispatch(getBalance(PRV.id));
+    if (!prvBalance || new BigNumber(prvBalance).isLessThan(100)) {
+      needFaucet = true;
+      await dispatch(
+        actionToggleModal({
+          shouldCloseModalWhenTapOverlay: true,
+          visible: true,
+          data,
+        }),
+      );
+    }
+  } catch (error) {
+    throw error;
+  }
+  return needFaucet;
 };

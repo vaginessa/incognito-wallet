@@ -138,16 +138,25 @@ export const actionSetFetchingNFT = () => ({
 });
 
 export const actionSetNFTTokenData = () => async (dispatch) => {
+  let nftPayload = {
+    nftToken: '',
+    nftTokenAvailable: '',
+    initNFTToken: false,
+    list: [],
+    pending: false,
+    listNFTToken: [],
+  };
   try {
     dispatch(actionSetFetchingNFT());
     const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
-    const nftPayload = await pDexV3Inst.getNFTTokenData({
+    nftPayload = await pDexV3Inst.getNFTTokenData({
       version: PrivacyVersion.ver2,
     });
     dispatch(actionFetchedNFT(nftPayload));
   } catch (error) {
     new ExHandler(error).showErrorToast();
   }
+  return nftPayload;
 };
 
 export const setDefaultAccount = (account) => async (dispatch) => {

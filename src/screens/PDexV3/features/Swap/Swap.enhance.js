@@ -4,6 +4,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { actionToggleModal } from '@src/components/Modal';
 import { TradeSuccessModal } from '@src/screens/PDexV3/features/Trade';
 import { focus } from 'redux-form';
+import { actionCheckNeedFaucetPRV } from '@src/redux/actions/token';
+import FaucetPRVModal from '@src/components/Modal/features/FaucetPRVModal';
 import { formConfigs } from './Swap.constant';
 import {
   actionInitSwapForm,
@@ -11,12 +13,17 @@ import {
   actionFetchSwap,
   actionToggleProTab,
 } from './Swap.actions';
-import { swapInfoSelector, swapFormErrorSelector } from './Swap.selector';
+import {
+  swapInfoSelector,
+  swapFormErrorSelector,
+  sellInputTokenSeletor,
+} from './Swap.selector';
 
 const enhance = (WrappedComp) => (props) => {
   const dispatch = useDispatch();
   const swapInfo = useSelector(swapInfoSelector);
   const formErrors = useSelector(swapFormErrorSelector);
+  const sellInputToken = useSelector(sellInputTokenSeletor);
   const unmountSwap = () => {
     dispatch(actionReset());
   };
@@ -30,11 +37,12 @@ const enhance = (WrappedComp) => (props) => {
     );
   const handleConfirm = async () => {
     try {
-      if (formErrors[formConfigs.selltoken]) {
-        return dispatch(focus(formConfigs.formName, formConfigs.selltoken));
-      }
-      if (formErrors[formConfigs.buytoken]) {
-        return dispatch(focus(formConfigs.formName, formConfigs.buytoken));
+      const fields = [formConfigs.selltoken, formConfigs.buytoken];
+      for (let index = 0; index < fields.length; index++) {
+        const field = fields[index];
+        if (formErrors[field]) {
+          return dispatch(focus(formConfigs.formName, field));
+        }
       }
       if (
         swapInfo?.disabledBtnSwap &&
@@ -45,6 +53,14 @@ const enhance = (WrappedComp) => (props) => {
       ) {
         dispatch(actionToggleProTab(true));
         return;
+      }
+      if (!sellInputToken.isMainCrypto) {
+        const needFaucet = await dispatch(
+          actionCheckNeedFaucetPRV(<FaucetPRVModal />),
+        );
+        if (needFaucet) {
+          return;
+        }
       }
       const tx = await dispatch(actionFetchSwap());
       if (tx) {
