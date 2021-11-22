@@ -69,6 +69,27 @@ export const actionSubmitOTAKeyForListAccount = (wallet) => async (
   }
 };
 
+export const actionRequestAirdropNFTForListAccount = (wallet) => async () => {
+  try {
+    if (!wallet) {
+      return;
+    }
+    const listAccount = await wallet.listAccount();
+    if (!listAccount) {
+      return;
+    }
+    const task = listAccount.map((account) => {
+      const accountWallet = accountService.getAccount(account, wallet);
+      if (!!accountWallet && accountWallet?.name) {
+        return accountWallet.requestAirdropNFT();
+      }
+    });
+    await Promise.all(task);
+  } catch (error) {
+    console.log('REQUEST AIRDROP NFT ERROR', error);
+  }
+};
+
 export const reloadWallet = (accountName = '') => async (
   dispatch,
   getState,

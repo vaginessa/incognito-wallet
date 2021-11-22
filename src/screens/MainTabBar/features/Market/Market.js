@@ -10,6 +10,7 @@ import routeNames from '@routers/routeNames';
 import {actionChangeTab} from '@components/core/Tabs/Tabs.actions';
 import {ROOT_TAB_TRADE, TAB_BUY_LIMIT_ID} from '@screens/PDexV3/features/Trade/Trade.constant';
 import {actionInit, actionSetPoolSelected} from '@screens/PDexV3/features/OrderLimit';
+import {actionLogEvent} from '@screens/Performance';
 
 const Market = React.memo((props) => {
   const { handleToggleFollowToken, keySearch, onFilter, ...rest } = props;
@@ -17,6 +18,9 @@ const Market = React.memo((props) => {
   const navigation = useNavigation();
   const onOrderPress = (item) => {
     const poolId = item.defaultPoolPair;
+    dispatch(actionLogEvent({
+      desc: 'POOL-SELECTED-Market-' + JSON.stringify(poolId || '')
+    }));
     if (poolId) {
       batch(() => {
         dispatch(actionSetPoolSelected(poolId));
