@@ -22,7 +22,11 @@ const enhance = (WrappedComp) => (props) => {
   };
   const initSwapForm = (refresh = false) =>
     dispatch(
-      actionInitSwapForm({ defaultPair: swapInfo?.defaultPair, refresh }),
+      actionInitSwapForm({
+        defaultPair: swapInfo?.defaultPair,
+        refresh,
+        shouldFetchHistory: true,
+      }),
     );
   const handleConfirm = async () => {
     try {

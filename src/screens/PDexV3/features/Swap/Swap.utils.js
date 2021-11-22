@@ -8,8 +8,8 @@ import { formValueSelector } from 'redux-form';
 import floor from 'lodash/floor';
 import { formConfigs } from './Swap.constant';
 
-export const minFeeValidator = (feetokenData) => {
-  if (!feetokenData) {
+export const minFeeValidator = (feetokenData, isFetching) => {
+  if (!feetokenData || isFetching) {
     return undefined;
   }
   try {
@@ -32,14 +32,16 @@ export const maxFeeValidator = ({
   originalAmount,
   availableOriginalAmount,
   selltoken,
-
   feetoken,
   origininalFeeAmount,
-
   prvBalance,
   networkfee,
+  isFetching,
 }) => {
   try {
+    if (isFetching) {
+      return undefined;
+    }
     const sellTokenIsPRV = selltoken === PRV.id;
     const payFeeByPRV = feetoken === PRV.id;
     let msg = 'Your balance is insufficient';

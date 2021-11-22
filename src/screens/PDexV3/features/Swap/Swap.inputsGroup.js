@@ -46,7 +46,6 @@ const SwapInputsGroup = React.memo(() => {
   const buyInputAmount = inputAmount(formConfigs.buytoken);
   const onSelectToken = (token, field) => {
     dispatch(actionSelectToken(token, field));
-    dispatch(actionToggleModal());
   };
   const onSelectSellToken = () => {
     navigation.navigate(routeNames.SelectTokenModal, {

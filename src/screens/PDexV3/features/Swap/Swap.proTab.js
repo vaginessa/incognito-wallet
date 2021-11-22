@@ -46,7 +46,7 @@ const styled = StyleSheet.create({
 const TabPro = React.memo(() => {
   const { networkfee } = useSelector(swapSelector);
   const swapInfo = useSelector(swapInfoSelector);
-  const { maxGet, toggleProTab } = swapInfo;
+  const { maxGet, toggleProTab, isFetching } = swapInfo;
   const feeTypes = useSelector(feeTypesSelector);
   const slippagetolerance = useSelector(slippagetoleranceSelector);
   const feetokenData = useSelector(feetokenDataSelector);
@@ -75,12 +75,13 @@ const TabPro = React.memo(() => {
     dispatch(change(formConfigs.formName, formConfigs.buytoken, amount));
   };
   let _minFeeValidator = React.useCallback(
-    () => minFeeValidator(feetokenData),
+    () => minFeeValidator(feetokenData, isFetching),
     [
       feetokenData?.origininalFeeAmount,
       feetokenData?.minFeeOriginal,
       feetokenData?.symbol,
       feetokenData?.minFeeAmountText,
+      isFetching,
     ],
   );
   let _maxFeeValidator = React.useCallback(
@@ -93,6 +94,7 @@ const TabPro = React.memo(() => {
         origininalFeeAmount: feetokenData?.origininalFeeAmount,
         networkfee,
         prvBalance: prv?.amount || 0,
+        isFetching,
       }),
     [
       sellinputAmount?.originalAmount,
@@ -102,6 +104,7 @@ const TabPro = React.memo(() => {
       feetokenData?.origininalFeeAmount,
       prv?.amount,
       networkfee,
+      isFetching,
     ],
   );
   let _maxAmountValidatorForSlippageTolerance = React.useCallback(
