@@ -30,3 +30,8 @@ export const isUsePRVToPayFeeSelector = createSelector(
   // ({ usePRVToPayFee }) => usePRVToPayFee,
   () => true,
 );
+
+export const marketTabSelector = createSelector(
+  settingSelector,
+  (setting) => setting.marketTab,
+);

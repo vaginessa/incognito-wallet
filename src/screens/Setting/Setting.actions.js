@@ -8,7 +8,7 @@ import {
   ACTION_TOGGLE_CURRENCY,
   ACTION_TOGGLE_DECIMAL_DIGITS,
   ACTION_UPDATE_SHOW_WALLET_BALANCE,
-  ACTION_TOGGLE_USE_PRV_TO_PAY_FEE,
+  ACTION_TOGGLE_USE_PRV_TO_PAY_FEE, ACTION_UPDATE_MARKET_TAB,
 } from './Setting.constant';
 
 const actionFetchedDevices = (payload) => ({
@@ -63,5 +63,10 @@ export const actionUpdateShowWalletBalance = () => ({
 
 export const actionToggleBackupAllKeys = (payload = false) => ({
   type: ACTION_TOGGLE_BACKUP_ALL_KEYS,
+  payload,
+});
+
+export const actionToggleMarketTab = (payload) => ({
+  type: ACTION_UPDATE_MARKET_TAB,
   payload,
 });

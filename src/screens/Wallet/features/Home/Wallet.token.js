@@ -86,7 +86,7 @@ const Token = (props) => {
         autoClose
         style={{
           backgroundColor: 'transparent',
-          paddingBottom: 28
+          paddingBottom: 22
         }}
         right={[
           {

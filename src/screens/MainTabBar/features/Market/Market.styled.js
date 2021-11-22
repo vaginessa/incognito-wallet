@@ -9,11 +9,30 @@ export const headerStyled = StyleSheet.create({
   input: {
     height: 50
   },
+  wrapTab: {
+    width: 49,
+    height: 40,
+    backgroundColor: COLORS.lightGrey30,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 8,
+    borderRadius: 8
+  },
+  tabText: {
+    ...FONT.STYLE.normal,
+    fontSize: FONT.SIZE.regular,
+    color: COLORS.black
+  },
+  wrapSearch: {
+    backgroundColor: COLORS.white,
+    height: 50,
+    marginBottom: 16
+  },
   wrapInput: {
     flex: 1,
-    height: 50,
-    backgroundColor: COLORS.colorGrey5,
-    marginRight: 8
+    backgroundColor: COLORS.white,
+    borderColor: COLORS.lightGrey37,
+    borderWidth: 1
   },
   rowStyle: {
     borderBottomWidth: 0.5,
@@ -36,11 +55,10 @@ export const headerStyled = StyleSheet.create({
     fontSize: FONT.SIZE.regular
   },
   buttonStyle: {
-    width: 110,
-    backgroundColor: COLORS.white,
+    width: 112,
     borderRadius: 8,
-    borderWidth: 1,
-    borderColor: COLORS.lightGrey37
+    height: 40,
+    backgroundColor: COLORS.lightGrey30,
   }
 });
 

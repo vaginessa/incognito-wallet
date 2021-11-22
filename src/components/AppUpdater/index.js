@@ -139,8 +139,6 @@ class AppUpdater extends PureComponent {
     if (ignored) {
       return;
     }
-    const { logEvent } = this.props;
-    logEvent('TEST::: 3');
     try {
       await codePush.sync(
         {

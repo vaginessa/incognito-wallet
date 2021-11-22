@@ -11,7 +11,7 @@ import incognito from '@assets/images/new-icons/incognito.png';
 import {BtnStar} from '@components/Button';
 
 const TokenFollow = ({ item, hideStar, handleToggleFollowToken, onPress }) => {
-  const { symbol, priceUsd, change, tokenId, isFollowed, network, hasSameSymbol } = item;
+  const { symbol, priceUsd, change, tokenId, isFollowed, name } = item;
   const balance = React.useMemo(() => {
     const price = priceUsd;
     const isTokenDecrease = change && change[0] === '-';
@@ -30,10 +30,10 @@ const TokenFollow = ({ item, hideStar, handleToggleFollowToken, onPress }) => {
         <View centerVertical style={styled.sectionFirst}>
           <Row centerVertical>
             <ImageCached uri={item.iconUrl} style={styled.icon} defaultImage={incognito} />
-            <Row style={styled.flexEnd}>
+            <View>
               <Text style={styled.blackLabel}>{symbol}</Text>
-              {!!network && !!hasSameSymbol && <Text style={styled.networkName}>{network}</Text>}
-            </Row>
+              <Text style={styled.greyText}>{name}</Text>
+            </View>
           </Row>
         </View>
         <View style={styled.sectionSecond}>
@@ -47,12 +47,10 @@ const TokenFollow = ({ item, hideStar, handleToggleFollowToken, onPress }) => {
               { fontFamily: FONT.NAME.specialRegular }
             ]}
           />
-        </View>
-        <View style={styled.sectionThird}>
           <NormalText
+            style={styled.greyText}
             containerStyle={styled.containerStyle}
             text={balance.changeStr}
-            style={[styled.blackLabel, { color: balance.changeColor }]}
           />
         </View>
         {!hideStar && (
@@ -84,41 +82,39 @@ export const FollowHeader = React.memo(({ hideStar }) => {
 
 export const styled = StyleSheet.create({
   wrapItem: {
-    paddingBottom: 32,
+    paddingBottom: 16,
   },
   blackLabel: {
     ...FONT.STYLE.medium,
     fontSize: FONT.SIZE.medium,
     textAlign: 'left',
     color: COLORS.black,
-    lineHeight: FONT.SIZE.medium + 5,
+    lineHeight: FONT.SIZE.medium + 9,
   },
   icon: {
     marginRight: 12,
-    width: 24,
-    height: 24
+    width: 32,
+    height: 32
   },
   sectionFirst: {
-    flex: 0.65,
+    flex: 1,
     paddingRight: 5,
     height: '100%',
   },
   sectionSecond: {
-    flex: 0.35,
+    flex: 1,
     paddingRight: 5,
-    alignItems: 'flex-end'
+    alignItems: 'flex-end',
   },
   sectionThird: {
     width: 90,
     alignItems: 'flex-end',
   },
-  networkName: {
+  greyText: {
     ...FONT.STYLE.normal,
     fontSize: FONT.SIZE.small,
-    textAlign: 'left',
-    marginLeft: 6,
     color: COLORS.colorGrey1,
-    lineHeight: FONT.SIZE.small + 5,
+    lineHeight: FONT.SIZE.small + 7,
   },
   containerStyle: {
     minHeight: 20,
@@ -138,9 +134,6 @@ export const styled = StyleSheet.create({
     paddingTop: 2,
     alignItems: 'flex-end',
   },
-  flexEnd: {
-    alignItems: 'flex-end'
-  }
 });
 
 TokenFollow.propTypes = {

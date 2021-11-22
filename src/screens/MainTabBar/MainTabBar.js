@@ -24,7 +24,7 @@ const TabNavigator = createMaterialBottomTabNavigator(
           <View style={styled.wrapBar}>
             <TradeIcon active={focused} />
             {focused && (
-              <Text style={[styled.label, { color: tintColor }]}>Market</Text>
+              <Text style={[styled.label, { color: tintColor }]}>Markets</Text>
             )}
           </View>
         ),
