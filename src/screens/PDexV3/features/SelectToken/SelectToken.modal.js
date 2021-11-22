@@ -10,6 +10,7 @@ import { BaseTextInputCustom } from '@src/components/core/BaseTextInput';
 import { COLORS, FONT } from '@src/styles';
 import { withLayout_2 } from '@src/components/Layout';
 import { useNavigation, useNavigationParam } from 'react-navigation-hooks';
+import { delay } from '@src/utils/delay';
 import { ListAllTokenSelectable } from './SelectToken';
 
 const styled = StyleSheet.create({
@@ -75,11 +76,12 @@ const SelectTokenModal = (props) => {
           availableTokens={availableTokens}
           renderItem={({ item }) => (
             <TokenTrade
-              onPress={() => {
+              onPress={async () => {
+                goBack();
+                await delay(0);
                 if (typeof onPress === 'function') {
                   onPress(item);
                 }
-                goBack();
               }}
               tokenId={item?.tokenId}
             />

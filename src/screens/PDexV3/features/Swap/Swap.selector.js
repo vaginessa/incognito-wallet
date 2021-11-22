@@ -4,11 +4,7 @@ import { getPrivacyDataByTokenID as getPrivacyDataByTokenIDSelector } from '@src
 import format from '@src/utils/format';
 import { ACCOUNT_CONSTANT } from 'incognito-chain-web-js/build/wallet';
 import capitalize from 'lodash/capitalize';
-import {
-  formValueSelector,
-  isValid,
-  getFormSyncErrors,
-} from 'redux-form';
+import { formValueSelector, isValid, getFormSyncErrors } from 'redux-form';
 import convert from '@src/utils/convert';
 import SelectedPrivacy from '@src/models/selectedPrivacy';
 import { PRV } from '@src/constants/common';
@@ -17,6 +13,7 @@ import orderBy from 'lodash/orderBy';
 import { getExchangeRate, getPairRate, getPoolSize } from '@screens/PDexV3';
 import { PRIORITY_LIST } from '@screens/Dex/constants';
 import BigNumber from 'bignumber.js';
+import xor from 'lodash/xor';
 import { formConfigs } from './Swap.constant';
 import { getInputAmount } from './Swap.utils';
 
@@ -425,7 +422,7 @@ export const mappingOrderHistorySelector = createSelector(
         feeToken.pDecimals,
         false,
       )} ${feeToken.symbol}`;
-      const swapStr = `${sellStr} = ${buyStr}`;
+      const swapStr = price ? `${sellStr} = ${buyStr}` : '';
       const result = {
         ...order,
         sellStr,
@@ -440,6 +437,7 @@ export const mappingOrderHistorySelector = createSelector(
         statusStr: capitalize(status),
         swapStr,
         tradingFeeByPRV: feeToken.isMainCrypto,
+        price,
       };
       return result;
     } catch (error) {
@@ -451,10 +449,13 @@ export const mappingOrderHistorySelector = createSelector(
 export const swapHistorySelector = createSelector(
   swapSelector,
   mappingOrderHistorySelector,
-  ({ swapHistory, selltoken }, mappingOrderHistory) => {
+  ({ swapHistory, selltoken, buytoken }, mappingOrderHistory) => {
     const history = swapHistory?.data
       ?.map((order) => mappingOrderHistory(order))
-      .filter((order) => order?.sellTokenId === selltoken);
+      .filter(
+        ({ sellTokenId, buyTokenId }) =>
+          xor([selltoken, buytoken], [sellTokenId, buyTokenId]).length === 0,
+      );
     return {
       ...swapHistory,
       history,

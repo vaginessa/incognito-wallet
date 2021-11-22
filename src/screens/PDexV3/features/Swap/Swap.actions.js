@@ -114,11 +114,7 @@ export const actionEstimateTradeForMax = () => async (dispatch, getState) => {
     const { data, networkfee } = swapSelector(state);
     const { feePrv: feeOriginalPRV = 0, feeToken: feeOriginalToken = 0 } = data;
     const feeTokenData = feetokenDataSelector(state);
-    const {
-      payFeeByPRV,
-      minFeePRVFixed,
-      minFeeTokenFixed,
-    } = feeTokenData;
+    const { payFeeByPRV, minFeePRVFixed, minFeeTokenFixed } = feeTokenData;
     const {
       tokenId: selltoken,
       pDecimals: sellPDecimals,
@@ -244,6 +240,9 @@ export const actionEstimateTrade = ({
     case formConfigs.selltoken: {
       inputToken = formConfigs.buytoken;
       payload.sellamount = sellAmount;
+      if (!payload.sellamount) {
+        return;
+      }
       payload.sellamount = String(payload.sellamount);
       inputPDecimals = buyPDecimals;
       break;
@@ -255,6 +254,9 @@ export const actionEstimateTrade = ({
           .multipliedBy(100 / (100 - slippagetolerance))
           .toNumber(),
       );
+      if (!payload.buyamount) {
+        return;
+      }
       payload.buyamount = String(payload.buyamount);
       inputPDecimals = sellPDecimals;
       break;
@@ -421,6 +423,7 @@ export const actionFetchPairs = (refresh) => async (dispatch, getState) => {
 export const actionInitSwapForm = ({
   refresh = true,
   defaultPair = {},
+  shouldFetchHistory = false,
 } = {}) => async (dispatch, getState) => {
   try {
     const state = getState();
@@ -465,7 +468,9 @@ export const actionInitSwapForm = ({
         dispatch(actionSetFeeToken(PRV.id));
       }
       dispatch(actionSetInputToken({ selltoken, buytoken }));
-      dispatch(actionFetchHistory());
+      if (shouldFetchHistory) {
+        dispatch(actionFetchHistory());
+      }
     });
   } catch (error) {
     new ExHandler(error).showErrorToast();
