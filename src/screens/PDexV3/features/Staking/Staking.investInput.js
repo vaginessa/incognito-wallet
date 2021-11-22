@@ -17,7 +17,7 @@ import withTransaction from '@screens/PDexV3/features/Staking/Staking.transactio
 import {NFTTokenBottomBar} from '@screens/PDexV3/features/NFTToken';
 import withFetch from '@screens/PDexV3/features/Staking/Staking.enhanceFetch';
 import {RowSpaceText} from '@src/components';
-import {NetworkFee} from '@screens/PDexV3/features/Share';
+import NetworkFee from '@src/components/NetworkFee';
 
 const initialFormValues = {
   input: ''

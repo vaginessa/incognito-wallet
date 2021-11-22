@@ -234,6 +234,7 @@ export const actionEstimateTrade = ({
     let payload = {
       selltoken,
       buytoken,
+      ismax: useMax,
     };
     const slippagetolerance = slippagetoleranceSelector(state);
     switch (field) {

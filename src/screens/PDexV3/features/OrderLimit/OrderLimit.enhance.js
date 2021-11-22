@@ -5,13 +5,17 @@ import ErrorBoundary from '@src/components/ErrorBoundary';
 import { compose } from 'recompose';
 import { actionToggleModal } from '@src/components/Modal';
 import { TradeSuccessModal } from '@screens/PDexV3/features/Trade';
-import { nftTokenDataSelector } from '@src/redux/selectors/account';
+import { actionSetNFTTokenData } from '@src/redux/actions/account';
 import { NFTTokenModal } from '@screens/PDexV3/features/NFTToken';
 import { LoadingContainer } from '@src/components/core';
+import { actionCheckNeedFaucetPRV, getBalance } from '@src/redux/actions/token';
+import { PRV } from '@src/constants/common';
+import FaucetPRVModal from '@src/components/Modal/features/FaucetPRVModal';
 import { formConfigs } from './OrderLimit.constant';
 import {
   orderLimitDataSelector,
   orderLimitSelector,
+  sellInputAmountSelector,
 } from './OrderLimit.selector';
 import {
   actionInit,
@@ -23,16 +27,16 @@ import {
 const enhance = (WrappedComp) => (props) => {
   const dispatch = useDispatch();
   const { cfmTitle, disabledBtn } = useSelector(orderLimitDataSelector);
-  const { nftTokenAvailable } = useSelector(nftTokenDataSelector);
   const { isFetching, isFetched } = useSelector(orderLimitSelector);
+  const sellInputAmount = useSelector(sellInputAmountSelector);
   const formErrors = useSelector((state) =>
     getFormSyncErrors(formConfigs.formName)(state),
   );
   const handleConfirm = async () => {
     try {
       const fields = [
-        formConfigs.buytoken,
         formConfigs.selltoken,
+        formConfigs.buytoken,
         formConfigs.rate,
       ];
       for (let index = 0; index < fields.length; index++) {
@@ -41,6 +45,15 @@ const enhance = (WrappedComp) => (props) => {
           return dispatch(focus(formConfigs.formName, field));
         }
       }
+      if (!sellInputAmount.isMainCrypto) {
+        const needFaucet = await dispatch(
+          actionCheckNeedFaucetPRV(<FaucetPRVModal />),
+        );
+        if (needFaucet) {
+          return;
+        }
+      }
+      const { nftTokenAvailable } = dispatch(actionSetNFTTokenData());
       if (!nftTokenAvailable) {
         return dispatch(
           actionToggleModal({
