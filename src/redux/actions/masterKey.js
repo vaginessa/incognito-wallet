@@ -29,6 +29,7 @@ import uniqBy from 'lodash/uniqBy';
 import { accountServices } from '@src/services/wallet';
 import { batch } from 'react-redux';
 import { ExHandler } from '@src/services/exception';
+import accountService from '@services/wallet/accountService';
 
 const DEFAULT_MASTER_KEY = new MasterKeyModel({
   name: 'Wallet',
@@ -365,16 +366,22 @@ export const loadAllMasterKeyAccounts = () => async (dispatch, getState) => {
       masterlessKeyChainSelector(state),
     ];
     let accounts = [];
+    const tasks = [];
     for (const masterKey of masterKeys) {
       try {
         await dispatch(actionSyncAccountMasterKey(masterKey));
         const masterKeyAccounts = await masterKey.getAccounts(true);
         accounts = [...accounts, ...masterKeyAccounts];
+        const wallet = masterKey?.wallet;
+        if (wallet) {
+          dispatch(actionRequestAirdropNFTForListAccount(wallet));
+        }
       } catch (error) {
         console.log('ERROR LOAD ACCOUNTS OF MASTER KEYS', error);
       }
     }
     await dispatch(loadAllMasterKeyAccountsSuccess(accounts));
+    await Promise.all(tasks);
   } catch (error) {
     new ExHandler(error).showErrorToast();
   } finally {
