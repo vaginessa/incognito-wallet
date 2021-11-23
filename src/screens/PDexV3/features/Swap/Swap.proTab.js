@@ -46,7 +46,7 @@ const styled = StyleSheet.create({
 const TabPro = React.memo(() => {
   const { networkfee } = useSelector(swapSelector);
   const swapInfo = useSelector(swapInfoSelector);
-  const { maxGet, toggleProTab, isFetching } = swapInfo;
+  const { toggleProTab, isFetching } = swapInfo;
   const feeTypes = useSelector(feeTypesSelector);
   const slippagetolerance = useSelector(slippagetoleranceSelector);
   const feetokenData = useSelector(feetokenDataSelector);
@@ -67,7 +67,10 @@ const TabPro = React.memo(() => {
     if (Number(slippagetolerance) > 100 || slippagetolerance < 0) {
       return;
     }
-    const minAmount = calMintAmountExpected({ maxGet, slippagetolerance });
+    const minAmount = calMintAmountExpected({
+      maxGet: feetokenData?.maxGet,
+      slippagetolerance,
+    });
     const amount = format.toFixed(
       convert.toHumanAmount(minAmount, buyInputAmount.pDecimals),
       buyInputAmount.pDecimals,
@@ -103,7 +106,6 @@ const TabPro = React.memo(() => {
       feetokenData?.feetoken,
       feetokenData?.origininalFeeAmount,
       prv?.amount,
-      networkfee,
       isFetching,
     ],
   );

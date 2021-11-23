@@ -26,7 +26,10 @@ import {
 const initialState = {
   isFetching: false,
   isFetched: false,
-  data: {},
+  data: {
+    feePrv: {},
+    feeToken: {},
+  },
   buytoken: '',
   selltoken: '',
   feetoken: '',
@@ -56,7 +59,7 @@ export default (state = initialState, action) => {
   case ACTION_TOGGLE_PRO_TAB: {
     return {
       ...state,
-      toggleProTab: action.payload
+      toggleProTab: action.payload,
     };
   }
   case ACTION_SET_DEFAULT_PAIR: {
@@ -142,7 +145,7 @@ export default (state = initialState, action) => {
   case ACTION_FETCHING: {
     return {
       ...state,
-      isFetching: true,
+      isFetching: action.payload,
     };
   }
   case ACTION_FETCHED: {
