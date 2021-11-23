@@ -129,7 +129,7 @@ const SwapOrderDetail = () => {
   return (
     <View style={styled.container}>
       <Header
-        title="Order detail"
+        title="Swap detail"
         rightHeader={<BtnCopy onPress={handleCopy} />}
       />
       <ScrollView

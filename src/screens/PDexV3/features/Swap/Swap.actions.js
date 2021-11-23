@@ -90,8 +90,9 @@ export const actionSetFocusToken = (payload) => ({
   payload,
 });
 
-export const actionFetching = () => ({
+export const actionFetching = (payload) => ({
   type: ACTION_FETCHING,
+  payload,
 });
 
 export const actionFetched = (payload) => ({
@@ -111,39 +112,28 @@ export const actionReset = (payload) => ({
 export const actionEstimateTradeForMax = () => async (dispatch, getState) => {
   try {
     const state = getState();
-    const { data, networkfee } = swapSelector(state);
-    const { feePrv: feeOriginalPRV = 0, feeToken: feeOriginalToken = 0 } = data;
     const feeTokenData = feetokenDataSelector(state);
-    const { payFeeByPRV, minFeePRVFixed, minFeeTokenFixed } = feeTokenData;
+    const {
+      payFeeByPRV,
+
+      minFeeOriginalPRV,
+      minFeePRVFixed,
+      availableFixedSellAmountPRV,
+
+      minFeeTokenFixed,
+      availableFixedSellAmountToken,
+    } = feeTokenData;
     const {
       tokenId: selltoken,
-      pDecimals: sellPDecimals,
-      availableAmountText: availableSellAmountText,
+      isMainCrypto: sellTokenIsPRV,
     } = sellInputTokenSeletor(state);
-    const prvBalance = await dispatch(getBalance(PRV.id));
-    let availableOriginalPRVAmount = new BigNumber(prvBalance)
-      .minus(feeOriginalPRV)
-      .minus(networkfee);
-    const canPayFeeByPRV = feeOriginalPRV && availableOriginalPRVAmount.gt(0);
-    const sellTokenIsPRV = selltoken === PRV.id;
     if (sellTokenIsPRV) {
-      availableOriginalPRVAmount = availableOriginalPRVAmount.gt(0)
-        ? availableOriginalPRVAmount.toNumber()
-        : 0;
-      const availableHunmanAmount = convert.toHumanAmount(
-        availableOriginalPRVAmount,
-        PRV.pDecimals,
-      );
-      const availableFixedSellAmount = format.toFixed(
-        availableHunmanAmount,
-        PRV.pDecimals,
-      );
       batch(() => {
         dispatch(
           change(
             formConfigs.formName,
             formConfigs.selltoken,
-            availableFixedSellAmount,
+            availableFixedSellAmountPRV,
           ),
         );
         dispatch(
@@ -152,13 +142,19 @@ export const actionEstimateTradeForMax = () => async (dispatch, getState) => {
       });
     } else {
       // sellTokenIsToken
+      const prvBalance = await dispatch(getBalance(PRV.id));
+      let availableOriginalPRVAmount = new BigNumber(prvBalance).minus(
+        minFeeOriginalPRV,
+      );
+      const canPayFeeByPRV =
+        minFeeOriginalPRV && availableOriginalPRVAmount.gt(0);
       if (canPayFeeByPRV && payFeeByPRV) {
         batch(() => {
           dispatch(
             change(
               formConfigs.formName,
               formConfigs.selltoken,
-              availableSellAmountText,
+              availableFixedSellAmountPRV,
             ),
           );
           dispatch(
@@ -166,27 +162,12 @@ export const actionEstimateTradeForMax = () => async (dispatch, getState) => {
           );
         });
       } else {
-        const tokenBalance = await dispatch(getBalance(selltoken));
-        let availableOriginalTokenAmount = new BigNumber(tokenBalance).minus(
-          feeOriginalToken,
-        );
-        availableOriginalTokenAmount = availableOriginalTokenAmount.gt(0)
-          ? availableOriginalTokenAmount.toNumber()
-          : 0;
-        const availableHunmanAmount = convert.toHumanAmount(
-          availableOriginalTokenAmount,
-          sellPDecimals,
-        );
-        const availableFixedSellAmount = format.toFixed(
-          availableHunmanAmount,
-          sellPDecimals,
-        );
         batch(() => {
           dispatch(
             change(
               formConfigs.formName,
               formConfigs.selltoken,
-              availableFixedSellAmount,
+              availableFixedSellAmountToken,
             ),
           );
           dispatch(
@@ -275,9 +256,10 @@ export const actionEstimateTrade = ({
     ) {
       return;
     }
-    await dispatch(actionFetching());
+    dispatch(actionFetching(true));
     const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
     const data = await pDexV3Inst.getEstimateTrade(payload);
+    const { feePrv: feePrvEst, feeToken: feeTokenEst } = data;
     await dispatch(actionFetched(data));
     state = getState();
     const feeTokenData = feetokenDataSelector(state);
@@ -285,15 +267,24 @@ export const actionEstimateTrade = ({
       minFeeAmountFixed,
       canNotPayFeeByPRV,
       minFeeTokenFixed,
+      payFeeByPRV,
     } = feeTokenData;
     let maxGet = 0;
     switch (field) {
     case formConfigs.selltoken: {
-      maxGet = data?.maxGet || 0;
+      if (payFeeByPRV) {
+        maxGet = feePrvEst?.maxGet || 0;
+      } else {
+        maxGet = feeTokenEst?.maxGet || 0;
+      }
       break;
     }
     case formConfigs.buytoken: {
-      maxGet = data?.sellAmount || 0;
+      if (payFeeByPRV) {
+        maxGet = feePrvEst?.sellAmount || 0;
+      } else {
+        maxGet = feeTokenEst?.sellAmount || 0;
+      }
       break;
     }
     default:
@@ -315,7 +306,7 @@ export const actionEstimateTrade = ({
       change(formConfigs.formName, inputToken, minAmountExpectedToFixed),
     );
     if (useMax) {
-      dispatch(actionEstimateTradeForMax({}));
+      await dispatch(actionEstimateTradeForMax({}));
     } else {
       batch(() => {
         if (canNotPayFeeByPRV) {
@@ -344,7 +335,10 @@ export const actionEstimateTrade = ({
     await dispatch(actionFetchFail());
     new ExHandler(error).showErrorToast();
   } finally {
-    dispatch(actionSetFocusToken(''));
+    batch(() => {
+      dispatch(actionFetching(false));
+      dispatch(actionSetFocusToken(''));
+    });
   }
 };
 
@@ -585,7 +579,8 @@ export const actionFetchSwap = () => async (dispatch, getState) => {
   let tx;
   try {
     const state = getState();
-    const { disabledBtnSwap, routing: tradePath } = swapInfoSelector(state);
+    const { disabledBtnSwap } = swapInfoSelector(state);
+    const { tradePath } = feetokenDataSelector(state);
     if (disabledBtnSwap) {
       return;
     }

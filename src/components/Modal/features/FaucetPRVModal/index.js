@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet } from 'react-native';
 import { PureModalContent } from '@src/components/Modal/features/PureModal';
-import { Text, View } from '@src/components/core';
+import { Image, Text, View } from '@src/components/core';
 import { ButtonTrade } from '@src/components/Button';
 import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
@@ -10,7 +10,8 @@ import { actionToggleModal } from '@src/components/Modal';
 import { useDispatch, useSelector } from 'react-redux';
 import { CONSTANT_CONFIGS } from '@src/constants';
 import { defaultAccountSelector } from '@src/redux/selectors/account';
-import { FaucetIcon } from '@src/components/Icons';
+import srcFaucetIcon from '@src/assets/images/new-icons/faucet_icon.png';
+import { Row } from '@src/components';
 
 const styled = StyleSheet.create({
   title: {
@@ -47,15 +48,15 @@ const FaucetPRVModal = () => {
   const [navigateFaucet] = useFaucet();
   return (
     <PureModalContent>
-      <View
-        style={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}
-      >
-        <FaucetIcon />
-      </View>
+      <Row style={{ justifyContent: 'center' }}>
+        <Image
+          source={srcFaucetIcon}
+          style={{
+            width: 39,
+            height: 34.8,
+          }}
+        />
+      </Row>
       <Text style={styled.title}>Faucet PRV</Text>
       <Text style={styled.desc}>
         Incognito collects a small network fee of PRV to pay the miners who help

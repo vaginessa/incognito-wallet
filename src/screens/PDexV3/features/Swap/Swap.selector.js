@@ -106,7 +106,23 @@ export const feetokenDataSelector = createSelector(
       const sellTokenData: SelectedPrivacy = getPrivacyDataByTokenID(selltoken);
       const selector = formValueSelector(formConfigs.formName);
       const fee = selector(state, formConfigs.feetoken);
-      const { feePrv, feeToken } = data;
+      const { feePrv: feePrvEst = {}, feeToken: feeTokenEst = {} } = data;
+      const {
+        fee: feePrv,
+        sellAmount: sellAmountPRV,
+        poolDetails: poolDetailsPRV,
+        route: tradePathPRV,
+        maxGet: maxGetPRV,
+      } = feePrvEst;
+      const {
+        fee: feeToken,
+        sellAmount: sellAmountToken,
+        poolDetails: poolDetailsToken,
+        route: tradePathToken,
+        maxGet: maxGetToken,
+      } = feeTokenEst;
+      let allPoolSize = [];
+      let maxGet = 0;
       const payFeeByPRV = feetoken === PRV.id;
       const minFeeOriginal = payFeeByPRV ? feePrv : feeToken;
       let feeAmount = convert.toNumber(fee, true) || 0;
@@ -152,6 +168,14 @@ export const feetokenDataSelector = createSelector(
         minFeeTokenAmount,
         sellTokenData?.pDecimals,
       );
+      const availableHunmanAmountToken = convert.toHumanAmount(
+        sellAmountToken,
+        sellTokenData.pDecimals,
+      );
+      const availableFixedSellAmountToken = format.toFixed(
+        availableHunmanAmountToken,
+        sellTokenData.pDecimals,
+      );
 
       const minFeeOriginalPRV = feePrv;
       const minFeePRVAmount = convert.toHumanAmount(
@@ -159,10 +183,36 @@ export const feetokenDataSelector = createSelector(
         PRV.pDecimals,
       );
       const minFeePRVFixed = format.toFixed(minFeePRVAmount, PRV.pDecimals);
-
+      const availableHunmanAmountPRV = convert.toHumanAmount(
+        sellAmountPRV,
+        sellTokenData.pDecimals,
+      );
+      const availableFixedSellAmountPRV = format.toFixed(
+        availableHunmanAmountPRV,
+        sellTokenData.pDecimals,
+      );
       const canNotPayFeeByPRV =
         !sellTokenData.isMainCrypto && feeToken && !feePrv;
-
+      try {
+        allPoolSize = Object.entries(
+          payFeeByPRV ? poolDetailsPRV : poolDetailsToken,
+        ).map(([, value]) => {
+          const { token1Value, token2Value, token1Id, token2Id } = value;
+          const token1 = getPrivacyDataByTokenID(token1Id);
+          const token2 = getPrivacyDataByTokenID(token2Id);
+          const poolSize = getPoolSize(
+            token1,
+            token2,
+            token1Value,
+            token2Value,
+          );
+          return poolSize;
+        });
+      } catch {
+        //
+      }
+      const tradePath = payFeeByPRV ? tradePathPRV : tradePathToken;
+      maxGet = payFeeByPRV ? maxGetPRV : maxGetToken;
       return {
         ...feeTokenData,
         feetoken,
@@ -181,6 +231,12 @@ export const feetokenDataSelector = createSelector(
         minFeePRVFixed,
         canNotPayFeeByPRV,
         minFeeOriginalPRV,
+        minFeeOriginalToken,
+        availableFixedSellAmountPRV,
+        availableFixedSellAmountToken,
+        tradePath,
+        maxGet,
+        allPoolSize,
       };
     } catch (error) {
       console.log('feetokenDataSelector-error', error);
@@ -215,7 +271,6 @@ export const inputAmountSelector = createSelector(
   inpuTokenSelector,
   focustokenSelector,
   feetokenDataSelector,
-  swapSelector,
   sharedSelector.isGettingBalance,
   getInputAmount,
 );
@@ -270,29 +325,6 @@ export const swapInfoSelector = createSelector(
     try {
       const sellInputAmount = getInputAmount(formConfigs.selltoken);
       const buyInputAmount = getInputAmount(formConfigs.buytoken);
-      const { fee, route: routing, poolDetails, maxGet } = data;
-      let allPoolSize = [];
-      try {
-        allPoolSize = Object.entries(poolDetails).map(([, value]) => {
-          const { token1Value, token2Value, token1Id, token2Id } = value;
-          const token1 = getPrivacyDataByTokenID(token1Id);
-          const token2 = getPrivacyDataByTokenID(token2Id);
-          const poolSize = getPoolSize(
-            token1,
-            token2,
-            token1Value,
-            token2Value,
-          );
-          return poolSize;
-        });
-      } catch {
-        //
-      }
-      const minFeeAmount = format.toFixed(
-        convert.toHumanAmount(fee, feeTokenData?.pDecimals),
-        feeTokenData?.pDecimals,
-      );
-      const minFeeAmountStr = `${minFeeAmount} ${feeTokenData?.symbol}`;
       const networkfeeAmount = format.toFixed(
         convert.toHumanAmount(networkfee, PRV.pDecimals),
         PRV.pDecimals,
@@ -320,23 +352,13 @@ export const swapInfoSelector = createSelector(
       const showPRVBalance = !sellInputAmount?.isMainCrypto;
       const prvBalance = format.amountVer2(prv.amount, PRV.pDecimals);
       const prvBalanceStr = `${prvBalance} ${PRV.symbol}`;
-      const maxPriceStr = getExchangeRate(
-        sellInputAmount.tokenData,
-        buyInputAmount.tokenData,
-        sellInputAmount.originalAmount,
-        maxGet,
-      );
       const defaultPair = {
         selltoken: sellInputAmount.tokenId,
         buytoken: buyInputAmount.tokenId,
       };
       return {
         balanceStr: sellInputBalanceStr,
-        routing,
-        minFeeAmount,
-        minFeeAmountStr,
         networkfeeAmountStr,
-        maxPriceStr,
         editableInput,
         btnSwapText,
         disabledBtnSwap,
@@ -350,8 +372,6 @@ export const swapInfoSelector = createSelector(
         prvBalanceStr,
         percent,
         swaping,
-        allPoolSize,
-        maxGet,
         refreshing: initing,
         defaultPair,
         toggleProTab,

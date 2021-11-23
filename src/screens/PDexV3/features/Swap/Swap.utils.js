@@ -148,7 +148,6 @@ export const getInputAmount = (
   getInputToken,
   focustoken,
   feeData,
-  { networkfee },
   isGettingBalance,
 ) => (field) => {
   try {
