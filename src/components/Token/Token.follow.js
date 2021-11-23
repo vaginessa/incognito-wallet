@@ -31,8 +31,14 @@ const TokenFollow = ({ item, hideStar, handleToggleFollowToken, onPress }) => {
           <Row centerVertical>
             <ImageCached uri={item.iconUrl} style={styled.icon} defaultImage={incognito} />
             <View>
-              <Text style={styled.blackLabel}>{symbol}</Text>
-              <Text style={styled.greyText}>{name}</Text>
+              <NormalText
+                style={styled.blackLabel}
+                text={symbol}
+              />
+              <NormalText
+                style={styled.greyText}
+                text={name}
+              />
             </View>
           </Row>
         </View>
@@ -82,10 +88,10 @@ export const FollowHeader = React.memo(({ hideStar }) => {
 
 export const styled = StyleSheet.create({
   wrapItem: {
-    paddingBottom: 16,
+    paddingBottom: 32,
   },
   blackLabel: {
-    ...FONT.STYLE.medium,
+    fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.medium,
     textAlign: 'left',
     color: COLORS.black,
@@ -111,7 +117,7 @@ export const styled = StyleSheet.create({
     alignItems: 'flex-end',
   },
   greyText: {
-    ...FONT.STYLE.normal,
+    fontFamily: FONT.NAME.normal,
     fontSize: FONT.SIZE.small,
     color: COLORS.colorGrey1,
     lineHeight: FONT.SIZE.small + 7,

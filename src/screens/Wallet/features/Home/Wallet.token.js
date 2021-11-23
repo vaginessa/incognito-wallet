@@ -86,7 +86,7 @@ const Token = (props) => {
         autoClose
         style={{
           backgroundColor: 'transparent',
-          paddingBottom: 22
+          paddingBottom: 32
         }}
         right={[
           {
@@ -104,7 +104,7 @@ const Token = (props) => {
     );
   }
   return (
-    <View style={{ paddingBottom: 28 }}>
+    <View style={{ paddingBottom: 32 }}>
       <TokenDefault {...props} />
     </View>
   );
