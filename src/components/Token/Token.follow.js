@@ -54,7 +54,7 @@ const TokenFollow = ({ item, hideStar, handleToggleFollowToken, onPress }) => {
             ]}
           />
           <NormalText
-            style={styled.greyText}
+            style={[styled.greyText, { color: balance.changeColor }]}
             containerStyle={styled.containerStyle}
             text={balance.changeStr}
           />

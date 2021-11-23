@@ -29,6 +29,7 @@ import { defaultPTokensIDsSelector } from '@src/redux/selectors/token';
 import { actionGetPDexV3Inst } from '@src/screens/PDexV3';
 import MasterKeyModel from '@src/models/masterKey';
 import { batch } from 'react-redux';
+import uniq from 'lodash/uniq';
 import { getBalance as getTokenBalance, setListToken } from './token';
 
 export const setAccount = (
@@ -270,6 +271,7 @@ export const actionReloadFollowingToken = () => async (dispatch, getState) => {
       const pTokensIDs = defaultPTokensIDsSelector(state);
       if (pTokensIDs.length > 0) {
         let tokenIDs = [...pTokensIDs, ...coinIDs];
+        tokenIDs = uniq(tokenIDs);
         await accountWallet.followingDefaultTokens({
           tokenIDs,
         });
