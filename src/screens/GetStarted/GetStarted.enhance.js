@@ -20,6 +20,8 @@ import { actionFetchPairs } from '@screens/PDexV3/features/Swap';
 import { actionFetchListPools } from '@screens/PDexV3/features/Pools';
 import { requestUpdateMetrics } from '@src/redux/actions/app';
 import { ANALYTICS } from '@src/constants';
+import {actionFetch as actionFetchHomeConfigs} from '@screens/Home/Home.actions';
+import {actionCheckUnreadNews} from '@screens/News';
 import withDetectStatusNetwork from './GetStarted.enhanceNetwork';
 import withWizard from './GetStarted.enhanceWizard';
 import withWelcome from './GetStarted.enhanceWelcome';
@@ -39,6 +41,17 @@ const enhance = (WrappedComp) => (props) => {
     return errorMessage;
   };
 
+  const getHomeConfiguration = async () => {
+    try {
+      await new Promise.all([
+        dispatch(actionFetchHomeConfigs()),
+        dispatch(actionCheckUnreadNews()),
+      ]);
+    } catch (error) {
+      console.log('Fetching configuration for home failed.', error);
+    }
+  };
+
   const configsApp = async () => {
     console.time('CONFIGS_APP');
     let hasError;
@@ -53,6 +66,7 @@ const enhance = (WrappedComp) => (props) => {
         dispatch(requestUpdateMetrics(ANALYTICS.ANALYTIC_DATA_TYPE.OPEN_APP));
         dispatch(actionFetchListPools());
         dispatch(actionFetchPairs(true));
+        getHomeConfiguration();
       });
       const servers = await serverService.get();
       if (!servers || servers?.length === 0) {
