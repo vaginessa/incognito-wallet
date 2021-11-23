@@ -34,17 +34,17 @@ const enhance = (WrappedComp) => (props) => {
   );
   const handleConfirm = async () => {
     try {
-      // const fields = [
-      //   formConfigs.selltoken,
-      //   formConfigs.buytoken,
-      //   formConfigs.rate,
-      // ];
-      // for (let index = 0; index < fields.length; index++) {
-      //   const field = fields[index];
-      //   if (formErrors[field]) {
-      //     return dispatch(focus(formConfigs.formName, field));
-      //   }
-      // }
+      const fields = [
+        formConfigs.selltoken,
+        formConfigs.buytoken,
+        formConfigs.rate,
+      ];
+      for (let index = 0; index < fields.length; index++) {
+        const field = fields[index];
+        if (formErrors[field]) {
+          return dispatch(focus(formConfigs.formName, field));
+        }
+      }
       if (!sellInputAmount.isMainCrypto) {
         const needFaucet = await dispatch(
           actionCheckNeedFaucetPRV(<FaucetPRVModal />),
