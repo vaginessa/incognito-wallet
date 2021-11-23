@@ -34,15 +34,6 @@ const NFTTokenModal = () => {
   const dispatch = useDispatch();
   return (
     <PureModalContent>
-      <View
-        style={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}
-      >
-        <Image source={nftSrc} style={{ width: 40, height: 40 }} />
-      </View>
       <Text style={styled.title}>Mint a ticket to continue.</Text>
       <Text style={styled.desc}>
         {`You don't have any spare tickets to anonymize this transaction. Wait for

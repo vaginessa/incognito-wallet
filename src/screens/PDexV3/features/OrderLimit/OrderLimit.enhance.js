@@ -5,11 +5,10 @@ import ErrorBoundary from '@src/components/ErrorBoundary';
 import { compose } from 'recompose';
 import { actionToggleModal } from '@src/components/Modal';
 import { TradeSuccessModal } from '@screens/PDexV3/features/Trade';
-import { actionSetNFTTokenData } from '@src/redux/actions/account';
 import { NFTTokenModal } from '@screens/PDexV3/features/NFTToken';
 import { LoadingContainer } from '@src/components/core';
-import { actionCheckNeedFaucetPRV, getBalance } from '@src/redux/actions/token';
-import { PRV } from '@src/constants/common';
+import { actionCheckNeedFaucetPRV } from '@src/redux/actions/token';
+import { nftTokenDataSelector } from '@src/redux/selectors/account';
 import FaucetPRVModal from '@src/components/Modal/features/FaucetPRVModal';
 import { formConfigs } from './OrderLimit.constant';
 import {
@@ -28,12 +27,18 @@ const enhance = (WrappedComp) => (props) => {
   const dispatch = useDispatch();
   const { cfmTitle, disabledBtn } = useSelector(orderLimitDataSelector);
   const { isFetching, isFetched } = useSelector(orderLimitSelector);
+  const { nftTokenAvailable } = useSelector(nftTokenDataSelector);
   const sellInputAmount = useSelector(sellInputAmountSelector);
+  const [ordering, setOrdering] = React.useState(false);
   const formErrors = useSelector((state) =>
     getFormSyncErrors(formConfigs.formName)(state),
   );
   const handleConfirm = async () => {
     try {
+      if (ordering) {
+        return;
+      }
+      await setOrdering(true);
       const fields = [
         formConfigs.selltoken,
         formConfigs.buytoken,
@@ -53,7 +58,6 @@ const enhance = (WrappedComp) => (props) => {
           return;
         }
       }
-      const { nftTokenAvailable } = await dispatch(actionSetNFTTokenData());
       if (!nftTokenAvailable) {
         return dispatch(
           actionToggleModal({
@@ -90,6 +94,8 @@ const enhance = (WrappedComp) => (props) => {
       }
     } catch {
       //
+    } finally {
+      setOrdering(false);
     }
   };
   const onRefresh = () => {
