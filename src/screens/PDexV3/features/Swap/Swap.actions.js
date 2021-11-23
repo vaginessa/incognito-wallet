@@ -251,8 +251,7 @@ export const actionEstimateTrade = ({
     if (
       isEmpty(sellInputToken) ||
       isEmpty(buyInputToken) ||
-      isEmpty(feetoken) ||
-      !sellAmount
+      isEmpty(feetoken)
     ) {
       return;
     }
