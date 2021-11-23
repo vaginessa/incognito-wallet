@@ -15,7 +15,7 @@ import {
 } from '@components/core/reduxForm';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from '@screens/PDexV3/features/Liquidity/Liquidity.styled';
-import { Field } from 'redux-form';
+import {Field, focus, getFormSyncErrors} from 'redux-form';
 import { AddBreakLine } from '@components/core';
 import withLiquidity from '@screens/PDexV3/features/Liquidity/Liquidity.enhance';
 import {
@@ -23,10 +23,11 @@ import {
   liquidityActions,
 } from '@screens/PDexV3/features/Liquidity';
 import { ButtonTrade } from '@components/Button';
-import { NFTTokenBottomBar } from '@screens/PDexV3/features/NFTToken';
+import {NFTTokenBottomBar, NFTTokenModal} from '@screens/PDexV3/features/NFTToken';
 import { compose } from 'recompose';
 import withTransaction from '@screens/PDexV3/features/Liquidity/Liquidity.enhanceTransaction';
 import NetworkFee from '@src/components/NetworkFee';
+import {actionToggleModal} from '@components/Modal';
 
 const initialFormValues = {
   inputToken: '',
@@ -119,6 +120,7 @@ export const Extra = React.memo(() => {
 });
 
 const ContributeButton = React.memo(({ onSubmit }) => {
+  const dispatch = useDispatch();
   const amountSelector = useSelector(contributeSelector.inputAmountSelector);
   const inputAmount = amountSelector(
     formConfigsContribute.formName,
@@ -132,8 +134,30 @@ const ContributeButton = React.memo(({ onSubmit }) => {
   const poolId = useSelector(contributeSelector.poolIDSelector);
   const { amp } = useSelector(contributeSelector.mappingDataSelector);
   const { nftToken } = useSelector(contributeSelector.nftTokenSelector);
-  const { isDisabled } = useSelector(contributeSelector.disableContribute);
+  const { isDisabled, nftTokenAvailable } = useSelector(contributeSelector.disableContribute);
+  const formErrors = useSelector((state) =>
+    getFormSyncErrors(formConfigsContribute.formName)(state),
+  );
   const createContributes = async () => {
+    const fields = [
+      formConfigsContribute.inputToken,
+      formConfigsContribute.outputToken,
+    ];
+    for (let index = 0; index < fields.length; index++) {
+      const field = fields[index];
+      if (formErrors[field]) {
+        return dispatch(focus(formConfigsContribute.formName, field));
+      }
+    }
+    if (!nftTokenAvailable) {
+      return dispatch(
+        actionToggleModal({
+          visible: true,
+          shouldCloseModalWhenTapOverlay: true,
+          data: <NFTTokenModal />,
+        }),
+      );
+    }
     if (isDisabled) return;
     const params = {
       fee: feeAmount / 2,
@@ -180,12 +204,12 @@ const Contribute = ({
       <View style={styled.container}>
         <Header style={styled.padding} />
         <ScrollView
-          refreshControl={
+          refreshControl={(
             <RefreshControl
               refreshing={isFetching}
               onRefresh={onInitContribute}
             />
-          }
+          )}
           showsVerticalScrollIndicator={false}
         >
           <Form>
