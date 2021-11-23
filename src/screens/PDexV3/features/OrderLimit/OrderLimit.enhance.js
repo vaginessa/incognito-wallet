@@ -53,7 +53,7 @@ const enhance = (WrappedComp) => (props) => {
           return;
         }
       }
-      const { nftTokenAvailable } = dispatch(actionSetNFTTokenData());
+      const { nftTokenAvailable } = await dispatch(actionSetNFTTokenData());
       if (!nftTokenAvailable) {
         return dispatch(
           actionToggleModal({
