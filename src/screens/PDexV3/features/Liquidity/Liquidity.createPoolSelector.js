@@ -10,7 +10,6 @@ import {listPoolsPureSelector} from '@screens/PDexV3/features/Pools';
 import {nftTokenDataSelector} from '@src/redux/selectors/account';
 import BigNumber from 'bignumber.js';
 import convert from '@utils/convert';
-import format from '@utils/format';
 import {isNaN} from 'lodash';
 
 const createPoolSelector = createSelector(
@@ -160,6 +159,7 @@ export const disableCreatePool = createSelector(
     const disabled = !!inputError || !!outputError || isFetching || !nftToken || isTyping;
     return {
       disabled,
+      nftTokenAvailable: !!nftToken
     };
   }
 );

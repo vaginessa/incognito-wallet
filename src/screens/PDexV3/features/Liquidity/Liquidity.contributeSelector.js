@@ -148,7 +148,7 @@ export const disableContribute = createSelector(
     const { error: inputError } = inputAmount(formConfigsContribute.formName, formConfigsContribute.inputToken);
     const { error: outputError } = inputAmount(formConfigsContribute.formName, formConfigsContribute.outputToken);
     const isDisabled = isFetching || !!inputError || !!outputError || !nftToken;
-    return { isDisabled };
+    return { isDisabled, nftTokenAvailable: !!nftToken };
   }
 );
 
