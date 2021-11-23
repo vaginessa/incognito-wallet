@@ -19,7 +19,7 @@ const GroupSubInfo = () => {
         styledTabs={styled.styledTabs}
         useTab1
       >
-        <View tabID={TAB_HISTORY_ID} label="Swap history" onChangeTab={() => null}>
+        <View tabID={TAB_HISTORY_ID} label="Swap history" onChangeTab={() => null} upperCase={false}>
           <History />
         </View>
         <View tabID="" label="" />

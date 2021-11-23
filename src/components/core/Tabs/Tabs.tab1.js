@@ -43,12 +43,13 @@ const Tab1 = (props) => {
     titleStyled,
     titleDisabledStyled,
     tabStyledEnabled,
+    upperCase,
   } = props;
   const onClick = () => typeof onClickTab === 'function' && onClickTab(tabID);
   const disabled = tabID !== activeTab;
   return (
     <ButtonBasic
-      title={label.toUpperCase()}
+      title={upperCase && label ? label.toUpperCase() : label}
       onPress={onClick}
       btnStyle={
         tabStyled
@@ -73,6 +74,7 @@ Tab1.defaultProps = {
   tabStyledDisabled: null,
   titleDisabledStyled: null,
   tabStyledEnabled: null,
+  upperCase: true
 };
 
 Tab1.propTypes = {
@@ -84,7 +86,8 @@ Tab1.propTypes = {
   tabStyledDisabled: PropTypes.any,
   titleStyled: PropTypes.any,
   titleDisabledStyled: PropTypes.any,
-  tabStyledEnabled: PropTypes.any
+  tabStyledEnabled: PropTypes.any,
+  upperCase: PropTypes.bool
 };
 
 export default React.memo(Tab1);
