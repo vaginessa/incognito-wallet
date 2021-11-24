@@ -312,7 +312,6 @@ export const HOME_CONFIGS = {
 };
 
 export const checkOutdatedVersion = (appVersion, packageVersion = CONSTANT_CONFIGS.BUILD_VERSION) => {
-  console.log('SANG TEST::: ', appVersion, packageVersion);
   const currentAppVersion = split(packageVersion, '.').map(
     (item) => Number(item),
   );

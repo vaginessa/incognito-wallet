@@ -123,6 +123,7 @@ const PoolsListContainer = (props) => {
   return (
     <View style={[styled.container, style]}>
       <BaseTextInputCustom
+        value={text}
         inputProps={{
           onChangeText: onChange,
           placeholder: 'Search coins',
