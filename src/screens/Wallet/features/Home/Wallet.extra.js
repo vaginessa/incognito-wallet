@@ -81,6 +81,7 @@ const GroupButton = React.memo(() => {
   const dispatch = useDispatch();
   const { guide } = useSelector(shieldStorageSelector);
   const handleShield = async () => {
+    if (isDisabled) return;
     navigation.navigate(routeNames.Shield);
     if (!guide) {
       await dispatch(actionToggleGuide());
@@ -100,7 +101,6 @@ const GroupButton = React.memo(() => {
         />
       )}
       <BTNPrimary
-        disabled={isDisabled}
         onPress={onFeaturePress}
         title="Deposit"
       />
