@@ -21,10 +21,14 @@ const styled = StyleSheet.create({
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.small,
     color: COLORS.black,
+    flex: 1,
+    maxWidth: '49%',
   },
   volume: {
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.small,
+    flex: 1,
+    maxWidth: '49%',
   },
   label: {
     fontSize: FONT.SIZE.superSmall,
@@ -53,7 +57,10 @@ const Item = React.memo((props) => {
           <Text numberOfLines={1} style={{ ...styled.volume, ...styled.label }}>
             Amount
           </Text>
-          <Text numberOfLines={1} style={{ ...styled.price, ...styled.label }}>
+          <Text
+            numberOfLines={1}
+            style={{ ...styled.price, ...styled.label, textAlign: 'right' }}
+          >
             Price
           </Text>
         </Row>
@@ -71,7 +78,7 @@ const Item = React.memo((props) => {
         <Text
           numberOfLines={1}
           ellipsizeMode="tail"
-          style={{ ...styled.price, color }}
+          style={{ ...styled.price, color, textAlign: 'right' }}
         >
           {priceStr}
         </Text>
@@ -85,7 +92,10 @@ const Item = React.memo((props) => {
           <Text numberOfLines={1} style={{ ...styled.price, ...styled.label }}>
             Price
           </Text>
-          <Text numberOfLines={1} style={{ ...styled.volume, ...styled.label }}>
+          <Text
+            numberOfLines={1}
+            style={{ ...styled.volume, ...styled.label, textAlign: 'right' }}
+          >
             Amount
           </Text>
         </Row>
@@ -103,7 +113,7 @@ const Item = React.memo((props) => {
         <Text
           numberOfLines={1}
           ellipsizeMode="tail"
-          style={{ ...styled.volume }}
+          style={{ ...styled.volume, textAlign: 'right' }}
         >
           {volumeStr}
         </Text>

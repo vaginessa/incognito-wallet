@@ -192,7 +192,7 @@ const PriceHistoryCandles = () => {
     const parseData = JSON.parse(data);
     if (parseData?.initted) {
       await setInitted(true);
-      handleFetchData(periods[0]);
+      handleFetchData(periods[3]);
     }
   };
   const handleInit = async () => {

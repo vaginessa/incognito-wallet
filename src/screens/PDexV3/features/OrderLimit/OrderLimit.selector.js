@@ -451,30 +451,41 @@ export const mappingOrderHistorySelector = createSelector(
       const buyTokenBalance = new BigNumber(order?.buyTokenBalance);
       const sellTokenWithdrawed = new BigNumber(order?.sellTokenWithdrawed);
       let statusStr = capitalize(status);
-      if (fromStorage) {
+      if (
+        fromStorage &&
+        ![
+          ACCOUNT_CONSTANT.TX_STATUS.TXSTATUS_CANCELED,
+          ACCOUNT_CONSTANT.TX_STATUS.TXSTATUS_FAILED,
+        ].includes(statusCode)
+      ) {
         statusStr = 'Processing';
       }
       let visibleBtnCancel = false;
       let visibleBtnClaim = false;
-      const isWithdrawing = statusCode === 3 || status === 'withdrawing';
-      if (isCompleted) {
-        if (sellTokenWithdrawed.isGreaterThan(0)) {
-          statusStr = 'Canceled';
-        } else {
-          statusStr = 'Claimed';
-        }
-      } else {
-        if (sellTokenBalance.isEqualTo(0) && buyTokenBalance.isGreaterThan(0)) {
-          if (isWithdrawing) {
-            statusStr = 'Claiming';
+      if (!fromStorage) {
+        const isWithdrawing = statusCode === 3 || status === 'withdrawing';
+        if (isCompleted) {
+          if (sellTokenWithdrawed.isGreaterThan(0)) {
+            statusStr = 'Canceled';
           } else {
-            visibleBtnClaim = true;
+            statusStr = 'Claimed';
           }
-        } else if (sellTokenBalance.isGreaterThan(0)) {
-          if (isWithdrawing) {
-            statusStr = 'Canceling';
-          } else {
-            visibleBtnCancel = true;
+        } else {
+          if (
+            sellTokenBalance.isEqualTo(0) &&
+            buyTokenBalance.isGreaterThan(0)
+          ) {
+            if (isWithdrawing) {
+              statusStr = 'Claiming';
+            } else {
+              visibleBtnClaim = true;
+            }
+          } else if (sellTokenBalance.isGreaterThan(0)) {
+            if (isWithdrawing) {
+              statusStr = 'Canceling';
+            } else {
+              visibleBtnCancel = true;
+            }
           }
         }
       }
