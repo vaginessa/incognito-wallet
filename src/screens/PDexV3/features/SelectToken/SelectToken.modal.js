@@ -61,6 +61,7 @@ const SelectTokenModal = (props) => {
     <View style={styled.container}>
       <Header title="Select coins" style={styled.header} />
       <BaseTextInputCustom
+        value={text}
         inputProps={{
           onChangeText: onChange,
           placeholder: 'Search coins',
