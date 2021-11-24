@@ -145,7 +145,7 @@ jobs:
   push_play_store:
     executor:
       name: rn/linux_android
-      size: "medium" # can be "medium", "large", "xlarge", "2xlarge"
+      size: "medium"
     steps:
       - attach_workspace:
           at: .
@@ -238,7 +238,7 @@ workflows:
             requires:
               - generate_data
         - push_ios_staging:
-            requires:push_play_store
+            requires:
               - generate_data
   push_next:
       jobs:
