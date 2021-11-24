@@ -24,11 +24,13 @@ const Market = React.memo((props) => {
     if (poolId) {
       batch(() => {
         dispatch(actionSetPoolSelected(poolId));
-        dispatch(actionInit());
         dispatch(actionChangeTab({ rootTabID: ROOT_TAB_TRADE, tabID: TAB_BUY_LIMIT_ID }));
+        setTimeout(() => {
+          dispatch(actionInit());
+          navigation.navigate(routeNames.Trade, { tabIndex: 0 });
+        }, 200);
       });
     }
-    navigation.navigate(routeNames.Trade, { tabIndex: 0 });
   };
   return (
     <>

@@ -39,7 +39,7 @@ export const enhanceAmountValidation = (WrappedComp) => (props) => {
       await setState({
         ...currentState,
         minAmountValidator: validator.minValue(_minAmount, {
-          message: `Amount must be larger than ${minAmountText} ${selectedPrivacy?.externalSymbol ||
+          message: `Amount must be greater than ${minAmountText} ${selectedPrivacy?.externalSymbol ||
             selectedPrivacy?.symbol}`,
         }),
       });

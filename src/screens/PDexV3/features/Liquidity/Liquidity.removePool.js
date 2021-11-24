@@ -149,6 +149,7 @@ const RemovePool = ({
 }) => {
   const navigation = useNavigation();
   const isFetching = useSelector(removePoolSelector.isFetchingSelector);
+  const { feeAmountStr } = useSelector(removePoolSelector.feeAmountSelector);
   const onSubmit = (params) => {
     typeof onRemoveContribute === 'function' && onRemoveContribute(params);
   };
@@ -166,7 +167,7 @@ const RemovePool = ({
       <View style={styled.padding}>
         {!!error && <Text style={styled.warning}>{error}</Text>}
         <RemoveLPButton onSubmit={onSubmit} />
-        <NetworkFee />
+        <NetworkFee feeStr={feeAmountStr} />
       </View>
     </>
   );
@@ -179,12 +180,12 @@ const RemovePool = ({
       <View style={styled.container}>
         <Header style={styled.padding} />
         <ScrollView
-          refreshControl={
+          refreshControl={(
             <RefreshControl
               refreshing={isFetching}
               onRefresh={onInitRemovePool}
             />
-          }
+          )}
           showsVerticalScrollIndicator={false}
         >
           <Form>{renderContent()}</Form>

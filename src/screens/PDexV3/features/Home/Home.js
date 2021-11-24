@@ -10,7 +10,6 @@ import { liquidityActions } from '@screens/PDexV3/features/Liquidity';
 import {styled as mainStyle} from '@screens/PDexV3/PDexV3.styled';
 import ReturnLP from '@screens/PDexV3/features/Share/Share.returnLP';
 import {listPoolsSelector, PoolsList} from '@screens/PDexV3/features/Pools';
-import {NFTTokenBottomBar} from '@screens/PDexV3/features/NFTToken';
 import {nftTokenDataSelector} from '@src/redux/selectors/account';
 import SelectAccountButton from '@components/SelectAccountButton';
 import {compose} from 'recompose';
@@ -33,7 +32,7 @@ const TabPools = React.memo(() => {
     <>
       <PoolsList onPressPool={onNavigateContribute} listPools={listPools} />
       <BottomView
-        title="Create liquidity +"
+        title="Create a pool +"
         onPress={() => {
           navigation.navigate(routeNames.CreatePool);
         }}

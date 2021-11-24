@@ -20,12 +20,14 @@ const styled = StyleSheet.create({
   },
 });
 
-const NetworkFee = ({ style }) => {
+const NetworkFee = ({ style, feeStr }) => {
   const [navigateFaucet] = useFaucet();
   return (
     <Text style={[styled.subText, style]}>
       {
-        'Incognito collects a small network fee of PRV to pay the miners\nwho help power the network.'
+        feeStr
+          ? `Incognito collects a small network fee of ${feeStr}PRV to pay the miners who help power the network.`
+          : 'Incognito collects a small network fee of PRV to pay the miners\nwho help power the network.'
       }
       <Text style={styled.topup} onPress={navigateFaucet}>
         Top up now!
@@ -34,8 +36,14 @@ const NetworkFee = ({ style }) => {
   );
 };
 
+NetworkFee.defaultProps = {
+  style: null,
+  feeStr: ''
+};
+
 NetworkFee.propTypes = {
   style: PropTypes.object,
+  feeStr: PropTypes.string
 };
 
 export default React.memo(NetworkFee);

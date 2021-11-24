@@ -182,7 +182,7 @@ export const minFeeValidator = (feetokenData) => {
         new BigNumber(minFeeOriginal),
       )
     ) {
-      return `Amount must be larger than ${minFeeAmountText} ${symbol}`;
+      return `Amount must be greater than ${minFeeAmountText} ${symbol}`;
     }
   } catch (error) {
     console.log('minFeeValidator-error', error);
