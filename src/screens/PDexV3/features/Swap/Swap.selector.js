@@ -113,6 +113,7 @@ export const feetokenDataSelector = createSelector(
         poolDetails: poolDetailsPRV,
         route: tradePathPRV,
         maxGet: maxGetPRV,
+        isSignificant: isSignificantPRV,
       } = feePrvEst;
       const {
         fee: feeToken,
@@ -120,10 +121,12 @@ export const feetokenDataSelector = createSelector(
         poolDetails: poolDetailsToken,
         route: tradePathToken,
         maxGet: maxGetToken,
+        isSignificant: isSignificantToken,
       } = feeTokenEst;
       let allPoolSize = [];
       let maxGet = 0;
       const payFeeByPRV = feetoken === PRV.id;
+      const isSignificant = payFeeByPRV ? isSignificantPRV : isSignificantToken;
       const minFeeOriginal = payFeeByPRV ? feePrv : feeToken;
       let feeAmount = convert.toNumber(fee, true) || 0;
       const feeToNumber = convert.toNumber(fee, true);
@@ -237,6 +240,7 @@ export const feetokenDataSelector = createSelector(
         tradePath,
         maxGet,
         allPoolSize,
+        isSignificant,
       };
     } catch (error) {
       console.log('feetokenDataSelector-error', error);

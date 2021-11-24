@@ -2,7 +2,7 @@ import React, { memo } from 'react';
 import { View, StyleSheet, Modal, Text } from 'react-native';
 import PropTypes from 'prop-types';
 import { COLORS, FONT } from '@src/styles';
-import { ButtonBasic } from '@components/Button';
+import { BtnPrimary, BtnSecondary } from '@components/core/Button/Button';
 
 const styles = StyleSheet.create({
   modalBackground: {
@@ -10,14 +10,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: 'rgba(0,0,0,0.5)',
-    paddingHorizontal: 27,
+    paddingHorizontal: 24,
   },
   wrapContent: {
     backgroundColor: COLORS.white,
     width: '100%',
     borderRadius: 13,
-    paddingHorizontal: 15,
-    paddingVertical: 30,
+    paddingHorizontal: 16,
+    minHeight: 200,
+    justifyContent: 'center',
   },
   title: {
     ...FONT.STYLE.bold,
@@ -33,9 +34,8 @@ const styles = StyleSheet.create({
     marginTop: 15,
   },
   buttonStyle: {
-    borderRadius: 25,
     height: 50,
-    marginTop: 30,
+    marginTop: 24,
     width: '48%',
   },
 });
@@ -67,15 +67,15 @@ const RemoveDialog = (props) => {
           <View
             style={{ flexDirection: 'row', justifyContent: 'space-between' }}
           >
-            <ButtonBasic
-              onPress={onPressCancel}
-              title={canStr || CONTENT.cancel}
-              btnStyle={styles.buttonStyle}
-            />
-            <ButtonBasic
+            <BtnSecondary
               onPress={onPressAccept}
               title={acceptStr || CONTENT.accept}
-              btnStyle={styles.buttonStyle}
+              wrapperStyle={styles.buttonStyle}
+            />
+            <BtnPrimary
+              onPress={onPressCancel}
+              title={canStr || CONTENT.cancel}
+              wrapperStyle={styles.buttonStyle}
             />
           </View>
         </View>

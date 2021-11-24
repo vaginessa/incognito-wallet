@@ -6,6 +6,7 @@ import { TradeSuccessModal } from '@src/screens/PDexV3/features/Trade';
 import { focus } from 'redux-form';
 import { actionCheckNeedFaucetPRV } from '@src/redux/actions/token';
 import FaucetPRVModal from '@src/components/Modal/features/FaucetPRVModal';
+import RemoveSuccessDialog from '@src/screens/Setting/features/RemoveStorage/RemoveStorage.Dialog';
 import { formConfigs } from './Swap.constant';
 import {
   actionInitSwapForm,
@@ -17,6 +18,7 @@ import {
   swapInfoSelector,
   swapFormErrorSelector,
   sellInputTokenSeletor,
+  feetokenDataSelector,
 } from './Swap.selector';
 
 const enhance = (WrappedComp) => (props) => {
@@ -24,6 +26,8 @@ const enhance = (WrappedComp) => (props) => {
   const swapInfo = useSelector(swapInfoSelector);
   const formErrors = useSelector(swapFormErrorSelector);
   const sellInputToken = useSelector(sellInputTokenSeletor);
+  const feeTokenData = useSelector(feetokenDataSelector);
+  const [visibleSignificant, setVisibleSignificant] = React.useState(false);
   const unmountSwap = () => {
     dispatch(actionReset());
   };
@@ -35,6 +39,27 @@ const enhance = (WrappedComp) => (props) => {
         shouldFetchHistory: true,
       }),
     );
+  const handleCreateSwapOrder = async () => {
+    const tx = await dispatch(actionFetchSwap());
+    if (tx) {
+      dispatch(
+        actionToggleModal({
+          data: (
+            <TradeSuccessModal
+              title="Swap initiated!"
+              desc={`You placed an order to sell\n${swapInfo?.sellInputAmountStr ||
+                ''} for ${swapInfo?.buyInputAmountStr || ''}.`}
+              handleTradeSucesss={() => initSwapForm()}
+              sub={
+                'Your balance will update in a couple of\nminutes after the trade is finalized.'
+              }
+            />
+          ),
+          visible: true,
+        }),
+      );
+    }
+  };
   const handleConfirm = async () => {
     try {
       const fields = [formConfigs.selltoken, formConfigs.buytoken];
@@ -62,25 +87,11 @@ const enhance = (WrappedComp) => (props) => {
           return;
         }
       }
-      const tx = await dispatch(actionFetchSwap());
-      if (tx) {
-        dispatch(
-          actionToggleModal({
-            data: (
-              <TradeSuccessModal
-                title="Swap initiated!"
-                desc={`You placed an order to sell\n${swapInfo?.sellInputAmountStr ||
-                  ''} for ${swapInfo?.buyInputAmountStr || ''}.`}
-                handleTradeSucesss={() => initSwapForm()}
-                sub={
-                  'Your balance will update in a couple of\nminutes after the trade is finalized.'
-                }
-              />
-            ),
-            visible: true,
-          }),
-        );
+      const { isSignificant } = feeTokenData;
+      if (isSignificant) {
+        return setVisibleSignificant(true);
       }
+      handleCreateSwapOrder();
     } catch {
       //
     }
@@ -95,6 +106,17 @@ const enhance = (WrappedComp) => (props) => {
   return (
     <ErrorBoundary>
       <WrappedComp {...{ ...props, handleConfirm, initSwapForm }} />
+      <RemoveSuccessDialog
+        visible={visibleSignificant}
+        onPressCancel={() => setVisibleSignificant(false)}
+        onPressAccept={() => {
+          setVisibleSignificant(false);
+          handleCreateSwapOrder();
+        }}
+        title="Warning"
+        subTitle="Do note that due to trade size, the price of this trade varies significantly from market price."
+        acceptStr="Accept"
+      />
     </ErrorBoundary>
   );
 };
