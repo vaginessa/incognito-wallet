@@ -37,7 +37,7 @@ const MAIN_NET_SERVER = {
   explorer: 'https://explorer.incognito.org',
   tradeServices: 'https://api-coinservice.incognito.org',
   portalServices: 'https://api-portalv4.incognito.org',
-  webviewChartServices: '',
+  webviewChartServices: 'https://chart-webview.incognito.org',
 };
 const BETA_SERVER = {
   id: 'beta',
