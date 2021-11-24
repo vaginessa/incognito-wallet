@@ -50,7 +50,7 @@ const WithdrawFeeLPDetail = () => {
       }
     }));
     const amountHook = (rewards || []).map(({ amountSymbolStr }, index) => ({
-      label: `Amount${index + 1}`,
+      label: `Amount ${index + 1}`,
       valueText: amountSymbolStr,
       disabled: !amountSymbolStr
     }));
