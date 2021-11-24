@@ -13,6 +13,7 @@ import { useSelector } from 'react-redux';
 import { currencySelector, decimalDigitsSelector } from '@src/screens/Setting';
 import { prefixCurrency, pTokenSelector } from '@src/redux/selectors/shared';
 import { formatAmount, formatPrice } from '@components/Token/Token.utils';
+import format from '@utils/format';
 import { styled } from './Token.styled';
 
 export const NormalText = (props) => {
@@ -164,7 +165,7 @@ export const ChangePrice = (props) => {
   }
   return (
     <NormalText
-      text={` ${isTokenDecrease ? '-' : '+'}${round(changeToNumber, 2)}%`}
+      text={` ${isTokenDecrease ? '-' : '+'}${format.amountVer2(changeToNumber, 0)}%`}
       style={[
         {
           marginLeft: 5,

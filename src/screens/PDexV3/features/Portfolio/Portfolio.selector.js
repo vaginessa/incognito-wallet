@@ -93,7 +93,7 @@ export const listShareSelector = createSelector(
       const totalRewardUSD = mapRewards.reduce((prev, curr) => new BigNumber(prev).plus(curr.rewardUSD).toNumber(), 0);
       const totalRewardAmount = Math.ceil(new BigNumber(totalRewardUSD).multipliedBy(Math.pow(10, 9)).toNumber());
       const totalRewardUSDStr = format.amountVer2(totalRewardAmount, 9);
-      const rewardUSDSymbolStr = `${totalRewardUSDStr} $`;
+      const rewardUSDSymbolStr = `$${totalRewardUSDStr}`;
       const hookRewards = mapRewards.map((item, index) => ({
         label: `Reward ${index + 1}`,
         valueText: item.rewardStr,
