@@ -8,6 +8,7 @@ import convert from '@src/utils/convert';
 import format from '@src/utils/format';
 import { formValueSelector, isValid } from 'redux-form';
 import isEmpty from 'lodash/isEmpty';
+import capitalize from 'lodash/capitalize';
 import { createSelector } from 'reselect';
 import SelectedPrivacy from '@src/models/selectedPrivacy';
 import {
@@ -449,7 +450,7 @@ export const mappingOrderHistorySelector = createSelector(
       const sellTokenBalance = new BigNumber(order?.sellTokenBalance);
       const buyTokenBalance = new BigNumber(order?.buyTokenBalance);
       const sellTokenWithdrawed = new BigNumber(order?.sellTokenWithdrawed);
-      let statusStr = status;
+      let statusStr = capitalize(status);
       if (fromStorage) {
         statusStr = 'Processing';
       }

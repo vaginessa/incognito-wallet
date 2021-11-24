@@ -407,6 +407,10 @@ export const mappingOrderHistorySelector = createSelector(
         respondAmounts,
         isCompleted,
       } = order;
+      let statusStr = capitalize(status);
+      if (fromStorage) {
+        statusStr = 'Processing';
+      }
       const sellToken: SelectedPrivacy = getPrivacyDataByTokenID(sellTokenId);
       const buyToken: SelectedPrivacy = getPrivacyDataByTokenID(buyTokenId);
       const feeToken: SelectedPrivacy = getPrivacyDataByTokenID(feeTokenId);
@@ -454,7 +458,7 @@ export const mappingOrderHistorySelector = createSelector(
           PRV.symbol
         }`,
         tradingFeeStr,
-        statusStr: capitalize(status),
+        statusStr,
         swapStr,
         tradingFeeByPRV: feeToken.isMainCrypto,
         price,

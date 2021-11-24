@@ -68,7 +68,7 @@ const enhance = (WrappedComp) => (props) => {
           actionToggleModal({
             data: (
               <TradeSuccessModal
-                title="Order initiated!"
+                title="Swap initiated!"
                 desc={`You placed an order to sell\n${swapInfo?.sellInputAmountStr ||
                   ''} for ${swapInfo?.buyInputAmountStr || ''}.`}
                 handleTradeSucesss={() => initSwapForm()}
