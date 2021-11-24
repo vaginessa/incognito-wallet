@@ -181,7 +181,7 @@ jobs:
           command: |
             ghr -t ${GITHUB_TOKEN} -u incognitochain -r incognito-wallet -c ${CIRCLE_SHA1} -soft ${APP_VERSION} .
 orbs:
-  rn: react-native-community/react-native@4.1.0
+  rn: react-native-community/react-native@6.0.1
 version: 2.1
 workflows:
   build_staging:
