@@ -45,11 +45,10 @@ const GroupButton = React.memo(() => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const selected = useSelector(selectedPrivacySelector.selectedPrivacy);
-  const handleSend = () => {
+  const handleBuy = () => {
     navigation.navigate(routeNames.Trade, { tabIndex: 0 });
     const poolId = selected.defaultPoolPair;
     if (poolId) {
-      navigation.navigate(routeNames.Trade, { tabIndex: 0 });
       dispatch(
         actionChangeTab({ rootTabID: ROOT_TAB_TRADE, tabID: TAB_BUY_LIMIT_ID }),
       );
@@ -59,7 +58,7 @@ const GroupButton = React.memo(() => {
       }, 200);
     }
   };
-  const handleReceive = () => {
+  const handleSell = () => {
     const poolId = selected.defaultPoolPair;
     navigation.navigate(routeNames.Trade, { tabIndex: 1 });
     if (poolId) {
@@ -79,13 +78,13 @@ const GroupButton = React.memo(() => {
         title="Buy"
         wrapperStyle={groupBtnStyled.btnStyle}
         background={COLORS.green}
-        onPress={handleSend}
+        onPress={handleBuy}
       />
       <BTNPrimary
         title="Sell"
         wrapperStyle={groupBtnStyled.btnStyle}
         background={COLORS.red2}
-        onPress={handleReceive}
+        onPress={handleSell}
       />
     </View>
   );
