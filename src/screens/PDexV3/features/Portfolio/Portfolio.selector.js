@@ -95,7 +95,7 @@ export const listShareSelector = createSelector(
       const totalRewardUSDStr = format.amountVer2(totalRewardAmount, 9);
       const rewardUSDSymbolStr = `${totalRewardUSDStr} $`;
       const hookRewards = mapRewards.map((item, index) => ({
-        label: `Reward${index + 1}`,
+        label: `Reward ${index + 1}`,
         valueText: item.rewardStr,
       }));
       const hookFactories = [
@@ -109,24 +109,24 @@ export const listShareSelector = createSelector(
         },
       ];
       const hookFactoriesDetail = [
-        {
-          label: 'PoolId',
-          valueText: poolId,
-          copyable: true,
-        },
+        // {
+        //   label: 'PoolId',
+        //   valueText: poolId,
+        //   copyable: true,
+        // },
         {
           label: 'APY',
-          valueText: `${apy}%`,
+          valueText: `${format.amount(apy, 0)}%`,
         },
         {
           label: 'Principal',
           valueText: principalStr,
           moreLines: true
         },
-        {
-          label: 'Share',
-          valueText: shareStr,
-        },
+        // {
+        //   label: 'Share',
+        //   valueText: shareStr,
+        // },
         ...hookRewards,
       ];
 
@@ -183,7 +183,7 @@ export const totalShareSelector = createSelector(
       return prev.plus(cur.totalRewardUSD);
     }, new BigNumber('0')).toNumber();
     const originalAmount = convert.toOriginalAmount(rewardUSD, 9, true);
-    return format.amountSuffix(originalAmount, 9);
+    return format.amountVer2(originalAmount, 9);
   }
 );
 
