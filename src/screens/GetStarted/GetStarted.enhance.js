@@ -6,7 +6,7 @@ import { login } from '@src/services/auth';
 import routeNames from '@src/router/routeNames';
 import { ExHandler } from '@src/services/exception';
 import serverService from '@src/services/wallet/Server';
-import { useNavigation } from 'react-navigation-hooks';
+import { useFocusEffect, useNavigation } from 'react-navigation-hooks';
 import { actionFetch as actionFetchProfile } from '@screens/Profile';
 import withPin from '@components/pin.enhance';
 import KeepAwake from 'react-native-keep-awake';
@@ -66,7 +66,6 @@ const enhance = (WrappedComp) => (props) => {
         dispatch(requestUpdateMetrics(ANALYTICS.ANALYTIC_DATA_TYPE.OPEN_APP));
         dispatch(actionFetchListPools());
         dispatch(actionFetchPairs(true));
-        getHomeConfiguration();
       });
       const servers = await serverService.get();
       if (!servers || servers?.length === 0) {
@@ -97,6 +96,12 @@ const enhance = (WrappedComp) => (props) => {
   React.useEffect(() => {
     onRetry();
   }, []);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      getHomeConfiguration();
+    }, []),
+  );
 
   return (
     <ErrorBoundary>
