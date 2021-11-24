@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
@@ -47,7 +48,7 @@ const periods = [
 ];
 
 export const Period = React.memo(({ handleFetchData }) => {
-  const [actived, setActived] = React.useState(periods[0]);
+  const [actived, setActived] = React.useState(periods[3]);
   return (
     <Row
       style={{

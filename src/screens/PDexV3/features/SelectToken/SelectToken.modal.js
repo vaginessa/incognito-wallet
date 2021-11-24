@@ -1,13 +1,12 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import { Text } from '@components/core';
-import { Row, Header } from '@src/components';
+import { Header } from '@src/components';
 import {
   handleFilterTokenByKeySearch,
   TokenTrade,
 } from '@src/components/Token';
 import { BaseTextInputCustom } from '@src/components/core/BaseTextInput';
-import { COLORS, FONT } from '@src/styles';
+import { FONT } from '@src/styles';
 import { withLayout_2 } from '@src/components/Layout';
 import { useNavigation, useNavigationParam } from 'react-navigation-hooks';
 import { delay } from '@src/utils/delay';
@@ -18,11 +17,6 @@ const styled = StyleSheet.create({
   input: {
     fontSize: FONT.SIZE.small,
     lineHeight: FONT.SIZE.small + 5,
-  },
-  subText: {
-    fontSize: FONT.SIZE.small,
-    lineHeight: FONT.SIZE.small + 5,
-    color: COLORS.colorGrey3,
   },
   extra: {
     marginTop: 16,
@@ -70,9 +64,6 @@ const SelectTokenModal = (props) => {
         }}
       />
       <View style={styled.extra}>
-        <Row>
-          <Text style={styled.subText}>Name</Text>
-        </Row>
         <ListAllTokenSelectable
           availableTokens={availableTokens}
           renderItem={({ item }) => (
