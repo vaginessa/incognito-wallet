@@ -38,7 +38,7 @@ const NetworkFee = ({ style, feeStr }) => {
 
 NetworkFee.defaultProps = {
   style: null,
-  feeStr: ''
+  feeStr: '0.0000001'
 };
 
 NetworkFee.propTypes = {
