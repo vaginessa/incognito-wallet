@@ -143,9 +143,9 @@ jobs:
       - run: yarn deployIOS:prod
       - run: curl -X POST -H 'Content-type:application/json' --data '{"text":"'"Deploy iOS $APP_VERSION production successfully! $LAST_COMMIT_MESSAGE"'"}' $SLACK_HOOK
   push_play_store:
+    resource_class: "medium"
     executor:
       name: rn/linux_android
-      size: "medium"
     steps:
       - attach_workspace:
           at: .
