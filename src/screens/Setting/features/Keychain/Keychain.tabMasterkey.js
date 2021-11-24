@@ -14,7 +14,7 @@ const TabMasterkey = () => {
           <Accounts />
         </ScrollView>
       </View>
-      <View tabID={TABS.TAB_KEYCHAIN_MASTER_KEY_SETTING_ID} label="Settings keychains">
+      <View tabID={TABS.TAB_KEYCHAIN_MASTER_KEY_SETTING_ID} label="Actions">
         <ScrollView style={styled.wrapper} showsVerticalScrollIndicator={false}>
           <KeychainSetting />
         </ScrollView>

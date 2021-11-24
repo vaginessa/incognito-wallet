@@ -2,7 +2,6 @@ import React from 'react';
 import ErrorBoundary from '@src/components/ErrorBoundary';
 import { useDispatch, useSelector } from 'react-redux';
 import { defaultAccountSelector } from '@src/redux/selectors/account';
-import {NFTTokenBottomBar} from '@screens/PDexV3/features/NFTToken';
 import { actionFreeHomePDexV3, actionRefresh } from './Home.actions';
 
 const enhance = (WrappedComp) => (props) => {
@@ -20,7 +19,6 @@ const enhance = (WrappedComp) => (props) => {
   return (
     <ErrorBoundary>
       <WrappedComp {...{ ...props, handleOnRefresh }} />
-      <NFTTokenBottomBar />
     </ErrorBoundary>
   );
 };

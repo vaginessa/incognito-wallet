@@ -46,8 +46,10 @@ const tokenSelector = createSelector(
 export const feeAmountSelector = createSelector(
   contributeSelector,
   getPrivacyDataByTokenIDSelector,
-  ({ feeAmount, feeToken }, getPrivacyDataByTokenID) =>
-    ({ feeAmount, feeToken, token: getPrivacyDataByTokenID(feeToken) }),
+  ({ feeAmount, feeToken }, getPrivacyDataByTokenID) => {
+    const token = getPrivacyDataByTokenID(feeToken);
+    return { feeAmount, feeToken, token, feeAmountStr: format.amountFull(feeAmount, token.pDecimals) };
+  },
 );
 
 export const inputAmountSelector = createSelector(

@@ -23,7 +23,7 @@ import {
   liquidityActions,
 } from '@screens/PDexV3/features/Liquidity';
 import { ButtonTrade } from '@components/Button';
-import {NFTTokenBottomBar, NFTTokenModal} from '@screens/PDexV3/features/NFTToken';
+import { NFTTokenModal } from '@screens/PDexV3/features/NFTToken';
 import { compose } from 'recompose';
 import withTransaction from '@screens/PDexV3/features/Liquidity/Liquidity.enhanceTransaction';
 import NetworkFee from '@src/components/NetworkFee';
@@ -189,6 +189,7 @@ const Contribute = ({
   error,
 }) => {
   const isFetching = useSelector(contributeSelector.statusSelector);
+  const { feeAmountStr } = useSelector(contributeSelector.feeAmountSelector);
   const onSubmit = (params) => {
     typeof onCreateContributes === 'function' && onCreateContributes(params);
   };
@@ -219,7 +220,7 @@ const Contribute = ({
                 <View style={styled.padding}>
                   {!!error && <Text style={styled.warning}>{error}</Text>}
                   <ContributeButton onSubmit={onSubmit} />
-                  <NetworkFee />
+                  <NetworkFee feeStr={feeAmountStr} />
                   <Extra />
                 </View>
               </>
@@ -227,7 +228,6 @@ const Contribute = ({
           </Form>
         </ScrollView>
       </View>
-      <NFTTokenBottomBar />
       <SuccessModal
         closeSuccessDialog={onClose}
         title={SUCCESS_MODAL.CREATE_POOL.title}

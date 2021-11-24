@@ -11,6 +11,7 @@ import {nftTokenDataSelector} from '@src/redux/selectors/account';
 import BigNumber from 'bignumber.js';
 import convert from '@utils/convert';
 import {isNaN} from 'lodash';
+import format from '@utils/format';
 
 const createPoolSelector = createSelector(
   liquiditySelector,
@@ -34,8 +35,10 @@ export const tokenSelector = createSelector(
 export const feeAmountSelector = createSelector(
   createPoolSelector,
   getPrivacyDataByTokenIDSelector,
-  ({ feeAmount, feeToken }, getPrivacyDataByTokenID) =>
-    ({ feeAmount, feeToken, token: getPrivacyDataByTokenID(feeToken) }),
+  ({ feeAmount, feeToken }, getPrivacyDataByTokenID) => {
+    const token = getPrivacyDataByTokenID(feeToken);
+    return { feeAmount, feeToken, token, feeAmountStr: format.amountFull(feeAmount, token.pDecimals) };
+  },
 );
 
 export const inputAmountSelector = createSelector(

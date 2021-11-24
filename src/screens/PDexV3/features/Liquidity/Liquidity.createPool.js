@@ -6,7 +6,7 @@ import {Header, RowSpaceText, SuccessModal} from '@src/components';
 import {
   LIQUIDITY_MESSAGES,
   formConfigsCreatePool,
-  SUCCESS_MODAL, formConfigsContribute,
+  SUCCESS_MODAL,
 } from '@screens/PDexV3/features/Liquidity/Liquidity.constant';
 import {createForm, RFTradeInputAmount as TradeInputAmount, validator} from '@components/core/reduxForm';
 import {AddBreakLine} from '@components/core';
@@ -18,7 +18,7 @@ import styled from '@screens/PDexV3/features/Liquidity/Liquidity.styled';
 import {ButtonTrade} from '@components/Button';
 import {compose} from 'recompose';
 import withTransaction from '@screens/PDexV3/features/Liquidity/Liquidity.enhanceTransaction';
-import {NFTTokenBottomBar, NFTTokenModal} from '@screens/PDexV3/features/NFTToken';
+import {NFTTokenModal} from '@screens/PDexV3/features/NFTToken';
 import {useNavigation} from 'react-navigation-hooks';
 import routeNames from '@routers/routeNames';
 import NetworkFee from '@src/components/NetworkFee';
@@ -169,7 +169,7 @@ const ButtonCreatePool = React.memo(({ onSubmit }) => {
   const amountSelector = useSelector(createPoolSelector.inputAmountSelector);
   const inputAmount = amountSelector(formConfigsCreatePool.formName, formConfigsCreatePool.inputToken);
   const outputAmount = amountSelector(formConfigsCreatePool.formName, formConfigsCreatePool.outputToken);
-  const { feeAmount } = useSelector(createPoolSelector.feeAmountSelector);
+  const { feeAmount, feeAmountStr } = useSelector(createPoolSelector.feeAmountSelector);
   const { amp, estOutputStr } = useSelector(createPoolSelector.ampValueSelector);
   const formErrors = useSelector((state) =>
     getFormSyncErrors(formConfigsCreatePool.formName)(state),
@@ -219,7 +219,7 @@ const ButtonCreatePool = React.memo(({ onSubmit }) => {
         title={LIQUIDITY_MESSAGES.createPool}
         onPress={handleSubmit}
       />
-      <NetworkFee />
+      <NetworkFee feeStr={feeAmountStr} />
     </>
   );
 });
@@ -269,7 +269,6 @@ const CreatePool = ({
           </Form>
         </ScrollView>
       </View>
-      <NFTTokenBottomBar />
       <SuccessModal
         closeSuccessDialog={onClose}
         title={SUCCESS_MODAL.ADD_POOL.title}
