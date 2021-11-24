@@ -1,30 +1,23 @@
-import React, {memo} from 'react';
-import {
-  StyleSheet,
-  View,
-  ScrollView,
-  Text,
-} from 'react-native';
-import {COLORS, FONT} from '@src/styles';
-import {batch, useDispatch, useSelector} from 'react-redux';
-import {
-  getDataByShareIdSelector,
-} from '@screens/PDexV3/features/Portfolio/Portfolio.selector';
-import {Hook} from '@screens/Wallet/features/TxHistoryDetail/TxHistoryDetail';
-import {liquidityActions} from '@screens/PDexV3/features/Liquidity';
-import {useNavigation} from 'react-navigation-hooks';
+import React, { memo } from 'react';
+import { StyleSheet, View, ScrollView, Text } from 'react-native';
+import { COLORS, FONT } from '@src/styles';
+import { batch, useDispatch, useSelector } from 'react-redux';
+import { getDataByShareIdSelector } from '@screens/PDexV3/features/Portfolio/Portfolio.selector';
+import { Hook } from '@screens/Wallet/features/TxHistoryDetail/TxHistoryDetail';
+import { liquidityActions } from '@screens/PDexV3/features/Liquidity';
+import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@routers/routeNames';
-import {Row} from '@src/components';
-import {actionToggleModal} from '@components/Modal';
-import {BTNBorder, BTNPrimary} from '@components/core/Button';
+import { Row } from '@src/components';
+import { actionToggleModal } from '@components/Modal';
+import { BtnSecondary, BtnPrimary } from '@components/core/Button';
 import PropTypes from 'prop-types';
 
 const styles = StyleSheet.create({
   wrapper: {
-    flex: 1
+    flex: 1,
   },
   content: {
-    flex: 1
+    flex: 1,
   },
   title: {
     ...FONT.STYLE.medium,
@@ -42,11 +35,11 @@ const styles = StyleSheet.create({
     width: 125,
     marginLeft: 5,
     borderRadius: 14,
-    backgroundColor: COLORS.lightGrey19
+    backgroundColor: COLORS.lightGrey19,
   },
   row: {
     alignItems: 'center',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
   },
   warning: {
     color: COLORS.orange,
@@ -67,8 +60,8 @@ const styles = StyleSheet.create({
     fontFamily: FONT.NAME.medium,
   },
   wrapHook: {
-    marginTop: 8
-  }
+    marginTop: 8,
+  },
 });
 
 const PortfolioModal = ({ shareId, onWithdrawFeeLP }) => {
@@ -79,7 +72,12 @@ const PortfolioModal = ({ shareId, onWithdrawFeeLP }) => {
   const onWithdrawPress = () => {
     batch(() => {
       onClose();
-      dispatch(liquidityActions.actionSetRemovePoolToken({ inputToken: token1.tokenId, outputToken: token2.tokenId }));
+      dispatch(
+        liquidityActions.actionSetRemovePoolToken({
+          inputToken: token1.tokenId,
+          outputToken: token2.tokenId,
+        }),
+      );
       dispatch(liquidityActions.actionSetRemoveShareID(data.shareId));
       navigation.navigate(routeNames.RemovePool);
     });
@@ -87,7 +85,12 @@ const PortfolioModal = ({ shareId, onWithdrawFeeLP }) => {
   const onInvestPress = () => {
     batch(() => {
       onClose();
-      dispatch(liquidityActions.actionSetContributeID({ poolId: data.poolId, nftId: data.nftId || '' }));
+      dispatch(
+        liquidityActions.actionSetContributeID({
+          poolId: data.poolId,
+          nftId: data.nftId || '',
+        }),
+      );
       navigation.navigate(routeNames.ContributePool);
     });
   };
@@ -104,8 +107,11 @@ const PortfolioModal = ({ shareId, onWithdrawFeeLP }) => {
     <View style={styles.wrapper}>
       <View style={styles.content}>
         <Row style={styles.row} centerVertical>
-          <Text style={styles.title}>{`${token1.symbol} / ${token2.symbol}`}</Text>
-          <BTNPrimary
+          <Text
+            style={styles.title}
+          >{`${token1.symbol} / ${token2.symbol}`}
+          </Text>
+          <BtnPrimary
             title="Remove liquidity"
             textStyle={styles.btnText}
             wrapperStyle={styles.btnSmall}
@@ -113,28 +119,42 @@ const PortfolioModal = ({ shareId, onWithdrawFeeLP }) => {
             disabled={disableBtn || !share}
           />
         </Row>
-        <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+        <ScrollView
+          style={styles.scrollView}
+          showsVerticalScrollIndicator={false}
+        >
           {hookFactoriesDetail.map((hook) => (
-            <Hook key={hook?.label} {...hook} labelStyle={styles.leftText} valueTextStyle={styles.rightText} style={styles.wrapHook} />
+            <Hook
+              key={hook?.label}
+              {...hook}
+              labelStyle={styles.leftText}
+              valueTextStyle={styles.rightText}
+              style={styles.wrapHook}
+            />
           ))}
         </ScrollView>
-        {!validNFT && <Text style={styles.warning}>You don&apos;t have any spare tickets to make this transaction. Wait for one to free up.</Text>}
+        {!validNFT && (
+          <Text style={styles.warning}>
+            You don&apos;t have any spare tickets to make this transaction. Wait
+            for one to free up.
+          </Text>
+        )}
         <Row spaceBetween style={{ marginTop: 10 }}>
           {!!withdrawable && (
-            <BTNBorder
+            <BtnSecondary
               title="Withdraw rewards"
               onPress={onClaimReward}
-              wrapperStyle={[{flex: 1}, !!share && { marginRight: 8 }]}
-              textStyle={{color: COLORS.colorBlue}}
+              wrapperStyle={[{ flex: 1 }, !!share && { marginRight: 8 }]}
+              textStyle={{ color: COLORS.colorBlue }}
               background={COLORS.colorBlue}
               disabled={withdrawing || disableBtn}
             />
           )}
           {!!share && (
-            <BTNPrimary
+            <BtnPrimary
               title="Invest more"
               onPress={onInvestPress}
-              wrapperStyle={{flex: 1}}
+              wrapperStyle={{ flex: 1 }}
               background={COLORS.colorBlue}
             />
           )}
@@ -146,7 +166,7 @@ const PortfolioModal = ({ shareId, onWithdrawFeeLP }) => {
 
 PortfolioModal.propTypes = {
   shareId: PropTypes.string.isRequired,
-  onWithdrawFeeLP: PropTypes.func.isRequired
+  onWithdrawFeeLP: PropTypes.func.isRequired,
 };
 
 export default memo(PortfolioModal);

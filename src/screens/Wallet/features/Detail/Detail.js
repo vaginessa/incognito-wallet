@@ -1,5 +1,5 @@
 import React from 'react';
-import {TouchableOpacity, View} from 'react-native';
+import { TouchableOpacity, View } from 'react-native';
 import Header from '@src/components/Header';
 import {
   selectedPrivacySelector,
@@ -7,33 +7,34 @@ import {
   tokenSelector,
   accountSelector,
 } from '@src/redux/selectors';
-import {useDispatch, useSelector} from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { BtnInfo } from '@src/components/Button';
 import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
-import {
-  Amount,
-  AmountBasePRV,
-  AmountBaseUSDT,
-  ChangePrice, Price,
-} from '@src/components/Token/Token';
+import { Amount, ChangePrice, Price } from '@src/components/Token/Token';
 import HistoryToken from '@screens/Wallet/features/HistoryToken';
 import MainCryptoHistory from '@screens/Wallet/features/MainCryptoHistory';
 import { isGettingBalance as isGettingTokenBalanceSelector } from '@src/redux/selectors/token';
 import { isGettingBalance as isGettingMainCryptoBalanceSelector } from '@src/redux/selectors/account';
 import useFeatureConfig from '@src/shared/hooks/featureConfig';
-import { pTokenSelector } from '@src/redux/selectors/shared';
 import { useHistoryEffect } from '@screens/Wallet/features/History';
 import appConstant from '@src/constants/app';
-import {actionChangeTab} from '@components/core/Tabs/Tabs.actions';
-import {ROOT_TAB_TRADE, TAB_BUY_LIMIT_ID, TAB_SELL_LIMIT_ID} from '@screens/PDexV3/features/Trade/Trade.constant';
-import {actionInit, actionSetPoolSelected} from '@screens/PDexV3/features/OrderLimit';
-import {BTNBorder, BTNPrimary} from '@components/core/Button';
-import {COLORS} from '@src/styles';
-import {ThreeDotsVerIcon} from '@components/Icons';
-import {actionToggleModal} from '@components/Modal';
+import { actionChangeTab } from '@components/core/Tabs/Tabs.actions';
+import {
+  ROOT_TAB_TRADE,
+  TAB_BUY_LIMIT_ID,
+  TAB_SELL_LIMIT_ID,
+} from '@screens/PDexV3/features/Trade/Trade.constant';
+import {
+  actionInit,
+  actionSetPoolSelected,
+} from '@screens/PDexV3/features/OrderLimit';
+import { BtnSecondary, BtnPrimary } from '@components/core/Button';
+import { COLORS } from '@src/styles';
+import { ThreeDotsVerIcon } from '@components/Icons';
+import { actionToggleModal } from '@components/Modal';
 import ModalBottomSheet from '@components/Modal/features/ModalBottomSheet';
-import {Row} from '@src/components';
+import { Row } from '@src/components';
 import {
   styled,
   groupBtnStyled,
@@ -63,7 +64,10 @@ const GroupButton = React.memo(() => {
     navigation.navigate(routeNames.Trade, { tabIndex: 1 });
     if (poolId) {
       dispatch(
-        actionChangeTab({ rootTabID: ROOT_TAB_TRADE, tabID: TAB_SELL_LIMIT_ID }),
+        actionChangeTab({
+          rootTabID: ROOT_TAB_TRADE,
+          tabID: TAB_SELL_LIMIT_ID,
+        }),
       );
       dispatch(actionSetPoolSelected(poolId));
       setTimeout(() => {
@@ -74,13 +78,13 @@ const GroupButton = React.memo(() => {
 
   return (
     <View style={groupBtnStyled.groupButton}>
-      <BTNPrimary
+      <BtnPrimary
         title="Buy"
         wrapperStyle={groupBtnStyled.btnStyle}
         background={COLORS.green}
         onPress={handleBuy}
       />
-      <BTNPrimary
+      <BtnPrimary
         title="Sell"
         wrapperStyle={groupBtnStyled.btnStyle}
         background={COLORS.red2}
@@ -144,33 +148,38 @@ const CustomRightHeader = () => {
     handleSend,
   );
   const onToggle = () => {
-    dispatch(actionToggleModal({
-      data: (
-        <ModalBottomSheet
-          style={{ height: '15%' }}
-          contentView={(
-            <Row style={groupBtnStyled.groupButton}>
-              <BTNBorder
-                title="Receive"
-                wrapperStyle={groupBtnStyled.btnStyle}
-                onPress={handleReceive}
-              />
-              <BTNPrimary
-                title="Send"
-                wrapperStyle={groupBtnStyled.btnStyle}
-                onPress={onPressSend}
-                disabled={isSendDisabled}
-              />
-            </Row>
-          )}
-        />
-      ),
-      visible: true,
-      shouldCloseModalWhenTapOverlay: true
-    }));
+    dispatch(
+      actionToggleModal({
+        data: (
+          <ModalBottomSheet
+            style={{ height: '15%' }}
+            contentView={
+              <Row style={groupBtnStyled.groupButton}>
+                <BtnSecondary
+                  title="Receive"
+                  wrapperStyle={groupBtnStyled.btnStyle}
+                  onPress={handleReceive}
+                />
+                <BtnPrimary
+                  title="Send"
+                  wrapperStyle={groupBtnStyled.btnStyle}
+                  onPress={onPressSend}
+                  disabled={isSendDisabled}
+                />
+              </Row>
+            }
+          />
+        ),
+        visible: true,
+        shouldCloseModalWhenTapOverlay: true,
+      }),
+    );
   };
   return (
-    <TouchableOpacity style={{ height: 30, justifyContent: 'center' }} onPress={onToggle}>
+    <TouchableOpacity
+      style={{ height: 30, justifyContent: 'center' }}
+      onPress={onToggle}
+    >
       <ThreeDotsVerIcon />
     </TouchableOpacity>
   );

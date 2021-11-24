@@ -18,7 +18,7 @@ import { Text } from '@components/core';
 import { change, Field } from 'redux-form';
 import withInput from '@screens/PDexV3/features/Staking/Staking.enhanceInput';
 import { stakingSelector } from '@screens/PDexV3/features/Staking/index';
-import { BTNPrimary } from '@components/core/Button';
+import { BtnPrimary } from '@components/core/Button';
 import isEmpty from 'lodash/isEmpty';
 import withTransaction from '@screens/PDexV3/features/Staking/Staking.transaction';
 import NetworkFee from '@src/components/NetworkFee';
@@ -90,7 +90,7 @@ const StakingWithdrawInvest = React.memo(({ onUnStaking, error }) => {
           <>
             <Form>{() => <CustomInput />}</Form>
             {!!error && <Text style={coinStyled.error}>{error}</Text>}
-            <BTNPrimary
+            <BtnPrimary
               title={STAKING_MESSAGES.withdraw}
               wrapperStyle={coinStyled.button}
               disabled={disabled || error}

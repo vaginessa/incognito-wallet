@@ -26,7 +26,7 @@ const NetworkFee = ({ style, feeStr }) => {
     <Text style={[styled.subText, style]}>
       {
         feeStr
-          ? `Incognito collects a small network fee of ${feeStr}PRV to pay the miners who help power the network.`
+          ? `Incognito collects a small network fee of ${feeStr} PRV to pay the miners who help power the network.`
           : 'Incognito collects a small network fee of PRV to pay the miners\nwho help power the network.'
       }
       <Text style={styled.topup} onPress={navigateFaucet}>
