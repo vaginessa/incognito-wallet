@@ -214,7 +214,7 @@ export const HOME_CONFIGS = {
             'https://incognito-org.s3.amazonaws.com/wallet/icons6/Explorer.png',
           title: 'Explorer',
           desc: 'Discover the network',
-          route: 'https://incscan.io/',
+          route: 'https://explorer.incognito.org/',
           message: '',
           toolTip: {
             id: 0,
@@ -312,6 +312,7 @@ export const HOME_CONFIGS = {
 };
 
 export const checkOutdatedVersion = (appVersion, packageVersion = CONSTANT_CONFIGS.BUILD_VERSION) => {
+  console.log('SANG TEST::: ', appVersion, packageVersion);
   const currentAppVersion = split(packageVersion, '.').map(
     (item) => Number(item),
   );

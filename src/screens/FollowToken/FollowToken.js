@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text } from 'react-native';
 import Header from '@src/components/Header';
-import { TokenBasic as Token, ListAllToken } from '@src/components/Token';
+import {TokenBasic as Token, ListAllToken, TokenFollow} from '@src/components/Token';
 import PropTypes from 'prop-types';
 import routeNames from '@src/router/routeNames';
 import { useNavigation } from 'react-navigation-hooks';
@@ -26,7 +26,7 @@ const AddManually = () => {
   );
 };
 
-const Item = ({ item, handleToggleFollowToken }) =>
+export const Item = ({ item, handleToggleFollowToken }) =>
   React.useMemo(() => {
     return (
       <Token
@@ -39,7 +39,7 @@ const Item = ({ item, handleToggleFollowToken }) =>
     );
   }, [item?.isFollowed]);
 
-const FollowToken = React.memo((props) => {
+const FollowTokenList = React.memo((props) => {
   const { handleToggleFollowToken, ...rest } = props;
   return (
     <View style={styled.container}>
@@ -47,7 +47,7 @@ const FollowToken = React.memo((props) => {
       <ListAllToken
         {...rest}
         renderItem={({ item }) => (
-          <Item item={item} handleToggleFollowToken={handleToggleFollowToken} />
+          <TokenFollow item={item} handleToggleFollowToken={handleToggleFollowToken} onPress={() => handleToggleFollowToken(item)} />
         )}
       />
       <AddManually />
@@ -55,9 +55,9 @@ const FollowToken = React.memo((props) => {
   );
 });
 
-FollowToken.propTypes = {
+FollowTokenList.propTypes = {
   handleToggleFollowToken: PropTypes.func.isRequired,
   tokensFactories: PropTypes.array.isRequired,
 };
 
-export default withFollowToken(FollowToken);
+export default withFollowToken(FollowTokenList);

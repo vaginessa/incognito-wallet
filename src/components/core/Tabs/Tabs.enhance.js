@@ -1,6 +1,7 @@
 import React from 'react';
 import ErrorBoundary from '@src/components/ErrorBoundary';
 import { useDispatch, useSelector } from 'react-redux';
+import { delay } from '@src/utils/delay';
 import { ExHandler } from '@src/services/exception';
 import { View } from '@src/components/core';
 import { actionChangeTab } from './Tabs.actions';
@@ -10,16 +11,10 @@ import Tab from './Tabs.tab';
 import Tab1 from './Tabs.tab1';
 
 const enhance = (WrappedComp) => (props) => {
-  const {
-    children,
-    rootTabID,
-    useTab1 = false,
-    defaultTabIndex,
-    renderTabsAtBottom = false,
-  } = props;
+  const { children, rootTabID, useTab1 = false, defaultTabIndex = 0 } = props;
   const activeTab = useSelector(activedTabSelector)(rootTabID);
   const dispatch = useDispatch();
-  const onClickTabItem = (tab) => {
+  const onClickTabItem = async (tab) => {
     try {
       const foundTab = children.find((chil) => chil.props.tabID === tab);
       const { onChangeTab } = foundTab.props || {};
@@ -30,6 +25,7 @@ const enhance = (WrappedComp) => (props) => {
             tabID: tab,
           }),
         );
+        await delay(0);
         if (typeof onChangeTab === 'function') {
           onChangeTab();
         }
@@ -66,47 +62,41 @@ const enhance = (WrappedComp) => (props) => {
     });
   };
   React.useEffect(() => {
-    if (children) {
-      const { tabID, onChangeTab } = children[defaultTabIndex ?? 0].props || {};
-      dispatch(
-        actionChangeTab({
-          rootTabID,
-          tabID,
-        }),
-      );
-      if (typeof onChangeTab === 'function') {
-        onChangeTab();
+    try {
+      if (children) {
+        const { tabID, onChangeTab } = children[defaultTabIndex]?.props;
+        dispatch(
+          actionChangeTab({
+            rootTabID,
+            tabID,
+          }),
+        );
+        if (typeof onChangeTab === 'function') {
+          onChangeTab();
+        }
       }
+    } catch (error) {
+      console.log('ERROR HERE', error);
     }
   }, [defaultTabIndex]);
   const renderComponent = () => {
-    let Comp;
-    if (renderTabsAtBottom) {
-      Comp = (
-        <>
-          <View style={styled.tabContent}>
-            {children.map((child) => {
-              if (child.props.tabID !== activeTab) return null;
-              return child.props.children;
-            })}
-          </View>
-          <WrappedComp {...{ ...props, onClickTabItem, renderTabs }} />
-        </>
-      );
-    } else {
-      Comp = (
+    try {
+      let Comp = (
         <>
           <WrappedComp {...{ ...props, onClickTabItem, renderTabs }} />
           <View style={styled.tabContent}>
-            {children.map((child) => {
+            {children?.map((child) => {
               if (child.props.tabID !== activeTab) return null;
               return child.props.children;
             })}
           </View>
         </>
       );
+      return Comp;
+    } catch (error) {
+      console.log('ERROR', error);
     }
-    return Comp;
+    return null;
   };
   return <ErrorBoundary>{renderComponent()}</ErrorBoundary>;
 };

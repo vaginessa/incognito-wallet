@@ -1,5 +1,5 @@
 import React from 'react';
-import {MaxIcon} from '@src/components/Icons';
+import { MaxIcon } from '@src/components/Icons';
 import PropTypes from 'prop-types';
 import Row from '@src/components/Row';
 import { StyleSheet } from 'react-native';
@@ -7,7 +7,7 @@ import {
   Text,
   BaseTextInput,
   TouchableOpacity,
-  ActivityIndicator,
+  // ActivityIndicator,
   View,
 } from '@src/components/core';
 import { COLORS, FONT } from '@src/styles';
@@ -20,7 +20,7 @@ const styled = StyleSheet.create({
   },
   inputContainer: {
     flex: 1,
-    height: 30,
+    height: 40,
     borderRadius: 8,
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -29,23 +29,23 @@ const styled = StyleSheet.create({
   input: {
     flex: 1,
     color: COLORS.black,
-    fontSize: FONT.SIZE.large + 2,
-    lineHeight: FONT.SIZE.large + 5,
+    fontSize: FONT.SIZE.avgLarge + 2,
+    lineHeight: FONT.SIZE.avgLarge + 8,
     fontFamily: FONT.NAME.medium,
     marginRight: 15,
   },
   symbol: {
     color: COLORS.black,
-    fontSize: FONT.SIZE.large + 2,
-    lineHeight: FONT.SIZE.large + 5,
+    fontSize: FONT.SIZE.avgLarge + 2,
+    lineHeight: FONT.SIZE.avgLarge + 8,
     fontFamily: FONT.NAME.medium,
     marginRight: 5,
   },
   infinityIcon: {
   },
-  loadingIcon: {
-    marginRight: 8,
-  },
+  // loadingIcon: {
+  //   marginRight: 8,
+  // },
   header: {
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -77,9 +77,9 @@ const TradeInputAmount = (props) => {
     ...rest
   } = props || {};
   const renderSub = () => {
-    if (loadingBalance) {
-      return <ActivityIndicator style={styled.loadingIcon} size="small" />;
-    }
+    // if (loadingBalance) {
+    //   return <ActivityIndicator style={styled.loadingIcon} size="small" />;
+    // }
     if (hasIcon) {
       return <Icon iconUrl={srcIcon} />;
     }
@@ -119,7 +119,7 @@ const TradeInputAmount = (props) => {
         />
         {renderSub()}
         {!!symbol && (
-          <TouchableOpacity style={{ marginLeft: 8 }} onPress={onPressSymbol}>
+          <TouchableOpacity style={{ marginLeft: 16 }} onPress={onPressSymbol}>
             <Row style={{ alignItems: 'center' }}>
               {!!symbol && <Text style={styled.symbol}>{symbol}</Text>}
               {canSelectSymbol && <ArrowRight />}

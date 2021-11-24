@@ -60,7 +60,6 @@ const StakingPortfolio = ({ handleFetchCoins }) => {
   };
   return (
     <View style={mainStyle.fullFlex}>
-      <HeaderRow array={['Name', 'Amount']} style={{ marginTop: 10 }} />
       {renderContent()}
     </View>
   );

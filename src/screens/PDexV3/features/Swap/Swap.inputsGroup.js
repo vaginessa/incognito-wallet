@@ -8,14 +8,13 @@ import { change, Field } from 'redux-form';
 import SelectedPrivacy from '@src/models/selectedPrivacy';
 import { useDispatch, useSelector } from 'react-redux';
 import { SwapButton } from '@src/components/core';
-import { COLORS, FONT } from '@src/styles';
 import { actionToggleModal } from '@src/components/Modal';
-import { Hook } from '@screens/PDexV3/features/Extra';
 import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
 import ToggleArrow from '@src/components/ToggleArrow';
 import { maxAmountValidatorForSellInput } from './Swap.utils';
 import { formConfigs } from './Swap.constant';
+import SwapDetails from './Swap.details';
 import {
   listPairsSelector,
   selltokenSelector,
@@ -29,13 +28,12 @@ import {
   actionSelectToken,
   actionSetFocusToken,
   actionSwapToken,
+  actionToggleProTab,
 } from './Swap.actions';
 import { inputGroupStyled as styled } from './Swap.styled';
 import SwapProTab from './Swap.proTab';
-import SwapSimpleTab from './Swap.simpleTab';
 
 const SwapInputsGroup = React.memo(() => {
-  const [toggle, setToggle] = React.useState(false);
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const swapInfo = useSelector(swapInfoSelector);
@@ -48,7 +46,6 @@ const SwapInputsGroup = React.memo(() => {
   const buyInputAmount = inputAmount(formConfigs.buytoken);
   const onSelectToken = (token, field) => {
     dispatch(actionSelectToken(token, field));
-    dispatch(actionToggleModal());
   };
   const onSelectSellToken = () => {
     navigation.navigate(routeNames.SelectTokenModal, {
@@ -67,7 +64,7 @@ const SwapInputsGroup = React.memo(() => {
     });
   };
   const onFocusToken = (e, field) => dispatch(actionSetFocusToken(swap[field]));
-  const onEndEditing = (field) => dispatch(actionEstimateTrade(field));
+  const onEndEditing = (field) => dispatch(actionEstimateTrade({ field }));
   const onSwapButtons = () => dispatch(actionSwapToken());
   let _maxAmountValidatorForSellInput = React.useCallback(
     () => maxAmountValidatorForSellInput(sellInputAmount),
@@ -80,13 +77,10 @@ const SwapInputsGroup = React.memo(() => {
   );
   const onPressInfinityIcon = () => {
     dispatch(
-      change(
-        formConfigs.formName,
-        formConfigs.selltoken,
-        sellInputAmount.availableAmountText,
-      ),
+      actionEstimateTrade({
+        useMax: true,
+      }),
     );
-    dispatch(actionEstimateTrade());
   };
   const onChange = (field, value) => {
     dispatch(change(formConfigs.formName, field, value));
@@ -141,11 +135,14 @@ const SwapInputsGroup = React.memo(() => {
       />
       <ToggleArrow
         label="Advanced"
-        toggle={toggle}
-        handlePressToggle={() => setToggle(!toggle)}
+        toggle={swapInfo?.toggleProTab}
+        handlePressToggle={() =>
+          dispatch(actionToggleProTab(!swapInfo?.toggleProTab))
+        }
         style={styled.toggleArrow}
       />
-      {toggle && <SwapProTab />}
+      <SwapProTab />
+      <SwapDetails />
     </View>
   );
 });

@@ -1,7 +1,7 @@
 import TokenModel from './token';
 
 class PToken {
-  constructor(data = {}) {
+  constructor(data = {}, pTokens: []) {
     const pairPrv = data?.CurrentPrvPool !== 0;
     this.id = data.ID;
     this.address = data.ContractID;
@@ -24,7 +24,11 @@ class PToken {
     this.pairPrv = pairPrv;
     this.change = data?.PercentChange24h || '';
     this.pricePrv = data?.PricePrv || 0;
-
+    this.defaultPoolPair = data?.DefaultPoolPair;
+    this.defaultPairToken = data?.DefaultPairToken;
+    this.network = data?.Network;
+    const tokens = pTokens && pTokens.filter(_token => _token.Symbol && _token.Symbol === data.Symbol);
+    this.hasSameSymbol = tokens && tokens.length > 1;
     if (data && data.ListChildToken instanceof Array) {
       this.listChildToken = data.ListChildToken.map((item) => {
         let newItem = new PToken(item);

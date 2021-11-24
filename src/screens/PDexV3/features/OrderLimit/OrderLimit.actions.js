@@ -12,7 +12,7 @@ import {
 } from '@screens/PDexV3/features/Pools';
 import { actionSetNFTTokenData } from '@src/redux/actions/account';
 import isEmpty from 'lodash/isEmpty';
-import { change, destroy, reset } from 'redux-form';
+import { change, focus } from 'redux-form';
 import { actionGetPDexV3Inst } from '@screens/PDexV3';
 import { batch } from 'react-redux';
 import { actionSetDefaultPair } from '@screens/PDexV3/features/Swap';
@@ -21,6 +21,7 @@ import {
   TAB_BUY_LIMIT_ID,
   TAB_SELL_LIMIT_ID,
 } from '@screens/PDexV3/features/Trade/Trade.constant';
+import {actionLogEvent} from '@screens/Performance';
 import {
   ACTION_FETCHING,
   ACTION_FETCHED,
@@ -101,10 +102,10 @@ export const actionSetBuyTokenFetched = (payload) => ({
 
 export const actionSetPoolSelected = (payload) => async (
   dispatch,
-  getState,
 ) => {
   batch(async () => {
-    await dispatch({
+    dispatch(actionResetOrdersHistory());
+    dispatch({
       type: ACTION_SET_POOL_ID,
       payload,
     });
@@ -187,14 +188,16 @@ export const actionSetDefaultPool = () => async (dispatch, getState) => {
 
 export const actionInit = (refresh = true) => async (dispatch, getState) => {
   try {
-    dispatch(actionFetching());
     batch(() => {
-      dispatch(reset(formConfigs.formName));
+      dispatch(actionFetching());
       dispatch(actionSetPercent(0));
     });
     let state = getState();
     const pools = listPoolsIDsSelector(state);
     const poolSelected = poolSelectedDataSelector(state);
+    dispatch(actionLogEvent({
+      desc: 'POOL-SELECTED-' + JSON.stringify(poolSelected)
+    }));
     if (!poolSelected?.poolId) {
       const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
       let defaultPoolId;
@@ -213,6 +216,9 @@ export const actionInit = (refresh = true) => async (dispatch, getState) => {
     }
     state = getState();
     const pool = poolSelectedDataSelector(state);
+    dispatch(actionLogEvent({
+      desc: 'POOL-' + JSON.stringify(pool)
+    }));
     if (isEmpty(pool)) {
       return;
     }
@@ -252,6 +258,7 @@ export const actionInit = (refresh = true) => async (dispatch, getState) => {
       state = getState();
       const { rate } = rateDataSelector(state);
       dispatch(change(formConfigs.formName, formConfigs.rate, rate));
+      dispatch(focus(formConfigs.formName, formConfigs.rate));
     });
   } catch (error) {
     new ExHandler(error).showErrorToast;

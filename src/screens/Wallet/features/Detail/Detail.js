@@ -1,5 +1,5 @@
 import React from 'react';
-import { View } from 'react-native';
+import {TouchableOpacity, View} from 'react-native';
 import Header from '@src/components/Header';
 import {
   selectedPrivacySelector,
@@ -7,25 +7,33 @@ import {
   tokenSelector,
   accountSelector,
 } from '@src/redux/selectors';
-import { useSelector } from 'react-redux';
-import { ButtonBasic, BtnInfo } from '@src/components/Button';
+import {useDispatch, useSelector} from 'react-redux';
+import { BtnInfo } from '@src/components/Button';
 import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
 import {
   Amount,
   AmountBasePRV,
   AmountBaseUSDT,
-  ChangePrice,
+  ChangePrice, Price,
 } from '@src/components/Token/Token';
 import HistoryToken from '@screens/Wallet/features/HistoryToken';
 import MainCryptoHistory from '@screens/Wallet/features/MainCryptoHistory';
 import { isGettingBalance as isGettingTokenBalanceSelector } from '@src/redux/selectors/token';
 import { isGettingBalance as isGettingMainCryptoBalanceSelector } from '@src/redux/selectors/account';
-import { useBtnTrade } from '@src/components/UseEffect/useBtnTrade';
 import useFeatureConfig from '@src/shared/hooks/featureConfig';
 import { pTokenSelector } from '@src/redux/selectors/shared';
 import { useHistoryEffect } from '@screens/Wallet/features/History';
 import appConstant from '@src/constants/app';
+import {actionChangeTab} from '@components/core/Tabs/Tabs.actions';
+import {ROOT_TAB_TRADE, TAB_BUY_LIMIT_ID, TAB_SELL_LIMIT_ID} from '@screens/PDexV3/features/Trade/Trade.constant';
+import {actionInit, actionSetPoolSelected} from '@screens/PDexV3/features/OrderLimit';
+import {BTNBorder, BTNPrimary} from '@components/core/Button';
+import {COLORS} from '@src/styles';
+import {ThreeDotsVerIcon} from '@components/Icons';
+import {actionToggleModal} from '@components/Modal';
+import ModalBottomSheet from '@components/Modal/features/ModalBottomSheet';
+import {Row} from '@src/components';
 import {
   styled,
   groupBtnStyled,
@@ -35,25 +43,48 @@ import {
 
 const GroupButton = React.memo(() => {
   const navigation = useNavigation();
-  const handleSend = () => navigation.navigate(routeNames.Send);
-  const handleReceive = () => navigation.navigate(routeNames.ReceiveCrypto);
-  const [onPressSend, isSendDisabled] = useFeatureConfig(
-    appConstant.DISABLED.SEND,
-    handleSend,
-  );
+  const dispatch = useDispatch();
+  const selected = useSelector(selectedPrivacySelector.selectedPrivacy);
+  const handleSend = () => {
+    navigation.navigate(routeNames.Trade, { tabIndex: 0 });
+    const poolId = selected.defaultPoolPair;
+    if (poolId) {
+      navigation.navigate(routeNames.Trade, { tabIndex: 0 });
+      dispatch(
+        actionChangeTab({ rootTabID: ROOT_TAB_TRADE, tabID: TAB_BUY_LIMIT_ID }),
+      );
+      dispatch(actionSetPoolSelected(poolId));
+      setTimeout(() => {
+        dispatch(actionInit());
+      }, 200);
+    }
+  };
+  const handleReceive = () => {
+    const poolId = selected.defaultPoolPair;
+    navigation.navigate(routeNames.Trade, { tabIndex: 1 });
+    if (poolId) {
+      dispatch(
+        actionChangeTab({ rootTabID: ROOT_TAB_TRADE, tabID: TAB_SELL_LIMIT_ID }),
+      );
+      dispatch(actionSetPoolSelected(poolId));
+      setTimeout(() => {
+        dispatch(actionInit());
+      }, 200);
+    }
+  };
+
   return (
     <View style={groupBtnStyled.groupButton}>
-      <ButtonBasic
-        title="Send"
-        btnStyle={groupBtnStyled.btnStyle}
-        titleStyle={groupBtnStyled.titleStyle}
-        onPress={onPressSend}
-        disabled={isSendDisabled}
+      <BTNPrimary
+        title="Buy"
+        wrapperStyle={groupBtnStyled.btnStyle}
+        background={COLORS.green}
+        onPress={handleSend}
       />
-      <ButtonBasic
-        title="Receive"
-        btnStyle={groupBtnStyled.btnStyle}
-        titleStyle={groupBtnStyled.titleStyle}
+      <BTNPrimary
+        title="Sell"
+        wrapperStyle={groupBtnStyled.btnStyle}
+        background={COLORS.red2}
         onPress={handleReceive}
       />
     </View>
@@ -62,8 +93,6 @@ const GroupButton = React.memo(() => {
 
 const Balance = React.memo(() => {
   const selected = useSelector(selectedPrivacySelector.selectedPrivacy);
-  const { isToggleUSD } = useSelector(pTokenSelector);
-
   const isGettingBalance = useSelector(
     sharedSelector.isGettingBalance,
   ).includes(selected?.tokenId);
@@ -76,11 +105,6 @@ const Balance = React.memo(() => {
     ...tokenData,
     showSymbol: false,
   };
-  const amountBaseUSDTProps = {
-    customStyle: balanceStyled.amountBasePRV,
-    customPSymbolStyle: [balanceStyled.pSymbol],
-    ...tokenData,
-  };
   const changePriceProps = {
     customStyle: balanceStyled.changePrice,
     ...tokenData,
@@ -89,11 +113,7 @@ const Balance = React.memo(() => {
     <View style={balanceStyled.container}>
       <Amount {...amountProps} />
       <View style={balanceStyled.hook}>
-        {isToggleUSD ? (
-          <AmountBaseUSDT {...amountBaseUSDTProps} />
-        ) : (
-          <AmountBasePRV {...amountBaseUSDTProps} />
-        )}
+        <Price pricePrv={selected.pricePrv} priceUsd={selected.priceUsd} />
         <ChangePrice {...changePriceProps} />
       </View>
     </View>
@@ -108,6 +128,54 @@ const History = React.memo(() => {
     </View>
   );
 });
+
+const CustomRightHeader = () => {
+  const navigation = useNavigation();
+  const dispatch = useDispatch();
+  const handleSend = () => {
+    navigation.navigate(routeNames.Send);
+    dispatch(actionToggleModal({ visible: false }));
+  };
+  const handleReceive = () => {
+    navigation.navigate(routeNames.ReceiveCrypto);
+    dispatch(actionToggleModal({ visible: false }));
+  };
+  const [onPressSend, isSendDisabled] = useFeatureConfig(
+    appConstant.DISABLED.SEND,
+    handleSend,
+  );
+  const onToggle = () => {
+    dispatch(actionToggleModal({
+      data: (
+        <ModalBottomSheet
+          style={{ height: '15%' }}
+          contentView={(
+            <Row style={groupBtnStyled.groupButton}>
+              <BTNBorder
+                title="Receive"
+                wrapperStyle={groupBtnStyled.btnStyle}
+                onPress={handleReceive}
+              />
+              <BTNPrimary
+                title="Send"
+                wrapperStyle={groupBtnStyled.btnStyle}
+                onPress={onPressSend}
+                disabled={isSendDisabled}
+              />
+            </Row>
+          )}
+        />
+      ),
+      visible: true,
+      shouldCloseModalWhenTapOverlay: true
+    }));
+  };
+  return (
+    <TouchableOpacity style={{ height: 30, justifyContent: 'center' }} onPress={onToggle}>
+      <ThreeDotsVerIcon />
+    </TouchableOpacity>
+  );
+};
 
 const Detail = (props) => {
   const navigation = useNavigation();
@@ -126,7 +194,6 @@ const Detail = (props) => {
       ? isGettingMainCryptoBalance.length > 0 || !defaultAccount
       : isGettingTokenBalance.length > 0 || !token;
   const onGoBack = () => navigation.navigate(routeNames.Wallet);
-  const [BtnTrade, hasTradeBtn] = useBtnTrade();
   const { onRefresh } = useHistoryEffect();
   return (
     <>
@@ -134,11 +201,8 @@ const Detail = (props) => {
         <Header
           title={selected?.name}
           customHeaderTitle={<BtnInfo />}
-          rightHeader={<BtnTrade />}
+          rightHeader={<CustomRightHeader />}
           onGoBack={onGoBack}
-          styledContainerHeaderTitle={
-            hasTradeBtn && styled.styledContainerHeaderTitle
-          }
           handleSelectedAccount={onRefresh}
         />
         <Balance />

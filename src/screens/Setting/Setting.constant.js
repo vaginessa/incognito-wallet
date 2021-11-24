@@ -8,3 +8,5 @@ export const ACTION_UPDATE_SHOW_WALLET_BALANCE =
 export const ACTION_TOGGLE_BACKUP_ALL_KEYS = '[setting] Toggle backup all keys';
 export const ACTION_TOGGLE_USE_PRV_TO_PAY_FEE =
   '[setting] Toggle use PRV to pay fee';
+export const ACTION_UPDATE_MARKET_TAB =
+  '[setting] Update market tab';

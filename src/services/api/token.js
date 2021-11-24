@@ -7,12 +7,13 @@ import http from '@src/services/http';
 import { CONSTANT_CONFIGS } from '@src/constants';
 import axios from 'axios';
 import { cachePromise, EXPIRED_TIME, KEYS } from '@services/cache';
+import http1 from '@services/http1';
 
 let BEP2Tokens = [];
 
 const getTokenListNoCache = () => {
-  return http.get('ptoken/list')
-    .then(res => res.map(token => new PToken(token)));
+  return http1.get('coins/tokenlist')
+    .then(res => res.map(token => new PToken(token, res)));
 };
 
 export const getTokenList = ({ expiredTime = EXPIRED_TIME } ={}) => {

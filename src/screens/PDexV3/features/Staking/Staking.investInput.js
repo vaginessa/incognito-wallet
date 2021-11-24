@@ -16,8 +16,8 @@ import {compose} from 'recompose';
 import withTransaction from '@screens/PDexV3/features/Staking/Staking.transaction';
 import {NFTTokenBottomBar} from '@screens/PDexV3/features/NFTToken';
 import withFetch from '@screens/PDexV3/features/Staking/Staking.enhanceFetch';
-import {MaxIcon} from '@components/Icons';
-import {Row, RowSpaceText} from '@src/components';
+import {RowSpaceText} from '@src/components';
+import NetworkFee from '@src/components/NetworkFee';
 
 const initialFormValues = {
   input: ''
@@ -87,7 +87,10 @@ const StakingMoreInput = React.memo(({ onSymbolPress, onStaking, error }) => {
               disabled={disabled || !!error}
               onPress={onSubmit}
             />
-            <RowSpaceText label={`${pool.symbol} Balance`} value={pool.userBalanceDisplay} />
+            <NetworkFee />
+            <View style={mainStyle.extra}>
+              <RowSpaceText label={`${pool.symbol} Balance`} value={pool.userBalanceDisplay} />
+            </View>
           </>
         )}
       </Form>

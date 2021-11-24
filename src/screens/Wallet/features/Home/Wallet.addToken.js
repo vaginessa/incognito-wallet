@@ -1,5 +1,5 @@
 import React, {memo} from 'react';
-import {Text, View} from 'react-native';
+import {Text} from 'react-native';
 import {useNavigation} from 'react-navigation-hooks';
 import routeNames from '@routers/routeNames';
 import {TouchableOpacity} from '@components/core';
@@ -9,10 +9,8 @@ const AddToken = () => {
   const navigation = useNavigation();
   const handleFollowToken = () => navigation.navigate(routeNames.FollowToken);
   return (
-    <TouchableOpacity onPress={handleFollowToken}>
-      <View style={styledAddToken.container}>
-        <Text style={styledAddToken.title}>Add a coin +</Text>
-      </View>
+    <TouchableOpacity style={styledAddToken.container} onPress={handleFollowToken}>
+      <Text style={styledAddToken.title}>Add a coin +</Text>
     </TouchableOpacity>
   );
 };

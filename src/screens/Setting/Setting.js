@@ -12,6 +12,7 @@ import { SafeAreaView, ScrollView } from 'react-native';
 import { NetworkIcon, SecurityIcon } from '@components/Icons';
 import { Header } from '@src/components';
 import codePush from 'react-native-code-push';
+import HideBalance from '@screens/Setting/features/HideBalance';
 import PINSection from './features/PINSection';
 import SeparatorSection from './features/SeparatorSection';
 import DevSection from './features/DevSection';
@@ -25,7 +26,7 @@ import withSetting from './Setting.enhance';
 import DecimalDigitsSection from './features/DecimalDigitsSection';
 import ExportCSVSection from './features/ExportCSVSection';
 import RemoveBalanceCached from './features/RemoveBalanceCached';
-import PayFeeByPRV from './features/PayFeeByPRV';
+// import PayFeeByPRV from './features/PayFeeByPRV';
 
 const Setting = () => {
   const navigation = useNavigation();
@@ -79,7 +80,7 @@ const Setting = () => {
           {sectionItemFactories.map((item) => (
             <SectionItem data={item} key={`${item.title} ${item.desc}`} />
           ))}
-          <PayFeeByPRV />
+          {/* <PayFeeByPRV /> */}
           <PINSection />
           <SeparatorSection />
           <DecimalDigitsSection />
@@ -90,6 +91,7 @@ const Setting = () => {
           <ConvertCoinsSection />
           <RemoveStorage />
           <RemoveBalanceCached />
+          <HideBalance />
           {global.isDebug() && <DevSection />}
         </View>
         <Text style={[settingStyle.textVersion]}>

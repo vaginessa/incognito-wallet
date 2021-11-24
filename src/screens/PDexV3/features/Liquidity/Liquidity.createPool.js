@@ -6,21 +6,23 @@ import {Header, RowSpaceText, SuccessModal} from '@src/components';
 import {
   LIQUIDITY_MESSAGES,
   formConfigsCreatePool,
-  SUCCESS_MODAL
+  SUCCESS_MODAL, formConfigsContribute,
 } from '@screens/PDexV3/features/Liquidity/Liquidity.constant';
 import {createForm, RFTradeInputAmount as TradeInputAmount, validator} from '@components/core/reduxForm';
 import {AddBreakLine} from '@components/core';
 import {useDispatch, useSelector} from 'react-redux';
-import {change, Field} from 'redux-form';
+import {change, Field, focus, getFormSyncErrors} from 'redux-form';
 import withLiquidity from '@screens/PDexV3/features/Liquidity/Liquidity.enhance';
 import {createPoolSelector, liquidityActions} from '@screens/PDexV3/features/Liquidity';
 import styled from '@screens/PDexV3/features/Liquidity/Liquidity.styled';
 import {ButtonTrade} from '@components/Button';
 import {compose} from 'recompose';
 import withTransaction from '@screens/PDexV3/features/Liquidity/Liquidity.enhanceTransaction';
-import {NFTTokenBottomBar} from '@screens/PDexV3/features/NFTToken';
+import {NFTTokenBottomBar, NFTTokenModal} from '@screens/PDexV3/features/NFTToken';
 import {useNavigation} from 'react-navigation-hooks';
 import routeNames from '@routers/routeNames';
+import NetworkFee from '@src/components/NetworkFee';
+import {actionToggleModal} from '@components/Modal';
 
 const initialFormValues = {
   inputToken: '',
@@ -95,8 +97,6 @@ const InputsGroup = () => {
         component={TradeInputAmount}
         name={formConfigsCreatePool.inputToken}
         canSelectSymbol
-        visibleHeader
-        label="Amount"
         symbol={inputToken && inputToken?.symbol}
         validate={[
           _validateInput,
@@ -125,7 +125,6 @@ const InputsGroup = () => {
         name={formConfigsCreatePool.outputToken}
         canSelectSymbol
         visibleHeader
-        label="Amount"
         symbol={outputToken && outputToken?.symbol}
         hasInfinityIcon={!!outputToken && !!outputToken?.balanceStr}
         validate={[
@@ -158,24 +157,46 @@ export const Extra = React.memo(() => {
     return hooks.map(item => <RowSpaceText {...item} key={item?.label} />);
   };
   return(
-    <>
+    <View style={{ marginTop: 20 }}>
       {renderHooks()}
-    </>
+    </View>
   );
 });
 
 const ButtonCreatePool = React.memo(({ onSubmit }) => {
   const dispatch = useDispatch();
-  const { disabled } = useSelector(createPoolSelector.disableCreatePool);
+  const { disabled, nftTokenAvailable } = useSelector(createPoolSelector.disableCreatePool);
   const amountSelector = useSelector(createPoolSelector.inputAmountSelector);
   const inputAmount = amountSelector(formConfigsCreatePool.formName, formConfigsCreatePool.inputToken);
   const outputAmount = amountSelector(formConfigsCreatePool.formName, formConfigsCreatePool.outputToken);
   const { feeAmount } = useSelector(createPoolSelector.feeAmountSelector);
   const { amp, estOutputStr } = useSelector(createPoolSelector.ampValueSelector);
+  const formErrors = useSelector((state) =>
+    getFormSyncErrors(formConfigsCreatePool.formName)(state),
+  );
   const handleSubmit = () => {
+    const fields = [
+      formConfigsCreatePool.inputToken,
+      formConfigsCreatePool.outputToken,
+    ];
+    for (let index = 0; index < fields.length; index++) {
+      const field = fields[index];
+      if (formErrors[field]) {
+        return dispatch(focus(formConfigsCreatePool.formName, field));
+      }
+    }
+    if (!nftTokenAvailable) {
+      return dispatch(
+        actionToggleModal({
+          visible: true,
+          shouldCloseModalWhenTapOverlay: true,
+          data: <NFTTokenModal />,
+        }),
+      );
+    }
     if (disabled) return;
     const params = {
-      fee: String(feeAmount / 2),
+      fee: feeAmount / 2,
       tokenId1: inputAmount.tokenId,
       tokenId2: outputAmount.tokenId,
       amount1: String(inputAmount.originalInputAmount),
@@ -189,16 +210,16 @@ const ButtonCreatePool = React.memo(({ onSubmit }) => {
   return (
     <>
       {!!estOutputStr && (
-        <View style={{ marginTop: 15 }}>
+        <View style={mainStyle.extra}>
           {LIQUIDITY_MESSAGES.estRate(changeEstRate)}
         </View>
       )}
       <ButtonTrade
         btnStyle={mainStyle.button}
         title={LIQUIDITY_MESSAGES.createPool}
-        disabled={disabled}
         onPress={handleSubmit}
       />
+      <NetworkFee />
     </>
   );
 });

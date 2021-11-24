@@ -8,7 +8,7 @@ const withLazy = WrappedComp => props => {
 
   const EmptyView = React.useMemo(() => (
     <View style={styled.container}>
-      <Header style={styled.header} />
+      <Header hideBackButton style={styled.header} />
       <LoadingContainer />
     </View>
   ), []);

@@ -11,8 +11,8 @@ const styled = StyleSheet.create({
     alignItems: 'center',
   },
   icon: {
-    width: 18.2,
-    height: 18,
+    width: 17.53,
+    height: 20,
   },
 });
 

@@ -61,7 +61,17 @@ export const styledBalance = StyleSheet.create({
   },
   wrapBalance: {
     minHeight: FONT.SIZE.superLarge + 12,
-  }
+  },
+  iconHide: {
+    marginLeft: 5
+  },
+  btnHideBalance: {
+    position: 'absolute',
+    right: -15,
+    top: -15,
+    width: 50,
+    height: 50,
+  },
 });
 
 export const groupButtonStyled = StyleSheet.create({
@@ -69,14 +79,17 @@ export const groupButtonStyled = StyleSheet.create({
     marginTop: 24
   },
   tooltip: {
-    backgroundColor: COLORS.black,
+    // backgroundColor: COLORS.colorBlue,
     borderRadius: 11,
     marginBottom: 20,
+    borderColor: COLORS.colorBlue,
+    borderWidth: 1,
   },
   triangleStyle: {
     bottom: -30,
     left: '48%',
-    borderBottomColor: COLORS.black,
+    borderBottomColor: COLORS.colorBlue,
+    borderBottomWidth: 10,
   },
   btnClose: {
     position: 'absolute',
@@ -91,14 +104,14 @@ export const groupButtonStyled = StyleSheet.create({
     fontFamily: FONT.NAME.bold,
     fontSize: FONT.SIZE.medium,
     lineHeight: FONT.SIZE.medium + 3,
-    color: COLORS.white,
+    color: COLORS.black,
     marginBottom: 5,
   },
   desc: {
     fontFamily: FONT.NAME.regular,
     fontSize: FONT.SIZE.small + 1,
     lineHeight: FONT.SIZE.small + 6,
-    color: COLORS.white,
+    color: COLORS.black,
   },
   wrapHook: {
     padding: 20,
@@ -109,63 +122,56 @@ export const groupButtonStyled = StyleSheet.create({
 export const tokenStyled = StyleSheet.create({
   container: {
     flexDirection: 'row',
+    alignItems: 'center',
   },
   wrapFirst: {
     flex: 1,
-    paddingRight: 10
+    paddingRight: 10,
+    justifyContent: 'space-between',
   },
   wrapSecond: {
     flex: 1,
-    paddingRight: 10
+    alignItems: 'flex-end',
+    height: '100%'
   },
   wrapThird: {
-    flex: 1
+    flex: 1,
   },
   rowHeight: {
     height: FONT.SIZE.regular + 8,
   },
   blackText: {
     ...FONT.STYLE.medium,
-    fontSize: FONT.SIZE.small + 1,
-    lineHeight: FONT.SIZE.regular + 8,
+    fontSize: FONT.SIZE.medium,
+    lineHeight: FONT.SIZE.medium + 7,
     textAlign: 'left',
     color: COLORS.black
   },
   grayText: {
-    ...FONT.STYLE.regular,
-    fontSize: FONT.SIZE.small + 1,
-    lineHeight: FONT.SIZE.regular + 8,
+    ...FONT.STYLE.medium,
+    fontSize: FONT.SIZE.small,
+    lineHeight: FONT.SIZE.small + 5,
     color: COLORS.lightGrey36
   },
   centerVertical: {
     justifyContent: 'center'
   },
-  icon: {
+  iconVerify: {
     width: 12,
     height: 12
   },
-  btnTrade: {
-    backgroundColor: COLORS.blue5,
-    height: 32,
-    width: 55,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 4
-  },
-  labelTrade: {
-    ...FONT.STYLE.medium,
-    fontSize: FONT.SIZE.small + 1,
-    color: COLORS.white
-  },
-  headerLabel: {
-    ...FONT.STYLE.regular,
-    fontSize: FONT.SIZE.small,
-    lineHeight: FONT.SIZE.regular,
-    color: COLORS.lightGrey36,
+  icon: {
+    width: 40,
+    height: 40,
+    marginRight: 16,
   },
   wrapHeader: {
     marginTop: 5,
     marginBottom: 10
+  },
+  wrapLoader: {
+    height: FONT.SIZE.medium + 9,
+    justifyContent: 'center'
   }
 });
 

@@ -1,28 +1,32 @@
-import React, {memo} from 'react';
-import {RefreshControl, ScrollView, Text, View} from 'react-native';
+import React, { memo } from 'react';
+import { RefreshControl, ScrollView, Text, View } from 'react-native';
 import PropTypes from 'prop-types';
-import {styled as mainStyle} from '@screens/PDexV3/PDexV3.styled';
-import {Header, Row, SuccessModal} from '@src/components';
+import { styled as mainStyle } from '@screens/PDexV3/PDexV3.styled';
+import { Header, SuccessModal } from '@src/components';
 import {
   formConfigsRemovePool,
   LIQUIDITY_MESSAGES,
-  SUCCESS_MODAL
+  SUCCESS_MODAL,
 } from '@screens/PDexV3/features/Liquidity/Liquidity.constant';
 import withLiquidity from '@screens/PDexV3/features/Liquidity/Liquidity.enhance';
-import {createForm, RFTradeInputAmount as TradeInputAmount, validator} from '@components/core/reduxForm';
+import {
+  createForm,
+  RFTradeInputAmount as TradeInputAmount,
+  validator,
+} from '@components/core/reduxForm';
 import styled from '@screens/PDexV3/features/Liquidity/Liquidity.styled';
-import {Field} from 'redux-form';
-import {AddBreakLine} from '@components/core';
-import {batch, useDispatch, useSelector} from 'react-redux';
-import {liquidityActions, removePoolSelector} from '@screens/PDexV3/features/Liquidity/index';
-import {ButtonTrade} from '@components/Button';
-import SelectPercentAmount from '@components/SelectPercentAmount';
-import {COLORS} from '@src/styles';
-import {compose} from 'recompose';
+import { Field } from 'redux-form';
+import { AddBreakLine } from '@components/core';
+import { batch, useDispatch, useSelector } from 'react-redux';
+import {
+  liquidityActions,
+  removePoolSelector,
+} from '@screens/PDexV3/features/Liquidity/index';
+import { ButtonTrade } from '@components/Button';
+import { compose } from 'recompose';
 import withTransaction from '@screens/PDexV3/features/Liquidity/Liquidity.enhanceTransaction';
-import LPHistoryIcon from '@screens/PDexV3/features/Liquidity/Liquidity.iconHistory';
-import {MaxIcon} from '@components/Icons';
-import {useNavigation} from 'react-navigation-hooks';
+import { useNavigation } from 'react-navigation-hooks';
+import NetworkFee from '@src/components/NetworkFee';
 
 const initialFormValues = {
   inputToken: '',
@@ -39,11 +43,20 @@ const InputsGroup = () => {
   const dispatch = useDispatch();
   const [percent, setPercent] = React.useState(0);
   const inputAmount = useSelector(removePoolSelector.inputAmountSelector);
-  const inputToken = inputAmount(formConfigsRemovePool.formName, formConfigsRemovePool.inputToken);
-  const outputToken = inputAmount(formConfigsRemovePool.formName, formConfigsRemovePool.outputToken);
-  const { maxInputShareStr, maxOutputShareStr } = useSelector(removePoolSelector.maxShareAmountSelector) || {};
-  const onChangeInput = (text) => dispatch(liquidityActions.actionChangeInputRemovePool(text));
-  const onChangeOutput = (text) => dispatch(liquidityActions.actionChangeOutputRemovePool(text));
+  const inputToken = inputAmount(
+    formConfigsRemovePool.formName,
+    formConfigsRemovePool.inputToken,
+  );
+  const outputToken = inputAmount(
+    formConfigsRemovePool.formName,
+    formConfigsRemovePool.outputToken,
+  );
+  const { maxInputShareStr, maxOutputShareStr } =
+    useSelector(removePoolSelector.maxShareAmountSelector) || {};
+  const onChangeInput = (text) =>
+    dispatch(liquidityActions.actionChangeInputRemovePool(text));
+  const onChangeOutput = (text) =>
+    dispatch(liquidityActions.actionChangeOutputRemovePool(text));
   const onMaxPress = () => dispatch(liquidityActions.actionMaxRemovePool());
   const onChangePercent = (_percent) => {
     setPercent(_percent);
@@ -64,28 +77,19 @@ const InputsGroup = () => {
         <Field
           component={TradeInputAmount}
           name={formConfigsRemovePool.inputToken}
-          validate={[
-            _validateInput,
-            ...validator.combinedAmount,
-          ]}
-          visibleHeader
+          validate={[_validateInput, ...validator.combinedAmount]}
           editableInput={!inputToken.loadingBalance}
           srcIcon={inputToken && inputToken?.iconUrl}
           symbol={inputToken && inputToken?.symbol}
           onChange={onChangeInput}
           onPressInfinityIcon={onMaxPress}
-          label="Amount"
           hasInfinityIcon
         />
         <AddBreakLine />
         <Field
           component={TradeInputAmount}
           name={formConfigsRemovePool.outputToken}
-          validate={[
-            _validateOutput,
-            ...validator.combinedAmount,
-          ]}
-          label="Amount"
+          validate={[_validateOutput, ...validator.combinedAmount]}
           symbol={outputToken && outputToken?.symbol}
           srcIcon={outputToken && outputToken?.iconUrl}
           editableInput={!outputToken.loadingBalance}
@@ -105,8 +109,14 @@ const RemoveLPButton = React.memo(({ onSubmit }) => {
   const { feeAmount } = useSelector(removePoolSelector.feeAmountSelector);
   const poolId = useSelector(removePoolSelector.poolIDSelector);
   const nftId = useSelector(removePoolSelector.nftTokenSelector);
-  const inputAmount = amountSelector(formConfigsRemovePool.formName, formConfigsRemovePool.inputToken);
-  const outputAmount = amountSelector(formConfigsRemovePool.formName, formConfigsRemovePool.outputToken);
+  const inputAmount = amountSelector(
+    formConfigsRemovePool.formName,
+    formConfigsRemovePool.inputToken,
+  );
+  const outputAmount = amountSelector(
+    formConfigsRemovePool.formName,
+    formConfigsRemovePool.outputToken,
+  );
   const handleSubmit = () => {
     if (disabled) return;
     const params = {
@@ -116,7 +126,7 @@ const RemoveLPButton = React.memo(({ onSubmit }) => {
       shareAmount: inputAmount.withdraw,
       nftID: nftId,
       amount1: String(inputAmount.originalInputAmount),
-      amount2: String(outputAmount.originalInputAmount)
+      amount2: String(outputAmount.originalInputAmount),
     };
     onSubmit(params);
   };
@@ -125,7 +135,6 @@ const RemoveLPButton = React.memo(({ onSubmit }) => {
     <ButtonTrade
       btnStyle={mainStyle.button}
       title={LIQUIDITY_MESSAGES.removePool}
-      disabled={disabled}
       onPress={handleSubmit}
     />
   );
@@ -157,22 +166,28 @@ const RemovePool = ({
       <View style={styled.padding}>
         {!!error && <Text style={styled.warning}>{error}</Text>}
         <RemoveLPButton onSubmit={onSubmit} />
+        <NetworkFee />
       </View>
     </>
   );
 
-  React.useEffect(() => { onInitRemovePool(); }, []);
+  React.useEffect(() => {
+    onInitRemovePool();
+  }, []);
   return (
     <>
       <View style={styled.container}>
-        <Header style={styled.padding} title={LIQUIDITY_MESSAGES.removePool} />
+        <Header style={styled.padding} />
         <ScrollView
-          refreshControl={(<RefreshControl refreshing={isFetching} onRefresh={onInitRemovePool} />)}
+          refreshControl={
+            <RefreshControl
+              refreshing={isFetching}
+              onRefresh={onInitRemovePool}
+            />
+          }
           showsVerticalScrollIndicator={false}
         >
-          <Form>
-            {renderContent()}
-          </Form>
+          <Form>{renderContent()}</Form>
         </ScrollView>
       </View>
       <SuccessModal
@@ -187,7 +202,7 @@ const RemovePool = ({
 };
 
 RemovePool.defaultProps = {
-  error: ''
+  error: '',
 };
 
 RemovePool.propTypes = {
@@ -195,7 +210,7 @@ RemovePool.propTypes = {
   onRemoveContribute: PropTypes.func.isRequired,
   onCloseModal: PropTypes.func.isRequired,
   visible: PropTypes.bool.isRequired,
-  error: PropTypes.string
+  error: PropTypes.string,
 };
 
 RemoveLPButton.propTypes = {

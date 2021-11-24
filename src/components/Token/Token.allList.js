@@ -30,7 +30,7 @@ const ListAllToken = (props) => {
   } = props;
   return (
     <KeyboardAwareScrollView>
-      <ListToken {...tokensFactories[0]} renderItem={renderItem} />
+      <ListToken {...tokensFactories[0]} renderItem={renderItem} styledListToken={{ paddingTop: 15 }} />
       <BtnChecked
         btnStyle={[
           styled.hook,

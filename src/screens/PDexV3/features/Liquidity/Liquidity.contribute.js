@@ -1,26 +1,33 @@
-import React, {memo} from 'react';
-import {RefreshControl, ScrollView, Text, View} from 'react-native';
+import React, { memo } from 'react';
+import { RefreshControl, ScrollView, Text, View } from 'react-native';
 import PropTypes from 'prop-types';
-import {styled as mainStyle} from '@screens/PDexV3/PDexV3.styled';
-import {Header, Row, RowSpaceText, SuccessModal} from '@src/components';
+import { styled as mainStyle } from '@screens/PDexV3/PDexV3.styled';
+import { Header, RowSpaceText, SuccessModal } from '@src/components';
 import {
   LIQUIDITY_MESSAGES,
   formConfigsContribute,
-  SUCCESS_MODAL
+  SUCCESS_MODAL,
 } from '@screens/PDexV3/features/Liquidity/Liquidity.constant';
-import {createForm, RFTradeInputAmount as TradeInputAmount, validator} from '@components/core/reduxForm';
-import {useDispatch, useSelector} from 'react-redux';
+import {
+  createForm,
+  RFTradeInputAmount as TradeInputAmount,
+  validator,
+} from '@components/core/reduxForm';
+import { useDispatch, useSelector } from 'react-redux';
 import styled from '@screens/PDexV3/features/Liquidity/Liquidity.styled';
-import {Field} from 'redux-form';
-import {AddBreakLine} from '@components/core';
+import {Field, focus, getFormSyncErrors} from 'redux-form';
+import { AddBreakLine } from '@components/core';
 import withLiquidity from '@screens/PDexV3/features/Liquidity/Liquidity.enhance';
-import {contributeSelector, liquidityActions} from '@screens/PDexV3/features/Liquidity';
-import {ButtonTrade} from '@components/Button';
-import {NFTTokenBottomBar} from '@screens/PDexV3/features/NFTToken';
-import {compose} from 'recompose';
+import {
+  contributeSelector,
+  liquidityActions,
+} from '@screens/PDexV3/features/Liquidity';
+import { ButtonTrade } from '@components/Button';
+import {NFTTokenBottomBar, NFTTokenModal} from '@screens/PDexV3/features/NFTToken';
+import { compose } from 'recompose';
 import withTransaction from '@screens/PDexV3/features/Liquidity/Liquidity.enhanceTransaction';
-import {MaxIcon} from '@components/Icons';
-import LPHistoryIcon from '@screens/PDexV3/features/Liquidity/Liquidity.iconHistory';
+import NetworkFee from '@src/components/NetworkFee';
+import {actionToggleModal} from '@components/Modal';
 
 const initialFormValues = {
   inputToken: '',
@@ -35,14 +42,34 @@ const Form = createForm(formConfigsContribute.formName, {
 
 const InputsGroup = React.memo(() => {
   const dispatch = useDispatch();
-  const { inputToken, outputToken } = useSelector(contributeSelector.mappingDataSelector);
-  const onChangeInput = (newText) => dispatch(liquidityActions.actionChangeInputContribute(newText));
-  const onChangeOutput = (newText) => dispatch(liquidityActions.actionChangeOutputContribute(newText));
-  const onMaxInput = () => dispatch(liquidityActions.actionChangeInputContribute(inputAmount.maxOriginalAmountText));
-  const onMaxOutput = () => dispatch(liquidityActions.actionChangeOutputContribute(outputAmount.maxOriginalAmountText));
+  const { inputToken, outputToken } = useSelector(
+    contributeSelector.mappingDataSelector,
+  );
+  const onChangeInput = (newText) =>
+    dispatch(liquidityActions.actionChangeInputContribute(newText));
+  const onChangeOutput = (newText) =>
+    dispatch(liquidityActions.actionChangeOutputContribute(newText));
+  const onMaxInput = () =>
+    dispatch(
+      liquidityActions.actionChangeInputContribute(
+        inputAmount.maxOriginalAmountText,
+      ),
+    );
+  const onMaxOutput = () =>
+    dispatch(
+      liquidityActions.actionChangeOutputContribute(
+        outputAmount.maxOriginalAmountText,
+      ),
+    );
   const amountSelector = useSelector(contributeSelector.inputAmountSelector);
-  const inputAmount = amountSelector(formConfigsContribute.formName, formConfigsContribute.inputToken);
-  const outputAmount = amountSelector(formConfigsContribute.formName, formConfigsContribute.outputToken);
+  const inputAmount = amountSelector(
+    formConfigsContribute.formName,
+    formConfigsContribute.inputToken,
+  );
+  const outputAmount = amountSelector(
+    formConfigsContribute.formName,
+    formConfigsContribute.outputToken,
+  );
   const _validateInput = React.useCallback(() => {
     return inputAmount.error;
   }, [inputAmount.error]);
@@ -56,12 +83,7 @@ const InputsGroup = React.memo(() => {
         name={formConfigsContribute.inputToken}
         symbol={inputToken && inputToken?.symbol}
         srcIcon={inputToken && inputToken?.iconUrl}
-        validate={[
-          _validateInput,
-          ...validator.combinedAmount,
-        ]}
-        visibleHeader
-        label="Amount"
+        validate={[_validateInput, ...validator.combinedAmount]}
         hasInfinityIcon
         onChange={onChangeInput}
         editableInput={!inputAmount.loadingBalance}
@@ -75,12 +97,8 @@ const InputsGroup = React.memo(() => {
         hasInfinityIcon
         symbol={outputToken && outputToken?.symbol}
         srcIcon={outputToken && outputToken?.iconUrl}
-        validate={[
-          _validateOutput,
-          ...validator.combinedAmount,
-        ]}
+        validate={[_validateOutput, ...validator.combinedAmount]}
         visibleHeader
-        label="Amount"
         onChange={onChangeOutput}
         editableInput={!outputAmount.loadingBalance}
         loadingBalance={outputAmount.loadingBalance}
@@ -94,25 +112,52 @@ export const Extra = React.memo(() => {
   const data = useSelector(contributeSelector.mappingDataSelector);
   const renderHooks = () => {
     if (!data) return;
-    return (data?.hookFactories || []).map(item => <RowSpaceText {...item} key={item?.label} />);
+    return (data?.hookFactories || []).map((item) => (
+      <RowSpaceText {...item} key={item?.label} />
+    ));
   };
-  return(
-    <>
-      {renderHooks()}
-    </>
-  );
+  return <View style={mainStyle.extra}>{renderHooks()}</View>;
 });
 
 const ContributeButton = React.memo(({ onSubmit }) => {
+  const dispatch = useDispatch();
   const amountSelector = useSelector(contributeSelector.inputAmountSelector);
-  const inputAmount = amountSelector(formConfigsContribute.formName, formConfigsContribute.inputToken);
-  const outputAmount = amountSelector(formConfigsContribute.formName, formConfigsContribute.outputToken);
+  const inputAmount = amountSelector(
+    formConfigsContribute.formName,
+    formConfigsContribute.inputToken,
+  );
+  const outputAmount = amountSelector(
+    formConfigsContribute.formName,
+    formConfigsContribute.outputToken,
+  );
   const { feeAmount } = useSelector(contributeSelector.feeAmountSelector);
   const poolId = useSelector(contributeSelector.poolIDSelector);
   const { amp } = useSelector(contributeSelector.mappingDataSelector);
   const { nftToken } = useSelector(contributeSelector.nftTokenSelector);
-  const { isDisabled } = useSelector(contributeSelector.disableContribute);
+  const { isDisabled, nftTokenAvailable } = useSelector(contributeSelector.disableContribute);
+  const formErrors = useSelector((state) =>
+    getFormSyncErrors(formConfigsContribute.formName)(state),
+  );
   const createContributes = async () => {
+    const fields = [
+      formConfigsContribute.inputToken,
+      formConfigsContribute.outputToken,
+    ];
+    for (let index = 0; index < fields.length; index++) {
+      const field = fields[index];
+      if (formErrors[field]) {
+        return dispatch(focus(formConfigsContribute.formName, field));
+      }
+    }
+    if (!nftTokenAvailable) {
+      return dispatch(
+        actionToggleModal({
+          visible: true,
+          shouldCloseModalWhenTapOverlay: true,
+          data: <NFTTokenModal />,
+        }),
+      );
+    }
     if (isDisabled) return;
     const params = {
       fee: feeAmount / 2,
@@ -131,7 +176,6 @@ const ContributeButton = React.memo(({ onSubmit }) => {
     <ButtonTrade
       btnStyle={mainStyle.button}
       title={LIQUIDITY_MESSAGES.addLiquidity}
-      disabled={isDisabled}
       onPress={createContributes}
     />
   );
@@ -142,7 +186,7 @@ const Contribute = ({
   onCreateContributes,
   visible,
   onCloseModal,
-  error
+  error,
 }) => {
   const isFetching = useSelector(contributeSelector.statusSelector);
   const onSubmit = (params) => {
@@ -160,7 +204,12 @@ const Contribute = ({
       <View style={styled.container}>
         <Header style={styled.padding} />
         <ScrollView
-          refreshControl={(<RefreshControl refreshing={isFetching} onRefresh={onInitContribute} />)}
+          refreshControl={(
+            <RefreshControl
+              refreshing={isFetching}
+              onRefresh={onInitContribute}
+            />
+          )}
           showsVerticalScrollIndicator={false}
         >
           <Form>
@@ -170,6 +219,7 @@ const Contribute = ({
                 <View style={styled.padding}>
                   {!!error && <Text style={styled.warning}>{error}</Text>}
                   <ContributeButton onSubmit={onSubmit} />
+                  <NetworkFee />
                   <Extra />
                 </View>
               </>
@@ -194,7 +244,7 @@ ContributeButton.propTypes = {
 };
 
 Contribute.defaultProps = {
-  error: ''
+  error: '',
 };
 
 Contribute.propTypes = {
@@ -202,7 +252,7 @@ Contribute.propTypes = {
   onCreateContributes: PropTypes.func.isRequired,
   onCloseModal: PropTypes.func.isRequired,
   visible: PropTypes.bool.isRequired,
-  error: PropTypes.string
+  error: PropTypes.string,
 };
 
 export default compose(

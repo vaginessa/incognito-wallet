@@ -20,12 +20,16 @@ import {
   ACTION_FETCHING_ORDER_DETAIL,
   ACTION_FETCHED_ORDER_DETAIL,
   ACTION_SET_DEFAULT_PAIR,
+  ACTION_TOGGLE_PRO_TAB,
 } from './Swap.constant';
 
 const initialState = {
   isFetching: false,
   isFetched: false,
-  data: {},
+  data: {
+    feePrv: {},
+    feeToken: {},
+  },
   buytoken: '',
   selltoken: '',
   feetoken: '',
@@ -47,10 +51,17 @@ const initialState = {
     order: {},
     fetching: false,
   },
+  toggleProTab: false,
 };
 
 export default (state = initialState, action) => {
   switch (action.type) {
+  case ACTION_TOGGLE_PRO_TAB: {
+    return {
+      ...state,
+      toggleProTab: action.payload,
+    };
+  }
   case ACTION_SET_DEFAULT_PAIR: {
     const { selltoken, buytoken } = action.payload;
     return {
@@ -134,7 +145,7 @@ export default (state = initialState, action) => {
   case ACTION_FETCHING: {
     return {
       ...state,
-      isFetching: true,
+      isFetching: action.payload,
     };
   }
   case ACTION_FETCHED: {

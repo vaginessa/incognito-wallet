@@ -28,6 +28,8 @@ import {
   TAB_BUY_LIMIT_ID,
   TAB_SELL_LIMIT_ID,
 } from '@screens/PDexV3/features/Trade/Trade.constant';
+import orderBy from 'lodash/orderBy';
+import differenceBy from 'lodash/differenceBy';
 import { formConfigs } from './OrderLimit.constant';
 import { getInputAmount as getInputTokenAmount } from './OrderLimit.utils';
 
@@ -259,12 +261,13 @@ export const orderLimitDataSelector = createSelector(
     let totalOriginalAmount = 0,
       totalAmount = 0,
       totalAmountStr = '',
-      totalAmountToken = {},
-      totalStr = '';
+      totalAmountToken = {};
+    const calculating = isFetching;
+    let disabledBtn = calculating || !isValid(formConfigs.formName)(state);
     switch (activedTab) {
     case TAB_BUY_LIMIT_ID: {
       mainColor = buyColor;
-      btnActionTitle = `Buy ${buyInputAmount?.symbol}`;
+      btnActionTitle = 'Place buy order';
       reviewOrderTitle = `Buy ${buyInputAmount?.amountText} ${buyInputAmount?.symbol}`;
       reviewOrderDesc = 'Pay with';
       totalAmountToken = sellInputAmount?.tokenData;
@@ -290,11 +293,12 @@ export const orderLimitDataSelector = createSelector(
       );
       reviewOrderDescValue = `${totalAmountStr} ${totalAmountToken?.symbol}`;
       cfmTitle = `You placed an order to buy ${buyInputAmount?.amountText} ${buyInputAmount?.symbol} for ${reviewOrderDescValue}`;
+      disabledBtn = !originalbuyAmount && disabledBtn;
       break;
     }
     case TAB_SELL_LIMIT_ID: {
       mainColor = sellColor;
-      btnActionTitle = `Sell ${sellInputAmount?.symbol}`;
+      btnActionTitle = 'Place sell order';
       reviewOrderTitle = `Sell ${sellInputAmount?.amountText} ${sellInputAmount?.symbol}`;
       reviewOrderDesc = 'Receive';
       totalAmountToken = buyInputAmount?.tokenData;
@@ -320,9 +324,9 @@ export const orderLimitDataSelector = createSelector(
       );
       reviewOrderDescValue = `${totalAmountStr} ${totalAmountToken?.symbol}`;
       cfmTitle = `You placed an order to sell ${sellInputAmount?.amountText} ${sellInputAmount?.symbol} for ${reviewOrderDescValue}`;
+      disabledBtn = !originalSellAmount && disabledBtn;
       break;
     }
-
     default:
       break;
     }
@@ -348,12 +352,10 @@ export const orderLimitDataSelector = createSelector(
       !sellInputAmount?.isMainCrypto && !buyInputAmount.isMainCrypto;
     const prvBalance = format.amountVer2(prv?.amount || 0, PRV.pDecimals);
     const prvBalanceStr = `${prvBalance} ${PRV.symbol}`;
-    const balanceStr = `${sellInputAmount?.balanceStr ||
-      '0'} ${sellInputAmount?.symbol || ''}`;
+    const balanceStr = sellInputAmount?.balanceStr;
     const poolSizeStr = `${sellInputAmount?.poolValueStr} ${sellInputAmount?.symbol} + ${buyInputAmount?.poolValueStr} ${buyInputAmount?.symbol}`;
     const editableInput = !isFetching;
-    const calculating = isFetching;
-    const disabledBtn = calculating || !isValid(formConfigs.formName)(state);
+
     if (calculating) {
       btnActionTitle = 'Calculating...';
     }
@@ -448,6 +450,9 @@ export const mappingOrderHistorySelector = createSelector(
       const buyTokenBalance = new BigNumber(order?.buyTokenBalance);
       const sellTokenWithdrawed = new BigNumber(order?.sellTokenWithdrawed);
       let statusStr = status;
+      if (fromStorage) {
+        statusStr = 'Processing';
+      }
       let visibleBtnCancel = false;
       let visibleBtnClaim = false;
       const isWithdrawing = statusCode === 3 || status === 'withdrawing';
@@ -519,6 +524,7 @@ export const mappingOrderHistorySelector = createSelector(
       if (sellTokenId === token1.tokenId) {
         type = 'sell';
         mainColor = COLORS.red;
+
         const originalPrice = getOriginalPairRate({
           token1Value: amount,
           token2Value: price,
@@ -577,6 +583,7 @@ export const mappingOrderHistorySelector = createSelector(
         ...order,
         type,
         mainColor,
+        time,
         timeStr,
         percent,
         percentStr,
@@ -624,6 +631,11 @@ export const orderHistorySelector = createSelector(
       return history;
     }
     history = data.map((order) => mappingOrderHistory(order));
+    let openOrders = history.filter((h) => !h?.isCompleted);
+    openOrders = orderBy(openOrders, ['time'], ['desc']);
+    let remainOrders = differenceBy(history, openOrders, ['requestTx']);
+    remainOrders = orderBy(remainOrders, ['time'], ['desc']);
+    history = [...openOrders, ...remainOrders];
     return { history, isFetching, isFetched };
   },
 );
@@ -672,5 +684,17 @@ export const selectableTokens2Selector = createSelector(
     return pools
       .filter(({ token1 }) => token1?.tokenId === token1Id)
       .map(({ token2 }) => token2);
+  },
+);
+
+export const visibleBtnChartSelector = createSelector(
+  poolIdSelector,
+  activedTabSelector,
+  (poolId, getActivedTab) => {
+    const activedTab = getActivedTab(ROOT_TAB_TRADE);
+    return (
+      !!poolId &&
+      (activedTab === TAB_BUY_LIMIT_ID || activedTab === TAB_SELL_LIMIT_ID)
+    );
   },
 );

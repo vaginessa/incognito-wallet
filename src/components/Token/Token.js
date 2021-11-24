@@ -17,15 +17,16 @@ import { styled } from './Token.styled';
 
 export const NormalText = (props) => {
   const prefix = useSelector(prefixCurrency);
-  const { style, stylePSymbol, containerStyle, text, hasPSymbol } = props;
+  const { style, stylePSymbol, containerStyle, text, hasPSymbol, showBalance, symbol, rightIcon } = props;
   return (
     <View style={[styled.normalText, containerStyle]}>
-      {hasPSymbol && (
+      {hasPSymbol && showBalance && (
         <Text style={[styled.pSymbol, stylePSymbol]}>{prefix}</Text>
       )}
       <Text numberOfLines={1} style={[styled.text, style]} ellipsizeMode="tail">
-        {trim(text)}
+        {showBalance ? trim(text) : `••• ${symbol}`}
       </Text>
+      {!!rightIcon && rightIcon}
     </View>
   );
 };
@@ -36,6 +37,9 @@ NormalText.propTypes = {
   containerStyle: PropTypes.any,
   text: PropTypes.string,
   hasPSymbol: PropTypes.bool,
+  showBalance: PropTypes.bool,
+  symbol: PropTypes.string,
+  rightIcon: PropTypes.any
 };
 
 NormalText.defaultProps = {
@@ -44,6 +48,9 @@ NormalText.defaultProps = {
   containerStyle: null,
   text: '',
   hasPSymbol: false,
+  showBalance: true,
+  symbol: '',
+  rightIcon: null
 };
 
 export const Name = (props) => {
@@ -140,7 +147,7 @@ export const AmountBaseUSDT = React.memo((props) => {
 
   return (
     <NormalText
-      hasPSymbol={hideBalance ? false : true}
+      hasPSymbol={!hideBalance}
       text={hideBalance ? '•••' : `${currentAmount}`}
       style={[styled.rightText, customStyle]}
       stylePSymbol={[customPSymbolStyle]}
@@ -180,7 +187,7 @@ ChangePrice.defaultProps = {
   customStyle: null,
 };
 
-const Price = (props) => {
+export const Price = (props) => {
   const { priceUsd, pricePrv } = props;
   const { isToggleUSD } = useSelector(pTokenSelector);
 

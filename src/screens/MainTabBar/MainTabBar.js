@@ -9,24 +9,38 @@ import {
   MoreIcon,
   TradeIcon,
   LiquidityIcon,
-  AssetsIcon,
+  AssetsIcon, ShieldIcon,
 } from '@components/Icons';
 import { View, Text } from 'react-native';
+import Market from '@screens/MainTabBar/features/Market';
 import { styled } from './MainTabBar.styled';
 
 const TabNavigator = createMaterialBottomTabNavigator(
   {
+    Market: {
+      screen: Market,
+      navigationOptions: {
+        tabBarIcon: ({ focused, tintColor }) => (
+          <View style={styled.wrapBar}>
+            <TradeIcon active={focused} />
+            {focused && (
+              <Text style={[styled.label, { color: tintColor }]}>Markets</Text>
+            )}
+          </View>
+        ),
+      },
+    },
     Assets: {
       screen: TabAssets,
       navigationOptions: {
         tabBarIcon: ({ focused, tintColor }) => (
           <View style={styled.wrapBar}>
             <AssetsIcon active={focused} />
-            <Text style={[styled.label, { color: tintColor }]}>Portfolio</Text>
+            {focused && (
+              <Text style={[styled.label, { color: tintColor }]}>Portfolio</Text>
+            )}
           </View>
         ),
-        activeColor: COLORS.colorBlue,
-        inactiveColor: COLORS.lightGrey34,
       },
     },
     Trade: {
@@ -35,9 +49,11 @@ const TabNavigator = createMaterialBottomTabNavigator(
         tabBarIcon: ({ focused, tintColor }) => (
           <View style={styled.wrapBar}>
             <View style={{ height: 24 }}>
-              <TradeIcon active={focused} />
+              <ShieldIcon active={focused} />
             </View>
-            <Text style={[styled.label, { color: tintColor }]}>Trade</Text>
+            {focused && (
+              <Text style={[styled.label, { color: tintColor }]}>Trade</Text>
+            )}
           </View>
         ),
       },
@@ -48,7 +64,9 @@ const TabNavigator = createMaterialBottomTabNavigator(
         tabBarIcon: ({ focused, tintColor }) => (
           <View style={styled.wrapBar}>
             <LiquidityIcon active={focused} />
-            <Text style={[styled.label, { color: tintColor }]}>Liquidity</Text>
+            {focused && (
+              <Text style={[styled.label, { color: tintColor }]}>Earn</Text>
+            )}
           </View>
         ),
       },
@@ -59,14 +77,16 @@ const TabNavigator = createMaterialBottomTabNavigator(
         tabBarIcon: ({ focused, tintColor }) => (
           <View style={styled.wrapBar}>
             <MoreIcon active={focused} />
-            <Text style={[styled.label, { color: tintColor }]}>More</Text>
+            {focused && (
+              <Text style={[styled.label, { color: tintColor }]}>More</Text>
+            )}
           </View>
         ),
       },
     }
   },
   {
-    initialRouteName: 'Assets',
+    initialRouteName: 'Market',
     activeColor: COLORS.colorBlue,
     inactiveColor: COLORS.lightGrey34,
     barStyle: {

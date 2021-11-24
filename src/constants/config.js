@@ -10,6 +10,8 @@ const isMainnet = global.isMainnet ?? true;
 
 export const MAIN_WEBSITE = 'https://we.incognito.org';
 
+const TOKENS_URL = isMainnet ? global.severDefault.coinServices : 'http://51.79.76.38:8096';
+
 const API_BASE_URL = isMainnet
   ? 'https://api-service.incognito.org'
   : global.severDefault
@@ -39,7 +41,7 @@ const INCOGNITO_TOKEN_ICON_URL = isMainnet
   : 'https://storage.googleapis.com/incognito/wallet-testnet/tokens/icons';
 const BUILD_VERSION = pkg.version;
 const EXPLORER_CONSTANT_CHAIN_URL = isMainnet
-  ? 'https://incscan.io'
+  ? 'https://explorer.incognito.org'
   : global.severDefault
     ? global.severDefault.explorer
     : 'https://testnet.incognito.org'; // Change explorer
@@ -131,4 +133,5 @@ export default {
   NODE_MONITOR_URL,
   NODE_MONITOR_DETAIL_URL,
   FAUCET_URL,
+  TOKENS_URL
 };

@@ -1,6 +1,5 @@
 import React, {memo} from 'react';
-import {RefreshControl, ScrollView, Text, View} from 'react-native';
-import PropTypes from 'prop-types';
+import {RefreshControl, ScrollView, View} from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { tokenSelector } from '@src/redux/selectors';
 import { useNavigation } from 'react-navigation-hooks';
@@ -12,8 +11,6 @@ import { Toast } from '@components/core';
 import Token from '@screens/Wallet/features/Home/Wallet.token';
 import {CONSTANT_COMMONS} from '@src/constants';
 import {styledFollow, styledToken} from '@screens/Wallet/features/Home/_Wallet.styled';
-import {Row} from '@src/components';
-import {tokenStyled} from '@screens/Wallet/features/Home/Wallet.styled';
 
 const Followed = () => {
   const navigation = useNavigation();
@@ -34,49 +31,42 @@ const Followed = () => {
   };
 
   return (
-    <View style={{ flex: 1 }}>
-      <Row style={tokenStyled.wrapHeader} centerVertical>
-        <Text style={[tokenStyled.headerLabel, tokenStyled.wrapFirst]}>Assets</Text>
-        <Text style={[tokenStyled.headerLabel, tokenStyled.wrapSecond]}>Balance</Text>
-        <Text style={[tokenStyled.headerLabel, tokenStyled.wrapThird]}>Price</Text>
-        <View style={[tokenStyled.btnTrade, { backgroundColor: 'transparent' }]} />
-      </Row>
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        refreshControl={(
-          <RefreshControl
-            refreshing={isReloading}
-            onRefresh={() => onRefresh(true)}
-          />
-        )}
-        nestedScrollEnabled
-      >
+    <ScrollView
+      showsVerticalScrollIndicator={false}
+      refreshControl={(
+        <RefreshControl
+          refreshing={isReloading}
+          onRefresh={() => onRefresh(true)}
+        />
+      )}
+      style={{ paddingTop: 25 }}
+      nestedScrollEnabled
+    >
+      <Token
+        tokenId={CONSTANT_COMMONS.PRV_TOKEN_ID}
+        style={[
+          styledFollow.token,
+          followed.length === 0 && styledToken.lastChild,
+        ]}
+        onPress={() => handleSelectToken(CONSTANT_COMMONS.PRV_TOKEN_ID)}
+      />
+      {followed.map((token, index) => (
         <Token
-          tokenId={CONSTANT_COMMONS.PRV_TOKEN_ID}
+          key={token?.id}
+          tokenId={token?.id}
           style={[
             styledFollow.token,
-            followed.length === 0 && styledToken.lastChild,
+            followed.length - 1 === index && styledToken.lastChild,
           ]}
-          onPress={() => handleSelectToken(CONSTANT_COMMONS.PRV_TOKEN_ID)}
+          onPress={() => handleSelectToken(token?.id)}
+          handleRemoveToken={() => handleRemoveToken(token?.id)}
+          swipable
+          removable
+          showGettingBalance={token?.loading}
         />
-        {followed.map((token, index) => (
-          <Token
-            key={token?.id}
-            tokenId={token?.id}
-            style={[
-              styledFollow.token,
-              followed.length - 1 === index && styledToken.lastChild,
-            ]}
-            onPress={() => handleSelectToken(token?.id)}
-            handleRemoveToken={() => handleRemoveToken(token?.id)}
-            swipable
-            removable
-            showGettingBalance={token?.loading}
-          />
-        ))}
-        <View style={{ height: 50 }} />
-      </ScrollView>
-    </View>
+      ))}
+      <View style={{ height: 70 }} />
+    </ScrollView>
   );
 };
 

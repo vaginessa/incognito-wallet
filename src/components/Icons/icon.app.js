@@ -8,7 +8,7 @@ const styled = StyleSheet.create({
     width: 20,
     height: 20,
     backgroundColor: COLORS.black,
-    borderRadius: 12,
+    borderRadius: 80,
   },
 });
 

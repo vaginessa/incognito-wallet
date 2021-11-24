@@ -115,7 +115,7 @@ export const listPoolsSelector = createSelector(
             token1Value,
             token2Value,
           ),
-          volumeToAmountStr: `${volumeToAmount}$`,
+          volumeToAmountStr: `$${volumeToAmount}`,
           volumeSuffix,
           volumeSuffixStr: `${volumeSuffix}$`,
           ampStr: `${amp}`,

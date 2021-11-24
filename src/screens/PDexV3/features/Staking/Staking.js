@@ -1,11 +1,10 @@
 import React, {memo} from 'react';
 import {SafeAreaView, View} from 'react-native';
 import {styled as mainStyle} from '@screens/PDexV3/PDexV3.styled';
-import {Header, Row} from '@src/components';
+import { Row } from '@src/components';
 import {Tabs} from '@components/core';
 import routeNames from '@routers/routeNames';
 import {useNavigation} from 'react-navigation-hooks';
-import {homeStyle, tabStyle} from '@screens/PDexV3/features/Staking/Staking.styled';
 import {STAKING_MESSAGES, TABS} from '@screens/PDexV3/features/Staking/Staking.constant';
 import AmountGroup from '@components/core/AmountGroup';
 import {CalendarClockIcon as CalendarIcon} from '@components/Icons';
@@ -17,16 +16,17 @@ import withFetch from '@screens/PDexV3/features/Staking/Staking.enhanceFetch';
 import {useSelector} from 'react-redux';
 import {defaultAccountSelector} from '@src/redux/selectors/account';
 import {stakingSelector} from '@screens/PDexV3/features/Staking';
-import {NFTTokenBottomBar} from '@screens/PDexV3/features/NFTToken';
 import {compose} from 'recompose';
-import withLazy from '@components/LazyHoc/LazyHoc';
+import SelectAccountButton from '@components/SelectAccountButton';
+import {withLayout_2} from '@components/Layout';
+import enhance from '@screens/PDexV3/features/Staking/Staking.enhance';
 
 const Reward = React.memo(() => {
   const navigation = useNavigation();
   const { rewardUSDStr, rewardPRVStr } = useSelector(stakingSelector.stakingRewardSelector);
   const isFetching = useSelector(stakingSelector.isFetchingCoinsSelector);
   return (
-    <Row center style={{ marginTop: 27 }}>
+    <Row center style={{ marginTop: 15 }}>
       <AmountGroup
         amountStr={rewardUSDStr}
         subAmountStr={rewardPRVStr}
@@ -39,12 +39,6 @@ const Reward = React.memo(() => {
     </Row>
   );
 });
-
-const tabStyled = {
-  titleStyled: tabStyle.title,
-  titleDisabledStyled: tabStyle.disabledText,
-  tabStyledEnabled: tabStyle.tabEnable,
-};
 
 const Staking = ({ handleFetchData, onFreeData }) => {
   const navigation = useNavigation();
@@ -61,36 +55,44 @@ const Staking = ({ handleFetchData, onFreeData }) => {
   }, [account.paymentAddress]);
 
   const TabPools = React.useMemo(() => (
-    <View tabID={TABS.TAB_COINS} label={STAKING_MESSAGES.listCoins} {...tabStyled}>
+    <View tabID={TABS.TAB_COINS} label={STAKING_MESSAGES.listCoins}>
+      <Reward />
       <StakingPools />
     </View>
   ), []);
 
   const TabPortfolio = React.useMemo(() => (
-    <View tabID={TABS.TAB_PORTFOLIO} label={STAKING_MESSAGES.portfolio} {...tabStyled}>
+    <View tabID={TABS.TAB_PORTFOLIO} label={STAKING_MESSAGES.portfolio}>
+      <Reward />
       <StakingPortfolio />
     </View>
   ), []);
 
   return (
     <>
-      <View style={mainStyle.container}>
-        <Header title={STAKING_MESSAGES.staking} accountSelectable />
-        <Reward />
-        <View style={homeStyle.wrapper}>
-          <Tabs rootTabID={TABS.ROOT_ID} styledTabList={{ padding: 0 }} defaultTabIndex={1}>
-            {TabPools}
-            {TabPortfolio}
-          </Tabs>
-        </View>
-        <SafeAreaView>
-          <BTNBorder
-            title={isStaking ? STAKING_MESSAGES.stakeMore : STAKING_MESSAGES.stakeNow}
-            onPress={onStakingMore}
-          />
-        </SafeAreaView>
-      </View>
-      <NFTTokenBottomBar />
+      {/*<Header title={STAKING_MESSAGES.staking} accountSelectable />*/}
+      <Tabs
+        rootTabID={TABS.ROOT_ID}
+        styledTabs={mainStyle.tab1}
+        styledTabList={mainStyle.styledTabList1}
+        defaultTabIndex={1}
+        useTab1
+        hideBackButton={false}
+        rightCustom={(
+          <Row>
+            <SelectAccountButton />
+          </Row>
+        )}
+      >
+        {TabPools}
+        {TabPortfolio}
+      </Tabs>
+      <SafeAreaView>
+        <BTNBorder
+          title={isStaking ? STAKING_MESSAGES.stakeMore : STAKING_MESSAGES.stakeNow}
+          onPress={onStakingMore}
+        />
+      </SafeAreaView>
     </>
   );
 };
@@ -101,6 +103,7 @@ Staking.propTypes = {
 };
 
 export default compose(
-  withLazy,
-  withFetch
+  enhance,
+  withLayout_2,
+  withFetch,
 )(memo(Staking));

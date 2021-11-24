@@ -4,7 +4,7 @@ import { getPrivacyDataByTokenID as getPrivacyDataByTokenIDSelector } from '@src
 import format from '@src/utils/format';
 import { ACCOUNT_CONSTANT } from 'incognito-chain-web-js/build/wallet';
 import capitalize from 'lodash/capitalize';
-import { formValueSelector, isValid } from 'redux-form';
+import { formValueSelector, isValid, getFormSyncErrors } from 'redux-form';
 import convert from '@src/utils/convert';
 import SelectedPrivacy from '@src/models/selectedPrivacy';
 import { PRV } from '@src/constants/common';
@@ -13,12 +13,18 @@ import orderBy from 'lodash/orderBy';
 import { getExchangeRate, getPairRate, getPoolSize } from '@screens/PDexV3';
 import { PRIORITY_LIST } from '@screens/Dex/constants';
 import BigNumber from 'bignumber.js';
+import xor from 'lodash/xor';
 import { formConfigs } from './Swap.constant';
 import { getInputAmount } from './Swap.utils';
 
 export const swapSelector = createSelector(
   (state) => state.pDexV3,
   ({ swap }) => swap,
+);
+
+export const purePairsSelector = createSelector(
+  swapSelector,
+  ({ pairs }) => pairs || [],
 );
 
 export const listPairsSelector = createSelector(
@@ -89,17 +95,49 @@ export const feetokenDataSelector = createSelector(
   swapSelector,
   feeSelectedSelector,
   getPrivacyDataByTokenIDSelector,
-  (state, { data, networkfee }, feetoken, getPrivacyDataByTokenID) => {
+  (
+    state,
+    { data, networkfee, selltoken },
+    feetoken,
+    getPrivacyDataByTokenID,
+  ) => {
     try {
       const feeTokenData: SelectedPrivacy = getPrivacyDataByTokenID(feetoken);
+      const sellTokenData: SelectedPrivacy = getPrivacyDataByTokenID(selltoken);
       const selector = formValueSelector(formConfigs.formName);
       const fee = selector(state, formConfigs.feetoken);
-      const { fee: minFeeOriginal = 0 } = data;
+      const { feePrv: feePrvEst = {}, feeToken: feeTokenEst = {} } = data;
+      const {
+        fee: feePrv,
+        sellAmount: sellAmountPRV,
+        poolDetails: poolDetailsPRV,
+        route: tradePathPRV,
+        maxGet: maxGetPRV,
+      } = feePrvEst;
+      const {
+        fee: feeToken,
+        sellAmount: sellAmountToken,
+        poolDetails: poolDetailsToken,
+        route: tradePathToken,
+        maxGet: maxGetToken,
+      } = feeTokenEst;
+      let allPoolSize = [];
+      let maxGet = 0;
+      const payFeeByPRV = feetoken === PRV.id;
+      const minFeeOriginal = payFeeByPRV ? feePrv : feeToken;
       let feeAmount = convert.toNumber(fee, true) || 0;
-      const feeAmountText = `${fee} ${feeTokenData.symbol}`;
+      const feeToNumber = convert.toNumber(fee, true);
+      const feeToOriginal = convert.toOriginalAmount(
+        feeToNumber,
+        feeTokenData?.pDecimals,
+      );
+      const feeAmountText = `${format.amountFull(
+        new BigNumber(feeToOriginal),
+        feeTokenData?.pDecimals,
+        false,
+      )} ${feeTokenData.symbol}`;
       const origininalFeeAmount =
-        convert.toOriginalAmount(feeAmount, feeTokenData?.pDecimals, false) ||
-        0;
+        convert.toOriginalAmount(feeAmount, feeTokenData?.pDecimals, true) || 0;
       const minFeeAmount = convert.toHumanAmount(
         minFeeOriginal,
         feeTokenData?.pDecimals,
@@ -120,6 +158,61 @@ export const feetokenDataSelector = createSelector(
         false,
       );
       const totalFeePRVText = `${totalFeePRV} ${PRV.symbol}`;
+
+      const minFeeOriginalToken = feeToken;
+      const minFeeTokenAmount = convert.toHumanAmount(
+        minFeeOriginalToken,
+        sellTokenData.pDecimals,
+      );
+      const minFeeTokenFixed = format.toFixed(
+        minFeeTokenAmount,
+        sellTokenData?.pDecimals,
+      );
+      const availableHunmanAmountToken = convert.toHumanAmount(
+        sellAmountToken,
+        sellTokenData.pDecimals,
+      );
+      const availableFixedSellAmountToken = format.toFixed(
+        availableHunmanAmountToken,
+        sellTokenData.pDecimals,
+      );
+
+      const minFeeOriginalPRV = feePrv;
+      const minFeePRVAmount = convert.toHumanAmount(
+        minFeeOriginalPRV,
+        PRV.pDecimals,
+      );
+      const minFeePRVFixed = format.toFixed(minFeePRVAmount, PRV.pDecimals);
+      const availableHunmanAmountPRV = convert.toHumanAmount(
+        sellAmountPRV,
+        sellTokenData.pDecimals,
+      );
+      const availableFixedSellAmountPRV = format.toFixed(
+        availableHunmanAmountPRV,
+        sellTokenData.pDecimals,
+      );
+      const canNotPayFeeByPRV =
+        !sellTokenData.isMainCrypto && feeToken && !feePrv;
+      try {
+        allPoolSize = Object.entries(
+          payFeeByPRV ? poolDetailsPRV : poolDetailsToken,
+        ).map(([, value]) => {
+          const { token1Value, token2Value, token1Id, token2Id } = value;
+          const token1 = getPrivacyDataByTokenID(token1Id);
+          const token2 = getPrivacyDataByTokenID(token2Id);
+          const poolSize = getPoolSize(
+            token1,
+            token2,
+            token1Value,
+            token2Value,
+          );
+          return poolSize;
+        });
+      } catch {
+        //
+      }
+      const tradePath = payFeeByPRV ? tradePathPRV : tradePathToken;
+      maxGet = payFeeByPRV ? maxGetPRV : maxGetToken;
       return {
         ...feeTokenData,
         feetoken,
@@ -133,6 +226,17 @@ export const feetokenDataSelector = createSelector(
         totalFeePRV,
         totalFeePRVText,
         minFeeAmountFixed,
+        payFeeByPRV,
+        minFeeTokenFixed,
+        minFeePRVFixed,
+        canNotPayFeeByPRV,
+        minFeeOriginalPRV,
+        minFeeOriginalToken,
+        availableFixedSellAmountPRV,
+        availableFixedSellAmountToken,
+        tradePath,
+        maxGet,
+        allPoolSize,
       };
     } catch (error) {
       console.log('feetokenDataSelector-error', error);
@@ -167,9 +271,18 @@ export const inputAmountSelector = createSelector(
   inpuTokenSelector,
   focustokenSelector,
   feetokenDataSelector,
-  swapSelector,
   sharedSelector.isGettingBalance,
   getInputAmount,
+);
+
+export const sellInputTokenSeletor = createSelector(
+  inputAmountSelector,
+  (getInputAmount) => getInputAmount(formConfigs.selltoken),
+);
+
+export const buyInputTokenSeletor = createSelector(
+  inputAmountSelector,
+  (getInputAmount) => getInputAmount(formConfigs.buytoken),
 );
 
 export const slippagetoleranceSelector = createSelector(
@@ -202,6 +315,7 @@ export const swapInfoSelector = createSelector(
       isFetched,
       percent,
       swaping,
+      toggleProTab,
     },
     feeTokenData,
     getInputAmount,
@@ -211,29 +325,6 @@ export const swapInfoSelector = createSelector(
     try {
       const sellInputAmount = getInputAmount(formConfigs.selltoken);
       const buyInputAmount = getInputAmount(formConfigs.buytoken);
-      const { fee, route: routing, poolDetails, maxGet } = data;
-      let allPoolSize = [];
-      try {
-        allPoolSize = Object.entries(poolDetails).map(([, value]) => {
-          const { token1Value, token2Value, token1Id, token2Id } = value;
-          const token1 = getPrivacyDataByTokenID(token1Id);
-          const token2 = getPrivacyDataByTokenID(token2Id);
-          const poolSize = getPoolSize(
-            token1,
-            token2,
-            token1Value,
-            token2Value,
-          );
-          return poolSize;
-        });
-      } catch {
-        //
-      }
-      const minFeeAmount = format.toFixed(
-        convert.toHumanAmount(fee, feeTokenData?.pDecimals),
-        feeTokenData?.pDecimals,
-      );
-      const minFeeAmountStr = `${minFeeAmount} ${feeTokenData?.symbol}`;
       const networkfeeAmount = format.toFixed(
         convert.toHumanAmount(networkfee, PRV.pDecimals),
         PRV.pDecimals,
@@ -261,23 +352,13 @@ export const swapInfoSelector = createSelector(
       const showPRVBalance = !sellInputAmount?.isMainCrypto;
       const prvBalance = format.amountVer2(prv.amount, PRV.pDecimals);
       const prvBalanceStr = `${prvBalance} ${PRV.symbol}`;
-      const maxPriceStr = getExchangeRate(
-        sellInputAmount.tokenData,
-        buyInputAmount.tokenData,
-        sellInputAmount.originalAmount,
-        maxGet,
-      );
       const defaultPair = {
         selltoken: sellInputAmount.tokenId,
         buytoken: buyInputAmount.tokenId,
       };
       return {
         balanceStr: sellInputBalanceStr,
-        routing,
-        minFeeAmount,
-        minFeeAmountStr,
         networkfeeAmountStr,
-        maxPriceStr,
         editableInput,
         btnSwapText,
         disabledBtnSwap,
@@ -291,10 +372,11 @@ export const swapInfoSelector = createSelector(
         prvBalanceStr,
         percent,
         swaping,
-        allPoolSize,
-        maxGet,
-        refreshing: isFetching,
+        refreshing: initing,
         defaultPair,
+        toggleProTab,
+        isFetching,
+        isFetched,
       };
     } catch (error) {
       console.log('swapInfoSelector-error', error);
@@ -360,7 +442,7 @@ export const mappingOrderHistorySelector = createSelector(
         feeToken.pDecimals,
         false,
       )} ${feeToken.symbol}`;
-      const swapStr = `${sellStr} = ${buyStr}`;
+      const swapStr = price ? `${sellStr} = ${buyStr}` : '';
       const result = {
         ...order,
         sellStr,
@@ -375,6 +457,7 @@ export const mappingOrderHistorySelector = createSelector(
         statusStr: capitalize(status),
         swapStr,
         tradingFeeByPRV: feeToken.isMainCrypto,
+        price,
       };
       return result;
     } catch (error) {
@@ -386,10 +469,13 @@ export const mappingOrderHistorySelector = createSelector(
 export const swapHistorySelector = createSelector(
   swapSelector,
   mappingOrderHistorySelector,
-  ({ swapHistory }, mappingOrderHistory) => {
-    const history = swapHistory?.data?.map((order) =>
-      mappingOrderHistory(order),
-    );
+  ({ swapHistory, selltoken, buytoken }, mappingOrderHistory) => {
+    const history = swapHistory?.data
+      ?.map((order) => mappingOrderHistory(order))
+      .filter(
+        ({ sellTokenId, buyTokenId }) =>
+          xor([selltoken, buytoken], [sellTokenId, buyTokenId]).length === 0,
+      );
     return {
       ...swapHistory,
       history,
@@ -400,6 +486,7 @@ export const swapHistorySelector = createSelector(
 export const orderDetailSelector = createSelector(
   swapSelector,
   mappingOrderHistorySelector,
+
   ({ orderDetail }, mappingOrderHistory) => {
     const { fetching, order } = orderDetail;
     return {
@@ -412,4 +499,9 @@ export const orderDetailSelector = createSelector(
 export const defaultPairSelector = createSelector(
   swapSelector,
   ({ selltoken, buytoken }) => ({ selltoken, buytoken }),
+);
+
+export const swapFormErrorSelector = createSelector(
+  (state) => state,
+  (state) => getFormSyncErrors(formConfigs.formName)(state),
 );

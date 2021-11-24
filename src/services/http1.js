@@ -1,11 +1,13 @@
 import axios from 'axios';
+import {CONSTANT_CONFIGS} from '@src/constants';
 import { CustomError, ErrorCode, ExHandler } from './exception';
 
 const HEADERS = {'Content-Type': 'application/json'};
 const TIMEOUT = 20000;
 
+
 const instance = axios.create({
-  baseURL: 'http://51.79.76.38:8096/coins/tokenlist',
+  baseURL: CONSTANT_CONFIGS.TOKENS_URL,
   timeout: TIMEOUT,
   headers: {
     ...HEADERS,
@@ -15,7 +17,7 @@ const instance = axios.create({
 
 instance.interceptors.response.use(
   res => {
-    const result = res?.data?.Data;
+    const result = res?.data?.Result;
     return Promise.resolve(result);
   },
   errorData => {

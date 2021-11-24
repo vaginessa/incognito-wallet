@@ -7,14 +7,6 @@ export const getPrice = ({ token, tokenUSDT }) => {
   if (!tokenUSDT) {
     return defaultValue;
   }
-  const { pricePrv, priceUsd } = tokenUSDT;
-  if (token?.isMainCrypto) {
-    return {
-      change: '0',
-      pricePrv: 1,
-      priceUsd: priceUsd / pricePrv || 0,
-    };
-  }
   return {
     change: token?.change || defaultValue.change,
     pricePrv: token?.pricePrv !== 0 ? token?.pricePrv : 0,

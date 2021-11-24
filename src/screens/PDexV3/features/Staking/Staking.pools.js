@@ -5,7 +5,7 @@ import {batch, useDispatch, useSelector} from 'react-redux';
 import withFetch from '@screens/PDexV3/features/Staking/Staking.enhanceFetch';
 import {styled as mainStyle} from '@screens/PDexV3/PDexV3.styled';
 import {stakingActions, stakingSelector} from '@screens/PDexV3/features/Staking';
-import {HeaderRow, PoolItem} from '@screens/PDexV3/features/Staking/Staking.item';
+import { PoolItem } from '@screens/PDexV3/features/Staking/Staking.item';
 import {RefreshControl} from '@components/core';
 import routeNames from '@routers/routeNames';
 import {useNavigation} from 'react-navigation-hooks';
@@ -24,7 +24,6 @@ const StakingPools = ({ handleFetchStakingPools }) => {
   const renderItem = (data) => <PoolItem item={data.item} onPress={onInvestCoin} isLast={data.index === (pools.length - 1)} />;
   return (
     <View style={mainStyle.fullFlex}>
-      <HeaderRow array={['Name', 'APY']} style={{ marginTop: 10 }} />
       <FlatList
         refreshControl={
           <RefreshControl refreshing={isFetching} onRefresh={handleFetchStakingPools} />
