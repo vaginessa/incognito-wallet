@@ -138,8 +138,9 @@ export const styled = StyleSheet.create({
   },
   iconStar: {
     width: 24,
-    paddingTop: 2,
+    height: FONT.SIZE.medium + 9,
     alignItems: 'flex-end',
+    justifyContent: 'center'
   },
 });
 
