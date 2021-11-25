@@ -37,14 +37,14 @@ const Header = () => {
   }, []);
   return (
     <Row style={headerStyled.container} centerVertical spaceBetween>
-      <QRCodeIcon
-        style={headerStyled.icon}
-        onPress={onShowAddress}
-      />
       <Row centerVertical>
-        {/*<Notification />*/}
-        <SelectAccountButton />
+        <QRCodeIcon
+          style={headerStyled.icon}
+          onPress={onShowAddress}
+        />
+        <Notification />
       </Row>
+      <SelectAccountButton />
     </Row>
   );
 };
