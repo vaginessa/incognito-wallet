@@ -11,7 +11,6 @@ import { PRV } from '@src/constants/common';
 import { sharedSelector } from '@src/redux/selectors';
 import orderBy from 'lodash/orderBy';
 import { getExchangeRate, getPairRate, getPoolSize } from '@screens/PDexV3';
-import { PRIORITY_LIST } from '@screens/Dex/constants';
 import BigNumber from 'bignumber.js';
 import xor from 'lodash/xor';
 import { formConfigs } from './Swap.constant';
@@ -34,13 +33,7 @@ export const listPairsSelector = createSelector(
     if (!pairs) {
       return [];
     }
-    let list = pairs
-      .map((tokenID) => getPrivacyDataByTokenID(tokenID))
-      .map((token) => {
-        let priority = PRIORITY_LIST.indexOf(token?.id);
-        priority > -1 ? priority : PRIORITY_LIST.length + 1;
-        return { ...token, priority };
-      });
+    let list = pairs.map((tokenID) => getPrivacyDataByTokenID(tokenID));
     return orderBy(
       list,
       ['priority', 'hasIcon', 'verified'],

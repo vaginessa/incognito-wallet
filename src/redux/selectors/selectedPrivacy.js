@@ -4,8 +4,13 @@ import memoize from 'memoize-one';
 import { CONSTANT_COMMONS } from '@src/constants';
 import { ExHandler } from '@src/services/exception';
 import { BIG_COINS, PRIORITY_LIST } from '@src/screens/Dex/constants';
+import toLower from 'lodash/toLower';
 import { defaultAccount } from './account';
-import { tokensFollowedSelector, pTokens, internalTokens } from './token';
+import token, {
+  tokensFollowedSelector,
+  pTokens,
+  internalTokens,
+} from './token';
 import { getPrice } from '../utils/selectedPrivacy';
 
 export const selectedPrivacyTokenID = createSelector(
@@ -20,9 +25,12 @@ export const getPrivacyDataByTokenID = createSelector(
   tokensFollowedSelector,
   (account, internalTokens, pTokens, followed) =>
     memoize((tokenID) => {
+      let data = {};
+      if (!tokenID) {
+        return data;
+      }
       try {
-        // ‘PRV’ is not a token
-        tokenID = (tokenID || '').toLowerCase();
+        tokenID = toLower(tokenID);
         const internalTokenData =
           internalTokens?.find(
             (t) => t?.id !== CONSTANT_COMMONS.PRV_TOKEN_ID && t?.id === tokenID,
@@ -46,17 +54,20 @@ export const getPrivacyDataByTokenID = createSelector(
           (token) => token?.tokenId === BIG_COINS.USDT,
         );
         const price = getPrice({ token, tokenUSDT });
-        const priority = PRIORITY_LIST.indexOf(tokenID);
-        let data = {
+        let priority =
+          PRIORITY_LIST.indexOf(tokenID) > -1
+            ? PRIORITY_LIST.indexOf(tokenID)
+            : PRIORITY_LIST.length + 1;
+        data = {
           ...token,
           ...price,
           isFollowed: followedTokenData?.id === tokenID,
           priority,
         };
-        return data;
       } catch (e) {
-        console.log('e');
+        console.log('error', tokenID, e);
       }
+      return data;
     }),
 );
 
