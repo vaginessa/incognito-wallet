@@ -1,5 +1,5 @@
 import { PRV } from '@src/constants/common';
-import uniqBy from 'lodash/uniqBy';
+import uniq from 'lodash/uniq';
 import { sharedSelector } from '@src/redux/selectors';
 import { ACCOUNT_CONSTANT } from 'incognito-chain-web-js/build/wallet';
 import { getPrivacyDataByTokenID as getPrivacyDataByTokenIDSelector } from '@src/redux/selectors/selectedPrivacy';
@@ -684,8 +684,17 @@ export const orderDetailSelector = createSelector(
 
 export const selectableTokens1Selector = createSelector(
   listPoolsVerifySelector,
-  (pools) =>
-    uniqBy(pools.map(({ token1 }) => token1), (token) => token?.tokenId),
+  getPrivacyDataByTokenIDSelector,
+  (pools, getPrivacyDataByTokenID) => {
+    let list = uniq(pools.map(({ token1 }) => token1?.tokenId));
+    list = list.map((tokenID) => getPrivacyDataByTokenID(tokenID));
+    list = orderBy(
+      list,
+      ['priority', 'hasIcon', 'verified'],
+      ['asc', 'desc', 'desc'],
+    );
+    return list;
+  },
 );
 
 export const selectableTokens2Selector = createSelector(
