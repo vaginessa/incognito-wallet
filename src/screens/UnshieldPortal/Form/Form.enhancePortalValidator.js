@@ -8,7 +8,7 @@ import { detectToken } from '@src/utils/misc';
 export const enhancePortalValidation = (WrappedComp) => (props) => {
   const selectedPrivacy = useSelector(selectedPrivacySelector.selectedPrivacy);
   const { portalData, balancePRV } = props;
-  const { 
+  const {
     minUnshieldAmount,
     maxUnshieldAmount,
   } = portalData;
@@ -35,7 +35,7 @@ export const enhancePortalValidation = (WrappedComp) => (props) => {
       } : {},
       ...Number.isFinite(minUnshieldAmount) ? {
         minAmountValidator: validator.minValue(minUnshieldAmount, {
-          message: `Amount must be larger than ${minUnshieldAmount} ${selectedPrivacy?.externalSymbol ||
+          message: `Amount must be greater than ${minUnshieldAmount} ${selectedPrivacy?.externalSymbol ||
             selectedPrivacy?.symbol}`,
         }),
       } : {},

@@ -27,9 +27,9 @@ const SelectAccount = () => {
         <View tabID={TABS.TAB_SELECT_ACCOUNT_MASTER_LESS_ID} label="Masterless">
           <Masterless />
         </View>
-        <View tabID={TABS.TAB_SETTING_ID} label="Settings">
-          <Setting />
-        </View>
+        {/*<View tabID={TABS.TAB_SETTING_ID} label="Settings">*/}
+        {/*  <Setting />*/}
+        {/*</View>*/}
       </Tabs>
     </View>
   );

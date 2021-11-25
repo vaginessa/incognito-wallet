@@ -50,7 +50,7 @@ const RemoveLPDetail = () => {
       }
     }));
     const amountHook = removeData.map(({ removeAmountSymbolStr: amount, removeAmount }, index) => ({
-      label: `Amount${index + 1}`,
+      label: `Amount ${index + 1}`,
       valueText: amount,
       disabled: !removeAmount
     }));

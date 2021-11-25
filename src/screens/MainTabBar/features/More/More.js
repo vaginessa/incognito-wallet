@@ -1,7 +1,7 @@
 import React, {memo} from 'react';
 import withTab from '@screens/MainTabBar/MainTabBar.enhanceTab';
-import {SafeAreaView, ScrollView, Text, TouchableOpacity, View} from 'react-native';
-import {homeStyled, moreStyled, styled} from '@screens/MainTabBar/MainTabBar.styled';
+import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { moreStyled, styled } from '@screens/MainTabBar/MainTabBar.styled';
 import {useSelector} from 'react-redux';
 import {defaultAccountSelector} from '@src/redux/selectors/account';
 import {useNavigation} from 'react-navigation-hooks';
@@ -27,12 +27,12 @@ const Categories = [
   {
     label: 'Power privacy',
     data: [
-      {
-        route: routeNames.Staking,
-        label: routeNames.Staking,
-        icon: StakeIcon,
-        key: appConstant.DISABLED.STAKING_PDEX3
-      },
+      // {
+      //   route: routeNames.Staking,
+      //   label: routeNames.Staking,
+      //   icon: StakeIcon,
+      //   key: appConstant.DISABLED.STAKING_PDEX3
+      // },
       {
         route: routeNames.PoolV2,
         label: 'Provide',
@@ -46,17 +46,6 @@ const Categories = [
         key: appConstant.DISABLED.NODE
       },
       {
-        route: routeNames.Keychain,
-        label: routeNames.Keychain,
-        icon: KeyChainIcon,
-        key: appConstant.DISABLED.KEY_CHAIN
-      }
-    ]
-  },
-  {
-    label: 'More',
-    data: [
-      {
         route: routeNames.CreateToken,
         label: 'Mint',
         icon: MintIcon,
@@ -67,6 +56,26 @@ const Categories = [
         label: 'Faucet',
         icon: FaucetIcon,
         key: appConstant.DISABLED.FAUCET
+      },
+    ]
+  },
+  {
+    label: 'More',
+    data: [
+      {
+        route: routeNames.Keychain,
+        label: routeNames.Keychain,
+        icon: KeyChainIcon,
+        key: appConstant.DISABLED.KEY_CHAIN
+      },
+      {
+        route: routeNames.Setting,
+        label: routeNames.Setting,
+        icon: VectorSettingColor,
+        key: appConstant.DISABLED.SETTING,
+        params: {
+          showHeader: true
+        },
       },
       {
         route: routeNames.pApp,
@@ -86,15 +95,6 @@ const Categories = [
           showHeader: true
         },
       },
-      {
-        route: routeNames.Setting,
-        label: routeNames.Setting,
-        icon: VectorSettingColor,
-        key: appConstant.DISABLED.SETTING,
-        params: {
-          showHeader: true
-        },
-      }
     ]
   }
 ];
@@ -122,7 +122,7 @@ const CategoryItem = ({ item }) => {
       style={[moreStyled.category, isDisabled && { opacity: 0.7 }]}
       onPress={onFeaturePress}
     >
-      <View style={{ height: 32 }}>
+      <View style={{ height: 32, justifyContent: 'center' }}>
         <Icon />
       </View>
       <Text style={moreStyled.regularBlack}>{item.label}</Text>
@@ -142,7 +142,7 @@ const TabAssets = () => {
     </View>
   );
   return (
-    <View style={[styled.container, { paddingTop: 20 }]}>
+    <View style={[styled.container, { paddingTop: 25 }]}>
       <ScrollView>
         {Categories.map(renderSections)}
       </ScrollView>

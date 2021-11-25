@@ -21,7 +21,6 @@ import {
   TAB_BUY_LIMIT_ID,
   TAB_SELL_LIMIT_ID,
 } from '@screens/PDexV3/features/Trade/Trade.constant';
-import {actionLogEvent} from '@screens/Performance';
 import {
   ACTION_FETCHING,
   ACTION_FETCHED,
@@ -100,9 +99,7 @@ export const actionSetBuyTokenFetched = (payload) => ({
   payload,
 });
 
-export const actionSetPoolSelected = (payload) => async (
-  dispatch,
-) => {
+export const actionSetPoolSelected = (payload) => async (dispatch) => {
   batch(async () => {
     dispatch(actionResetOrdersHistory());
     dispatch({
@@ -149,7 +146,6 @@ export const actionSetBuyToken = (buytokenId, refresh) => async (dispatch) => {
 
 export const actionSetInputToken = ({ selltoken, buytoken, refresh }) => async (
   dispatch,
-  getState,
 ) => {
   if (!selltoken || !buytoken) {
     return;
@@ -195,9 +191,6 @@ export const actionInit = (refresh = true) => async (dispatch, getState) => {
     let state = getState();
     const pools = listPoolsIDsSelector(state);
     const poolSelected = poolSelectedDataSelector(state);
-    dispatch(actionLogEvent({
-      desc: 'POOL-SELECTED-' + JSON.stringify(poolSelected)
-    }));
     if (!poolSelected?.poolId) {
       const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
       let defaultPoolId;
@@ -216,9 +209,6 @@ export const actionInit = (refresh = true) => async (dispatch, getState) => {
     }
     state = getState();
     const pool = poolSelectedDataSelector(state);
-    dispatch(actionLogEvent({
-      desc: 'POOL-' + JSON.stringify(pool)
-    }));
     if (isEmpty(pool)) {
       return;
     }

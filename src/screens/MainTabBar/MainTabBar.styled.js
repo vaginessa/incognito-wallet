@@ -220,10 +220,10 @@ export const moreStyled = StyleSheet.create({
   },
   regularBlack: {
     ...FONT.STYLE.medium,
-    fontSize: FONT.SIZE.small,
+    fontSize: FONT.SIZE.regular,
     color: COLORS.black,
     lineHeight: FONT.SIZE.small + 6,
-    marginTop: 2,
+    marginTop: 8,
   },
   wrapCategory: {
     marginTop: 10,

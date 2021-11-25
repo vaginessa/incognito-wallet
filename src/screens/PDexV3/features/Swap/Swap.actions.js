@@ -341,49 +341,10 @@ export const actionEstimateTrade = ({
   }
 };
 
-export const actionSetSellToken = (selltoken) => async (dispatch, getState) => {
-  try {
-    batch(() => {
-      dispatch(actionSetSellTokenFetched(selltoken));
-      dispatch(getBalance(selltoken));
-    });
-  } catch (error) {
-    new ExHandler(error).showErrorToast();
-  }
-};
-
-export const actionSetBuyToken = (buytoken) => async (dispatch, getState) => {
-  try {
-    batch(() => {
-      dispatch(actionSetBuyTokenFetched(buytoken));
-      dispatch(getBalance(buytoken));
-    });
-  } catch (error) {
-    new ExHandler(error).showErrorToast();
-  }
-};
-
 export const actionInitingSwapForm = (payload) => ({
   type: ACTION_SET_INITIING_SWAP,
   payload,
 });
-
-export const actionSetInputToken = ({ selltoken, buytoken }) => async (
-  dispatch,
-) => {
-  if (!selltoken || !buytoken) {
-    return;
-  }
-  try {
-    batch(() => {
-      dispatch(actionSetSellToken(selltoken));
-      dispatch(actionSetBuyToken(buytoken));
-      dispatch(getBalance(PRV.id));
-    });
-  } catch (error) {
-    throw error;
-  }
-};
 
 export const actionFetchedPairs = (payload) => ({
   payload,
@@ -426,32 +387,20 @@ export const actionInitSwapForm = ({
       dispatch(actionInitingSwapForm(true));
       dispatch(reset(formConfigs.formName));
     });
-    const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
     let pair = defaultPair || defaultPairSelector(state);
-    if (!pair?.selltoken || !pair?.buytoken) {
-      const defaultPoolId = await pDexV3Inst.getDefaultPool();
-      const defaultPool = getDataByPoolIdSelector(state)(defaultPoolId);
-      pair.selltoken = defaultPool?.token1?.tokenId;
-      pair.buytoken = defaultPool?.token2?.tokenId;
-    }
     const pairs = await dispatch(actionFetchPairs(refresh));
     const isDefaultPairExisted =
       difference([pair?.selltoken, pair?.buytoken], pairs).length === 0;
     if (!pair?.selltoken || !pair?.buytoken || !isDefaultPairExisted) {
       pair = {
         selltoken: PRV_ID,
-        buytoken:
-          pairs.find(
-            (i) =>
-              i ===
-              '116976a6896ed7001deb011b92576048bd8c670c47cd8529a5ddbba0024c701a',
-          ) || BIG_COINS.USDT,
+        buytoken: pairs.find((i) => i === BIG_COINS.USDT),
       };
     }
     const { selltoken, buytoken } = pair;
+    dispatch(actionSetSellTokenFetched(selltoken));
+    dispatch(actionSetBuyTokenFetched(buytoken));
     batch(() => {
-      dispatch(actionSetSellTokenFetched(selltoken));
-      dispatch(actionSetBuyTokenFetched(buytoken));
       dispatch(
         change(formConfigs.formName, formConfigs.slippagetolerance, '1'),
       );
@@ -461,7 +410,10 @@ export const actionInitSwapForm = ({
       } else {
         dispatch(actionSetFeeToken(PRV.id));
       }
-      dispatch(actionSetInputToken({ selltoken, buytoken }));
+      dispatch(getBalance(selltoken));
+      if (selltoken !== PRV_ID && refresh) {
+        dispatch(getBalance(PRV_ID));
+      }
       if (shouldFetchHistory) {
         dispatch(actionFetchHistory());
       }
@@ -469,7 +421,7 @@ export const actionInitSwapForm = ({
   } catch (error) {
     new ExHandler(error).showErrorToast();
   } finally {
-    await dispatch(actionInitingSwapForm(false));
+    dispatch(actionInitingSwapForm(false));
   }
 };
 

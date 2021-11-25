@@ -1,29 +1,34 @@
-import React, {memo} from 'react';
-import {SafeAreaView, View} from 'react-native';
-import {styled as mainStyle} from '@screens/PDexV3/PDexV3.styled';
+import React, { memo } from 'react';
+import { SafeAreaView, View } from 'react-native';
+import { styled as mainStyle } from '@screens/PDexV3/PDexV3.styled';
 import { Row } from '@src/components';
-import {Tabs} from '@components/core';
+import { Tabs } from '@components/core';
 import routeNames from '@routers/routeNames';
-import {useNavigation} from 'react-navigation-hooks';
-import {STAKING_MESSAGES, TABS} from '@screens/PDexV3/features/Staking/Staking.constant';
+import { useNavigation } from 'react-navigation-hooks';
+import {
+  STAKING_MESSAGES,
+  TABS,
+} from '@screens/PDexV3/features/Staking/Staking.constant';
 import AmountGroup from '@components/core/AmountGroup';
-import {CalendarClockIcon as CalendarIcon} from '@components/Icons';
+import { CalendarClockIcon as CalendarIcon } from '@components/Icons';
 import StakingPools from '@screens/PDexV3/features/Staking/Staking.pools';
-import {BTNBorder} from '@components/core/Button';
+import { BtnSecondary } from '@components/core/Button';
 import StakingPortfolio from '@screens/PDexV3/features/Staking/Staking.portfolio';
 import PropTypes from 'prop-types';
 import withFetch from '@screens/PDexV3/features/Staking/Staking.enhanceFetch';
-import {useSelector} from 'react-redux';
-import {defaultAccountSelector} from '@src/redux/selectors/account';
-import {stakingSelector} from '@screens/PDexV3/features/Staking';
-import {compose} from 'recompose';
+import { useSelector } from 'react-redux';
+import { defaultAccountSelector } from '@src/redux/selectors/account';
+import { stakingSelector } from '@screens/PDexV3/features/Staking';
+import { compose } from 'recompose';
 import SelectAccountButton from '@components/SelectAccountButton';
-import {withLayout_2} from '@components/Layout';
+import { withLayout_2 } from '@components/Layout';
 import enhance from '@screens/PDexV3/features/Staking/Staking.enhance';
 
 const Reward = React.memo(() => {
   const navigation = useNavigation();
-  const { rewardUSDStr, rewardPRVStr } = useSelector(stakingSelector.stakingRewardSelector);
+  const { rewardUSDStr, rewardPRVStr } = useSelector(
+    stakingSelector.stakingRewardSelector,
+  );
   const isFetching = useSelector(stakingSelector.isFetchingCoinsSelector);
   return (
     <Row center style={{ marginTop: 15 }}>
@@ -54,19 +59,25 @@ const Staking = ({ handleFetchData, onFreeData }) => {
     };
   }, [account.paymentAddress]);
 
-  const TabPools = React.useMemo(() => (
-    <View tabID={TABS.TAB_COINS} label={STAKING_MESSAGES.listCoins}>
-      <Reward />
-      <StakingPools />
-    </View>
-  ), []);
+  const TabPools = React.useMemo(
+    () => (
+      <View tabID={TABS.TAB_COINS} label={STAKING_MESSAGES.listCoins}>
+        <Reward />
+        <StakingPools />
+      </View>
+    ),
+    [],
+  );
 
-  const TabPortfolio = React.useMemo(() => (
-    <View tabID={TABS.TAB_PORTFOLIO} label={STAKING_MESSAGES.portfolio}>
-      <Reward />
-      <StakingPortfolio />
-    </View>
-  ), []);
+  const TabPortfolio = React.useMemo(
+    () => (
+      <View tabID={TABS.TAB_PORTFOLIO} label={STAKING_MESSAGES.portfolio}>
+        <Reward />
+        <StakingPortfolio />
+      </View>
+    ),
+    [],
+  );
 
   return (
     <>
@@ -78,18 +89,20 @@ const Staking = ({ handleFetchData, onFreeData }) => {
         defaultTabIndex={1}
         useTab1
         hideBackButton={false}
-        rightCustom={(
+        rightCustom={
           <Row>
             <SelectAccountButton />
           </Row>
-        )}
+        }
       >
         {TabPools}
         {TabPortfolio}
       </Tabs>
       <SafeAreaView>
-        <BTNBorder
-          title={isStaking ? STAKING_MESSAGES.stakeMore : STAKING_MESSAGES.stakeNow}
+        <BtnSecondary
+          title={
+            isStaking ? STAKING_MESSAGES.stakeMore : STAKING_MESSAGES.stakeNow
+          }
           onPress={onStakingMore}
         />
       </SafeAreaView>

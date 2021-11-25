@@ -18,17 +18,19 @@ const Market = React.memo((props) => {
   const navigation = useNavigation();
   const onOrderPress = (item) => {
     const poolId = item.defaultPoolPair;
+    navigation.navigate(routeNames.Trade, { tabIndex: 0 });
     dispatch(actionLogEvent({
       desc: 'POOL-SELECTED-Market-' + JSON.stringify(poolId || '')
     }));
     if (poolId) {
       batch(() => {
         dispatch(actionSetPoolSelected(poolId));
-        dispatch(actionInit());
         dispatch(actionChangeTab({ rootTabID: ROOT_TAB_TRADE, tabID: TAB_BUY_LIMIT_ID }));
+        setTimeout(() => {
+          dispatch(actionInit());
+        }, 200);
       });
     }
-    navigation.navigate(routeNames.Trade, { tabIndex: 0 });
   };
   return (
     <>

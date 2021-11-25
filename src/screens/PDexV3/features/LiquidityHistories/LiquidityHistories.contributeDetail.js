@@ -84,7 +84,7 @@ const ContributeDetail = ({ handleRefund, handleRetry }) => {
           }
         },
         {
-          label: `Amount${index}`,
+          label: `Amount ${index}`,
           valueText: item.contributeAmountSymbolStr,
         },
       ];
@@ -101,7 +101,7 @@ const ContributeDetail = ({ handleRefund, handleRetry }) => {
         }
       },
       {
-        label: `Refund${index + 1}`,
+        label: `Refund ${index + 1}`,
         valueText: item.returnAmountSymbolStr,
         disabled: !item.returnAmount,
       },

@@ -9,12 +9,12 @@ import KeychainSetting from '@screens/Setting/features/Keychain/Keychain.setting
 const TabMasterless = () => {
   return (
     <Tabs rootTabID={TABS.TAB_KEYCHAIN_MASTER_LESS_ID} useTab1 styledTabs={{ paddingHorizontal: 25 }}>
-      <View tabID={TABS.TAB_KEYCHAIN_MASTER_LESS_LIST_ID} label="Masterless">
+      <View tabID={TABS.TAB_KEYCHAIN_MASTER_LESS_LIST_ID} label="Masterless keys">
         <ScrollView style={styled.wrapper} showsVerticalScrollIndicator={false}>
           <Accounts />
         </ScrollView>
       </View>
-      <View tabID={TABS.TAB_KEYCHAIN_MASTER_LESS_SETTING_ID} label="Settings masterless">
+      <View tabID={TABS.TAB_KEYCHAIN_MASTER_LESS_SETTING_ID} label="Actions">
         <ScrollView style={styled.wrapper} showsVerticalScrollIndicator={false}>
           <KeychainSetting />
         </ScrollView>

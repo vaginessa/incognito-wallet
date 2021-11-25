@@ -94,9 +94,9 @@ const getDecimalsFromHumanAmount = (humanAmount, defaultDecimals) => {
     decimals = 2;
   } else if (humanAmount > 1) {
     decimals = 3;
-  } else if (humanAmount > 1e-1) {
+  } else if (humanAmount > 1e-4) {
     decimals = 4;
-  } else if (humanAmount > 1e-2) {
+  } else if (humanAmount > 1e-5) {
     decimals = 5;
   } else {
     decimals = Math.max(defaultDecimals, 6);

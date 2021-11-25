@@ -55,7 +55,7 @@ export const headerStyled = StyleSheet.create({
     fontSize: FONT.SIZE.regular
   },
   buttonStyle: {
-    width: 112,
+    width: 90,
     borderRadius: 8,
     height: 40,
     backgroundColor: COLORS.lightGrey30,

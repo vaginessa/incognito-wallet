@@ -1,5 +1,5 @@
 import { PRV } from '@src/constants/common';
-import uniqBy from 'lodash/uniqBy';
+import uniq from 'lodash/uniq';
 import { sharedSelector } from '@src/redux/selectors';
 import { ACCOUNT_CONSTANT } from 'incognito-chain-web-js/build/wallet';
 import { getPrivacyDataByTokenID as getPrivacyDataByTokenIDSelector } from '@src/redux/selectors/selectedPrivacy';
@@ -8,6 +8,7 @@ import convert from '@src/utils/convert';
 import format from '@src/utils/format';
 import { formValueSelector, isValid } from 'redux-form';
 import isEmpty from 'lodash/isEmpty';
+import capitalize from 'lodash/capitalize';
 import { createSelector } from 'reselect';
 import SelectedPrivacy from '@src/models/selectedPrivacy';
 import {
@@ -449,31 +450,42 @@ export const mappingOrderHistorySelector = createSelector(
       const sellTokenBalance = new BigNumber(order?.sellTokenBalance);
       const buyTokenBalance = new BigNumber(order?.buyTokenBalance);
       const sellTokenWithdrawed = new BigNumber(order?.sellTokenWithdrawed);
-      let statusStr = status;
-      if (fromStorage) {
+      let statusStr = capitalize(status);
+      if (
+        fromStorage &&
+        ![
+          ACCOUNT_CONSTANT.TX_STATUS.TXSTATUS_CANCELED,
+          ACCOUNT_CONSTANT.TX_STATUS.TXSTATUS_FAILED,
+        ].includes(statusCode)
+      ) {
         statusStr = 'Processing';
       }
       let visibleBtnCancel = false;
       let visibleBtnClaim = false;
-      const isWithdrawing = statusCode === 3 || status === 'withdrawing';
-      if (isCompleted) {
-        if (sellTokenWithdrawed.isGreaterThan(0)) {
-          statusStr = 'Canceled';
-        } else {
-          statusStr = 'Claimed';
-        }
-      } else {
-        if (sellTokenBalance.isEqualTo(0) && buyTokenBalance.isGreaterThan(0)) {
-          if (isWithdrawing) {
-            statusStr = 'Claiming';
+      if (!fromStorage) {
+        const isWithdrawing = statusCode === 3 || status === 'withdrawing';
+        if (isCompleted) {
+          if (sellTokenWithdrawed.isGreaterThan(0)) {
+            statusStr = 'Canceled';
           } else {
-            visibleBtnClaim = true;
+            statusStr = 'Claimed';
           }
-        } else if (sellTokenBalance.isGreaterThan(0)) {
-          if (isWithdrawing) {
-            statusStr = 'Canceling';
-          } else {
-            visibleBtnCancel = true;
+        } else {
+          if (
+            sellTokenBalance.isEqualTo(0) &&
+            buyTokenBalance.isGreaterThan(0)
+          ) {
+            if (isWithdrawing) {
+              statusStr = 'Claiming';
+            } else {
+              visibleBtnClaim = true;
+            }
+          } else if (sellTokenBalance.isGreaterThan(0)) {
+            if (isWithdrawing) {
+              statusStr = 'Canceling';
+            } else {
+              visibleBtnCancel = true;
+            }
           }
         }
       }
@@ -672,8 +684,17 @@ export const orderDetailSelector = createSelector(
 
 export const selectableTokens1Selector = createSelector(
   listPoolsVerifySelector,
-  (pools) =>
-    uniqBy(pools.map(({ token1 }) => token1), (token) => token?.tokenId),
+  getPrivacyDataByTokenIDSelector,
+  (pools, getPrivacyDataByTokenID) => {
+    let list = uniq(pools.map(({ token1 }) => token1?.tokenId));
+    list = list.map((tokenID) => getPrivacyDataByTokenID(tokenID));
+    list = orderBy(
+      list,
+      ['priority', 'hasIcon', 'verified'],
+      ['asc', 'desc', 'desc'],
+    );
+    return list;
+  },
 );
 
 export const selectableTokens2Selector = createSelector(

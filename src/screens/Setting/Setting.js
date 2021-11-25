@@ -84,9 +84,9 @@ const Setting = () => {
           <PINSection />
           <SeparatorSection />
           <DecimalDigitsSection />
-          <CurrencySection />
+          {/*<CurrencySection />*/}
           <AddressBookSection />
-          <ExportCSVSection handlePress={handlePressExportCSV} />
+          {/*<ExportCSVSection handlePress={handlePressExportCSV} />*/}
           <UTXOSection />
           <ConvertCoinsSection />
           <RemoveStorage />
