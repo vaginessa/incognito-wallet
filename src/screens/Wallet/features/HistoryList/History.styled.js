@@ -25,7 +25,7 @@ const style = StyleSheet.create({
     marginBottom: 10,
   },
   itemContainer: {
-    paddingVertical: 10,
+    paddingVertical: 8,
   },
   amountText: {
     flex: 1,
@@ -69,7 +69,7 @@ const style = StyleSheet.create({
   title: {
     ...FONT.STYLE.medium,
     fontSize: FONT.SIZE.regular,
-    lineHeight: FONT.SIZE.regular + 4,
+    lineHeight: FONT.SIZE.regular + 8,
     color: COLORS.black,
   },
   text: {
@@ -78,6 +78,13 @@ const style = StyleSheet.create({
     color: COLORS.colorGreyBold,
     fontSize: FONT.SIZE.regular,
     lineHeight: FONT.SIZE.regular + 4,
+  },
+  desc: {
+    ...FONT.STYLE.normal,
+    maxWidth: UTILS.screenWidth() / 2 - 50,
+    color: COLORS.lightGrey36,
+    fontSize: FONT.SIZE.small,
+    lineHeight: FONT.SIZE.small + 7,
   },
 });
 
