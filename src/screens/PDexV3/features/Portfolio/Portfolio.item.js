@@ -24,14 +24,14 @@ const Hook = React.memo(({ label, value }) => (
 
 const Extra = React.memo(({ shareId }) => {
   const data = useSelector(getDataByShareIdSelector)(shareId);
-  const { token1, token2, apy } = data || {};
+  const { token1, token2, apyStr } = data || {};
   return (
     <Row style={styled.extraContainer} centerVertical spaceBetween>
       <Text style={styled.extraLabel}>
         {`${token1?.symbol} / ${token2?.symbol}`}
       </Text>
       <Text style={styled.extraLabel}>
-        {`${apy}% APY`}
+        {`${apyStr}% APY`}
       </Text>
     </Row>
   );
