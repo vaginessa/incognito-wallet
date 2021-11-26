@@ -16,8 +16,8 @@ const TermOfUseShield = (props) => {
   const [isPressed, setIsPressed] = React.useState(false);
   const android = isAndroid();
   const terms = [
-    'I will shield from other platform (e.g. exchange, etc)',
-    'I will shield from my own wallet (e.g. Metamask, Trust Wallet, etc)'
+    'Generate a deposit address',
+    `Connect your ${selectedPrivacy?.rootNetworkName} wallet`
   ];
 
   const handlePressNext = () => {
@@ -59,10 +59,10 @@ const TermOfUseShield = (props) => {
 
   return (
     <View style={styled.container}>
-      <Header title="Term of use" />
+      <Header title="Deposit" />
       <ScrollView style={styled.scrollview}>
         <Text style={[styled.text, { marginBottom: 22 }]}>
-          You have to deposit tokens to an address provided by Bridge. How will you complete this transaction?
+          {`To anonymize your coins, you'll need to send funds to Incognito. You can simply generate a deposit address, or connect directly with the bridge smart contract using your ${selectedPrivacy?.rootNetworkName} wallet.`}
         </Text>
         {terms && terms.map((item, index) => {
           return (
@@ -80,12 +80,12 @@ const TermOfUseShield = (props) => {
         })}
         <RoundCornerButton
           style={styled.button}
-          title="Next"
+          title={`${selectedTerm !== (terms.length - 1) ? 'Next' : 'Launch my wallet'}`}
           disabled={isPressed || selectedTerm === undefined}
           onPress={handlePressNext}
         />
-        {selectedTerm === (terms.length - 1) && android && (
-          <Text style={styled.warningText}>Make sure {selectedPrivacy?.rootNetworkName} wallet was installed on your device and if power saving mode is on please turn it off to avoid bad experience.</Text>
+        {selectedTerm === (terms.length - 1) && (
+          <Text style={styled.warningText}>Your wallet will launch and prompt you to approve the connection. Simply follow the instructions to complete the deposit process.</Text>
         )}
       </ScrollView>
     </View>
@@ -143,11 +143,11 @@ const styled = StyleSheet.create({
     backgroundColor: COLORS.black,
   },
   warningText: {
-    ...FONT.STYLE.regular,
+    ...FONT.STYLE.medium,
     textAlign: 'center',
-    marginTop: 40,
-    fontSize: FONT.SIZE.regular,
+    marginTop: 30,
+    fontSize: FONT.SIZE.agvSmall,
     lineHeight: FONT.SIZE.medium + 4,
-    color: COLORS.orange,
+    color: COLORS.green5,
   },
 });

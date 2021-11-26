@@ -65,7 +65,7 @@ const AddressModal = () => {
         >
           <Text style={homeStyle.desc}>
             {'To receive from outside Incognito,\n please use '}
-            <Text style={[homeStyle.desc, homeStyle.sub]}>Shield.</Text>
+            <Text style={[homeStyle.desc, homeStyle.sub]}>Deposit.</Text>
           </Text>
         </TouchableOpacity>
       )}
