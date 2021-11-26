@@ -12,8 +12,8 @@ import {useDispatch, useSelector} from 'react-redux';
 import {actionToggleMarketTab, marketTabSelector} from '@screens/Setting';
 
 const headers = [
-  { name: 'Gainer', filterField: 'change', orderField: 'desc' },
-  { name: 'Loser', filterField: 'change', orderField: 'asc' },
+  { name: 'Gainers', filterField: 'change', orderField: 'desc' },
+  { name: 'Losers', filterField: 'change', orderField: 'asc' },
 ];
 
 export const MarketTabs = {
