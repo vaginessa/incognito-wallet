@@ -52,10 +52,13 @@ const Categories = [
         key: appConstant.DISABLED.MINT
       },
       {
-        route: routeNames.WebView,
-        label: 'Faucet',
-        icon: FaucetIcon,
-        key: appConstant.DISABLED.FAUCET
+        route: routeNames.Community,
+        label: routeNames.Community,
+        icon: CommunityIcon,
+        key: appConstant.DISABLED.COMMUNITY,
+        params: {
+          showHeader: true
+        },
       },
     ]
   },
@@ -87,13 +90,10 @@ const Categories = [
         },
       },
       {
-        route: routeNames.Community,
-        label: routeNames.Community,
-        icon: CommunityIcon,
-        key: appConstant.DISABLED.COMMUNITY,
-        params: {
-          showHeader: true
-        },
+        route: routeNames.WebView,
+        label: 'Faucet',
+        icon: FaucetIcon,
+        key: appConstant.DISABLED.FAUCET
       },
     ]
   }
