@@ -25,7 +25,9 @@ import {
 
 const enhance = (WrappedComp) => (props) => {
   const dispatch = useDispatch();
-  const { cfmTitle, disabledBtn } = useSelector(orderLimitDataSelector);
+  const { cfmTitle, disabledBtn, accountBalance } = useSelector(
+    orderLimitDataSelector,
+  );
   const { isFetching, isFetched } = useSelector(orderLimitSelector);
   const { nftTokenAvailable } = useSelector(nftTokenDataSelector);
   const sellInputAmount = useSelector(sellInputAmountSelector);
@@ -52,7 +54,7 @@ const enhance = (WrappedComp) => (props) => {
       }
       if (!sellInputAmount.isMainCrypto) {
         const needFaucet = await dispatch(
-          actionCheckNeedFaucetPRV(<FaucetPRVModal />),
+          actionCheckNeedFaucetPRV(<FaucetPRVModal />, accountBalance),
         );
         if (needFaucet) {
           return;

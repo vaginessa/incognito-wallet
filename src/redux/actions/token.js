@@ -479,10 +479,11 @@ export const actionFetchReceiveHistory = (refreshing = false) => async (
   return data;
 };
 
-export const actionCheckNeedFaucetPRV = (data) => async (dispatch) => {
+export const actionCheckNeedFaucetPRV = (data, prvBalance = 0) => async (
+  dispatch,
+) => {
   let needFaucet = false;
   try {
-    const prvBalance = await dispatch(getBalance(PRV.id));
     if (!prvBalance || new BigNumber(prvBalance).isLessThan(100)) {
       needFaucet = true;
       await dispatch(

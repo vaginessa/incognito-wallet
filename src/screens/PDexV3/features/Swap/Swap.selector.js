@@ -375,6 +375,7 @@ export const swapInfoSelector = createSelector(
         toggleProTab,
         isFetching,
         isFetched,
+        accountBalance: prv?.amount || 0,
       };
     } catch (error) {
       console.log('swapInfoSelector-error', error);
