@@ -79,9 +79,9 @@ export const actionFetchListPools = () => async (dispatch, getState) => {
       poolsIDs
         .map((poolId) => pools.find((pool) => pool?.poolId === poolId))
         .filter((pool) => !!pool)
-        .filter((pool) => !!pool.isVerify) || [];
+        .filter((pool) => !!pool?.isVerify) || [];
     batch(() => {
-      dispatch(actionFetchedListPools(orderBy(payload, 'volume', 'desc')));
+      dispatch(actionFetchedListPools(orderBy(payload, 'apy', 'desc')));
       dispatch(actionFetchedTradingVolume24h(originalVolume));
       dispatch(actionFetched());
     });
