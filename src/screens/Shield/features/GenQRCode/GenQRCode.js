@@ -190,7 +190,7 @@ const Extra = (props) => {
 
   const renderShieldUserAddress = () => (
     <>
-      <NormalText style={styled.title} text="Send to this shielding address" />
+      <NormalText style={styled.title} text="Send to this deposit address" />
       <View style={styled.qrCode}>
         <QrCodeGenerate value={address} size={175} />
       </View>
@@ -200,7 +200,7 @@ const Extra = (props) => {
         <NormalText
           style={styled.text}
           text={`Send only ${selectedPrivacy?.externalSymbol ||
-            selectedPrivacy?.symbol} to this shielding address.`}
+            selectedPrivacy?.symbol} to this deposit address.`}
         />
         <NormalText
           style={{ marginTop: 10 }}
@@ -291,7 +291,7 @@ const GenQRCode = (props) => {
     if (isPRV) {
       setEthFee(ethFee);
     }
-  } else if ((shieldDataBsc?.tokenFee || shieldDataBsc?.estimateFee) &&  
+  } else if ((shieldDataBsc?.tokenFee || shieldDataBsc?.estimateFee) &&
   (bscFee?.estimateFee === 0 && bscFee?.tokenFee === 0) && isPRV) {
     const temp = {
       estimateFee: shieldDataBsc?.estimateFeem,
