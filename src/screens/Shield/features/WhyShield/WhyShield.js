@@ -33,8 +33,8 @@ const WhyShield = () => {
       <Header title="What happens to your deposit" />
       <ScrollView style={styled.scrollview}>
         <Text style={styled.text}>
-          To transact anonymously, first you have to shield your crypto. When
-          you send coins to be shielded, an identical – but 100% private –
+          To transact anonymously, first you have to deposit your crypto. When
+          you send coins to be deposited, an identical – but 100% private –
           version is generated. If you withdraw your coins from the Incognito
           network, this privacy version will be burned, and the original will be
           returned. All original coins are stored safely using the methods
