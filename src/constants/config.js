@@ -10,7 +10,9 @@ const isMainnet = global.isMainnet ?? true;
 
 export const MAIN_WEBSITE = 'https://we.incognito.org';
 
-const TOKENS_URL = isMainnet ? global.severDefault.coinServices : 'http://51.79.76.38:8096';
+const TOKENS_URL = (global && global.severDefault && global.severDefault.coinServices)
+  ? global.severDefault.coinServices
+  : 'https://api-coinservice.incognito.org';
 
 const API_BASE_URL = isMainnet
   ? 'https://api-service.incognito.org'
@@ -57,7 +59,7 @@ const ETH_TOKEN_ID = isMainnet
   : 'ffd8d42dc40a8d166ea4848baf8b5f6e9fe0e9c30d60062eb7d44a8df9e00854';
 
 const CRYPTO_ICON_URL =
-  'https://statics.incognito.org/wallet/cryptocurrency-icons/32@2x/color';
+  'https://statics.incognito.org/cmc/symbols/128x128';
 
 const HOME_CONFIG_DATA =
   global.homeConfig !== 'staging'

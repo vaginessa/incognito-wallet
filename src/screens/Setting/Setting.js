@@ -46,7 +46,7 @@ const Setting = () => {
     },
     {
       title: 'Tickets',
-      desc: 'Manage your tickets',
+      desc: 'View and mint tickets',
       handlePress: () => navigation?.navigate(routeNames.NFTToken),
       icon: <SecurityIcon />,
     },
@@ -70,7 +70,7 @@ const Setting = () => {
   return (
     <SafeAreaView>
       {!!showHeader && (
-        <Header title="Setting" style={{ paddingHorizontal: 25 }} />
+        <Header title="Settings" style={{ paddingHorizontal: 25 }} />
       )}
       <ScrollView
         style={{ paddingHorizontal: 25 }}

@@ -4,7 +4,7 @@ export default {
   RootMiner: 'RootMiner',
   // RootTab: 'RootTab',
   Wallet: 'Assets',
-  Setting: 'Setting',
+  Setting: 'Settings',
   NetworkSetting: 'NetworkSetting',
   CreateAccount: 'CreateAccount',
   ImportAccount: 'ImportAccount',

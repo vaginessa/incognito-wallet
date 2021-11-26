@@ -101,7 +101,7 @@ export const styled = StyleSheet.create({
   icon: {
     marginRight: 12,
     width: 32,
-    height: 32
+    height: 32,
   },
   sectionFirst: {
     flex: 1,

@@ -28,6 +28,7 @@ const enhance = (WrappedComp) => (props) => {
   const sellInputToken = useSelector(sellInputTokenSeletor);
   const feeTokenData = useSelector(feetokenDataSelector);
   const [visibleSignificant, setVisibleSignificant] = React.useState(false);
+  const [ordering, setOrdering] = React.useState(false);
   const unmountSwap = () => {
     dispatch(actionReset());
   };
@@ -62,6 +63,10 @@ const enhance = (WrappedComp) => (props) => {
   };
   const handleConfirm = async () => {
     try {
+      if (ordering) {
+        return;
+      }
+      await setOrdering(true);
       const fields = [formConfigs.selltoken, formConfigs.buytoken];
       for (let index = 0; index < fields.length; index++) {
         const field = fields[index];
@@ -81,7 +86,10 @@ const enhance = (WrappedComp) => (props) => {
       }
       if (!sellInputToken.isMainCrypto) {
         const needFaucet = await dispatch(
-          actionCheckNeedFaucetPRV(<FaucetPRVModal />),
+          actionCheckNeedFaucetPRV(
+            <FaucetPRVModal />,
+            swapInfo?.accountBalance,
+          ),
         );
         if (needFaucet) {
           return;
@@ -91,9 +99,11 @@ const enhance = (WrappedComp) => (props) => {
       if (isSignificant) {
         return setVisibleSignificant(true);
       }
-      handleCreateSwapOrder();
+      await handleCreateSwapOrder();
     } catch {
       //
+    } finally {
+      setOrdering(false);
     }
   };
   React.useEffect(() => {

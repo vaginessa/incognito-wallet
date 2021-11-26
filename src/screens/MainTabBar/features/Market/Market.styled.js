@@ -52,10 +52,10 @@ export const headerStyled = StyleSheet.create({
   buttonTextStyle: {
     ...FONT.STYLE.normal,
     color: COLORS.black,
-    fontSize: FONT.SIZE.regular
+    fontSize: FONT.SIZE.regular,
   },
   buttonStyle: {
-    width: 90,
+    width: 98,
     borderRadius: 8,
     height: 40,
     backgroundColor: COLORS.lightGrey30,

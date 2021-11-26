@@ -30,11 +30,11 @@ const styled = StyleSheet.create({
 const WhyShield = () => {
   return (
     <View style={styled.container}>
-      <Header title="Why Shield?" />
+      <Header title="What happens to your deposit" />
       <ScrollView style={styled.scrollview}>
         <Text style={styled.text}>
-          To transact anonymously, first you have to shield your crypto. When
-          you send coins to be shielded, an identical – but 100% private –
+          To transact anonymously, first you have to deposit your crypto. When
+          you send coins to be deposited, an identical – but 100% private –
           version is generated. If you withdraw your coins from the Incognito
           network, this privacy version will be burned, and the original will be
           returned. All original coins are stored safely using the methods
@@ -45,11 +45,9 @@ const WhyShield = () => {
           For ETH and all ERC20 tokens, your crypto is safely secured in a
           trustless smart contract.
         </Text>
-        <Text style={styled.title}>Portal (upcoming)</Text>
+        <Text style={styled.title}>Portal for Bitcoin and Binance Smart Chain</Text>
         <Text style={styled.text}>
-          For other coins, your crypto is stored in one of the wallets
-          maintained by the Incognito Core team. We’re working on a trustless
-          solution for this too, called Portal.
+          Decentralized custodians hold deposited tokens, supplying collateral as a bond. Portal is designed as a general bridge, and will continue to branch out to any blockchains that need privacy.
         </Text>
       </ScrollView>
     </View>

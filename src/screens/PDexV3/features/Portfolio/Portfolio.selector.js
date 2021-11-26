@@ -108,6 +108,7 @@ export const listShareSelector = createSelector(
           value: rewardUSDSymbolStr,
         },
       ];
+      const apyStr = format.amount(apy, 0);
       const hookFactoriesDetail = [
         // {
         //   label: 'PoolId',
@@ -116,7 +117,7 @@ export const listShareSelector = createSelector(
         // },
         {
           label: 'APY',
-          valueText: `${format.amount(apy, 0)}%`,
+          valueText: `${apyStr}%`,
         },
         {
           label: 'Principal',
@@ -141,6 +142,7 @@ export const listShareSelector = createSelector(
         hookFactories,
         amp,
         apy,
+        apyStr,
         token1PoolValue,
         token2PoolValue,
         hookFactoriesDetail,

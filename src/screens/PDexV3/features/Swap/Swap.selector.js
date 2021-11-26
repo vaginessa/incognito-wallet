@@ -131,7 +131,7 @@ export const feetokenDataSelector = createSelector(
         new BigNumber(feeToOriginal),
         feeTokenData?.pDecimals,
         false,
-      )} ${feeTokenData.symbol}`;
+      )} ${feeTokenData?.symbol || ''}`;
       const origininalFeeAmount =
         convert.toOriginalAmount(feeAmount, feeTokenData?.pDecimals, true) || 0;
       const minFeeAmount = convert.toHumanAmount(
@@ -147,7 +147,8 @@ export const feetokenDataSelector = createSelector(
         feeTokenData?.pDecimals,
         false,
       );
-      const minFeeAmountStr = `${minFeeAmountText} ${feeTokenData?.symbol}`;
+      const minFeeAmountStr = `${minFeeAmountText} ${feeTokenData?.symbol ||
+        ''}`;
       const totalFeePRV = format.amountFull(
         new BigNumber(origininalFeeAmount).plus(networkfee).toNumber(),
         PRV.pDecimals,
@@ -374,6 +375,7 @@ export const swapInfoSelector = createSelector(
         toggleProTab,
         isFetching,
         isFetched,
+        accountBalance: prv?.amount || 0,
       };
     } catch (error) {
       console.log('swapInfoSelector-error', error);

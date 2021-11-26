@@ -401,6 +401,7 @@ export const orderLimitDataSelector = createSelector(
       colorPriceChange24h,
       calculating,
       totalAmountData,
+      accountBalance: prv?.amount || 0,
     };
   },
 );

@@ -41,7 +41,7 @@ const enhance = (WrappedComp) => (props) => {
 
   const renderHeader = React.useCallback(() => (
     <Header
-      title={`Shield ${tokenSymbol}`}
+      title={`Deposit ${tokenSymbol}`}
       titleStyled={styled.titleStyled}
       rightHeader={<BtnInfo isBlack onPress={handleToggleTooltip} />}
       onGoBack={handleGoBack}
