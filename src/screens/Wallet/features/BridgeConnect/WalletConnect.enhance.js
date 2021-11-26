@@ -67,7 +67,7 @@ const walletConnectEnhance = WrappedComp => props => {
     const decimals = await tokenInstance.methods
       .decimals()
       .call();
-    const transferValue =new BigNumber(transferAmount).multipliedBy(10 ** decimals).toString();
+    const transferValue = '0x' + (new BigNumber(transferAmount).multipliedBy(10 ** decimals).toString(16));
     const contractAddress = isBSC ? CONSTANTS.INC_BSC_CONTRACT_ADDRESS : CONSTANTS.INC_CONTRACT_ADDRESS;
     /** deposit ERC20 */
     const incInstance = new client.eth.Contract(INC_CONTRACT_ABI, contractAddress);
