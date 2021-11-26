@@ -16,8 +16,8 @@ const TermOfUseShield = (props) => {
   const [isPressed, setIsPressed] = React.useState(false);
   const android = isAndroid();
   const terms = [
-    'I will shield from other platform (e.g. exchange, etc)',
-    'I will shield from my own wallet (e.g. Metamask, Trust Wallet, etc)'
+    'I will deposit from other platform (e.g. exchange, etc)',
+    'I will deposit from my own wallet (e.g. Metamask, Trust Wallet, etc)'
   ];
 
   const handlePressNext = () => {
