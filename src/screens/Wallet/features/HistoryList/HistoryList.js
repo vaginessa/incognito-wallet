@@ -68,7 +68,7 @@ const HistoryItem = React.memo(({ history }) => {
   };
   return (
     <TouchableOpacity onPress={onPress} style={styleSheet.itemContainer}>
-      <View style={[styleSheet.row, styleSheet.rowTop]}>
+      <View style={[styleSheet.row]}>
         <NormalText
           text={txTypeStr}
           style={styleSheet.title}
