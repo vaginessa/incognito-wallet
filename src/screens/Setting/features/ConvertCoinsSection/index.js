@@ -14,8 +14,8 @@ const ConvertCoinsSection = React.memo(() => {
   return (
     <Section
       data={{
-        title: 'Convert UTXOs Version 1',
-        desc: 'Convert UTXOs Version 1 for each keychain',
+        title: 'Convert v1 to v2 coins',
+        desc: 'Convert coins for each keychain',
         handlePress: handleGoConvert,
         icon: <ConvertIcon />
       }}

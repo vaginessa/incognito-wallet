@@ -10,7 +10,7 @@ import {EmptyBookIcon} from '@components/Icons';
 const Masterless = () => {
   const groupAccounts = useSelector(groupMasterless);
   const handleSelectedAccount = useNavigationParam('handleSelectedAccount');
-  if (!groupAccounts || groupAccounts.length === 0) return <EmptyBookIcon message="Your masterless is empty" />;
+  if (!groupAccounts || groupAccounts.length === 0) return <EmptyBookIcon message="You don't have any masterless keychains on this device. To create or import a keychain, please tap the More icon on the navigation bar and select Keychain." />;
 
   return (
     <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 25 }}>

@@ -46,7 +46,7 @@ const Setting = () => {
     },
     {
       title: 'Tickets',
-      desc: 'Manage your tickets',
+      desc: 'View and mint tickets',
       handlePress: () => navigation?.navigate(routeNames.NFTToken),
       icon: <SecurityIcon />,
     },
