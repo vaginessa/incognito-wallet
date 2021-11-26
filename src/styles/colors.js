@@ -81,6 +81,7 @@ const COLORS = {
   green2: '#64A121',
   green3: '#018775',
   green4: '#6DD400',
+  green5: '#34C759',
 
   colorTradeBlue: '#4C8BF5',
 };

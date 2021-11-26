@@ -80,7 +80,7 @@ const TermOfUseShield = (props) => {
         })}
         <RoundCornerButton
           style={styled.button}
-          title="Next"
+          title={`${selectedTerm !== (terms.length - 1) ? 'Next' : 'Launch my wallet'}`}
           disabled={isPressed || selectedTerm === undefined}
           onPress={handlePressNext}
         />
@@ -148,6 +148,6 @@ const styled = StyleSheet.create({
     marginTop: 30,
     fontSize: FONT.SIZE.agvSmall,
     lineHeight: FONT.SIZE.medium + 4,
-    color: COLORS.orange,
+    color: COLORS.green5,
   },
 });
