@@ -10,7 +10,9 @@ const isMainnet = global.isMainnet ?? true;
 
 export const MAIN_WEBSITE = 'https://we.incognito.org';
 
-const TOKENS_URL = isMainnet ? global.severDefault.coinServices : 'http://51.79.76.38:8096';
+const TOKENS_URL = (global && global.severDefault && global.severDefault.coinServices)
+  ? global.severDefault.coinServices
+  : 'https://api-coinservice.incognito.org';
 
 const API_BASE_URL = isMainnet
   ? 'https://api-service.incognito.org'
