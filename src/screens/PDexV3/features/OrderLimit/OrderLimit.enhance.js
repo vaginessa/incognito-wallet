@@ -10,6 +10,7 @@ import { LoadingContainer } from '@src/components/core';
 import { actionCheckNeedFaucetPRV } from '@src/redux/actions/token';
 import { nftTokenDataSelector } from '@src/redux/selectors/account';
 import FaucetPRVModal from '@src/components/Modal/features/FaucetPRVModal';
+import withLazy from '@src/components/LazyHoc/LazyHoc';
 import { formConfigs } from './OrderLimit.constant';
 import {
   orderLimitDataSelector,
@@ -25,7 +26,7 @@ import {
 
 const enhance = (WrappedComp) => (props) => {
   const dispatch = useDispatch();
-  const { cfmTitle, disabledBtn, accountBalance } = useSelector(
+  const { cfmTitle, disabledBtn, accountBalance, activedTab } = useSelector(
     orderLimitDataSelector,
   );
   const { isFetching, isFetched } = useSelector(orderLimitSelector);
@@ -108,9 +109,7 @@ const enhance = (WrappedComp) => (props) => {
     await dispatch(actionSetPoolSelected(poolId));
     dispatch(actionInit(true));
   };
-  React.useEffect(() => {
-    dispatch(actionInit(true));
-  }, []);
+
   if (isFetching && !isFetched) {
     return <LoadingContainer />;
   }
@@ -121,4 +120,7 @@ const enhance = (WrappedComp) => (props) => {
   );
 };
 
-export default compose(enhance);
+export default compose(
+  withLazy,
+  enhance,
+);

@@ -86,8 +86,9 @@ const enhance = (WrappedComp) => (props) => {
           <WrappedComp {...{ ...props, onClickTabItem, renderTabs }} />
           <View style={styled.tabContent}>
             {children?.map((child) => {
-              if (child.props.tabID !== activeTab) return null;
-              return child.props.children;
+              const actived = child.props.tabID === activeTab;
+              const style = actived ? { flex: 1 } : { display: 'none' };
+              return <View style={style}>{child.props.children}</View>;
             })}
           </View>
         </>

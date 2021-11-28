@@ -73,7 +73,7 @@ const enhance = (WrappedComp) => (props) => {
   }
   return (
     <ErrorBoundary>
-      <WrappedComp {...{ ...props, refreshing, onRefresh }} />
+      <WrappedComp {...{ ...props, refreshing, onRefresh, shouldLazy: false }} />
       {(activedTab === TAB_BUY_LIMIT_ID ||
         activedTab === TAB_SELL_LIMIT_ID) && <NFTTokenBottomBar />}
     </ErrorBoundary>
