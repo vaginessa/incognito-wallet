@@ -1,4 +1,4 @@
-import { batch, useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Tabs } from '@src/components/core';
 import Row from '@src/components/Row';
@@ -61,7 +61,7 @@ const Trade = () => {
         >
           <OrderLimit />
         </View>
-        <View tabID={TAB_SWAP_ID} label="Swap" onChangeTab={() => null}>
+        <View tabID={TAB_SWAP_ID} label="Swap">
           <TabSwap />
         </View>
       </Tabs>
