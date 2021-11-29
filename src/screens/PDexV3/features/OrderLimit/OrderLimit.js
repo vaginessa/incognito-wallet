@@ -52,7 +52,6 @@ const OrderLimit = (props) => {
           title={btnActionTitle}
           onPress={handleConfirm}
         />
-        <NetworkFee />
         <GroupSubInfo />
       </KeyboardAwareScrollView>
       {!!ordering && <LoadingTx />}

@@ -6,3 +6,4 @@ export { default as OrderLimitHistory } from './OrderLimit.orderHistory';
 export { default as OrderLimitDetail } from './OrderLimit.orderDetail';
 export * from './OrderLimit.actions';
 export * from './OrderLimit.selector';
+export * from './OrderLimit.constant';

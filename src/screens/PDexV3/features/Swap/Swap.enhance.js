@@ -7,6 +7,8 @@ import { focus } from 'redux-form';
 import { actionCheckNeedFaucetPRV } from '@src/redux/actions/token';
 import FaucetPRVModal from '@src/components/Modal/features/FaucetPRVModal';
 import RemoveSuccessDialog from '@src/screens/Setting/features/RemoveStorage/RemoveStorage.Dialog';
+import { compose } from 'recompose';
+import withLazy from '@src/components/LazyHoc/LazyHoc';
 import { formConfigs } from './Swap.constant';
 import {
   actionInitSwapForm,
@@ -131,4 +133,7 @@ const enhance = (WrappedComp) => (props) => {
   );
 };
 
-export default enhance;
+export default compose(
+  withLazy,
+  enhance,
+);

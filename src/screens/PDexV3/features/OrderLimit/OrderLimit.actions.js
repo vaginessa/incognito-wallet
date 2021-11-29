@@ -118,7 +118,6 @@ export const actionSetSellToken = (selltokenId, refresh) => async (
       return;
     }
     batch(() => {
-      dispatch(actionSetSellTokenFetched(selltokenId));
       if (refresh) {
         dispatch(getBalance(selltokenId));
       }
@@ -134,7 +133,6 @@ export const actionSetBuyToken = (buytokenId, refresh) => async (dispatch) => {
       return;
     }
     batch(() => {
-      dispatch(actionSetBuyTokenFetched(buytokenId));
       if (refresh) {
         dispatch(getBalance(buytokenId));
       }
@@ -184,10 +182,7 @@ export const actionSetDefaultPool = () => async (dispatch, getState) => {
 
 export const actionInit = (refresh = true) => async (dispatch, getState) => {
   try {
-    batch(() => {
-      dispatch(actionFetching());
-      dispatch(actionSetPercent(0));
-    });
+    dispatch(actionFetching());
     let state = getState();
     const pools = listPoolsIDsSelector(state);
     const poolSelected = poolSelectedDataSelector(state);
@@ -212,13 +207,6 @@ export const actionInit = (refresh = true) => async (dispatch, getState) => {
     if (isEmpty(pool)) {
       return;
     }
-    batch(() => {
-      if (refresh) {
-        dispatch(actionFetchPools());
-        dispatch(actionSetNFTTokenData());
-        dispatch(actionFetchOrdersHistory());
-      }
-    });
     const activedTab = activedTabSelector(state)(ROOT_TAB_TRADE);
     const token1: SelectedPrivacy = pool?.token1;
     const token2: SelectedPrivacy = pool?.token2;
@@ -238,6 +226,9 @@ export const actionInit = (refresh = true) => async (dispatch, getState) => {
       break;
     }
     batch(() => {
+      dispatch(actionSetBuyTokenFetched(buytokenId));
+      dispatch(actionSetSellTokenFetched(selltokenId));
+      dispatch(actionSetPercent(0));
       dispatch(
         actionSetInputToken({
           selltoken: selltokenId,
@@ -249,6 +240,11 @@ export const actionInit = (refresh = true) => async (dispatch, getState) => {
       const { rate } = rateDataSelector(state);
       dispatch(change(formConfigs.formName, formConfigs.rate, rate));
       dispatch(focus(formConfigs.formName, formConfigs.rate));
+      if (refresh) {
+        dispatch(actionFetchPools());
+        dispatch(actionSetNFTTokenData());
+        dispatch(actionFetchOrdersHistory());
+      }
     });
   } catch (error) {
     new ExHandler(error).showErrorToast;

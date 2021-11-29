@@ -49,7 +49,6 @@ const Swap = (props) => {
                 onPress={handleConfirm}
                 title={swapInfo?.btnSwapText || ''}
               />
-              <NetworkFee />
             </>
           )}
         </Form>
