@@ -12,7 +12,7 @@ import { BtnStar } from '@src/components/Button';
 import { styled } from './Pool.styled';
 
 export const PoolItem = React.memo((props) => {
-  const { poolId, onPressPool, style } = props;
+  const { poolId, onPressPool, style, isLast } = props;
   const data = useSelector(getDataByPoolIdSelector)(poolId);
   if (!data) {
     return null;
@@ -29,7 +29,7 @@ export const PoolItem = React.memo((props) => {
   return (
     <TouchableOpacity
       onPress={() => typeof onPressPool === 'function' && onPressPool(poolId)}
-      style={[styled.container, style]}
+      style={[styled.container, isLast && { marginBottom: 70 }, style]}
     >
       <Row>
         <View style={styled.block1}>
@@ -50,20 +50,22 @@ export const PoolItem = React.memo((props) => {
 });
 
 const Pool = (props) => {
-  const { poolId, onPressPool } = props;
+  const { poolId, onPressPool, isLast } = props;
   if (!poolId) {
     return null;
   }
-  return <PoolItem poolId={poolId} onPressPool={onPressPool} />;
+  return <PoolItem poolId={poolId} onPressPool={onPressPool} isLast={isLast} />;
 };
 
 Pool.defaultProps = {
   onPressPool: null,
+  isLast: false,
 };
 
 Pool.propTypes = {
   poolId: PropTypes.string.isRequired,
   onPressPool: PropTypes.func,
+  isLast: PropTypes.bool,
 };
 
 PoolItem.defaultProps = {
@@ -75,6 +77,7 @@ PoolItem.propTypes = {
   poolId: PropTypes.string.isRequired,
   onPressPool: PropTypes.func,
   style: PropTypes.object,
+  isLast: PropTypes.bool.isRequired
 };
 
 export default React.memo(Pool);

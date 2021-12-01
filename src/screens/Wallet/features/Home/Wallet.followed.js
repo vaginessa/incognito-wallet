@@ -1,7 +1,7 @@
 import React, {memo} from 'react';
 import {RefreshControl, ScrollView, View} from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
-import { tokenSelector } from '@src/redux/selectors';
+import { selectedPrivacySelector, tokenSelector } from '@src/redux/selectors';
 import { useNavigation } from 'react-navigation-hooks';
 import { WalletContext } from '@screens/Wallet/features/Home/Wallet.enhance';
 import { setSelectedPrivacy } from '@src/redux/actions/selectedPrivacy';
@@ -11,11 +11,33 @@ import { Toast } from '@components/core';
 import Token from '@screens/Wallet/features/Home/Wallet.token';
 import {CONSTANT_COMMONS} from '@src/constants';
 import {styledFollow, styledToken} from '@screens/Wallet/features/Home/_Wallet.styled';
+import { formatAmount } from '@components/Token';
+import convert from '@utils/convert';
+import orderBy from 'lodash/orderBy';
+import { decimalDigitsSelector } from '@screens/Setting';
 
 const Followed = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const followed = useSelector(tokenSelector.tokensFollowedSelector);
+  const getPrivacyDataByTokenID = useSelector(selectedPrivacySelector.getPrivacyDataByTokenID);
+  const decimalDigits = useSelector(decimalDigitsSelector);
+
+  const _followed = React.useMemo(() => {
+    const data = followed.map(_token => {
+      const token = getPrivacyDataByTokenID(_token.id);
+      const amountUSD =
+        formatAmount(token.priceUsd, _token.amount, token.pDecimals, token.pDecimals, decimalDigits, false);
+      const amountUSDNumb = convert.toNumber(amountUSD, true);
+      return {
+        ..._token,
+        amountUSD,
+        amountUSDNumb,
+      };
+    });
+    return orderBy(data, 'amountUSDNumb', 'desc');
+  }, [followed, getPrivacyDataByTokenID]);
+
   const { walletProps } = React.useContext(WalletContext);
   const { isReloading, onRefresh } = walletProps;
   const handleSelectToken = async (tokenId) => {
@@ -46,17 +68,17 @@ const Followed = () => {
         tokenId={CONSTANT_COMMONS.PRV_TOKEN_ID}
         style={[
           styledFollow.token,
-          followed.length === 0 && styledToken.lastChild,
+          _followed.length === 0 && styledToken.lastChild,
         ]}
         onPress={() => handleSelectToken(CONSTANT_COMMONS.PRV_TOKEN_ID)}
       />
-      {followed.map((token, index) => (
+      {_followed.map((token, index) => (
         <Token
           key={token?.id}
           tokenId={token?.id}
           style={[
             styledFollow.token,
-            followed.length - 1 === index && styledToken.lastChild,
+            _followed.length - 1 === index && styledToken.lastChild,
           ]}
           onPress={() => handleSelectToken(token?.id)}
           handleRemoveToken={() => handleRemoveToken(token?.id)}
