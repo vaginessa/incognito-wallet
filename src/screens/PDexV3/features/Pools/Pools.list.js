@@ -85,13 +85,14 @@ export const PoolsList = React.memo(({ onPressPool, pools }) => {
       <FlatList
         data={data}
         style={{ paddingTop: 30 }}
-        renderItem={({ item }) => (
+        renderItem={({ item, index }) => (
           <Pool
             poolId={item.poolId}
             onPressPool={() => {
               console.log(item.poolId);
               onPressPool(item.poolId, item);
             }}
+            isLast={data && (data.length - 1 === index)}
           />
         )}
         keyExtractor={({ poolId }) => poolId}
