@@ -68,7 +68,7 @@ const TEST_NET_SERVER = {
   coinServices: 'https://api-coinservice-staging.incognito.org',
   pubsubServices: 'https://api-coinservice-staging.incognito.org/txservice',
   requestServices:
-    'https://api-coinservice-staging.incognito.org',
+    'https://api-coinservice-staging66.incognito.org',
   apiServices: 'https://staging-api-service.incognito.org',
   shardNumber: DEFAULT_SHARD_NUMBER,
   IncContractAddress: '0x2f6F03F1b43Eab22f7952bd617A24AB46E970dF7',
