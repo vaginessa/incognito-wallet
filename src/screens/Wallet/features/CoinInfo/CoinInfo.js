@@ -9,12 +9,13 @@ import { COLORS } from '@src/styles';
 import { TokenBasic } from '@src/components/Token';
 import { BtnInfo } from '@src/components/Button';
 import { useNavigation } from 'react-navigation-hooks';
+import { Row } from '@src/components';
 import withCoinInfo from './CoinInfo.enhance';
 import { styled } from './CoinInfo.styled';
 
 const InfoItem = ({ label, value, copyable, link, onlyLabel, labelStyle }) => {
   const renderComponent = (numberOfLinesValue) => (
-    <View style={styled.infoContainer}>
+    <Row style={styled.infoContainer} centerVertical>
       {!!label && (
         <Text
           numberOfLines={1}
@@ -25,17 +26,19 @@ const InfoItem = ({ label, value, copyable, link, onlyLabel, labelStyle }) => {
         </Text>
       )}
       {!!value && (
-        <Text
-          numberOfLines={numberOfLinesValue || 1}
-          ellipsizeMode="middle"
-          style={styled.value}
-        >
-          {value}
-        </Text>
+        <View style={{ flex: 5 }}>
+          <Text
+            numberOfLines={numberOfLinesValue || 1}
+            ellipsizeMode="middle"
+            style={styled.value}
+          >
+            {value}
+          </Text>
+        </View>
       )}
       {copyable && <CopyIcon />}
       {!!link && <OpenUrlIcon />}
-    </View>
+    </Row>
   );
   const handleCopyText = () => {
     Clipboard.setString(value);
