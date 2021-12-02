@@ -16,8 +16,7 @@ export const styled = StyleSheet.create({
     fontSize: FONT.SIZE.medium,
     lineHeight: FONT.SIZE.medium + 4,
     color: COLORS.colorGreyBold,
-    flex: 1,
-    minWidth: 80,
+    width: 130,
     marginRight: 15,
   },
   labelIsVerified: {
@@ -31,7 +30,6 @@ export const styled = StyleSheet.create({
     lineHeight: FONT.SIZE.medium + 4,
     color: COLORS.black,
     flex: 5,
-    paddingRight: 5,
     textAlign: 'left',
   },
   verified: {
