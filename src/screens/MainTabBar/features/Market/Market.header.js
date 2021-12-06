@@ -5,13 +5,14 @@ import { headerStyled } from '@screens/MainTabBar/features/Market/Market.styled'
 import { Row } from '@src/components';
 import {ArrowDownLine} from '@components/Icons/icon.arrowDown';
 import SearchBox from '@components/Header/Header.searchBox';
-import {Text, TouchableOpacity, View} from 'react-native';
+import { View } from 'react-native';
 import {StarIcon} from '@components/Icons';
 import {COLORS} from '@src/styles';
 import {useDispatch, useSelector} from 'react-redux';
 import {actionToggleMarketTab, marketTabSelector} from '@screens/Setting';
 import styled from 'styled-components/native';
 import globalStyled from '@src/theme/theme.styled';
+import { Text, TouchableOpacity } from '@components/core';
 
 const headers = [
   { name: 'Gainers', filterField: 'change', orderField: 'desc' },
@@ -25,6 +26,10 @@ export const MarketTabs = {
 
 const StyledHeader = styled(Row)`
   background-color: ${({ theme }) => theme.background2};
+`;
+
+const StyledTouchableOpacity = styled(TouchableOpacity)`
+  background-color: ${({ theme }) => theme.btnBG2};
 `;
 
 const Header = ({ onFilter }) => {
@@ -45,14 +50,18 @@ const Header = ({ onFilter }) => {
           }}
         />
       </StyledHeader>
-      <Row centerVertical spaceBetween style={[globalStyled.defaultPadding, globalStyled.defaultBorderSection]}>
+      <Row
+        centerVertical
+        spaceBetween
+        style={[headerStyled.wrapFilter, globalStyled.defaultPadding, globalStyled.defaultBorderSection]}
+      >
         <Row centerVertical>
-          <TouchableOpacity style={headerStyled.wrapTab} onPress={() => onChangeTab(MarketTabs.ALL)}>
+          <StyledTouchableOpacity style={headerStyled.wrapTab} onPress={() => onChangeTab(MarketTabs.ALL)}>
             <Text style={[headerStyled.tabText, activeTab === MarketTabs.ALL && { color: COLORS.blue5 }]}>All</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={headerStyled.wrapTab} onPress={() => onChangeTab(MarketTabs.FAVORITE)}>
+          </StyledTouchableOpacity>
+          <StyledTouchableOpacity style={headerStyled.wrapTab} onPress={() => onChangeTab(MarketTabs.FAVORITE)}>
             <StarIcon isBlue={activeTab === MarketTabs.FAVORITE} />
-          </TouchableOpacity>
+          </StyledTouchableOpacity>
         </Row>
         <SelectDropdown
           data={headers}

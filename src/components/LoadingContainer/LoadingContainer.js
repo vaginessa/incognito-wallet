@@ -1,11 +1,12 @@
 import React from 'react';
-import { Container, ActivityIndicator, View } from '@src/components/core';
+import { ActivityIndicator } from '@src/components/core';
+import { View2 } from '@components/core/View';
 import styleSheet from './style';
 
 const LoadingContainer = () => (
-  <View style={styleSheet.container}>
+  <View2 style={styleSheet.container}>
     <ActivityIndicator size="large" />
-  </View>
+  </View2>
 );
 
 export default LoadingContainer;
