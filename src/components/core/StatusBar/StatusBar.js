@@ -9,7 +9,7 @@ import { colorsSelector } from '@src/theme/theme.selector';
 
 const { Market } = routeNames;
 
-const background1Screen = [Market];
+export const background1Screen = [Market];
 
 const isIOS = Platform.OS === 'ios';
 const isIphoneX = DeviceInfo.hasNotch();
