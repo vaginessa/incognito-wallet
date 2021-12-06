@@ -10,14 +10,12 @@ const styled = StyleSheet.create({
   container: {
     height: 40,
     flexDirection: 'row',
-    paddingHorizontal: 15,
     alignItems: 'center',
     backgroundColor: 'transparent'
   },
   inputStyle: {
     flex: 1,
-    color: COLORS.black,
-    fontSize: FONT.SIZE.small,
+    fontSize: FONT.SIZE.large + 2,
     fontFamily: FONT.NAME.medium,
   },
 });
@@ -50,7 +48,7 @@ const BaseTextInputCustom = (props) => {
           style: { ...styled.inputStyle, ...inputProps?.style },
         }}
         value={value}
-        placeholderTextColor={COLORS.lightGrey34}
+        placeholderTextColor={COLORS.white}
       />
       {handleRenderCustom()}
     </Row>

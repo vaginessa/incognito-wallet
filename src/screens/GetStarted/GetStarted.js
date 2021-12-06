@@ -1,21 +1,22 @@
-import { Text, View } from '@src/components/core';
+import { Text } from '@src/components/core';
 import { ActivityIndicator } from 'react-native';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { ButtonBasic } from '@src/components/Button';
+import { View2 } from '@components/core/View';
 import withGetStarted from './GetStarted.enhance';
 import style from './style';
 
 const GetStarted = React.memo((props) => {
   const { loading, errorMsg = '', onRetry } = props;
   return (
-    <View style={style.container}>
+    <View2 style={style.container}>
       {loading && (
-        <View style={style.loadingContainer}>
+        <View2 style={style.loadingContainer}>
           <ActivityIndicator size="large" color="#828282" />
-        </View>
+        </View2>
       )}
-      <View style={style.getStartedBlock}>
+      <View2 style={style.getStartedBlock}>
         {!errorMsg && loading && (
           <Text style={[style.title, style.centerText]}>
             {'Entering incognito mode\nfor your crypto...'}
@@ -31,8 +32,8 @@ const GetStarted = React.memo((props) => {
             />
           </>
         )}
-      </View>
-    </View>
+      </View2>
+    </View2>
   );
 });
 

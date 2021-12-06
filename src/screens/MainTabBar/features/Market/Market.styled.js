@@ -12,7 +12,6 @@ export const headerStyled = StyleSheet.create({
   wrapTab: {
     width: 49,
     height: 40,
-    backgroundColor: COLORS.lightGrey30,
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 8,
@@ -21,7 +20,6 @@ export const headerStyled = StyleSheet.create({
   tabText: {
     ...FONT.STYLE.normal,
     fontSize: FONT.SIZE.regular,
-    color: COLORS.black
   },
   wrapSearch: {
     height: 50,
@@ -55,6 +53,9 @@ export const headerStyled = StyleSheet.create({
     borderRadius: 8,
     height: 40,
     backgroundColor: COLORS.lightGrey30,
+  },
+  wrapFilter: {
+    paddingTop: 24
   }
 });
 

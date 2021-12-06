@@ -1,14 +1,20 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { TextInput, TextInputProps } from 'react-native';
+import { TextInputProps } from 'react-native';
 import { COLORS } from '@src/styles';
+import styled from 'styled-components/native';
 import styles from './styles';
+
+
+const StyledInput = styled.TextInput`
+  color: ${({ theme }) => theme.text1};
+`;
 
 const BaseTextInput = (props: TextInputProps) => {
   const { style, editable = true, ...rest } = props;
   return (
-    <TextInput
-      placeholderTextColor={COLORS.colorGreyMedium}
+    <StyledInput
+      placeholderTextColor={COLORS.white}
       returnKeyType="done"
       autoCorrect={false}
       spellCheck={false}
