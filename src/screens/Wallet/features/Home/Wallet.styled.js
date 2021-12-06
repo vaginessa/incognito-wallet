@@ -165,16 +165,12 @@ export const tokenStyled = StyleSheet.create({
 export const styledAddToken = StyleSheet.create({
   container: {
     paddingVertical: 10,
-    paddingHorizontal: 24,
     position: 'absolute',
     bottom: 0,
-    left: -25,
-    backgroundColor: COLORS.white,
     borderTopRightRadius: 8,
   },
   title: {
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.regular,
-    color: COLORS.black,
   },
 });

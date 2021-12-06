@@ -18,5 +18,7 @@ export function appTheme(darkMode: boolean) {
     // button
     btnBG1: darkMode ? '#1A73E8' : '#1A73E8',
     btnBG2: darkMode ? '#404040' : white,
+
+    contrast: darkMode ? white : black,
   };
 }
