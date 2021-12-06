@@ -1,7 +1,6 @@
 import React from 'react';
-import { InteractionManager, View, StyleSheet } from 'react-native';
-import { Header, LoadingContainer } from '@src/components';
-import { COLORS } from '@src/styles';
+import { InteractionManager } from 'react-native';
+import { LoadingContainer } from '@src/components';
 
 const withLazy = (WrappedComp) => (props) => {
   const { shouldLazy = true } = props;
@@ -17,10 +16,7 @@ const withLazy = (WrappedComp) => (props) => {
   const [hidden, setHidden] = React.useState(true);
   const EmptyView = React.useMemo(
     () => (
-      <View style={styled.container}>
-        <Header hideBackButton style={styled.header} />
-        <LoadingContainer />
-      </View>
+      <LoadingContainer />
     ),
     [],
   );
@@ -42,15 +38,5 @@ const withLazy = (WrappedComp) => (props) => {
     />
   );
 };
-
-const styled = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: COLORS.white,
-  },
-  header: {
-    marginHorizontal: 25,
-  },
-});
 
 export default withLazy;

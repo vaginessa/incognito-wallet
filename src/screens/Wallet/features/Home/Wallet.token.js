@@ -17,12 +17,14 @@ import { NormalText } from '@components/Token/Token';
 import { itemStyled } from '@screens/Setting/features/Keychain/keychain.styled';
 import { DeleteFillIcon } from '@components/Icons/icon.delete';
 import incognito from '@assets/images/new-icons/incognito.png';
+import { colorsSelector } from '@src/theme/theme.selector';
 
 const TokenDefault = React.memo((props) => {
-  const { symbol, priceUsd, amount, pDecimals, decimalDigits, pricePrv, change, onPress, isGettingBalance, showGettingBalance, iconUrl } = props;
+  const { symbol, priceUsd, amount, pDecimals, decimalDigits, pricePrv, change, onPress, name, isGettingBalance, showGettingBalance, iconUrl } = props;
   const shouldShowGettingBalance = isGettingBalance || showGettingBalance;
   const isToggleUSD = useSelector(currencySelector);
   const hideBalance = useSelector(hideWalletBalanceSelector);
+  const colors = useSelector(colorsSelector);
   const balance = React.useMemo(() => {
     const price = isToggleUSD ? priceUsd : pricePrv;
     const amountCompare = formatAmount(price, amount, pDecimals, pDecimals, decimalDigits, false);
@@ -45,14 +47,12 @@ const TokenDefault = React.memo((props) => {
       <ImageCached style={tokenStyled.icon} uri={iconUrl} defaultImage={incognito} />
       <View style={tokenStyled.wrapFirst}>
         <NormalText
-          style={tokenStyled.blackText}
+          style={tokenStyled.mainText}
           text={symbol}
         />
         <NormalText
-          text={`${balance.tokenAmount} ${symbol}`}
-          style={tokenStyled.grayText}
-          showBalance={!hideBalance}
-          symbol={symbol}
+          text={name}
+          style={[tokenStyled.grayText, { color: colors.text3 }]}
         />
       </View>
       <View style={tokenStyled.wrapSecond}>
@@ -65,14 +65,20 @@ const TokenDefault = React.memo((props) => {
             <NormalText
               text={balance.amountCompare}
               hasPSymbol
-              style={tokenStyled.blackText}
+              style={tokenStyled.mainText}
               stylePSymbol={[
-                tokenStyled.blackText,
+                tokenStyled.mainText,
                 { fontFamily: FONT.NAME.specialRegular }
               ]}
               showBalance={!hideBalance}
             />
           )}
+        <NormalText
+          text={`${balance.tokenAmount} ${symbol}`}
+          style={[tokenStyled.grayText, { color: colors.text3 }]}
+          showBalance={!hideBalance}
+          symbol={symbol}
+        />
       </View>
     </TouchableOpacity>
   );

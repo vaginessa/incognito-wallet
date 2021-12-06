@@ -13,6 +13,7 @@ import {actionToggleMarketTab, marketTabSelector} from '@screens/Setting';
 import styled from 'styled-components/native';
 import globalStyled from '@src/theme/theme.styled';
 import { Text, TouchableOpacity } from '@components/core';
+import { colorsSelector } from '@src/theme/theme.selector';
 
 const headers = [
   { name: 'Gainers', filterField: 'change', orderField: 'desc' },
@@ -34,6 +35,7 @@ const StyledTouchableOpacity = styled(TouchableOpacity)`
 
 const Header = ({ onFilter }) => {
   const dispatch = useDispatch();
+  const colors = useSelector(colorsSelector);
   const activeTab = useSelector(marketTabSelector);
   const onChangeTab = (tab) => {
     dispatch(actionToggleMarketTab(tab));
@@ -74,8 +76,8 @@ const Header = ({ onFilter }) => {
           rowTextForSelection={(item) => item.name}
           rowTextStyle={headerStyled.rowTextStyle}
           rowStyle={headerStyled.rowStyle}
-          buttonStyle={headerStyled.buttonStyle}
-          buttonTextStyle={headerStyled.buttonTextStyle}
+          buttonStyle={[headerStyled.buttonStyle, { backgroundColor: colors.btnBG2 }]}
+          buttonTextStyle={[headerStyled.buttonTextStyle, { color: colors.text1 }]}
           renderDropdownIcon={() => {
             return (
               <ArrowDownLine />

@@ -4,7 +4,6 @@ import { FONT, COLORS } from '@src/styles';
 export const styled = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.white,
   },
 });
 
@@ -19,7 +18,6 @@ export const headerStyled = StyleSheet.create({
     position: 'absolute',
     width: 8,
     height: 8,
-    backgroundColor: COLORS.blue5,
     right: 15,
     borderRadius: 4
   },
@@ -28,35 +26,26 @@ export const headerStyled = StyleSheet.create({
 export const styledBalance = StyleSheet.create({
   container: {
     marginTop: 16,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   title: {
     fontFamily: FONT.NAME.regular,
     fontSize: FONT.SIZE.small,
     lineHeight: FONT.SIZE.small + 7,
-    color: COLORS.lightGrey36,
   },
   balance: {
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.superLarge,
     lineHeight: FONT.SIZE.superLarge + 12,
-    color: COLORS.black,
     maxWidth: '85%',
     height: '100%',
-    textAlign: 'center'
   },
   pSymbol: {
     fontFamily: FONT.NAME.specialRegular,
     fontSize: FONT.SIZE.superLarge,
     lineHeight: FONT.SIZE.superLarge + 12,
-    color: COLORS.black,
     height: '100%',
   },
   balanceContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    textAlign: 'center',
     width: '100%',
   },
   wrapBalance: {
@@ -140,18 +129,16 @@ export const tokenStyled = StyleSheet.create({
   rowHeight: {
     height: FONT.SIZE.regular + 8,
   },
-  blackText: {
+  mainText: {
     ...FONT.STYLE.medium,
     fontSize: FONT.SIZE.medium,
     lineHeight: FONT.SIZE.medium + 7,
     textAlign: 'left',
-    color: COLORS.black
   },
   grayText: {
     ...FONT.STYLE.medium,
     fontSize: FONT.SIZE.small,
     lineHeight: FONT.SIZE.small + 5,
-    color: COLORS.lightGrey36
   },
   centerVertical: {
     justifyContent: 'center'
