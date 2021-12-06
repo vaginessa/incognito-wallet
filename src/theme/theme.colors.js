@@ -8,7 +8,7 @@ export function appTheme(darkMode: boolean) {
     black,
     // background
     background1: darkMode ? '#303030' : white,
-    background2: darkMode ? black : white,
+    background2: darkMode ? black : '#F2F4F5',
 
     // text
     text1: darkMode ? white : black,

@@ -1,5 +1,4 @@
 import React, { memo } from 'react';
-import { Text, View } from 'react-native';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -26,6 +25,9 @@ import useFeatureConfig from '@src/shared/hooks/featureConfig';
 import appConstant from '@src/constants/app';
 import Tooltip from '@components/Tooltip/Tooltip';
 import { BtnClose } from '@components/Button';
+import { Text3 } from '@components/core/Text';
+import globalStyled from '@src/theme/theme.styled';
+import { View } from '@components/core';
 import { Row } from '@src/components';
 
 const Balance = React.memo(({ hideBalance }) => {
@@ -36,9 +38,9 @@ const Balance = React.memo(({ hideBalance }) => {
     totalShielded = 0;
   }
   return (
-    <View style={styledBalance.container}>
+    <View style={[styledBalance.container]}>
       <Row centerVertical>
-        <Text style={styledBalance.title}>Total Portfolio Value</Text>
+        <Text3 style={styledBalance.title}>Coin balance</Text3>
       </Row>
       <Row style={styledBalance.wrapBalance} center>
         <Amount
@@ -72,12 +74,12 @@ const Hook = React.memo(() => {
       <View style={groupButtonStyled.btnClose}>
         <BtnClose size={20} onPress={handleCloseShield} />
       </View>
-      <Text style={groupButtonStyled.title}>
+      <Text3 style={groupButtonStyled.title}>
         {'Turn your public coins into\nprivacy coins.'}
-      </Text>
-      <Text style={groupButtonStyled.desc}>
+      </Text3>
+      <Text3 style={groupButtonStyled.desc}>
         Enter the Incognito network and transact without a trace.
-      </Text>
+      </Text3>
     </View>
   );
 });
@@ -116,7 +118,7 @@ const Extra = () => {
   const hideBalance = useSelector(hideWalletBalanceSelector);
   const updateShowBalance = () => dispatch(actionUpdateShowWalletBalance());
   return (
-    <View>
+    <View style={[globalStyled.defaultPadding, globalStyled.defaultBorderSection]}>
       <Balance
         hideBalance={hideBalance}
         onPressHideBalance={updateShowBalance}
