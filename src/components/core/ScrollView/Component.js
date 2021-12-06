@@ -1,7 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { ScrollView as RNComponent, ScrollViewProps } from 'react-native';
+import { ScrollViewProps } from 'react-native';
+import styled from 'styled-components/native';
+import globalStyled from '@src/theme/theme.styled';
 import styleSheet from './style';
+
+const StyledScrollView = styled.ScrollView`
+  background-color: ${({ theme }) => theme.background1};
+`;
 
 const ScrollView = React.forwardRef(
   (
@@ -13,8 +19,8 @@ const ScrollView = React.forwardRef(
     }: ScrollViewProps,
     ref,
   ) => (
-    <RNComponent
-      style={[styleSheet.root, style]}
+    <StyledScrollView
+      style={[styleSheet.root, globalStyled.defaultPadding, style]}
       contentContainerStyle={[
         paddingBottom && styleSheet.content,
         contentContainerStyle,

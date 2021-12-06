@@ -45,7 +45,7 @@ const Header = ({ onFilter }) => {
           }}
         />
       </StyledHeader>
-      <Row centerVertical spaceBetween>
+      <Row centerVertical spaceBetween style={[globalStyled.defaultPadding, globalStyled.defaultBorderSection]}>
         <Row centerVertical>
           <TouchableOpacity style={headerStyled.wrapTab} onPress={() => onChangeTab(MarketTabs.ALL)}>
             <Text style={[headerStyled.tabText, activeTab === MarketTabs.ALL && { color: COLORS.blue5 }]}>All</Text>

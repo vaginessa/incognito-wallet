@@ -53,7 +53,7 @@ const SearchBox = (props) => {
                 placeholder={props?.title || ''}
                 inputProps={{
                   onChangeText: input?.onChange,
-                  placeholder: 'Search coins',
+                  placeholder: 'Search privacy coins',
                   autFocus: true,
                 }}
                 style={style}

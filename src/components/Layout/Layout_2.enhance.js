@@ -1,15 +1,12 @@
 import React from 'react';
 import ErrorBoundary from '@src/components/ErrorBoundary';
-import { SafeAreaView, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import withLazy from '@components/LazyHoc/LazyHoc';
 import { compose } from 'recompose';
-import { useSelector } from 'react-redux';
-import { colorsSelector } from '@src/theme/theme.selector';
-import { background1Screen } from '@components/core/StatusBar/StatusBar';
-import { currentScreenSelector } from '@screens/Navigation';
-import { View } from '@components/core';
+import { View2 } from '@components/core/View';
+import styled from 'styled-components/native';
 
-const styled = StyleSheet.create({
+const _styled = StyleSheet.create({
   container: {
     flex: 1,
   },
@@ -19,21 +16,17 @@ const styled = StyleSheet.create({
   },
 });
 
+const SafeAreaView = styled.SafeAreaView`
+  background-color: ${({ theme }) => theme.background2};
+`;
+
 const enhance = (WrappedComp) => (props) => {
-  const colors = useSelector(colorsSelector);
-  const currentScreen = useSelector(currentScreenSelector);
-  const _background = React.useMemo(() => {
-    if (background1Screen.includes(currentScreen)) {
-      return colors.background1;
-    }
-    return colors.background2;
-  }, [currentScreen]);
   return (
     <ErrorBoundary>
-      <SafeAreaView style={[styled.container, { backgroundColor: _background }, props?.containerStyled]}>
-        <View style={[styled.wrapper, props?.wrapperStyled]}>
+      <SafeAreaView style={[_styled.container, props?.containerStyled]}>
+        <View2 style={[_styled.wrapper, props?.wrapperStyled]}>
           <WrappedComp {...props} />
-        </View>
+        </View2>
       </SafeAreaView>
     </ErrorBoundary>
   );

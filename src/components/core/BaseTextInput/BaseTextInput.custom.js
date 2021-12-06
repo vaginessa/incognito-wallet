@@ -12,6 +12,7 @@ const styled = StyleSheet.create({
     flexDirection: 'row',
     paddingHorizontal: 15,
     alignItems: 'center',
+    backgroundColor: 'transparent'
   },
   inputStyle: {
     flex: 1,
