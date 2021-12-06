@@ -20,6 +20,11 @@ const SafeAreaView = styled.SafeAreaView`
   background-color: ${({ theme }) => theme.background2};
 `;
 
+const SafeAreaViewBottom = styled.SafeAreaView`
+  background-color: ${({ theme }) => theme.background1};
+`;
+
+
 const enhance = (WrappedComp) => (props) => {
   return (
     <ErrorBoundary>
@@ -28,6 +33,7 @@ const enhance = (WrappedComp) => (props) => {
           <WrappedComp {...props} />
         </View2>
       </SafeAreaView>
+      <SafeAreaViewBottom />
     </ErrorBoundary>
   );
 };
