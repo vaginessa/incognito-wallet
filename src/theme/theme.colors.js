@@ -8,12 +8,11 @@ export function appTheme(darkMode: boolean) {
     black,
     // background
     background1: darkMode ? '#303030' : white,
+    background2: darkMode ? black : white,
 
     // text
     text1: darkMode ? white : black,
     text2: darkMode ? '#000000' : '#9e9e9e',
-    text3: darkMode ? '#616161' : '#616161',
-    text4: darkMode ? '#797979' : '#797979',
-    text5: darkMode ? '#595959' : '#595959',
+    text3: darkMode ? '#9C9C9C' : '#C0C0C0',
   };
 }

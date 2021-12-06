@@ -9,7 +9,7 @@ const Container = styled.View`
 const View = (props) => {
   const { style, fullFlex, ...rest } = props;
   return (
-    <Container {...rest} style={[style, fullFlex && { flex:1 }]} />
+    <Container {...rest} style={[style, fullFlex && { flex: 1 }]} />
   );
 };
 
