@@ -24,15 +24,11 @@ export const headerStyled = StyleSheet.create({
     color: COLORS.black
   },
   wrapSearch: {
-    backgroundColor: COLORS.white,
     height: 50,
     marginBottom: 16
   },
   wrapInput: {
     flex: 1,
-    backgroundColor: COLORS.white,
-    borderColor: COLORS.lightGrey37,
-    borderWidth: 1
   },
   rowStyle: {
     borderBottomWidth: 0.5,

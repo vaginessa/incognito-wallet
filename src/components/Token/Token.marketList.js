@@ -1,11 +1,12 @@
 import React, {memo} from 'react';
-import {RefreshControl, ScrollView, StyleSheet, Text} from 'react-native';
+import {RefreshControl, StyleSheet, Text} from 'react-native';
 import PropTypes from 'prop-types';
 import {ListView} from '@components/Token/index';
 import {BtnChecked} from '@components/Button';
 import {COLORS, FONT} from '@src/styles';
 import {useDispatch} from 'react-redux';
 import {getPTokenList} from '@src/redux/actions/token';
+import { ScrollView } from '@components/core';
 
 const styled = StyleSheet.create({
   hook: {

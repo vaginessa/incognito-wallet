@@ -1,8 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { reduxForm } from 'redux-form';
-import View from '../View';
-
+import { View } from 'react-native';
 
 const Form = ({ children, style, ...props }) => (
   <View style={style}>
@@ -24,7 +23,7 @@ Form.propTypes = {
 export default createForm;
 
 /**
- * 
+ *
 const submit = values => console.log(values);
 
 const SimpleForm = (props) => {

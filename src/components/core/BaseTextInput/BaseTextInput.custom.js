@@ -8,12 +8,11 @@ import BaseTextInput from './BaseTextInput';
 
 const styled = StyleSheet.create({
   container: {
-    backgroundColor: COLORS.colorGrey4,
     height: 40,
-    borderRadius: 8,
     flexDirection: 'row',
     paddingHorizontal: 15,
     alignItems: 'center',
+    backgroundColor: 'transparent'
   },
   inputStyle: {
     flex: 1,

@@ -1,6 +1,5 @@
 import React from 'react';
-import { Image, StyleSheet } from 'react-native';
-import { View } from '@src/components/core';
+import { Image, StyleSheet, View } from 'react-native';
 import srcCopy from '@src/assets/images/new-icons/search.png';
 
 const styled = StyleSheet.create({

@@ -20,22 +20,13 @@ export const STATUS_BAR_HEIGHT = isIOS
     : 20
   : RNComponent.currentHeight;
 
-const StatusBar = React.memo(({ currentScreen }) => {
+const StatusBar = React.memo(() => {
   let backgroundColor;
   let textColor;
-  // const { isFetched } = useSelector(wizardSelector);
   const colors = useSelector(colorsSelector);
 
-  if (background1Screen.includes(currentScreen)) {
-    backgroundColor = colors.background1;
-  } else {
-    backgroundColor = colors.background2;
-  }
-
-  // if (currentScreen === Wizard && isFetched) {
-  //   backgroundColor = colors.background1;
-  //   textColor = 'dark-content';
-  // }
+  backgroundColor = colors.background2;
+  textColor = 'light-content';
 
   if (!isIOS) {
     RNComponent.setBackgroundColor(backgroundColor);
