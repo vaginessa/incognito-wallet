@@ -35,7 +35,7 @@ const Market = React.memo((props) => {
     }
   };
   return (
-    <View fullFlex style={globalStyled.defaultPadding}>
+    <>
       <Header onFilter={onFilter} />
       <MarketList
         keySearch={keySearch}
@@ -50,7 +50,7 @@ const Market = React.memo((props) => {
           />
         )}
       />
-    </View>
+    </>
   );
 });
 

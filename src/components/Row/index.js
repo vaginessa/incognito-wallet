@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { View } from '@components/core';
+import { View } from 'react-native';
 import styles from './style';
 
 const Row = ({

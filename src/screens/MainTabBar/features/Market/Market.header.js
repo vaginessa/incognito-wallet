@@ -10,6 +10,8 @@ import {StarIcon} from '@components/Icons';
 import {COLORS} from '@src/styles';
 import {useDispatch, useSelector} from 'react-redux';
 import {actionToggleMarketTab, marketTabSelector} from '@screens/Setting';
+import styled from 'styled-components/native';
+import globalStyled from '@src/theme/theme.styled';
 
 const headers = [
   { name: 'Gainers', filterField: 'change', orderField: 'desc' },
@@ -21,6 +23,10 @@ export const MarketTabs = {
   FAVORITE: 'favorite'
 };
 
+const StyledHeader = styled(Row)`
+  background-color: ${({ theme }) => theme.background2};
+`;
+
 const Header = ({ onFilter }) => {
   const dispatch = useDispatch();
   const activeTab = useSelector(marketTabSelector);
@@ -30,7 +36,7 @@ const Header = ({ onFilter }) => {
 
   return (
     <View>
-      <Row spaceBetween style={headerStyled.wrapSearch}>
+      <StyledHeader spaceBetween style={[headerStyled.wrapSearch, globalStyled.defaultPadding]}>
         <SearchBox
           customSearchBox
           style={headerStyled.wrapInput}
@@ -38,7 +44,7 @@ const Header = ({ onFilter }) => {
             style: headerStyled.input
           }}
         />
-      </Row>
+      </StyledHeader>
       <Row centerVertical spaceBetween>
         <Row centerVertical>
           <TouchableOpacity style={headerStyled.wrapTab} onPress={() => onChangeTab(MarketTabs.ALL)}>
