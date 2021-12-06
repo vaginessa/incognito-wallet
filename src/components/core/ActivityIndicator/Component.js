@@ -1,11 +1,13 @@
 import React from 'react';
-import { ActivityIndicator as RNComponent } from 'react-native';
-import { COLORS } from '@src/styles';
 import PropTypes from 'prop-types';
+import styled from 'styled-components/native';
 
+const StyledActivityIndicator = styled.ActivityIndicator`
+  color: ${({ theme }) => theme.contrast}
+`;
 const ActivityIndicator = (props) => {
   const { size } = props;
-  return <RNComponent color={COLORS.black} size={size} {...props} />;
+  return <StyledActivityIndicator size={size} {...props} />;
 };
 
 ActivityIndicator.propTypes = {
