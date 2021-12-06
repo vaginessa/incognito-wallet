@@ -95,7 +95,6 @@ export const styled = StyleSheet.create({
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.medium,
     textAlign: 'left',
-    color: COLORS.black,
     lineHeight: FONT.SIZE.medium + 9,
   },
   icon: {

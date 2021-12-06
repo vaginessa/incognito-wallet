@@ -39,7 +39,6 @@ const text = {
   },
   defaultTextStyle: {
     ...FONTS.STYLE.normal,
-    color: COLORS.dark1,
     fontSize: fontSizes.regular,
     letterSpacing: 0,
   },

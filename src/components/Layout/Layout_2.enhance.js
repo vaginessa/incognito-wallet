@@ -11,7 +11,7 @@ const styled = StyleSheet.create({
     backgroundColor: COLORS.white,
   },
   wrapper: {
-    paddingHorizontal: 25,
+    // paddingHorizontal: 25,
     flex: 1,
     paddingBottom: 0,
   },
