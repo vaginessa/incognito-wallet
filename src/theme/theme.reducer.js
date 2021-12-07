@@ -1,5 +1,7 @@
+import { THEME_KEYS } from '@src/theme/theme.consts';
+
 const initialState = {
-  darkMode: true
+  themeMode: THEME_KEYS.DARK_THEME
 };
 
 const themeReducer = (state = initialState, action) => {

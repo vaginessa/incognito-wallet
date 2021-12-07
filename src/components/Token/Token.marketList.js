@@ -1,12 +1,12 @@
 import React, {memo} from 'react';
-import {RefreshControl, StyleSheet, Text} from 'react-native';
+import {RefreshControl, StyleSheet} from 'react-native';
 import PropTypes from 'prop-types';
 import {ListView} from '@components/Token/index';
-import {BtnChecked} from '@components/Button';
-import {COLORS, FONT} from '@src/styles';
-import {useDispatch} from 'react-redux';
-import {getPTokenList} from '@src/redux/actions/token';
-import { ScrollView } from '@components/core';
+import { BtnChecked } from '@components/Button';
+import { FONT } from '@src/styles';
+import { useDispatch } from 'react-redux';
+import { getPTokenList } from '@src/redux/actions/token';
+import { ScrollView, Text } from '@components/core';
 
 const styled = StyleSheet.create({
   hook: {
@@ -18,7 +18,6 @@ const styled = StyleSheet.create({
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.small,
     lineHeight: FONT.SIZE.small + 5,
-    color: COLORS.black,
     marginLeft: 5,
   },
 });

@@ -6,8 +6,8 @@ export const themeSelector = createSelector(
   (theme) => theme,
 );
 
-export const darkModeSelector = createSelector(themeSelector, (theme) => theme.darkMode);
+export const themeModeSelector = createSelector(themeSelector, (theme) => theme.themeMode);
 
-export const colorsSelector = createSelector(darkModeSelector, (darkMode) => appTheme(darkMode));
+export const colorsSelector = createSelector(themeModeSelector, (themeMode) => appTheme(themeMode));
 
-// export const colorsSelector = createSelector(darkModeSelector, (darkMode) => appTheme(darkMode));
+// export const colorsSelector = createSelector(themeModeSelector, (darkMode) => appTheme(darkMode));
