@@ -1,8 +1,8 @@
 import React from 'react';
 import Svg, { Path } from 'react-native-svg';
-import {View, StyleSheet} from 'react-native';
+import { StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
-import {COLORS} from '@src/styles';
+import { View } from '@components/core';
 
 const VectorCheck = () => (
   <Svg
@@ -27,7 +27,6 @@ const styled = StyleSheet.create({
     borderWidth: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    borderColor: COLORS.lightGrey37
   }
 });
 
