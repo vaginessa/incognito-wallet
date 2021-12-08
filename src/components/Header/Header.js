@@ -1,10 +1,10 @@
 import React from 'react';
-import {View, Text, BackHandler, SafeAreaView} from 'react-native';
+import { BackHandler, SafeAreaView} from 'react-native';
 import { BtnCircleBack } from '@src/components/Button';
 import PropTypes from 'prop-types';
 import { useFocusEffect, useNavigation } from 'react-navigation-hooks';
 import debounce from 'lodash/debounce';
-import { TouchableOpacity } from '@src/components/core';
+import { TouchableOpacity, View, Text } from '@src/components/core';
 import SelectAccountButton from '@src/components/SelectAccountButton';
 import { styled, styledHeaderTitle } from './Header.styled';
 import SearchBox from './Header.searchBox';
