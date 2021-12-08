@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { FONT, COLORS, UTILS } from '@src/styles';
+import { FONT, UTILS } from '@src/styles';
 
 const fontSize = UTILS.widthScale(34);
 const lineHeight = fontSize + 4;
@@ -24,12 +24,10 @@ export default StyleSheet.create({
   symbol: {
     fontSize: fontSize,
     lineHeight: lineHeight,
-    color: COLORS.dark1,
   },
   symbolUSD: {
     fontSize: 18,
     fontFamily: FONT.NAME.medium,
-    color: COLORS.newGrey,
   },
   center: {
     textAlign: 'center',
@@ -60,7 +58,6 @@ export default StyleSheet.create({
   },
   coinInterest: {
     fontSize: 20,
-    color: COLORS.green2,
     fontFamily: FONT.NAME.medium,
     textAlign: 'right',
     flex: 1,
@@ -76,7 +73,6 @@ export default StyleSheet.create({
   },
   rateStyle: {
     fontFamily: FONT.NAME.medium,
-    color: COLORS.newGrey,
     fontSize: 18,
   },
   scrollView: {
@@ -84,7 +80,6 @@ export default StyleSheet.create({
   },
   migrateButton: {
     marginHorizontal: 1,
-    backgroundColor: COLORS.overlayBlackDark,
     height: 35,
     width: 150,
   },
