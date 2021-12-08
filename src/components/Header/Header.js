@@ -1,5 +1,5 @@
 import React from 'react';
-import {BackHandler, SafeAreaView} from 'react-native';
+import { BackHandler, SafeAreaView } from 'react-native';
 import { BtnCircleBack } from '@src/components/Button';
 import PropTypes from 'prop-types';
 import { useFocusEffect, useNavigation } from 'react-navigation-hooks';

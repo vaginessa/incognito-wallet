@@ -3,12 +3,11 @@ import PropTypes from 'prop-types';
 import { Text } from '@components/core';
 import { CONSTANT_COMMONS } from '@src/constants';
 import { StyleSheet } from 'react-native';
-import { COLORS, FONT } from '@src/styles';
+import { FONT } from '@src/styles';
 
 const styles = StyleSheet.create({
   symbol: {
     fontSize: 18,
-    color: COLORS.newGrey,
   },
   font: {
     fontFamily: FONT.NAME.specialRegular,
