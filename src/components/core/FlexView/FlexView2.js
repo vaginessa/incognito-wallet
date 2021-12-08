@@ -4,23 +4,22 @@ import styled from 'styled-components/native';
 
 const Container = styled.View`
   flex: 1;
-  background-color: ${({ theme }) => theme.background1};
+  background-color: ${({ theme }) => theme.background2};
 `;
 
-const FlexView = (props) => {
+const FlexView2 = (props) => {
   const { style, ...rest } = props;
   return (
     <Container {...rest} style={[style]} />
   );
 };
 
-
-FlexView.propTypes = {
-  style: PropTypes.any,
-};
-
-FlexView.defaultProps = {
+FlexView2.defaultProps = {
   style: null,
 };
 
-export default FlexView;
+FlexView2.propTypes = {
+  style: PropTypes.object,
+};
+
+export default FlexView2;

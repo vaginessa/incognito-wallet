@@ -1,11 +1,12 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { useSelector } from 'react-redux';
 import { useNavigation } from 'react-navigation-hooks';
 import { settingSelector } from '@screens/Setting/Setting.selector';
 import AccountSection from '@screens/Setting/features/AccountSection';
 import routeNames from '@src/router/routeNames';
 import { Text } from '@src/components/core';
+import { View2 } from  '@components/core/View';
 import { SectionItem } from '@screens/Setting/features/Section';
 import {
   currentMasterKeySelector,
@@ -87,11 +88,11 @@ const Keychain = () => {
         devices={devices}
         label={isMasterless ? 'Masterless keychains' : 'Your keychains'}
       />
-      <View style={styled.extra}>
+      <View2 style={styled.extra}>
         {sectionItemFactories.map((item) => (
           <SectionItem data={item} key={item.title} />
         ))}
-      </View>
+      </View2>
       {isMasterless && (
         <Text style={[styled.extra, styled.warning]}>
           􀇿 You will not be able to back up these keychains with a master key

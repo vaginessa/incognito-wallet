@@ -1,7 +1,8 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { withLayout_2 } from '@src/components/Layout';
 import Header from '@src/components/Header';
+import { View } from '@src/components/core';
 import QrCodeGenerate from '@src/components/QrCodeGenerate';
 import { CopiableTextDefault } from '@src/components/CopiableText';
 import PropTypes from 'prop-types';

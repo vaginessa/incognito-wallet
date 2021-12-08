@@ -1,6 +1,9 @@
 import React from 'react';
-import { StyleSheet, View, Text, Clipboard } from 'react-native';
+import { StyleSheet, Text, Clipboard } from 'react-native';
 import { ButtonBasic } from '@src/components/Button';
+import { View } from '@src/components/core';
+import { View3 } from '@src/components/core/View';
+import { Text4 } from '@src/components/core/Text';
 import { COLORS, FONT } from '@src/styles';
 import PropTypes from 'prop-types';
 
@@ -11,14 +14,14 @@ const styled = StyleSheet.create({
     borderRadius: 30,
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: COLORS.colorGrey,
+    // backgroundColor: COLORS.colorGrey,
   },
   text: {
     flex: 1,
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.regular,
     lineHeight: FONT.SIZE.regular + 6,
-    color: COLORS.colorGreyBold,
+    // color: COLORS.colorGreyBold,
     marginHorizontal: 15,
   },
   btnStyle: {
@@ -39,17 +42,17 @@ const CopiableText = props => {
     setCopied(true);
   };
   return (
-    <View style={styled.container}>
-      <Text style={[styled.text, textStyle]} numberOfLines={1} ellipsizeMode="middle">
+    <View3 style={styled.container}>
+      <Text4 style={[styled.text, textStyle]} numberOfLines={1} ellipsizeMode="middle">
         {data}
-      </Text>
+      </Text4>
       <ButtonBasic
         btnStyle={styled.btnStyle}
         titleStyle={styled.titleStyle}
         title={copied ? 'Copied' : 'Copy'}
         onPress={handleCopyText}
       />
-    </View>
+    </View3>
   );
 };
 

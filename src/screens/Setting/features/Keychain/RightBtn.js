@@ -11,7 +11,7 @@ const styled = StyleSheet.create({
     backgroundColor: COLORS.lightGrey19,
     height: 40,
   },
-  title: {
+  title: {  
     ...THEME.text.mediumText,
     fontSize: 15,
   }

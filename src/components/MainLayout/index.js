@@ -2,12 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { compose } from 'recompose';
 import {
-  View,
   ScrollView,
-  FlexView,
   LoadingContainer,
   KeyboardAwareScrollView,
 } from '@components/core';
+import { FlexView2 } from  '@components/core/FlexView';
+import { View2 } from  '@components/core/View';
 import { withLayout_2 } from '@components/Layout';
 import Header from '@components/Header';
 import styles from './style';
@@ -28,7 +28,7 @@ const MainLayout = ({
   keyboardAware,
 }) => {
   return (
-    <FlexView style={[noPadding && styles.noPaddingStyle]}>
+    <FlexView2 style={[noPadding && styles.noPaddingStyle]}>
       {!noHeader && (
         <Header
           canSearch={canSearch}
@@ -61,16 +61,16 @@ const MainLayout = ({
             {children}
           </KeyboardAwareScrollView>
         ) : (
-          <View style={[
+          <View2 style={[
             styles.content,
             contentStyle
           ]}
           >
             {children}
-          </View>
+          </View2>
         )
       }
-    </FlexView>
+    </FlexView2>
   );
 };
 

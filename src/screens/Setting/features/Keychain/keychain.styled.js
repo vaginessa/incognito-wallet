@@ -19,13 +19,11 @@ export const itemStyled = StyleSheet.create({
   },
   mediumBlack: {
     ...FONT.STYLE.medium,
-    color: COLORS.black,
     fontSize: FONT.SIZE.medium,
     lineHeight: FONT.SIZE.medium + 9,
   },
   mediumGrey: {
     ...FONT.STYLE.medium,
-    color: COLORS.lightGrey36,
     fontSize: FONT.SIZE.small,
     lineHeight: FONT.SIZE.small + 7,
     paddingLeft: 36
@@ -38,7 +36,6 @@ export const itemStyled = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 3,
     borderRadius: 8,
-    backgroundColor: COLORS.white,
     borderWidth: 1,
     borderColor: COLORS.colorGrey4,
     overflow: 'visible'

@@ -1,13 +1,14 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Text, View } from 'react-native';
+// import { Text, View } from 'react-native';
 import clipboard from '@src/services/clipboard';
 import { BtnQRCode, BtnCopy } from '@src/components/Button';
 import Header from '@src/components/Header';
 import srcQrCodeLight from '@src/assets/images/icons/qr_code_light.png';
 import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
-import { ScrollView } from '@src/components/core';
+import { ScrollView, View, Text  } from '@src/components/core';
+import { Text3 } from '@src/components/core/Text';
 import withExportAccount from './ExportAccount.enhance';
 import styleSheet from './ExportAccount.styled';
 
@@ -24,7 +25,7 @@ const ExportItem = ({ label, data, onPress, onPressQRCode }) => (
         <BtnCopy onPress={onPress} />
       </View>
     </View>
-    <Text style={styleSheet.itemData}>{data}</Text>
+    <Text3 style={styleSheet.itemData}>{data}</Text3>
   </View>
 );
 

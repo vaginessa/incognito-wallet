@@ -32,7 +32,7 @@ export const sectionStyle = StyleSheet.create({
   },
   lastItem: {},
   items: {
-    backgroundColor: COLORS.white,
+    // backgroundColor: COLORS.white,
   },
   label: {
     fontFamily: FONT.NAME.medium,
