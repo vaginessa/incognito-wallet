@@ -17,6 +17,8 @@ import { useNavigation } from 'react-navigation-hooks';
 import ROUTE_NAMES from '@routers/routeNames';
 import { RefreshControl } from 'react-native';
 import { PRV_ID } from '@src/screens/DexV2/constants';
+import { useSelector } from 'react-redux';
+import { colorsSelector } from '@src/theme/theme.selector';
 import styles from './style';
 
 export const LockTimeComp = React.memo(() => {
@@ -54,7 +56,7 @@ const CoinList = ({
   isLoadingHistories,
 }) => {
   const navigation = useNavigation();
-
+  const colors = useSelector(colorsSelector);
   const handleHistory = () => {
     navigation.navigate(ROUTE_NAMES.PoolV2History, {
       coins,
@@ -87,7 +89,7 @@ const CoinList = ({
               <Text style={mainStyles.coinName}>{item.name}</Text>
               <Row style={[mainStyles.flex, mainStyles.emptyRight]}>
                 {item.locked && <UpToIconComp />}
-                <Text style={[mainStyles.coinExtra, mainStyles.textRight]}>{item.displayInterest}</Text>
+                <Text style={[mainStyles.coinExtra, mainStyles.textRight, {color: colors.text7}]}>{item.displayInterest}</Text>
               </Row>
             </Row>
           ))}
@@ -135,7 +137,7 @@ const CoinList = ({
 
   const renderBtnViewDetails = (item) => {
     return (
-      <TouchableOpacity style={mainStyles.btnViewDetail} onPress={() => handleShowLockHistory(item)}>
+      <TouchableOpacity style={[mainStyles.btnViewDetail, {borderColor: colors.contrast}]} onPress={() => handleShowLockHistory(item)}>
         <Text style={mainStyles.viewDetailText}>View details</Text>
       </TouchableOpacity>
     );
@@ -162,7 +164,7 @@ const CoinList = ({
     return (
       <Row style={{alignItems: 'center'}}>
         {item.locked && <UpToIconComp />}
-        <Text style={mainStyles.coinExtra}>{item.coin.displayInterest}</Text>
+        <Text style={[mainStyles.coinExtra, {color: colors.text7}]}>{item.coin.displayInterest}</Text>
       </Row>
     );
   };
@@ -209,8 +211,8 @@ const CoinList = ({
                         center
                       >
                         {item.locked && <SumIconComp />}
-                        <PRVSymbol style={mainStyles.coinInterest} />
-                        <Text style={mainStyles.coinInterest}>
+                        <PRVSymbol style={[mainStyles.coinInterest, {color: colors.text6}]} />
+                        <Text style={[mainStyles.coinInterest, {color: colors.text6}]}>
                           &nbsp;{item.displayReward}
                         </Text>
                       </Row>
@@ -242,11 +244,11 @@ const CoinList = ({
 
     if (histories?.length > 0) {
       return (
-        <View style={styles.rateChange}>
+        <View style={[styles.rateChange, { backgroundColor: colors.background1 }]}>
           <TouchableOpacity onPress={handleHistory}>
             <Row center spaceBetween style={mainStyles.flex}>
-              <Text style={styles.rateStyle}>Provider history</Text>
-              <ArrowRightGreyIcon style={[{ marginLeft: 10 }]} />
+              <Text style={[styles.rateStyle, { marginLeft: 20 }]}>Provider history</Text>
+              <ArrowRightGreyIcon style={[{ marginRight: 10 }]} />
             </Row>
           </TouchableOpacity>
         </View>

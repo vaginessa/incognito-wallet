@@ -26,7 +26,6 @@ export default StyleSheet.create({
   },
   coinExtra: {
     fontFamily: FONT.NAME.medium,
-    color: COLORS.newGrey,
     fontSize: 18,
     marginBottom: 8,
   },
@@ -70,7 +69,6 @@ export default StyleSheet.create({
   },
   inputContainer: {
     marginBottom: 8,
-    backgroundColor: COLORS.colorGrey4,
     paddingHorizontal: 16,
     paddingVertical: 13,
     borderRadius: 8,
@@ -96,7 +94,6 @@ export default StyleSheet.create({
   lockText: {
     ...FONT.STYLE.medium,
     fontSize: FONT.SIZE.small,
-    color: COLORS.newGrey,
     marginLeft: 5
   },
   btnMirage: {
@@ -111,7 +108,6 @@ export default StyleSheet.create({
   mirageText: {
     ...FONT.STYLE.medium,
     fontSize: FONT.SIZE.small,
-    color: COLORS.white,
   },
   btnViewDetail: {
     alignItems: 'center',
@@ -120,13 +116,11 @@ export default StyleSheet.create({
     height: 24,
     paddingHorizontal: 8,
     borderRadius: 4,
-    borderColor: COLORS.black,
     borderWidth: 1,
   },
   viewDetailText: {
     ...FONT.STYLE.medium,
     fontSize: FONT.SIZE.small,
-    color:  COLORS.black,
   },
   emptyRight: {
     alignItems: 'center',

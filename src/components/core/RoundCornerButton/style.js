@@ -10,6 +10,7 @@ export default StyleSheet.create({
   },
   buttonTitle: {
     fontSize: 18,
+    backgroundColor: COLORS.green2,
     ...FONT.STYLE.medium,
   },
 });

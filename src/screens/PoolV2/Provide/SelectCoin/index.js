@@ -13,12 +13,14 @@ import { Header, Row } from '@src/components/';
 import { COINS } from '@src/constants';
 import {LockTimeComp} from '@screens/PoolV2/Home/CoinList';
 import upToIcon from '@src/assets/images/icons/upto_icon.png';
+import { colorsSelector } from '@src/theme/theme.selector';
+import { useSelector } from 'react-redux'; 
 
 const SelectCoin = ({
   coins
 }) => {
   const navigation = useNavigation();
-
+  const colors = useSelector(colorsSelector);
   const handleSelect = (coin) => {
     const prv = coins.find(item => item.id === COINS.PRV_ID);
     navigation.navigate(ROUTE_NAMES.PoolV2ProvideInput, {
@@ -45,7 +47,7 @@ const SelectCoin = ({
               />
             )
         }
-        <Text style={[mainStyle.coinExtra, { marginBottom: 0, marginTop: 2 }]}>{item.displayInterest}</Text>
+        <Text style={[mainStyle.coinExtra, { marginBottom: 0, marginTop: 2 }, {color: colors.text7}]}>{item.displayInterest}</Text>
       </Row>
     );
   };
