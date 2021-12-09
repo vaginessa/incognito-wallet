@@ -1,11 +1,13 @@
 import { StyleSheet } from 'react-native';
 import { FONT } from '@src/styles';
+import globalStyled from '@src/theme/theme.styled';
 
 export const styled = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
     height: 50,
+    paddingHorizontal: globalStyled.defaultPadding.paddingHorizontal,
   },
 });
 

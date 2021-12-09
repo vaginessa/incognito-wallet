@@ -1,8 +1,7 @@
 import React from 'react';
-import { View } from 'react-native';
 import Header from '@src/components/Header';
 import { useNavigationParam } from 'react-navigation-hooks';
-import { DropdownMenu, KeyboardAwareScrollView } from '@src/components/core';
+import { DropdownMenu, KeyboardAwareScrollView, View } from '@src/components/core';
 import PropTypes from 'prop-types';
 import withListAllReceivers from './FrequentReceivers.enhance';
 import Item from './FrequentReceivers.item';
@@ -60,7 +59,9 @@ const ListAllReceivers = (props) => {
           marginHorizontal: 25,
         }}
       >
-        <ListReceivers {...{ receivers, isEmpty }} />
+        <View>
+          <ListReceivers {...{ receivers, isEmpty }} />
+        </View>
       </KeyboardAwareScrollView>
     </View>
   );
