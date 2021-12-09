@@ -14,7 +14,6 @@ export const styles = StyleSheet.create({
     marginTop: 15,
   },
   text: {
-    color: COLORS.colorGreyBold,
     textAlign: 'center',
     lineHeight: FONT.SIZE.regular + 5,
     fontSize: FONT.SIZE.regular,

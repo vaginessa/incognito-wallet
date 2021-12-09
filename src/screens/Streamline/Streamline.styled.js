@@ -15,19 +15,16 @@ export const styled = StyleSheet.create({
     fontFamily: FONT.NAME.medium,
     lineHeight: FONT.SIZE.regular + 3,
     fontSize: FONT.SIZE.regular,
-    color: COLORS.colorGreyBold,
   },
   hookDesc: {
     fontFamily: FONT.NAME.medium,
     lineHeight: FONT.SIZE.regular + 3,
     fontSize: FONT.SIZE.regular,
-    color: COLORS.colorGreyBold,
   },
   tooltip: {
     fontFamily: FONT.NAME.medium,
     lineHeight: 30,
     fontSize: FONT.SIZE.medium,
-    color: COLORS.black,
   },
   scrollview: {
     paddingTop: 32,

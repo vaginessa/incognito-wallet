@@ -63,7 +63,6 @@ export const balanceStyled = StyleSheet.create({
     alignItems: 'center',
   },
   pSymbol: {
-    color: COLORS.colorGreyBold,
     fontFamily: FONT.NAME.specialRegular,
     fontSize: FONT.SIZE.medium,
     lineHeight: FONT.SIZE.medium + 4,

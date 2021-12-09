@@ -1,5 +1,5 @@
 import React from 'react';
-import { FlatList, RefreshControl, Text, View } from 'react-native';
+import { FlatList, RefreshControl, Text } from 'react-native';
 import { Header, LoadingContainer } from '@src/components';
 import { compose } from 'recompose';
 import convertTokenListEnhance from '@screens/Home/features/ConvertTokenList/ConvertTokenList.enhance';
@@ -16,7 +16,8 @@ import { selectedPrivacySelector } from '@src/redux/selectors';
 import BigNumber from 'bignumber.js';
 import { ButtonBasic } from '@components/Button';
 import isEmpty from 'lodash/isEmpty';
-import { ActivityIndicator, Image, TouchableOpacity } from '@components/core';
+import { ActivityIndicator, Image, TouchableOpacity, View } from '@components/core';
+import { Text4 } from '@components/core/Text';
 import noTransaction from '@assets/images/icons/shield.png';
 import { styles } from '@screens/Wallet/features/HistoryToken/HistoryToken.empty';
 import { withLayout_2 } from '@components/Layout';
@@ -117,9 +118,9 @@ const ConvertTokenList = React.memo(
     const renderEmptyView = () => (
       <View style={styles.container}>
         <Image source={noTransaction} style={styles.image} />
-        <Text style={styles.text}>
+        <Text4 style={styles.text}>
           {'Trade some coins to start\ntransacting anonymously.'}
-        </Text>
+        </Text4>
       </View>
     );
 

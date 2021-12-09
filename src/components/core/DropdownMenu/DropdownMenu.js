@@ -1,11 +1,10 @@
 import React from 'react';
 import {
-  View,
   StyleSheet,
-  Text,
   SectionList,
   TouchableWithoutFeedback,
 } from 'react-native';
+import { Text, View } from '@src/components/core';
 import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/Entypo';
 import { COLORS, FONT } from '@src/styles';
@@ -22,7 +21,6 @@ const styled = StyleSheet.create({
     fontFamily: FONT.NAME.bold,
     fontSize: FONT.SIZE.superMedium,
     lineHeight: FONT.SIZE.superMedium + 4,
-    color: COLORS.BLACK,
   },
 });
 
