@@ -16,6 +16,7 @@ import convertUtil, { formatTime }from '@utils/convert';
 import formatUtil from '@utils/format';
 import ic_radio from '@src/assets/images/icons/ic_radio.png';
 import ic_radio_check from '@src/assets/images/icons/ic_radio_check.png';
+import globalStyled from '@src/theme/theme.styled';
 import styles from './style';
 
 const Provide = ({
@@ -66,7 +67,7 @@ const Provide = ({
   return (
     <View style={mainStyle.flex}>
       <Header title='Provide' />
-      <View style={mainStyle.coinContainer}>
+      <View style={[mainStyle.coinContainer, globalStyled.defaultPadding2]}>
         <Row center spaceBetween style={mainStyle.inputContainer}>
           <BaseTextInput
             style={mainStyle.input}

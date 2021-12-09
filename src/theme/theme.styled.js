@@ -8,7 +8,11 @@ const globalStyled = StyleSheet.create({
   defaultBorderSection: {
     borderTopRightRadius: 26,
     borderTopLeftRadius: 26,
-  }
+  },
+  defaultPadding2: {
+    paddingHorizontal: 25,
+    paddingVertical: 5,
+  },
 });
 
 export default globalStyled;
