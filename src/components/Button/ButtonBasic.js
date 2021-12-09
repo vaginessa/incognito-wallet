@@ -1,15 +1,17 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import PropTypes from 'prop-types';
 import { COLORS, FONT } from '@src/styles';
 import {
   ActivityIndicator,
   TouchableOpacity,
+  Text
 } from '@src/components/core';
 import isArray from 'lodash/isArray';
 
 const styled = StyleSheet.create({
   container: {
+    // todo: 
     backgroundColor: COLORS.colorPrimary,
     borderRadius: 100,
     height: 50,
@@ -18,12 +20,12 @@ const styled = StyleSheet.create({
     maxWidth: '100%',
   },
   title: {
-    color: COLORS.white,
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.medium,
     textAlign: 'center',
   },
   disabled: {
+    // todo: 
     backgroundColor: COLORS.colorGreyMedium,
   },
 });

@@ -38,13 +38,11 @@ export const sectionStyle = StyleSheet.create({
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.medium,
     lineHeight: FONT.SIZE.medium + 9,
-    color: COLORS.black,
   },
   desc: {
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.regular,
     lineHeight: FONT.SIZE.regular + 9,
-    color: COLORS.lightGrey33,
     flex: 1,
     marginLeft: 40
   },

@@ -1,4 +1,5 @@
 import { Text, TouchableOpacity, View } from '@src/components/core';
+import { Text5 } from '@src/components/core/Text';
 import PropTypes from 'prop-types';
 import React from 'react';
 import {Row} from '@src/components';
@@ -25,7 +26,7 @@ export const SectionItem = (
         </Row>
         <ArrowRightGreyIcon style={{ width: 6, height: 10 }} />
       </Row>
-      {desc && <Text style={[sectionStyle.desc]}>{desc}</Text>}
+      {desc && <Text5 style={[sectionStyle.desc]}>{desc}</Text5>}
     </TouchableOpacity>
   );
 };

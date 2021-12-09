@@ -11,6 +11,7 @@ import DeviceInfo from 'react-native-device-info';
 import { SafeAreaView, ScrollView } from 'react-native';
 import { NetworkIcon, SecurityIcon } from '@components/Icons';
 import { Header } from '@src/components';
+import globalStyled from '@src/theme/theme.styled';
 import codePush from 'react-native-code-push';
 import HideBalance from '@screens/Setting/features/HideBalance';
 import PINSection from './features/PINSection';
@@ -26,6 +27,7 @@ import withSetting from './Setting.enhance';
 import DecimalDigitsSection from './features/DecimalDigitsSection';
 import ExportCSVSection from './features/ExportCSVSection';
 import RemoveBalanceCached from './features/RemoveBalanceCached';
+
 // import PayFeeByPRV from './features/PayFeeByPRV';
 
 const Setting = () => {
@@ -70,13 +72,12 @@ const Setting = () => {
   return (
     <SafeAreaView>
       {!!showHeader && (
-        <Header title="Settings" style={{ paddingHorizontal: 25 }} />
+        <Header title="Settings" style={{ paddingHorizontal: globalStyled.defaultPadding.paddingHorizontal }} />
       )}
       <ScrollView
-        style={{ paddingHorizontal: 25 }}
         showsVerticalScrollIndicator={false}
       >
-        <View>
+        <View style={{ paddingHorizontal: globalStyled.defaultPadding.paddingHorizontal }}>
           {sectionItemFactories.map((item) => (
             <SectionItem data={item} key={`${item.title} ${item.desc}`} />
           ))}
@@ -94,11 +95,14 @@ const Setting = () => {
           <HideBalance />
           {global.isDebug() && <DevSection />}
         </View>
-        <Text style={[settingStyle.textVersion]}>
-          {`v${AppUpdater.appVersion}${
-            global.isDebug() ? ` (${DeviceInfo.getBuildNumber()})` : ''
-          }`}
-        </Text>
+        <View>
+          <Text style={[settingStyle.textVersion]}>
+            {`v${AppUpdater.appVersion}${
+              global.isDebug() ? ` (${DeviceInfo.getBuildNumber()})` : ''
+            }`}
+          </Text>
+        </View>
+        
       </ScrollView>
     </SafeAreaView>
   );

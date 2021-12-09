@@ -1,5 +1,6 @@
 import { Row } from '@src/components';
 import { Text } from '@src/components/core';
+import { Text6 } from '@src/components/core/Text';
 import PropTypes from 'prop-types';
 import { COLORS, FONT } from '@src/styles';
 import React from 'react';
@@ -36,19 +37,17 @@ export const styled = StyleSheet.create({
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.small,
     lineHeight: FONT.SIZE.small + 7,
-    color: COLORS.colorGrey3,
+    // color: COLORS.colorGrey3,
     marginRight: 5,
   },
   value: {
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.small,
     lineHeight: FONT.SIZE.small + 7,
-    color: COLORS.black,
     flex: 1,
     textAlign: 'right',
   },
   bold: {
-    color: COLORS.black,
     fontFamily: FONT.NAME.bold,
   },
   hookCustomStyleBtnQuestion: {
@@ -73,7 +72,7 @@ export const Hook = React.memo((props) => {
   return (
     <Row style={[styled.hook, styledHook]}>
       <Row style={styled.labelContainer}>
-        <Text
+        <Text6
           style={[
             styled.label,
             boldLabel && styled.bold,
@@ -83,7 +82,7 @@ export const Hook = React.memo((props) => {
           ellipsizeMode="tail"
         >
           {label}
-        </Text>
+        </Text6>
         {hasQuestionIcon && (
           <BtnQuestionDefault
             icon={srcQuestionIcon}

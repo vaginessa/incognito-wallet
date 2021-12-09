@@ -17,6 +17,7 @@ import {
 import format from '@src/utils/format';
 import { PRV } from '@src/constants/common';
 import { ExHandler } from '@src/services/exception';
+import globalStyled from '@src/theme/theme.styled';
 import { Hook } from '@screens/PDexV3/features/Extra';
 import NFTTokenHook from './NFTToken.hook';
 
@@ -30,6 +31,7 @@ const styled = StyleSheet.create({
   },
   form: {
     // flex: 1,
+    paddingVertical: globalStyled.defaultPadding.paddingVertical,
     minHeight: 100,
     marginBottom: 50,
   },

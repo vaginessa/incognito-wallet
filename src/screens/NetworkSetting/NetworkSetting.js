@@ -1,12 +1,12 @@
-import { ScrollView } from '@src/components/core';
+import { ScrollView, View } from '@src/components/core';
 import DialogLoader from '@src/components/DialogLoader';
 import { onClickView } from '@src/utils/ViewUtil';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import RNRestart from 'react-native-restart';
-import { View } from 'react-native';
 import { withLayout_2 } from '@src/components/Layout';
 import Header from '@src/components/Header';
+import globalStyled from '@src/theme/theme.styled';
 import NetworkItem, { networkItemShape } from './NetworkItem';
 import { styled } from './NetworkSetting.styled';
 
@@ -44,7 +44,7 @@ class NetworkSetting extends Component {
 
     return (
       <View style={styled.container}>
-        <Header title="Network" />
+        <Header title="Network" style={{ paddingHorizontal: globalStyled.defaultPadding.paddingHorizontal }} />
         <View style={styled.wrapper}>
           <ScrollView style={{ paddingTop: 32 }}>
             {networks &&

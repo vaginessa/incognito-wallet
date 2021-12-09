@@ -39,14 +39,12 @@ export const networkItemStyle = StyleSheet.create({
   networkName: {
     fontSize: FONT.SIZE.superMedium,
     lineHeight: FONT.SIZE.superMedium + 4,
-    color: COLORS.black,
     fontFamily: FONT.NAME.bold,
     marginBottom: 10,
   },
   networkAddr: {
     fontSize: FONT.SIZE.regular,
     lineHeight: FONT.SIZE.regular + 3,
-    color: COLORS.colorGreyBold,
     fontFamily: FONT.NAME.medium,
   },
   textInfoContainer: {
@@ -58,7 +56,6 @@ export const networkItemStyle = StyleSheet.create({
     width: 10,
     height: 10,
     borderRadius: 5,
-    backgroundColor: COLORS.black,
     marginTop: 8,
   },
 });
