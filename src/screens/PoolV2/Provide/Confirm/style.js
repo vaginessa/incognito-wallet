@@ -23,15 +23,12 @@ export default StyleSheet.create({
   },
   bold: {
     ...FONT.STYLE.bold,
-    color: COLORS.black,
   },
   extra: {
-    color: COLORS.newGrey,
     fontSize: 16,
     lineHeight: 19,
   },
   extraRight: {
-    color: COLORS.black,
   },
   warning: {
     color: COLORS.orange,

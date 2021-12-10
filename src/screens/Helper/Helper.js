@@ -1,9 +1,11 @@
 import React, {memo} from 'react';
-import { Text, View, StyleSheet, ScrollView } from 'react-native';
+import { StyleSheet, ScrollView } from 'react-native';
+import { View, Text } from '@components/core';
 import { Header } from '@src/components';
 import { COLORS, FONT } from '@src/styles';
 import PropTypes from 'prop-types';
 import { v4 } from 'uuid';
+import globalStyled from '@src/theme/theme.styled';
 import withEnhance from './Helper.enhance';
 
 const HelperScreen = ({ title, contents, style }) => {
@@ -15,7 +17,7 @@ const HelperScreen = ({ title, contents, style }) => {
       const subTitle = section?.subTitle || '';
       const key = v4();
       views.push(
-        <View key={key}>
+        <View key={key} style={globalStyled.defaultPadding3}>
           { !!subTitle && (
             <Text style={styles.subTitle}>
               {subTitle}

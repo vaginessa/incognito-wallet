@@ -6,6 +6,7 @@ import { withLayout_2 } from '@components/Layout';
 import Header from '@components/Header/index';
 import ExtraInfo from '@screens/DexV2/components/ExtraInfo';
 import { ScrollView } from 'react-native';
+import globalStyled from '@src/theme/theme.styled';
 import styles from './style';
 import withData from './data.enhance';
 
@@ -13,7 +14,7 @@ const HistoryDetail = ({ history }) => {
   return (
     <View style={{ flex: 1 }}>
       <Header title="Provider history" />
-      <ScrollView>
+      <ScrollView style={globalStyled.defaultPadding3}>
         <View style={styles.historyItem}>
           <Text style={styles.buttonTitle}>{history.type}</Text>
           <Text style={styles.content}>{history.description}</Text>

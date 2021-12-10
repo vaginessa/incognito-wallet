@@ -16,6 +16,7 @@ import convertUtil from '@utils/convert';
 import formatUtil from '@utils/format';
 import ic_radio from '@src/assets/images/icons/ic_radio.png';
 import ic_radio_check from '@src/assets/images/icons/ic_radio_check.png';
+import globalStyled from '@src/theme/theme.styled';
 import styles from './style';
 
 const InputMigration = ({
@@ -58,7 +59,7 @@ const InputMigration = ({
   return (
     <View style={mainStyle.flex}>
       <Header title='Migrate' />
-      <View style={mainStyle.coinContainer}>
+      <View style={[mainStyle.coinContainer, globalStyled.defaultPadding3]}>
         <Row center spaceBetween style={mainStyle.inputContainer}>
           <BaseTextInput
             style={mainStyle.input}
