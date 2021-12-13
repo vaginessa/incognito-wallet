@@ -5,7 +5,6 @@ import screenTheme from '@src/screens/Node/theme';
 const style = StyleSheet.create({
   container: {
     paddingTop: 32,
-    backgroundColor: COLORS.white,
   },
   title: {
     fontSize: 20,
@@ -19,7 +18,6 @@ const style = StyleSheet.create({
     backgroundColor: screenTheme.buttonColor,
   },
   description: {
-    color: COLORS.newGrey,
     fontFamily: FONT.NAME.medium,
     textAlign: 'center',
   },

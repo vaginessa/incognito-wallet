@@ -3,8 +3,9 @@ import { Text, StyleSheet, View } from 'react-native';
 import PropTypes from 'prop-types';
 import { COLORS, FONT } from '@src/styles';
 import { BtnPrimary } from '@components/core/Button';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { actionToggleModal } from '@components/Modal';
+import { colorsSelector } from '@src/theme/theme.selector';
 import { SuccessIcon } from '@components/Icons';
 
 const SuccessModal = ({
@@ -19,9 +20,11 @@ const SuccessModal = ({
     typeof onButtonPress === 'function' && onButtonPress();
     dispatch(actionToggleModal());
   };
+  const colors = useSelector(colorsSelector);
+
   return (
     <View style={styled.container}>
-      <SuccessIcon />
+      <SuccessIcon fill={colors.icon1} />
       {!!title && <Text style={styled.title}>{title}</Text>}
       {!!content && <Text style={styled.content}>{content}</Text>}
       {!!subContent && <Text style={styled.content}>{subContent}</Text>}

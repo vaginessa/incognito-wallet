@@ -30,5 +30,8 @@ export function appTheme(darkMode: boolean) {
     border1: darkMode ? '#9C9C9C' : '#F7F7F7',
 
     contrast: darkMode ? white : black,
+
+    // icon
+    icon1: darkMode ? '#6DD400' : '#1A73E8',  // green - blue
   };
 }
