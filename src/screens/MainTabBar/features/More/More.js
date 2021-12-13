@@ -1,6 +1,6 @@
 import React, {memo} from 'react';
 import withTab from '@screens/MainTabBar/MainTabBar.enhanceTab';
-import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { ScrollView, TouchableOpacity, View } from 'react-native';
 import { moreStyled, styled } from '@screens/MainTabBar/MainTabBar.styled';
 import {useSelector} from 'react-redux';
 import {defaultAccountSelector} from '@src/redux/selectors/account';
@@ -20,6 +20,7 @@ import {
   StakeIcon
 } from '@components/Icons';
 import {Row} from '@src/components';
+import {Text} from '@src/components/core';
 import PropTypes from 'prop-types';
 import {VectorSettingColor} from '@components/Icons/icon.setting';
 

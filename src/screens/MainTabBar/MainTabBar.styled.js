@@ -221,7 +221,7 @@ export const moreStyled = StyleSheet.create({
   regularBlack: {
     ...FONT.STYLE.medium,
     fontSize: FONT.SIZE.regular,
-    color: COLORS.black,
+    // color: COLORS.black,
     lineHeight: FONT.SIZE.small + 6,
     marginTop: 8,
   },

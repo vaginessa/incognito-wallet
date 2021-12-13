@@ -1,14 +1,9 @@
-import { COLORS, FONT } from '@src/styles';
+import { FONT } from '@src/styles';
 import { StyleSheet } from 'react-native';
 
 const HEADER_HEIGHT = 35;
 
 export const sectionStyle = StyleSheet.create({
-  container: {
-    paddingVertical: 16,
-    borderBottomColor: COLORS.colorGrey4,
-    borderBottomWidth: 1
-  },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -20,20 +15,12 @@ export const sectionStyle = StyleSheet.create({
     flexDirection: 'row',
   },
   infoContainer: {},
-  item: {
-    paddingVertical: 16,
-    borderBottomColor: COLORS.colorGrey4,
-    borderBottomWidth: 1
-  },
   subItem: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
   },
   lastItem: {},
-  items: {
-    // backgroundColor: COLORS.white,
-  },
   label: {
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.medium,

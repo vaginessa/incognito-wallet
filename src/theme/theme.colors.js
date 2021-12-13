@@ -26,6 +26,9 @@ export function appTheme(darkMode: boolean) {
     btnBG1: darkMode ? '#1A73E8' : '#1A73E8',
     btnBG2: darkMode ? '#404040' : white,
 
+    // border
+    border1: darkMode ? '#9C9C9C' : '#F7F7F7',
+
     contrast: darkMode ? white : black,
   };
 }
