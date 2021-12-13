@@ -4,6 +4,10 @@ import { StyleSheet } from 'react-native';
 const HEADER_HEIGHT = 35;
 
 export const sectionStyle = StyleSheet.create({
+  container: {
+    paddingVertical: 16,
+    borderBottomWidth: 1,
+  },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',

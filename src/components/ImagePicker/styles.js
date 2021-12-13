@@ -36,14 +36,12 @@ const style = StyleSheet.create({
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.medium,
     lineHeight: FONT.SIZE.medium + 3,
-    color: COLORS.colorGreyBold,
     marginVertical: 10,
   },
   label: {
     fontFamily: FONT.NAME.bold,
     fontSize: FONT.SIZE.superMedium,
     lineHeight: FONT.SIZE.superMedium + 4,
-    color: COLORS.black,
   },
   circle: {
     width: 60,
@@ -60,7 +58,6 @@ const style = StyleSheet.create({
   chooseFile: {
     fontFamily: FONT.NAME.bold,
     fontSize: FONT.SIZE.medium,
-    color: COLORS.colorGreyBold,
     marginRight: 10,
   },
   hook: {

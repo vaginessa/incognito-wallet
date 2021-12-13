@@ -340,7 +340,7 @@ class AddInternalToken extends Component {
                     label="Coin icon"
                   />
                 </View>
-                <Text style={isNotEnoughFee && styleSheet.error}>
+                <Text style={[styleSheet.issuanceFee, isNotEnoughFee && styleSheet.error]}>
                   Issuance fee:{' '}
                   {formatUtil.amountFull(
                     MAX_FEE_PER_TX,

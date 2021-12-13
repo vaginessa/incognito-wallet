@@ -1,71 +1,69 @@
 import { Text, TouchableOpacity, View } from '@src/components/core';
 import { Text5 } from '@src/components/core/Text';
-import { ViewWithBorderBottom1 } from '@src/components/core/View';
 import PropTypes from 'prop-types';
 import React from 'react';
 import {Row} from '@src/components';
 import {ArrowRightGreyIcon} from '@components/Icons';
+import { colorsSelector } from '@src/theme/theme.selector';
+import { useSelector } from 'react-redux';
 import { sectionStyle } from './Section.styled';
 
 export const SectionItem = (
   { data: { title, desc, handlePress, styleItem = null, icon: CMPIcon } },
   lastItem,
 ) => {
+  const colors = useSelector(colorsSelector);
   return (
     <TouchableOpacity
-      style={[lastItem && sectionStyle.lastItem, styleItem]}
+      style={[sectionStyle.container, lastItem && sectionStyle.lastItem, styleItem, { borderBottomColor: colors.border1 }]}
       onPress={handlePress}
     >
-      <ViewWithBorderBottom1>
-        <Row centerVertical spaceBetween>
-          <Row centerVertical>
-            {!!CMPIcon && (
-              <View style={[sectionStyle.wrapIcon]}>
-                {CMPIcon}
-              </View>
-            )}
-            {title && <Text style={[sectionStyle.label]}>{title}</Text>}
-          </Row>
-          <ArrowRightGreyIcon style={{ width: 6, height: 10 }} />
+      <Row centerVertical spaceBetween>
+        <Row centerVertical>
+          {!!CMPIcon && (
+            <View style={[sectionStyle.wrapIcon]}>
+              {CMPIcon}
+            </View>
+          )}
+          {title && <Text style={[sectionStyle.label]}>{title}</Text>}
         </Row>
-        {desc && <Text5 style={[sectionStyle.desc]}>{desc}</Text5>}
-      </ViewWithBorderBottom1>
+        <ArrowRightGreyIcon style={{ width: 6, height: 10 }} />
+      </Row>
+      {desc && <Text5 style={[sectionStyle.desc]}>{desc}</Text5>}
     </TouchableOpacity>
   );
 };
 
 const Section = (props) => {
   const { label, items, customItems, headerRight, labelStyle, headerIcon: HeaderIcon } = props;
+  const colors = useSelector(colorsSelector);
   return (
-    <View>
-      <ViewWithBorderBottom1>
-        <Row style={sectionStyle.header}>
-          <Row centerVertical>
-            {!!HeaderIcon && (
-              <View style={sectionStyle.wrapIcon}>
-                {HeaderIcon}
-              </View>
-            )}
-            <Text style={[sectionStyle.label, labelStyle]}>{label}</Text>
-          </Row>
-          {headerRight}
+    <View style={[sectionStyle.container, { borderBottomColor: colors.border1 }]}>
+      <Row style={sectionStyle.header}>
+        <Row centerVertical>
+          {!!HeaderIcon && (
+            <View style={sectionStyle.wrapIcon}>
+              {HeaderIcon}
+            </View>
+          )}
+          <Text style={[sectionStyle.label, labelStyle]}>{label}</Text>
         </Row>
-        {customItems ? (
-          customItems
-        ) : (
-          <View>
-            {items &&
-              items.map((item, index) => (
-                <SectionItem
-                  key={`${item.title || item.desc}`}
-                  data={item}
-                  lastItem={index === items.length - 1}
-                />
-              ))}
-          </View>
-        )}
-      </ViewWithBorderBottom1>
-      
+        {headerRight}
+      </Row>
+      {customItems ? (
+        customItems
+      ) : (
+        <View>
+          {items &&
+            items.map((item, index) => (
+              <SectionItem
+                key={`${item.title || item.desc}`}
+                data={item}
+                lastItem={index === items.length - 1}
+              />
+            ))}
+        </View>
+      )}
     </View>
   );
 };
