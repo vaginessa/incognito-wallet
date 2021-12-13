@@ -1,11 +1,17 @@
 import { FONT, THEME, COLORS } from '@src/styles';
 import { StyleSheet } from 'react-native';
 import { isIOS } from '@src/utils/platform';
+import globalStyled from '@src/theme/theme.styled';
 
 const style = StyleSheet.create({
   container: {
+    ...globalStyled.defaultBorderSection,
     flex: 1,
     marginBottom: isIOS() ? 30 : 50,
+    paddingHorizontal: globalStyled.defaultPadding.paddingHorizontal,
+  },
+  issuanceFee: {
+    marginTop: 16
   },
   form: {
     flex: 1,
@@ -22,7 +28,6 @@ const style = StyleSheet.create({
     fontSize: FONT.SIZE.medium,
     fontFamily: FONT.NAME.medium,
     lineHeight: FONT.SIZE.medium + 4,
-    color: COLORS.black,
     flex: 1,
   },
   block: {
@@ -35,21 +40,17 @@ const style = StyleSheet.create({
     fontSize: FONT.SIZE.medium,
     lineHeight: FONT.SIZE.medium + 4,
     fontFamily: FONT.NAME.medium,
-    color: COLORS.colorGreyBold,
   },
   labelInput: {
     fontSize: FONT.SIZE.superMedium,
     lineHeight: FONT.SIZE.superMedium + 4,
     fontFamily: FONT.NAME.bold,
-    color: COLORS.black,
   },
   descriptionInput: {
     marginTop: 30,
   },
   submitBtn: {
     marginVertical: 50,
-    borderRadius: 100,
-    backgroundColor: COLORS.orange,
     height: 50,
   },
   titleSubmitBtn: {
@@ -80,7 +81,6 @@ const style = StyleSheet.create({
     fontFamily: FONT.NAME.bold,
     fontSize: FONT.SIZE.superMedium,
     lineHeight: FONT.SIZE.superMedium + 10,
-    color: COLORS.black,
   },
   switch: {
     marginBottom: 0,

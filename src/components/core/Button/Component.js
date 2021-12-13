@@ -1,8 +1,9 @@
-import { ActivityIndicator, Text, View, TouchableScale } from '@src/components/core';
+import { ActivityIndicator, TouchableScale } from '@src/components/core';
 import { COLORS } from '@src/styles';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { Button as ButtonElements } from 'react-native-elements';
+import { View, Text } from 'react-native';
 import styleSheet from './style';
 
 export const ButtonExtension = React.memo((props)=>{

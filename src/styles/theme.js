@@ -179,9 +179,9 @@ const header = {
 };
 const opacityButton = {
   button: {
-    backgroundColor: COLORS.blue,
+    backgroundColor: COLORS.colorBlue,
     paddingHorizontal: 5,
-    borderRadius: 6,
+    borderRadius: 8,
     borderWidth: DECOR.borderWidth,
     borderColor: COLORS.transparent,
     height: DECOR.buttonHeight,
