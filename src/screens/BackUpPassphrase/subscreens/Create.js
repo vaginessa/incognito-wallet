@@ -3,7 +3,7 @@ import { StyleSheet } from 'react-native';
 import MainLayout from '@components/MainLayout/index';
 import Input from '@screens/BackUpPassphrase/components/Input';
 import Button from '@screens/BackUpPassphrase/components/Button';
-import { Text, View, Image } from '@components/core';
+import { Text, View, Image, Text3 } from '@components/core';
 import { COLORS, THEME } from '@src/styles';
 import { useNavigation, useNavigationParam } from 'react-navigation-hooks';
 import routeNames from '@routers/routeNames';
@@ -13,6 +13,7 @@ import { validateName } from '@screens/BackUpPassphrase/utils';
 import { CheckBox } from 'react-native-elements';
 import checkedIcon from '@assets/images/icons/checked-checkbox.png';
 import uncheckedIcon from '@assets/images/icons/unchecked-checkbox.png';
+import globalStyled from '@src/theme/theme.styled';
 
 const styles = StyleSheet.create({
   desc: {
@@ -78,6 +79,7 @@ const CreateMasterKey = () => {
       header="Create master key"
       scrollable
       onGoBack={handleBack}
+      contentStyle={globalStyled.defaultBorderSection}
     >
       <Input
         onChangeText={setName}
