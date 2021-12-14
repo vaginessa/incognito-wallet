@@ -16,6 +16,10 @@ const globalStyled = StyleSheet.create({
   defaultPadding3: {
     paddingHorizontal: 25,
   },
+  defaultPadding4: {
+    paddingHorizontal: 25,
+    paddingTop: 25,
+  },
 });
 
 export default globalStyled;

@@ -1,5 +1,6 @@
 import {StyleSheet} from 'react-native';
 import {COLORS, FONT} from '@src/styles';
+import globalStyled from '@src/theme/theme.styled';
 
 export const itemStyled = StyleSheet.create({
   wrap: {
@@ -61,8 +62,14 @@ export const itemStyled = StyleSheet.create({
 
 export const styled = StyleSheet.create({
   wrapper: {
-    paddingHorizontal: 25,
-    paddingTop: 24,
+    paddingHorizontal: globalStyled.defaultPadding.paddingHorizontal,
+    paddingTop: globalStyled.defaultPadding.paddingTop,
+    ...globalStyled.defaultBorderSection,
+  },
+  borderTop: {
+    borderTopRightRadius: 26,
+    borderTopLeftRadius: 26,
+    // ...globalStyled.defaultBorderSection,
   }
 });
 

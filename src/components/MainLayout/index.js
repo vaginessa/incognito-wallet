@@ -10,6 +10,7 @@ import { FlexView2 } from  '@components/core/FlexView';
 import { View2 } from  '@components/core/View';
 import { withLayout_2 } from '@components/Layout';
 import Header from '@components/Header';
+import globalStyled from '@src/theme/theme.styled';
 import styles from './style';
 
 const MainLayout = ({
@@ -47,6 +48,7 @@ const MainLayout = ({
             contentContainerStyle={[
               styles.content,
               contentStyle,
+              {...globalStyled.defaultBorderSection}
             ]}
           >
             {children}
@@ -56,6 +58,7 @@ const MainLayout = ({
             contentContainerStyle={[
               styles.content,
               contentStyle,
+              {...globalStyled.defaultBorderSection}
             ]}
           >
             {children}
@@ -63,7 +66,8 @@ const MainLayout = ({
         ) : (
           <View2 style={[
             styles.content,
-            contentStyle
+            contentStyle,
+            {...globalStyled.defaultBorderSection}
           ]}
           >
             {children}

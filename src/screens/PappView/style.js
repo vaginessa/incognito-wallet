@@ -8,6 +8,7 @@ const style = StyleSheet.create({
   },
   webview: {
     width: ScreenWidth,
+    //todo
     marginLeft: -25, // Cheat sheet
     minHeight: 500,
     paddingBottom: 50
@@ -38,6 +39,7 @@ const style = StyleSheet.create({
     width: ScreenWidth, 
     flexDirection: 'row', 
     paddingLeft: 10, 
+    //todo:
     marginLeft: -25,
     backgroundColor: 'white'
   },

@@ -1,5 +1,6 @@
 import { COLORS, DECOR, FONT } from '@src/styles';
 import { StyleSheet, Dimensions } from 'react-native';
+import globalStyled from '@src/theme/theme.styled';
 
 const { width, height } = Dimensions.get('window');
 const style = StyleSheet.create({
@@ -13,6 +14,7 @@ const style = StyleSheet.create({
   wrapper: {
     flex: 1,
     marginTop: 23,
+    ...globalStyled.defaultBorderSection,
   },
   itemContainer: {
     marginBottom: 30,

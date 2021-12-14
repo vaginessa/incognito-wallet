@@ -24,7 +24,6 @@ const Keychain = () => {
     <View style={{ flex: 1 }}>
       <Header
         title="Keychain"
-        style={{ marginHorizontal: 25 }}
         rightHeader={<RightBtn title={masterKey.name} />}
         customHeaderTitle={<BtnInfo />}
       />

@@ -1,6 +1,5 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-// import { Text, View } from 'react-native';
 import clipboard from '@src/services/clipboard';
 import { BtnQRCode, BtnCopy } from '@src/components/Button';
 import Header from '@src/components/Header';
@@ -9,6 +8,7 @@ import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
 import { ScrollView, View, Text  } from '@src/components/core';
 import { Text3 } from '@src/components/core/Text';
+import globalStyled from '@src/theme/theme.styled';
 import withExportAccount from './ExportAccount.enhance';
 import styleSheet from './ExportAccount.styled';
 

@@ -25,6 +25,9 @@ export const sectionStyle = StyleSheet.create({
     justifyContent: 'space-between',
   },
   lastItem: {},
+  nonPaddingTop: {
+    paddingTop: 0,
+  },
   label: {
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.medium,

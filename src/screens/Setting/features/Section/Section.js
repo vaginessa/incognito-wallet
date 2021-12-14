@@ -9,13 +9,13 @@ import { useSelector } from 'react-redux';
 import { sectionStyle } from './Section.styled';
 
 export const SectionItem = (
-  { data: { title, desc, handlePress, styleItem = null, icon: CMPIcon } },
+  { data: { title, desc, handlePress, styleItem = null, icon: CMPIcon, nonPaddingTop = null } },
   lastItem,
 ) => {
   const colors = useSelector(colorsSelector);
   return (
     <TouchableOpacity
-      style={[sectionStyle.container, lastItem && sectionStyle.lastItem, styleItem, { borderBottomColor: colors.border1 }]}
+      style={[sectionStyle.container, lastItem && sectionStyle.lastItem, styleItem, nonPaddingTop && sectionStyle.nonPaddingTop, { borderBottomColor: colors.border1 }]}
       onPress={handlePress}
     >
       <Row centerVertical spaceBetween>

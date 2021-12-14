@@ -1,4 +1,4 @@
-import { Text, View } from '@src/components/core';
+import { Text, View, ScrollView } from '@src/components/core';
 import React, { useState } from 'react';
 import AppUpdater from '@components/AppUpdater/index';
 import { useNavigation, useNavigationParam } from 'react-navigation-hooks';
@@ -8,7 +8,7 @@ import CurrencySection from '@screens/Setting/features/CurrencySection/CurrencyS
 import RemoveStorage from '@screens/Setting/features/RemoveStorage/RemoveStorage';
 import ConvertCoinsSection from '@screens/Setting/features/ConvertCoinsSection';
 import DeviceInfo from 'react-native-device-info';
-import { SafeAreaView, ScrollView } from 'react-native';
+import { SafeAreaView } from 'react-native';
 import { NetworkIcon, SecurityIcon } from '@components/Icons';
 import { Header } from '@src/components';
 import globalStyled from '@src/theme/theme.styled';
@@ -45,6 +45,7 @@ const Setting = () => {
           onReloadedNetworks: actionFetchServers,
         }),
       icon: <NetworkIcon />,
+      nonPaddingTop: true,
     },
     {
       title: 'Tickets',
@@ -72,14 +73,14 @@ const Setting = () => {
   return (
     <SafeAreaView>
       {!!showHeader && (
-        <Header title="Settings" style={{ paddingHorizontal: globalStyled.defaultPadding.paddingHorizontal }} />
+        <Header title="Settings" />
       )}
       <ScrollView
         showsVerticalScrollIndicator={false}
       >
-        <View style={{ paddingHorizontal: globalStyled.defaultPadding.paddingHorizontal }}>
-          {sectionItemFactories.map((item) => (
-            <SectionItem data={item} key={`${item.title} ${item.desc}`} />
+        <View style={settingStyle.container}>
+          {sectionItemFactories.map((item, index) => (
+            <SectionItem data={item} key={`${item.title} ${item.desc}`} firstItem={index === 0} />
           ))}
           {/* <PayFeeByPRV /> */}
           <PINSection />
