@@ -10,6 +10,7 @@ import Modal from 'react-native-modal';
 import {SuccessIcon} from '@components/Icons';
 import { useSelector } from 'react-redux';
 import { colorsSelector } from '@src/theme/theme.selector';
+
 import styles from './style';
 
 const SuccessModal = (props) => {
@@ -31,7 +32,7 @@ const SuccessModal = (props) => {
       <View style={[styles.dialogContent]}>
         <SuccessIcon fill={colors.icon1} />
         {!!title && (
-          <Text style={[styles.dialogTitle, {color: colors.icon1}]}>
+          <Text style={[styles.dialogTitle]}>
             {title}
           </Text>
         )}
@@ -62,8 +63,7 @@ const SuccessModal = (props) => {
           <RoundCornerButton
             onPress={closeSuccessDialog}
             title={buttonTitle}
-            style={[styles.button, buttonStyle, {backgroundColor: colors.icon1}]}
-            titleStyle={{backgroundColor: colors.icon1}}
+            style={[styles.button, buttonStyle]}
           />
         )}
       </View>

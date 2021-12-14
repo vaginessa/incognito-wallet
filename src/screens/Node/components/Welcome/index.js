@@ -6,8 +6,6 @@ import nodeImg from '@assets/images/node/node.png';
 import theme from '@src/styles/theme';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { COLORS } from '@src/styles';
-import { useSelector } from 'react-redux';
-import { colorsSelector } from '@src/theme/theme.selector';
 import styles from './style';
 
 const WelcomeNodes = ({ onAddPNode, onAddVNode }) => {
@@ -20,16 +18,14 @@ const WelcomeNodes = ({ onAddPNode, onAddVNode }) => {
   //   }
   //   NavigationService.navigate(routeNames.BuyNodeScreen);
   // };
-  const colors = useSelector(colorsSelector);
 
   return (
     <ScrollView contentContainerStyle={styles.pNode}>
       <Image style={styles.pNodeImg} source={nodeImg} resizeMode="contain" resizeMethod="resize" />
       <RoundCornerButton
-        style={[styles.pNodeButton, theme.BUTTON.NODE_BUTTON, {backgroundColor: colors.icon1}]}
+        style={[styles.pNodeButton, theme.BUTTON.NODE_BUTTON]}
         onPress={onAddPNode}
         title='Add Node Device'
-        titleStyle={{backgroundColor: colors.icon1}}
       />
       {/*<Text style={styles.buyText}>Don&apos;t have a Node yet?</Text>
       <TouchableOpacity style={[theme.FLEX.rowSpaceBetweenCenter]} onPress={_onBuyNodePress}>

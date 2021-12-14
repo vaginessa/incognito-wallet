@@ -46,7 +46,6 @@ export default StyleSheet.create({
     justifyContent: 'flex-end',
   },
   button: {
-    backgroundColor: COLORS.green2,
   },
   error: {
     color: COLORS.red,
