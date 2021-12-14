@@ -14,6 +14,7 @@ import { CheckBox } from 'react-native-elements';
 import checkedIcon from '@assets/images/icons/checked-checkbox.png';
 import uncheckedIcon from '@assets/images/icons/unchecked-checkbox.png';
 import globalStyled from '@src/theme/theme.styled';
+import { colorsSelector } from '@src/theme/theme.selector';
 
 const styles = StyleSheet.create({
   desc: {
@@ -46,6 +47,7 @@ const styles = StyleSheet.create({
 const CreateMasterKey = () => {
   const navigation = useNavigation();
   const masterKeys = useSelector(masterKeysSelector);
+  const colors = useSelector(colorsSelector);
   const isInit = useNavigationParam('init');
 
   const [checked, setChecked] = useState(false);
@@ -99,7 +101,7 @@ const CreateMasterKey = () => {
           checked={checked}
           onPress={() => setChecked(!checked)}
           containerStyle={styles.checkbox}
-          textStyle={styles.checkboxTitle}
+          textStyle={[styles.checkboxTitle, { color: colors.text1 }]}
           checkedIcon={<Image source={checkedIcon} />}
           uncheckedIcon={<Image source={uncheckedIcon} />}
           checkedColor='red'
