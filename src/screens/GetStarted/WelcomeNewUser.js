@@ -21,7 +21,6 @@ const styles = StyleSheet.create({
   },
   button: {
     marginTop: verticalScale(110 * scale),
-    backgroundColor: COLORS.black2,
   },
   buttonText: {
     color: COLORS.white,
@@ -35,7 +34,7 @@ const styles = StyleSheet.create({
 
 const WelcomeNewUser = ({ onCreate, onImport }) => {
   return (
-    <View>
+    <View borderTop fullFlex paddingHorizontal>
       <Text style={styles.title}>Privacy is freedom.</Text>
       <RoundCornerButton
         style={styles.button}

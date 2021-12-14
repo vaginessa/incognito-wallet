@@ -70,7 +70,6 @@ const text = {
   },
   boldTextStyleSuperMedium: {
     ...FONTS.STYLE.bold,
-    color: COLORS.black,
     fontSize: fontSizes.superMedium,
   },
   boldTextStyleLarge: {
