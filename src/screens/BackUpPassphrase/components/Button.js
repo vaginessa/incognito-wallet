@@ -7,7 +7,6 @@ import { COLORS } from '@src/styles';
 const styles = StyleSheet.create({
   btn: {
     marginBottom: 30,
-    backgroundColor: COLORS.black2,
     marginTop: 50,
   },
 });

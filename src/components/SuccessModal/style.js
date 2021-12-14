@@ -1,4 +1,4 @@
-import { COLORS, FONT } from '@src/styles';
+import { FONT } from '@src/styles';
 import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
@@ -12,7 +12,6 @@ export default StyleSheet.create({
     paddingHorizontal: 16,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: COLORS.white
   },
   icon: {
     width: 62,
@@ -33,18 +32,15 @@ export default StyleSheet.create({
     marginTop: 8,
     lineHeight: FONT.SIZE.superMedium + 5,
     textAlign: 'center',
-    color: COLORS.blue5
   },
   dialogDesc: {
     ...FONT.STYLE.medium,
     fontSize: FONT.SIZE.regular,
     lineHeight: FONT.SIZE.regular + 8,
     paddingHorizontal: 14,
-    color: COLORS.black,
     textAlign: 'center',
   },
   dialogButton: {
-    color: COLORS.primary,
     ...FONT.STYLE.bold,
     marginTop: 30,
     marginBottom: 20,
@@ -54,7 +50,6 @@ export default StyleSheet.create({
     fontSize: FONT.SIZE.regular,
     lineHeight: FONT.SIZE.regular + 8,
     paddingHorizontal: 14,
-    color: COLORS.lightGrey34,
     textAlign: 'center',
   },
   button: {

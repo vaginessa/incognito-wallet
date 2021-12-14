@@ -1,5 +1,5 @@
 import React, { memo } from 'react';
-import { FlatList, Text, View } from 'react-native';
+import { FlatList } from 'react-native';
 import nodeEnhance from '@screens/Node/Node.enhance';
 import DialogLoader from '@components/DialogLoader';
 import PropTypes from 'prop-types';
@@ -9,7 +9,7 @@ import WelcomeFirstTime from '@screens/Node/components/WelcomeFirstTime';
 import WelcomeNodes from '@screens/Node/components/Welcome';
 import { isEmpty } from 'lodash';
 import Rewards from '@screens/Node/components/Rewards';
-import {ActivityIndicator, RoundCornerButton} from '@components/core';
+import {ActivityIndicator, RoundCornerButton, View} from '@components/core';
 import theme from '@src/styles/theme';
 import { SuccessModal } from '@src/components';
 import NodeItem from '@screens/Node/components/NodeItem/NodeItem';

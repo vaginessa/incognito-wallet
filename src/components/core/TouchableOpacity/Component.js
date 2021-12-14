@@ -10,7 +10,7 @@ const StyledTouchableOpacity = styled.TouchableOpacity`
 `;
 
 const TouchableOpacity = (props: TouchableOpacityProps) => {
-  const { onPress, activeOpacity = 0, ...rest } = props;
+  const { onPress, activeOpacity = 0.6, ...rest } = props;
   const _onPress = async () => {
     await delay(0);
     requestAnimationFrame(() => {
