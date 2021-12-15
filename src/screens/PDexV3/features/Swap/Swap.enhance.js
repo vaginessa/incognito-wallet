@@ -19,7 +19,7 @@ import {
 import {
   swapInfoSelector,
   swapFormErrorSelector,
-  sellInputTokenSeletor,
+  sellInputTokenSelector,
   feetokenDataSelector,
 } from './Swap.selector';
 
@@ -27,7 +27,7 @@ const enhance = (WrappedComp) => (props) => {
   const dispatch = useDispatch();
   const swapInfo = useSelector(swapInfoSelector);
   const formErrors = useSelector(swapFormErrorSelector);
-  const sellInputToken = useSelector(sellInputTokenSeletor);
+  const sellInputToken = useSelector(sellInputTokenSelector);
   const feeTokenData = useSelector(feetokenDataSelector);
   const [visibleSignificant, setVisibleSignificant] = React.useState(false);
   const [ordering, setOrdering] = React.useState(false);

@@ -18,7 +18,7 @@ import { styled } from './MainTabBar.styled';
 const TabNavigator = createMaterialBottomTabNavigator(
   {
     Market: {
-      screen: Market,
+      screen: TabTrade,
       navigationOptions: {
         tabBarIcon: ({ focused, tintColor }) => (
           <View style={styled.wrapBar}>

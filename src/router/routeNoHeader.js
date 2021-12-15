@@ -140,6 +140,7 @@ import PairList from '@screens/PDexV3/features/PairList';
 import MainTabBar from '@screens/MainTabBar';
 import More from '@screens/MainTabBar/features/More';
 import Market from '@screens/MainTabBar/features/Market';
+import { SelectOptionModal } from '@components/SelectOption';
 
 const masterKeyRoutes = [
   {
@@ -697,6 +698,10 @@ const routes = [
   {
     screen: WebView,
     name: routeNames.WebView,
+  },
+  {
+    screen: SelectOptionModal,
+    name: routeNames.SelectOptionModal,
   },
   ...masterKeyRoutes,
   ...devRoutes,

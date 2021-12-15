@@ -92,3 +92,4 @@ export { default as MarketIcon } from './icon.martket';
 export { default as MoreIcon } from './icon.more';
 export { default as WalletIcon } from './icon.wallet';
 export { default as EyeIcon } from './icon.eye';
+export { default as PancakeIcon } from './icon.pancake';
