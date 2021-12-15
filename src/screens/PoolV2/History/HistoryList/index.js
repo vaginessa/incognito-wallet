@@ -52,9 +52,9 @@ const History = ({
     <ActivityIndicator /> : null;
 
   return (
-    <View style={styles.wrapper}>
+    <>
       <Header title="Provider history" onGoBack={() => navigation.navigate(ROUTE_NAMES.PoolV2)} />
-      <View style={[styles.wrapper, styles.historyTitle, globalStyled.defaultPadding3]}>
+      <View style={[styles.wrapper, styles.historyTitle, globalStyled.defaultPadding3]} borderTop>
         {histories.length ? (
           <VirtualizedList
             data={histories}
@@ -72,7 +72,7 @@ const History = ({
           />
         ) : <LoadingContainer /> }
       </View>
-    </View>
+    </>
   );
 };
 

@@ -10,6 +10,10 @@ export default StyleSheet.create({
     marginTop: 30,
     flex: 1,
   },
+  coinContainerNoMargin: {
+    flex: 1,
+    paddingTop: 20,
+  },
   coin: {
     marginBottom: 20,
   },
@@ -45,8 +49,7 @@ export default StyleSheet.create({
   justifyRight: {
     justifyContent: 'flex-end',
   },
-  button: {
-  },
+  button: {},
   error: {
     color: COLORS.red,
     fontSize: 16,
@@ -79,7 +82,7 @@ export default StyleSheet.create({
   wrapTitle: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 8
+    marginBottom: 8,
   },
   wrapperLock: {
     paddingHorizontal: 8,
@@ -88,12 +91,12 @@ export default StyleSheet.create({
     backgroundColor: COLORS.lightGrey19,
     marginLeft: 8,
     height: 24,
-    borderRadius: 4
+    borderRadius: 4,
   },
   lockText: {
     ...FONT.STYLE.medium,
     fontSize: FONT.SIZE.small,
-    marginLeft: 5
+    marginLeft: 5,
   },
   btnMirage: {
     alignItems: 'center',
@@ -102,7 +105,7 @@ export default StyleSheet.create({
     marginLeft: 8,
     height: 24,
     paddingHorizontal: 8,
-    borderRadius: 4
+    borderRadius: 4,
   },
   mirageText: {
     ...FONT.STYLE.medium,
@@ -129,6 +132,6 @@ export default StyleSheet.create({
     width: 14,
     height: 16,
     marginBottom: 8,
-    marginRight: 9
-  }
+    marginRight: 9,
+  },
 });

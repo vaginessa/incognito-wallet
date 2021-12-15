@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { View, Text, ScrollView, TouchableOpacity } from '@components/core';
+import { Text, ScrollViewBorder, TouchableOpacity } from '@components/core';
 import mainStyle from '@screens/PoolV2/style';
 import { compose } from 'recompose';
 import { withLayout_2 } from '@components/Layout/index';
@@ -35,9 +35,9 @@ const SelectCoin = ({
   const anytime = ' anytime';
 
   return (
-    <View style={mainStyle.flex}>
+    <>
       <Header title="Withdraw" />
-      <ScrollView style={mainStyle.coinContainer}>
+      <ScrollViewBorder style={mainStyle.coinContainerNoMargin}>
         <TouchableOpacity
           style={[mainStyle.coin, !totalRewardsNonLock && mainStyle.disabled]}
           onPress={handleWithdrawReward}
@@ -63,8 +63,8 @@ const SelectCoin = ({
             <Text style={mainStyle.coinExtra}>Provision</Text>
           </TouchableOpacity>
         ))}
-      </ScrollView>
-    </View>
+      </ScrollViewBorder>
+    </>
   );
 };
 

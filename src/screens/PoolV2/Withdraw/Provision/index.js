@@ -35,9 +35,9 @@ const Provide = ({
   };
 
   return (
-    <View style={mainStyle.flex}>
+    <>
       <Header title={`Withdraw ${coin.symbol} provision`} />
-      <View style={[mainStyle.coinContainer, globalStyled.defaultPadding3]}>
+      <View style={[mainStyle.coinContainerNoMargin, globalStyled.defaultPadding3]} borderTop>
         <Row center spaceBetween style={mainStyle.inputContainer}>
           <BaseTextInput
             style={mainStyle.input}
@@ -69,7 +69,7 @@ const Provide = ({
         </Text>
       </View>
       <Loading open={withdrawing} />
-    </View>
+    </>
   );
 };
 
