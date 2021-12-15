@@ -21,9 +21,9 @@ import BigNumber from 'bignumber.js';
 import floor from 'lodash/floor';
 import difference from 'lodash/difference';
 import { isUsePRVToPayFeeSelector } from '@screens/Setting';
-import { delay } from '@src/utils/delay';
 import flatten from 'lodash/flatten';
 import orderBy from 'lodash/orderBy';
+import { BIG_COINS } from '@src/screens/DexV2/constants';
 import {
   ACTION_FETCHING,
   ACTION_FETCHED,
@@ -754,12 +754,12 @@ export const actionInitSwapForm =
         difference([pair?.selltoken, pair?.buytoken], pairs).length === 0;
         if (!pair?.selltoken || !pair?.buytoken || !isDefaultPairExisted) {
           pair = {
-          // selltoken: PRV_ID,
-          // buytoken: pairs.find((i) => i === BIG_COINS.USDT),
-            selltoken:
-            'e5032c083f0da67ca141331b6005e4a3740c50218f151a5e829e9d03227e33e2',
-            buytoken:
-            'a61df4d870c17a7dc62d7e4c16c6f4f847994403842aaaf21c994d1a0024b032',
+            selltoken: PRV_ID,
+            buytoken: pairs.find((i) => i === BIG_COINS.USDT),
+            // selltoken:
+            // 'e5032c083f0da67ca141331b6005e4a3740c50218f151a5e829e9d03227e33e2',
+            // buytoken:
+            // 'a61df4d870c17a7dc62d7e4c16c6f4f847994403842aaaf21c994d1a0024b032',
           };
         }
         const { selltoken, buytoken } = pair;
