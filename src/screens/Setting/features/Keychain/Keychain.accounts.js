@@ -14,6 +14,7 @@ import { ArrowRightGreyIcon, CheckBoxIcon } from '@components/Icons';
 import { isNodeAccount } from '@screens/Setting/features/Keychain/Keychain.ultil';
 import { settingSelector } from '@screens/Setting';
 import { DeleteFillIcon } from '@components/Icons/icon.delete';
+import { colorsSelector } from '@src/theme/theme.selector';
 import withKeychain from './Keychain.enhance';
 import { itemStyled } from './keychain.styled';
 
@@ -24,12 +25,14 @@ const Item = React.memo(
       () => account?.paymentAddress === defaultAccount?.paymentAddress,
       [account?.paymentAddress, defaultAccount?.paymentAddress],
     );
+    const colors = useSelector(colorsSelector);
     return (
       <Swipeout
         style={[
           itemStyled.wrap,
           itemStyled.shadow,
           isLast && { marginBottom: 50 },
+          { borderColor: colors.border1 },
         ]}
         right={[
           ...(handleDelete

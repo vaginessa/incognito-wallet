@@ -11,7 +11,7 @@ const styled = StyleSheet.create({
   container: {
     flexDirection: 'row',
     padding: 3,
-    borderRadius: 30,
+    borderRadius: 4,
     alignItems: 'center',
     justifyContent: 'space-between',
     // backgroundColor: COLORS.colorGrey,
@@ -21,7 +21,7 @@ const styled = StyleSheet.create({
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.regular,
     lineHeight: FONT.SIZE.regular + 6,
-    // color: COLORS.colorGreyBold,
+    color: COLORS.colorGreyBold,
     marginHorizontal: 15,
   },
   btnStyle: {

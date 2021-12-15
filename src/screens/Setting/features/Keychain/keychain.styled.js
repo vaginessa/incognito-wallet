@@ -38,7 +38,6 @@ export const itemStyled = StyleSheet.create({
     shadowRadius: 3,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: COLORS.colorGrey4,
     overflow: 'visible'
   },
   arrow: {
@@ -48,7 +47,6 @@ export const itemStyled = StyleSheet.create({
   },
   wrapSetting: {
     paddingVertical: 16,
-    borderBottomColor: COLORS.colorGrey4,
     borderBottomWidth: 1
   },
   wrapIcon: {
@@ -62,14 +60,9 @@ export const itemStyled = StyleSheet.create({
 
 export const styled = StyleSheet.create({
   wrapper: {
-    paddingHorizontal: globalStyled.defaultPadding.paddingHorizontal,
-    paddingTop: globalStyled.defaultPadding.paddingTop,
-    ...globalStyled.defaultBorderSection,
-  },
-  borderTop: {
-    borderTopRightRadius: 26,
-    borderTopLeftRadius: 26,
+    // paddingHorizontal: globalStyled.defaultPadding.paddingHorizontal,
+    // paddingTop: globalStyled.defaultPadding.paddingTop,
     // ...globalStyled.defaultBorderSection,
-  }
+  },
 });
 

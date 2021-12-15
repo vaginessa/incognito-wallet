@@ -3,6 +3,8 @@ import Svg, { Path } from 'react-native-svg';
 import { StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
 import { View } from '@components/core';
+import { useSelector } from 'react-redux';
+import { colorsSelector } from '@src/theme/theme.selector';
 
 const VectorCheck = () => (
   <Svg
@@ -31,8 +33,9 @@ const styled = StyleSheet.create({
 });
 
 const CheckBoxIcon = React.memo(({ active, style }) => {
+  const colors = useSelector(colorsSelector);
   return (
-    <View style={[styled.box, style]}>
+    <View style={[styled.box, style, { borderColor: colors.border2}]}>
       {active && <VectorCheck />}
     </View>
   );

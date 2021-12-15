@@ -57,7 +57,7 @@ const ExportAccount = ({ account, token, title }) => {
   return (
     <View style={styleSheet.container}>
       <Header title={title} />
-      <View style={styleSheet.wrapper}>
+      <View style={styleSheet.wrapper} borderTop>
         <ScrollView>
           {renderItem('Your incognito address', account?.PaymentAddress)}
           {renderItem('Private key', account?.PrivateKey)}

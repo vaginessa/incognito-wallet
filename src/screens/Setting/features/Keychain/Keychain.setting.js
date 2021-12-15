@@ -16,12 +16,14 @@ import {
 import {Row} from '@src/components';
 import {Text} from '@components/core';
 import {itemStyled} from '@screens/Setting/features/Keychain/keychain.styled';
+import { colorsSelector } from '@src/theme/theme.selector';
 
 const Item = React.memo(({ item, isFirst, isLast }) => {
   if (!item) return null;
   const { title, icon: SectionIcon, handlePress } = item;
+  const colors = useSelector(colorsSelector);
   return (
-    <TouchableOpacity onPress={handlePress} style={[itemStyled.wrapSetting, isFirst && { paddingTop: 0 }, isLast && { borderBottomWidth: 0 }]}>
+    <TouchableOpacity onPress={handlePress} style={[itemStyled.wrapSetting, isFirst && { paddingTop: 0 }, isLast && { borderBottomWidth: 0 }, { borderBottomColor: colors.border1 }]}>
       <Row centerVertical spaceBetween>
         <Row centerVertical>
           <View style={itemStyled.wrapIcon}>

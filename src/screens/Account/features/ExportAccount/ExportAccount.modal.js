@@ -23,8 +23,11 @@ const ExportAccountModal = (props) => {
   return (
     <View style={styled.container}>
       <Header title={label} />
-      <QrCodeGenerate style={styled.qrCode} value={value} size={175} />
-      <CopiableTextDefault data={value} />
+      <View borderTop paddingHorizontal>
+        <QrCodeGenerate style={styled.qrCode} value={value} size={175} />
+        <CopiableTextDefault data={value} />
+      </View>
+      
     </View>
   );
 };

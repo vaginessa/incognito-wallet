@@ -5,7 +5,7 @@ import { useNavigation } from 'react-navigation-hooks';
 import { settingSelector } from '@screens/Setting/Setting.selector';
 import AccountSection from '@screens/Setting/features/AccountSection';
 import routeNames from '@src/router/routeNames';
-import { Text } from '@src/components/core';
+import { Text, View } from '@src/components/core';
 import { View2 } from  '@components/core/View';
 import { SectionItem } from '@screens/Setting/features/Section';
 import {
@@ -22,6 +22,7 @@ import BtnInfo from './BtnInfo';
 const styled = StyleSheet.create({
   extra: {
     paddingHorizontal: globalStyled.defaultPadding.paddingHorizontal,
+    backgroundColor: 'red',
   },
   warning: {
     lineHeight: 24,
@@ -89,11 +90,11 @@ const Keychain = () => {
         devices={devices}
         label={isMasterless ? 'Masterless keychains' : 'Your keychains'}
       />
-      <View2 style={styled.extra}>
+      <View style={styled.extra}>
         {sectionItemFactories.map((item) => (
           <SectionItem data={item} key={item.title} />
         ))}
-      </View2>
+      </View>
       {isMasterless && (
         <Text style={[styled.extra, styled.warning]}>
           􀇿 You will not be able to back up these keychains with a master key

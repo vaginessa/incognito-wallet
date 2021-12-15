@@ -27,7 +27,8 @@ export function appTheme(darkMode: boolean) {
     btnBG2: darkMode ? '#404040' : white,
 
     // border
-    border1: darkMode ? '#9C9C9C' : '#F7F7F7',
+    border1: darkMode ? '#484848' : '#F7F7F7',
+    border2: darkMode ? white : black,
 
     contrast: darkMode ? white : black,
 

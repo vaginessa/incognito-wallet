@@ -13,8 +13,6 @@ const style = StyleSheet.create({
   },
   wrapper: {
     flex: 1,
-    marginTop: 23,
-    ...globalStyled.defaultBorderSection,
   },
   itemContainer: {
     marginBottom: 30,
