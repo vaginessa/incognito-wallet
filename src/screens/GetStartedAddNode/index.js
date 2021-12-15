@@ -46,7 +46,7 @@ class GetStartedAddNode extends BaseScreen {
     this.state = {
       qrCode: null,
       account: null,
-      step: 2,
+      step: 0,
       hotspotSSID: '',
       success: false,
       statusConnection: CONNECTION_STATUS.LOW,
