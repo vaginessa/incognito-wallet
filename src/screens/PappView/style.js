@@ -32,7 +32,7 @@ const style = StyleSheet.create({
     justifyContent: 'center',
   },
   navigation: {
-    height: 70,
+    height: 55,
     width: ScreenWidth,
     flexDirection: 'row',
   },

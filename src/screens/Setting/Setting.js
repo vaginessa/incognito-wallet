@@ -1,4 +1,4 @@
-import { Text, View, ScrollView } from '@src/components/core';
+import { Text, View, ScrollView, ScrollViewBorder } from '@src/components/core';
 import React, { useState } from 'react';
 import AppUpdater from '@components/AppUpdater/index';
 import { useNavigation, useNavigationParam } from 'react-navigation-hooks';
@@ -14,6 +14,8 @@ import { Header } from '@src/components';
 import globalStyled from '@src/theme/theme.styled';
 import codePush from 'react-native-code-push';
 import HideBalance from '@screens/Setting/features/HideBalance';
+import { compose } from 'recompose';
+import { withLayout_2 } from '@components/Layout';
 import PINSection from './features/PINSection';
 import SeparatorSection from './features/SeparatorSection';
 import DevSection from './features/DevSection';
@@ -71,11 +73,12 @@ const Setting = () => {
   }, []);
 
   return (
-    <SafeAreaView>
+    <>
+      <Header title="Settings" />
       {!!showHeader && (
         <Header title="Settings" />
       )}
-      <ScrollView
+      <ScrollViewBorder
         showsVerticalScrollIndicator={false}
       >
         <View style={settingStyle.container}>
@@ -103,10 +106,13 @@ const Setting = () => {
             }`}
           </Text>
         </View>
-        
-      </ScrollView>
-    </SafeAreaView>
+
+      </ScrollViewBorder>
+    </>
   );
 };
 
-export default withSetting(Setting);
+export default compose(
+  withLayout_2,
+  withSetting
+)(Setting);
