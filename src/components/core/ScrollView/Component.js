@@ -7,8 +7,6 @@ import styleSheet from './style';
 
 const StyledScrollView = styled.ScrollView`
   background-color: ${({ theme }) => theme.background1};
-  border-top-left-radius: 26px;
-  border-top-right-radius: 26px;
 `;
 
 const ScrollView = React.forwardRef(
