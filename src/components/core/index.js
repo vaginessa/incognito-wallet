@@ -43,3 +43,4 @@ export { default as Divider } from './Divider';
 export { default as AddBreakLine } from './AddBreakLine';
 export { default as Text3 } from './Text/Text3';
 export { default as ScrollViewBorder } from './ScrollView/ScrollViewBorder';
+export { default as View5 } from './View/View5';
