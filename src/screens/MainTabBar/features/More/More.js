@@ -1,6 +1,6 @@
 import React, {memo} from 'react';
 import withTab from '@screens/MainTabBar/MainTabBar.enhanceTab';
-import { ScrollView, TouchableOpacity, View } from 'react-native';
+import { TouchableOpacity, View } from 'react-native';
 import { moreStyled, styled } from '@screens/MainTabBar/MainTabBar.styled';
 import {useSelector} from 'react-redux';
 import {defaultAccountSelector} from '@src/redux/selectors/account';
@@ -17,23 +17,17 @@ import {
   MintIcon,
   PowerIcon,
   ProvideIcon,
-  StakeIcon
 } from '@components/Icons';
-import {Row} from '@src/components';
-import {Text} from '@src/components/core';
+import { Header, Row } from '@src/components';
+import { ScrollViewBorder, Text, View5 } from '@src/components/core';
 import PropTypes from 'prop-types';
 import {VectorSettingColor} from '@components/Icons/icon.setting';
+import { compose } from 'recompose';
+import { withLayout_2 } from '@components/Layout';
 
 const Categories = [
   {
-    label: 'Power privacy',
     data: [
-      // {
-      //   route: routeNames.Staking,
-      //   label: routeNames.Staking,
-      //   icon: StakeIcon,
-      //   key: appConstant.DISABLED.STAKING_PDEX3
-      // },
       {
         route: routeNames.PoolV2,
         label: 'Provide',
@@ -61,11 +55,6 @@ const Categories = [
           showHeader: true
         },
       },
-    ]
-  },
-  {
-    label: 'More',
-    data: [
       {
         route: routeNames.Keychain,
         label: routeNames.Keychain,
@@ -97,7 +86,7 @@ const Categories = [
         key: appConstant.DISABLED.FAUCET
       },
     ]
-  }
+  },
 ];
 
 const CategoryItem = ({ item }) => {
@@ -123,9 +112,9 @@ const CategoryItem = ({ item }) => {
       style={[moreStyled.category, isDisabled && { opacity: 0.7 }]}
       onPress={onFeaturePress}
     >
-      <View style={{ height: 32, justifyContent: 'center' }}>
+      <View5 style={moreStyled.wrapIcon}>
         <Icon />
-      </View>
+      </View5>
       <Text style={moreStyled.regularBlack}>{item.label}</Text>
     </TouchableOpacity>
   );
@@ -136,18 +125,18 @@ const TabAssets = () => {
   const renderCategory = (item) => <CategoryItem item={item} key={item.label} />;
   const renderSections = (item) => (
     <View style={moreStyled.wrapCategory} key={item.label}>
-      <Text style={moreStyled.sectionLabel}>{item.label}</Text>
       <Row style={{ flexWrap: 'wrap' }}>
         {item.data.map(renderCategory)}
       </Row>
     </View>
   );
   return (
-    <View style={[styled.container, { paddingTop: 25 }]}>
-      <ScrollView>
+    <>
+      <Header title="Privacy Services" hideBackButton titleStyled={moreStyled.title} />
+      <ScrollViewBorder>
         {Categories.map(renderSections)}
-      </ScrollView>
-    </View>
+      </ScrollViewBorder>
+    </>
   );
 };
 
@@ -155,4 +144,7 @@ CategoryItem.propTypes = {
   item: PropTypes.object.isRequired
 };
 
-export default withTab(memo(TabAssets));
+export default compose(
+  withTab,
+  withLayout_2
+)(memo(TabAssets));
