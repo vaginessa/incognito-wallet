@@ -100,29 +100,29 @@ class LinkDevice extends BaseScreen {
     const { container } = styles;
     const { loading, nodeInfo, qrCode } = this.state;
     return (
-      <View style={container}>
-        <Loader loading={loading} />
-        <Header
-          title="Add existing Node"
-        />
-        <InputQRField
-          input={{
-            onChange: this.handleChangeQRCode
-          }}
-          label='QR Code'
-          placeholder='Scan Node QR code'
-          style={[styles.input]}
-          inputStyle={styles.inputStyle}
-          labelStyle={theme.text.BUTTON_TITLE}
-          value={qrCode}
-        />
-        <RoundCornerButton
-          onPress={this.addNode}
-          disabled={!nodeInfo}
-          title='Add'
-          style={[theme.BUTTON.NODE_BUTTON]}
-        />
-      </View>
+      <>
+        <Header title="Add existing Node" style={{paddingTop: 4, marginTop: -4}}/>
+        <View style={container}>
+          <Loader loading={loading} />
+          <InputQRField
+            input={{
+              onChange: this.handleChangeQRCode
+            }}
+            label='QR Code'
+            placeholder='Scan Node QR code'
+            style={[styles.input]}
+            inputStyle={styles.inputStyle}
+            labelStyle={theme.text.BUTTON_TITLE}
+            value={qrCode}
+          />
+          <RoundCornerButton
+            onPress={this.addNode}
+            disabled={!nodeInfo}
+            title='Add'
+            style={[theme.BUTTON.NODE_BUTTON]}
+          />
+        </View>
+      </>
     );
   }
 }
