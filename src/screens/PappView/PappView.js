@@ -14,6 +14,7 @@ import { Icon } from 'react-native-elements';
 import { isEmpty } from 'lodash';
 import { COMMANDS } from 'papp-sdk/src/base/constants';
 import DeviceInfo from 'react-native-device-info';
+import { View2 } from '@components/core/View';
 import Validator from './sdk/validator';
 import RequestSendTx from './RequestSendTx';
 import { APPSDK, ERRORSDK, CONSTANTSDK } from './sdk';
@@ -378,17 +379,16 @@ class PappView extends Component {
 
     return (
       <>
-        <View style={styles.container}>
+        <View2 fullFlex borderTop style={{ overflow: 'hidden' }}>
           <WebView
+            style={{ backgroundColor:'transparent'}}
+            source={{ uri: url }}
             ref={(webview) => {
               if (webview?.webViewRef?.current) {
                 sdk = new APPSDK(webview);
                 this.webviewInstance = webview;
               }
             }}
-            //todo:
-            containerStyle={styles.webview}
-            source={{ uri: url }}
             allowsBackForwardNavigationGestures
             onLoad={(e) => {
               // Update the state so url changes could be detected by React and we could load the mainUrl.
@@ -401,10 +401,10 @@ class PappView extends Component {
             onLoadEnd={this.onPappLoaded}
             onMessage={this.onWebViewData}
           />
-          {!hasWebViewError ? this.renderBottomBar() : null}
-          <Modal visible={!!modalData}>{modalData}</Modal>
-          {this.renderQrCodeCamera()}
-        </View>
+        </View2>
+        {!hasWebViewError ? this.renderBottomBar() : null}
+        <Modal visible={!!modalData}>{modalData}</Modal>
+        {this.renderQrCodeCamera()}
       </>
     );
   }

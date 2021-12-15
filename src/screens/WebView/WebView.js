@@ -10,6 +10,7 @@ import PappError from '@screens/PappView/PappError';
 import PappView from '@screens/PappView/PappView';
 import { containerStyle as styled } from '@screens/PappView/style';
 import {useNavigationParam} from 'react-navigation-hooks';
+import { View2 } from '@components/core/View';
 
 const Empty = React.memo(() => (
   <View style={styled.emptyContainer}>
@@ -21,7 +22,7 @@ const Empty = React.memo(() => (
 ));
 
 const LoadingView = React.memo(() => (
-  <View style={styled.wrapperIndicator}>
+  <View borderTop style={styled.wrapperIndicator}>
     <ActivityIndicator size='large' />
   </View>
 ));
@@ -54,11 +55,11 @@ const WebViewContainer = React.memo(() => {
   };
 
   return (
-    <View style={styled.container}>
+    <View2 style={styled.container}>
       <Header title={url} />
       {renderContent()}
       {isLoading && (<LoadingView />)}
-    </View>
+    </View2>
   );
 });
 
