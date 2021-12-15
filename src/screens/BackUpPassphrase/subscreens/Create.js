@@ -3,7 +3,7 @@ import { StyleSheet } from 'react-native';
 import MainLayout from '@components/MainLayout/index';
 import Input from '@screens/BackUpPassphrase/components/Input';
 import Button from '@screens/BackUpPassphrase/components/Button';
-import { Text, View, Image } from '@components/core';
+import { Text, View, Image, Text3 } from '@components/core';
 import { COLORS, THEME } from '@src/styles';
 import { useNavigation, useNavigationParam } from 'react-navigation-hooks';
 import routeNames from '@routers/routeNames';
@@ -13,6 +13,8 @@ import { validateName } from '@screens/BackUpPassphrase/utils';
 import { CheckBox } from 'react-native-elements';
 import checkedIcon from '@assets/images/icons/checked-checkbox.png';
 import uncheckedIcon from '@assets/images/icons/unchecked-checkbox.png';
+import globalStyled from '@src/theme/theme.styled';
+import { colorsSelector } from '@src/theme/theme.selector';
 
 const styles = StyleSheet.create({
   desc: {
@@ -45,6 +47,7 @@ const styles = StyleSheet.create({
 const CreateMasterKey = () => {
   const navigation = useNavigation();
   const masterKeys = useSelector(masterKeysSelector);
+  const colors = useSelector(colorsSelector);
   const isInit = useNavigationParam('init');
 
   const [checked, setChecked] = useState(false);
@@ -78,6 +81,7 @@ const CreateMasterKey = () => {
       header="Create master key"
       scrollable
       onGoBack={handleBack}
+      contentStyle={globalStyled.defaultBorderSection}
     >
       <Input
         onChangeText={setName}
@@ -97,7 +101,7 @@ const CreateMasterKey = () => {
           checked={checked}
           onPress={() => setChecked(!checked)}
           containerStyle={styles.checkbox}
-          textStyle={styles.checkboxTitle}
+          textStyle={[styles.checkboxTitle, { color: colors.text1 }]}
           checkedIcon={<Image source={checkedIcon} />}
           uncheckedIcon={<Image source={uncheckedIcon} />}
           checkedColor='red'
