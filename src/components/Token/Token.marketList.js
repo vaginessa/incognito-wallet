@@ -1,5 +1,5 @@
 import React, {memo} from 'react';
-import {RefreshControl, StyleSheet} from 'react-native';
+import { RefreshControl, StyleSheet, View } from 'react-native';
 import PropTypes from 'prop-types';
 import {ListView} from '@components/Token/index';
 import { BtnChecked } from '@components/Button';
@@ -69,7 +69,6 @@ const MarketList = (props) => {
       refreshControl={
         <RefreshControl refreshing={loading} onRefresh={onRefresh} />
       }
-      contentContainerStyle={{ paddingTop: 20 }}
     >
       {!keySearch && (
         <ListView {...tokensFactories[2]} renderItem={renderItem} />

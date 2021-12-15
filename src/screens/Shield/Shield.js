@@ -11,26 +11,28 @@ import withShield from './Shield.enhance';
 const Shield = (props) => {
   const { handleShield, handleWhyShield, hideBackButton, ...rest } = props;
   return (
-    <View style={[styled.container, globalStyled.defaultPadding, globalStyled.defaultBorderSection]}>
+    <>
       <Header
         title="Search coins"
         canSearch
         hideBackButton={hideBackButton}
         rightHeader={<BtnQuestionDefault onPress={handleWhyShield} />}
       />
-      <ListAllToken
-        {...rest}
-        renderItem={({ item }) => (
-          <TokenFollow
-            item={item}
-            key={item.tokenId}
-            hideStar
-            externalSymbol
-            onPress={() => handleShield(item)}
-          />
-        )}
-      />
-    </View>
+      <View style={[styled.container, globalStyled.defaultPadding, globalStyled.defaultBorderSection]}>
+        <ListAllToken
+          {...rest}
+          renderItem={({ item }) => (
+            <TokenFollow
+              item={item}
+              key={item.tokenId}
+              hideStar
+              externalSymbol
+              onPress={() => handleShield(item)}
+            />
+          )}
+        />
+      </View>
+    </>
   );
 };
 
