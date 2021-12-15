@@ -46,7 +46,7 @@ class GetStartedAddNode extends BaseScreen {
     this.state = {
       qrCode: null,
       account: null,
-      step: 0,
+      step: 2,
       hotspotSSID: '',
       success: false,
       statusConnection: CONNECTION_STATUS.LOW,
@@ -308,42 +308,44 @@ class GetStartedAddNode extends BaseScreen {
   render() {
     const { success, isErrPermission, showBandWidthModal } = this.state;
     return (
-      <View style={styles.container}>
+      <>
         <Header
           rightHeader={<BtnQuestionDefault onPress={()=>NavigationService.navigate(routeNames.NodeHelp)} />}
           title=""
           style={styles.header}
         />
-        <BackUpAccountModal onClose={this.handleFinish} visible={success} />
-        <ScrollView contentContainerStyle={styles.contentWrapper} paddingBottom>
-          {this.renderStep()}
-        </ScrollView>
-        <SuccessModal
-          title="Help Node find you"
-          extraInfo="Please give the app permission to access your location."
-          visible={isErrPermission}
-          closeSuccessDialog={() => {
-            this.setState({ errPermission: '', isErrPermission: false });
-            if (Platform.OS === 'ios') {
+        <View style={styles.container} borderTop>
+          <BackUpAccountModal onClose={this.handleFinish} visible={success} />
+          <ScrollView contentContainerStyle={styles.contentWrapper} paddingBottom>
+            {this.renderStep()}
+          </ScrollView>
+          <SuccessModal
+            title="Help Node find you"
+            extraInfo="Please give the app permission to access your location."
+            visible={isErrPermission}
+            closeSuccessDialog={() => {
+              this.setState({ errPermission: '', isErrPermission: false });
+              if (Platform.OS === 'ios') {
+                this.openSettingApp();
+              } else {
+                this.openLocationService();
+              }
+            }}
+            buttonStyle={theme.BUTTON.NODE_BUTTON}
+            icon={locationPermissionPng}
+          />
+          <SuccessModal
+            title="Unable to connect"
+            extraInfo="Please ensure you are connected to Wi-Fi and try again."
+            visible={showBandWidthModal}
+            closeSuccessDialog={() => {
+              this.setState({ showBandWidthModal: false });
               this.openSettingApp();
-            } else {
-              this.openLocationService();
-            }
-          }}
-          buttonStyle={theme.BUTTON.NODE_BUTTON}
-          icon={locationPermissionPng}
-        />
-        <SuccessModal
-          title="Unable to connect"
-          extraInfo="Please ensure you are connected to Wi-Fi and try again."
-          visible={showBandWidthModal}
-          closeSuccessDialog={() => {
-            this.setState({ showBandWidthModal: false });
-            this.openSettingApp();
-          }}
-          buttonStyle={theme.BUTTON.NODE_BUTTON}
-        />
-      </View>
+            }}
+            buttonStyle={theme.BUTTON.NODE_BUTTON}
+          />
+        </View>
+      </>
     );
   }
 

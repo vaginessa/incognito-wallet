@@ -9,6 +9,7 @@ const ratioConnection = ScreenWidth / 500;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    overflow: 'hidden'
   },
   item: {
     marginTop: 12,

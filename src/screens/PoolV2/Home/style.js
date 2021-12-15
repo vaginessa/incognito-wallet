@@ -9,8 +9,9 @@ export default StyleSheet.create({
     flex: 1,
   },
   wrapper: {
-    marginTop: 20,
+    paddingTop: 20,
     flex: 1,
+    overflow: 'hidden'
   },
   rewards: {
     marginTop: UTILS.heightScale(23),
