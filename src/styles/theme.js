@@ -85,13 +85,11 @@ const text = {
   },
   mediumTextMotto: {
     ...FONTS.STYLE.medium,
-    color: COLORS.newGrey,
     fontSize: fontSizes.medium,
   },
   mediumText: {
     ...FONTS.STYLE.normal,
     fontFamily: FONTS.NAME.medium,
-    color: COLORS.black,
     fontSize: fontSizes.medium,
   },
   mediumTextBold: {

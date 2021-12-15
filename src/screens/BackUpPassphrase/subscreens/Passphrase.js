@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { StyleSheet } from 'react-native';
 import MainLayout from '@components/MainLayout/index';
 import Button from '@screens/BackUpPassphrase/components/Button';
-import { LoadingContainer, Text, TouchableOpacity, View } from '@components/core';
+import { LoadingContainer, Text, TouchableOpacity, View, Text3 } from '@components/core';
 import { COLORS, FONT, THEME } from '@src/styles';
 import { useNavigation, useNavigationParam } from 'react-navigation-hooks';
 import routeNames from '@routers/routeNames';
@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   word: {
-    borderRadius: 10,
+    borderRadius: 8,
     alignItems: 'center',
     borderWidth: 1,
     borderColor: COLORS.lightGrey20,
@@ -118,7 +118,7 @@ const Passphrase = () => {
             key={`${word}-${index}`}
             style={[styles.word]}
           >
-            <Text style={[styles.word, styles.index]}>{index + 1} </Text>{word}
+            <Text3 style={[styles.word, styles.index]}>{index + 1} </Text3>{word}
           </Text>
         ))}
       </View>
