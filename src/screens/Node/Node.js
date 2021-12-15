@@ -112,12 +112,10 @@ const Node = (props) => {
 
     if (!isFetching && isEmpty(listDevice)) {
       return (
-        <View style={{ marginHorizontal: 25 }}>
-          <WelcomeNodes
-            onAddVNode={handleAddVirtualNodePress}
-            onAddPNode={handleAddNodePress}
-          />
-        </View>
+        <WelcomeNodes
+          onAddVNode={handleAddVirtualNodePress}
+          onAddPNode={handleAddNodePress}
+        />
       );
     }
 
@@ -159,7 +157,7 @@ const Node = (props) => {
 
   return (
     <>
-      <View style={{ flex: 1 }}>
+      <View fullFlex borderTop>
         {renderContent()}
         {renderModalActionsForNodePrevSetup()}
         <DialogLoader loading={loading} />
