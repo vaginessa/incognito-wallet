@@ -56,7 +56,7 @@ const Home = ({
     }
 
     return (
-      <View style={styles.wrapper}>
+      <View style={styles.wrapper} borderTop>
         <TotalReward
           total={displayClipTotalRewards}
           nativeToken={nativeToken}
@@ -87,7 +87,7 @@ const Home = ({
   };
 
   return (
-    <View style={styles.container}>
+    <>
       <Header
         title="Provide"
         customHeaderTitle={<BtnInfo />}
@@ -97,7 +97,7 @@ const Home = ({
         }}
       />
       {renderContent()}
-    </View>
+    </>
   );
 };
 
