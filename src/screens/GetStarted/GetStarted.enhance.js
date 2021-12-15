@@ -81,7 +81,7 @@ const enhance = (WrappedComp) => (props) => {
     await setLoading(false);
     console.timeEnd('CONFIGS_APP');
     if (!hasError) {
-      navigation.navigate(routeNames.MainTabBar);
+      navigation.navigate(routeNames.Node);
     }
   };
 

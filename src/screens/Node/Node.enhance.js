@@ -15,6 +15,7 @@ import withAccount from '@screens/DexV2/components/account.enhance';
 import routeNames from '@routers/routeNames';
 import useFeatureConfig from '@src/shared/hooks/featureConfig';
 import appConstant from '@src/constants/app';
+import { withLayout_2 } from '@components/Layout';
 
 const nodeEnhance = WrappedComp => props => {
   const navigation  = useNavigation();
@@ -74,6 +75,7 @@ const nodeEnhance = WrappedComp => props => {
 };
 
 export default compose(
+  withLayout_2,
   withAccount,
   nodeDataEnhance,
   nodeWelcomeEnhance,
