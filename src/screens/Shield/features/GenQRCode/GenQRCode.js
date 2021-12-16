@@ -104,7 +104,7 @@ const Extra = (props) => {
     if (min) {
       minComp = (
         <>
-          <NormalText text="Minimum: ">
+          <NormalText text="Minimum: " style={{color: colors?.text1}}>
             <Text style={[styled.boldText]}>{`${min} ${symbol}`}</Text>
           </NormalText>
           <NormalText
@@ -219,7 +219,7 @@ const Extra = (props) => {
 
   const renderShieldPortalAddress = () => (
     <>
-      <NormalText style={styled.title}>
+      <NormalText style={[styled.title, {color: colors.text1}]}>
         {`Send only ${selectedPrivacy?.externalSymbol ||
           selectedPrivacy?.symbol} \nto this shielding address.`}
       </NormalText>
@@ -227,7 +227,7 @@ const Extra = (props) => {
         <QrCodeGenerate value={address} size={175} />
       </View>
       <View style={styled.hook}>{renderMinPortalShieldAmount()}</View>
-      <CopiableText data={address} />
+      <CopiableText data={address} textStyle={{color: colors.text1}} btnStyle={{backgroundColor: colors.background6}}/>
     </>
   );
 
