@@ -1,5 +1,8 @@
 import React from 'react';
-import { View, StyleSheet, Text } from 'react-native';
+import { StyleSheet } from 'react-native';
+import { View, Text} from '@components/core/index';
+import { View2 } from '@components/core/View';
+import globalStyled from '@src/theme/theme.styled';
 import { withLayout_2 } from '@src/components/Layout';
 import Header from '@src/components/Header';
 import { FONT, COLORS } from '@src/styles';
@@ -30,7 +33,7 @@ const styled = StyleSheet.create({
 const CoinInfoVerify = () => {
   const { isVerified } = useSelector(selectedPrivacySelector.selectedPrivacy);
   return (
-    <View style={styled.container}>
+    <View2 style={styled.container}>
       <Header
         title={
           isVerified
@@ -39,7 +42,7 @@ const CoinInfoVerify = () => {
         }
       />
       {isVerified ? <CoinInfoVerified /> : <CoinInfoUnVerified />}
-    </View>
+    </View2>
   );
 };
 
@@ -61,7 +64,7 @@ const NormalText = ({ text, sub }) => (
 
 const CoinInfoVerified = () => {
   return (
-    <View style={styled.extra}>
+    <View style={[styled.extra, {flex: 1, padding: 0, paddingTop: 24, marginTop: 0}, globalStyled.defaultPadding3]} borderTop>
       <NormalText text="Genuine coins that originate from an external blockchain (Ethereum, Bitcoin, Binance, etc.) are automatically verified." />
       <NormalText text="For user-created coins, the verified tick certifies that this coin is associated with a particular project and is not a duplicate." />
     </View>
@@ -70,7 +73,7 @@ const CoinInfoVerified = () => {
 
 const CoinInfoUnVerified = () => {
   return (
-    <View style={styled.extra}>
+    <View style={[styled.extra, {flex: 1, padding: 0, paddingTop: 24, marginTop: 0}, globalStyled.defaultPadding3]} borderTop>
       <NormalText text="If you are shielding a coin or adding it to your list, look out for the verified symbol to make sure you have the correct coin you are looking for." />
       <NormalText text="On certain blockchains, anyone can create duplicates with the same name and symbol. If an ERC20, BEP20 or BEP2 coin does not have a verified tick, it is likely to be a copy." />
       <NormalText

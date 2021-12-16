@@ -5,7 +5,6 @@ import { Header } from '@src/components';
 import { COLORS, FONT } from '@src/styles';
 import PropTypes from 'prop-types';
 import { v4 } from 'uuid';
-import globalStyled from '@src/theme/theme.styled';
 import withEnhance from './Helper.enhance';
 
 const HelperScreen = ({ title, contents, style }) => {

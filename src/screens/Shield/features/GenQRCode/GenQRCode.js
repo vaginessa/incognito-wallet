@@ -1,5 +1,7 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, Image } from 'react-native';
+import { Text, TouchableOpacity, Image } from 'react-native';
+import { View, ScrollViewBorder } from '@components/core';
+import { View2 } from '@src/components/core/View';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectedPrivacySelector } from '@src/redux/selectors';
 import { shieldDataSelector, shieldDataBscSelector } from '@screens/Shield/Shield.selector';
@@ -11,7 +13,6 @@ import { ButtonBasic, BtnInfo } from '@src/components/Button';
 import { ClockWiseIcon } from '@src/components/Icons';
 import Tooltip from '@src/components/Tooltip/Tooltip';
 import { COLORS } from '@src/styles';
-import { ScrollView } from '@src/components/core';
 import { isEmpty } from 'lodash';
 import { useNavigation } from 'react-navigation-hooks';
 import { CONSTANT_COMMONS } from '@src/constants';
@@ -25,6 +26,7 @@ import ic_radio from '@src/assets/images/icons/ic_radio.png';
 import ic_radio_check from '@src/assets/images/icons/ic_radio_check.png';
 import { PRV_ID } from '@src/screens/DexV2/constants';
 import { ExHandler } from '@src/services/exception';
+import { colorsSelector } from '@src/theme/theme.selector';
 import withGenQRCode from './GenQRCode.enhance';
 import { styled } from './GenQRCode.styled';
 
@@ -72,7 +74,7 @@ const Extra = (props) => {
   const { address, min, expiredAt, decentralized, isPortal } = useSelector(
     shieldDataSelector,
   );
-  const { selectedPrivacy, defaultFee } = props;
+  const { selectedPrivacy, defaultFee, colors } = props;
   const navigation = useNavigation();
 
   const renderMinShieldAmount = () => {
@@ -80,7 +82,7 @@ const Extra = (props) => {
     if (min) {
       minComp = (
         <>
-          <NormalText text="Minimum: ">
+          <NormalText text="Minimum: " style={{color: colors?.text1}}>
             <Text style={[styled.boldText]}>
               {`${min} ${selectedPrivacy?.externalSymbol ||
                 selectedPrivacy?.symbol}`}
@@ -157,7 +159,7 @@ const Extra = (props) => {
 
   const renderShieldIncAddress = () => (
     <>
-      <NormalText style={styled.title}>
+      <NormalText style={[styled.title, {color: colors.text1}]}>
         {'Send to this shielding\naddress '}
         <Text style={[styled.boldText]}>once only.</Text>
       </NormalText>
@@ -166,24 +168,24 @@ const Extra = (props) => {
       </View>
       <View style={styled.hook}>
         {!isEmpty(expiredAt) && (
-          <NormalText text="Expires at: ">
+          <NormalText text="Expires at: " style={{color: colors.text1}}>
             <Text style={[styled.boldText, styled.countdown]}>{expiredAt}</Text>
           </NormalText>
         )}
         {renderMinShieldAmount()}
       </View>
-      <CopiableText data={address} />
+      <CopiableText data={address} textStyle={{color: colors.text1}} btnStyle={{backgroundColor: colors.background6}} />
       <NormalText
         text={
           'If sending from an exchange, please take\nwithdrawal times into account.'
         }
-        style={{ marginTop: 30 }}
+        style={{ marginTop: 30, color: colors.text1 }}
       />
       <NormalText
         text={
           'It may be more reliable to use a normal\nwallet as an intermediary.'
         }
-        style={{ marginTop: 10 }}
+        style={{ marginTop: 10, color: colors.text1 }}
       />
     </>
   );
@@ -230,22 +232,24 @@ const Extra = (props) => {
   );
 
   return (
-    <ScrollView style={styled.scrollview}>
-      <View style={styled.extra}>
-        {isPortal
-          ? renderShieldPortalAddress()
-          : decentralized === 2 || decentralized === 3
-            ? renderShieldUserAddress()
-            : renderShieldIncAddress()}
-      </View>
-    </ScrollView>
+    <View2>
+      <ScrollViewBorder style={styled.scrollview}>
+        <View style={styled.extra}>
+          {isPortal
+            ? renderShieldPortalAddress()
+            : decentralized === 2 || decentralized === 3
+              ? renderShieldUserAddress()
+              : renderShieldIncAddress()}
+        </View>
+      </ScrollViewBorder>
+    </View2>
   );
 };
 
 const Content = () => {
   return (
-    <View style={styled.content}>
-      <Text style={styled.textContent}>
+    <View style={[styled.content, {backgroundColor: 'white'}]}>
+      <Text style={[styled.textContent, {color:'black'}]}>
         Make sure you have selected the right coin
       </Text>
     </View>
@@ -263,6 +267,7 @@ const GenQRCode = (props) => {
   const shieldDataBsc = useSelector(
     shieldDataBscSelector,
   );
+  const colors = useSelector(colorsSelector);
   const { address } = shieldData || {};
   const [toggle, setToggle] = React.useState(true);
   const platforms = ['ETH', 'BSC'];
@@ -333,6 +338,7 @@ const GenQRCode = (props) => {
             ...props,
             selectedPrivacy,
             defaultFee,
+            colors,
           }}
         />
       </>
@@ -413,8 +419,8 @@ const GenQRCode = (props) => {
           }}
           triangleStyle={{
             top: -50,
-            right: 5,
-            borderBottomColor: COLORS.black,
+            right: 25,
+            borderBottomColor: colors.background4,
             transform: [{ rotate: '0deg' }],
           }}
         />

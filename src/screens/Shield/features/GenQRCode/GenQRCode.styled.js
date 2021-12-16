@@ -21,7 +21,6 @@ export const styled = StyleSheet.create({
   },
   boldText: {
     fontFamily: FONT.NAME.bold,
-    color: COLORS.black,
   },
   smallText: {
     fontSize: 13,
@@ -49,7 +48,6 @@ export const styled = StyleSheet.create({
     height: 40,
   },
   title: {
-    color: COLORS.black,
     fontSize: FONT.SIZE.medium,
     lineHeight: FONT.SIZE.medium + 7,
   },
