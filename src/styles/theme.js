@@ -85,7 +85,6 @@ const text = {
   },
   mediumTextMotto: {
     ...FONTS.STYLE.medium,
-    color: COLORS.newGrey,
     fontSize: fontSizes.medium,
   },
   mediumText: {

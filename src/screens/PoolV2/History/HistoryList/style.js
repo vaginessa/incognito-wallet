@@ -29,6 +29,7 @@ export default StyleSheet.create({
   },
   historyTitle: {
     paddingTop: 30,
+    overflow: 'hidden',
   },
   right: {
     textAlign: 'right',

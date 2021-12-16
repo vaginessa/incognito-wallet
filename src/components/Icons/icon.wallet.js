@@ -1,6 +1,6 @@
 import React from 'react';
-import { Image, StyleSheet } from 'react-native';
-import { View } from '@src/components/core';
+import { StyleSheet, View } from 'react-native';
+import { Image } from '@src/components/core';
 import srcIcon from '@src/assets/images/new-icons/wallet.png';
 
 const styled = StyleSheet.create({

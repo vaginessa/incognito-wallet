@@ -1,10 +1,11 @@
 import PropTypes from 'prop-types';
-import { Text, TouchableOpacity, Image, View, RoundCornerButton } from '@src/components/core';
+import { Text, TouchableOpacity, View, RoundCornerButton } from '@src/components/core';
 import routeNames from '@src/router/routeNames';
 import nodeStep1 from '@src/assets/images/node/plug_node.png';
 import plug from '@src/assets/images/node/plug.png';
 import React from 'react';
 import theme from '@src/styles/theme';
+import { Image } from 'react-native';
 import styles from '../../styles';
 
 const FirstScreen = ({ onNext, goToScreen }) => (

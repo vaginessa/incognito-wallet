@@ -6,7 +6,7 @@ export const styled = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
-    height: 50,
+    height: 64,
     paddingHorizontal: globalStyled.defaultPadding.paddingHorizontal,
   },
 });

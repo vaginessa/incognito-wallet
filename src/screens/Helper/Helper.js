@@ -1,6 +1,6 @@
 import React, {memo} from 'react';
-import { StyleSheet, ScrollView } from 'react-native';
-import { View, Text } from '@components/core';
+import { StyleSheet } from 'react-native';
+import { View, Text, ScrollViewBorder } from '@components/core';
 import { Header } from '@src/components';
 import { COLORS, FONT } from '@src/styles';
 import PropTypes from 'prop-types';
@@ -17,7 +17,7 @@ const HelperScreen = ({ title, contents, style }) => {
       const subTitle = section?.subTitle || '';
       const key = v4();
       views.push(
-        <View key={key} style={globalStyled.defaultPadding3}>
+        <View key={key}>
           { !!subTitle && (
             <Text style={styles.subTitle}>
               {subTitle}
@@ -33,14 +33,14 @@ const HelperScreen = ({ title, contents, style }) => {
   };
 
   return (
-    <View style={styles.container}>
+    <>
       <Header title={title} />
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollViewBorder showsVerticalScrollIndicator={false}>
         <View style={[styles.wrapper, style]}>
           {renderContent()}
         </View>
-      </ScrollView>
-    </View>
+      </ScrollViewBorder>
+    </>
   );
 };
 

@@ -7,6 +7,8 @@ import styleSheet from './style';
 
 const StyledScrollView = styled.ScrollView`
   background-color: ${({ theme }) => theme.background1};
+  border-top-left-radius: 26px;
+  border-top-right-radius: 26px;
 `;
 
 const ScrollView = React.forwardRef(
@@ -21,7 +23,7 @@ const ScrollView = React.forwardRef(
     ref,
   ) => (
     <StyledScrollView
-      style={[styleSheet.root, globalStyled.defaultPaddingHorizontal, style]}
+      style={[styleSheet.root, globalStyled.defaultPadding, style]}
       contentContainerStyle={[
         paddingBottom && styleSheet.content,
         contentContainerStyle,

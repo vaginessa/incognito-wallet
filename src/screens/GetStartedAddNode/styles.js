@@ -9,6 +9,7 @@ const ratioConnection = ScreenWidth / 500;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    overflow: 'hidden'
   },
   item: {
     marginTop: 12,
@@ -123,7 +124,6 @@ const styles = StyleSheet.create({
   },
   text: {
     ...TextStyle.normalText,
-    color: COLORS.black,
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.superMedium,
     marginTop: 15,
@@ -159,12 +159,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
     width: ScreenWidth * 0.8,
     fontFamily: FONT.NAME.medium,
-    color: COLORS.colorGreyBold
   },
   bold: {
     ...FontStyle.bold,
     fontSize: 16,
-    color: COLORS.colorPrimary,
   },
   icon: {
     marginHorizontal: 5,

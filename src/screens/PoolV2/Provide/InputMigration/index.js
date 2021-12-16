@@ -57,9 +57,9 @@ const InputMigration = ({
 
 
   return (
-    <View style={mainStyle.flex}>
+    <>
       <Header title='Migrate' />
-      <View style={[mainStyle.coinContainer, globalStyled.defaultPadding3]}>
+      <View style={[mainStyle.coinContainerNoMargin, globalStyled.defaultPadding3]} borderTop>
         <Row center spaceBetween style={mainStyle.inputContainer}>
           <BaseTextInput
             style={mainStyle.input}
@@ -101,7 +101,7 @@ const InputMigration = ({
           style={mainStyle.coinExtraSmall}
         />
       </View>
-    </View>
+    </>
   );
 };
 

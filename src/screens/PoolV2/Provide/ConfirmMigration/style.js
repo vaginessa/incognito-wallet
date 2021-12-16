@@ -19,7 +19,7 @@ export default StyleSheet.create({
     ...FONT.STYLE.bold,
   },
   mainInfo: {
-    marginVertical: UTILS.heightScale(38),
+    marginVertical: UTILS.heightScale(10),
   },
   bold: {
     ...FONT.STYLE.bold,

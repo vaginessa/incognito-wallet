@@ -21,6 +21,7 @@ import {
 import { masterKeysSelector } from '@src/redux/selectors/masterKey';
 import { COLORS, THEME } from '@src/styles';
 import { Text } from '@components/core/index';
+import globalStyled from '@src/theme/theme.styled';
 
 const styles = StyleSheet.create({
   input: {
@@ -99,7 +100,11 @@ const ImportMasterKey = () => {
   }, [phrase, name]);
 
   return (
-    <MainLayout header="Import master key" scrollable keyboardAware>
+    <MainLayout
+      header="Import master key"
+      scrollable
+      contentStyle={globalStyled.defaultBorderSection}
+    >
       <Input
         onChangeText={setName}
         label="Master key name"
@@ -113,14 +118,14 @@ const ImportMasterKey = () => {
         value={phrase}
         style={styles.input}
         autoCapitalize="none"
-        rightComponent={
+        rightComponent={(
           <BtnScanQrCode
             style={styles.btn}
             onPress={() => {
               openQrScanner(setPhrase);
             }}
           />
-        }
+        )}
       />
       {!!error && <Text style={styles.error}>{error}</Text>}
       <Button
