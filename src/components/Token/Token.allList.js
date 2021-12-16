@@ -1,10 +1,10 @@
 import React from 'react';
-import { Text, StyleSheet } from 'react-native';
-import { KeyboardAwareScrollView } from '@src/components/core';
+import { StyleSheet } from 'react-native';
+import { KeyboardAwareScrollView, Text } from '@src/components/core';
 import { BtnChecked } from '@src/components/Button';
 import { ListToken } from '@src/components/Token';
 import PropTypes from 'prop-types';
-import { COLORS, FONT } from '@src/styles';
+import { FONT } from '@src/styles';
 
 const styled = StyleSheet.create({
   hook: {
@@ -16,7 +16,6 @@ const styled = StyleSheet.create({
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.small,
     lineHeight: FONT.SIZE.small + 5,
-    color: COLORS.black,
     marginLeft: 5,
   },
 });
@@ -42,7 +41,7 @@ const ListAllToken = (props) => {
       />
       <ListToken {...tokensFactories[1]} renderItem={renderItem} />
     </KeyboardAwareScrollView>
-  );
+  );                                                                                                                  
 };
 
 ListAllToken.propTypes = {
