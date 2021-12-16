@@ -1,14 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet } from 'react-native';
+import { useSelector } from 'react-redux';
 import MainLayout from '@components/MainLayout/index';
 import Button from '@screens/BackUpPassphrase/components/Button';
 import { LoadingContainer, Text, TouchableOpacity, View } from '@components/core';
+import { Text4, Text8 } from '@components/core/Text';
 import { COLORS, FONT, THEME } from '@src/styles';
 import { useNavigation, useNavigationParam } from 'react-navigation-hooks';
 import routeNames from '@routers/routeNames';
 import { generateNewMnemonic } from '@services/wallet/mnemonicService';
 import QrCodeGenerate from '@components/QrCodeGenerate/index';
 import clipboard from '@services/clipboard';
+import { colorsSelector } from '@src/theme/theme.selector';
 
 const styles = StyleSheet.create({
   desc: {
@@ -52,7 +55,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: COLORS.lightGrey20,
     paddingHorizontal: 10,
     paddingVertical: 10,
     textAlign: 'center',
@@ -61,7 +63,7 @@ const styles = StyleSheet.create({
     fontFamily: FONT.NAME.medium,
   },
   index: {
-    color: COLORS.newGrey,
+    // color: COLORS.newGrey,
   },
 });
 
@@ -69,6 +71,7 @@ const Passphrase = () => {
   const navigation = useNavigation();
   const data = useNavigationParam('data');
   const [mnemonic, setMnemonic] = useState('');
+  const colors = useSelector(colorsSelector);
 
   const handleNext = () => {
     navigation.navigate(data.isInit ?
@@ -116,9 +119,9 @@ const Passphrase = () => {
         {mnemonic.split(' ').map((word, index) => (
           <Text
             key={`${word}-${index}`}
-            style={[styles.word]}
+            style={[styles.word, {borderColor: colors.border3}]}
           >
-            <Text style={[styles.word, styles.index]}>{index + 1} </Text>{word}
+            <Text4 style={[styles.word, styles.index]}>{index + 1} </Text4>{word}
           </Text>
         ))}
       </View>

@@ -91,7 +91,6 @@ const text = {
   mediumText: {
     ...FONTS.STYLE.normal,
     fontFamily: FONTS.NAME.medium,
-    color: COLORS.black,
     fontSize: fontSizes.medium,
   },
   mediumTextBold: {

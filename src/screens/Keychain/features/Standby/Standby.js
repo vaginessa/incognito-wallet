@@ -1,9 +1,10 @@
 import { Header } from '@src/components';
-import { LoadingContainer, ScrollView, Text } from '@src/components/core';
+import { LoadingContainer, ScrollView, Text, Button } from '@src/components/core';
 import React from 'react';
 import { View, StyleSheet, SafeAreaView } from 'react-native';
 import CopiableText from '@src/components/CopiableText';
 import { BtnQRCode, ButtonBasic } from '@src/components/Button';
+import { Text4 } from '@src/components/core/Text';
 import IconCopy from '@src/components/Icons/icon.copy';
 import srcQrCodeLight from '@src/assets/images/icons/qr_code_light.png';
 import { Wallet } from 'incognito-chain-web-js/build/wallet';
@@ -12,7 +13,7 @@ import { ExHandler } from '@src/services/exception';
 import { configsWallet } from '@src/services/wallet/WalletService';
 import { getPassphrase } from '@src/services/wallet/passwordService';
 import routeNames from '@src/router/routeNames';
-import { COLORS, FONT } from '@src/styles';
+import { FONT } from '@src/styles';
 import { withLayout_2 } from '@src/components/Layout';
 import clipboard from '@src/services/clipboard';
 import uniqBy from 'lodash/uniqBy';
@@ -25,7 +26,7 @@ const styled = StyleSheet.create({
   },
   scrollview: {
     flex: 1,
-    paddingTop: 27,
+    // paddingTop: 27,
     paddingBottom: 100,
   },
   accountItemContainer: {
@@ -43,21 +44,18 @@ const styled = StyleSheet.create({
     fontFamily: FONT.NAME.bold,
     fontSize: FONT.SIZE.superMedium,
     lineHeight: FONT.SIZE.superMedium + 4,
-    color: COLORS.black,
     flex: 1,
   },
   desc: {
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.medium,
     lineHeight: FONT.SIZE.medium + 4,
-    color: COLORS.colorGreyBold,
     alignSelf: 'flex-start',
   },
   titleGroup: {
     fontFamily: FONT.NAME.bold,
     fontSize: FONT.SIZE.large,
     lineHeight: FONT.SIZE.large + 4,
-    color: COLORS.black,
     flex: 1,
     marginTop: 5,
     marginBottom: 25,
@@ -66,7 +64,7 @@ const styled = StyleSheet.create({
     flex: 1,
   },
   copyAllButton: {
-    borderRadius: 15,
+    // borderRadius: 15,
     flex: 1,
     marginTop: 30,
     marginBottom: 50,
@@ -104,7 +102,7 @@ const Item = React.memo(({ label, value }) => {
         />
         <IconCopy />
       </View>
-      <Text style={styled.desc}>{value}</Text>
+      <Text4 style={styled.desc}>{value}</Text4>
     </CopiableText>
   );
 });
@@ -192,8 +190,8 @@ const Standby = (props) => {
         )}
         <View>
           <Text style={styled.title}>Restore all keys</Text>
-          <ButtonBasic
-            btnStyle={[styled.copyAllButton]}
+          <Button
+            buttonStyle={[styled.copyAllButton]}
             title="Copy all keys"
             onPress={handleCopyAll}
           />

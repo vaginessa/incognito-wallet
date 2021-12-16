@@ -1,12 +1,13 @@
 /* eslint-disable import/no-cycle */
-import { ScrollView, TouchableOpacity } from '@src/components/core';
+import { ScrollView, TouchableOpacity, Text, Button } from '@src/components/core';
 import PropTypes from 'prop-types';
 import React from 'react';
 import CopiableText from '@src/components/CopiableText';
-import { View, Text } from 'react-native';
+import { Text4 } from '@src/components/core/Text';
+import { View } from 'react-native';
 import Header from '@src/components/Header';
 import IconCopy from '@src/components/Icons/icon.copy';
-import { ButtonBasic, BtnQRCode } from '@src/components/Button';
+import { BtnQRCode } from '@src/components/Button';
 import srcQrCodeLight from '@src/assets/images/icons/qr_code_light.png';
 import srcQrCode from '@src/assets/images/icons/qr_code.png';
 import { ArrowRightGreyIcon } from '@src/components/Icons';
@@ -45,9 +46,9 @@ const BackupKeys = (props) => {
           />
           <IconCopy />
         </View>
-        <Text style={style.desc}>
+        <Text4 style={style.desc}>
           {key}
-        </Text>
+        </Text4>
       </CopiableText>
     );
   };
@@ -89,12 +90,12 @@ const BackupKeys = (props) => {
             </TouchableOpacity>
             <View style={style.bottomGroup}>
               <BtnQRCode
-                style={style.btnQRCode}
+                style={[style.btnQRCode]}
                 onPress={()=> onNavigateToQrPage('Back up private keys', backupDataStr)}
                 source={srcQrCode}
               />
-              <ButtonBasic
-                btnStyle={[style.copyAllButton, onNext && style.copyNext]}
+              <Button
+                buttonStyle={[style.copyAllButton, onNext && style.copyNext]}
                 title={onNext ? 'Copy all keys and\n\ncontinue to new update' : 'Copy all keys'}
                 onPress={handleCopy}
               />
