@@ -2,8 +2,6 @@ import React, { memo } from 'react';
 import { SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
 import PropTypes from 'prop-types';
 import { COLORS, FONT } from '@src/styles';
-import { useKeyboard } from '@src/components/UseEffect/useKeyboard';
-import debounce from 'lodash/debounce';
 
 const styles = StyleSheet.create({
   container: {
@@ -51,7 +49,11 @@ const ModalBottomSheet = ({
           <>
             {!!title && <Text style={styles.title}>{title}</Text>}
             {!!headerView && headerView}
-            {!!contentView && <ScrollView showsVerticalScrollIndicator={false}>{contentView}</ScrollView>}
+            {!!contentView && (
+              <ScrollView showsVerticalScrollIndicator={false}>
+                {contentView}
+              </ScrollView>
+            )}
           </>
         )}
       </SafeAreaView>

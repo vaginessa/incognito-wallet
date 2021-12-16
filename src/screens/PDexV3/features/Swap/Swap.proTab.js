@@ -2,7 +2,7 @@ import React from 'react';
 import { Text } from '@src/components/core';
 import { View, StyleSheet } from 'react-native';
 import Extra, { styled as extraStyled } from '@screens/PDexV3/features/Extra';
-import { batch, useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { change, Field } from 'redux-form';
 import {
   RFBaseInput,
@@ -15,9 +15,13 @@ import { PRV } from '@src/constants/common';
 import format from '@src/utils/format';
 import convert from '@src/utils/convert';
 import { FONT } from '@src/styles';
-import { SelectOptionInput } from '@src/components/SelectOption';
+import {
+  SelectOptionInput,
+  SelectOptionModal,
+} from '@src/components/SelectOption';
 import { AppIcon, PancakeIcon } from '@src/components/Icons';
 import { useNavigation } from 'react-navigation-hooks';
+import { actionToggleModal } from '@src/components/Modal';
 import {
   feetokenDataSelector,
   feeTypesSelector,
@@ -50,7 +54,6 @@ const styled = StyleSheet.create({
 });
 
 const TabPro = React.memo(() => {
-  const navigation = useNavigation();
   const { networkfee } = useSelector(swapSelector);
   const swapInfo = useSelector(swapInfoSelector);
   const { toggleProTab, isFetching } = swapInfo;
@@ -146,10 +149,11 @@ const TabPro = React.memo(() => {
         return {
           ...platform,
           onPressItem: async (id) => {
-            if(isSelected){
+            if (isSelected) {
               return;
             }
             dispatch(actionSwitchPlatform(id));
+            dispatch(actionToggleModal());
           },
           icon,
         };
@@ -165,7 +169,21 @@ const TabPro = React.memo(() => {
       titleStyle: {
         fontSize: FONT.SIZE.small,
       },
-      hooks: <SelectOptionInput options={options} actived={platformSelected} />,
+      hooks: (
+        <SelectOptionInput
+          options={options}
+          actived={platformSelected}
+          onPressItem={() => {
+            dispatch(
+              actionToggleModal({
+                visible: true,
+                shouldCloseModalWhenTapOverlay: true,
+                data: <SelectOptionModal options={options} />,
+              }),
+            );
+          }}
+        />
+      ),
     },
     {
       title: 'Slippage tolerance',

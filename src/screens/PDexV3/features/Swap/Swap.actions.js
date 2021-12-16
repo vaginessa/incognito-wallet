@@ -67,6 +67,7 @@ import {
   findTokenPancakeByIdSelector,
   hashmapContractIDsSelector,
   platformSelectedSelector,
+  isPairSupportedTradeOnPancakeSelector,
 } from './Swap.selector';
 import {
   calMintAmountExpected,
@@ -365,6 +366,9 @@ export const actionHandleInjectEstDataForPancake =
       const getPancakeTokenParamReq = findTokenPancakeByIdSelector(state);
       const tokenSellPancake = getPancakeTokenParamReq(selltoken);
       const tokenBuyPancake = getPancakeTokenParamReq(buytoken);
+      if (tokenSellPancake == null || tokenBuyPancake == null) {
+        throw 'This pair is not existed on pancake';
+      }
       switch (field) {
       case formConfigs.selltoken: {
         inputPDecimals = tokenSellPancake.pDecimals;
@@ -423,11 +427,12 @@ export const actionEstimateTradeForPancake =
     try {
       const { selltoken, buytoken, sellamount, buyamount } = payload;
       let state = getState();
-      const { field, useMax } = feetokenDataSelector(state);
+      const isPairSup = isPairSupportedTradeOnPancakeSelector(state);
+      const { field } = feetokenDataSelector(state);
       const getPancakeTokenParamReq = findTokenPancakeByIdSelector(state);
       const tokenSellPancake = getPancakeTokenParamReq(selltoken);
       const tokenBuyPancake = getPancakeTokenParamReq(buytoken);
-      if (tokenSellPancake == null || tokenBuyPancake == null) {
+      if (!isPairSup) {
         throw 'This pair is not existed on pancake';
       }
       let tokenDecimals, tokenPDecimals;
@@ -544,9 +549,10 @@ export const actionEstimateTradeForPancake =
   };
 
 export const actionFindBestRateBetweenPlatforms =
-  ({ pDexData, pancakeData, params, payload }) =>
+  ({ pDexData, pancakeData, params }) =>
     async (dispatch, getState) => {
       const { field } = params;
+      const state = getState();
       const {
         minSellOriginalAmount: sellPDexAmount,
         maxBuyOriginalAmount: buyPDexAmount,
@@ -555,46 +561,68 @@ export const actionFindBestRateBetweenPlatforms =
         minSellOriginalAmount: sellPancakeAmount,
         maxBuyOriginalAmount: buyPancakeAmount,
       } = pancakeData;
-      let platformIdHasBestRate = -1;
+      let platformIdHasBestRate;
+      const isPairSupportedTradeOnPancake =
+      isPairSupportedTradeOnPancakeSelector(state);
       console.log('pdexData', pDexData);
       console.log('pancakeData', pancakeData);
       try {
         switch (field) {
         case formConfigs.selltoken: {
-          const arrMaxBuyAmount = [
-            {
+          let arrMaxBuyAmount = [];
+          if (new BigNumber(buyPDexAmount).isGreaterThan(0)) {
+            arrMaxBuyAmount.push({
               id: KEYS_PLATFORMS_SUPPORTED.incognito,
               amount: buyPDexAmount,
-            },
-            {
+            });
+          }
+          if (
+            isPairSupportedTradeOnPancake &&
+            new BigNumber(buyPancakeAmount).isGreaterThan(0)
+          ) {
+            arrMaxBuyAmount.push({
               id: KEYS_PLATFORMS_SUPPORTED.pancake,
               amount: buyPancakeAmount,
-            },
-          ];
-          const bestRate = findBestRateOfMaxBuyAmount(arrMaxBuyAmount);
-          platformIdHasBestRate = bestRate?.id;
+            });
+          }
+          if (arrMaxBuyAmount.length > 0) {
+            const bestRate = findBestRateOfMaxBuyAmount(arrMaxBuyAmount);
+            platformIdHasBestRate = bestRate?.id;
+          }
           break;
         }
         case formConfigs.buytoken: {
-          const arrMinSellAmount = [
-            {
+          const arrMinSellAmount = [];
+          if (new BigNumber(sellPDexAmount).isGreaterThan(0)) {
+            arrMinSellAmount.push({
               id: KEYS_PLATFORMS_SUPPORTED.incognito,
               amount: sellPDexAmount,
-            },
-            {
+            });
+          }
+          if (
+            isPairSupportedTradeOnPancake &&
+            new BigNumber(sellPancakeAmount).isGreaterThan(0)
+          ) {
+            arrMinSellAmount.push({
               id: KEYS_PLATFORMS_SUPPORTED.pancake,
               amount: sellPancakeAmount,
-            },
-          ];
-          const bestRate = findBestRateOfMinSellAmount(arrMinSellAmount);
-          platformIdHasBestRate = bestRate?.id;
+            });
+          }
+          if (arrMinSellAmount.length > 0) {
+            const bestRate = findBestRateOfMinSellAmount(arrMinSellAmount);
+            platformIdHasBestRate = bestRate?.id;
+          }
           break;
         }
         default:
           break;
         }
         console.log('existed', KEYS_PLATFORMS_SUPPORTED[platformIdHasBestRate]);
-        if (KEYS_PLATFORMS_SUPPORTED[platformIdHasBestRate]) {
+        platformIdHasBestRate = KEYS_PLATFORMS_SUPPORTED[platformIdHasBestRate]
+          ? platformIdHasBestRate
+          : KEYS_PLATFORMS_SUPPORTED.incognito;
+        console.log('platformIdHasBestRate',platformIdHasBestRate);
+        if (platformIdHasBestRate) {
           await dispatch(actionSwitchPlatform(platformIdHasBestRate));
         }
       } catch (error) {
@@ -678,10 +706,11 @@ export const actionEstimateTrade =
         ) {
           return;
         }
-        const [pDexData, pancakeData] = await Promise.all([
+        let task = [
           dispatch(actionEstimateTradeForPDex(payload)),
           dispatch(actionEstimateTradeForPancake(payload)),
-        ]);
+        ];
+        const [pDexData, pancakeData] = await Promise.all(task);
         await dispatch(
           actionFindBestRateBetweenPlatforms({
             pDexData,
@@ -744,11 +773,16 @@ export const actionInitSwapForm =
       try {
         const state = getState();
         const isUsePRVToPayFee = isUsePRVToPayFeeSelector(state);
+        let pair = defaultPair || defaultPairSelector(state);
         batch(() => {
           dispatch(actionInitingSwapForm(true));
           dispatch(reset(formConfigs.formName));
+          dispatch(actionSetSellTokenFetched(pair?.selltoken));
+          dispatch(actionSetBuyTokenFetched(pair?.buytoken));
+          dispatch(
+            actionChangeSelectedPlatform(KEYS_PLATFORMS_SUPPORTED.incognito),
+          );
         });
-        let pair = defaultPair || defaultPairSelector(state);
         const pairs = await dispatch(actionFetchPairs(refresh));
         const isDefaultPairExisted =
         difference([pair?.selltoken, pair?.buytoken], pairs).length === 0;
@@ -756,16 +790,14 @@ export const actionInitSwapForm =
           pair = {
             selltoken: PRV_ID,
             buytoken: pairs.find((i) => i === BIG_COINS.USDT),
-            // selltoken:
-            // 'e5032c083f0da67ca141331b6005e4a3740c50218f151a5e829e9d03227e33e2',
-            // buytoken:
-            // 'a61df4d870c17a7dc62d7e4c16c6f4f847994403842aaaf21c994d1a0024b032',
           };
+          batch(() => {
+            dispatch(actionSetSellTokenFetched(pair.selltoken));
+            dispatch(actionSetBuyTokenFetched(pair.buytoken));
+          });
         }
-        const { selltoken, buytoken } = pair;
-        dispatch(actionSetSellTokenFetched(selltoken));
-        dispatch(actionSetBuyTokenFetched(buytoken));
-        batch(() => {
+        const { selltoken } = pair;
+        batch(() => { 
           dispatch(
             change(formConfigs.formName, formConfigs.slippagetolerance, '1'),
           );
@@ -966,7 +998,6 @@ export const actionFetchSwap = () => async (dispatch, getState) => {
               '0x0000000000000000000000000000000000000000',
         },
       });
-      console.log('res', response);
       tx = response;
       break;
     }
@@ -1010,6 +1041,7 @@ export const actionFetchHistory = () => async (dispatch) => {
     history = orderBy(history, 'requestime', 'desc');
     await dispatch(actionFetchedOrdersHistory(history));
   } catch (error) {
+    console.log('actionFetchHistory-error', error);
     new ExHandler(error).showErrorToast();
     await dispatch(actionFetchFailOrderHistory());
   }
@@ -1094,6 +1126,7 @@ export const actionSwitchPlatform =
         break;
       }
     } catch (error) {
+      new ExHandler(error).showErrorToast();
       throw error;
     }
   };
