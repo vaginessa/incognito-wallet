@@ -1,9 +1,9 @@
 import React from 'react';
-import { StyleSheet, Text, Clipboard } from 'react-native';
+import { StyleSheet, Clipboard } from 'react-native';
 import { ButtonBasic } from '@src/components/Button';
 import { View3 } from '@src/components/core/View';
-import { Text4 } from '@src/components/core/Text';
-import { COLORS, FONT } from '@src/styles';
+import { Text9 } from '@src/components/core/Text';
+import { FONT } from '@src/styles';
 import PropTypes from 'prop-types';
 
 const styled = StyleSheet.create({
@@ -19,7 +19,6 @@ const styled = StyleSheet.create({
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.regular,
     lineHeight: FONT.SIZE.regular + 6,
-    color: COLORS.colorGreyBold,
     marginHorizontal: 15,
   },
   btnStyle: {
@@ -41,9 +40,9 @@ const CopiableText = props => {
   };
   return (
     <View3 style={styled.container}>
-      <Text4 style={[styled.text, textStyle]} numberOfLines={1} ellipsizeMode="middle">
+      <Text9 style={[styled.text, textStyle]} numberOfLines={1} ellipsizeMode="middle">
         {data}
-      </Text4>
+      </Text9>
       <ButtonBasic
         btnStyle={[styled.btnStyle, btnStyle]}
         titleStyle={styled.titleStyle}

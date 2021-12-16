@@ -64,11 +64,13 @@ const MainLayout = ({
             {children}
           </KeyboardAwareScrollView>
         ) : (
-          <View2 style={[
-            styles.content,
-            contentStyle,
-            {...globalStyled.defaultBorderSection}
-          ]}
+          <View2 
+            borderTop 
+            paddingHorizontal
+            style={[
+              styles.content,
+              contentStyle,
+            ]}
           >
             {children}
           </View2>
