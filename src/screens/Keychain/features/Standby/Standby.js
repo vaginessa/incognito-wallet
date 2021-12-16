@@ -1,5 +1,5 @@
 import { Header } from '@src/components';
-import { LoadingContainer, ScrollView, Text, Button } from '@src/components/core';
+import { LoadingContainer, ScrollView, Text, Button, ScrollViewBorder } from '@src/components/core';
 import React from 'react';
 import { View, StyleSheet, SafeAreaView } from 'react-native';
 import CopiableText from '@src/components/CopiableText';
@@ -21,9 +21,6 @@ import toLower from 'lodash/toLower';
 import isEqual from 'lodash/isEqual';
 
 const styled = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
   scrollview: {
     flex: 1,
     // paddingTop: 27,
@@ -168,9 +165,9 @@ const Standby = (props) => {
     loadListWallet();
   }, []);
   return (
-    <SafeAreaView style={styled.container}>
+    <>
       <Header title="Restore private keys" />
-      <ScrollView style={styled.scrollview}>
+      <ScrollViewBorder style={styled.scrollview}>
         {loading && <LoadingContainer />}
         {masterKeys.length > 0 && (
           <View>
@@ -196,8 +193,8 @@ const Standby = (props) => {
             onPress={handleCopyAll}
           />
         </View>
-      </ScrollView>
-    </SafeAreaView>
+      </ScrollViewBorder>
+    </>
   );
 };
 

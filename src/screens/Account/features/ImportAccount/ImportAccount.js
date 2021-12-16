@@ -1,4 +1,4 @@
-import { Text, TouchableOpacity, View } from '@src/components/core';
+import { Text, TouchableOpacity, View, Button } from '@src/components/core';
 import { Text4 } from '@src/components/core/Text';
 import PropTypes from 'prop-types';
 import { Field } from 'redux-form';
@@ -40,10 +40,10 @@ const ImportAccount = (props) => {
 
   const renderForm = () => {
     return (
-      <View paddingHorizontal borderTop>
+      <View paddingHorizontal borderTop fullFlex>
         <Form>
           {({ handleSubmit, submitting }) => (
-            <View>
+            <>
               {toggle && randomName ? (
                 <View style={styleSheet.randomNameField}>
                   <Text style={styleSheet.randomNameLabel}>Keychain name</Text>
@@ -80,13 +80,13 @@ const ImportAccount = (props) => {
                 label="Private Key"
                 validate={getPrivateKeyValidator()}
               />
-              <ButtonBasic
+              <Button
                 title={(checking || submitting) ? 'Importing...' : 'Import'}
-                btnStyle={styleSheet.submitBtn}
+                buttonStyle={styleSheet.submitBtn}
                 onPress={checking ? undefined : handleSubmit(handleImportAccount)}
                 disabled={disabledForm || submitting || checking}
               />
-            </View>
+            </>
           )}
         </Form>
       </View>
@@ -118,7 +118,7 @@ const ImportAccount = (props) => {
   };
 
   return (
-    <MainLayout header="Import keychain" scrollable keyboardAware>
+    <MainLayout header="Import keychain" scrollable keyboardAware noPaddingBottom>
       {wantImport ? renderConfirm() : renderForm()}
     </MainLayout>
   );

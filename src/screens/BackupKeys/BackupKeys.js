@@ -1,5 +1,5 @@
 /* eslint-disable import/no-cycle */
-import { ScrollView, TouchableOpacity, Text, Button } from '@src/components/core';
+import { ScrollViewBorder, TouchableOpacity, Text, Button } from '@src/components/core';
 import PropTypes from 'prop-types';
 import React from 'react';
 import CopiableText from '@src/components/CopiableText';
@@ -62,48 +62,46 @@ const BackupKeys = (props) => {
   };
 
   return (
-    <View style={style.container}>
+    <>
       <Header title="Back up private keys" onGoBack={onBack} />
-      <View style={style.wrapper}>
-        <ScrollView>
-          <View>
-            <Text style={style.titleGroup}>Master keys</Text>
-            {noMasterless.length > 0 && (noMasterless?.map((pair) => {
-              const [name, key] = getNameKey(pair);
-              return renderAccountItem(name, key);
-            }))}
-          </View>
-          <View style={style.topGroup}>
-            <Text style={style.titleGroup}>Masterless</Text>
-            {masterless?.map((pair) => {
-              const [name, key] = getNameKey(pair);
-              return renderAccountItem(name, key);
-            })}
-          </View>
-          <View>
-            <Text style={style.title}>Back up all keys</Text>
-            <TouchableOpacity onPress={onSaveAs}>
-              <View style={style.saveAsBtn}>
-                <Text style={style.desc}>Choose back up option</Text>
-                <ArrowRightGreyIcon />
-              </View>
-            </TouchableOpacity>
-            <View style={style.bottomGroup}>
-              <BtnQRCode
-                style={[style.btnQRCode]}
-                onPress={()=> onNavigateToQrPage('Back up private keys', backupDataStr)}
-                source={srcQrCode}
-              />
-              <Button
-                buttonStyle={[style.copyAllButton, onNext && style.copyNext]}
-                title={onNext ? 'Copy all keys and\n\ncontinue to new update' : 'Copy all keys'}
-                onPress={handleCopy}
-              />
+      <ScrollViewBorder>
+        <View>
+          <Text style={style.titleGroup}>Master keys</Text>
+          {noMasterless.length > 0 && (noMasterless?.map((pair) => {
+            const [name, key] = getNameKey(pair);
+            return renderAccountItem(name, key);
+          }))}
+        </View>
+        <View style={style.topGroup}>
+          <Text style={style.titleGroup}>Masterless</Text>
+          {masterless?.map((pair) => {
+            const [name, key] = getNameKey(pair);
+            return renderAccountItem(name, key);
+          })}
+        </View>
+        <View>
+          <Text style={style.title}>Back up all keys</Text>
+          <TouchableOpacity onPress={onSaveAs}>
+            <View style={style.saveAsBtn}>
+              <Text style={style.desc}>Choose back up option</Text>
+              <ArrowRightGreyIcon />
             </View>
+          </TouchableOpacity>
+          <View style={style.bottomGroup}>
+            <BtnQRCode
+              style={[style.btnQRCode]}
+              onPress={()=> onNavigateToQrPage('Back up private keys', backupDataStr)}
+              source={srcQrCode}
+            />
+            <Button
+              buttonStyle={[style.copyAllButton, onNext && style.copyNext]}
+              title={onNext ? 'Copy all keys and\n\ncontinue to new update' : 'Copy all keys'}
+              onPress={handleCopy}
+            />
           </View>
-        </ScrollView>
-      </View>
-    </View>
+        </View>
+      </ScrollViewBorder>
+    </>
   );
 };
 

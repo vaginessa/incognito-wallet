@@ -13,6 +13,7 @@ export function appTheme(darkMode: boolean) {
     background4: darkMode ? white : black,
     background5: darkMode ? '#404040' : white,
     background6: darkMode ? '#1A73E8' : '#404040',  // blue - gray
+    background7: darkMode ? '#404040' : '#F4F4F4',  // blue - gray
 
     // text
     text1: darkMode ? white : black,

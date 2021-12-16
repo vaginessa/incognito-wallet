@@ -14,7 +14,7 @@ export const styled = StyleSheet.create({
     flex: 1,
   },
   tabList1: {
-    borderRadius: 0,
+    borderRadius: 10,
     backgroundColor: 'transparent',
     padding: 0,
     alignItems: 'center',

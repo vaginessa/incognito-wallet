@@ -74,7 +74,6 @@ const Setting = () => {
 
   return (
     <>
-      <Header title="Settings" />
       {!!showHeader && (
         <Header title="Settings" />
       )}
