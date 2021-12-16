@@ -32,7 +32,15 @@ const SwapOrderDetail = () => {
     if (!order) {
       return [];
     }
-    let ft = [
+    let ft = [];
+    if (order?.tradeID) {
+      ft.push({
+        label: 'Trade ID',
+        value: `#${order?.tradeID}`,
+        copiable: true,
+      });
+    }
+    ft = ft.concat([
       {
         label: 'Request Tx',
         value: `#${order?.requestTx}`,
@@ -71,7 +79,7 @@ const SwapOrderDetail = () => {
         label: 'Fee',
         value: order?.tradingFeeStr,
       },
-    ];
+    ]);
     if (!order?.tradingFeeByPRV) {
       ft.push({
         label: 'Network fee',
@@ -109,6 +117,10 @@ const SwapOrderDetail = () => {
         value: order?.respondTxs.map((responseTx) => `\n${responseTx}`).join(),
       });
     }
+    ft.push({
+      label: 'Exchange',
+      value: order?.exchange,
+    });
     return ft.filter(
       (ftItem) => !!ftItem && (!!ftItem?.value || !!ftItem?.customValue),
     );

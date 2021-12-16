@@ -33,7 +33,7 @@ const Trade = () => {
         rootTabID={ROOT_TAB_TRADE}
         styledTabs={styled.styledTabs}
         useTab1
-        defaultTabIndex={0}
+        defaultTabIndex={2}
         styledTabList={styled.styledTabList}
         rightCustom={
           <Row style={styled.rightHeader}>
