@@ -1,6 +1,6 @@
 import React from 'react';
-import { Text, TouchableOpacity, Image } from 'react-native';
-import { View, ScrollViewBorder } from '@components/core';
+import { TouchableOpacity, Image } from 'react-native';
+import { View, ScrollViewBorder, Text } from '@components/core';
 import { View2 } from '@src/components/core/View';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectedPrivacySelector } from '@src/redux/selectors';
@@ -192,20 +192,20 @@ const Extra = (props) => {
 
   const renderShieldUserAddress = () => (
     <>
-      <NormalText style={styled.title} text="Send to this deposit address" />
+      <NormalText style={[styled.title, {color: colors.text1}]} text="Send to this deposit address" />
       <View style={styled.qrCode}>
         <QrCodeGenerate value={address} size={175} />
       </View>
       <View style={styled.hook}>{renderEstimateFee()}</View>
-      <CopiableText data={address} />
+      <CopiableText data={address} textStyle={{color: colors.text1}} btnStyle={{backgroundColor: colors.background6}} />
       <View style={{ marginTop: 15 }}>
         <NormalText
-          style={styled.text}
+          style={[styled.text, {color: colors.text1}]}
           text={`Send only ${selectedPrivacy?.externalSymbol ||
             selectedPrivacy?.symbol} to this deposit address.`}
         />
         <NormalText
-          style={{ marginTop: 10 }}
+          style={{ marginTop: 10, color: colors.text1}}
           text={`Sending coins or tokens other than ${selectedPrivacy?.externalSymbol ||
             selectedPrivacy?.symbol} to this address may result in the loss of your deposit.`}
         />
