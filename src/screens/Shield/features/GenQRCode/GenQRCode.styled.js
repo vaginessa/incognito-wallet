@@ -124,7 +124,6 @@ export const styled = StyleSheet.create({
   },
 
   btnConnect: {
-    backgroundColor: COLORS.colorGrey,
     height: 40,
     paddingHorizontal: 15,
     width: '100%',
@@ -133,17 +132,10 @@ export const styled = StyleSheet.create({
     fontFamily: FONT.NAME.medium,
     fontSize: 15,
     lineHeight: 19,
-    color: COLORS.black,
     marginRight: 5,
-  },
-  connectHook: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   btnShield: {
     marginTop: 40,
-    backgroundColor: COLORS.black,
   },
   wrapMessage: {
     alignSelf: 'center',
