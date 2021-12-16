@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import Header from '@src/components/Header';
 import { ButtonBasic } from '@src/components/Button';
-import { View } from '@src/components/core';
+import { View, ScrollViewBorder } from '@src/components/core';
 // eslint-disable-next-line import/no-cycle
 import withCreateAccount from './CreateAccount.enhance';
 import styled from './CreateAccount.styled';
@@ -22,12 +22,12 @@ const CreateAccount = ({
   handleCreateAccount,
 }) => {
   return (
-    <View style={styled.container} >
+    <>
       <Header title="Create keychain" />
-      <View paddingHorizontal borderTop>
+      <View fullFlex borderTop paddingHorizontal>
         <Form style={styled.form}>
           {({ handleSubmit, submitting }) => (
-            <View>
+            <>
               <Field
                 autoFocus
                 component={InputField}
@@ -47,11 +47,11 @@ const CreateAccount = ({
                 onPress={handleSubmit(handleCreateAccount)}
                 disabled={disabledForm || submitting}
               />
-            </View>
+            </>
           )}
         </Form>
       </View>  
-    </View>
+    </>
   );
 };
 

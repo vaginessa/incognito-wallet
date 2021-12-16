@@ -6,7 +6,7 @@ import Header from '@src/components/Header';
 import srcQrCodeLight from '@src/assets/images/icons/qr_code_light.png';
 import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
-import { ScrollView, View, Text  } from '@src/components/core';
+import { View, Text, ScrollViewBorder } from '@src/components/core';
 import { Text3 } from '@src/components/core/Text';
 import globalStyled from '@src/theme/theme.styled';
 import withExportAccount from './ExportAccount.enhance';
@@ -55,25 +55,23 @@ const ExportAccount = ({ account, token, title }) => {
       />
     ) : null;
   return (
-    <View style={styleSheet.container}>
+    <>
       <Header title={title} />
-      <View style={styleSheet.wrapper} borderTop>
-        <ScrollView>
-          {renderItem('Your incognito address', account?.PaymentAddress)}
-          {renderItem('Private key', account?.PrivateKey)}
-          {renderItem('Public key', account?.PublicKeyCheckEncode)}
-          {renderItem('Readonly key', account?.ReadonlyKey)}
-          {renderItem('Validator key', account?.ValidatorKey)}
-          {renderItem('Validator Public key', account?.BLSPublicKey)}
-          {renderItem('OTA key', account?.OTAKey)}
-          {__DEV__ || global.isDEV ? renderItem('Device token', token) : null}
-          {renderItem('ID', account?.ID.toString())}
-          {__DEV__ || global.isDEV
-            ? renderItem('Shard', parseShard(account?.PublicKeyBytes))
-            : null}
-        </ScrollView>
-      </View>
-    </View>
+      <ScrollViewBorder>
+        {renderItem('Your incognito address', account?.PaymentAddress)}
+        {renderItem('Private key', account?.PrivateKey)}
+        {renderItem('Public key', account?.PublicKeyCheckEncode)}
+        {renderItem('Readonly key', account?.ReadonlyKey)}
+        {renderItem('Validator key', account?.ValidatorKey)}
+        {renderItem('Validator Public key', account?.BLSPublicKey)}
+        {renderItem('OTA key', account?.OTAKey)}
+        {__DEV__ || global.isDEV ? renderItem('Device token', token) : null}
+        {renderItem('ID', account?.ID.toString())}
+        {__DEV__ || global.isDEV
+          ? renderItem('Shard', parseShard(account?.PublicKeyBytes))
+          : null}
+      </ScrollViewBorder>
+    </>
   );
 };
 

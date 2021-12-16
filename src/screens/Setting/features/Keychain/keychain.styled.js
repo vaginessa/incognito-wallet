@@ -41,7 +41,6 @@ export const itemStyled = StyleSheet.create({
     overflow: 'visible'
   },
   arrow: {
-    tintColor: COLORS.blue5,
     width: 8,
     height: 13,
   },

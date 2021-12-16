@@ -10,12 +10,13 @@ const BOTTOM_BAR_PADDING_BOTTOM = getBottomAreaHeight() + 10;
 
 const styled = StyleSheet.create({
   contentContainerStyle: {
-    paddingBottom: 50 + BOTTOM_BAR_PADDING_BOTTOM,
+    // paddingBottom: 50 + BOTTOM_BAR_PADDING_BOTTOM,
+    // flex: 1,
   },
 });
 
 const Component = (props: KeyboardAwareScrollViewProps) => {
-  const { contentContainerStyle, ...rest } = props;
+  const { contentContainerStyle, fullFlex, paddingBottom, ...rest } = props;
   return (
     <KeyboardAwareScrollView
       showsVerticalScrollIndicator={false}
@@ -25,6 +26,8 @@ const Component = (props: KeyboardAwareScrollViewProps) => {
       contentContainerStyle={[
         styled.contentContainerStyle,
         contentContainerStyle,
+        fullFlex && { flex: 1 },
+        paddingBottom && { paddingBottom: 50 + BOTTOM_BAR_PADDING_BOTTOM},
       ]}
       {...rest}
     />

@@ -194,7 +194,7 @@ const opacityButton = {
     letterSpacing: 0,
   },
   disabled: {
-    backgroundColor: COLORS.blue3,
+    opacity: 0.5
   },
 };
 

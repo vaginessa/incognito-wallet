@@ -277,7 +277,7 @@ const ShieldDecentralized = (props) => {
               {SHIELD_BUTTON_TITLE.DISCONNECT}
             </Text>
           )}
-          btnStyle={[styled.btnConnect, {backgroundColor: colors.background7}]}
+          btnStyle={[styled.btnConnect, {backgroundColor: colors.background8}]}
         />
       </View>
     );
