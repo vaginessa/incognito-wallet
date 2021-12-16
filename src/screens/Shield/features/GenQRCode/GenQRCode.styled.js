@@ -155,6 +155,10 @@ export const styled = StyleSheet.create({
   unSelectBtn: {
     borderColor: COLORS.colorGreyLight,
   },
+  icon: {
+    marginTop: 2,
+    marginRight: 8,
+  },
   optionBtn: {
     flex: 1,
     height: 45,
@@ -173,7 +177,6 @@ export const styled = StyleSheet.create({
     alignItems: 'center'
   },
   textSelectBox: {
-    color: COLORS.colorGreyBold,
     fontFamily: FONT.NAME.specialMedium,
     fontSize: FONT.SIZE.regular,
     lineHeight: FONT.SIZE.medium + 4,

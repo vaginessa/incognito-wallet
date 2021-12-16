@@ -1,5 +1,5 @@
 import React from 'react';
-import { TouchableOpacity, Image } from 'react-native';
+import { TouchableOpacity, Image, View as View3 } from 'react-native';
 import { View, ScrollViewBorder, Text } from '@components/core';
 import { View2 } from '@src/components/core/View';
 import { useDispatch, useSelector } from 'react-redux';
@@ -26,7 +26,8 @@ import ic_radio from '@src/assets/images/icons/ic_radio.png';
 import ic_radio_check from '@src/assets/images/icons/ic_radio_check.png';
 import { PRV_ID } from '@src/screens/DexV2/constants';
 import { ExHandler } from '@src/services/exception';
-import { colorsSelector } from '@src/theme/theme.selector';
+import { colorsSelector, themeModeSelector } from '@src/theme/theme.selector';
+import { THEME_KEYS } from '@src/theme/theme.consts';
 import withGenQRCode from './GenQRCode.enhance';
 import { styled } from './GenQRCode.styled';
 
@@ -133,9 +134,10 @@ const Extra = (props) => {
     );
     humanFee = convert.toHumanAmount(originalFee, selectedPrivacy?.pDecimals);
     if (!humanFee) return null;
+    const themeMode = useSelector(themeModeSelector);
     return (
       <>
-        <NormalText text="Estimated shielding fee: ">
+        <NormalText text="Estimated shielding fee: " style={{color: colors?.text1}}>
           <Text style={[styled.boldText]}>
             {`${humanFee} ${selectedPrivacy?.externalSymbol ||
               selectedPrivacy?.symbol}`}
@@ -146,7 +148,7 @@ const Extra = (props) => {
             This fee will be deducted from the shielded funds.
           </Text>
           <BtnInfo
-            isBlack
+            isBlack={themeMode !== THEME_KEYS.DARK_THEME}
             style={styled.btnInfo}
             onPress={() =>
               navigation.navigate(routeNames.ShieldDecentralizeDescription)
@@ -232,17 +234,13 @@ const Extra = (props) => {
   );
 
   return (
-    <View2>
-      <ScrollViewBorder style={styled.scrollview}>
-        <View style={styled.extra}>
-          {isPortal
-            ? renderShieldPortalAddress()
-            : decentralized === 2 || decentralized === 3
-              ? renderShieldUserAddress()
-              : renderShieldIncAddress()}
-        </View>
-      </ScrollViewBorder>
-    </View2>
+    <View style={styled.extra}>
+      {isPortal
+        ? renderShieldPortalAddress()
+        : decentralized === 2 || decentralized === 3
+          ? renderShieldUserAddress()
+          : renderShieldIncAddress()}
+    </View>
   );
 };
 
@@ -331,17 +329,20 @@ const GenQRCode = (props) => {
       return <LoadingContainer />;
     }
     return (
-      <>
-        {isPRV && renderOptionsPRV()}
-        <Extra
-          {...{
-            ...props,
-            selectedPrivacy,
-            defaultFee,
-            colors,
-          }}
-        />
-      </>
+      <View2>
+        <ScrollViewBorder style={styled.scrollview}>
+          {isPRV && renderOptionsPRV()}
+          <Extra
+            {...{
+              ...props,
+              selectedPrivacy,
+              defaultFee,
+              colors,
+              isPRV,
+            }}
+          />
+        </ScrollViewBorder>
+      </View2>
     );
   };
 
@@ -383,12 +384,13 @@ const GenQRCode = (props) => {
             style={[
               styled.optionBtn,
               isSelected ? styled.selectedBtn : styled.unSelectBtn,
+              {marginBottom: 10},
             ]}
             key={`key-${index}`}
             onPress={() => handlePress(index)}
             disabled={isLoadingBsc}
           >
-            <View style={styled.optionContent}>
+            <View3 style={styled.optionContent}>
               <Image
                 style={styled.icon}
                 source={isSelected ? ic_radio_check : ic_radio}
@@ -401,7 +403,7 @@ const GenQRCode = (props) => {
               >
                 {item}
               </Text>
-            </View>
+            </View3>
           </TouchableOpacity>
         );
       })}
