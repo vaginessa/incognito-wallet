@@ -15,12 +15,44 @@ import memoize from 'lodash/memoize';
 import { getExchangeRate, getPairRate, getPoolSize } from '@screens/PDexV3';
 import BigNumber from 'bignumber.js';
 import xor from 'lodash/xor';
-import { formConfigs, KEYS_PLATFORMS_SUPPORTED } from './Swap.constant';
+import { formConfigs, KEYS_PLATFORMS_SUPPORTED, PLATFORMS_SUPPORTED} from './Swap.constant';
 import { getInputAmount } from './Swap.utils';
 
 export const swapSelector = createSelector(
   (state) => state.pDexV3,
   ({ swap }) => swap,
+);
+
+export const pDexPairsSelector = createSelector(
+  swapSelector,
+  ({ pDEXPairs }) => pDEXPairs,
+);
+
+export const pancakePairsSelector = createSelector(
+  swapSelector,
+  ({ pancakeTokens }) => pancakeTokens,
+);
+
+export const findTokenPancakeByIdSelector = createSelector(
+  pancakePairsSelector,
+  (pancakeTokens) =>
+    memoize((tokenID) => pancakeTokens.find((t) => t?.tokenID === tokenID)),
+);
+
+export const hashmapContractIDsSelector = createSelector(
+  pancakePairsSelector,
+  (pancakeTokens) =>
+    pancakeTokens.reduce((curr, token) => {
+      const { symbol, contractIdGetRate, decimals } = token;
+      curr = {
+        ...curr,
+        [toLower(contractIdGetRate)]: {
+          symbol: toLower(symbol),
+          decimals,
+        },
+      };
+      return curr;
+    }, {}),
 );
 
 export const purePairsSelector = createSelector(
@@ -78,11 +110,43 @@ export const focustokenSelector = createSelector(
   ({ focustoken }) => focustoken,
 );
 
+export const isPairSupportedTradeOnPancakeSelector = createSelector(
+  findTokenPancakeByIdSelector,
+  selltokenSelector,
+  buytokenSelector,
+  (
+    getPancakeTokenParamReq,
+    sellToken: SelectedPrivacy,
+    buyToken: SelectedPrivacy,
+  ) => {
+    let isSupported = false;
+    try {
+      const tokenSellPancake = getPancakeTokenParamReq(sellToken.tokenId);
+      const tokenBuyPancake = getPancakeTokenParamReq(buyToken.tokenId);
+      if (!!tokenSellPancake && !!tokenBuyPancake) {
+        isSupported = true;
+      }
+    } catch (error) {
+      //
+      console.log('platformsSupportedSelector-error', error);
+    }
+    return isSupported;
+  },
+);
+
 // platform supported
 
 export const platformsSupportedSelector = createSelector(
   swapSelector,
-  ({ platforms }) => platforms,
+  isPairSupportedTradeOnPancakeSelector,
+  ({ platforms }, isPairSupportedTradeOnPancake) => {
+    if (!isPairSupportedTradeOnPancake) {
+      return platforms.filter(
+        (platform) => platform.id !== KEYS_PLATFORMS_SUPPORTED.pancake,
+      );
+    }
+    return platforms;
+  },
 );
 
 export const platformsVisibleSelector = createSelector(
@@ -92,7 +156,7 @@ export const platformsVisibleSelector = createSelector(
 
 export const platformSelectedSelector = createSelector(
   platformsSupportedSelector,
-  (platforms) => platforms.find((platform) => !!platform.isSelected),
+  (platforms) => platforms.find((platform) => !!platform.isSelected) || PLATFORMS_SUPPORTED[0],
 );
 
 export const platformIdSelectedSelector = createSelector(
@@ -287,7 +351,7 @@ export const feeTypesSelector = createSelector(
       {
         tokenId: PRV.id,
         symbol: PRV.symbol,
-        actived: feetoken == PRV.id,
+        actived: feetoken === PRV.id,
       },
     ];
     switch (platformId) {
@@ -296,7 +360,7 @@ export const feeTypesSelector = createSelector(
         types.push({
           tokenId: selltoken.tokenId,
           symbol: selltoken.symbol,
-          actived: feetoken == selltoken.tokenId,
+          actived: feetoken === selltoken.tokenId,
         });
       }
       if (canNotPayFeeByPRV) {
@@ -549,36 +613,4 @@ export const defaultPairSelector = createSelector(
 export const swapFormErrorSelector = createSelector(
   (state) => state,
   (state) => getFormSyncErrors(formConfigs.formName)(state),
-);
-
-export const pDexPairsSelector = createSelector(
-  swapSelector,
-  ({ pDEXPairs }) => pDEXPairs,
-);
-
-export const pancakePairsSelector = createSelector(
-  swapSelector,
-  ({ pancakeTokens }) => pancakeTokens,
-);
-
-export const findTokenPancakeByIdSelector = createSelector(
-  pancakePairsSelector,
-  (pancakeTokens) =>
-    memoize((tokenID) => pancakeTokens.find((t) => t?.tokenID === tokenID)),
-);
-
-export const hashmapContractIDsSelector = createSelector(
-  pancakePairsSelector,
-  (pancakeTokens) =>
-    pancakeTokens.reduce((curr, token) => {
-      const { symbol, contractIdGetRate, decimals } = token;
-      curr = {
-        ...curr,
-        [toLower(contractIdGetRate)]: {
-          symbol: toLower(symbol),
-          decimals,
-        },
-      };
-      return curr;
-    }, {}),
 );

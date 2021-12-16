@@ -1,12 +1,10 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import { withLayout_2 } from '@src/components/Layout';
-import Header from '@src/components/Header';
 import { ScrollView, Text, TouchableOpacity } from '@src/components/core';
-import { useNavigation, useNavigationParam } from 'react-navigation-hooks';
 import Row from '@src/components/Row';
 import PropTypes from 'prop-types';
 import { FONT } from '@src/styles';
+import ModalBottomSheet from '@src/components/Modal/features/ModalBottomSheet';
 
 const styled = StyleSheet.create({
   touchWrapper: {
@@ -48,19 +46,12 @@ const styled = StyleSheet.create({
 
 export const SelectItem = React.memo(
   ({ id, title, desc, icon, onPressItem, itemStyled }) => {
-    const navigation = useNavigation();
-    const _onSelectItem = useNavigationParam('onSelectItem');
     return (
       <TouchableOpacity
         onPress={() => {
           if (typeof onPressItem === 'function') {
             // from props
             onPressItem(id);
-            navigation.goBack();
-            return;
-          }
-          if (typeof _onSelectItem === 'function') {
-            _onSelectItem(id);
           }
         }}
         style={styled.touchWrapper}
@@ -91,20 +82,23 @@ SelectItem.propTypes = {
   onPressItem: PropTypes.func.isRequired,
 };
 
-const SelectOptionModal = () => {
-  const options = useNavigationParam('options');
+const SelectOptionModal = ({ options }) => {
   return (
-    <View style={styled.container}>
-      <Header title="Switch platform" />
-      <ScrollView style={styled.scrollview}>
-        {options.map((option) => (
-          <SelectItem key={option?.id} {...option} />
-        ))}
-      </ScrollView>
-    </View>
+    <ModalBottomSheet
+      style={{ height: '30%', minHeight: 300 }}
+      customContent={
+        <View style={styled.container}>
+          <ScrollView style={styled.scrollview}>
+            {options.map((option) => (
+              <SelectItem key={option?.id} {...option} />
+            ))}
+          </ScrollView>
+        </View>
+      }
+    />
   );
 };
 
 SelectOptionModal.propTypes = {};
 
-export default withLayout_2(React.memo(SelectOptionModal));
+export default React.memo(SelectOptionModal);

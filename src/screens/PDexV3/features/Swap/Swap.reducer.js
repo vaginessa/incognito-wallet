@@ -65,7 +65,7 @@ const initialState = {
     order: {},
     fetching: false,
   },
-  toggleProTab: true,
+  toggleProTab: false,
   pDEXPairs: [],
   pancakeTokens: [],
   platforms: [...PLATFORMS_SUPPORTED],
