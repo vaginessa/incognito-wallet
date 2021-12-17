@@ -199,5 +199,6 @@ export default {
   PoolsTab: 'PoolsTab',
   SelectTokenModal: 'SelectTokenModal',
   More: 'More',
-  Market: 'Market'
+  Market: 'Market',
+  SelectOptionModal: 'SelectOptionModal',
 };

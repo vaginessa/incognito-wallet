@@ -1,5 +1,6 @@
 import { createSelector } from 'reselect';
 import isNaN from 'lodash/isNaN';
+import toLower from 'lodash/toLower';
 import { getPrivacyDataByTokenID as getPrivacyDataByTokenIDSelector } from '@src/redux/selectors/selectedPrivacy';
 import format from '@src/utils/format';
 import { ACCOUNT_CONSTANT } from 'incognito-chain-web-js/build/wallet';
@@ -10,15 +11,48 @@ import SelectedPrivacy from '@src/models/selectedPrivacy';
 import { PRV } from '@src/constants/common';
 import { sharedSelector } from '@src/redux/selectors';
 import orderBy from 'lodash/orderBy';
+import memoize from 'lodash/memoize';
 import { getExchangeRate, getPairRate, getPoolSize } from '@screens/PDexV3';
 import BigNumber from 'bignumber.js';
 import xor from 'lodash/xor';
-import { formConfigs } from './Swap.constant';
+import { formConfigs, KEYS_PLATFORMS_SUPPORTED, PLATFORMS_SUPPORTED} from './Swap.constant';
 import { getInputAmount } from './Swap.utils';
 
 export const swapSelector = createSelector(
   (state) => state.pDexV3,
   ({ swap }) => swap,
+);
+
+export const pDexPairsSelector = createSelector(
+  swapSelector,
+  ({ pDEXPairs }) => pDEXPairs,
+);
+
+export const pancakePairsSelector = createSelector(
+  swapSelector,
+  ({ pancakeTokens }) => pancakeTokens,
+);
+
+export const findTokenPancakeByIdSelector = createSelector(
+  pancakePairsSelector,
+  (pancakeTokens) =>
+    memoize((tokenID) => pancakeTokens.find((t) => t?.tokenID === tokenID)),
+);
+
+export const hashmapContractIDsSelector = createSelector(
+  pancakePairsSelector,
+  (pancakeTokens) =>
+    pancakeTokens.reduce((curr, token) => {
+      const { symbol, contractIdGetRate, decimals } = token;
+      curr = {
+        ...curr,
+        [toLower(contractIdGetRate)]: {
+          symbol: toLower(symbol),
+          decimals,
+        },
+      };
+      return curr;
+    }, {}),
 );
 
 export const purePairsSelector = createSelector(
@@ -76,7 +110,61 @@ export const focustokenSelector = createSelector(
   ({ focustoken }) => focustoken,
 );
 
-// fee
+export const isPairSupportedTradeOnPancakeSelector = createSelector(
+  findTokenPancakeByIdSelector,
+  selltokenSelector,
+  buytokenSelector,
+  (
+    getPancakeTokenParamReq,
+    sellToken: SelectedPrivacy,
+    buyToken: SelectedPrivacy,
+  ) => {
+    let isSupported = false;
+    try {
+      const tokenSellPancake = getPancakeTokenParamReq(sellToken.tokenId);
+      const tokenBuyPancake = getPancakeTokenParamReq(buyToken.tokenId);
+      if (!!tokenSellPancake && !!tokenBuyPancake) {
+        isSupported = true;
+      }
+    } catch (error) {
+      //
+      console.log('platformsSupportedSelector-error', error);
+    }
+    return isSupported;
+  },
+);
+
+// platform supported
+
+export const platformsSupportedSelector = createSelector(
+  swapSelector,
+  isPairSupportedTradeOnPancakeSelector,
+  ({ platforms }, isPairSupportedTradeOnPancake) => {
+    if (!isPairSupportedTradeOnPancake) {
+      return platforms.filter(
+        (platform) => platform.id !== KEYS_PLATFORMS_SUPPORTED.pancake,
+      );
+    }
+    return platforms;
+  },
+);
+
+export const platformsVisibleSelector = createSelector(
+  platformsSupportedSelector,
+  (platforms) => platforms.filter((platform) => !!platform?.visible),
+);
+
+export const platformSelectedSelector = createSelector(
+  platformsSupportedSelector,
+  (platforms) => platforms.find((platform) => !!platform.isSelected) || PLATFORMS_SUPPORTED[0],
+);
+
+export const platformIdSelectedSelector = createSelector(
+  platformSelectedSelector,
+  (platform) => platform.id,
+);
+
+// fee data selector
 
 export const feeSelectedSelector = createSelector(
   swapSelector,
@@ -88,18 +176,23 @@ export const feetokenDataSelector = createSelector(
   swapSelector,
   feeSelectedSelector,
   getPrivacyDataByTokenIDSelector,
+  platformSelectedSelector,
   (
     state,
     { data, networkfee, selltoken },
     feetoken,
     getPrivacyDataByTokenID,
+    platform,
   ) => {
     try {
       const feeTokenData: SelectedPrivacy = getPrivacyDataByTokenID(feetoken);
       const sellTokenData: SelectedPrivacy = getPrivacyDataByTokenID(selltoken);
       const selector = formValueSelector(formConfigs.formName);
       const fee = selector(state, formConfigs.feetoken);
-      const { feePrv: feePrvEst = {}, feeToken: feeTokenEst = {} } = data;
+      const { id: platformID } = platform;
+      const feeDataByPlatform = data[platformID];
+      const { feePrv: feePrvEst = {}, feeToken: feeTokenEst = {} } =
+        feeDataByPlatform;
       const {
         fee: feePrv,
         sellAmount: sellAmountPRV,
@@ -147,8 +240,9 @@ export const feetokenDataSelector = createSelector(
         feeTokenData?.pDecimals,
         false,
       );
-      const minFeeAmountStr = `${minFeeAmountText} ${feeTokenData?.symbol ||
-        ''}`;
+      const minFeeAmountStr = `${minFeeAmountText} ${
+        feeTokenData?.symbol || ''
+      }`;
       const totalFeePRV = format.amountFull(
         new BigNumber(origininalFeeAmount).plus(networkfee).toNumber(),
         PRV.pDecimals,
@@ -212,6 +306,7 @@ export const feetokenDataSelector = createSelector(
       maxGet = payFeeByPRV ? maxGetPRV : maxGetToken;
       return {
         ...feeTokenData,
+        ...data,
         feetoken,
         feeAmount,
         feeAmountText,
@@ -235,6 +330,9 @@ export const feetokenDataSelector = createSelector(
         maxGet,
         allPoolSize,
         isSignificant,
+        feeDataByPlatform,
+        feePrvEst,
+        feeTokenEst,
       };
     } catch (error) {
       console.log('feetokenDataSelector-error', error);
@@ -245,21 +343,37 @@ export const feetokenDataSelector = createSelector(
 export const feeTypesSelector = createSelector(
   selltokenSelector,
   feeSelectedSelector,
-  (selltoken: SelectedPrivacy, feetoken) => {
+  platformIdSelectedSelector,
+  feetokenDataSelector,
+  (selltoken: SelectedPrivacy, feetoken, platformId, feeTokenData) => {
+    const { canNotPayFeeByPRV } = feeTokenData;
     let types = [
       {
         tokenId: PRV.id,
         symbol: PRV.symbol,
-        actived: feetoken == PRV.id,
+        actived: feetoken === PRV.id,
       },
     ];
-    if (selltoken?.tokenId && !selltoken.isMainCrypto) {
-      types.push({
-        tokenId: selltoken.tokenId,
-        symbol: selltoken.symbol,
-        actived: feetoken == selltoken.tokenId,
-      });
+    switch (platformId) {
+    case KEYS_PLATFORMS_SUPPORTED.incognito:
+      if (selltoken?.tokenId && !selltoken.isMainCrypto) {
+        types.push({
+          tokenId: selltoken.tokenId,
+          symbol: selltoken.symbol,
+          actived: feetoken === selltoken.tokenId,
+        });
+      }
+      if (canNotPayFeeByPRV) {
+        types = types.filter((type) => type.tokenId !== PRV.id);
+      }
+      break;
+    case KEYS_PLATFORMS_SUPPORTED.pancake: {
+      break;
     }
+    default:
+      break;
+    }
+
     return types;
   },
 );
@@ -273,7 +387,7 @@ export const inputAmountSelector = createSelector(
   getInputAmount,
 );
 
-export const sellInputTokenSeletor = createSelector(
+export const sellInputTokenSelector = createSelector(
   inputAmountSelector,
   (getInputAmount) => getInputAmount(formConfigs.selltoken),
 );
@@ -340,10 +454,12 @@ export const swapInfoSelector = createSelector(
         btnSwapText = 'Calculating...';
       }
       const tradingFeeStr = `${feeTokenData?.feeAmountText} ${feeTokenData?.symbol}`;
-      const sellInputBalanceStr = `${sellInputAmount?.balanceStr ||
-        '0'} ${sellInputAmount?.symbol || ''}`;
-      const buyInputBalanceStr = `${buyInputAmount?.balanceStr ||
-        '0'} ${buyInputAmount?.symbol || ''}`;
+      const sellInputBalanceStr = `${sellInputAmount?.balanceStr || '0'} ${
+        sellInputAmount?.symbol || ''
+      }`;
+      const buyInputBalanceStr = `${buyInputAmount?.balanceStr || '0'} ${
+        buyInputAmount?.symbol || ''
+      }`;
       const sellInputAmountStr = `${sellInputAmount?.amountText} ${sellInputAmount?.symbol}`;
       const buyInputAmountStr = `${buyInputAmount?.amountText} ${buyInputAmount?.symbol}`;
       const prv: SelectedPrivacy = getPrivacyDataByTokenID(PRV.id);
@@ -398,13 +514,10 @@ export const mappingOrderHistorySelector = createSelector(
         buyTokenId,
         requestime,
         status,
-        minAccept,
         fee,
         feeToken: feeTokenId,
         fromStorage,
-        respondTokens,
-        respondAmounts,
-        isCompleted,
+        price,
       } = order;
       let statusStr = capitalize(status);
       if (fromStorage) {
@@ -413,13 +526,6 @@ export const mappingOrderHistorySelector = createSelector(
       const sellToken: SelectedPrivacy = getPrivacyDataByTokenID(sellTokenId);
       const buyToken: SelectedPrivacy = getPrivacyDataByTokenID(buyTokenId);
       const feeToken: SelectedPrivacy = getPrivacyDataByTokenID(feeTokenId);
-      let price = 0;
-      if (!isCompleted) {
-        price = minAccept;
-      } else {
-        const indexBuyToken = respondTokens.findIndex((t) => t === buyTokenId);
-        price = respondAmounts[indexBuyToken];
-      }
       const amountStr = format.amountVer2(amount, sellToken.pDecimals);
       const priceStr = format.amountVer2(price, buyToken.pDecimals);
       const sellStr = `${amountStr} ${sellToken.symbol}`;
