@@ -101,6 +101,7 @@ const TextInput = ({
               styleSheet.input,
               oldVersion && styleSheet.oldInput,
               inputStyle,
+              {color: colors.text9},
             ]}
             onFocus={handleFocus}
             onBlur={handleBlur}

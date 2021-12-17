@@ -1,5 +1,5 @@
 import React from 'react';
-import {BottomView, Row} from '@src/components';
+import { BottomView, Row } from '@src/components';
 import { Tabs } from '@src/components/core';
 import Portfolio from '@src/screens/PDexV3/features/Portfolio';
 import { View } from 'react-native';
@@ -81,7 +81,7 @@ const Home = () => {
       defaultTabIndex={1}
       useTab1
       rightCustom={(
-        <Row>
+        <Row style={{ borderRadius: 20 }}>
           <SelectAccountButton />
         </Row>
       )}

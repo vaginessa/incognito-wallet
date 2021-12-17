@@ -65,7 +65,6 @@ const text = {
   },
   boldTextStyleMedium: {
     ...FONTS.STYLE.bold,
-    color: COLORS.black,
     fontSize: fontSizes.medium,
   },
   boldTextStyleSuperMedium: {
@@ -122,7 +121,6 @@ const text = {
     color: COLORS.black,
   },
   regularSizeMediumFontGrey: {
-    color: COLORS.newGrey,
     fontSize: fontSizes.regular,
     fontFamily: FONTS.NAME.medium,
   },
@@ -137,7 +135,6 @@ const text = {
     fontFamily: FONTS.NAME.medium,
   },
   superMediumTextMotto: {
-    color: COLORS.newGrey,
     fontSize: fontSizes.superMedium,
     fontFamily: FONTS.NAME.medium,
   },

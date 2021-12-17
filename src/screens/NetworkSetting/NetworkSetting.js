@@ -1,4 +1,4 @@
-import { ScrollView, View } from '@src/components/core';
+import { ScrollView, View, ScrollViewBorder } from '@src/components/core';
 import DialogLoader from '@src/components/DialogLoader';
 import { onClickView } from '@src/utils/ViewUtil';
 import PropTypes from 'prop-types';
@@ -43,27 +43,25 @@ class NetworkSetting extends Component {
     const { networks, reloadNetworks } = this.props;
 
     return (
-      <View style={styled.container}>
+      <>
         <Header title="Network" style={{ paddingHorizontal: globalStyled.defaultPadding.paddingHorizontal }} />
-        <View style={styled.wrapper}>
-          <ScrollView style={{ paddingTop: 32 }}>
-            {networks &&
-              networks.map(
-                (network) =>
-                  network && (
-                    <NetworkItem
-                      key={network?.id}
-                      network={network}
-                      active={network?.id === activeNetworkId}
-                      onActive={onClickView(() => this.handleActive(network))}
-                      reloadNetworks={reloadNetworks}
-                    />
-                  ),
-              )}
-            <DialogLoader loading={loading} />
-          </ScrollView>
-        </View>
-      </View>
+        <ScrollViewBorder>
+          {networks &&
+            networks.map(
+              (network) =>
+                network && (
+                  <NetworkItem
+                    key={network?.id}
+                    network={network}
+                    active={network?.id === activeNetworkId}
+                    onActive={onClickView(() => this.handleActive(network))}
+                    reloadNetworks={reloadNetworks}
+                  />
+                ),
+            )}
+          <DialogLoader loading={loading} />
+        </ScrollViewBorder>
+      </>
     );
   }
 }

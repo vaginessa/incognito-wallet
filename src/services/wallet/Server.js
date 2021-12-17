@@ -1,5 +1,10 @@
-import storage from '@src/services/storage';
 import _ from 'lodash';
+import storage from '@src/services/storage';
+import {
+  PANCAKE_CONSTANTS,
+  WEB3_CONSTANT,
+  BSC_CONSTANT,
+} from 'incognito-chain-web-js/build/wallet';
 
 export const MAINNET_FULLNODE = 'https://lb-fullnode.incognito.org/fullnode';
 export const MAINNET_1_FULLNODE = 'http://51.83.237.20:9338';
@@ -67,8 +72,7 @@ const TEST_NET_SERVER = {
   name: 'Testnet',
   coinServices: 'https://api-coinservice-staging.incognito.org',
   pubsubServices: 'https://api-coinservice-staging.incognito.org/txservice',
-  requestServices:
-    'https://api-coinservice-staging.incognito.org',
+  requestServices: 'https://api-coinservice-staging.incognito.org',
   apiServices: 'https://staging-api-service.incognito.org',
   shardNumber: DEFAULT_SHARD_NUMBER,
   IncContractAddress: '0x2f6F03F1b43Eab22f7952bd617A24AB46E970dF7',
@@ -77,6 +81,9 @@ const TEST_NET_SERVER = {
   tradeServices: 'https://api-coinservice-staging.incognito.org',
   portalServices: 'http://51.161.119.66:8020',
   webviewChartServices: 'https://chart-webview-staging.incognito.org',
+  bscConfigs: BSC_CONSTANT.BSC_TESTNET_CONFIGS,
+  pancakeConfigs: PANCAKE_CONSTANTS.PANCAKE_TESTNET_CONFIGS,
+  web3Configs: WEB3_CONSTANT.WEB3_TESTNET_CONFIGS,
 };
 
 const LOCAL_SERVER = {
@@ -97,8 +104,7 @@ const TEST_NET_1_SERVER = {
   name: 'Testnet 1',
   coinServices: 'https://api-coinservice-staging2.incognito.org',
   pubsubServices: 'https://api-coinservice-staging2.incognito.org/txservice',
-  requestServices:
-    'https://api-coinservice-staging2.incognito.org',
+  requestServices: 'https://api-coinservice-staging2.incognito.org',
   apiServices: 'https://privacyv2-api-service.incognito.org',
   shardNumber: DEFAULT_SHARD_NUMBER,
   IncContractAddress: '0xE0D5e7217c6C4bc475404b26d763fAD3F14D2b86',
@@ -115,17 +121,20 @@ export const DEV_TEST_SERVER = {
   username: '',
   password: '',
   name: 'Dev test server',
-  coinServices: 'http://51.161.119.66:7001',
-  pubsubServices: 'http://51.161.119.66:7003',
-  requestServices: 'http://51.161.119.66:5000',
-  apiServices: 'https://staging-api-service.incognito.org',
+  coinServices: 'http://51.161.119.66:6022',
+  pubsubServices: 'http://51.161.119.66:6030',
+  requestServices: 'http://51.161.119.66:6030',
+  apiServices: 'https://privacyv2-api-service.incognito.org',
   shardNumber: 2,
   IncContractAddress: '0xE0D5e7217c6C4bc475404b26d763fAD3F14D2b86',
   IncBSCContractAddress: '0x1ce57B254DC2DBB41e1aeA296Dc7dBD6fb549241',
   explorer: 'https://testnet1.incognito.org',
   portalServices: 'http://139.162.55.124:8010',
-  tradeServices: 'http://51.161.119.66:7001',
+  tradeServices: 'http://51.161.119.66:6022',
   webviewChartServices: 'https://chart-webview-staging.incognito.org',
+  bscConfigs: BSC_CONSTANT.BSC_TESTNET_CONFIGS,
+  pancakeConfigs: PANCAKE_CONSTANTS.PANCAKE_TESTNET_CONFIGS,
+  web3Configs: WEB3_CONSTANT.WEB3_TESTNET_CONFIGS,
 };
 
 const PORTAL_SERVER = {
@@ -138,8 +147,7 @@ const PORTAL_SERVER = {
   portalServices: 'http://192.168.146.58:8091',
   coinServices: 'https://api-coinservice-staging.incognito.org',
   pubsubServices: 'https://api-coinservice-staging.incognito.org/txservice',
-  requestServices:
-    'https://api-coinservice-staging.incognito.org',
+  requestServices: 'https://api-coinservice-staging.incognito.org',
   apiServices: 'https://staging-api-service.incognito.org',
   shardNumber: DEFAULT_SHARD_NUMBER,
   IncContractAddress: '0x2f6F03F1b43Eab22f7952bd617A24AB46E970dF7',
@@ -230,6 +238,9 @@ export default class Server {
               IncBSCContractAddress: server?.IncContractAddress || '',
               tradeServices: server?.tradeServices || '',
               webviewChartServices: server?.webviewChartServices || '',
+              bscConfigs: server?.bscConfigs || '',
+              web3Configs: server?.web3Configs || '',
+              pancakeConfigs: server?.pancakeConfigs || '',
             };
           }
         }

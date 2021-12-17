@@ -13,7 +13,12 @@ import { WalletIcon } from './Icons';
 import { TouchableOpacity } from './core';
 
 const styled = StyleSheet.create({
-  btnStyle: {},
+  btnStyle: {
+    width: 40,
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 });
 
 const SelectAccountButton = ({

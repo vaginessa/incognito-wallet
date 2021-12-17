@@ -6,7 +6,8 @@ import { useSelector } from 'react-redux';
 import { selectedPrivacySelector } from '@src/redux/selectors';
 import {streamlineConsolidateSelector} from '@screens/Streamline';
 import BigNumber from 'bignumber.js';
-import {ActivityIndicator, TouchableOpacity, View} from '@components/core';
+import {ActivityIndicator, TouchableOpacity, View, ScrollViewBorder} from '@components/core';
+import { View2 } from '@components/core/View';
 import { Text4 } from '@components/core/Text';
 import { styled } from '@components/Token/Token.styled';
 import { NormalText } from '@components/Token/Token';
@@ -66,23 +67,23 @@ const Item = React.memo(({ item, maxSize, index, loading, onPress }) => {
 const SelectToken = React.memo(({ onSelectItem, onPullRefresh }) => {
   const { UTXOSFiltered: UTXOS, isLoading, isFetching } = useSelector(streamlineConsolidateSelector);
   const renderItem = (data) => <Item item={data?.item} index={data?.index} maxSize={UTXOS.length - 1} loading={isFetching} onPress={onSelectItem} />;
-  return (
-    // marginHorizontal: 25, 
-    <View style={{ flex: 1 }}>
-      <Header title="Consolidate" accountSelectable style={{ paddingHorizontal: globalStyled.defaultPadding.paddingHorizontal }} />
+  return ( 
+    <View2>
+      <Header title="Consolidate" accountSelectable />
       {(isLoading) ?
         (<LoadingContainer />) : (
-          <FlatList
-            data={UTXOS}
-            refreshing={isFetching}
-            renderItem={renderItem}
-            keyExtractor={item => item.tokenID}
-            style={{ paddingTop: 30, paddingHorizontal: globalStyled.defaultPadding.paddingHorizontal }}
-            showsVerticalScrollIndicator={false}
-            onRefresh={onPullRefresh}
-          />
+          <ScrollViewBorder>
+            <FlatList
+              data={UTXOS}
+              refreshing={isFetching}
+              renderItem={renderItem}
+              keyExtractor={item => item.tokenID}
+              showsVerticalScrollIndicator={false}
+              onRefresh={onPullRefresh}
+            />
+          </ScrollViewBorder>
         )}
-    </View>
+    </View2>
   );
 });
 

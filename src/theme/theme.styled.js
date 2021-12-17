@@ -23,6 +23,9 @@ const globalStyled = StyleSheet.create({
     paddingHorizontal: 24,
     paddingTop: 24,
   },
+  defaultBorderRadius: {
+    borderRadius: 8,
+  }
 });
 
 export default globalStyled;

@@ -2,7 +2,7 @@ import React from 'react';
 import { Text } from '@src/components/core';
 import { View, StyleSheet } from 'react-native';
 import Extra, { styled as extraStyled } from '@screens/PDexV3/features/Extra';
-import { batch, useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { change, Field } from 'redux-form';
 import {
   RFBaseInput,
@@ -16,19 +16,29 @@ import format from '@src/utils/format';
 import convert from '@src/utils/convert';
 import { FONT } from '@src/styles';
 import {
+  SelectOptionInput,
+  SelectOptionModal,
+} from '@src/components/SelectOption';
+import { AppIcon, PancakeIcon } from '@src/components/Icons';
+import { actionToggleModal } from '@src/components/Modal';
+import {
   feetokenDataSelector,
   feeTypesSelector,
   inputAmountSelector,
   slippagetoleranceSelector,
   swapInfoSelector,
   swapSelector,
+  platformsSupportedSelector,
+  platformIdSelectedSelector,
+  isPrivacyAppSelector,
 } from './Swap.selector';
 import {
-  actionFetched,
-  actionEstimateTrade,
+  actionHandleInjectEstDataForPancake,
+  actionHandleInjectEstDataForPDex,
   actionSetFeeToken,
+  actionSwitchPlatform,
 } from './Swap.actions';
-import { formConfigs } from './Swap.constant';
+import { formConfigs, KEYS_PLATFORMS_SUPPORTED } from './Swap.constant';
 import {
   minFeeValidator,
   maxAmountValidatorForSlippageTolerance,
@@ -54,14 +64,22 @@ const TabPro = React.memo(() => {
   const sellinputAmount = inputAmount(formConfigs.selltoken);
   const buyInputAmount = inputAmount(formConfigs.buytoken);
   const prv: SelectedPrivacy = useSelector(getPrivacyDataByTokenID)(PRV.id);
+  const platformId = useSelector(platformIdSelectedSelector);
+  const isPrivacyApp = useSelector(isPrivacyAppSelector);
   const dispatch = useDispatch();
   const onChangeTypeFee = async (type) => {
     const { tokenId } = type;
-    batch(() => {
-      dispatch(actionSetFeeToken(tokenId));
-      dispatch(actionFetched({}));
-      dispatch(actionEstimateTrade());
-    });
+    await dispatch(actionSetFeeToken(tokenId));
+    switch (platformId) {
+    case KEYS_PLATFORMS_SUPPORTED.incognito:
+      await dispatch(actionHandleInjectEstDataForPDex());
+      break;
+    case KEYS_PLATFORMS_SUPPORTED.pancake:
+      await dispatch(actionHandleInjectEstDataForPancake());
+      break;
+    default:
+      break;
+    }
   };
   const onEndEditing = () => {
     if (Number(slippagetolerance) > 100 || slippagetolerance < 0) {
@@ -113,6 +131,38 @@ const TabPro = React.memo(() => {
     () => maxAmountValidatorForSlippageTolerance(slippagetolerance),
     [slippagetolerance],
   );
+  const platforms = useSelector(platformsSupportedSelector);
+  const options = React.useMemo(
+    () =>
+      platforms.map((platform) => {
+        let icon = null;
+        const isSelected = platform.isSelected;
+        switch (platform.id) {
+        case KEYS_PLATFORMS_SUPPORTED.incognito:
+          icon = <AppIcon />;
+          break;
+        case KEYS_PLATFORMS_SUPPORTED.pancake:
+          icon = <PancakeIcon />;
+          break;
+        default:
+          break;
+        }
+        return {
+          ...platform,
+          onPressItem: async (id) => {
+            if (isSelected) {
+              return;
+            }
+            dispatch(actionSwitchPlatform(id));
+            dispatch(actionToggleModal());
+          },
+          icon,
+        };
+      }),
+    [platforms],
+  );
+  const platformSelected = options.find((option) => !!option?.isSelected);
+
   let extraFactories = [
     {
       title: 'Slippage tolerance',
@@ -168,6 +218,31 @@ const TabPro = React.memo(() => {
       containerStyle: { marginBottom: 0 },
     },
   ];
+  if (!isPrivacyApp) {
+    extraFactories.unshift({
+      title: 'Switch platform',
+      hasQuestionIcon: true,
+      onPressQuestionIcon: () => null,
+      titleStyle: {
+        fontSize: FONT.SIZE.small,
+      },
+      hooks: (
+        <SelectOptionInput
+          options={options}
+          actived={platformSelected}
+          onPressItem={() => {
+            dispatch(
+              actionToggleModal({
+                visible: true,
+                shouldCloseModalWhenTapOverlay: true,
+                data: <SelectOptionModal options={options} />,
+              }),
+            );
+          }}
+        />
+      ),
+    });
+  }
   return (
     <View
       style={{

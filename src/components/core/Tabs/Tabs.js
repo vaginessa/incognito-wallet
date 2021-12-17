@@ -4,6 +4,7 @@ import { View } from '@src/components/core';
 import { BtnCircleBack } from '@components/Button';
 import {useNavigation} from 'react-navigation-hooks';
 import debounce from 'lodash/debounce';
+import globalStyled from '@src/theme/theme.styled';
 import { styled } from './Tabs.styled';
 import withTabs from './Tabs.enhance';
 
@@ -15,7 +16,12 @@ const Tabs = (props) => {
   const _handleGoBack = debounce(handleGoBack, 100);
 
   return (
-    <View style={[styled.tabs, styledTabs]}>
+    <View style={[
+      styled.tabs,
+      globalStyled.defaultPaddingHorizontal,
+      styledTabs,
+    ]}
+    >
       {!hideBackButton && (
         <BtnCircleBack onPress={_handleGoBack} />
       )}

@@ -36,3 +36,4 @@ export { default as ButtonRefresh } from './BtnRefresh';
 export { default as ButtonChart } from './BtnChart';
 export { default as BtnOrderHistory } from './BtnOrderHistory';
 export { default as BtnStar } from './BtnStar';
+export { default as ButtonTyni } from './ButtonTyni';
