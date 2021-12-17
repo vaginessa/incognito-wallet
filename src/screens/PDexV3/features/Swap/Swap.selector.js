@@ -15,7 +15,11 @@ import memoize from 'lodash/memoize';
 import { getExchangeRate, getPairRate, getPoolSize } from '@screens/PDexV3';
 import BigNumber from 'bignumber.js';
 import xor from 'lodash/xor';
-import { formConfigs, KEYS_PLATFORMS_SUPPORTED, PLATFORMS_SUPPORTED} from './Swap.constant';
+import {
+  formConfigs,
+  KEYS_PLATFORMS_SUPPORTED,
+  PLATFORMS_SUPPORTED,
+} from './Swap.constant';
 import { getInputAmount } from './Swap.utils';
 
 export const swapSelector = createSelector(
@@ -135,11 +139,20 @@ export const isPairSupportedTradeOnPancakeSelector = createSelector(
 );
 
 // platform supported
+export const platformsSelector = createSelector(
+  swapSelector,
+  ({ platforms }) => platforms,
+);
+
+export const platformsVisibleSelector = createSelector(
+  platformsSelector,
+  (platforms) => platforms.filter((platform) => !!platform?.visible),
+);
 
 export const platformsSupportedSelector = createSelector(
-  swapSelector,
+  platformsVisibleSelector,
   isPairSupportedTradeOnPancakeSelector,
-  ({ platforms }, isPairSupportedTradeOnPancake) => {
+  (platforms, isPairSupportedTradeOnPancake) => {
     if (!isPairSupportedTradeOnPancake) {
       return platforms.filter(
         (platform) => platform.id !== KEYS_PLATFORMS_SUPPORTED.pancake,
@@ -149,19 +162,27 @@ export const platformsSupportedSelector = createSelector(
   },
 );
 
-export const platformsVisibleSelector = createSelector(
-  platformsSupportedSelector,
-  (platforms) => platforms.filter((platform) => !!platform?.visible),
-);
-
 export const platformSelectedSelector = createSelector(
   platformsSupportedSelector,
-  (platforms) => platforms.find((platform) => !!platform.isSelected) || PLATFORMS_SUPPORTED[0],
+  (platforms) =>
+    platforms.find((platform) => !!platform.isSelected) ||
+    PLATFORMS_SUPPORTED[0],
 );
 
 export const platformIdSelectedSelector = createSelector(
   platformSelectedSelector,
   (platform) => platform.id,
+);
+
+export const isExchangeVisibleSelector = createSelector(
+  platformsSelector,
+  (platforms) =>
+    memoize((exchange) => {
+      const foundPlatform = platforms.find(
+        (platform) => platform?.id === exchange,
+      );
+      return !!foundPlatform?.visible;
+    }),
 );
 
 // fee data selector
@@ -613,4 +634,14 @@ export const defaultPairSelector = createSelector(
 export const swapFormErrorSelector = createSelector(
   (state) => state,
   (state) => getFormSyncErrors(formConfigs.formName)(state),
+);
+
+export const defaultExchangeSelector = createSelector(
+  swapSelector,
+  ({ defaultExchange }) => defaultExchange,
+);
+
+export const isPrivacyAppSelector = createSelector(
+  swapSelector,
+  ({ isPrivacyApp }) => isPrivacyApp,
 );
