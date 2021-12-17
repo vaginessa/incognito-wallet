@@ -2,6 +2,7 @@ import React from 'react';
 import Header from '@src/components/Header';
 import { useNavigationParam } from 'react-navigation-hooks';
 import { DropdownMenu, KeyboardAwareScrollView, View } from '@src/components/core';
+import { View2 } from '@src/components/core/View';
 import PropTypes from 'prop-types';
 import withListAllReceivers from './FrequentReceivers.enhance';
 import Item from './FrequentReceivers.item';
@@ -48,22 +49,24 @@ const ListReceivers = (props) => {
 const ListAllReceivers = (props) => {
   const { receivers, isEmpty } = props;
   return (
-    <View style={styled.container}>
+    <View2 style={styled.container} >
       <Header
         title="Search by name or address"
         style={styled.header}
         canSearch
       />
-      <KeyboardAwareScrollView
-        style={{
-          marginHorizontal: 25,
-        }}
-      >
-        <View>
-          <ListReceivers {...{ receivers, isEmpty }} />
-        </View>
-      </KeyboardAwareScrollView>
-    </View>
+      <View style={styled.container} borderTop>
+        <KeyboardAwareScrollView
+          style={{
+            marginHorizontal: 25,
+          }}
+        >
+          <View>
+            <ListReceivers {...{ receivers, isEmpty }} />
+          </View>
+        </KeyboardAwareScrollView>
+      </View>
+    </View2>
   );
 };
 

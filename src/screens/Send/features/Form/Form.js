@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { View, Text } from 'react-native';
-import { KeyboardAwareScrollView } from '@src/components/core';
+import { KeyboardAwareScrollView, View, Text, Button  } from '@src/components/core';
+import globalStyled from '@src/theme/theme.styled';
 import { Field } from 'redux-form';
 import {
   createForm,
@@ -13,7 +13,6 @@ import { SEND } from '@src/constants/elements';
 import { generateTestId } from '@src/utils/misc';
 import EstimateFee from '@components/EstimateFee/EstimateFee.input';
 import PropTypes from 'prop-types';
-import { ButtonBasic } from '@src/components/Button';
 import { useSelector } from 'react-redux';
 import { feeDataSelector } from '@src/components/EstimateFee/EstimateFee.selector';
 import { selectedPrivacySelector } from '@src/redux/selectors';
@@ -24,6 +23,7 @@ import format from '@src/utils/format';
 import useFeatureConfig from '@src/shared/hooks/featureConfig';
 import appConstant from '@src/constants/app';
 import { CONSTANT_COMMONS } from '@src/constants';
+import { colorsSelector } from '@src/theme/theme.selector';
 import { styledForm as styled } from './Form.styled';
 import withSendForm, { formName } from './Form.enhance';
 
@@ -109,6 +109,7 @@ const SendForm = (props) => {
   const submitHandler = handlePressSend;
   const [ childSelectedPrivacy, setChildSelectedPrivacy] = useState(null);
   const account = useSelector(defaultAccountSelector);
+  const colors = useSelector(colorsSelector);
 
   const renderMemo = () => {
     if (isUnShield) {
@@ -124,6 +125,9 @@ const SendForm = (props) => {
               validate={validateMemo}
               componentProps={{
                 editable: editableInput,
+                inputStyle: {
+                  color: colors.text1,
+                },
               }}
               autoFocus
             />
@@ -145,6 +149,9 @@ const SendForm = (props) => {
         maxLength={500}
         componentProps={{
           editable: editableInput,
+          inputStyle: {
+            color: colors.text1,
+          },
         }}
         {...generateTestId(SEND.MEMO_INPUT)}
       />
@@ -181,6 +188,7 @@ const SendForm = (props) => {
           items={platforms}
           name="currencyType"
           label="Network type"
+          labelStyle={{color: colors.text1}}
         />
       );
     }
@@ -198,7 +206,7 @@ const SendForm = (props) => {
   }, [navigation.state?.params]);
 
   return (
-    <View style={styled.container}>
+    <View style={[styled.container, globalStyled.defaultPadding3]} borderTop>
       <KeyboardAwareScrollView>
         <Form>
           {({ handleSubmit }) => (
@@ -217,6 +225,9 @@ const SendForm = (props) => {
                     marginTop: 22,
                   },
                   editable: editableInput,
+                  inputStyle: {
+                    color: colors.text1,
+                  },
                 }}
                 validate={amountValidator}
                 {...generateTestId(SEND.AMOUNT_INPUT)}
@@ -234,6 +245,9 @@ const SendForm = (props) => {
                 shouldStandardized
                 componentProps={{
                   editable: editableInput,
+                  inputStyle: {
+                    color: colors.text1,
+                  },
                 }}
                 {...generateTestId(SEND.ADDRESS_INPUT)}
               />
@@ -251,12 +265,13 @@ const SendForm = (props) => {
                 }}
               />
               {renderMemo()}
-              <ButtonBasic
+              <Button
                 title={titleBtnSubmit}
                 btnStyle={[
                   styled.submitBtn,
                   isUnShield ? styled.submitBtnUnShield : null,
                 ]}
+                style={{marginTop: 24}}
                 disabled={disabledForm || isDisabled}
                 onPress={handleSubmit(
                   submitHandler
