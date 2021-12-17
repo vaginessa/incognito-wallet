@@ -106,7 +106,7 @@ const TabNavigator = createMaterialBottomTabNavigator(
     activeColor: COLORS.colorBlue,
     inactiveColor: COLORS.lightGrey34,
     barStyle: {
-      backgroundColor: COLORS.white,
+      backgroundColor: '#191919',
     },
     shifting: false,
     labeled: false,
