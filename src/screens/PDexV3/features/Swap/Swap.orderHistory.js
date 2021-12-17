@@ -112,7 +112,7 @@ const OrderHistory = () => {
       <FlatList
         refreshControl={<RefreshControl refreshing={isFetching} />}
         data={history}
-        keyExtractor={(item) => item?.requestTx}
+        keyExtractor={(item) => item?.tradeID || item?.requestTx}
         renderItem={({ item, index }) => (
           <Order data={item} visibleDivider={index !== history.length - 1} />
         )}
