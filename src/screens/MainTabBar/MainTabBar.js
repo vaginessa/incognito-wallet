@@ -5,11 +5,12 @@ import More from '@screens/MainTabBar/features/More';
 import TabAssets from '@screens/MainTabBar/features/Assets';
 import TabTrade from '@screens/MainTabBar/features/Trade';
 import TabHomeLP from '@screens/MainTabBar/features/HomeLP';
+import TabPrivacyApps from '@screens/MainTabBar/features/PrivacyApps';
 import {
   MoreIcon,
   TradeIcon,
   LiquidityIcon,
-  AssetsIcon, ShieldIcon,
+  AssetsIcon, ShieldIcon, PrivacyAppsIcon,
 } from '@components/Icons';
 import { View, Text } from 'react-native';
 import Market from '@screens/MainTabBar/features/Market';
@@ -53,6 +54,21 @@ const TabNavigator = createMaterialBottomTabNavigator(
             </View>
             {focused && (
               <Text style={[styled.label, { color: tintColor }]}>Trade</Text>
+            )}
+          </View>
+        ),
+      },
+    },
+    PrivacyApps: {
+      screen: TabPrivacyApps,
+      navigationOptions: {
+        tabBarIcon: ({ focused, tintColor }) => (
+          <View style={styled.wrapBar}>
+            <View style={{ height: 24 }}>
+              <PrivacyAppsIcon active={focused} />
+            </View>
+            {focused && (
+              <Text style={[styled.label, { color: tintColor }]}>Apps</Text>
             )}
           </View>
         ),

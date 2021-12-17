@@ -93,3 +93,5 @@ export { default as MoreIcon } from './icon.more';
 export { default as WalletIcon } from './icon.wallet';
 export { default as EyeIcon } from './icon.eye';
 export { default as PancakeIcon } from './icon.pancake';
+export { default as PrivacyAppsIcon } from './icon.privacyApps';
+export { default as PancakeIcon2 } from './icon.pancake2';

@@ -28,6 +28,7 @@ import {
   ACTION_CHANGE_STATUS_VISIBLE_PLATFORM,
   ACTION_SAVE_LAST_FIELD,
   ACTION_CHANGE_ESTIMATE_DATA,
+  ACTION_SET_DEFAULT_EXCHANGE,
 } from './Swap.constant';
 
 const initialState = {
@@ -71,10 +72,25 @@ const initialState = {
   platforms: [...PLATFORMS_SUPPORTED],
   field: '',
   useMax: false,
+  defaultExchange: KEYS_PLATFORMS_SUPPORTED.incognito,
+  isPrivacyApp: false,
 };
 
 export default (state = initialState, action) => {
   switch (action.type) {
+  case ACTION_SET_DEFAULT_EXCHANGE: {
+    const { exchange, isPrivacyApp } = action.payload;
+    return {
+      ...state,
+      defaultExchange: exchange,
+      platforms: state.platforms.map((platform) =>
+        isPrivacyApp && exchange === platform.id
+          ? { ...platform, visible: true }
+          : { ...platform, visible: false },
+      ),
+      isPrivacyApp,
+    };
+  }
   case ACTION_SAVE_LAST_FIELD: {
     return {
       ...state,

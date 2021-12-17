@@ -20,7 +20,6 @@ import {
   SelectOptionModal,
 } from '@src/components/SelectOption';
 import { AppIcon, PancakeIcon } from '@src/components/Icons';
-import { useNavigation } from 'react-navigation-hooks';
 import { actionToggleModal } from '@src/components/Modal';
 import {
   feetokenDataSelector,
@@ -31,6 +30,7 @@ import {
   swapSelector,
   platformsSupportedSelector,
   platformIdSelectedSelector,
+  isPrivacyAppSelector,
 } from './Swap.selector';
 import {
   actionHandleInjectEstDataForPancake,
@@ -65,6 +65,7 @@ const TabPro = React.memo(() => {
   const buyInputAmount = inputAmount(formConfigs.buytoken);
   const prv: SelectedPrivacy = useSelector(getPrivacyDataByTokenID)(PRV.id);
   const platformId = useSelector(platformIdSelectedSelector);
+  const isPrivacyApp = useSelector(isPrivacyAppSelector);
   const dispatch = useDispatch();
   const onChangeTypeFee = async (type) => {
     const { tokenId } = type;
@@ -161,30 +162,8 @@ const TabPro = React.memo(() => {
     [platforms],
   );
   const platformSelected = options.find((option) => !!option?.isSelected);
+
   let extraFactories = [
-    {
-      title: 'Switch platform',
-      hasQuestionIcon: true,
-      onPressQuestionIcon: () => null,
-      titleStyle: {
-        fontSize: FONT.SIZE.small,
-      },
-      hooks: (
-        <SelectOptionInput
-          options={options}
-          actived={platformSelected}
-          onPressItem={() => {
-            dispatch(
-              actionToggleModal({
-                visible: true,
-                shouldCloseModalWhenTapOverlay: true,
-                data: <SelectOptionModal options={options} />,
-              }),
-            );
-          }}
-        />
-      ),
-    },
     {
       title: 'Slippage tolerance',
       titleStyle: {
@@ -239,6 +218,31 @@ const TabPro = React.memo(() => {
       containerStyle: { marginBottom: 0 },
     },
   ];
+  if (!isPrivacyApp) {
+    extraFactories.unshift({
+      title: 'Switch platform',
+      hasQuestionIcon: true,
+      onPressQuestionIcon: () => null,
+      titleStyle: {
+        fontSize: FONT.SIZE.small,
+      },
+      hooks: (
+        <SelectOptionInput
+          options={options}
+          actived={platformSelected}
+          onPressItem={() => {
+            dispatch(
+              actionToggleModal({
+                visible: true,
+                shouldCloseModalWhenTapOverlay: true,
+                data: <SelectOptionModal options={options} />,
+              }),
+            );
+          }}
+        />
+      ),
+    });
+  }
   return (
     <View
       style={{
