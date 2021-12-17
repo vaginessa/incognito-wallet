@@ -201,4 +201,5 @@ export default {
   More: 'More',
   Market: 'Market',
   SelectOptionModal: 'SelectOptionModal',
+  PrivacyAppsPancake: 'PrivacyAppsPancake',
 };

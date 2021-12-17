@@ -51,6 +51,7 @@ import {
   KEYS_PLATFORMS_SUPPORTED,
   ACTION_SAVE_LAST_FIELD,
   ACTION_CHANGE_ESTIMATE_DATA,
+  ACTION_SET_DEFAULT_EXCHANGE,
 } from './Swap.constant';
 import {
   buytokenSelector,
@@ -68,6 +69,9 @@ import {
   hashmapContractIDsSelector,
   platformSelectedSelector,
   isPairSupportedTradeOnPancakeSelector,
+  defaultExchangeSelector,
+  isPrivacyAppSelector,
+  isExchangeVisibleSelector,
 } from './Swap.selector';
 import {
   calMintAmountExpected,
@@ -75,6 +79,14 @@ import {
   findBestRateOfMaxBuyAmount,
   findBestRateOfMinSellAmount,
 } from './Swap.utils';
+
+export const actionSetDefaultExchange = ({ isPrivacyApp, exchange }) => ({
+  type: ACTION_SET_DEFAULT_EXCHANGE,
+  payload: {
+    isPrivacyApp,
+    exchange,
+  },
+});
 
 export const actionChangeEstimateData = (payload) => ({
   type: ACTION_CHANGE_ESTIMATE_DATA,
@@ -307,6 +319,15 @@ export const actionEstimateTradeForPDex =
     let maxBuyOriginalAmount = 0;
     try {
       let state = getState();
+      const isExchangeVisible = isExchangeVisibleSelector(state)(
+        KEYS_PLATFORMS_SUPPORTED.incognito,
+      );
+      if (!isExchangeVisible) {
+        return {
+          minSellOriginalAmount,
+          maxBuyOriginalAmount,
+        };
+      }
       const { payFeeByPRV, field } = feetokenDataSelector(state);
       const { sellamount, buyamount } = payload;
       const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
@@ -427,6 +448,15 @@ export const actionEstimateTradeForPancake =
     try {
       const { selltoken, buytoken, sellamount, buyamount } = payload;
       let state = getState();
+      const isExchangeVisible = isExchangeVisibleSelector(state)(
+        KEYS_PLATFORMS_SUPPORTED.pancake,
+      );
+      if (!isExchangeVisible) {
+        return {
+          minSellOriginalAmount,
+          maxBuyOriginalAmount,
+        };
+      }
       const isPairSup = isPairSupportedTradeOnPancakeSelector(state);
       const { field } = feetokenDataSelector(state);
       const getPancakeTokenParamReq = findTokenPancakeByIdSelector(state);
@@ -621,7 +651,7 @@ export const actionFindBestRateBetweenPlatforms =
         platformIdHasBestRate = KEYS_PLATFORMS_SUPPORTED[platformIdHasBestRate]
           ? platformIdHasBestRate
           : KEYS_PLATFORMS_SUPPORTED.incognito;
-        console.log('platformIdHasBestRate',platformIdHasBestRate);
+        console.log('platformIdHasBestRate', platformIdHasBestRate);
         if (platformIdHasBestRate) {
           await dispatch(actionSwitchPlatform(platformIdHasBestRate));
         }
@@ -749,16 +779,29 @@ export const actionFetchPairs = (refresh) => async (dispatch, getState) => {
     if (!refresh && listPairs.length > 0) {
       return listPairs;
     }
-    [pDEXPairs, pancakeTokens] = await Promise.all([
-      pDexV3Inst.getListPair(),
-      pDexV3Inst.getPancakeTokens(),
-    ]);
-    pairs = pDEXPairs.reduce(
-      (prev, current) =>
-        (prev = prev.concat([current.tokenId1, current.tokenId2])),
-      [],
-    );
-    pairs = [...pairs, ...pancakeTokens.map((t) => t?.tokenID)];
+    const defaultExchange = defaultExchangeSelector(state);
+    const isPrivacyApp = isPrivacyAppSelector(state);
+    if (!isPrivacyApp) {
+      [pDEXPairs, pancakeTokens] = await Promise.all([
+        pDexV3Inst.getListPair(),
+        pDexV3Inst.getPancakeTokens(),
+      ]);
+      pairs = pDEXPairs.reduce(
+        (prev, current) =>
+          (prev = prev.concat([current.tokenId1, current.tokenId2])),
+        [],
+      );
+      pairs = [...pairs, ...pancakeTokens.map((t) => t?.tokenID)];
+    } else {
+      switch (defaultExchange) {
+      case KEYS_PLATFORMS_SUPPORTED.pancake:
+        pancakeTokens = await pDexV3Inst.getPancakeTokens();
+        pairs = [...pancakeTokens.map((t) => t?.tokenID)];
+        break;
+      default:
+        break;
+      }
+    }
     pairs = uniq(pairs);
   } catch (error) {
     new ExHandler(error).showErrorToast();
@@ -772,6 +815,7 @@ export const actionInitSwapForm =
     async (dispatch, getState) => {
       try {
         const state = getState();
+        const defaultExchange = defaultExchangeSelector(state);
         const isUsePRVToPayFee = isUsePRVToPayFeeSelector(state);
         let pair = defaultPair || defaultPairSelector(state);
         batch(() => {
@@ -779,17 +823,15 @@ export const actionInitSwapForm =
           dispatch(reset(formConfigs.formName));
           dispatch(actionSetSellTokenFetched(pair?.selltoken));
           dispatch(actionSetBuyTokenFetched(pair?.buytoken));
-          dispatch(
-            actionChangeSelectedPlatform(KEYS_PLATFORMS_SUPPORTED.incognito),
-          );
+          dispatch(actionChangeSelectedPlatform(defaultExchange));
         });
         const pairs = await dispatch(actionFetchPairs(refresh));
         const isDefaultPairExisted =
         difference([pair?.selltoken, pair?.buytoken], pairs).length === 0;
         if (!pair?.selltoken || !pair?.buytoken || !isDefaultPairExisted) {
           pair = {
-            selltoken: PRV_ID,
-            buytoken: pairs.find((i) => i === BIG_COINS.USDT),
+            selltoken: pairs[0],
+            buytoken: pairs[1],
           };
           batch(() => {
             dispatch(actionSetSellTokenFetched(pair.selltoken));
@@ -797,7 +839,7 @@ export const actionInitSwapForm =
           });
         }
         const { selltoken } = pair;
-        batch(() => { 
+        batch(() => {
           dispatch(
             change(formConfigs.formName, formConfigs.slippagetolerance, '1'),
           );
@@ -1028,16 +1070,30 @@ export const actionFetchFailOrderHistory = () => ({
   type: ACTION_FETCH_FAIL_ORDERS_HISTORY,
 });
 
-export const actionFetchHistory = () => async (dispatch) => {
+export const actionFetchHistory = () => async (dispatch, getState) => {
   let history = [];
   try {
     await dispatch(actionFetchingOrdersHistory());
+    const state = getState();
     const pDexV3 = await dispatch(actionGetPDexV3Inst());
-    const [swapHistory, pancakeHistory] = await Promise.all([
-      pDexV3.getSwapHistory({ version: PrivacyVersion.ver2 }),
-      pDexV3.getSwapPancakeHistory(),
-    ]);
-    history = flatten([swapHistory, pancakeHistory]);
+    const defaultExchange = defaultExchangeSelector(state);
+    const isPrivacyApp = isPrivacyAppSelector(state);
+    if (!isPrivacyApp) {
+      const [swapHistory, pancakeHistory] = await Promise.all([
+        pDexV3.getSwapHistory({ version: PrivacyVersion.ver2 }),
+        pDexV3.getSwapPancakeHistory(),
+      ]);
+      history = flatten([swapHistory, pancakeHistory]);
+    } else {
+      switch (defaultExchange) {
+      case KEYS_PLATFORMS_SUPPORTED.pancake: {
+        history = await pDexV3.getSwapPancakeHistory();
+        break;
+      }
+      default:
+        break;
+      }
+    }
     history = orderBy(history, 'requestime', 'desc');
     await dispatch(actionFetchedOrdersHistory(history));
   } catch (error) {

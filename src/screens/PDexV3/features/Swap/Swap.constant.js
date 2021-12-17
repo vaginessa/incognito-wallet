@@ -38,7 +38,10 @@ export const ACTION_CHANGE_STATUS_VISIBLE_PLATFORM =
 
 export const ACTION_SAVE_LAST_FIELD = '[pDexV3][swap] Save last field';
 export const ACTION_CHANGE_ESTIMATE_DATA =
-  '[pDexV3][swap] Change estimate dataÎ';
+  '[pDexV3][swap] Change estimate data';
+
+export const ACTION_SET_DEFAULT_EXCHANGE =
+  '[pDexV3][swap] Set default exchange';
 
 export const TAB_SIMPLE_ID = '[swap] simple';
 export const TAB_PRO_ID = '[swap] pro';

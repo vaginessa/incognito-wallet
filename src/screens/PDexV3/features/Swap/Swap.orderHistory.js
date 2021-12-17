@@ -75,7 +75,7 @@ const Order = React.memo(({ data, visibleDivider }) => {
   if (!data?.requestTx) {
     return null;
   }
-  const { statusStr, swapStr, requestTx } = data;
+  const { statusStr, swapStr, requestTx, tradeID } = data;
   const handleNavOrderDetail = async () => {
     await dispatch(actionFetchedOrderDetail(data));
     navigation.navigate(routeNames.OrdeSwapDetail);
@@ -90,7 +90,7 @@ const Order = React.memo(({ data, visibleDivider }) => {
               numberOfLines={1}
               ellipsizeMode="middle"
             >
-              {`#${requestTx}`}
+              {`#${tradeID || requestTx}`}
             </Text>
             <Text style={styled.title}>Swap</Text>
           </Row>
@@ -112,7 +112,7 @@ const OrderHistory = () => {
       <FlatList
         refreshControl={<RefreshControl refreshing={isFetching} />}
         data={history}
-        keyExtractor={(item) => item?.requestTx}
+        keyExtractor={(item) => item?.tradeID || item?.requestTx}
         renderItem={({ item, index }) => (
           <Order data={item} visibleDivider={index !== history.length - 1} />
         )}
