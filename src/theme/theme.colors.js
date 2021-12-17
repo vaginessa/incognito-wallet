@@ -13,9 +13,9 @@ export function appTheme(darkMode: boolean) {
     background4: darkMode ? white : black,
     background5: darkMode ? '#404040' : white,
     background6: darkMode ? '#1A73E8' : '#404040',  // blue - gray
-    background7: darkMode ? '#404040' : '#F4F4F4', 
+    background7: darkMode ? '#404040' : '#F4F4F4',
     background8: darkMode ? '#F6465D' : '#ECECEC',  // red - gray
-    background9: darkMode ? '#404040' : '#333335',  
+    background9: darkMode ? '#404040' : '#333335',
 
     // text
     text1: darkMode ? white : black,
@@ -43,5 +43,8 @@ export function appTheme(darkMode: boolean) {
 
     // icon
     icon1: darkMode ? '#1A73E8' : '#1A73E8',  // green - blue
+
+    // image
+    image1: darkMode ? white : black,
   };
 }

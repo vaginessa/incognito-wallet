@@ -6,10 +6,12 @@ import { COLORS, FONT } from '@src/styles';
 
 const styled = StyleSheet.create({
   btnStyle: {
-    backgroundColor: 'transparent',
-    borderRadius: 0,
+    borderRadius: 100,
     padding: 0,
-    marginRight: 24,
+    marginRight: 8,
+    overflow: 'hidden',
+    backgroundColor: '#303030',
+    height: 40
   },
   btnStyleEnabled: {
     borderBottomColor: COLORS.colorBlue,
@@ -20,15 +22,16 @@ const styled = StyleSheet.create({
     borderBottomColor: 'transparent',
   },
   titleStyle: {
-    color: COLORS.black,
     padding: 0,
     margin: 0,
     fontSize: FONT.SIZE.regular,
     fontFamily: FONT.NAME.medium,
     lineHeight: FONT.SIZE.regular + 5,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
   },
   titleDisabledStyle: {
-    color: COLORS.colorGreyLight,
+    color: '#9C9C9C',
   },
 });
 
@@ -43,13 +46,12 @@ const Tab1 = (props) => {
     titleStyled,
     titleDisabledStyled,
     tabStyledEnabled,
-    upperCase,
   } = props;
   const onClick = () => typeof onClickTab === 'function' && onClickTab(tabID);
   const disabled = tabID !== activeTab;
   return (
     <ButtonBasic
-      title={upperCase && label ? label.toUpperCase() : label}
+      title={label}
       onPress={onClick}
       btnStyle={
         tabStyled
@@ -74,7 +76,6 @@ Tab1.defaultProps = {
   tabStyledDisabled: null,
   titleDisabledStyled: null,
   tabStyledEnabled: null,
-  upperCase: true
 };
 
 Tab1.propTypes = {
@@ -87,7 +88,6 @@ Tab1.propTypes = {
   titleStyled: PropTypes.any,
   titleDisabledStyled: PropTypes.any,
   tabStyledEnabled: PropTypes.any,
-  upperCase: PropTypes.bool
 };
 
 export default React.memo(Tab1);

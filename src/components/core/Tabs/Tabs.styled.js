@@ -4,12 +4,12 @@ import { COLORS } from '@src/styles';
 export const styled = StyleSheet.create({
   tabs: {
     backgroundColor: 'transparent',
-    minHeight: 50,
+    minHeight: 64,
   },
   tabList: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    backgroundColor: COLORS.colorGreyLight1,
+    backgroundColor: 'transparent',
     borderRadius: 40,
     flex: 1,
   },
@@ -22,5 +22,6 @@ export const styled = StyleSheet.create({
   },
   tabContent: {
     flex: 1,
+    overflow: 'hidden'
   },
 });
