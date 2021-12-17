@@ -15,6 +15,7 @@ export function appTheme(darkMode: boolean) {
     background6: darkMode ? '#1A73E8' : '#404040',  // blue - gray
     background7: darkMode ? '#404040' : '#F4F4F4', 
     background8: darkMode ? '#F6465D' : '#ECECEC',  // red - gray
+    background9: darkMode ? '#404040' : '#333335',  
 
     // text
     text1: darkMode ? white : black,
@@ -27,6 +28,7 @@ export function appTheme(darkMode: boolean) {
     text7: darkMode ? '#64A121' : black,
     text8: darkMode ? white : '#D6D6D6',
     text9: darkMode ? white : '#8A8A8E',
+    text10: darkMode ? '#757575' : '#9C9C9C',
 
     // button
     btnBG1: darkMode ? '#1A73E8' : '#1A73E8',

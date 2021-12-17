@@ -36,7 +36,6 @@ const style = StyleSheet.create({
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.superMedium,
     lineHeight: FONT.SIZE.superMedium + 4,
-    color: COLORS.colorGreyBold,
     marginRight: 5,
     padding: 0,
   },

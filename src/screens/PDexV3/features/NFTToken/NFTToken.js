@@ -1,6 +1,6 @@
 import { Header } from '@src/components';
 import { useDispatch, useSelector } from 'react-redux';
-import { ScrollView, Text, View } from '@src/components/core';
+import { ScrollView, Text, View, ScrollViewBorder } from '@src/components/core';
 import { withLayout_2 } from '@src/components/Layout';
 import React from 'react';
 import CopiableText from '@src/components/CopiableText';
@@ -67,16 +67,16 @@ const NFTToken = (props) => {
     [],
   );
   return (
-    <View style={styled.container}>
-      <Header title="Tickets" style={{ paddingHorizontal: globalStyled.defaultPadding.paddingHorizontal }} />
-      <ScrollView style={styled.scrollview}>
+    <>
+      <Header title="Tickets" />
+      <ScrollViewBorder style={styled.scrollview}>
         {hookFactories.map((hook) => (
           <NFTTokenHook {...hook} key={hook.label} />
         ))}
         <ListNFTToken />
         <FormMint />
-      </ScrollView>
-    </View>
+      </ScrollViewBorder>
+    </>
   );
 };
 

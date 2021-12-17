@@ -11,8 +11,10 @@ import { useSelector } from 'react-redux';
 import { masterKeysSelector } from '@src/redux/selectors/masterKey';
 import { validateName } from '@screens/BackUpPassphrase/utils';
 import { CheckBox } from 'react-native-elements';
-import checkedIcon from '@assets/images/icons/checked-checkbox.png';
-import uncheckedIcon from '@assets/images/icons/unchecked-checkbox.png';
+// import checkedIcon from '@assets/images/icons/checked-checkbox.png';
+// import uncheckedIcon from '@assets/images/icons/unchecked-checkbox.png';
+import checkedIcon from '@assets/images/icons/checked-checkbox-darkmode.png';
+import uncheckedIcon from '@assets/images/icons/unchecked-checkbox-darkmode.png';
 import globalStyled from '@src/theme/theme.styled';
 import { colorsSelector } from '@src/theme/theme.selector';
 

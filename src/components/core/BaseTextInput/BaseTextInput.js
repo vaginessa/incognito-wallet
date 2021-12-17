@@ -1,10 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { TextInputProps } from 'react-native';
-import { COLORS } from '@src/styles';
 import styled from 'styled-components/native';
+import { colorsSelector } from '@src/theme/theme.selector';
+import { useSelector } from 'react-redux';
 import styles from './styles';
-
 
 const StyledInput = styled.TextInput`
   color: ${({ theme }) => theme.text1};
@@ -12,9 +12,10 @@ const StyledInput = styled.TextInput`
 
 const BaseTextInput = (props: TextInputProps) => {
   const { style, editable = true, ...rest } = props;
+  const colors = useSelector(colorsSelector);
   return (
     <StyledInput
-      placeholderTextColor={COLORS.white}
+      placeholderTextColor={colors.text10}
       returnKeyType="done"
       autoCorrect={false}
       spellCheck={false}
@@ -22,7 +23,7 @@ const BaseTextInput = (props: TextInputProps) => {
       style={[
         styles.input,
         style,
-        !editable ? { color: COLORS.newGrey } : null,
+        !editable ? { color: colors.text4 } : null,
       ]}
       editable={editable}
       {...rest}

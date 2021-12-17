@@ -17,6 +17,7 @@ import { THEME } from '@src/styles';
 const styles = StyleSheet.create({
   padding: {
     marginHorizontal: 25,
+    paddingBottom: 5,
   },
   actions: {
     marginTop: 20,
