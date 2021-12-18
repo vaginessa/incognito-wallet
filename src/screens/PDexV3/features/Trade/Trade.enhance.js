@@ -39,7 +39,9 @@ const enhance = (WrappedComp) => (props) => {
       await setRefreshing(true);
       switch (activedTab) {
       case TAB_SWAP_ID: {
-        await dispatch(actionInitSwapForm());
+        await dispatch(
+          actionInitSwapForm({ refresh: true, shouldFetchHistory: true }),
+        );
         break;
       }
       case TAB_SELL_LIMIT_ID:
@@ -73,14 +75,13 @@ const enhance = (WrappedComp) => (props) => {
   }
   return (
     <ErrorBoundary>
-      <WrappedComp {...{ ...props, refreshing, onRefresh, shouldLazy: false }} />
+      <WrappedComp
+        {...{ ...props, refreshing, onRefresh, shouldLazy: false }}
+      />
       {(activedTab === TAB_BUY_LIMIT_ID ||
         activedTab === TAB_SELL_LIMIT_ID) && <NFTTokenBottomBar />}
     </ErrorBoundary>
   );
 };
 
-export default compose(
-  enhance,
-  withLayout_2,
-);
+export default compose(enhance, withLayout_2);
