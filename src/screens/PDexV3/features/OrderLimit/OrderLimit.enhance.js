@@ -26,7 +26,7 @@ import {
 
 const enhance = (WrappedComp) => (props) => {
   const dispatch = useDispatch();
-  const { cfmTitle, disabledBtn, accountBalance, activedTab } = useSelector(
+  const { cfmTitle, disabledBtn, accountBalance } = useSelector(
     orderLimitDataSelector,
   );
   const { isFetching, isFetched } = useSelector(orderLimitSelector);
