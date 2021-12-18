@@ -52,6 +52,7 @@ import {
   ACTION_SAVE_LAST_FIELD,
   ACTION_CHANGE_ESTIMATE_DATA,
   ACTION_SET_DEFAULT_EXCHANGE,
+  ACTION_FREE_HISTORY_ORDERS
 } from './Swap.constant';
 import {
   buytokenSelector,
@@ -810,6 +811,10 @@ export const actionFetchPairs = (refresh) => async (dispatch, getState) => {
   return pairs;
 };
 
+export const actionFreeHistoryOrders = () => ({
+  type: ACTION_FREE_HISTORY_ORDERS,
+});
+
 export const actionInitSwapForm =
   ({ refresh = true, defaultPair = {}, shouldFetchHistory = false } = {}) =>
     async (dispatch, getState) => {
@@ -824,6 +829,9 @@ export const actionInitSwapForm =
           dispatch(actionSetSellTokenFetched(pair?.selltoken));
           dispatch(actionSetBuyTokenFetched(pair?.buytoken));
           dispatch(actionChangeSelectedPlatform(defaultExchange));
+          if (refresh && shouldFetchHistory) {
+            dispatch(actionFreeHistoryOrders());
+          }
         });
         const pairs = await dispatch(actionFetchPairs(refresh));
         const isDefaultPairExisted =

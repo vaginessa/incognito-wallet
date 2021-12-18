@@ -29,6 +29,7 @@ import {
   ACTION_SAVE_LAST_FIELD,
   ACTION_CHANGE_ESTIMATE_DATA,
   ACTION_SET_DEFAULT_EXCHANGE,
+  ACTION_FREE_HISTORY_ORDERS,
 } from './Swap.constant';
 
 const initialState = {
@@ -78,6 +79,12 @@ const initialState = {
 
 export default (state = initialState, action) => {
   switch (action.type) {
+  case ACTION_FREE_HISTORY_ORDERS: {
+    return {
+      ...state,
+      swapHistory: Object.assign({}, initialState.swapHistory),
+    };
+  }
   case ACTION_SET_DEFAULT_EXCHANGE: {
     const { exchange, isPrivacyApp } = action.payload;
     return {

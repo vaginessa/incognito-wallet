@@ -42,7 +42,7 @@ export const ACTION_CHANGE_ESTIMATE_DATA =
 
 export const ACTION_SET_DEFAULT_EXCHANGE =
   '[pDexV3][swap] Set default exchange';
-
+export const ACTION_FREE_HISTORY_ORDERS = '[pDexV3][swap] Free history orders';
 export const TAB_SIMPLE_ID = '[swap] simple';
 export const TAB_PRO_ID = '[swap] pro';
 export const ROOT_TAB_ID = 'ROOT_TAB_SWAP';
