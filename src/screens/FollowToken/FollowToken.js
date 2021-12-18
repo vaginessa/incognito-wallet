@@ -1,11 +1,12 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, TouchableOpacity } from '@src/components/core';
+import { View2 } from '@src/components/core/View';
+import globalStyled from '@src/theme/theme.styled';
 import Header from '@src/components/Header';
 import {TokenBasic as Token, ListAllToken, TokenFollow} from '@src/components/Token';
 import PropTypes from 'prop-types';
 import routeNames from '@src/router/routeNames';
 import { useNavigation } from 'react-navigation-hooks';
-import { TouchableOpacity } from '@src/components/core';
 import { styled } from './FollowToken.styled';
 import withFollowToken from './FollowToken.enhance';
 
@@ -42,16 +43,18 @@ export const Item = ({ item, handleToggleFollowToken }) =>
 const FollowTokenList = React.memo((props) => {
   const { handleToggleFollowToken, ...rest } = props;
   return (
-    <View style={styled.container}>
+    <View2 style={styled.container}>
       <Header title="Add a coin" canSearch />
-      <ListAllToken
-        {...rest}
-        renderItem={({ item }) => (
-          <TokenFollow item={item} handleToggleFollowToken={handleToggleFollowToken} onPress={() => handleToggleFollowToken(item)} />
-        )}
-      />
-      <AddManually />
-    </View>
+      <View borderTop style={[ {paddingTop: 20, flex : 1}, globalStyled.defaultPadding3]}>
+        <ListAllToken
+          {...rest}
+          renderItem={({ item }) => (
+            <TokenFollow item={item} handleToggleFollowToken={handleToggleFollowToken} onPress={() => handleToggleFollowToken(item)} />
+          )}
+        />
+        <AddManually />
+      </View>
+    </View2>
   );
 });
 

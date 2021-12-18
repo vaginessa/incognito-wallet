@@ -7,7 +7,7 @@ export default StyleSheet.create({
     flex: 1,
   },
   modalContainer: {
-    backgroundColor: COLORS.white,
+    // backgroundColor: COLORS.white,
   },
   selectNetworkButtonLabel: {
     fontSize: FONT.SIZE.regular,
@@ -23,20 +23,18 @@ export default StyleSheet.create({
   },
   selectNetworkValueIcon: {},
   typesContainer: {
-    backgroundColor: 'white',
+    // backgroundColor: 'white',
     flex: 1,
   },
   text: {
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.superMedium,
     lineHeight: FONT.SIZE.superMedium + 4,
-    color: COLORS.colorGreyBold,
   },
   boldText: {
     fontFamily: FONT.NAME.bold,
     fontSize: FONT.SIZE.superMedium,
     lineHeight: FONT.SIZE.superMedium + 4,
-    color: COLORS.black,
   },
   selectType: {},
   extra: {
