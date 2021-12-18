@@ -19,7 +19,6 @@ export const styled = StyleSheet.create({
   labelText: {
     flex: 1,
     fontFamily: FONT.NAME.medium,
-    color: COLORS.colorGreyBold,
     fontSize: 15,
     lineHeight: 18,
     minWidth: 70,
@@ -31,7 +30,6 @@ export const styled = StyleSheet.create({
   },
   valueText: {
     fontFamily: FONT.NAME.bold,
-    color: COLORS.black,
     fontSize: 15,
     lineHeight: 18,
     textAlign: 'left',

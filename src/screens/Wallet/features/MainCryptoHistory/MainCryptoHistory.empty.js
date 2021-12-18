@@ -1,5 +1,5 @@
-import { Image, Text } from '@src/components/core';
-import { View, StyleSheet } from 'react-native';
+import { View, Image, Text } from '@src/components/core';
+import { StyleSheet } from 'react-native';
 import React from 'react';
 import noTransaction from '@assets/images/icons/shield_prv.png';
 import { selectedPrivacySelector } from '@src/redux/selectors';
@@ -14,7 +14,6 @@ const styles = StyleSheet.create({
     marginTop: 15,
   },
   text: {
-    color: COLORS.colorGreyBold,
     textAlign: 'center',
     lineHeight: FONT.SIZE.regular + 4,
     fontSize: FONT.SIZE.regular,

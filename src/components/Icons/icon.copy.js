@@ -2,6 +2,8 @@ import React from 'react';
 import { Image, StyleSheet } from 'react-native';
 import { View } from '@src/components/core';
 import srcCopy from '@src/assets/images/new-icons/copy.png';
+import { useSelector } from 'react-redux';
+import { colorsSelector } from '@src/theme/theme.selector';
 
 const styled = StyleSheet.create({
   container: {
@@ -17,8 +19,10 @@ const styled = StyleSheet.create({
 });
 
 const IconCopy = (props) => {
+  const { isHeader } = props;
+  const colors = useSelector(colorsSelector);
   return (
-    <View style={[styled.container, props?.containerStyle]}>
+    <View style={[styled.container, props?.containerStyle, isHeader ? { backgroundColor: colors.background10 } : {} ]}>
       <Image style={[styled.icon, props?.style]} source={srcCopy} />
     </View>
   );
