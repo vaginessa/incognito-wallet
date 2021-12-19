@@ -14,8 +14,8 @@ import {
 import { View, Text } from 'react-native';
 import Market from '@screens/MainTabBar/features/Market';
 import { createBottomTabNavigator, BottomTabBar } from 'react-navigation-tabs';
-import { View2 } from '@components/core/View';
 import styledComp from 'styled-components/native';
+import { SafeAreaView } from '@components/core';
 import { styled } from './MainTabBar.styled';
 
 const CustomBottomTabBar = styledComp(BottomTabBar)`
@@ -24,10 +24,14 @@ const CustomBottomTabBar = styledComp(BottomTabBar)`
   align-items: center;
 `;
 
+const CustomSafeAreaView = styledComp(SafeAreaView)`
+  background-color: ${({ theme }) => theme.background2};
+`;
+
 const TabBarComponent = (props) => (
-  <View2 style={{ height: 60 }}>
+  <CustomSafeAreaView>
     <CustomBottomTabBar {...props} />
-  </View2>
+  </CustomSafeAreaView>
 );
 
 const TabNavigator = createBottomTabNavigator(
@@ -97,7 +101,7 @@ const TabNavigator = createBottomTabNavigator(
       showLabel: false,
       style: {
         borderTopWidth: 0,
-        paddingTop: 3
+        paddingTop: 8,
       },
       shifting: false,
       labeled: false,
