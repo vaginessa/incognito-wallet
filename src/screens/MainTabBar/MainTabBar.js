@@ -8,7 +8,6 @@ import {
   TradeIcon,
   AssetsIcon,
   PrivacyAppsIcon,
-  ShieldIcon,
   MarketIcon
 } from '@components/Icons';
 import { View, Text } from 'react-native';
