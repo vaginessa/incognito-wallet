@@ -7,17 +7,26 @@ export const DEFAULT_PADDING = 24;
 export const styled = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 10
+    paddingTop: 10,
   },
   wrapBar: {
     width: ScreenWidth / 5,
     alignItems: 'center',
     justifyContent: 'center',
   },
+  centerTab: {
+    bottom: 0,
+    borderRadius: 48,
+    top: -16,
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'absolute',
+  },
   label: {
     ...FONT.STYLE.normal,
     fontSize: FONT.SIZE.superSmall,
     lineHeight: FONT.SIZE.superSmall + 6,
+    height: FONT.SIZE.superSmall + 6,
     marginTop: 2
   }
 });

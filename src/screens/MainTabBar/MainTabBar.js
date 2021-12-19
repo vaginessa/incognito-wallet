@@ -1,32 +1,44 @@
 import React from 'react';
-import { createMaterialBottomTabNavigator } from 'react-navigation-material-bottom-tabs';
-import { COLORS } from '@src/styles';
 import More from '@screens/MainTabBar/features/More';
 import TabAssets from '@screens/MainTabBar/features/Assets';
 import TabTrade from '@screens/MainTabBar/features/Trade';
-import TabHomeLP from '@screens/MainTabBar/features/HomeLP';
 import TabPrivacyApps from '@screens/MainTabBar/features/PrivacyApps';
 import {
   MoreIcon,
   TradeIcon,
-  LiquidityIcon,
-  AssetsIcon, ShieldIcon, PrivacyAppsIcon,
+  AssetsIcon,
+  PrivacyAppsIcon,
+  ShieldIcon,
+  MarketIcon
 } from '@components/Icons';
 import { View, Text } from 'react-native';
 import Market from '@screens/MainTabBar/features/Market';
+import { createBottomTabNavigator, BottomTabBar } from 'react-navigation-tabs';
+import { View2 } from '@components/core/View';
+import styledComp from 'styled-components/native';
 import { styled } from './MainTabBar.styled';
 
-const TabNavigator = createMaterialBottomTabNavigator(
+const CustomBottomTabBar = styledComp(BottomTabBar)`
+  background-color: ${({ theme }) => theme.background2};
+  display: flex;
+  align-items: center;
+`;
+
+const TabBarComponent = (props) => (
+  <View2 style={{ height: 60 }}>
+    <CustomBottomTabBar {...props} />
+  </View2>
+);
+
+const TabNavigator = createBottomTabNavigator(
   {
     Market: {
       screen: Market,
       navigationOptions: {
         tabBarIcon: ({ focused, tintColor }) => (
           <View style={styled.wrapBar}>
-            <TradeIcon active={focused} />
-            {focused && (
-              <Text style={[styled.label, { color: tintColor }]}>Markets</Text>
-            )}
+            <MarketIcon active={focused} />
+            <Text style={[styled.label, { color: tintColor }]}>{focused ? 'Markets' : ''}</Text>
           </View>
         ),
       },
@@ -37,9 +49,7 @@ const TabNavigator = createMaterialBottomTabNavigator(
         tabBarIcon: ({ focused, tintColor }) => (
           <View style={styled.wrapBar}>
             <AssetsIcon active={focused} />
-            {focused && (
-              <Text style={[styled.label, { color: tintColor }]}>Wallet</Text>
-            )}
+            <Text style={[styled.label, { color: tintColor }]}>{focused ? 'Wallet' : ''}</Text>
           </View>
         ),
       },
@@ -47,14 +57,9 @@ const TabNavigator = createMaterialBottomTabNavigator(
     Trade: {
       screen: TabTrade,
       navigationOptions: {
-        tabBarIcon: ({ focused, tintColor }) => (
-          <View style={styled.wrapBar}>
-            <View style={{ height: 24 }}>
-              <ShieldIcon active={focused} />
-            </View>
-            {focused && (
-              <Text style={[styled.label, { color: tintColor }]}>Trade</Text>
-            )}
+        tabBarIcon: () => (
+          <View style={styled.centerTab}>
+            <TradeIcon />
           </View>
         ),
       },
@@ -67,22 +72,7 @@ const TabNavigator = createMaterialBottomTabNavigator(
             <View style={{ height: 24 }}>
               <PrivacyAppsIcon active={focused} />
             </View>
-            {focused && (
-              <Text style={[styled.label, { color: tintColor }]}>Apps</Text>
-            )}
-          </View>
-        ),
-      },
-    },
-    Liquidity: {
-      screen: TabHomeLP,
-      navigationOptions: {
-        tabBarIcon: ({ focused, tintColor }) => (
-          <View style={styled.wrapBar}>
-            <LiquidityIcon active={focused} />
-            {focused && (
-              <Text style={[styled.label, { color: tintColor }]}>Earn</Text>
-            )}
+            <Text style={[styled.label, { color: tintColor }]}>{focused ? 'Apps' : ''}</Text>
           </View>
         ),
       },
@@ -93,23 +83,28 @@ const TabNavigator = createMaterialBottomTabNavigator(
         tabBarIcon: ({ focused, tintColor }) => (
           <View style={styled.wrapBar}>
             <MoreIcon active={focused} />
-            {focused && (
-              <Text style={[styled.label, { color: tintColor }]}>More</Text>
-            )}
+            <Text style={[styled.label, { color: tintColor }]}>{focused ? 'More' : ''}</Text>
           </View>
         ),
       },
     }
   },
   {
-    initialRouteName: 'Market',
-    activeColor: COLORS.colorBlue,
-    inactiveColor: COLORS.lightGrey34,
-    barStyle: {
-      backgroundColor: '#191919',
-    },
-    shifting: false,
-    labeled: false,
+    tabBarComponent: (props) => (
+      <TabBarComponent {...props} />
+    ),
+    tabBarOptions: {
+      showLabel: false,
+      style: {
+        borderTopWidth: 0,
+        paddingTop: 3
+      },
+      shifting: false,
+      labeled: false,
+      keyboardHidesTabBar: true,
+      safeAreaInset: { bottom: 'always', top: 'never' },
+      borderWidth: 0
+    }
   },
 );
 
