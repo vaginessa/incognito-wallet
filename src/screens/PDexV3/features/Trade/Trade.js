@@ -22,8 +22,9 @@ import {
 import { styled } from './Trade.styled';
 import withTrade from './Trade.enhance';
 
-const Trade = () => {
+const Trade = (props) => {
   const tabIndex = useNavigationParam('tabIndex');
+  const { onRefresh } = props;
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const visibleBtnChart = useSelector(visibleBtnChartSelector);
@@ -43,7 +44,7 @@ const Trade = () => {
                 style={{ marginRight: 15 }}
               />
             )}
-            <SelectAccountButton />
+            <SelectAccountButton handleSelectedAccount={onRefresh} />
           </Row>
         }
       >

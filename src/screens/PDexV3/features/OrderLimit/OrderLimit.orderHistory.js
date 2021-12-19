@@ -25,12 +25,11 @@ export const useHistoryOrders = () => {
 };
 
 const OrderHistory = () => {
-  const { history = [], isFetching } = useSelector(orderHistorySelector);
+  const { history = [],  } = useSelector(orderHistorySelector);
   useHistoryOrders();
   return (
     <View style={styled.container}>
       <FlatList
-        refreshControl={<RefreshControl refreshing={isFetching} />}
         data={history}
         keyExtractor={(item) => item?.requestTx}
         renderItem={({ item, index }) => (
