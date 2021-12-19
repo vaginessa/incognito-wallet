@@ -34,6 +34,7 @@ export function appTheme(darkMode: boolean) {
     // button
     btnBG1: darkMode ? '#1A73E8' : '#1A73E8',
     btnBG2: darkMode ? '#404040' : white,
+    btnBG3: darkMode ? '#404040' : '#F9F9F9',
 
     // border
     border1: darkMode ? '#484848' : '#F7F7F7',
