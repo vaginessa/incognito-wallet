@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import Row from '@src/components/Row';
 import { COLORS, FONT } from '@src/styles';
 import { SearchIcon ,CloseIcon} from '@src/components/Icons';
+import { Text } from '@components/core';
 import BaseTextInput from './BaseTextInput';
 
 const styled = StyleSheet.create({
@@ -22,7 +23,9 @@ const styled = StyleSheet.create({
 
 const BaseTextInputCustom = (props) => {
   const inputProps: TextInputProps = props?.inputProps;
-  const { canSearch, renderCustom, style, value } = props;
+  const { canSearch, renderCustom, style, value, maskLabel } = props;
+  const [_maskLabel, setMaskLabel] = React.useState(!!maskLabel);
+
   const handleRenderCustom = () => {
     if (renderCustom) {
       return renderCustom;
@@ -42,14 +45,25 @@ const BaseTextInputCustom = (props) => {
   };
   return (
     <Row style={[styled.container, style]}>
-      <BaseTextInput
-        {...{
-          ...inputProps,
-          style: { ...styled.inputStyle, ...inputProps?.style },
-        }}
-        value={value}
-        placeholderTextColor={COLORS.white}
-      />
+      {_maskLabel ? (
+        <Text
+          style={[
+            styled.inputStyle, inputProps?.style
+          ]}
+          onPress={() =>setMaskLabel(false)}
+        >
+          {inputProps.placeholder}
+        </Text>
+      ) :(
+        <BaseTextInput
+          {...{
+            ...inputProps,
+            style: { ...styled.inputStyle, ...inputProps?.style },
+          }}
+          value={value}
+          placeholderTextColor={COLORS.white}
+        />
+      )}
       {handleRenderCustom()}
     </Row>
   );
@@ -60,7 +74,8 @@ BaseTextInputCustom.defaultProps = {
   canSearch: true,
   renderCustom: undefined,
   style: undefined,
-  value: ''
+  value: '',
+  maskLabel: false
 };
 
 BaseTextInputCustom.propTypes = {
@@ -68,7 +83,8 @@ BaseTextInputCustom.propTypes = {
   canSearch: PropTypes.bool,
   renderCustom: PropTypes.element,
   style: PropTypes.object,
-  value: PropTypes.any
+  value: PropTypes.any,
+  maskLabel: PropTypes.bool
 };
 
 export default React.memo(BaseTextInputCustom);

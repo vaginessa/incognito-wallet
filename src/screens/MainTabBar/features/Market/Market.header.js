@@ -2,11 +2,11 @@ import React, { memo } from 'react';
 import PropTypes from 'prop-types';
 import SelectDropdown from 'react-native-select-dropdown';
 import { headerStyled } from '@screens/MainTabBar/features/Market/Market.styled';
-import { Row } from '@src/components';
+import { Header, Row } from '@src/components';
 import {ArrowDownLine} from '@components/Icons/icon.arrowDown';
 import SearchBox from '@components/Header/Header.searchBox';
 import { View } from 'react-native';
-import {StarIcon} from '@components/Icons';
+import { SearchIcon, StarIcon } from '@components/Icons';
 import {COLORS} from '@src/styles';
 import {useDispatch, useSelector} from 'react-redux';
 import {actionToggleMarketTab, marketTabSelector} from '@screens/Setting';
@@ -33,7 +33,7 @@ const StyledTouchableOpacity = styled(TouchableOpacity)`
   background-color: ${({ theme }) => theme.btnBG2};
 `;
 
-const Header = ({ onFilter }) => {
+const HeaderView = ({ onFilter }) => {
   const dispatch = useDispatch();
   const colors = useSelector(colorsSelector);
   const activeTab = useSelector(marketTabSelector);
@@ -43,15 +43,13 @@ const Header = ({ onFilter }) => {
 
   return (
     <View>
-      <StyledHeader spaceBetween style={[headerStyled.wrapSearch, globalStyled.defaultPadding]}>
-        <SearchBox
-          customSearchBox
-          style={headerStyled.wrapInput}
-          inputProps={{
-            style: headerStyled.input
-          }}
-        />
-      </StyledHeader>
+      <Header
+        title="Privacy Markets"
+        titleStyled={headerStyled.title}
+        canSearch
+        hideBackButton
+        rightHeader={<SearchIcon />}
+      />
       <Row
         centerVertical
         spaceBetween
@@ -89,9 +87,9 @@ const Header = ({ onFilter }) => {
   );
 };
 
-Header.propTypes = {
+HeaderView.propTypes = {
   onFilter: PropTypes.func.isRequired,
 };
 
 
-export default memo(Header);
+export default memo(HeaderView);

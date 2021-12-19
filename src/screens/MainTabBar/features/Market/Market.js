@@ -11,8 +11,6 @@ import {actionChangeTab} from '@components/core/Tabs/Tabs.actions';
 import {ROOT_TAB_TRADE, TAB_BUY_LIMIT_ID} from '@screens/PDexV3/features/Trade/Trade.constant';
 import {actionInit, actionSetPoolSelected} from '@screens/PDexV3/features/OrderLimit';
 import {actionLogEvent} from '@screens/Performance';
-import { View } from '@components/core';
-import globalStyled from '@src/theme/theme.styled';
 
 const Market = React.memo((props) => {
   const { handleToggleFollowToken, keySearch, onFilter, ...rest } = props;

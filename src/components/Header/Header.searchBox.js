@@ -56,6 +56,7 @@ const SearchBox = (props) => {
                   placeholder: 'Search privacy coins',
                   autFocus: true,
                 }}
+                maskLabel
                 style={style}
                 {...rest}
               />
