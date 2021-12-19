@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet } from 'react-native';
 import srcScanQrCode from '@src/assets/images/icons/qr_code_scan.png';
-import { Image, TouchableOpacity } from '@src/components/core';
+import { Image1, TouchableOpacity } from '@src/components/core';
 
 const styled = StyleSheet.create({
   icon: {
@@ -13,7 +13,7 @@ const styled = StyleSheet.create({
 const BtnScanQrCode = props => {
   return (
     <TouchableOpacity {...props}>
-      <Image style={styled.icon} source={srcScanQrCode} />
+      <Image1 style={styled.icon} source={srcScanQrCode} />
     </TouchableOpacity>
   );
 };

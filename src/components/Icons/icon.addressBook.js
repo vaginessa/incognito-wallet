@@ -1,7 +1,7 @@
 import React from 'react';
-import {Image} from 'react-native';
 import srcAddressBookIcon from '@src/assets/images/icons/address_book.png';
 import Svg, { Path } from 'react-native-svg';
+import { Image1 } from '@components/core';
 
 const AddressBookIcon = props => {
   const defaultStyle = {
@@ -10,7 +10,7 @@ const AddressBookIcon = props => {
   };
   const {style, source, ...rest} = props;
   return (
-    <Image
+    <Image1
       source={srcAddressBookIcon}
       style={[defaultStyle, style]}
       {...rest}

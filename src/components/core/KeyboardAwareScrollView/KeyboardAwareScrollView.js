@@ -5,26 +5,25 @@ import {
 } from 'react-native-keyboard-aware-scroll-view';
 import { StyleSheet } from 'react-native';
 import { getBottomAreaHeight } from '@src/utils/SafeAreaHelper';
+import styled from 'styled-components/native';
 
 const BOTTOM_BAR_PADDING_BOTTOM = getBottomAreaHeight() + 10;
 
-const styled = StyleSheet.create({
-  contentContainerStyle: {
-    // paddingBottom: 50 + BOTTOM_BAR_PADDING_BOTTOM,
-    // flex: 1,
-  },
-});
+const CustomKeyboardAwareScrollView = styled(KeyboardAwareScrollView)`
+  background-color: ${({ theme }) => theme.background1};
+  border-top-left-radius: 26px;
+  border-top-right-radius: 26px;
+`;
 
 const Component = (props: KeyboardAwareScrollViewProps) => {
   const { contentContainerStyle, fullFlex, paddingBottom, ...rest } = props;
   return (
-    <KeyboardAwareScrollView
+    <CustomKeyboardAwareScrollView
       showsVerticalScrollIndicator={false}
       showsHorizontalScrollIndicator={false}
       enableOnAndroid
       enableResetScrollToCoords={false}
       contentContainerStyle={[
-        styled.contentContainerStyle,
         contentContainerStyle,
         fullFlex && { flex: 1 },
         paddingBottom && { paddingBottom: 50 + BOTTOM_BAR_PADDING_BOTTOM},
