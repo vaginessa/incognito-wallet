@@ -12,7 +12,7 @@ const AddToken = () => {
   const handleFollowToken = () => navigation.navigate(routeNames.FollowToken);
   const colors = useSelector(colorsSelector);
   return (
-    <TouchableOpacity style={[styledAddToken.container, globalStyled.defaultPadding, { backgroundColor: colors.background1 }]} onPress={handleFollowToken}>
+    <TouchableOpacity style={[styledAddToken.container, globalStyled.defaultPaddingHorizontal, { backgroundColor: colors.background1 }]} onPress={handleFollowToken}>
       <Text style={styledAddToken.title}>Add a coin +</Text>
     </TouchableOpacity>
   );
