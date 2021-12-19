@@ -9,17 +9,23 @@ import routeNames from '@src/router/routeNames';
 import { listAllMasterKeyAccounts } from '@src/redux/selectors/masterKey';
 import { switchMasterKey } from '@src/redux/actions/masterKey';
 import accountService from '@services/wallet/accountService';
+import styled from 'styled-components/native';
 import { WalletIcon } from './Icons';
 import { TouchableOpacity } from './core';
 
-const styled = StyleSheet.create({
+const styles = StyleSheet.create({
   btnStyle: {
     width: 40,
     height: 40,
     justifyContent: 'center',
     alignItems: 'center',
+    borderRadius: 20,
   },
 });
+
+const CustomTouchableOpacity = styled(TouchableOpacity)`
+  background-color: ${({ theme }) => theme.background1};
+`;
 
 const SelectAccountButton = ({
   ignoredAccounts,
@@ -61,13 +67,13 @@ const SelectAccountButton = ({
     checkAccount();
   }, []);
   return (
-    <TouchableOpacity
+    <CustomTouchableOpacity
       disabled={disabled}
       onPress={onNavSelectAccount}
-      style={styled.btnStyle}
+      style={styles.btnStyle}
     >
       <WalletIcon />
-    </TouchableOpacity>
+    </CustomTouchableOpacity>
   );
 };
 
