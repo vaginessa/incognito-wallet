@@ -1,6 +1,6 @@
 import React from 'react';
-import {Image} from 'react-native';
 import srcThreeDotsVerIcon from '@src/assets/images/icons/three_dots_ver.png';
+import { Image1 } from '@components/core';
 
 const ThreeDotsVerIcon = props => {
   const defaultStyle = {
@@ -9,7 +9,7 @@ const ThreeDotsVerIcon = props => {
   };
   const {style, source, ...rest} = props;
   return (
-    <Image
+    <Image1
       source={srcThreeDotsVerIcon}
       style={[defaultStyle, style]}
       {...rest}

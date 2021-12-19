@@ -5,7 +5,8 @@ import {
   Toast,
   RefreshControl,
   TouchableOpacity,
-  View, Text,
+  View,
+  Text,
 } from '@src/components/core';
 import { View2 } from '@src/components/core/View';
 import { actionFetchTx } from '@src/redux/actions/history';

@@ -1,11 +1,12 @@
 import React, { memo } from 'react';
-import { SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { SafeAreaView, ScrollView, StyleSheet, Text } from 'react-native';
 import PropTypes from 'prop-types';
 import { COLORS, FONT } from '@src/styles';
+import styled from 'styled-components/native';
+import { View } from '@components/core';
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: COLORS.white,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     padding: 24,
@@ -28,6 +29,10 @@ const styles = StyleSheet.create({
   },
 });
 
+const CustomSafeAreaView = styled(SafeAreaView)`
+  background-color: ${({ theme }) => theme.background1};
+`;
+
 const ModalBottomSheet = ({
   title,
   headerView,
@@ -42,7 +47,7 @@ const ModalBottomSheet = ({
         ...style,
       }}
     >
-      <SafeAreaView style={styles.safeScreen}>
+      <CustomSafeAreaView style={styles.safeScreen}>
         {customContent ? (
           customContent
         ) : (
@@ -56,7 +61,7 @@ const ModalBottomSheet = ({
             )}
           </>
         )}
-      </SafeAreaView>
+      </CustomSafeAreaView>
     </View>
   );
 };
