@@ -7,6 +7,7 @@ import TabMasterKey from '@screens/Setting/features/Keychain/Keychain.tabMasterk
 import {Header} from '@src/components';
 import RightBtn from '@screens/Setting/features/Keychain/RightBtn';
 import BtnInfo from '@screens/Setting/features/Keychain/BtnInfo';
+import { withLayout_2 } from '@components/Layout';
 
 const Keychain = () => {
   const masterKey = useSelector(currentMasterKeySelector);
@@ -34,4 +35,4 @@ const Keychain = () => {
 
 Keychain.propTypes = {};
 
-export default memo(Keychain);
+export default withLayout_2(memo(Keychain));

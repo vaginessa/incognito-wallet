@@ -5,6 +5,8 @@ import { BtnCircleBack } from '@components/Button';
 import {useNavigation} from 'react-navigation-hooks';
 import debounce from 'lodash/debounce';
 import globalStyled from '@src/theme/theme.styled';
+import { useSelector } from 'react-redux';
+import { colorsSelector } from '@src/theme/theme.selector';
 import { styled } from './Tabs.styled';
 import withTabs from './Tabs.enhance';
 
@@ -14,11 +16,14 @@ const Tabs = (props) => {
   const handleGoBack = () =>
     typeof onGoBack === 'function' ? onGoBack() : goBack();
   const _handleGoBack = debounce(handleGoBack, 100);
+  const colors = useSelector(colorsSelector);
 
   return (
     <View style={[
       styled.tabs,
       globalStyled.defaultPaddingHorizontal,
+      !useTab1 && globalStyled.defaultBorderSection,
+      !useTab1 && { backgroundColor: colors.background1 },
       styledTabs,
     ]}
     >

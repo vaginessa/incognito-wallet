@@ -1,5 +1,4 @@
 import { StyleSheet } from 'react-native';
-import { COLORS } from '@src/styles';
 
 export const styled = StyleSheet.create({
   tabs: {
@@ -8,10 +7,11 @@ export const styled = StyleSheet.create({
   },
   tabList: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    backgroundColor: 'transparent',
-    borderRadius: 40,
+    // justifyContent: 'space-between',
+    // borderRadius: 40,
     flex: 1,
+    borderBottomColor: '#484848',
+    borderBottomWidth: 1,
   },
   tabList1: {
     borderRadius: 10,

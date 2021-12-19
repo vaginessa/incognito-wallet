@@ -3,16 +3,17 @@ import { StyleSheet } from 'react-native';
 import { RoundCornerButton } from '@src/components/core';
 import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@routers/routeNames';
-import { COLORS, THEME } from '@src/styles';
+import { THEME } from '@src/styles';
 import { useSelector } from 'react-redux';
 import { colorsSelector } from '@src/theme/theme.selector';
 
 const styled = StyleSheet.create({
   btn: {
-    width: 100,
-    height: 40,
+    width: 90,
+    height: 35,
+    borderRadius: 25
   },
-  title: {  
+  title: {
     ...THEME.text.mediumText,
     fontSize: 15,
   }
@@ -23,10 +24,10 @@ const RightBtn = ({ title }) => {
   const handlePress = React.useCallback(() => {
     navigation.navigate(routeNames.MasterKeys);
   }, []);
-  const colors = useSelector(colorsSelector); 
+  const colors = useSelector(colorsSelector);
   return (
     <RoundCornerButton
-      style={[styled.btn, {backgroundColor: colors.background7}]}
+      style={[styled.btn, { backgroundColor: colors.background11 }]}
       title={title}
       titleStyle={styled.title}
       onPress={handlePress}

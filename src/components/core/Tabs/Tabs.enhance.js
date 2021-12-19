@@ -11,7 +11,7 @@ import Tab from './Tabs.tab';
 import Tab1 from './Tabs.tab1';
 
 const enhance = (WrappedComp) => (props) => {
-  const { children, rootTabID, useTab1 = false, defaultTabIndex = 0 } = props;
+  const { children, rootTabID, useTab1 = false, defaultTabIndex = 0, borderTop = true } = props;
   const activeTab = useSelector(activedTabSelector)(rootTabID);
   const dispatch = useDispatch();
   const onClickTabItem = async (tab) => {
@@ -84,7 +84,7 @@ const enhance = (WrappedComp) => (props) => {
       let Comp = (
         <>
           <WrappedComp {...{ ...props, onClickTabItem, renderTabs }} />
-          <View borderTop style={styled.tabContent}>
+          <View borderTop={borderTop} style={styled.tabContent}>
             {children?.map((child) => {
               const actived = child.props.tabID === activeTab;
               if (!actived) {
