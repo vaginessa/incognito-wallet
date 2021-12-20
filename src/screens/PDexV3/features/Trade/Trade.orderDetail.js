@@ -9,7 +9,6 @@ import { BtnCopy, BtnOpenUrl } from '@src/components/Button';
 export const styled = StyleSheet.create({
   label: {
     fontFamily: FONT.NAME.medium,
-    color: COLORS.colorGrey3,
     fontSize: FONT.SIZE.small,
     width: 100,
   },
@@ -25,7 +24,6 @@ export const styled = StyleSheet.create({
   },
   value: {
     fontFamily: FONT.NAME.medium,
-    color: COLORS.black,
     fontSize: FONT.SIZE.small,
     textAlign: 'left',
     flex: 1,

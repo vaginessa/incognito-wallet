@@ -1,11 +1,12 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import {
   Divider,
   FlatList,
   RefreshControl,
   Text,
   TouchableOpacity,
+  View,
 } from '@src/components/core';
 import { useDispatch, useSelector } from 'react-redux';
 import { Row } from '@src/components';
@@ -41,7 +42,6 @@ const styled = StyleSheet.create({
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.small,
     lineHeight: FONT.SIZE.small + 5,
-    color: COLORS.black,
     marginRight: 15,
     flex: 1,
   },
@@ -65,7 +65,6 @@ const styled = StyleSheet.create({
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.regular,
     lineHeight: FONT.SIZE.regular + 5,
-    color: COLORS.black,
   },
 });
 
