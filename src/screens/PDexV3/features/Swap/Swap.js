@@ -36,7 +36,7 @@ const Swap = (props) => {
   return (
     <>
       <KeyboardAwareScrollView
-        style={[styled.scrollview, globalStyled.defaultPadding3]}
+        style={[styled.scrollview]}
         refreshControl={
           <RefreshControl
             refreshing={swapInfo?.refreshing}

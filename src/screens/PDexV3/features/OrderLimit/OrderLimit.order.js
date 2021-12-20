@@ -2,7 +2,7 @@ import React from 'react';
 import isEmpty from 'lodash/isEmpty';
 import ButtonBasic from '@src/components/Button/ButtonBasic';
 import { View, StyleSheet } from 'react-native';
-import { useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { ACCOUNT_CONSTANT } from 'incognito-chain-web-js/build/wallet';
 import { Row } from '@src/components';
 import { Divider, Text, TouchableOpacity } from '@src/components/core';
@@ -11,6 +11,7 @@ import LoadingTx from '@src/components/LoadingTx';
 import RemoveSuccessDialog from '@src/screens/Setting/features/RemoveStorage/RemoveStorage.Dialog';
 import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
+import { colorsSelector } from '@src/theme';
 import {
   actionWithdrawOrder,
   actionInit,
@@ -45,12 +46,10 @@ const styled = StyleSheet.create({
   subText: {
     fontSize: FONT.SIZE.small,
     fontFamily: FONT.NAME.regular,
-    color: COLORS.colorGrey3,
   },
   mainText: {
     fontSize: FONT.SIZE.regular,
     fontFamily: FONT.NAME.medium,
-    color: COLORS.black,
   },
   block1: {
     textAlign: 'left',
@@ -75,6 +74,7 @@ const OrderValue = React.memo(({ style, value }) => {
 
 const Order = React.memo(({ data, visibleDivider }) => {
   const navigation = useNavigation();
+  const colors = useSelector(colorsSelector);
   const dispatch = useDispatch();
   const [visible, setVisible] = React.useState(false);
   const [withdrawData, setWithdrawData] = React.useState({});
@@ -177,7 +177,12 @@ const Order = React.memo(({ data, visibleDivider }) => {
             }}
           >
             {`${type} `}
-            <Text style={{ ...styled.mainText, textTransform: 'uppercase' }}>
+            <Text
+              style={{
+                ...styled.mainText,
+                textTransform: 'uppercase',
+              }}
+            >
               {infoStr}
             </Text>
           </Text>

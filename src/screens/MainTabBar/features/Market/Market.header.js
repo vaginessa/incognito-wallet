@@ -48,7 +48,6 @@ const HeaderView = ({ onFilter }) => {
         titleStyled={headerStyled.title}
         canSearch
         hideBackButton
-        rightHeader={<SearchIcon />}
       />
       <Row
         centerVertical

@@ -7,6 +7,7 @@ import debounce from 'lodash/debounce';
 import { TouchableOpacity, Text } from '@src/components/core';
 import { View2 } from '@src/components/core/View';
 import SelectAccountButton from '@src/components/SelectAccountButton';
+import { SearchIcon } from '@src/components/Icons';
 import { styled, styledHeaderTitle } from './Header.styled';
 import SearchBox from './Header.searchBox';
 import withHeader from './Header.enhance';
@@ -52,6 +53,7 @@ export const HeaderTitle = () => {
       onPress={onHandleSearch}
     >
       <Title />
+      <SearchIcon />
     </TouchableOpacity>
   );
 };

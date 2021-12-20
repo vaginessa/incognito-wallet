@@ -19,27 +19,29 @@ const ScrollView = React.forwardRef(
       ...otherProps
     }: ScrollViewProps,
     ref,
-  ) => (
-    <StyledScrollView
-      style={[styleSheet.root, globalStyled.defaultPaddingHorizontal, style]}
-      contentContainerStyle={[
-        paddingBottom && styleSheet.content,
-        contentContainerStyle,
-      ]}
-      keyboardShouldPersistTaps="handled"
-      ref={ref}
-      border={border}
-      showsVerticalScrollIndicator={false}
-      {...otherProps}
-    />
-  ),
+  ) => {
+    return (
+      <StyledScrollView
+        style={[styleSheet.root, globalStyled.defaultPaddingHorizontal, style]}
+        contentContainerStyle={[
+          paddingBottom && styleSheet.content,
+          contentContainerStyle,
+        ]}
+        keyboardShouldPersistTaps="handled"
+        ref={ref}
+        border={border}
+        showsVerticalScrollIndicator={false}
+        {...otherProps}
+      />
+    );
+  },
 );
 
 ScrollView.defaultProps = {
   style: null,
   contentContainerStyle: null,
   paddingBottom: false,
-  border: false
+  border: false,
 };
 
 ScrollView.propTypes = {

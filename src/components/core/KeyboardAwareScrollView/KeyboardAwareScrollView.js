@@ -3,9 +3,9 @@ import {
   KeyboardAwareScrollView,
   KeyboardAwareScrollViewProps,
 } from 'react-native-keyboard-aware-scroll-view';
-import { StyleSheet } from 'react-native';
 import { getBottomAreaHeight } from '@src/utils/SafeAreaHelper';
 import styled from 'styled-components/native';
+import globalStyled from '@src/theme/theme.styled';
 
 const BOTTOM_BAR_PADDING_BOTTOM = getBottomAreaHeight() + 10;
 
@@ -26,6 +26,7 @@ const Component = (props: KeyboardAwareScrollViewProps) => {
       contentContainerStyle={[
         contentContainerStyle,
         fullFlex && { flex: 1 },
+        globalStyled.defaultPadding,
         paddingBottom && { paddingBottom: 50 + BOTTOM_BAR_PADDING_BOTTOM},
       ]}
       {...rest}

@@ -51,11 +51,7 @@ const TabOrderBook = React.memo(() => {
 const GroupSubInfo = () => {
   return (
     <View style={styled.container}>
-      <Tabs
-        rootTabID={ROOT_TAB_SUB_INFO}
-        styledTabs={styled.styledTabs}
-        useTab1
-      >
+      <Tabs rootTabID={ROOT_TAB_SUB_INFO}>
         <View
           tabID={TAB_ORDER_BOOK}
           label="Order book"
@@ -64,7 +60,12 @@ const GroupSubInfo = () => {
         >
           <TabOrderBook />
         </View>
-        <View tabID={TAB_HISTORY_ID} label="Orders" onChangeTab={() => null} upperCase={false}>
+        <View
+          tabID={TAB_HISTORY_ID}
+          label="Orders"
+          onChangeTab={() => null}
+          upperCase={false}
+        >
           <History />
         </View>
       </Tabs>

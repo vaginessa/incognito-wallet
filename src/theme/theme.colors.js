@@ -12,9 +12,9 @@ export function appTheme(darkMode: boolean) {
     background3: darkMode ? '#404040' : '#ECECEC',
     background4: darkMode ? white : black,
     background5: darkMode ? '#404040' : white,
-    background6: darkMode ? '#1A73E8' : '#404040',  // blue - gray
+    background6: darkMode ? '#1A73E8' : '#404040', // blue - gray
     background7: darkMode ? '#404040' : '#F4F4F4',
-    background8: darkMode ? '#F6465D' : '#ECECEC',  // red - gray
+    background8: darkMode ? '#F6465D' : '#ECECEC', // red - gray
     background9: darkMode ? '#404040' : '#333335',
     background10: darkMode ? black : white,
     background11: darkMode ? '#303030' : '#9C9C9C',
@@ -46,9 +46,31 @@ export function appTheme(darkMode: boolean) {
     contrast: darkMode ? white : black,
 
     // icon
-    icon1: darkMode ? '#1A73E8' : '#1A73E8',  // green - blue
+    icon1: darkMode ? '#1A73E8' : '#1A73E8', // green - blue
+
+    arrowRightIcon: darkMode ? '#9C9C9C' : black,
 
     // image
     image1: darkMode ? white : black,
+
+    // border
+    borderBaseTextInputColor: darkMode ? white : black,
+
+    // colors
+    against: darkMode ? '#FFFFFF' : '#000000',
+    primary: darkMode ? '#000000' : '#FFFFFF',
+    secondary: '#757575',
+    grey1: '#9C9C9C',
+    grey2: '#C0C0C0',
+    grey3: '#DDDDDD',
+    grey4: '#F5F5F5',
+    grey5: '#404040',
+
+    // text
+    mainText: darkMode ? white : black,
+    subText: darkMode ? '#858383' : '#858383',
+
+    // button
+    borderBtnColor: darkMode ? white : black,
   };
 }

@@ -75,7 +75,11 @@ const Input = React.forwardRef((props, ref) => {
         <TextInput
           {...rest}
           ref={ref}
-          style={[inputStyled.input, rest.style ? rest.style : null, {color: colors.text1}]}
+          style={[
+            inputStyled.input,
+            rest.style ? rest.style : null,
+            { color: colors.text1 },
+          ]}
           onFocus={onFocus}
           onBlur={onBlur}
           autoCapitalize="none"
@@ -84,6 +88,7 @@ const Input = React.forwardRef((props, ref) => {
           autoCompleteType="off"
           autoCorrect={false}
           allowFontScaling={false}
+          placeholderTextColor={colors.subText}
         />
         {inputMax.visible && <BtnMax onPress={inputMax.handleShowMax} />}
       </View>
