@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import { StyleSheet } from 'react-native';
 import BaseTextInput from '@src/components/core/BaseTextInput';
 import Row from '@src/components/Row';
+import { useSelector } from 'react-redux';
+import { colorsSelector } from '@src/theme';
 import { COLORS, FONT } from '@src/styles';
 import createField from './createField';
 
@@ -11,14 +13,12 @@ const styled = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: COLORS.colorGrey4,
     height: 50,
     borderRadius: 8,
     flexDirection: 'row',
-    paddingHorizontal: 15,
+    paddingHorizontal: 16,
   },
   input: {
-    color: COLORS.black,
     fontSize: FONT.SIZE.medium,
     lineHeight: FONT.SIZE.medium + 5,
     fontFamily: FONT.NAME.medium,
@@ -28,8 +28,9 @@ const styled = StyleSheet.create({
 const renderCustomField = (props) => {
   const { input, rightCustom, inputStyle, ...rest } = props;
   const { onChange, onFocus, onBlur, ...restInput } = input;
+  const colors = useSelector(colorsSelector);
   return (
-    <Row style={styled.container}>
+    <Row style={[styled.container, { backgroundColor: colors.grey5 }]}>
       <BaseTextInput
         {...{
           ...rest,

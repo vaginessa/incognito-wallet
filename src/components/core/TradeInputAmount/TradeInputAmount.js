@@ -3,11 +3,12 @@ import { MaxIcon } from '@src/components/Icons';
 import PropTypes from 'prop-types';
 import Row from '@src/components/Row';
 import { StyleSheet } from 'react-native';
+import { useSelector } from 'react-redux';
+import { colorsSelector } from '@src/theme';
 import {
   Text,
   BaseTextInput,
   TouchableOpacity,
-  // ActivityIndicator,
   View,
 } from '@src/components/core';
 import { COLORS, FONT } from '@src/styles';
@@ -39,8 +40,7 @@ const styled = StyleSheet.create({
     fontFamily: FONT.NAME.medium,
     marginRight: 5,
   },
-  infinityIcon: {
-  },
+  infinityIcon: {},
   // loadingIcon: {
   //   marginRight: 8,
   // },
@@ -73,10 +73,8 @@ const TradeInputAmount = (props) => {
     inputStyle,
     ...rest
   } = props || {};
+  const colors = useSelector(colorsSelector);
   const renderSub = () => {
-    // if (loadingBalance) {
-    //   return <ActivityIndicator style={styled.loadingIcon} size="small" />;
-    // }
     if (hasIcon) {
       return <Icon iconUrl={srcIcon} />;
     }
@@ -95,7 +93,10 @@ const TradeInputAmount = (props) => {
     <View style={styled.container}>
       {visibleHeader && (
         <Row style={styled.header}>
-          <Text numberOfLines={1} style={styled.label}>
+          <Text
+            numberOfLines={1}
+            style={[styled.label, { color: colors.subText }]}
+          >
             {label}
           </Text>
           {rightHeader && rightHeader}

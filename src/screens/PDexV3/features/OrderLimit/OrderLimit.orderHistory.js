@@ -1,6 +1,7 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
-import { FlatList, RefreshControl } from '@src/components/core';
+import { StyleSheet } from 'react-native';
+
+import { View, FlatList } from '@src/components/core';
 import { useDispatch, useSelector } from 'react-redux';
 import { orderHistorySelector, poolIdSelector } from './OrderLimit.selector';
 import Order from './OrderLimit.order';
@@ -25,7 +26,7 @@ export const useHistoryOrders = () => {
 };
 
 const OrderHistory = () => {
-  const { history = [],  } = useSelector(orderHistorySelector);
+  const { history = [] } = useSelector(orderHistorySelector);
   useHistoryOrders();
   return (
     <View style={styled.container}>

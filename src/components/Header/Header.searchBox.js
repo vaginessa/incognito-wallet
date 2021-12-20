@@ -4,8 +4,8 @@ import { StyleSheet } from 'react-native';
 import { createForm } from '@components/core/reduxForm';
 import { Field } from 'redux-form';
 import PropTypes from 'prop-types';
-import {BaseTextInputCustom} from '@components/core/BaseTextInput';
-import {ScreenWidth} from '@utils/devices';
+import { BaseTextInputCustom } from '@components/core/BaseTextInput';
+import { ScreenWidth } from '@utils/devices';
 
 const styled = StyleSheet.create({
   searchBox: {
@@ -15,7 +15,7 @@ const styled = StyleSheet.create({
     marginRight: 20,
     width: ScreenWidth * 0.62,
     height: 30,
-  }
+  },
 });
 export const searchBoxConfig = {
   form: 'searchFormHeader',
@@ -41,7 +41,7 @@ const SearchBox = (props) => {
     <Form style={styled.searchBox}>
       <Field
         name={searchBoxConfig.searchBox}
-        component={componentProps => {
+        component={(componentProps) => {
           const { input, ...rest } = componentProps;
           if (customSearchBox) {
             return (
@@ -82,12 +82,12 @@ const SearchBox = (props) => {
 SearchBox.defaultProps = {
   isNormalSearch: false,
   customSearchBox: false,
-  style: null
+  style: null,
 };
 SearchBox.propTypes = {
   isNormalSearch: PropTypes.bool,
   title: PropTypes.string.isRequired,
   customSearchBox: PropTypes.bool,
-  style: PropTypes.any
+  style: PropTypes.any,
 };
 export default React.memo(SearchBox);

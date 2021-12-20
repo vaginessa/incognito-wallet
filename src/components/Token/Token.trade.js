@@ -3,7 +3,7 @@ import { StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
 import { TouchableOpacity } from '@src/components/core';
 import { Row } from '@src/components';
-import { COLORS, FONT } from '@src/styles';
+import { FONT } from '@src/styles';
 import { Name } from './Token';
 import { Icon } from './Token.shared';
 import withToken from './Token.enhance';
@@ -18,7 +18,6 @@ const styled = StyleSheet.create({
   name: {
     fontSize: FONT.SIZE.medium,
     fontFamily: FONT.NAME.medium,
-    color: COLORS.black,
     marginLeft: 12,
   },
 });

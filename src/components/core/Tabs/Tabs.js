@@ -17,11 +17,9 @@ const Tabs = (props) => {
     typeof onGoBack === 'function' ? onGoBack() : goBack();
   const _handleGoBack = debounce(handleGoBack, 100);
   const colors = useSelector(colorsSelector);
-
   return (
     <View style={[
       styled.tabs,
-      globalStyled.defaultPaddingHorizontal,
       !useTab1 && globalStyled.defaultBorderSection,
       !useTab1 && { backgroundColor: colors.background1 },
       styledTabs,
@@ -33,7 +31,7 @@ const Tabs = (props) => {
       <View
         style={[
           styled.tabList,
-          useTab1 ? styled.tabList1 : null,
+          useTab1 ? styled.tabList1 : styled.tabList,
           styledTabList,
         ]}
       >

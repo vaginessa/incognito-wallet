@@ -1,16 +1,16 @@
 import React from 'react';
 import { StyleSheet } from 'react-native';
 import {
-  Divider,
   FlatList,
   RefreshControl,
   Text,
   TouchableOpacity,
   View,
 } from '@src/components/core';
+import { colorsSelector } from '@src/theme';
 import { useDispatch, useSelector } from 'react-redux';
 import { Row } from '@src/components';
-import { COLORS, FONT } from '@src/styles';
+import { FONT } from '@src/styles';
 import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
 import { actionFetchedOrderDetail } from './Swap.actions';
@@ -30,12 +30,12 @@ const styled = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    marginBottom: 16,
   },
   orderId: {
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.small,
     lineHeight: FONT.SIZE.small + 5,
-    color: COLORS.colorGrey3,
     maxWidth: 200,
   },
   swap: {
@@ -49,7 +49,6 @@ const styled = StyleSheet.create({
     fontFamily: FONT.NAME.regular,
     fontSize: FONT.SIZE.regular,
     lineHeight: FONT.SIZE.regular + 5,
-    color: COLORS.colorGreyBold,
   },
   wrapperOrder: {
     flex: 1,
@@ -58,9 +57,6 @@ const styled = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  dividerStyled: {
-    marginVertical: 16,
-  },
   title: {
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.regular,
@@ -68,8 +64,9 @@ const styled = StyleSheet.create({
   },
 });
 
-const Order = React.memo(({ data, visibleDivider }) => {
+const Order = React.memo(({ data }) => {
   const navigation = useNavigation();
+  const colors = useSelector(colorsSelector);
   const dispatch = useDispatch();
   if (!data?.requestTx) {
     return null;
@@ -85,21 +82,20 @@ const Order = React.memo(({ data, visibleDivider }) => {
         <View style={styled.wrapperOrder}>
           <Row style={{ ...styled.row, marginBottom: 4 }}>
             <Text
-              style={styled.orderId}
+              style={[styled.orderId, { color: colors.subText }]}
               numberOfLines={1}
               ellipsizeMode="middle"
             >
               {`#${tradeID || requestTx}`}
             </Text>
-            <Text style={styled.title}>Swap</Text>
+            <Text style={[styled.title, { color: colors.subText }]}>Swap</Text>
           </Row>
           <Row style={styled.row}>
-            <Text style={styled.swap}>{swapStr}</Text>
-            <Text style={styled.statusStr}>{statusStr}</Text>
+            <Text style={[styled.swap]}>{swapStr}</Text>
+            <Text style={[styled.statusStr]}>{statusStr}</Text>
           </Row>
         </View>
       </TouchableOpacity>
-      {visibleDivider && <Divider dividerStyled={styled.dividerStyled} />}
     </>
   );
 });

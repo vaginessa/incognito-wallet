@@ -3,7 +3,7 @@ import { View, StyleSheet } from 'react-native';
 import Row from '@src/components/Row';
 import { withLayout_2 } from '@src/components/Layout';
 import Header from '@components/Header';
-import { ScrollView, RefreshControl, Text } from '@components/core';
+import { ScrollViewBorder, RefreshControl, Text } from '@components/core';
 import { useDispatch, useSelector } from 'react-redux';
 import { BtnCopy } from '@src/components/Button';
 import { ExHandler } from '@src/services/exception';
@@ -19,7 +19,6 @@ import { actionFetchDataOrderDetail } from './OrderLimit.actions';
 
 const styled = StyleSheet.create({
   container: { flex: 1 },
-  scrollview: { flex: 1, paddingTop: 32 },
 });
 
 const OrderDetail = () => {
@@ -147,15 +146,14 @@ const OrderDetail = () => {
         title="Order detail"
         rightHeader={<BtnCopy onPress={handleCopy} />}
       />
-      <ScrollView
-        style={styled.scrollview}
+      <ScrollViewBorder
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
       >
         {factories.length > 0 &&
           factories?.map((item) => <OrderItem key={item?.label} {...item} />)}
-      </ScrollView>
+      </ScrollViewBorder>
     </View>
   );
 };

@@ -6,8 +6,8 @@ import styled from 'styled-components/native';
 
 const styles = StyleSheet.create({
   btnStyle: {
-    marginTop: 24,
     marginRight: 24,
+    paddingBottom: 16,
   },
   btnStyleEnabled: {
     borderBottomColor: '#1A73E8',

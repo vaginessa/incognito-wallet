@@ -3,7 +3,6 @@ import { StyleSheet } from 'react-native';
 export const styled = StyleSheet.create({
   tabs: {
     backgroundColor: 'transparent',
-    minHeight: 64,
   },
   tabList: {
     flexDirection: 'row',
@@ -21,6 +20,6 @@ export const styled = StyleSheet.create({
   },
   tabContent: {
     flex: 1,
-    overflow: 'hidden'
+    overflow: 'hidden',
   },
 });

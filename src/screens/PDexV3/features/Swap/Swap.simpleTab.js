@@ -32,15 +32,11 @@ export const useTabFactories = () => {
       result.push({
         label: 'Fee',
         value: feeTokenData?.totalFeePRVText ?? '',
-        hasQuestionIcon: true,
-        onPressQuestionIcon: () => null,
       });
     } else {
       result.push({
         label: 'Fee',
         value: feeTokenData?.feeAmountText ?? '',
-        hasQuestionIcon: true,
-        onPressQuestionIcon: () => null,
       });
     }
     return result.filter((hook) => !isEmpty(hook));

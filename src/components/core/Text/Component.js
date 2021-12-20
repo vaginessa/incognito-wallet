@@ -4,7 +4,7 @@ import styled from 'styled-components/native';
 import styleSheet from './style';
 
 const StyledText = styled.Text`
-  color: ${({ theme }) => theme.text1};
+  color: ${({ theme }) => theme.mainText};
 `;
 
 const Text = ({ style, ...rest }: TextProps) => (

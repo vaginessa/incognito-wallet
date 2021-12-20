@@ -11,6 +11,7 @@ const styled = StyleSheet.create({
     height: 24,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: 'transparent',
   },
   icon: {
     width: 15.09,
@@ -22,7 +23,13 @@ const IconCopy = (props) => {
   const { isHeader } = props;
   const colors = useSelector(colorsSelector);
   return (
-    <View style={[styled.container, props?.containerStyle, isHeader ? { backgroundColor: colors.background10 } : {} ]}>
+    <View
+      style={[
+        styled.container,
+        props?.containerStyle,
+        isHeader ? { backgroundColor: colors.background10 } : {},
+      ]}
+    >
       <Image1 style={[styled.icon, props?.style]} source={srcCopy} />
     </View>
   );

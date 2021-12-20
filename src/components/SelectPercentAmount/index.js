@@ -1,28 +1,28 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { COLORS, FONT } from '@src/styles';
 import Row from '@src/components/Row';
 import { Text, TouchableOpacity } from '@src/components/core';
+import { colorsSelector } from '@src/theme';
 
 const styled = StyleSheet.create({
   container: {
     alignItems: 'center',
   },
   btnContainer: {
-    marginRight: 15,
+    marginRight: 8,
+    height: 32,
+    borderRadius: 8,
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   percent: {
     fontSize: FONT.SIZE.superSmall,
-    color: COLORS.black,
     fontFamily: FONT.NAME.regular,
     textAlign: 'center',
-  },
-  percentBtn: {
-    height: 8,
-    borderRadius: 20,
-    width: '100%',
-    marginBottom: 10,
   },
   btnLastChild: {
     marginRight: 0,
@@ -36,6 +36,7 @@ const SelectPercentAmount = (props) => {
     percentBtnColor = COLORS.colorTradeBlue,
     containerStyled,
   } = props;
+  const colors = useSelector(colorsSelector);
   const renderMain = () => {
     return [...Array(size)].map((item, index, arr) => {
       const percent = (((index + 1) / size) * 100).toFixed(0);
@@ -46,29 +47,23 @@ const SelectPercentAmount = (props) => {
         <TouchableOpacity
           style={[
             {
-              flex: index + 1,
+              flex: 1,
+              maxWidth: lastChild ? 'auto' : 56,
             },
             styled.btnContainer,
             lastChild && styled.btnLastChild,
+            {
+              backgroundColor: isFilled ? percentBtnColor : colors.secondary,
+            },
           ]}
           onPress={() => onPressPercent(percent)}
           key={percent}
         >
-          <View
-            style={[
-              styled.percentBtn,
-              {
-                backgroundColor: isFilled
-                  ? percentBtnColor
-                  : COLORS.colorGrey2,
-              },
-            ]}
-          />
           <Text
-            style={{
-              ...styled.percent,
-              ...(isFilled ? { fontFamily: FONT.NAME.medium } : {}),
-            }}
+            style={[
+              styled.percent,
+              { fontFamily: isFilled ? FONT.NAME.medium : FONT.NAME.regular },
+            ]}
             numberOfLines={1}
             ellipsizeMode="tail"
           >

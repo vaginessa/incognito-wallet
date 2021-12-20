@@ -1,9 +1,14 @@
 import React from 'react';
-import {View, StyleSheet, TextInputProps, TouchableOpacity} from 'react-native';
+import {
+  View,
+  StyleSheet,
+  TextInputProps,
+  TouchableOpacity,
+} from 'react-native';
 import PropTypes from 'prop-types';
 import Row from '@src/components/Row';
 import { COLORS, FONT } from '@src/styles';
-import { SearchIcon ,CloseIcon} from '@src/components/Icons';
+import { SearchIcon, CloseIcon } from '@src/components/Icons';
 import { Text } from '@components/core';
 import BaseTextInput from './BaseTextInput';
 
@@ -12,7 +17,7 @@ const styled = StyleSheet.create({
     height: 40,
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'transparent'
+    backgroundColor: 'transparent',
   },
   inputStyle: {
     flex: 1,
@@ -31,15 +36,21 @@ const BaseTextInputCustom = (props) => {
       return renderCustom;
     }
     return (
-      <View>{canSearch && (
-        value ? (
-          <TouchableOpacity onPress={() => {
-            inputProps && inputProps.onChangeText && inputProps.onChangeText('');
-          }}
-          ><CloseIcon size={22} />
-          </TouchableOpacity>
-        ) : <SearchIcon />
-      )}
+      <View>
+        {canSearch &&
+          (value ? (
+            <TouchableOpacity
+              onPress={() => {
+                inputProps &&
+                  inputProps.onChangeText &&
+                  inputProps.onChangeText('');
+              }}
+            >
+              <CloseIcon size={22} />
+            </TouchableOpacity>
+          ) : (
+            <SearchIcon />
+          ))}
       </View>
     );
   };
@@ -47,14 +58,12 @@ const BaseTextInputCustom = (props) => {
     <Row style={[styled.container, style]}>
       {_maskLabel ? (
         <Text
-          style={[
-            styled.inputStyle, inputProps?.style
-          ]}
-          onPress={() =>setMaskLabel(false)}
+          style={[styled.inputStyle, inputProps?.style]}
+          onPress={() => setMaskLabel(false)}
         >
           {inputProps.placeholder}
         </Text>
-      ) :(
+      ) : (
         <BaseTextInput
           {...{
             ...inputProps,
@@ -75,7 +84,7 @@ BaseTextInputCustom.defaultProps = {
   renderCustom: undefined,
   style: undefined,
   value: '',
-  maskLabel: false
+  maskLabel: false,
 };
 
 BaseTextInputCustom.propTypes = {
@@ -84,7 +93,7 @@ BaseTextInputCustom.propTypes = {
   renderCustom: PropTypes.element,
   style: PropTypes.object,
   value: PropTypes.any,
-  maskLabel: PropTypes.bool
+  maskLabel: PropTypes.bool,
 };
 
 export default React.memo(BaseTextInputCustom);

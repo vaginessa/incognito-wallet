@@ -10,7 +10,7 @@ const styled = StyleSheet.create({
   hook: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 35,
+    marginTop: 32,
   },
   hookText: {
     fontFamily: FONT.NAME.medium,

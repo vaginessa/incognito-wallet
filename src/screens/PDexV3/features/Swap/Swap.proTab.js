@@ -221,7 +221,6 @@ const TabPro = React.memo(() => {
   if (!isPrivacyApp) {
     extraFactories.unshift({
       title: 'Switch platform',
-      hasQuestionIcon: true,
       onPressQuestionIcon: () => null,
       titleStyle: {
         fontSize: FONT.SIZE.small,
@@ -230,6 +229,7 @@ const TabPro = React.memo(() => {
         <SelectOptionInput
           options={options}
           actived={platformSelected}
+          isSelectItem={false}
           onPressItem={() => {
             dispatch(
               actionToggleModal({
