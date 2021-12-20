@@ -6,6 +6,18 @@ import { Tabs, View } from '@components/core';
 import { ROOT_TAB_ASSETS, TAB_COINS_ID, TAB_LIQUIDITY_ID } from '@screens/MainTabBar/features/Assets/Assets.constants';
 import Portfolio from '@screens/PDexV3/features/Portfolio/Portfolio';
 import { withLayout_2 } from '@components/Layout';
+import { Row } from '@src/components';
+import { styled } from '@screens/PDexV3/features/Home/Home.styled';
+import ReturnLP from '@screens/PDexV3/features/Share/Share.returnLP';
+
+const HeaderView = React.memo(() => {
+  const renderContent = () => (
+    <Row spaceBetween style={styled.headerRow}>
+      <ReturnLP />
+    </Row>
+  );
+  return renderContent();
+});
 
 const TabAssets = () => {
   return (
@@ -14,6 +26,7 @@ const TabAssets = () => {
         <Wallet hideBackButton />
       </View>
       <View tabID={TAB_LIQUIDITY_ID} label="Pools">
+        <HeaderView />
         <Portfolio />
       </View>
     </Tabs>

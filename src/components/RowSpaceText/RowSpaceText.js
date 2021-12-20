@@ -2,7 +2,7 @@ import React, {memo} from 'react';
 import PropTypes from 'prop-types';
 import {Row} from '@src/components';
 import styled from '@components/RowSpaceText/RowSpaceText.styled';
-import {Text} from '@components/core';
+import { Text, Text3 } from '@components/core';
 import {ActivityIndicator, View} from 'react-native';
 
 const RowSpaceText = (props) => {
@@ -10,7 +10,7 @@ const RowSpaceText = (props) => {
   return (
     <Row style={[styled.hookContainer, style]}>
       {customLeft ? customLeft : (
-        <Text style={[styled.hookLabel, leftStyle]}>{`${label}:`}</Text>
+        <Text3 style={[styled.hookLabel, leftStyle]}>{`${label}:`}</Text3>
       )}
       <View style={styled.wrapValue}>
         {

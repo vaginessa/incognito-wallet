@@ -5,7 +5,6 @@ import {TouchableOpacity} from 'react-native';
 import {batch, useDispatch, useSelector} from 'react-redux';
 import PropTypes from 'prop-types';
 import {actionSetPoolModal} from '@screens/PDexV3/features/Portfolio/Portfolio.actions';
-import {COLORS} from '@src/styles';
 import {actionToggleModal} from '@components/Modal';
 import ModalBottomSheet from '@components/Modal/features/ModalBottomSheet';
 import PortfolioModal from '@screens/PDexV3/features/Portfolio/Portfolio.detail';
@@ -16,9 +15,7 @@ const Hook = React.memo(({ label, value }) => (
   <RowSpaceText
     label={label}
     value={value}
-    style={{marginBottom: 2}}
-    leftStyle={{color: COLORS.lightGrey33}}
-    rightStyle={{color: COLORS.black1}}
+    style={{ marginBottom: 2 }}
   />
 ));
 
