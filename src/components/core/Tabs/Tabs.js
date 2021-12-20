@@ -11,7 +11,7 @@ import { styled } from './Tabs.styled';
 import withTabs from './Tabs.enhance';
 
 const Tabs = (props) => {
-  const { renderTabs, styledTabList, styledTabs, useTab1, rightCustom, onGoBack, hideBackButton } = props;
+  const { renderTabs, styledTabList, styledTabs, useTab1, rightCustom, onGoBack, hideBackButton, defaultTabHeader } = props;
   const { goBack } = useNavigation();
   const handleGoBack = () =>
     typeof onGoBack === 'function' ? onGoBack() : goBack();
@@ -22,6 +22,7 @@ const Tabs = (props) => {
       styled.tabs,
       !useTab1 && globalStyled.defaultBorderSection,
       !useTab1 && { backgroundColor: colors.background1 },
+      defaultTabHeader && styled.defaultTabHeader,
       styledTabs,
     ]}
     >
@@ -48,7 +49,8 @@ Tabs.defaultProps = {
   useTab1: false,
   rightCustom: null,
   onGoBack: null,
-  hideBackButton: true
+  hideBackButton: true,
+  defaultTabHeader: false
 };
 
 Tabs.propTypes = {
@@ -58,7 +60,8 @@ Tabs.propTypes = {
   useTab1: PropTypes.func,
   rightCustom: PropTypes.any,
   onGoBack: PropTypes.func,
-  hideBackButton: PropTypes.bool
+  hideBackButton: PropTypes.bool,
+  defaultTabHeader: PropTypes.bool
 };
 
 export default withTabs(React.memo(Tabs));

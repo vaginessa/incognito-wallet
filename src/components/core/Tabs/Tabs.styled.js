@@ -3,6 +3,8 @@ import { StyleSheet } from 'react-native';
 export const styled = StyleSheet.create({
   tabs: {
     backgroundColor: 'transparent',
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   tabList: {
     flexDirection: 'row',
@@ -22,4 +24,9 @@ export const styled = StyleSheet.create({
     flex: 1,
     overflow: 'hidden',
   },
+  defaultTabHeader: {
+    marginTop: 8,
+    marginBottom: 16,
+    paddingHorizontal: 24
+  }
 });

@@ -54,9 +54,8 @@ export const itemStyled = StyleSheet.create({
 
 export const styled = StyleSheet.create({
   wrapper: {
-    // paddingHorizontal: globalStyled.defaultPadding.paddingHorizontal,
-    // paddingTop: globalStyled.defaultPadding.paddingTop,
-    // ...globalStyled.defaultBorderSection,
+    paddingHorizontal: 0,
+    paddingTop: 24,
   },
 });
 

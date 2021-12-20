@@ -21,7 +21,11 @@ const HeaderView = React.memo(() => {
 
 const TabAssets = () => {
   return (
-    <Tabs rootTabID={ROOT_TAB_ASSETS} useTab1>
+    <Tabs
+      rootTabID={ROOT_TAB_ASSETS}
+      useTab1
+      defaultTabHeader
+    >
       <View tabID={TAB_COINS_ID} label="Coins">
         <Wallet hideBackButton />
       </View>

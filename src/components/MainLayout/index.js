@@ -64,8 +64,8 @@ const MainLayout = ({
             {children}
           </KeyboardAwareScrollView>
         ) : (
-          <View 
-            borderTop 
+          <View
+            borderTop
             paddingHorizontal
             style={[
               styles.content,
