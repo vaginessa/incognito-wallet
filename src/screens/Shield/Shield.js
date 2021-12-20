@@ -4,7 +4,6 @@ import { BtnQuestionDefault } from '@src/components/Button';
 import PropTypes from 'prop-types';
 import {ListAllToken, TokenFollow} from '@src/components/Token';
 import { View } from '@components/core';
-import globalStyled from '@src/theme/theme.styled';
 import { styled } from './Shield.styled';
 import withShield from './Shield.enhance';
 
