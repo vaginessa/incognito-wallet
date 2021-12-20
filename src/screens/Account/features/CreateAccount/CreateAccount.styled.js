@@ -6,7 +6,6 @@ const style = StyleSheet.create({
   },
   form: {
     flex: 1,
-    marginTop: 16,
   },
   submitBtn: {
     marginVertical: 50,

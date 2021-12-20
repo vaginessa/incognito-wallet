@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet } from 'react-native';
 import MainLayout from '@components/MainLayout';
 import { Text, View } from '@components/core';
+import { Text4, Text7 } from '@components/core/Text';
 import { COLORS, FONT, THEME } from '@src/styles';
 
 const styles = StyleSheet.create({
@@ -18,7 +19,6 @@ const styles = StyleSheet.create({
   },
   bold: {
     ...FONT.STYLE.bold,
-    color: COLORS.black,
   },
 });
 
@@ -26,9 +26,9 @@ const content = [
   {
     title: 'Master key',
     desc:
-  <Text style={styles.desc}>
-    A master key will allow you to recover all associated keychains and their keys, using a secret 12-word. You <Text style={[styles.desc, styles.bold]}>must</Text> keep the master key phrase safe – it’s the only way to ensure no one but you can access your funds.
-  </Text>,
+  <Text4 style={styles.desc}>
+    A master key will allow you to recover all associated keychains and their keys, using a secret 12-word. You <Text4 style={[styles.desc, styles.bold]}>must</Text4> keep the master key phrase safe – it’s the only way to ensure no one but you can access your funds.
+  </Text4>,
   },
   {
     title: 'Keychain',
@@ -43,13 +43,13 @@ const content = [
 const KeysExplained = () => {
   return (
     <MainLayout header="Keys explained" scrollable>
-      <Text style={styles.desc}>
+      <Text4 style={styles.desc}>
         Different keys enable different access and actions.
-      </Text>
+      </Text4>
       {content.map(item => (
         <View style={styles.content} key={item.title}>
           <Text style={styles.title}>{item.title}</Text>
-          <Text style={styles.desc}>{item.desc}</Text>
+          <Text4 style={styles.desc}>{item.desc}</Text4>
         </View>
       ))}
     </MainLayout>

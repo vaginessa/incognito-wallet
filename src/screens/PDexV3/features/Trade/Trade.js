@@ -36,7 +36,7 @@ const Trade = (props) => {
         useTab1
         defaultTabIndex={2}
         styledTabList={styled.styledTabList}
-        rightCustom={
+        rightCustom={(
           <Row style={styled.rightHeader}>
             {visibleBtnChart && (
               <ButtonChart
@@ -44,9 +44,11 @@ const Trade = (props) => {
                 style={{ marginRight: 15 }}
               />
             )}
-            <SelectAccountButton handleSelectedAccount={onRefresh} />
+            <View>
+              <SelectAccountButton handleSelectedAccount={onRefresh} />
+            </View>
           </Row>
-        }
+        )}
       >
         <View
           tabID={TAB_BUY_LIMIT_ID}

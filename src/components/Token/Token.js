@@ -1,14 +1,12 @@
 import React from 'react';
-import { Text, View } from 'react-native';
 import PropTypes from 'prop-types';
 import withToken from '@src/components/Token/Token.enhance';
 import { TokenVerifiedIcon } from '@src/components/Icons';
-import round from 'lodash/round';
 import Swipeout from 'react-native-swipeout';
 import { BtnDelete, BtnInfo } from '@src/components/Button';
 import replace from 'lodash/replace';
 import trim from 'lodash/trim';
-import { TouchableOpacity, ActivityIndicator } from '@src/components/core';
+import { TouchableOpacity, ActivityIndicator, Text, View } from '@src/components/core';
 import { useSelector } from 'react-redux';
 import { currencySelector, decimalDigitsSelector } from '@src/screens/Setting';
 import { prefixCurrency, pTokenSelector } from '@src/redux/selectors/shared';

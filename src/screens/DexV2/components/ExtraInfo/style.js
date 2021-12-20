@@ -10,7 +10,6 @@ export default StyleSheet.create({
     justifyContent: 'space-between',
   },
   text: {
-    color: COLORS.lightGrey17,
     ...FONT.STYLE.medium,
   },
   textLeft: {
@@ -26,7 +25,6 @@ export default StyleSheet.create({
   message: {
     ...FONT.STYLE.medium,
     fontSize: 14, 
-    color: COLORS.colorGreyBold,
     marginVertical: 10,
   },
 });

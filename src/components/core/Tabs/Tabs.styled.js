@@ -1,20 +1,20 @@
 import { StyleSheet } from 'react-native';
-import { COLORS } from '@src/styles';
 
 export const styled = StyleSheet.create({
   tabs: {
     backgroundColor: 'transparent',
-    minHeight: 50,
+    minHeight: 64,
   },
   tabList: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    backgroundColor: COLORS.colorGreyLight1,
-    borderRadius: 40,
+    // justifyContent: 'space-between',
+    // borderRadius: 40,
     flex: 1,
+    borderBottomColor: '#484848',
+    borderBottomWidth: 1,
   },
   tabList1: {
-    borderRadius: 0,
+    borderRadius: 10,
     backgroundColor: 'transparent',
     padding: 0,
     alignItems: 'center',
@@ -22,5 +22,6 @@ export const styled = StyleSheet.create({
   },
   tabContent: {
     flex: 1,
+    overflow: 'hidden'
   },
 });

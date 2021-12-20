@@ -1,5 +1,7 @@
 /* eslint-disable import/no-cycle */
 import { Text, TouchableOpacity, View } from '@src/components/core';
+import { View4 } from '@src/components/core/View';
+import { Text4 } from '@src/components/core/Text';
 import PropTypes from 'prop-types';
 import React from 'react';
 import isEqual from 'lodash/isEqual';
@@ -28,7 +30,7 @@ const NetworkItem = ({ active, network, onActive }) => {
           active && networkItemStyle.activeItem,
         ]}
       >
-        <View style={networkItemStyle.circle} />
+        <View4 style={networkItemStyle.circle} />
         <View style={networkItemStyle.textInfoContainer}>
           <Text
             style={networkItemStyle.networkName}
@@ -37,13 +39,13 @@ const NetworkItem = ({ active, network, onActive }) => {
           >
             {network?.name}
           </Text>
-          <Text
+          <Text4
             style={networkItemStyle.networkAddr}
             numberOfLines={1}
             ellipsizeMode="tail"
           >
             {network?.address}
-          </Text>
+          </Text4>
         </View>
       </View>
     </TouchableOpacity>

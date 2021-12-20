@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import {
@@ -11,14 +11,14 @@ import {
   defaultAccount,
   switchAccountSelector,
 } from '@src/redux/selectors/account';
-import { Toast, TouchableOpacity } from '@src/components/core';
+import { Text, Text3, Toast, TouchableOpacity } from '@src/components/core';
 import { ExHandler } from '@src/services/exception';
 import debounce from 'lodash/debounce';
-import Util from '@src/utils/Util';
 import { COLORS, FONT } from '@src/styles';
 import Row from '@components/Row';
 import { switchMasterKey } from '@src/redux/actions/masterKey';
 import { CheckBoxIcon } from '@components/Icons';
+import styled from 'styled-components/native';
 
 const itemStyled = StyleSheet.create({
   wrapper: {
@@ -26,41 +26,28 @@ const itemStyled = StyleSheet.create({
     marginTop: 8,
     paddingVertical: 14,
     paddingHorizontal: 16,
-    backgroundColor: COLORS.white,
   },
   selected: {
-    borderColor: COLORS.blue5,
-    borderWidth: 1,
   },
   container: {
     marginLeft: 10,
-  },
-  shadow: {
-    shadowOffset: {
-      width: 0,
-      height: 0,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
-    borderRadius: 8,
-    backgroundColor: COLORS.white,
-    borderWidth: 1,
-    borderColor: COLORS.colorGrey4,
   },
   name: {
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.regular,
     lineHeight: FONT.SIZE.regular + 9,
-    color: COLORS.black,
   },
   address: {
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.small,
     lineHeight: FONT.SIZE.small + 7,
-    color: COLORS.lightGrey36,
     marginTop: 4,
   },
 });
+
+const CustomRow = styled(Row)`
+  border: 1px solid ${({ theme }) => theme.border1};
+`;
 
 const AccountItem = React.memo(
   ({
@@ -115,7 +102,7 @@ const AccountItem = React.memo(
 
     // eslint-disable-next-line react/prop-types
     const Component = ({ style }) => (
-      <Row style={[itemStyled.wrapper, itemStyled.shadow, style]}>
+      <CustomRow style={[itemStyled.wrapper, style]}>
         <View style={itemStyled.container}>
           <Row centerVertical spaceBetween>
             <Text style={itemStyled.name} numberOfLines={1}>
@@ -123,15 +110,15 @@ const AccountItem = React.memo(
             </Text>
             <CheckBoxIcon active={isCurrentAccount} />
           </Row>
-          <Text
+          <Text3
             style={itemStyled.address}
             numberOfLines={1}
             ellipsizeMode="middle"
           >
             {PaymentAddress}
-          </Text>
+          </Text3>
         </View>
-      </Row>
+      </CustomRow>
     );
 
     if (!switchingAccount) {

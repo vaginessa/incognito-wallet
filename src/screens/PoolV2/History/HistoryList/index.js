@@ -15,6 +15,7 @@ import withHistories from '@screens/PoolV2/histories.enhance';
 import withDefaultAccount from '@components/Hoc/withDefaultAccount';
 import { LIMIT } from '@screens/PoolV2/constants';
 import {COLORS} from '@src/styles';
+import globalStyled from '@src/theme/theme.styled';
 import styles from './style';
 
 const History = ({
@@ -51,9 +52,9 @@ const History = ({
     <ActivityIndicator /> : null;
 
   return (
-    <View style={styles.wrapper}>
+    <>
       <Header title="Provider history" onGoBack={() => navigation.navigate(ROUTE_NAMES.PoolV2)} />
-      <View style={[styles.wrapper, styles.historyTitle]}>
+      <View style={[styles.wrapper, styles.historyTitle, globalStyled.defaultPadding3]} borderTop>
         {histories.length ? (
           <VirtualizedList
             data={histories}
@@ -71,7 +72,7 @@ const History = ({
           />
         ) : <LoadingContainer /> }
       </View>
-    </View>
+    </>
   );
 };
 

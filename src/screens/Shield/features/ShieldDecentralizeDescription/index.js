@@ -1,5 +1,6 @@
 import React, { memo } from 'react';
-import { ScrollView, Text, View } from 'react-native';
+import { ScrollViewBorder, Text, View } from '@components/core';
+import { View2 } from '@components/core/View';
 import { styled } from '@screens/Shield/features/ShieldDecentralizeDescription/styled';
 import Header from '@components/Header/Header';
 import { withLayout_2 } from '@components/Layout';
@@ -21,14 +22,14 @@ const CONTENTS = [
 const ShieldDecentralizeDescription = () => {
   const selectedPrivacy = useSelector(selectedPrivacySelector.selectedPrivacy);
   return (
-    <View style={styled.container}>
+    <View2 style={styled.container}>
       <Header title={`Shield ${selectedPrivacy?.externalSymbol || selectedPrivacy?.symbol}`} />
-      <ScrollView>
+      <ScrollViewBorder>
         <View style={styled.wrapper}>
           {CONTENTS.map((item, index) => <Text style={styled.content} key={`content-${index}`}>{item.content}</Text>)}
         </View>
-      </ScrollView>
-    </View>
+      </ScrollViewBorder>
+    </View2>
   );
 };
 

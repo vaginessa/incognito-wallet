@@ -1,5 +1,5 @@
 import React, { memo } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, TouchableOpacity } from 'react-native';
 import { useSelector } from 'react-redux';
 import {
   defaultAccountSelector,
@@ -8,10 +8,13 @@ import {
 import PropTypes from 'prop-types';
 import Swipeout from 'react-native-swipeout';
 import { Row } from '@src/components';
+import { Text } from '@src/components/core';
+import { Text3 } from '@src/components/core/Text';
 import { ArrowRightGreyIcon, CheckBoxIcon } from '@components/Icons';
 import { isNodeAccount } from '@screens/Setting/features/Keychain/Keychain.ultil';
 import { settingSelector } from '@screens/Setting';
 import { DeleteFillIcon } from '@components/Icons/icon.delete';
+import { colorsSelector } from '@src/theme/theme.selector';
 import withKeychain from './Keychain.enhance';
 import { itemStyled } from './keychain.styled';
 
@@ -22,12 +25,14 @@ const Item = React.memo(
       () => account?.paymentAddress === defaultAccount?.paymentAddress,
       [account?.paymentAddress, defaultAccount?.paymentAddress],
     );
+    const colors = useSelector(colorsSelector);
     return (
       <Swipeout
         style={[
           itemStyled.wrap,
           itemStyled.shadow,
           isLast && { marginBottom: 50 },
+          { borderColor: colors.border1 },
         ]}
         right={[
           ...(handleDelete
@@ -61,13 +66,13 @@ const Item = React.memo(
             </Row>
             <ArrowRightGreyIcon style={itemStyled.arrow} />
           </Row>
-          <Text
+          <Text3
             style={itemStyled.mediumGrey}
             ellipsizeMode="middle"
             numberOfLines={1}
           >
             {account.paymentAddress}
-          </Text>
+          </Text3>
         </TouchableOpacity>
       </Swipeout>
     );

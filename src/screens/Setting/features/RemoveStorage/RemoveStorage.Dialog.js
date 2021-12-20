@@ -1,7 +1,9 @@
 import React, { memo } from 'react';
-import { View, StyleSheet, Modal, Text } from 'react-native';
+import { StyleSheet, Modal } from 'react-native';
+import { Text, View } from '@components/core';
+import { Text4 } from '@components/core/Text';
 import PropTypes from 'prop-types';
-import { COLORS, FONT } from '@src/styles';
+import { FONT } from '@src/styles';
 import { BtnPrimary, BtnSecondary } from '@components/core/Button/Button';
 
 const styles = StyleSheet.create({
@@ -13,7 +15,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
   },
   wrapContent: {
-    backgroundColor: COLORS.white,
     width: '100%',
     borderRadius: 13,
     paddingHorizontal: 16,
@@ -30,7 +31,6 @@ const styles = StyleSheet.create({
     fontSize: FONT.SIZE.regular,
     alignSelf: 'center',
     textAlign: 'center',
-    color: COLORS.newGrey,
     marginTop: 15,
   },
   buttonStyle: {
@@ -63,7 +63,7 @@ const RemoveDialog = (props) => {
       <View style={styles.modalBackground}>
         <View style={styles.wrapContent}>
           <Text style={styles.title}>{title || CONTENT.title}</Text>
-          <Text style={styles.subTitle}>{subTitle || CONTENT.subTitle}</Text>
+          <Text4 style={styles.subTitle}>{subTitle || CONTENT.subTitle}</Text4>
           <View
             style={{ flexDirection: 'row', justifyContent: 'space-between' }}
           >

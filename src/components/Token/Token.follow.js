@@ -1,15 +1,15 @@
 import React, {memo} from 'react';
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import PropTypes from 'prop-types';
 import {ImageCached, Row} from '@src/components';
 import {formatPrice} from '@components/Token';
 import replace from 'lodash/replace';
-import round from 'lodash/round';
 import {COLORS, FONT} from '@src/styles';
 import {NormalText} from '@components/Token/Token';
 import incognito from '@assets/images/new-icons/incognito.png';
 import {BtnStar} from '@components/Button';
 import format from '@utils/format';
+import { Text } from '@components/core';
 
 const TokenFollow = ({ item, hideStar, handleToggleFollowToken, onPress }) => {
   const { symbol, priceUsd, change, tokenId, isFollowed, name } = item;
@@ -95,7 +95,6 @@ export const styled = StyleSheet.create({
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.medium,
     textAlign: 'left',
-    color: COLORS.black,
     lineHeight: FONT.SIZE.medium + 9,
   },
   icon: {

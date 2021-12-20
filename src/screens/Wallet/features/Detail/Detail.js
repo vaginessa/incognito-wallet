@@ -1,5 +1,8 @@
 import React from 'react';
-import { TouchableOpacity, View } from 'react-native';
+import { TouchableOpacity } from 'react-native';
+import { View } from '@src/components/core';
+import { View2 } from '@src/components/core/View';
+import globalStyled from '@src/theme/theme.styled';
 import Header from '@src/components/Header';
 import {
   selectedPrivacySelector,
@@ -205,7 +208,7 @@ const Detail = (props) => {
   const { onRefresh } = useHistoryEffect();
   return (
     <>
-      <View style={[styled.container, { marginHorizontal: 25 }]}>
+      <View2 style={[styled.container]}>
         <Header
           title={selected?.name}
           customHeaderTitle={<BtnInfo />}
@@ -213,10 +216,12 @@ const Detail = (props) => {
           onGoBack={onGoBack}
           handleSelectedAccount={onRefresh}
         />
-        <Balance />
-        <GroupButton />
-        <History {...{ ...props, refreshing }} />
-      </View>
+        <View borderTop style={[{flex : 1}, globalStyled.defaultPadding3]}>
+          <Balance />
+          <GroupButton />
+          <History {...{ ...props, refreshing }} />
+        </View>
+      </View2>
     </>
   );
 };

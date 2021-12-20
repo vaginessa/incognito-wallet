@@ -12,13 +12,11 @@ export const styled = StyleSheet.create({
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.regular,
     lineHeight: FONT.SIZE.regular + 5,
-    color: COLORS.colorGreyBold,
   },
   boldText: {
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.medium,
     lineHeight: FONT.SIZE.medium + 6,
-    color: COLORS.black,
   },
   addManually: {
     marginBottom: 40,

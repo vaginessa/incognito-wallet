@@ -5,9 +5,8 @@ import { useDispatch } from 'react-redux';
 import { actionGetPDexV3Inst } from '@screens/PDexV3';
 import { withLayout_2 } from '@src/components/Layout';
 import { Header } from '@src/components';
-import { ScrollView } from '@src/components/core';
+import { ScrollView, Button } from '@src/components/core';
 import { createForm } from '@src/components/core/reduxForm';
-import { ButtonBasic } from '@src/components/Button';
 import { actionSetNFTTokenData } from '@src/redux/actions/account';
 import LoadingTx from '@src/components/LoadingTx';
 import {
@@ -17,6 +16,7 @@ import {
 import format from '@src/utils/format';
 import { PRV } from '@src/constants/common';
 import { ExHandler } from '@src/services/exception';
+import globalStyled from '@src/theme/theme.styled';
 import { Hook } from '@screens/PDexV3/features/Extra';
 import NFTTokenHook from './NFTToken.hook';
 
@@ -30,6 +30,7 @@ const styled = StyleSheet.create({
   },
   form: {
     // flex: 1,
+    paddingVertical: globalStyled.defaultPadding.paddingVertical,
     minHeight: 100,
     marginBottom: 50,
   },
@@ -96,11 +97,11 @@ export const FormMint = React.memo(() => {
         {({ handleSubmit }) => (
           <>
             {hookFactories}
-            <ButtonBasic
+            <Button
               title={`Mint${minting ? '...' : ''}`}
               disabled={minting}
               onPress={onMint}
-              btnStyle={{ marginTop: 24 }}
+              buttonStyle={{ marginTop: 24 }}
             />
             {minting && <LoadingTx />}
           </>

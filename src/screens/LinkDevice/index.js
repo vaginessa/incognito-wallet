@@ -1,6 +1,7 @@
 import React from 'react';
 import _ from 'lodash';
 import { View, RoundCornerButton } from '@components/core';
+import { View2 } from '@src/components/core/View';
 import Loader from '@components/DialogLoader';
 import routeNames from '@routers/routeNames';
 import BaseScreen from '@screens/BaseScreen';
@@ -99,30 +100,32 @@ class LinkDevice extends BaseScreen {
   render() {
     const { container } = styles;
     const { loading, nodeInfo, qrCode } = this.state;
+    let container2 = Object.assign({}, container);
+    container2.padding = 0;
     return (
-      <View style={container}>
-        <Loader loading={loading} />
-        <Header
-          title="Add existing Node"
-        />
-        <InputQRField
-          input={{
-            onChange: this.handleChangeQRCode
-          }}
-          label='QR Code'
-          placeholder='Scan Node QR code'
-          style={[styles.input]}
-          inputStyle={styles.inputStyle}
-          labelStyle={theme.text.BUTTON_TITLE}
-          value={qrCode}
-        />
-        <RoundCornerButton
-          onPress={this.addNode}
-          disabled={!nodeInfo}
-          title='Add'
-          style={[theme.BUTTON.NODE_BUTTON]}
-        />
-      </View>
+      <View2 style={container2}>
+        <Header title="Add existing Node" style={{paddingTop: 4, marginTop: -4}}/>
+        <View borderTop style={container}>
+          <Loader loading={loading} />
+          <InputQRField
+            input={{
+              onChange: this.handleChangeQRCode
+            }}
+            label='QR Code'
+            placeholder='Scan Node QR code'
+            style={[styles.input]}
+            inputStyle={styles.inputStyle}
+            labelStyle={theme.text.BUTTON_TITLE}
+            value={qrCode}
+          />
+          <RoundCornerButton
+            onPress={this.addNode}
+            disabled={!nodeInfo}
+            title='Add'
+            style={[theme.BUTTON.NODE_BUTTON]}
+          />
+        </View>
+      </View2>
     );
   }
 }

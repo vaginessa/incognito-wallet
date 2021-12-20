@@ -39,7 +39,6 @@ const text = {
   },
   defaultTextStyle: {
     ...FONTS.STYLE.normal,
-    color: COLORS.dark1,
     fontSize: fontSizes.regular,
     letterSpacing: 0,
   },
@@ -66,12 +65,10 @@ const text = {
   },
   boldTextStyleMedium: {
     ...FONTS.STYLE.bold,
-    color: COLORS.black,
     fontSize: fontSizes.medium,
   },
   boldTextStyleSuperMedium: {
     ...FONTS.STYLE.bold,
-    color: COLORS.black,
     fontSize: fontSizes.superMedium,
   },
   boldTextStyleLarge: {
@@ -87,13 +84,11 @@ const text = {
   },
   mediumTextMotto: {
     ...FONTS.STYLE.medium,
-    color: COLORS.newGrey,
     fontSize: fontSizes.medium,
   },
   mediumText: {
     ...FONTS.STYLE.normal,
     fontFamily: FONTS.NAME.medium,
-    color: COLORS.black,
     fontSize: fontSizes.medium,
   },
   mediumTextBold: {
@@ -126,7 +121,6 @@ const text = {
     color: COLORS.black,
   },
   regularSizeMediumFontGrey: {
-    color: COLORS.newGrey,
     fontSize: fontSizes.regular,
     fontFamily: FONTS.NAME.medium,
   },
@@ -141,7 +135,6 @@ const text = {
     fontFamily: FONTS.NAME.medium,
   },
   superMediumTextMotto: {
-    color: COLORS.newGrey,
     fontSize: fontSizes.superMedium,
     fontFamily: FONTS.NAME.medium,
   },
@@ -180,9 +173,9 @@ const header = {
 };
 const opacityButton = {
   button: {
-    backgroundColor: COLORS.blue,
+    backgroundColor: COLORS.colorBlue,
     paddingHorizontal: 5,
-    borderRadius: 6,
+    borderRadius: 8,
     borderWidth: DECOR.borderWidth,
     borderColor: COLORS.transparent,
     height: DECOR.buttonHeight,
@@ -198,7 +191,7 @@ const opacityButton = {
     letterSpacing: 0,
   },
   disabled: {
-    backgroundColor: COLORS.blue3,
+    opacity: 0.5
   },
 };
 

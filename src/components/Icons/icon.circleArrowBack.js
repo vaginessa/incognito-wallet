@@ -1,25 +1,25 @@
 import React from 'react';
-import { Image, StyleSheet } from 'react-native';
-import srcCircleArrowBackIcon from '@src/assets/images/icons/circle_arrow_back.png';
-import PropTypes from 'prop-types';
+import Svg, { Path } from 'react-native-svg';
+import { useSelector } from 'react-redux';
+import { colorsSelector } from '@src/theme/theme.selector';
 
-const styled = StyleSheet.create({
-  defaultStyle: {
-    width: 24,
-    height: 24,
-  },
-});
-
-const CircleArrowBackIcon = props => {
-  const { style = null, source = srcCircleArrowBackIcon, ...rest } = props;
+const CircleArrowBackIcon = (props) => {
+  const colors = useSelector(colorsSelector);
   return (
-    <Image source={source} style={[styled.defaultStyle, style]} {...rest} />
+    <Svg
+      width={24}
+      height={24}
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
+      <Path
+        d="M7.00003 12.1999C7.00121 12.0053 7.04321 11.813 7.12331 11.6355C7.20341 11.4581 7.31984 11.2993 7.4651 11.1695L14.1132 5.32656C14.2196 5.21925 14.3469 5.13492 14.4872 5.07883C14.6276 5.02273 14.778 4.99606 14.9291 5.00046C15.0803 5.00487 15.2289 5.04026 15.3657 5.10444C15.5026 5.16862 15.6247 5.26022 15.7247 5.37355C15.8246 5.48687 15.9001 5.61951 15.9466 5.76323C15.9931 5.90694 16.0095 6.05866 15.9948 6.20897C15.9801 6.35928 15.9346 6.50497 15.8612 6.63699C15.7878 6.76901 15.688 6.88455 15.568 6.97642L9.75465 12.0868C9.73829 12.1008 9.72515 12.1181 9.71614 12.1377C9.70713 12.1572 9.70247 12.1784 9.70247 12.2C9.70247 12.2215 9.70713 12.2427 9.71614 12.2623C9.72515 12.2818 9.73829 12.2991 9.75465 12.3131L15.5679 17.4235C15.6879 17.5154 15.7877 17.631 15.8611 17.763C15.9346 17.895 15.98 18.0407 15.9947 18.191C16.0094 18.3413 15.993 18.493 15.9465 18.6367C15.9001 18.7805 15.8245 18.9131 15.7246 19.0264C15.6247 19.1397 15.5025 19.2313 15.3656 19.2955C15.2288 19.3597 15.0802 19.3951 14.9291 19.3995C14.778 19.4039 14.6275 19.3772 14.4872 19.3211C14.3468 19.265 14.2195 19.1807 14.1131 19.0734L7.46509 13.2304C7.31984 13.1006 7.2034 12.9418 7.1233 12.7644C7.0432 12.5869 7.00121 12.3946 7.00003 12.1999Z"
+        fill={colors?.text1}
+      />
+    </Svg>
   );
-};
-
-CircleArrowBackIcon.propTypes = {
-  style: PropTypes.any,
-  source: PropTypes.string,
 };
 
 export default CircleArrowBackIcon;

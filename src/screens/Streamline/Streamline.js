@@ -1,9 +1,9 @@
 import React from 'react';
-import { View, Text, RefreshControl } from 'react-native';
 import Header from '@src/components/Header';
 import { BtnQuestionDefault, ButtonBasic } from '@src/components/Button';
 import srcQuestion from '@src/assets/images/icons/question_gray.png';
-import { LoadingContainer, ScrollView } from '@src/components/core';
+import { LoadingContainer, ScrollView, View, Text } from '@src/components/core';
+import { Text4 } from '@src/components/core/Text';
 import LoadingTx from '@src/components/LoadingTx';
 import PropTypes from 'prop-types';
 import { MAX_NO_INPUT_DEFRAGMENT } from '@screens/Streamline/Streamline.constant';
@@ -21,8 +21,8 @@ const Hook = React.memo((props) => {
   }
   return (
     <View style={styled.hook}>
-      <Text style={styled.hookTitle}>{title}</Text>
-      <Text style={styled.hookDesc}>{desc}</Text>
+      <Text4 style={styled.hookTitle}>{title}</Text4>
+      <Text4 style={styled.hookDesc}>{desc}</Text4>
     </View>
   );
 });

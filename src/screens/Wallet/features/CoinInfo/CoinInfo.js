@@ -1,7 +1,8 @@
 import React from 'react';
-import { View, Text, Clipboard } from 'react-native';
+import { Clipboard } from 'react-native';
 import Header from '@src/components/Header';
-import { ScrollView, TouchableOpacity, Toast } from '@src/components/core';
+import { ScrollView, TouchableOpacity, Toast, View, Text } from '@src/components/core';
+import { View2 } from '@components/core/View';
 import LinkingService from '@src/services/linking';
 import { CopyIcon, OpenUrlIcon } from '@src/components/Icons';
 import PropTypes from 'prop-types';
@@ -76,13 +77,13 @@ const CoinInfo = (props) => {
   const navigation = useNavigation();
   const onGoBack = () => navigation.goBack();
   return (
-    <View style={styled.container}>
+    <View2 style={styled.container}>
       <Header
         title="Coin info"
         titleStyled={styled.headerTitleStyle}
         onGoBack={onGoBack}
       />
-      <View style={styled.wrapper}>
+      <View style={[styled.wrapper, {backgroundColor: 'red', marginTop: 0, overflow: 'hidden'}]} borderTop>
         <ScrollView>
           <TokenBasic
             tokenId={tokenId}
@@ -116,7 +117,7 @@ const CoinInfo = (props) => {
           ))}
         </ScrollView>
       </View>
-    </View>
+    </View2>
   );
 };
 

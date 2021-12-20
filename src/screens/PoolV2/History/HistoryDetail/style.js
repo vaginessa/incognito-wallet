@@ -14,13 +14,11 @@ export default StyleSheet.create({
   },
   bold: {
     ...FONT.STYLE.bold,
-    color: COLORS.black,
   },
   content: {
     ...FONT.STYLE.medium,
     fontSize: 18,
     marginTop: 5,
-    color: COLORS.lightGrey16,
   },
   historyItem: {
     marginVertical: 30,
@@ -38,7 +36,6 @@ export default StyleSheet.create({
   },
   info: {
     ...FONT.STYLE.bold,
-    color: COLORS.black,
     fontSize: 18,
   },
 });

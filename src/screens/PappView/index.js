@@ -22,6 +22,7 @@ import Header from '@components/Header';
 import { SearchIcon } from '@src/components/Icons';
 import sourceSearchIcon from '@assets/images/icons/search_icon.png';
 import LogManager from '@src/services/LogManager';
+import { View2 } from '@components/core/View';
 import styles, { containerStyle as styled } from './style';
 import PappError from './PappError';
 import PappView from './PappView';
@@ -193,7 +194,7 @@ class PappViewContainer extends Component {
     }
 
     return (
-      <View style={styled.container}>
+      <View2 style={styled.container}>
         <Header
           placeHolder="Enter a pApp address"
           isNormalSearch
@@ -217,20 +218,20 @@ class PappViewContainer extends Component {
           onTextSearchChange={text => {
             this.setState({ searchText: text });
           }}
-          rightHeader={(
-            <View style={styles.chooseTokenIcon}>
-              <SelectToken
-                tokens={tokens}
-                onSelect={this.handleSelectPrivacyToken}
-                selectedPrivacy={selectedPrivacy}
-                supportTokenIds={supportTokenIds}
-              />
-            </View>
-          )}
+          // rightHeader={(
+          //   <View style={styles.chooseTokenIcon}>
+          //     <SelectToken
+          //       tokens={tokens}
+          //       onSelect={this.handleSelectPrivacyToken}
+          //       selectedPrivacy={selectedPrivacy}
+          //       supportTokenIds={supportTokenIds}
+          //     />
+          //   </View>
+          // )}
         />
         {content}
         {loading && <ActivityIndicator style={styles.loading} />}
-      </View>
+      </View2>
     );
   }
 }

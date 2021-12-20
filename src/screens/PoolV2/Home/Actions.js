@@ -5,6 +5,7 @@ import ROUTE_NAMES from '@routers/routeNames';
 import { useNavigation } from 'react-navigation-hooks';
 import { Row } from '@src/components/';
 import mainStyle from '@screens/PoolV2/style';
+import globalStyled from '@src/theme/theme.styled';
 import styles from './style';
 
 const Actions = ({
@@ -58,7 +59,7 @@ const Actions = ({
   );
 
   return (
-    <Row center style={styles.actions}>
+    <Row center style={[styles.actions, globalStyled.defaultPadding3]}>
       {provideButton}
       {buy ? buyButton : withdrawButton}
     </Row>

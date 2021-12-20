@@ -8,6 +8,7 @@ import { Header, Row } from '@src/components/';
 import { COINS } from '@src/constants';
 import Loading from '@screens/DexV2/components/Loading';
 import withDefaultAccount from '@components/Hoc/withDefaultAccount';
+import globalStyled from '@src/theme/theme.styled';
 import withConfirm from './confirm.enhance';
 import withRewards from './reward.enhance';
 import withSuccess from './success.enhance';
@@ -22,9 +23,9 @@ const Provide = ({
 }) => {
   const coin = COINS.PRV;
   return (
-    <View style={mainStyle.flex}>
+    <>
       <Header title="Withdraw rewards" />
-      <View style={mainStyle.coinContainer}>
+      <View style={[mainStyle.coinContainerNoMargin, globalStyled.defaultPadding3]} borderTop>
         <Row center spaceBetween style={mainStyle.inputContainer}>
           <BaseTextInput
             style={mainStyle.input}
@@ -47,7 +48,7 @@ const Provide = ({
         </Text>
       </View>
       <Loading open={withdrawing} />
-    </View>
+    </>
   );
 };
 

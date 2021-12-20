@@ -10,7 +10,7 @@ const COLORS = {
   blue2: '#01828A',
   blue3: '#ACE9EC',
   blue4: '#004AA9',
-  blue5: '#4C8BF5',
+  blue5: '#1A73E8',
   blue6: '#00407E',
   red: '#F6465D',
   red2: '#FF443A',
@@ -77,13 +77,13 @@ const COLORS = {
   colorGrey4: '#F7F7F7',
   colorGrey5: '#f9f9f9',
   colorGrey6: '#C0C0C0',
-  colorBlue: '#4C8BF5',
+  colorBlue: '#1A73E8',
   green2: '#64A121',
   green3: '#018775',
   green4: '#6DD400',
   green5: '#34C759',
 
-  colorTradeBlue: '#4C8BF5',
+  colorTradeBlue: '#1A73E8',
 };
 
 export default {

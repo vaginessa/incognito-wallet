@@ -56,7 +56,6 @@ const styles = StyleSheet.create({
     marginTop: scaleInApp(8)
   },
   label: {
-    color: COLORS.black,
     fontSize: FONT.SIZE.superMedium,
     fontFamily: FONT.NAME.bold,
     marginBottom: -55

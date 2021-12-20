@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
-import { CheckedIcon } from '@src/components/Icons';
+import { CheckBoxIcon } from '@src/components/Icons';
 import PropTypes from 'prop-types';
 
 const styled = StyleSheet.create({
@@ -16,7 +16,7 @@ const BtnBack = (props) => {
   return (
     <TouchableOpacity style={[styled.btnStyle, btnStyle]} {...rest}>
       <View style={styled.row}>
-        <CheckedIcon checked={checked} />
+        <CheckBoxIcon active={checked} />
         {hook}
       </View>
     </TouchableOpacity>

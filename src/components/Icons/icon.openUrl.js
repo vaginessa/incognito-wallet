@@ -1,6 +1,6 @@
 import React from 'react';
-import { Image, StyleSheet } from 'react-native';
-import { View } from '@src/components/core';
+import { StyleSheet } from 'react-native';
+import { Image1, View } from '@src/components/core';
 import srcOpenUrl from '@src/assets/images/new-icons/open-link.png';
 
 const styled = StyleSheet.create({
@@ -19,7 +19,7 @@ const styled = StyleSheet.create({
 const IconOpenUrl = (props) => {
   return (
     <View style={[styled.container, props?.containerStyle]}>
-      <Image style={[styled.icon, props?.style]} source={srcOpenUrl} />
+      <Image1 style={[styled.icon, props?.style]} source={srcOpenUrl} />
     </View>
   );
 };

@@ -8,6 +8,7 @@ const style = StyleSheet.create({
   },
   webview: {
     width: ScreenWidth,
+    //todo
     marginLeft: -25, // Cheat sheet
     minHeight: 500,
     paddingBottom: 50
@@ -31,27 +32,21 @@ const style = StyleSheet.create({
     justifyContent: 'center',
   },
   navigation: {
-    position: 'absolute', 
-    bottom: 0, 
-    left: 0, 
-    height: 70, 
-    width: ScreenWidth, 
-    flexDirection: 'row', 
-    paddingLeft: 10, 
-    marginLeft: -25,
-    backgroundColor: 'white'
+    height: 55,
+    width: ScreenWidth,
+    flexDirection: 'row',
   },
   back: {
-    height: 70, 
-    width: '25%', 
-    justifyContent: 'center', 
-    alignContent: 'center', 
-    alignItems: 'center', 
+    height: 70,
+    width: '25%',
+    justifyContent: 'center',
+    alignContent: 'center',
+    alignItems: 'center',
     paddingBottom: 10,
   },
   rightContainer: {
-    flexDirection: 'row', 
-    flex: 1, 
+    flexDirection: 'row',
+    flex: 1,
     justifyContent: 'flex-end'
   },
   wrapperLoading: {

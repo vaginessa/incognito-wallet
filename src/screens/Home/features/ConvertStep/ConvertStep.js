@@ -1,7 +1,7 @@
 import React, { memo } from 'react';
-import { FlatList, Text, View } from 'react-native';
+import { FlatList, Text } from 'react-native';
 import styles from '@screens/Home/features/Convert/Convert.styled';
-import { ActivityIndicator } from '@components/core';
+import { ActivityIndicator, View } from '@components/core';
 import { Icon } from 'react-native-elements';
 import { COLORS } from '@src/styles';
 import { ScreenHeight } from '@utils/devices';

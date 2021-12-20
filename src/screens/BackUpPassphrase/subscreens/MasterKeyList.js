@@ -15,11 +15,9 @@ import { removeMasterKey, switchMasterKey } from '@src/redux/actions/masterKey';
 import { THEME } from '@src/styles';
 
 const styles = StyleSheet.create({
-  keys: {
-    marginTop: -15,
-  },
   padding: {
     marginHorizontal: 25,
+    paddingBottom: 5,
   },
   actions: {
     marginTop: 20,
@@ -68,8 +66,8 @@ const MasterKeyList = () => {
   }, []);
 
   return (
-    <MainLayout header="Master keys" scrollable noPadding>
-      <View style={styles.keys}>
+    <MainLayout header="Master keys" scrollable>
+      <View>
         <VirtualizedList
           data={list}
           renderItem={renderItem}

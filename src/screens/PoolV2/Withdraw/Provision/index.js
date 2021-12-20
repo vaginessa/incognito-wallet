@@ -13,6 +13,7 @@ import ExtraInfo from '@screens/DexV2/components/ExtraInfo';
 import formatUtil from '@utils/format';
 import { BtnInfinite } from '@components/Button/index';
 import convertUtil from '@utils/convert';
+import globalStyled from '@src/theme/theme.styled';
 import withCoinData from './coin.enhance';
 import withConfirm from './confirm.enhance';
 import withSuccess from './success.enhance';
@@ -34,9 +35,9 @@ const Provide = ({
   };
 
   return (
-    <View style={mainStyle.flex}>
+    <>
       <Header title={`Withdraw ${coin.symbol} provision`} />
-      <View style={mainStyle.coinContainer}>
+      <View style={[mainStyle.coinContainerNoMargin, globalStyled.defaultPadding3]} borderTop>
         <Row center spaceBetween style={mainStyle.inputContainer}>
           <BaseTextInput
             style={mainStyle.input}
@@ -68,7 +69,7 @@ const Provide = ({
         </Text>
       </View>
       <Loading open={withdrawing} />
-    </View>
+    </>
   );
 };
 

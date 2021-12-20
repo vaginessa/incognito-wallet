@@ -1,5 +1,6 @@
 import {StyleSheet} from 'react-native';
 import {COLORS, FONT} from '@src/styles';
+import globalStyled from '@src/theme/theme.styled';
 
 export const itemStyled = StyleSheet.create({
   wrap: {
@@ -19,13 +20,11 @@ export const itemStyled = StyleSheet.create({
   },
   mediumBlack: {
     ...FONT.STYLE.medium,
-    color: COLORS.black,
     fontSize: FONT.SIZE.medium,
     lineHeight: FONT.SIZE.medium + 9,
   },
   mediumGrey: {
     ...FONT.STYLE.medium,
-    color: COLORS.lightGrey36,
     fontSize: FONT.SIZE.small,
     lineHeight: FONT.SIZE.small + 7,
     paddingLeft: 36
@@ -38,19 +37,15 @@ export const itemStyled = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 3,
     borderRadius: 8,
-    backgroundColor: COLORS.white,
     borderWidth: 1,
-    borderColor: COLORS.colorGrey4,
     overflow: 'visible'
   },
   arrow: {
-    tintColor: COLORS.blue5,
     width: 8,
     height: 13,
   },
   wrapSetting: {
     paddingVertical: 16,
-    borderBottomColor: COLORS.colorGrey4,
     borderBottomWidth: 1
   },
   wrapIcon: {
@@ -64,8 +59,9 @@ export const itemStyled = StyleSheet.create({
 
 export const styled = StyleSheet.create({
   wrapper: {
-    paddingHorizontal: 25,
-    paddingTop: 24,
-  }
+    // paddingHorizontal: globalStyled.defaultPadding.paddingHorizontal,
+    // paddingTop: globalStyled.defaultPadding.paddingTop,
+    // ...globalStyled.defaultBorderSection,
+  },
 });
 

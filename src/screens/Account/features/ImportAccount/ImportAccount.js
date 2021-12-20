@@ -1,4 +1,5 @@
-import { Text, TouchableOpacity } from '@src/components/core';
+import { Text, TouchableOpacity, View, Button } from '@src/components/core';
+import { Text4 } from '@src/components/core/Text';
 import PropTypes from 'prop-types';
 import { Field } from 'redux-form';
 import {
@@ -7,7 +8,6 @@ import {
   InputQRField,
 } from '@src/components/core/reduxForm';
 import React from 'react';
-import { View } from 'react-native';
 import { ButtonBasic } from '@src/components/Button';
 import MainLayout from '@components/MainLayout/index';
 import styleSheet from './ImportAccount.styled';
@@ -40,60 +40,62 @@ const ImportAccount = (props) => {
 
   const renderForm = () => {
     return (
-      <Form>
-        {({ handleSubmit, submitting }) => (
-          <View>
-            {toggle && randomName ? (
-              <View style={styleSheet.randomNameField}>
-                <Text style={styleSheet.randomNameLabel}>Keychain name</Text>
-                <View style={styleSheet.randomNameValue}>
-                  <Text
-                    numberOfLines={1}
-                    ellipsizeMode="tail"
-                    style={styleSheet.randomNameText}
-                  >
-                    {randomName}
-                  </Text>
-                  <TouchableOpacity
-                    onPress={handleChangeRandomName}
-                    style={styleSheet.randomNameChangeBtn}
-                  >
-                    <Text style={styleSheet.randomNameChangeBtnText}>Edit</Text>
-                  </TouchableOpacity>
+      <View paddingHorizontal borderTop fullFlex>
+        <Form>
+          {({ handleSubmit, submitting }) => (
+            <>
+              {toggle && randomName ? (
+                <View style={styleSheet.randomNameField}>
+                  <Text style={styleSheet.randomNameLabel}>Keychain name</Text>
+                  <View style={styleSheet.randomNameValue}>
+                    <Text4
+                      numberOfLines={1}
+                      ellipsizeMode="tail"
+                      style={styleSheet.randomNameText}
+                    >
+                      {randomName}
+                    </Text4>
+                    <TouchableOpacity
+                      onPress={handleChangeRandomName}
+                      style={styleSheet.randomNameChangeBtn}
+                    >
+                      <Text style={styleSheet.randomNameChangeBtnText}>Edit</Text>
+                    </TouchableOpacity>
+                  </View>
                 </View>
-              </View>
-            ) : (
+              ) : (
+                <Field
+                  component={InputField}
+                  componentProps={{ autoFocus: true, style: { marginTop: 0 } }}
+                  name="accountName"
+                  placeholder="Keychain name"
+                  label="Keychain name"
+                  validate={getAccountValidator()}
+                />
+              )}
               <Field
-                component={InputField}
-                componentProps={{ autoFocus: true, style: { marginTop: 0 } }}
-                name="accountName"
-                placeholder="Keychain name"
-                label="Keychain name"
-                validate={getAccountValidator()}
+                component={InputQRField}
+                name="privateKey"
+                placeholder="Enter private key"
+                label="Private Key"
+                validate={getPrivateKeyValidator()}
               />
-            )}
-            <Field
-              component={InputQRField}
-              name="privateKey"
-              placeholder="Enter private key"
-              label="Private Key"
-              validate={getPrivateKeyValidator()}
-            />
-            <ButtonBasic
-              title={(checking || submitting) ? 'Importing...' : 'Import'}
-              btnStyle={styleSheet.submitBtn}
-              onPress={checking ? undefined : handleSubmit(handleImportAccount)}
-              disabled={disabledForm || submitting || checking}
-            />
-          </View>
-        )}
-      </Form>
+              <Button
+                title={(checking || submitting) ? 'Importing...' : 'Import'}
+                buttonStyle={styleSheet.submitBtn}
+                onPress={checking ? undefined : handleSubmit(handleImportAccount)}
+                disabled={disabledForm || submitting || checking}
+              />
+            </>
+          )}
+        </Form>
+      </View>
     );
   };
 
   const renderConfirm = () => {
     return (
-      <View>
+      <View paddingHorizontal>
         <Text style={styleSheet.actionText}>
           This keychain is not linked to any of your current master keys. Import its master key to restore all associated keychains, or import this keychain only.
         </Text>
@@ -116,7 +118,7 @@ const ImportAccount = (props) => {
   };
 
   return (
-    <MainLayout header="Import keychain" scrollable keyboardAware>
+    <MainLayout header="Import keychain" scrollable keyboardAware noPaddingBottom>
       {wantImport ? renderConfirm() : renderForm()}
     </MainLayout>
   );

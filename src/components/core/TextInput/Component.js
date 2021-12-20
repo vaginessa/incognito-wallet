@@ -3,12 +3,14 @@ import React, { useState } from 'react';
 import {
   TextInput as RNComponent,
   View,
-  Text,
   TouchableOpacity,
   Keyboard,
 } from 'react-native';
 import { Icon } from 'react-native-elements';
 import { COLORS } from '@src/styles';
+import { Text } from '@components/core';
+import { colorsSelector } from '@src/theme/theme.selector';
+import { useSelector } from 'react-redux';
 import styleSheet from './style';
 
 const TextInput = ({
@@ -31,6 +33,7 @@ const TextInput = ({
 }) => {
   const [focus, setFocus] = useState(false);
   let textInput = React.createRef();
+  const colors = useSelector(colorsSelector);
 
   React.useEffect(() => {
     if (textInput && onRef) {
@@ -91,13 +94,14 @@ const TextInput = ({
           <RNComponent
             ref={textInput}
             allowFontScaling={false}
-            placeholderTextColor={COLORS.colorGreyBold}
+            placeholderTextColor={colors.text4}
             returnKeyType="done"
             maxLength={maxLength}
             style={[
               styleSheet.input,
               oldVersion && styleSheet.oldInput,
               inputStyle,
+              {color: colors.text9},
             ]}
             onFocus={handleFocus}
             onBlur={handleBlur}

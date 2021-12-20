@@ -1,31 +1,30 @@
 import React from 'react';
-import { StyleSheet, Text } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import PropTypes from 'prop-types';
 import { COLORS, FONT } from '@src/styles';
 import {
   ActivityIndicator,
   TouchableOpacity,
-  View,
+  Text
 } from '@src/components/core';
 import isArray from 'lodash/isArray';
 
 const styled = StyleSheet.create({
   container: {
-    backgroundColor: COLORS.colorPrimary,
-    borderRadius: 100,
+    // todo:
+    backgroundColor: COLORS.blue5,
+    borderRadius: 4,
     height: 50,
     alignItems: 'center',
     justifyContent: 'center',
     maxWidth: '100%',
   },
   title: {
-    color: COLORS.white,
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.medium,
     textAlign: 'center',
   },
   disabled: {
-    backgroundColor: COLORS.colorGreyMedium,
   },
 });
 
@@ -35,7 +34,7 @@ const ButtonBasic = (props) => {
     btnStyle = null,
     titleStyle = null,
     customContent,
-    disabled = false,
+    disabled = true,
     loading = false,
     ...rest
   } = props;

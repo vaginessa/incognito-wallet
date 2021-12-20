@@ -6,13 +6,14 @@ export const styled = StyleSheet.create({
 });
 
 export const headerStyled = StyleSheet.create({
-  input: {
-    height: 50
+  title: {
+    fontWeight: '600',
+    fontSize: 24,
+    lineHeight: 30,
   },
   wrapTab: {
     width: 49,
     height: 40,
-    backgroundColor: COLORS.lightGrey30,
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 8,
@@ -21,18 +22,13 @@ export const headerStyled = StyleSheet.create({
   tabText: {
     ...FONT.STYLE.normal,
     fontSize: FONT.SIZE.regular,
-    color: COLORS.black
   },
   wrapSearch: {
-    backgroundColor: COLORS.white,
-    height: 50,
-    marginBottom: 16
+    height: 60,
+    marginBottom: 8
   },
   wrapInput: {
     flex: 1,
-    backgroundColor: COLORS.white,
-    borderColor: COLORS.lightGrey37,
-    borderWidth: 1
   },
   rowStyle: {
     borderBottomWidth: 0.5,
@@ -59,6 +55,9 @@ export const headerStyled = StyleSheet.create({
     borderRadius: 8,
     height: 40,
     backgroundColor: COLORS.lightGrey30,
+  },
+  wrapFilter: {
+    paddingTop: 24
   }
 });
 

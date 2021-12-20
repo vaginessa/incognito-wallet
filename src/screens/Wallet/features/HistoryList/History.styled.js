@@ -70,12 +70,10 @@ const style = StyleSheet.create({
     ...FONT.STYLE.medium,
     fontSize: FONT.SIZE.regular,
     lineHeight: FONT.SIZE.regular + 8,
-    color: COLORS.black,
   },
   text: {
     ...FONT.STYLE.medium,
     maxWidth: UTILS.screenWidth() / 2 - 50,
-    color: COLORS.colorGreyBold,
     fontSize: FONT.SIZE.regular,
     lineHeight: FONT.SIZE.regular + 4,
   },

@@ -1,6 +1,6 @@
 /* eslint-disable import/no-cycle */
 import React from 'react';
-import { View, TouchableWithoutFeedback, Text } from 'react-native';
+import { View, TouchableWithoutFeedback } from 'react-native';
 import { Field, change, focus } from 'redux-form';
 import { InputField, createForm, validator } from '@components/core/reduxForm';
 import { GENERAL } from '@src/constants/elements';
@@ -12,6 +12,7 @@ import { COLORS } from '@src/styles';
 import PropTypes from 'prop-types';
 import { CONSTANT_COMMONS } from '@src/constants';
 import { selectedPrivacySelector } from '@src/redux/selectors';
+import { Text } from '@components/core';
 import { styled } from './EstimateFee.styled';
 import withEstimateFee from './EstimateFee.enhance';
 import { estimateFeeSelector, feeDataSelector } from './EstimateFee.selector';

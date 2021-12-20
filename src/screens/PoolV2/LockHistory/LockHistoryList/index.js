@@ -2,7 +2,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { compose } from 'recompose';
-import { View, Text, ScrollView, Divider, Image } from '@components/core';
+import { View, Text, ScrollViewBorder, Divider, Image } from '@components/core';
 import emptyListIcon from '@src/assets/images/icons/empty_list.png';
 import { SumIconComp } from '@src/screens/PoolV2/Home/CoinList';
 import { Row, PRVSymbol } from '@src/components/';
@@ -23,7 +23,7 @@ const LockHistory = ({
 
   const renderEmptyList = () => {
     return (
-      <View style={styles.emptyListContainer}>
+      <View style={styles.emptyListContainer} borderTop>
         <Image
           source={emptyListIcon}
           style={{
@@ -39,11 +39,11 @@ const LockHistory = ({
   };
  
   return (
-    <View style={styles.wrapper}>
+    <>
       <Header title="Staking service" onGoBack={() => navigation.navigate(ROUTE_NAMES.PoolV2)} />
       { lockHistories.length > 0 
         ? (
-          <ScrollView style={mainStyles.coinContainer}>
+          <ScrollViewBorder style={mainStyles.coinContainerNoMargin}>
             {lockHistories.map((item, index) => {
               return (
                 <>
@@ -78,11 +78,11 @@ const LockHistory = ({
                 </>
               );
             })}
-          </ScrollView>
+          </ScrollViewBorder>
         ) 
         : renderEmptyList()
       }
-    </View>
+    </>
   );
 };
 

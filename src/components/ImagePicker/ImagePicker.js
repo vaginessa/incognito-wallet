@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { View, Image, Text, TouchableOpacity } from '@src/components/core';
+import { Text4 } from '@src/components/core/Text';
 import styles from './styles';
 import { ArrowRightGreyIcon } from '../Icons';
 
@@ -26,7 +27,7 @@ class ImagePicker extends Component {
       >
         <View style={styles.container}>
           <Text style={styles.label}>{label || 'Icon'}</Text>
-          <Text style={styles.text}>{text || 'Upload your image'}</Text>
+          <Text4 style={styles.text}>{text || 'Upload your image'}</Text4>
           <View style={styles.hook}>
             {uri ? (
               <Image style={styles.image} source={{ uri }} />
@@ -34,7 +35,7 @@ class ImagePicker extends Component {
               <View style={styles.circle} />
             )}
             <View style={styles.chooseFileContainer}>
-              <Text style={styles.chooseFile}>Choose file</Text>
+              <Text4 style={styles.chooseFile}>Choose file</Text4>
               <ArrowRightGreyIcon />
             </View>
           </View>

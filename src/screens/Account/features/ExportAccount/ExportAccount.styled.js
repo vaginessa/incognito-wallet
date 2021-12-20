@@ -1,5 +1,6 @@
 import { COLORS, DECOR, FONT } from '@src/styles';
 import { StyleSheet, Dimensions } from 'react-native';
+import globalStyled from '@src/theme/theme.styled';
 
 const { width, height } = Dimensions.get('window');
 const style = StyleSheet.create({
@@ -12,7 +13,6 @@ const style = StyleSheet.create({
   },
   wrapper: {
     flex: 1,
-    marginTop: 23,
   },
   itemContainer: {
     marginBottom: 30,
@@ -29,21 +29,18 @@ const style = StyleSheet.create({
   label: {
     fontSize: FONT.SIZE.superMedium,
     lineHeight: FONT.SIZE.superMedium + 4,
-    color: COLORS.dark1,
     fontFamily: FONT.NAME.bold,
     flex: 1,
   },
   itemData: {
     fontSize: FONT.SIZE.medium,
     lineHeight: FONT.SIZE.medium + 3,
-    color: COLORS.colorGreyBold,
     fontFamily: FONT.NAME.medium,
     paddingBottom: 5
   },
   itemDataShowFull: {
     fontSize: FONT.SIZE.medium,
     lineHeight: FONT.SIZE.medium + 3,
-    color: COLORS.colorGreyBold,
     fontFamily: FONT.NAME.medium,
     marginBottom: 5
   },

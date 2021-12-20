@@ -15,14 +15,12 @@ const styled = StyleSheet.create({
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.superMedium,
     lineHeight: FONT.SIZE.superMedium + 4,
-    color: COLORS.black,
   },
   qrCode: {
     marginVertical: 30,
   },
   boldText: {
     fontFamily: FONT.NAME.bold,
-    color: COLORS.black,
   },
   smallText: {
     fontSize: 13,

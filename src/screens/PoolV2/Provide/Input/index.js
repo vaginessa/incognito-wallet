@@ -1,6 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { View, Text, BaseTextInput, RoundCornerButton, TouchableOpacity, Image } from '@components/core';
+import {
+  View,
+  Text,
+  BaseTextInput,
+  RoundCornerButton,
+  TouchableOpacity,
+  Image,
+} from '@components/core';
 import mainStyle from '@screens/PoolV2/style';
 import { compose } from 'recompose';
 import { withLayout_2 } from '@components/Layout/index';
@@ -12,10 +19,11 @@ import { useNavigation } from 'react-navigation-hooks';
 import ROUTE_NAMES from '@routers/routeNames';
 import { Header, Row } from '@src/components/';
 import { BtnInfinite } from '@components/Button/index';
-import convertUtil, { formatTime }from '@utils/convert';
+import convertUtil, { formatTime } from '@utils/convert';
 import formatUtil from '@utils/format';
 import ic_radio from '@src/assets/images/icons/ic_radio.png';
 import ic_radio_check from '@src/assets/images/icons/ic_radio_check.png';
+import globalStyled from '@src/theme/theme.styled';
 import styles from './style';
 
 const Provide = ({
@@ -34,7 +42,16 @@ const Provide = ({
 }) => {
   const navigation = useNavigation();
   const [i, setI] = React.useState(initIndex);
-  const [selectedTerm, setSelectedTerm] = React.useState(coin.locked && coin.terms ? {apy: coin.terms[i].apy, lockTime: coin.terms[i].lockTime, termID: coin.terms[i].termID} : undefined);
+  const [selectedTerm, setSelectedTerm] = React.useState(
+    coin.locked && coin.terms
+      ? 
+      {
+        apy: coin.terms[i].apy,
+        lockTime: coin.terms[i].lockTime,
+        termID: coin.terms[i].termID,
+      }
+      : undefined,
+  );
 
   const handleProvide = () => {
     navigation.navigate(ROUTE_NAMES.PoolV2ProvideConfirm, {
@@ -59,14 +76,20 @@ const Provide = ({
 
   const handlePress = (index) => {
     setI(index);
-    setSelectedTerm({apy: coin.terms[index].apy, lockTime: coin.terms[index].lockTime, termID: coin.terms[index].termID});
+    setSelectedTerm({
+      apy: coin.terms[index].apy,
+      lockTime: coin.terms[index].lockTime,
+      termID: coin.terms[index].termID,
+    });
   };
 
-
   return (
-    <View style={mainStyle.flex}>
-      <Header title='Provide' />
-      <View style={mainStyle.coinContainer}>
+    <>
+      <Header title="Provide" />
+      <View
+        style={[mainStyle.coinContainerNoMargin, globalStyled.defaultPadding2]}
+        borderTop
+      >
         <Row center spaceBetween style={mainStyle.inputContainer}>
           <BaseTextInput
             style={mainStyle.input}
@@ -75,35 +98,41 @@ const Provide = ({
             value={inputText}
             keyboardType="decimal-pad"
           />
-          <BtnInfinite
-            style={mainStyle.symbol}
-            onPress={handleMax}
-          />
+          <BtnInfinite style={mainStyle.symbol} onPress={handleMax} />
         </Row>
-        {!coin.locked &&
+        {!coin.locked && (
           <Row center spaceBetween>
             <Text style={mainStyle.coinExtraSmall}>{coin.displayInterest}</Text>
           </Row>
-        }
+        )}
         <Text style={mainStyle.error}>{error}</Text>
-        {coin.locked && coin.terms && coin.terms.map((item, index) => {
-          return (
-            <TouchableOpacity
-              style={index === i ? styles.selectedButton : styles.unSelectedButon}
-              key={`key-${index}`}
-              onPress={() => handlePress(index)}
-            >
-              <Row style={styles.contentView}>
-                <Text style={[styles.textLeft, { marginRight: 20}]}>{item.lockTime} Months</Text>               
+        {coin.locked &&
+          coin.terms &&
+          coin.terms.map((item, index) => {
+            return (
+              <TouchableOpacity
+                style={
+                  index === i ? styles.selectedButton : styles.unSelectedButon
+                }
+                key={`key-${index}`}
+                onPress={() => handlePress(index)}
+              >
                 <Row style={styles.contentView}>
-                  <Text style={styles.textRight}>{item.apy}% APR</Text>
-                  <Image style={styles.textRight} source={index === i ? ic_radio_check : ic_radio} />
+                  <Text style={[styles.textLeft, { marginRight: 20 }]}>
+                    {item.lockTime} Months
+                  </Text>
+                  <Row style={styles.contentView}>
+                    <Text style={styles.textRight}>{item.apy}% APR</Text>
+                    <Image
+                      style={styles.textRight}
+                      source={index === i ? ic_radio_check : ic_radio}
+                    />
+                  </Row>
                 </Row>
-              </Row>
-            </TouchableOpacity>
-          );
-        })}
-        
+              </TouchableOpacity>
+            );
+          })}
+
         <RoundCornerButton
           title="Provide"
           style={[mainStyle.button, styles.button]}
@@ -119,12 +148,14 @@ const Provide = ({
         <ExtraInfo
           token={feeToken}
           left="Fee"
-          right={`${formatUtil.amount(fee, feeToken.pDecimals)} ${feeToken.symbol}`}
+          right={`${formatUtil.amount(fee, feeToken.pDecimals)} ${
+            feeToken.symbol
+          }`}
           style={mainStyle.coinExtraSmall}
           wrapperStyle={mainStyle.coinExtraSmallWrapper}
         />
       </View>
-    </View>
+    </>
   );
 };
 
@@ -139,7 +170,7 @@ Provide.propTypes = {
   feeToken: PropTypes.object,
   error: PropTypes.string,
   payOnOrigin: PropTypes.bool.isRequired,
-  isPrv: PropTypes.bool.isRequired
+  isPrv: PropTypes.bool.isRequired,
 };
 
 Provide.defaultProps = {
@@ -150,7 +181,7 @@ Provide.defaultProps = {
   fee: 0,
   feeToken: null,
   error: '',
-  coins: []
+  coins: [],
 };
 
 export default compose(
@@ -159,4 +190,3 @@ export default compose(
   withChangeInput,
   withValidate,
 )(Provide);
-

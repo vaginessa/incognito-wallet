@@ -39,7 +39,6 @@ export const balanceStyled = StyleSheet.create({
   amount: {
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.superLarge,
-    color: COLORS.black,
     maxWidth: '100%',
     lineHeight: FONT.SIZE.superLarge + 4,
     textAlign: 'center',
@@ -47,7 +46,6 @@ export const balanceStyled = StyleSheet.create({
   amountBasePRV: {
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.medium,
-    color: COLORS.colorGreyBold,
     lineHeight: FONT.SIZE.medium + 4,
     maxWidth: ScreenWidth
   },
@@ -63,7 +61,6 @@ export const balanceStyled = StyleSheet.create({
     alignItems: 'center',
   },
   pSymbol: {
-    color: COLORS.colorGreyBold,
     fontFamily: FONT.NAME.specialRegular,
     fontSize: FONT.SIZE.medium,
     lineHeight: FONT.SIZE.medium + 4,

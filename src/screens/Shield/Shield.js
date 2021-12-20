@@ -1,35 +1,38 @@
 import React from 'react';
-import { View } from 'react-native';
 import Header from '@src/components/Header';
 import { BtnQuestionDefault } from '@src/components/Button';
 import PropTypes from 'prop-types';
 import {ListAllToken, TokenFollow} from '@src/components/Token';
+import { View } from '@components/core';
+import globalStyled from '@src/theme/theme.styled';
 import { styled } from './Shield.styled';
 import withShield from './Shield.enhance';
 
 const Shield = (props) => {
   const { handleShield, handleWhyShield, hideBackButton, ...rest } = props;
   return (
-    <View style={[styled.container]}>
+    <>
       <Header
         title="Search coins"
         canSearch
         hideBackButton={hideBackButton}
         rightHeader={<BtnQuestionDefault onPress={handleWhyShield} />}
       />
-      <ListAllToken
-        {...rest}
-        renderItem={({ item }) => (
-          <TokenFollow
-            item={item}
-            key={item.tokenId}
-            hideStar
-            externalSymbol
-            onPress={() => handleShield(item)}
-          />
-        )}
-      />
-    </View>
+      <View style={[styled.container, globalStyled.defaultPadding, globalStyled.defaultBorderSection]}>
+        <ListAllToken
+          {...rest}
+          renderItem={({ item }) => (
+            <TokenFollow
+              item={item}
+              key={item.tokenId}
+              hideStar
+              externalSymbol
+              onPress={() => handleShield(item)}
+            />
+          )}
+        />
+      </View>
+    </>
   );
 };
 

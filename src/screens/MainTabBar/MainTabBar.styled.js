@@ -7,19 +7,26 @@ export const DEFAULT_PADDING = 24;
 export const styled = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.white,
-    paddingHorizontal: DEFAULT_PADDING,
-    paddingTop: 10
+    paddingTop: 10,
   },
   wrapBar: {
     width: ScreenWidth / 5,
     alignItems: 'center',
     justifyContent: 'center',
   },
+  centerTab: {
+    bottom: 0,
+    borderRadius: 48,
+    top: -16,
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'absolute',
+  },
   label: {
     ...FONT.STYLE.normal,
     fontSize: FONT.SIZE.superSmall,
     lineHeight: FONT.SIZE.superSmall + 6,
+    height: FONT.SIZE.superSmall + 6,
     marginTop: 2
   }
 });
@@ -201,6 +208,10 @@ export const moreStyled = StyleSheet.create({
     paddingHorizontal: DEFAULT_PADDING,
     paddingTop: 10,
   },
+  title: {
+    fontSize: 24,
+    lineHeight: 30
+  },
   wrapBar: {
     width: ScreenWidth / 5,
     alignItems: 'center',
@@ -216,23 +227,23 @@ export const moreStyled = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     width: (ScreenWidth - (DEFAULT_PADDING * 2)) / 4,
-    marginBottom: 20
+    marginBottom: 24
   },
   regularBlack: {
     ...FONT.STYLE.medium,
-    fontSize: FONT.SIZE.regular,
-    color: COLORS.black,
-    lineHeight: FONT.SIZE.small + 6,
+    fontSize: FONT.SIZE.small,
+    lineHeight: FONT.SIZE.small + 7,
     marginTop: 8,
   },
   wrapCategory: {
     marginTop: 10,
   },
-  sectionLabel: {
-    ...FONT.STYLE.medium,
-    fontSize: FONT.SIZE.medium,
-    color: COLORS.black,
-    marginBottom: 20,
+  wrapIcon: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    justifyContent: 'center',
+    alignItems: 'center'
   }
 });
 

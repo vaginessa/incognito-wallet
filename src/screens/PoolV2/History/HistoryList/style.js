@@ -4,7 +4,6 @@ import { StyleSheet } from 'react-native';
 export default StyleSheet.create({
   wrapper: {
     flex: 1,
-    marginBottom: 10,
   },
   button: {
     marginVertical: 50,
@@ -30,6 +29,7 @@ export default StyleSheet.create({
   },
   historyTitle: {
     paddingTop: 30,
+    overflow: 'hidden',
   },
   right: {
     textAlign: 'right',

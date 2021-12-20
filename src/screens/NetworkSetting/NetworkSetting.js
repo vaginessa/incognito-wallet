@@ -1,12 +1,12 @@
-import { ScrollView } from '@src/components/core';
+import { ScrollView, View, ScrollViewBorder } from '@src/components/core';
 import DialogLoader from '@src/components/DialogLoader';
 import { onClickView } from '@src/utils/ViewUtil';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import RNRestart from 'react-native-restart';
-import { View } from 'react-native';
 import { withLayout_2 } from '@src/components/Layout';
 import Header from '@src/components/Header';
+import globalStyled from '@src/theme/theme.styled';
 import NetworkItem, { networkItemShape } from './NetworkItem';
 import { styled } from './NetworkSetting.styled';
 
@@ -43,27 +43,25 @@ class NetworkSetting extends Component {
     const { networks, reloadNetworks } = this.props;
 
     return (
-      <View style={styled.container}>
-        <Header title="Network" />
-        <View style={styled.wrapper}>
-          <ScrollView style={{ paddingTop: 32 }}>
-            {networks &&
-              networks.map(
-                (network) =>
-                  network && (
-                    <NetworkItem
-                      key={network?.id}
-                      network={network}
-                      active={network?.id === activeNetworkId}
-                      onActive={onClickView(() => this.handleActive(network))}
-                      reloadNetworks={reloadNetworks}
-                    />
-                  ),
-              )}
-            <DialogLoader loading={loading} />
-          </ScrollView>
-        </View>
-      </View>
+      <>
+        <Header title="Network" style={{ paddingHorizontal: globalStyled.defaultPadding.paddingHorizontal }} />
+        <ScrollViewBorder>
+          {networks &&
+            networks.map(
+              (network) =>
+                network && (
+                  <NetworkItem
+                    key={network?.id}
+                    network={network}
+                    active={network?.id === activeNetworkId}
+                    onActive={onClickView(() => this.handleActive(network))}
+                    reloadNetworks={reloadNetworks}
+                  />
+                ),
+            )}
+          <DialogLoader loading={loading} />
+        </ScrollViewBorder>
+      </>
     );
   }
 }

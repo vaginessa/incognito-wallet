@@ -1,7 +1,7 @@
 import React from 'react';
-import { Switch } from '@components/core';
+import { Switch, View } from '@components/core';
 import Section, { sectionStyle } from '@screens/Setting/features/Section';
-import { Text, View } from 'react-native';
+import { Text5 } from '@src/components/core/Text';
 import { useSelector, useDispatch } from 'react-redux';
 import {
   decimalDigitsSelector,
@@ -24,9 +24,9 @@ const DecimalDigitsSection = () => {
           onPress={toggle}
           style={[sectionStyle.subItem]}
         >
-          <Text style={[sectionStyle.desc]}>
+          <Text5 style={[sectionStyle.desc]}>
             {'Limit main asset\ndisplays to 5 decimal digits'}
-          </Text>
+          </Text5>
         </View>,
       ]}
     />

@@ -19,19 +19,17 @@ export default StyleSheet.create({
     ...FONT.STYLE.bold,
   },
   mainInfo: {
-    marginVertical: UTILS.heightScale(38),
+    marginVertical: UTILS.heightScale(10),
   },
   bold: {
     ...FONT.STYLE.bold,
     color: COLORS.black,
   },
   extra: {
-    color: COLORS.newGrey,
     fontSize: 16,
     lineHeight: 19,
   },
   extraRight: {
-    color: COLORS.black,
   },
   warning: {
     color: COLORS.orange,

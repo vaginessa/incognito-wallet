@@ -1,11 +1,16 @@
 import React from 'react';
-import { Text as RNComponent, TextProps } from 'react-native';
+import { TextProps } from 'react-native';
+import styled from 'styled-components/native';
 import styleSheet from './style';
 
-const Text = ({ style, ...props }: TextProps) => (
-  <RNComponent
+const StyledText = styled.Text`
+  color: ${({ theme }) => theme.text1};
+`;
+
+const Text = ({ style, ...rest }: TextProps) => (
+  <StyledText
+    {...rest}
     allowFontScaling={false}
-    {...props}
     style={[styleSheet.root, style]}
   />
 );

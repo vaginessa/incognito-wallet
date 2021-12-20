@@ -32,7 +32,6 @@ const style = StyleSheet.create({
   },
   randomNameChangeBtn: {},
   randomNameChangeBtnText: {
-    color: COLORS.black,
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.superMedium,
     lineHeight: FONT.SIZE.superMedium + 4,
@@ -42,7 +41,6 @@ const style = StyleSheet.create({
     lineHeight: FONT.SIZE.superMedium + 4,
     fontFamily: FONT.NAME.bold,
     marginBottom: 10,
-    color: COLORS.black,
   },
   randomNameValue: {
     flexDirection: 'row',
