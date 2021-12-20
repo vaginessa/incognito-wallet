@@ -21,14 +21,13 @@ const styled = StyleSheet.create({
 const ExportAccountModal = (props) => {
   const { label, value } = useNavigationParam('params');
   return (
-    <View style={styled.container}>
+    <>
       <Header title={label} />
-      <View borderTop paddingHorizontal>
-        <QrCodeGenerate style={styled.qrCode} value={value} size={175} />
+      <View fullFlex borderTop paddingHorizontal>
+        <QrCodeGenerate style={styled.qrCode} value={value} size={150} />
         <CopiableTextDefault data={value} />
       </View>
-      
-    </View>
+    </>
   );
 };
 

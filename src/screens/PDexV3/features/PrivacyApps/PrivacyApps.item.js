@@ -4,7 +4,7 @@ import { Text, TouchableOpacity, Text3 } from '@components/core';
 import PropTypes from 'prop-types';
 import { ButtonTyni } from '@src/components/Button';
 import { Row } from '@src/components';
-import { COLORS, FONT } from '@src/styles';
+import { FONT } from '@src/styles';
 import styled from 'styled-components/native';
 
 const styles = StyleSheet.create({
@@ -29,7 +29,6 @@ const styles = StyleSheet.create({
   headerSub: {
     fontFamily: FONT.NAME.regular,
     fontSize: FONT.SIZE.small,
-    // color: COLORS.lightGrey36,
   },
   groupActions: {
     marginVertical: 16,
@@ -38,7 +37,6 @@ const styles = StyleSheet.create({
   desc: {
     fontFamily: FONT.NAME.regular,
     fontSize: FONT.SIZE.regular,
-    // color: COLORS.black,
   }
 });
 

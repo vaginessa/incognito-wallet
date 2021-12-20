@@ -1,6 +1,6 @@
 import React from 'react';
-import { Text } from '@src/components/core';
-import { View, StyleSheet } from 'react-native';
+import { View, Text } from '@src/components/core';
+import { StyleSheet } from 'react-native';
 import Extra, { styled as extraStyled } from '@screens/PDexV3/features/Extra';
 import { useDispatch, useSelector } from 'react-redux';
 import { change, Field } from 'redux-form';

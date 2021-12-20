@@ -28,14 +28,12 @@ const styled = StyleSheet.create({
   },
   input: {
     flex: 1,
-    color: COLORS.black,
     fontSize: FONT.SIZE.avgLarge + 2,
     lineHeight: FONT.SIZE.avgLarge + 8,
     fontFamily: FONT.NAME.medium,
     marginRight: 15,
   },
   symbol: {
-    color: COLORS.black,
     fontSize: FONT.SIZE.avgLarge + 2,
     lineHeight: FONT.SIZE.avgLarge + 8,
     fontFamily: FONT.NAME.medium,
@@ -52,7 +50,6 @@ const styled = StyleSheet.create({
     marginBottom: 8,
   },
   label: {
-    color: COLORS.lightGrey36,
     fontSize: FONT.SIZE.small,
     fontFamily: FONT.NAME.regular,
   },

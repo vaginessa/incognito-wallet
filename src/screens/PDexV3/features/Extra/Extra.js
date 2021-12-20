@@ -2,7 +2,7 @@ import { Row } from '@src/components';
 import { Text } from '@src/components/core';
 import { Text6 } from '@src/components/core/Text';
 import PropTypes from 'prop-types';
-import { COLORS, FONT } from '@src/styles';
+import { FONT } from '@src/styles';
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { BtnQuestionDefault } from '@src/components/Button';
@@ -20,7 +20,6 @@ export const styled = StyleSheet.create({
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.regular,
     lineHeight: FONT.SIZE.regular + 5,
-    color: COLORS.black,
     marginRight: 10,
   },
   hook: {
