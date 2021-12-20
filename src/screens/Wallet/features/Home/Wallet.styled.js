@@ -25,7 +25,7 @@ export const headerStyled = StyleSheet.create({
 
 export const styledBalance = StyleSheet.create({
   container: {
-    marginTop: 16,
+    marginTop: 32,
   },
   title: {
     fontFamily: FONT.NAME.regular,
