@@ -4,15 +4,13 @@ import SelectDropdown from 'react-native-select-dropdown';
 import { headerStyled } from '@screens/MainTabBar/features/Market/Market.styled';
 import { Header, Row } from '@src/components';
 import {ArrowDownLine} from '@components/Icons/icon.arrowDown';
-import SearchBox from '@components/Header/Header.searchBox';
-import { View } from 'react-native';
-import { SearchIcon, StarIcon } from '@components/Icons';
+import { StarIcon } from '@components/Icons';
 import {COLORS} from '@src/styles';
 import {useDispatch, useSelector} from 'react-redux';
 import {actionToggleMarketTab, marketTabSelector} from '@screens/Setting';
 import styled from 'styled-components/native';
 import globalStyled from '@src/theme/theme.styled';
-import { Text, TouchableOpacity } from '@components/core';
+import { Text, TouchableOpacity, View } from '@components/core';
 import { colorsSelector } from '@src/theme/theme.selector';
 
 const headers = [
@@ -42,47 +40,49 @@ const HeaderView = ({ onFilter }) => {
   };
 
   return (
-    <View>
+    <>
       <Header
         title="Privacy Markets"
         titleStyled={headerStyled.title}
         canSearch
         hideBackButton
       />
-      <Row
-        centerVertical
-        spaceBetween
-        style={[headerStyled.wrapFilter, globalStyled.defaultPadding, globalStyled.defaultBorderSection]}
-      >
-        <Row centerVertical>
-          <StyledTouchableOpacity style={headerStyled.wrapTab} onPress={() => onChangeTab(MarketTabs.ALL)}>
-            <Text style={[headerStyled.tabText, activeTab === MarketTabs.ALL && { color: COLORS.blue5 }]}>All</Text>
-          </StyledTouchableOpacity>
-          <StyledTouchableOpacity style={headerStyled.wrapTab} onPress={() => onChangeTab(MarketTabs.FAVORITE)}>
-            <StarIcon isBlue={activeTab === MarketTabs.FAVORITE} />
-          </StyledTouchableOpacity>
+      <View borderTop>
+        <Row
+          centerVertical
+          spaceBetween
+          style={[headerStyled.wrapFilter, globalStyled.defaultPadding, globalStyled.defaultBorderSection]}
+        >
+          <Row centerVertical>
+            <StyledTouchableOpacity style={headerStyled.wrapTab} onPress={() => onChangeTab(MarketTabs.ALL)}>
+              <Text style={[headerStyled.tabText, activeTab === MarketTabs.ALL && { color: COLORS.blue5 }]}>All</Text>
+            </StyledTouchableOpacity>
+            <StyledTouchableOpacity style={headerStyled.wrapTab} onPress={() => onChangeTab(MarketTabs.FAVORITE)}>
+              <StarIcon isBlue={activeTab === MarketTabs.FAVORITE} />
+            </StyledTouchableOpacity>
+          </Row>
+          <SelectDropdown
+            data={headers}
+            defaultValueByIndex={0}
+            dropdownStyle={headerStyled.dropdownStyle}
+            onSelect={(selectedItem) => {
+              onFilter && onFilter({ filterField: selectedItem.filterField, orderField: selectedItem.orderField });
+            }}
+            buttonTextAfterSelection={(selectedItem) => selectedItem.name}
+            rowTextForSelection={(item) => item.name}
+            rowTextStyle={headerStyled.rowTextStyle}
+            rowStyle={headerStyled.rowStyle}
+            buttonStyle={[headerStyled.buttonStyle, { backgroundColor: colors.btnBG2 }]}
+            buttonTextStyle={[headerStyled.buttonTextStyle, { color: colors.text1 }]}
+            renderDropdownIcon={() => {
+              return (
+                <ArrowDownLine />
+              );
+            }}
+          />
         </Row>
-        <SelectDropdown
-          data={headers}
-          defaultValueByIndex={0}
-          dropdownStyle={headerStyled.dropdownStyle}
-          onSelect={(selectedItem) => {
-            onFilter && onFilter({ filterField: selectedItem.filterField, orderField: selectedItem.orderField });
-          }}
-          buttonTextAfterSelection={(selectedItem) => selectedItem.name}
-          rowTextForSelection={(item) => item.name}
-          rowTextStyle={headerStyled.rowTextStyle}
-          rowStyle={headerStyled.rowStyle}
-          buttonStyle={[headerStyled.buttonStyle, { backgroundColor: colors.btnBG2 }]}
-          buttonTextStyle={[headerStyled.buttonTextStyle, { color: colors.text1 }]}
-          renderDropdownIcon={() => {
-            return (
-              <ArrowDownLine />
-            );
-          }}
-        />
-      </Row>
-    </View>
+      </View>
+    </>
   );
 };
 

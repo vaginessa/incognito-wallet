@@ -34,22 +34,22 @@ export const styledBalance = StyleSheet.create({
   },
   balance: {
     fontFamily: FONT.NAME.medium,
-    fontSize: FONT.SIZE.superLarge,
-    lineHeight: FONT.SIZE.superLarge + 12,
+    fontSize: FONT.SIZE.veryLarge,
+    lineHeight: FONT.SIZE.veryLarge + 10,
     maxWidth: '85%',
     height: '100%',
   },
   pSymbol: {
     fontFamily: FONT.NAME.specialRegular,
-    fontSize: FONT.SIZE.superLarge,
-    lineHeight: FONT.SIZE.superLarge + 12,
+    fontSize: FONT.SIZE.veryLarge,
+    lineHeight: FONT.SIZE.veryLarge + 10,
     height: '100%',
   },
   balanceContainer: {
     width: '100%',
   },
   wrapBalance: {
-    minHeight: FONT.SIZE.superLarge + 12,
+    minHeight: FONT.SIZE.veryLarge + 10,
   },
   iconHide: {
     marginLeft: 5

@@ -3,7 +3,6 @@ import { View, StyleSheet } from 'react-native';
 import { FONT } from '@src/styles';
 import PropTypes from 'prop-types';
 import { ActivityIndicator, Text, Text3 } from '@components/core';
-import globalStyled from '@src/theme/theme.styled';
 
 export const styled = StyleSheet.create({
   container: {
@@ -29,7 +28,7 @@ export const styled = StyleSheet.create({
 
 const HomeTabHeader = ({ title, desc, loading }) => {
   return (
-    <View style={[styled.container, globalStyled.defaultPaddingHorizontal]}>
+    <View style={[styled.container]}>
       <Text3 style={styled.title}>{title}</Text3>
       {loading ? (
         <View style={styled.wrapLoading}>

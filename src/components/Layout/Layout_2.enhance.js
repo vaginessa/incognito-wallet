@@ -39,6 +39,5 @@ const enhance = (WrappedComp) => (props) => {
 };
 
 export default compose(
-  withLazy,
   enhance
 );

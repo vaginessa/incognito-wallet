@@ -18,7 +18,7 @@ const Shield = (props) => {
         hideBackButton={hideBackButton}
         rightHeader={<BtnQuestionDefault onPress={handleWhyShield} />}
       />
-      <View style={[styled.container, globalStyled.defaultPadding, globalStyled.defaultBorderSection]}>
+      <View borderTop style={styled.container}>
         <ListAllToken
           {...rest}
           renderItem={({ item }) => (
