@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet } from 'react-native';
 import { withLayout_2 } from '@src/components/Layout';
-import { ScrollView, Text, View } from '@components/core';
+import { ScrollViewBorder } from '@components/core';
 import { PancakeIcon2 } from '@src/components/Icons';
 import { KEYS_PLATFORMS_SUPPORTED } from '@screens/PDexV3/features/Swap';
 import { useNavigation } from 'react-navigation-hooks';
@@ -51,13 +51,13 @@ const PrivacyApps = (props) => {
     ];
   }, []);
   return (
-    <View style={styled.container}>
-      <ScrollView style={styled.scrollview}>
+    <>
+      <ScrollViewBorder style={styled.scrollview}>
         {factories.map((item) => (
           <PrivacyAppsItem key={item.id} {...item} />
         ))}
-      </ScrollView>
-    </View>
+      </ScrollViewBorder>
+    </>
   );
 };
 

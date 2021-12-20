@@ -16,7 +16,7 @@ export const BtnPrimary = React.memo(
         onPress={onPress}
         disabled={disabled}
       >
-        <Text style={[styled.primaryText, textStyle]}>{title}</Text>
+        {!!title && <Text style={[styled.primaryText, textStyle]}>{title}</Text>}
       </TouchableOpacity>
     );
   },
