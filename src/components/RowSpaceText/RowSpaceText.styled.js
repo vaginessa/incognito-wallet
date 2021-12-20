@@ -10,7 +10,6 @@ const styled = StyleSheet.create({
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.small,
     lineHeight: FONT.SIZE.small + 7,
-    color: COLORS.lightGrey34,
   },
   wrapValue: {
     flexDirection:'row',
@@ -22,7 +21,7 @@ const styled = StyleSheet.create({
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.small,
     lineHeight: FONT.SIZE.small + 7,
-    color: COLORS.black,
+    color: COLORS.lightGrey35,
     textAlign: 'right',
   },
 });

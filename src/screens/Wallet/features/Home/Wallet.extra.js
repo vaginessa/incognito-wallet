@@ -118,7 +118,7 @@ const Extra = () => {
   const hideBalance = useSelector(hideWalletBalanceSelector);
   const updateShowBalance = () => dispatch(actionUpdateShowWalletBalance());
   return (
-    <View style={[globalStyled.defaultPadding, globalStyled.defaultBorderSection]}>
+    <View style={[globalStyled.defaultPaddingHorizontal]}>
       <Balance
         hideBalance={hideBalance}
         onPressHideBalance={updateShowBalance}

@@ -9,6 +9,7 @@ import {RefreshControl} from '@components/core';
 import {actionFetch} from '@screens/PDexV3/features/Portfolio/Portfolio.actions';
 import {EmptyBookIcon} from '@components/Icons';
 import uniq from 'lodash/uniq';
+import globalStyled from '@src/theme/theme.styled';
 import {
   getDataByShareIdSelector,
   isFetchingSelector,
@@ -51,7 +52,7 @@ const PortfolioList = withTransaction(React.memo(({ onCreateWithdrawFeeLP }) => 
       )}
       keyExtractor={(item) => item?.shareId}
       showsVerticalScrollIndicator={false}
-      contentContainerStyle={{ flexGrow: 1 }}
+      contentContainerStyle={[{ flexGrow: 1 }, globalStyled.defaultPaddingHorizontal]}
       ListEmptyComponent={
         <EmptyBookIcon message="Your portfolio is empty" />
       }

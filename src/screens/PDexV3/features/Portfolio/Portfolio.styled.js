@@ -43,7 +43,6 @@ export const portfolioItemStyled = StyleSheet.create({
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.medium,
     lineHeight: FONT.SIZE.medium + 9,
-    color: COLORS.black,
   },
   btnSmall: {
     height: 28,

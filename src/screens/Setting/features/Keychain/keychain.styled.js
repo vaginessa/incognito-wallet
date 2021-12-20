@@ -30,11 +30,6 @@ export const itemStyled = StyleSheet.create({
     paddingLeft: 36
   },
   shadow: {
-    shadowOffset: {
-      width: 0,
-      height: 0,
-    },
-    shadowOpacity: 0.1,
     shadowRadius: 3,
     borderRadius: 8,
     borderWidth: 1,

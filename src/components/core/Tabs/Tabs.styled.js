@@ -7,8 +7,6 @@ export const styled = StyleSheet.create({
   },
   tabList: {
     flexDirection: 'row',
-    // justifyContent: 'space-between',
-    // borderRadius: 40,
     flex: 1,
     borderBottomColor: '#484848',
     borderBottomWidth: 1,
@@ -19,6 +17,7 @@ export const styled = StyleSheet.create({
     padding: 0,
     alignItems: 'center',
     justifyContent: 'flex-start',
+    borderBottomWidth: 0
   },
   tabContent: {
     flex: 1,

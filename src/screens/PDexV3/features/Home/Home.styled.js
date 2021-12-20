@@ -23,7 +23,7 @@ export const styled = StyleSheet.create({
     width: '100%',
   },
   headerRow: {
-    marginTop: 13
+    marginTop: 32
   },
   tab: {
     marginTop: 24,
