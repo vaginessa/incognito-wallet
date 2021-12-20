@@ -1,11 +1,10 @@
-
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import { WebView } from 'react-native-webview';
 import { ButtonBasic } from '@src/components/Button';
 import { Row } from '@src/components';
-import { COLORS, FONT } from '@src/styles';
+import { FONT } from '@src/styles';
 import SelectedPrivacy from '@src/models/selectedPrivacy';
 import { ExHandler } from '@src/services/exception';
 import convert from '@src/utils/convert';
@@ -15,6 +14,7 @@ import Server from '@src/services/wallet/Server';
 import { ActivityIndicator } from '@src/components/core';
 import format from '@src/utils/format';
 import minBy from 'lodash/minBy';
+import { colorsSelector } from '@src/theme';
 import { poolSelectedSelector } from './Chart.selector';
 
 const styled = StyleSheet.create({
@@ -25,15 +25,15 @@ const styled = StyleSheet.create({
   },
   btnStyle: {
     height: 24,
-    backgroundColor: COLORS.lightGrey19,
     flex: 1,
     marginRight: 10,
+    backgroundColor: 'transparent',
   },
   titleStyle: {
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.small,
     lineHeight: FONT.SIZE.small + 5,
-    color: COLORS.black,
+    textTransform: 'uppercase',
   },
 });
 
@@ -48,6 +48,7 @@ const periods = [
 ];
 
 export const Period = React.memo(({ handleFetchData }) => {
+  const colors = useSelector(colorsSelector);
   const [actived, setActived] = React.useState(periods[3]);
   return (
     <Row
@@ -65,7 +66,9 @@ export const Period = React.memo(({ handleFetchData }) => {
           }}
           titleStyle={{
             ...styled.titleStyle,
-            ...(period === actived ? { color: COLORS.colorTradeBlue } : {}),
+            ...(period === actived
+              ? { color: colors.mainText }
+              : { color: colors.subText }),
           }}
           title={period}
           key={period}
@@ -120,14 +123,6 @@ const PriceHistoryCandles = () => {
         period = 'P1W';
         intervals = 'P1Y';
         break;
-        // case 'M':
-        //   period = 'P1M';
-        //   intervals = 'P1Y';
-        //   break;
-        // case 'Y':
-        //   period = 'P1M';
-        //   intervals = 'P12M';
-        //   break;
       default:
         break;
       }

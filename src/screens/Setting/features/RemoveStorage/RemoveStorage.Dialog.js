@@ -68,12 +68,12 @@ const RemoveDialog = (props) => {
             style={{ flexDirection: 'row', justifyContent: 'space-between' }}
           >
             <BtnSecondary
-              onPress={onPressAccept}
+              onPress={() => onPressAccept()}
               title={acceptStr || CONTENT.accept}
               wrapperStyle={styles.buttonStyle}
             />
             <BtnPrimary
-              onPress={onPressCancel}
+              onPress={() => onPressCancel()}
               title={canStr || CONTENT.cancel}
               wrapperStyle={styles.buttonStyle}
             />
