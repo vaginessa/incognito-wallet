@@ -3,16 +3,17 @@ import { StyleSheet, View } from 'react-native';
 import { Text, TouchableOpacity, Text3 } from '@components/core';
 import PropTypes from 'prop-types';
 import { ButtonTyni } from '@src/components/Button';
+import { useSelector } from 'react-redux';
+import { colorsSelector } from '@src/theme';
 import { Row } from '@src/components';
 import { FONT } from '@src/styles';
 import styled from 'styled-components/native';
 
 const styles = StyleSheet.create({
-  container: {
-  },
+  container: {},
   header: {
     alignItems: 'center',
-    backgroundColor: 'transparent'
+    backgroundColor: 'transparent',
   },
   icon: {
     width: 50,
@@ -32,12 +33,12 @@ const styles = StyleSheet.create({
   },
   groupActions: {
     marginVertical: 16,
-    backgroundColor: 'transparent'
+    backgroundColor: 'transparent',
   },
   desc: {
     fontFamily: FONT.NAME.regular,
     fontSize: FONT.SIZE.regular,
-  }
+  },
 });
 
 const CustomTouchableOpacity = styled(TouchableOpacity)`
@@ -56,6 +57,7 @@ const PrivacyAppItem = (props) => {
     desc,
     onPressItem,
   } = props;
+  const colors = useSelector(colorsSelector);
   return (
     <CustomTouchableOpacity
       style={styles.container}
@@ -64,8 +66,10 @@ const PrivacyAppItem = (props) => {
       <Row style={styles.header}>
         <View style={styles.icon}>{icon}</View>
         <View style={styles.headerHook}>
-          <Text style={styles.headerTitle}>{headerTitle}</Text>
-          <Text3 style={styles.headerSub}>{headerSub}</Text3>
+          <Text style={[styles.headerTitle]}>{headerTitle}</Text>
+          <Text style={[styles.headerSub, { color: colors.subText }]}>
+            {headerSub}
+          </Text>
         </View>
       </Row>
       <Row style={styles.groupActions}>
