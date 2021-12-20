@@ -40,7 +40,7 @@ const ImportAccount = (props) => {
 
   const renderForm = () => {
     return (
-      <View paddingHorizontal borderTop fullFlex>
+      <View borderTop fullFlex>
         <Form>
           {({ handleSubmit, submitting }) => (
             <>
