@@ -1,8 +1,9 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
+import { View2 } from '@src/components/core/View';
 import { withLayout_2 } from '@src/components/Layout';
 import Header from '@components/Header';
-import { ScrollView, RefreshControl, Text } from '@components/core';
+import { ScrollViewBorder, RefreshControl, Text } from '@components/core';
 import { useDispatch, useSelector } from 'react-redux';
 import { BtnCopy } from '@src/components/Button';
 import { ExHandler } from '@src/services/exception';
@@ -139,12 +140,12 @@ const SwapOrderDetail = () => {
     dispatch(actionFetchDataOrderDetail());
   }, []);
   return (
-    <View style={styled.container}>
+    <View2 style={styled.container}>
       <Header
         title="Swap detail"
-        rightHeader={<BtnCopy onPress={handleCopy} />}
+        rightHeader={<BtnCopy onPress={handleCopy} isHeader={true} />}
       />
-      <ScrollView
+      <ScrollViewBorder
         style={styled.scrollview}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
@@ -154,8 +155,8 @@ const SwapOrderDetail = () => {
           factories?.map((item) => (
             <TradeOrderDetail key={item?.label} {...item} />
           ))}
-      </ScrollView>
-    </View>
+      </ScrollViewBorder>
+    </View2>
   );
 };
 
