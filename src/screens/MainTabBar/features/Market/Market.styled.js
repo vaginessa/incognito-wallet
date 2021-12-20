@@ -6,8 +6,10 @@ export const styled = StyleSheet.create({
 });
 
 export const headerStyled = StyleSheet.create({
-  input: {
-    height: 50
+  title: {
+    fontWeight: '600',
+    fontSize: 24,
+    lineHeight: 30,
   },
   wrapTab: {
     width: 49,
@@ -22,8 +24,8 @@ export const headerStyled = StyleSheet.create({
     fontSize: FONT.SIZE.regular,
   },
   wrapSearch: {
-    height: 50,
-    marginBottom: 16
+    height: 60,
+    marginBottom: 8
   },
   wrapInput: {
     flex: 1,

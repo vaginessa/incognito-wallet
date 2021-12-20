@@ -1,6 +1,5 @@
 import { COLORS, DECOR, FONT } from '@src/styles';
 import { StyleSheet, Dimensions } from 'react-native';
-import globalStyled from '@src/theme/theme.styled';
 
 const { width, height } = Dimensions.get('window');
 const style = StyleSheet.create({

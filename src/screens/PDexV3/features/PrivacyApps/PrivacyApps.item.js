@@ -1,18 +1,19 @@
 import React from 'react';
-import { StyleSheet } from 'react-native';
-import { View, Text, TouchableOpacity } from '@components/core';
+import { StyleSheet, View } from 'react-native';
+import { Text, TouchableOpacity, Text3 } from '@components/core';
 import PropTypes from 'prop-types';
 import { ButtonTyni } from '@src/components/Button';
 import { Row } from '@src/components';
-import { COLORS, FONT } from '@src/styles';
+import { FONT } from '@src/styles';
+import styled from 'styled-components/native';
 
-const styled = StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
-    padding: 24,
-    backgroundColor: COLORS.colorGrey5,
-    borderRadius: 10,
   },
-  header: { alignItems: 'center' },
+  header: {
+    alignItems: 'center',
+    backgroundColor: 'transparent'
+  },
   icon: {
     width: 50,
     height: 50,
@@ -23,23 +24,27 @@ const styled = StyleSheet.create({
   headerTitle: {
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.superMedium,
-    color: COLORS.black,
     marginBottom: 2,
   },
   headerSub: {
     fontFamily: FONT.NAME.regular,
     fontSize: FONT.SIZE.small,
-    color: COLORS.lightGrey36,
   },
   groupActions: {
     marginVertical: 16,
+    backgroundColor: 'transparent'
   },
   desc: {
     fontFamily: FONT.NAME.regular,
     fontSize: FONT.SIZE.regular,
-    color: COLORS.black,
   }
 });
+
+const CustomTouchableOpacity = styled(TouchableOpacity)`
+  background-color: ${({ theme }) => theme.background3};
+  padding: 24px;
+  border-radius: 10px;
+`;
 
 const PrivacyAppItem = (props) => {
   const {
@@ -52,18 +57,18 @@ const PrivacyAppItem = (props) => {
     onPressItem,
   } = props;
   return (
-    <TouchableOpacity
-      style={styled.container}
+    <CustomTouchableOpacity
+      style={styles.container}
       onPress={() => onPressItem(privacyAppId)}
     >
-      <Row style={styled.header}>
-        <View style={styled.icon}>{icon}</View>
-        <View style={styled.headerHook}>
-          <Text style={styled.headerTitle}>{headerTitle}</Text>
-          <Text style={styled.headerSub}>{headerSub}</Text>
+      <Row style={styles.header}>
+        <View style={styles.icon}>{icon}</View>
+        <View style={styles.headerHook}>
+          <Text style={styles.headerTitle}>{headerTitle}</Text>
+          <Text3 style={styles.headerSub}>{headerSub}</Text3>
         </View>
       </Row>
-      <Row style={styled.groupActions}>
+      <Row style={styles.groupActions}>
         {groupActions.map(({ id, ...rest }, index) => (
           <ButtonTyni
             key={id}
@@ -72,8 +77,8 @@ const PrivacyAppItem = (props) => {
           />
         ))}
       </Row>
-      <Text style={styled.desc}>{desc}</Text>
-    </TouchableOpacity>
+      <Text style={styles.desc}>{desc}</Text>
+    </CustomTouchableOpacity>
   );
 };
 

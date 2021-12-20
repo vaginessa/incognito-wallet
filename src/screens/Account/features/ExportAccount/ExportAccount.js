@@ -8,7 +8,6 @@ import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
 import { View, Text, ScrollViewBorder } from '@src/components/core';
 import { Text3 } from '@src/components/core/Text';
-import globalStyled from '@src/theme/theme.styled';
 import withExportAccount from './ExportAccount.enhance';
 import styleSheet from './ExportAccount.styled';
 

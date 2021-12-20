@@ -11,8 +11,8 @@ import isArray from 'lodash/isArray';
 
 const styled = StyleSheet.create({
   container: {
-    // todo: 
-    backgroundColor: COLORS.colorPrimary,
+    // todo:
+    backgroundColor: COLORS.blue5,
     borderRadius: 4,
     height: 50,
     alignItems: 'center',
@@ -25,8 +25,6 @@ const styled = StyleSheet.create({
     textAlign: 'center',
   },
   disabled: {
-    // todo: 
-    backgroundColor: COLORS.colorGreyMedium,
   },
 });
 
@@ -36,7 +34,7 @@ const ButtonBasic = (props) => {
     btnStyle = null,
     titleStyle = null,
     customContent,
-    disabled = false,
+    disabled = true,
     loading = false,
     ...rest
   } = props;
