@@ -9,7 +9,7 @@ export const headerStyled = StyleSheet.create({
   title: {
     fontWeight: '600',
     fontSize: 24,
-    lineHeight: 30,
+    lineHeight: 28,
   },
   wrapTab: {
     width: 49,
@@ -31,17 +31,13 @@ export const headerStyled = StyleSheet.create({
     flex: 1,
   },
   rowStyle: {
-    borderBottomWidth: 0.5,
-    height: 40
   },
   rowTextStyle: {
     ...FONT.STYLE.normal,
-    color: COLORS.black,
     fontSize: FONT.SIZE.small
   },
   dropdownStyle: {
     borderRadius: 8,
-    backgroundColor: COLORS.white,
     width: 110,
   },
   buttonTextStyle: {

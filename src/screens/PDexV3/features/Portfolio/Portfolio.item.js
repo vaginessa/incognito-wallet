@@ -13,7 +13,7 @@ import TwoTokenImage from '@screens/PDexV3/features/Portfolio/Portfolio.image';
 import {portfolioItemStyled as styles} from './Portfolio.styled';
 import {getDataByShareIdSelector} from './Portfolio.selector';
 
-const Hook = React.memo(({ label, value }) => (
+export const Hook = React.memo(({ label, value }) => (
   <RowSpaceText
     label={label}
     value={value}
@@ -26,11 +26,11 @@ const CustomTouchableOpacity = styled(TouchableOpacity)`
   border-bottom-color: ${({ theme }) => theme.border4};
 `;
 
-const Extra = React.memo(({ shareId }) => {
+export const Extra = React.memo(({ shareId }) => {
   const data = useSelector(getDataByShareIdSelector)(shareId);
-  const { token1, token2, apyStr } = data || {};
+  const { token1, token2 } = data || {};
   return (
-    <Row style={styles.extraContainer} centerVertical spaceBetween>
+    <Row style={[styles.extraContainer]} centerVertical spaceBetween>
       <Text style={styles.extraLabel}>
         {`${token1?.symbol} / ${token2?.symbol}`}
       </Text>

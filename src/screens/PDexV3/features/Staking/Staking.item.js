@@ -1,10 +1,11 @@
 import React from 'react';
-import {Text, TouchableOpacity, View} from 'react-native';
+import { TouchableOpacity, View } from 'react-native';
 import PropTypes from 'prop-types';
 import {Row} from '@src/components';
-import {ArrowDown} from '@components/Icons';
+import { ArrowDown } from '@components/Icons';
 import {itemStyle as styled} from '@screens/PDexV3/features/Staking/Staking.styled';
 import {Icon} from '@components/Token/Token.shared';
+import { Text } from '@components/core';
 
 export const HeaderRow = React.memo(({ array, style }) => (
   <Row spaceBetween style={style}>

@@ -93,3 +93,4 @@ export { default as EyeIcon } from './icon.eye';
 export { default as PancakeIcon } from './icon.pancake';
 export { default as PrivacyAppsIcon } from './icon.privacyApps';
 export { default as PancakeIcon2 } from './icon.pancake2';
+export { default as AddCoinIcon } from './icon.addCoin';

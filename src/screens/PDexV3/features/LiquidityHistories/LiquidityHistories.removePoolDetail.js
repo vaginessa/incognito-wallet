@@ -1,11 +1,13 @@
 import React, {memo} from 'react';
-import {ScrollView, View} from 'react-native';
+import { ScrollView } from 'react-native';
 import {styled as mainStyle} from '@screens/PDexV3/PDexV3.styled';
 import {Header} from '@src/components';
 import {Hook} from '@screens/Wallet/features/TxHistoryDetail/TxHistoryDetail';
 import {useNavigationParam} from 'react-navigation-hooks';
 import {openLink} from '@components/UseEffect/useLink';
 import styled from '@screens/PDexV3/features/LiquidityHistories/LiquidityHistories.styled';
+import { withLayout_2 } from '@components/Layout';
+import { View } from '@components/core';
 
 const RemoveLPDetail = () => {
   const history = useNavigationParam('history');
@@ -57,20 +59,22 @@ const RemoveLPDetail = () => {
     return [...headHook, ...responseHook, ...amountHook];
   }, [history]);
   return (
-    <View style={mainStyle.container}>
+    <>
       <Header title="Detail" />
-      <ScrollView>
-        {hookFactories.map(data => (
-          <Hook
-            key={data?.label}
-            {...data}
-            labelStyle={styled.leftText}
-            valueTextStyle={styled.rightText}
-          />
-        ))}
-      </ScrollView>
-    </View>
+      <View borderTop style={mainStyle.container}>
+        <ScrollView>
+          {hookFactories.map(data => (
+            <Hook
+              key={data?.label}
+              {...data}
+              labelStyle={styled.leftText}
+              valueTextStyle={styled.rightText}
+            />
+          ))}
+        </ScrollView>
+      </View>
+    </>
   );
 };
 
-export default memo(RemoveLPDetail);
+export default withLayout_2(memo(RemoveLPDetail));

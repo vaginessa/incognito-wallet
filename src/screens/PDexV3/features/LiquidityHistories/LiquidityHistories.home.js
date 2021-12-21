@@ -43,6 +43,6 @@ Home.propTypes = {
 };
 
 export default compose(
-  withLayout_2,
   withHistories,
+  withLayout_2,
 )(memo(Home));

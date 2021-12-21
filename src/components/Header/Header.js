@@ -109,7 +109,7 @@ const Header = ({
           />
         );
       }
-      return <SearchBox title={title} />;
+      return <SearchBox title={title} inputStyle={titleStyled} />;
     }
     return <HeaderTitle />;
   };
