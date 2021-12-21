@@ -1,11 +1,13 @@
 import React, {memo} from 'react';
-import {ScrollView, View} from 'react-native';
+import {ScrollView} from 'react-native';
 import {useNavigationParam} from 'react-navigation-hooks';
 import {openLink} from '@components/UseEffect/useLink';
 import {styled as mainStyle} from '@screens/PDexV3/PDexV3.styled';
 import {Header} from '@src/components';
 import {Hook} from '@screens/Wallet/features/TxHistoryDetail/TxHistoryDetail';
 import styled from '@screens/PDexV3/features/LiquidityHistories/LiquidityHistories.styled';
+import { View } from '@components/core';
+import { withLayout_2 } from '@components/Layout';
 
 const WithdrawFeeLPDetail = () => {
   const history = useNavigationParam('history');
@@ -57,22 +59,24 @@ const WithdrawFeeLPDetail = () => {
     return [...headHook, ...responseHook, ...amountHook];
   }, [history]);
   return (
-    <View style={mainStyle.container}>
+    <>
       <Header title="Detail" />
-      <ScrollView>
-        {hookFactories.map(data => (
-          <Hook
-            key={data?.label}
-            {...data}
-            labelStyle={styled.leftText}
-            valueTextStyle={styled.rightText}
-          />
-        ))}
-      </ScrollView>
-    </View>
+      <View borderTop style={mainStyle.container}>
+        <ScrollView>
+          {hookFactories.map(data => (
+            <Hook
+              key={data?.label}
+              {...data}
+              labelStyle={styled.leftText}
+              valueTextStyle={styled.rightText}
+            />
+          ))}
+        </ScrollView>
+      </View>
+    </>
   );
 };
 
 WithdrawFeeLPDetail.propTypes = {};
 
-export default memo(WithdrawFeeLPDetail);
+export default withLayout_2(memo(WithdrawFeeLPDetail));
