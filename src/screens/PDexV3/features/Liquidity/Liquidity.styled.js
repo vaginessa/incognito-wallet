@@ -1,9 +1,11 @@
 import {StyleSheet} from 'react-native';
 import {COLORS, FONT} from '@src/styles';
+import globalStyled from '@src/theme/theme.styled';
 
 const styled = StyleSheet.create({
   container: {
     flex: 1,
+    overflow: 'hidden'
   },
   wrapInput: {
     marginTop: 27
@@ -24,11 +26,11 @@ const styled = StyleSheet.create({
     minHeight: FONT.SIZE.medium + 9,
   },
   inputBox: {
-    marginHorizontal: 25,
-    paddingTop: 20
+    ...globalStyled.defaultPaddingHorizontal,
+    marginTop: 32
   },
   padding: {
-    paddingHorizontal: 25,
+    ...globalStyled.defaultPaddingHorizontal
   },
   balanceStr: {
     fontFamily: FONT.NAME.regular,

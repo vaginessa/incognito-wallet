@@ -77,7 +77,11 @@ export const getPrincipal = ({ token1, token2, shareData }) => {
     outputToken: token2,
     shareData,
   });
-  return `${maxInputShareDisplayStr} ${token1.symbol} + ${maxOutputShareDisplayStr} ${token2.symbol}`;
+  return {
+    token1: `${maxInputShareDisplayStr} ${token1.symbol}`,
+    token2: `${maxOutputShareDisplayStr} ${token2.symbol}`,
+    str: `${maxInputShareDisplayStr} ${token1.symbol} + ${maxOutputShareDisplayStr} ${token2.symbol}`
+  };
 };
 
 export const getShareStr = (share, totalShare) => {

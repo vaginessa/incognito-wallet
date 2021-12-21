@@ -1,12 +1,12 @@
 import React, {memo} from 'react';
-import { RefreshControl, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
 import { ListView } from '@components/Token/index';
 import { BtnChecked } from '@components/Button';
 import { FONT } from '@src/styles';
 import { useDispatch } from 'react-redux';
 import { getPTokenList } from '@src/redux/actions/token';
-import { ScrollView, Text } from '@components/core';
+import { RefreshControl, ScrollView, Text } from '@components/core';
 import globalStyled from '@src/theme/theme.styled';
 
 const styled = StyleSheet.create({

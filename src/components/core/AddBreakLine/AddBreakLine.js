@@ -9,7 +9,8 @@ export const styled = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    marginVertical: 16,
+    marginTop: 24,
+    marginBottom: 8
   },
   divider: {
     flex: 1,
