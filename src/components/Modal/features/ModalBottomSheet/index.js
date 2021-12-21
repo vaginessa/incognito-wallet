@@ -1,9 +1,9 @@
 import React, { memo } from 'react';
-import { SafeAreaView, ScrollView, StyleSheet, Text } from 'react-native';
+import { SafeAreaView, ScrollView, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
 import { COLORS, FONT } from '@src/styles';
 import styled from 'styled-components/native';
-import { View } from '@components/core';
+import { Text, View } from '@components/core';
 
 const styles = StyleSheet.create({
   container: {
@@ -24,7 +24,6 @@ const styles = StyleSheet.create({
     ...FONT.STYLE.medium,
     fontSize: FONT.SIZE.superMedium,
     lineHeight: FONT.SIZE.superMedium + 10,
-    color: COLORS.black,
     marginBottom: 22,
   },
 });

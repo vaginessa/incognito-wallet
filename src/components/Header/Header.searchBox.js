@@ -23,7 +23,7 @@ export const searchBoxConfig = {
 };
 const Form = createForm(searchBoxConfig.form);
 const SearchBox = (props) => {
-  const { isNormalSearch, customSearchBox, style } = props;
+  const { isNormalSearch, customSearchBox, style, inputStyle } = props;
   if (isNormalSearch) {
     return (
       <TextInput
@@ -69,6 +69,7 @@ const SearchBox = (props) => {
               onFocus={input?.onFocus}
               value={input?.value}
               autoFocus
+              style={inputStyle}
               placeholder={props?.title || ''}
               {...rest}
             />

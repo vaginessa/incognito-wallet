@@ -3,6 +3,7 @@ import { View, StyleSheet } from 'react-native';
 import { FONT } from '@src/styles';
 import PropTypes from 'prop-types';
 import { ActivityIndicator, Text, Text3 } from '@components/core';
+import { Row } from '@src/components';
 
 export const styled = StyleSheet.create({
   container: {
@@ -26,10 +27,13 @@ export const styled = StyleSheet.create({
   }
 });
 
-const HomeTabHeader = ({ title, desc, loading }) => {
+const HomeTabHeader = ({ title, desc, loading, rightIcon }) => {
   return (
     <View style={[styled.container]}>
-      <Text3 style={styled.title}>{title}</Text3>
+      <Row centerVertical spaceBetween>
+        <Text3 style={styled.title}>{title}</Text3>
+        {rightIcon}
+      </Row>
       {loading ? (
         <View style={styled.wrapLoading}>
           <ActivityIndicator />
@@ -48,7 +52,8 @@ HomeTabHeader.defaultProps = {
 HomeTabHeader.propTypes = {
   title: PropTypes.string.isRequired,
   desc: PropTypes.string.isRequired,
-  loading: PropTypes.bool
+  loading: PropTypes.bool,
+  rightIcon: PropTypes.any.isRequired
 };
 
 export default React.memo(HomeTabHeader);

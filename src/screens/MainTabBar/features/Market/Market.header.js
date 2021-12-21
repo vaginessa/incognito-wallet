@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import SelectDropdown from 'react-native-select-dropdown';
 import { headerStyled } from '@screens/MainTabBar/features/Market/Market.styled';
 import { Header, Row } from '@src/components';
-import {ArrowDownLine} from '@components/Icons/icon.arrowDown';
+import { ArrowDownLine } from '@components/Icons/icon.arrowDown';
 import { StarIcon } from '@components/Icons';
 import {COLORS} from '@src/styles';
 import {useDispatch, useSelector} from 'react-redux';
@@ -64,14 +64,14 @@ const HeaderView = ({ onFilter }) => {
           <SelectDropdown
             data={headers}
             defaultValueByIndex={0}
-            dropdownStyle={headerStyled.dropdownStyle}
+            dropdownStyle={[headerStyled.dropdownStyle, { backgroundColor: colors.btnBG2 }]}
             onSelect={(selectedItem) => {
               onFilter && onFilter({ filterField: selectedItem.filterField, orderField: selectedItem.orderField });
             }}
             buttonTextAfterSelection={(selectedItem) => selectedItem.name}
             rowTextForSelection={(item) => item.name}
-            rowTextStyle={headerStyled.rowTextStyle}
-            rowStyle={headerStyled.rowStyle}
+            rowTextStyle={[headerStyled.rowTextStyle, { color: colors.text1 }]}
+            rowStyle={[{ backgroundColor: colors.btnBG2, borderBottomWidth: 0.5, borderBottomColor: colors.border4 }]}
             buttonStyle={[headerStyled.buttonStyle, { backgroundColor: colors.btnBG2 }]}
             buttonTextStyle={[headerStyled.buttonTextStyle, { color: colors.text1 }]}
             renderDropdownIcon={() => {

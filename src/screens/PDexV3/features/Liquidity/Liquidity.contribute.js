@@ -257,7 +257,7 @@ Contribute.propTypes = {
 };
 
 export default compose(
-  withLayout_2,
   withLiquidity,
+  withLayout_2,
   withTransaction,
 )(memo(Contribute));

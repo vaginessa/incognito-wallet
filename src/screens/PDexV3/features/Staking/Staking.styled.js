@@ -253,19 +253,16 @@ export const itemStyle = StyleSheet.create({
     ...FONT.STYLE.medium,
     fontSize: FONT.SIZE.medium,
     lineHeight: FONT.SIZE.medium + 9,
-    color: COLORS.black
   },
   subTitle: {
     ...FONT.STYLE.normal,
     fontSize: FONT.SIZE.small,
     lineHeight: FONT.SIZE.small + 7,
-    color: COLORS.lightGrey33,
   },
   headerTitle: {
     ...FONT.STYLE.medium,
     fontSize: FONT.SIZE.small,
     lineHeight: FONT.SIZE.small + 7,
-    color: COLORS.lightGrey33,
   },
   blueText: {
     color: COLORS.blue5,
@@ -294,6 +291,5 @@ export const itemStyle = StyleSheet.create({
     ...FONT.STYLE.medium,
     fontSize: FONT.SIZE.regular,
     lineHeight: FONT.SIZE.regular + 9,
-    color: COLORS.lightGrey34
   }
 });

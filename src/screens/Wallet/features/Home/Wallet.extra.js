@@ -29,6 +29,7 @@ import { Text3 } from '@components/core/Text';
 import globalStyled from '@src/theme/theme.styled';
 import { View } from '@components/core';
 import { Row } from '@src/components';
+import AddToken from '@screens/Wallet/features/Home/Wallet.addToken';
 
 const Balance = React.memo(({ hideBalance }) => {
   let totalShielded = useSelector(totalShieldedTokensSelector);
@@ -39,8 +40,9 @@ const Balance = React.memo(({ hideBalance }) => {
   }
   return (
     <View style={[styledBalance.container]}>
-      <Row centerVertical>
+      <Row centerVertical spaceBetween>
         <Text3 style={styledBalance.title}>Coin balance</Text3>
+        <AddToken />
       </Row>
       <Row style={styledBalance.wrapBalance} center>
         <Amount
@@ -108,7 +110,7 @@ const GroupButton = React.memo(() => {
       {/*    triangleStyle={groupButtonStyled.triangleStyle}*/}
       {/*  />*/}
       {/*)}*/}
-      <BtnPrimary onPress={onFeaturePress} title="Deposit" />
+      <BtnPrimary onPress={onFeaturePress} title="Shield" />
     </View>
   );
 });

@@ -7,6 +7,10 @@ import isNaN from 'lodash/isNaN';
 import SelectedPrivacy from '@src/models/selectedPrivacy';
 import { getShareDataValue } from '@screens/PDexV3/features/Liquidity/Liquidity.utils';
 
+export const convertToUSD = ({ amount, priceUsd, pDecimals }) => {
+  return Math.ceil(new BigNumber(amount).multipliedBy(priceUsd).multipliedBy(Math.pow(10, pDecimals)).toNumber());
+};
+
 export const getPairRate = ({ token1, token2, token1Value, token2Value }) => {
   try {
     const humanAmountToken1Value = convertUtil.toHumanAmount(
@@ -77,10 +81,14 @@ export const getPrincipal = ({ token1, token2, shareData }) => {
     outputToken: token2,
     shareData,
   });
+  const token1USD = convertToUSD({ amount: maxInputShareDisplayStr, priceUsd: token1.priceUsd, pDecimals: token1.pDecimals });
+  const token2USD = convertToUSD({ amount: maxOutputShareDisplayStr, priceUsd: token2.priceUsd, pDecimals: token2.pDecimals });
   return {
     token1: `${maxInputShareDisplayStr} ${token1.symbol}`,
     token2: `${maxOutputShareDisplayStr} ${token2.symbol}`,
-    str: `${maxInputShareDisplayStr} ${token1.symbol} + ${maxOutputShareDisplayStr} ${token2.symbol}`
+    str: `${maxInputShareDisplayStr} ${token1.symbol} + ${maxOutputShareDisplayStr} ${token2.symbol}`,
+    token1USD,
+    token2USD,
   };
 };
 

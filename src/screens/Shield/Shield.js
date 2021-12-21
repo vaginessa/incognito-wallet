@@ -15,7 +15,7 @@ const Shield = (props) => {
         title="Search coins"
         canSearch
         hideBackButton={hideBackButton}
-        rightHeader={<BtnQuestionDefault onPress={handleWhyShield} />}
+        rightHeader={<BtnQuestionDefault style={{ marginLeft: 8 }} onPress={handleWhyShield} customStyle={{ height: 24, width: 24 }} />}
       />
       <View borderTop style={styled.container}>
         <ListAllToken
