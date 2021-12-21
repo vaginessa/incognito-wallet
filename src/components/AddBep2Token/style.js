@@ -10,7 +10,6 @@ export default StyleSheet.create({
   },
   submitBtn: {
     marginTop: 30,
-    borderRadius: 100,
     height: 50,
   },
   submitBtnTitle: {

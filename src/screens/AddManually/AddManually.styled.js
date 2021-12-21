@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { COLORS, FONT } from '@src/styles';
+import { FONT } from '@src/styles';
 import { isIOS } from '@src/utils/platform';
 
 export default StyleSheet.create({
@@ -40,6 +40,5 @@ export default StyleSheet.create({
   extra: {
     flex: 1,
     marginBottom: isIOS() ? 70 : 100,
-    marginTop: 42,
   },
 });

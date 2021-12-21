@@ -68,7 +68,7 @@ const AddManually = () => {
   return (
     <View2 style={styles.container}>
       <Header title="Add manually" onGoBack={onGoBack} />
-      <View borderTop style={[{flex : 1}, globalStyled.defaultPadding3]}>
+      <View borderTop fullFlex>
         <KeyboardAwareScrollView>
           <View style={styles.extra}>
             <SelectType colors={colors} />
