@@ -5,10 +5,7 @@ import globalStyled from '@src/theme/theme.styled';
 
 const style = StyleSheet.create({
   container: {
-    ...globalStyled.defaultBorderSection,
-    flex: 1,
     marginBottom: isIOS() ? 30 : 50,
-    paddingHorizontal: globalStyled.defaultPadding.paddingHorizontal,
   },
   issuanceFee: {
     marginTop: 16

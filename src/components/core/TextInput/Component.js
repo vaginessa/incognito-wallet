@@ -29,6 +29,7 @@ const TextInput = ({
   oldVersion = false,
   canEditable,
   rightLabel,
+  noMarginTop,
   ...props
 }) => {
   const [focus, setFocus] = useState(false);
@@ -65,7 +66,7 @@ const TextInput = ({
   }
 
   return (
-    <View style={[styleSheet.container, style]}>
+    <View style={[styleSheet.container, style, noMarginTop && {marginTop: 0}]}>
       {label && (
         <View style={[styleSheet.labelContainer]}>
           <Text
