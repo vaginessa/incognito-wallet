@@ -114,6 +114,7 @@ export const tokenStyled = StyleSheet.create({
     ...globalStyled.defaultPaddingHorizontal,
     flexDirection: 'row',
     alignItems: 'center',
+    marginVertical: 16
   },
   wrapFirst: {
     flex: 1,
@@ -123,7 +124,7 @@ export const tokenStyled = StyleSheet.create({
   wrapSecond: {
     flex: 1,
     alignItems: 'flex-end',
-    height: '100%'
+    // height: '100%'
   },
   wrapThird: {
     flex: 1,

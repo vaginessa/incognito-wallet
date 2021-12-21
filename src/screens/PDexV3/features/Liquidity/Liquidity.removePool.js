@@ -1,5 +1,5 @@
 import React, { memo } from 'react';
-import { RefreshControl, ScrollView, Text, View } from 'react-native';
+import { RefreshControl, ScrollView, Text } from 'react-native';
 import PropTypes from 'prop-types';
 import { styled as mainStyle } from '@screens/PDexV3/PDexV3.styled';
 import { Header, SuccessModal } from '@src/components';
@@ -16,7 +16,7 @@ import {
 } from '@components/core/reduxForm';
 import styled from '@screens/PDexV3/features/Liquidity/Liquidity.styled';
 import { Field } from 'redux-form';
-import { AddBreakLine } from '@components/core';
+import { AddBreakLine, View } from '@components/core';
 import { batch, useDispatch, useSelector } from 'react-redux';
 import {
   liquidityActions,
@@ -27,6 +27,7 @@ import { compose } from 'recompose';
 import withTransaction from '@screens/PDexV3/features/Liquidity/Liquidity.enhanceTransaction';
 import { useNavigation } from 'react-navigation-hooks';
 import NetworkFee from '@src/components/NetworkFee';
+import { withLayout_2 } from '@components/Layout';
 
 const initialFormValues = {
   inputToken: '',
@@ -177,8 +178,8 @@ const RemovePool = ({
   }, []);
   return (
     <>
-      <View style={styled.container}>
-        <Header style={styled.padding} />
+      <Header style={styled.padding} />
+      <View borderTop style={styled.container}>
         <ScrollView
           refreshControl={(
             <RefreshControl
@@ -220,5 +221,6 @@ RemoveLPButton.propTypes = {
 
 export default compose(
   withLiquidity,
+  withLayout_2,
   withTransaction,
 )(memo(RemovePool));

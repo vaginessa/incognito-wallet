@@ -1,5 +1,5 @@
 import React, { memo } from 'react';
-import { RefreshControl, ScrollView, Text, View } from 'react-native';
+import { ScrollView, Text } from 'react-native';
 import PropTypes from 'prop-types';
 import { styled as mainStyle } from '@screens/PDexV3/PDexV3.styled';
 import { Header, RowSpaceText, SuccessModal } from '@src/components';
@@ -16,7 +16,7 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import styled from '@screens/PDexV3/features/Liquidity/Liquidity.styled';
 import {Field, focus, getFormSyncErrors} from 'redux-form';
-import { AddBreakLine } from '@components/core';
+import { AddBreakLine, RefreshControl, View } from '@components/core';
 import withLiquidity from '@screens/PDexV3/features/Liquidity/Liquidity.enhance';
 import {
   contributeSelector,
@@ -28,6 +28,7 @@ import { compose } from 'recompose';
 import withTransaction from '@screens/PDexV3/features/Liquidity/Liquidity.enhanceTransaction';
 import NetworkFee from '@src/components/NetworkFee';
 import {actionToggleModal} from '@components/Modal';
+import { withLayout_2 } from '@components/Layout';
 
 const initialFormValues = {
   inputToken: '',
@@ -202,8 +203,8 @@ const Contribute = ({
   }, []);
   return (
     <>
-      <View style={styled.container}>
-        <Header style={styled.padding} />
+      <Header style={styled.padding} />
+      <View borderTop style={styled.container}>
         <ScrollView
           refreshControl={(
             <RefreshControl
@@ -256,6 +257,7 @@ Contribute.propTypes = {
 };
 
 export default compose(
+  withLayout_2,
   withLiquidity,
   withTransaction,
 )(memo(Contribute));
