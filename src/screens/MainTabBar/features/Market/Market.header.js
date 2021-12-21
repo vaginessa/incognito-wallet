@@ -71,7 +71,7 @@ const HeaderView = ({ onFilter }) => {
             buttonTextAfterSelection={(selectedItem) => selectedItem.name}
             rowTextForSelection={(item) => item.name}
             rowTextStyle={headerStyled.rowTextStyle}
-            rowStyle={headerStyled.rowStyle}
+            rowStyle={[headerStyled.rowStyle, { backgroundColor: colors.btnBG2 }]}
             buttonStyle={[headerStyled.buttonStyle, { backgroundColor: colors.btnBG2 }]}
             buttonTextStyle={[headerStyled.buttonTextStyle, { color: colors.text1 }]}
             renderDropdownIcon={() => {

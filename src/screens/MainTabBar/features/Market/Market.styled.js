@@ -32,7 +32,6 @@ export const headerStyled = StyleSheet.create({
   },
   rowStyle: {
     borderBottomWidth: 0.5,
-    borderBottomColor: COLORS.lightGrey18,
     height: 40
   },
   rowTextStyle: {
