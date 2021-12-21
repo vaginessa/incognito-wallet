@@ -167,13 +167,5 @@ export const tokenStyled = StyleSheet.create({
 
 export const styledAddToken = StyleSheet.create({
   container: {
-    paddingVertical: 10,
-    position: 'absolute',
-    bottom: 0,
-    borderTopRightRadius: 8,
-  },
-  title: {
-    fontFamily: FONT.NAME.medium,
-    fontSize: FONT.SIZE.regular,
   },
 });
