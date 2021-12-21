@@ -1,5 +1,5 @@
 import React, {memo} from 'react';
-import {RefreshControl, ScrollView, Text, View} from 'react-native';
+import { ScrollView, Text } from 'react-native';
 import PropTypes from 'prop-types';
 import {styled as mainStyle} from '@screens/PDexV3/PDexV3.styled';
 import {Header, RowSpaceText, SuccessModal} from '@src/components';
@@ -9,7 +9,7 @@ import {
   SUCCESS_MODAL,
 } from '@screens/PDexV3/features/Liquidity/Liquidity.constant';
 import {createForm, RFTradeInputAmount as TradeInputAmount, validator} from '@components/core/reduxForm';
-import {AddBreakLine} from '@components/core';
+import { AddBreakLine, View, RefreshControl } from '@components/core';
 import {useDispatch, useSelector} from 'react-redux';
 import {change, Field, focus, getFormSyncErrors} from 'redux-form';
 import withLiquidity from '@screens/PDexV3/features/Liquidity/Liquidity.enhance';
@@ -23,6 +23,7 @@ import {useNavigation} from 'react-navigation-hooks';
 import routeNames from '@routers/routeNames';
 import NetworkFee from '@src/components/NetworkFee';
 import {actionToggleModal} from '@components/Modal';
+import { withLayout_2 } from '@components/Layout';
 
 const initialFormValues = {
   inputToken: '',
@@ -258,8 +259,8 @@ const CreatePool = ({
   }, []);
   return (
     <>
-      <View style={styled.container}>
-        <Header style={styled.padding} />
+      <Header style={styled.padding} />
+      <View borderTop style={styled.container}>
         <ScrollView
           refreshControl={(<RefreshControl refreshing={isFetching} onRefresh={onInitCreatePool} />)}
           showsVerticalScrollIndicator={false}
@@ -299,5 +300,6 @@ ButtonCreatePool.propTypes = {
 
 export default compose(
   withLiquidity,
+  withLayout_2,
   withTransaction,
 )(memo(CreatePool));

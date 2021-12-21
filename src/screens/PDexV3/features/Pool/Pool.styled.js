@@ -12,7 +12,6 @@ export const styled = StyleSheet.create({
   name: {
     marginRight: 5,
     fontSize: FONT.SIZE.medium,
-    color: COLORS.black,
     fontFamily: FONT.NAME.medium,
   },
   nameFollowed: {
@@ -21,7 +20,6 @@ export const styled = StyleSheet.create({
   subText: {
     fontSize: FONT.SIZE.small,
     lineHeight: FONT.SIZE.small + 2,
-    color: COLORS.colorGrey3,
     fontFamily: FONT.NAME.medium,
     marginBottom: 8,
   },

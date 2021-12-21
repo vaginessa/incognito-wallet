@@ -1,13 +1,13 @@
 import { Row } from '@src/components';
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   actionToggleFollowingPool,
   getDataByPoolIdSelector,
 } from '@screens/PDexV3/features/Pools';
 import PropTypes from 'prop-types';
-import { TouchableOpacity } from '@src/components/core';
+import { Text, TouchableOpacity } from '@src/components/core';
 import { BtnStar } from '@src/components/Button';
 import { styled } from './Pool.styled';
 

@@ -22,7 +22,7 @@ const HeaderView = React.memo(() => {
       <Row spaceBetween style={styled.headerRow}>
         <ReturnLP />
       </Row>
-      <BtnPrimary onPress={() => navigation.navigate(routeNames.PoolsList)} title="Join a Pool" wrapperStyle={{ marginTop: 24 }} />
+      <BtnPrimary onPress={() => navigation.navigate(routeNames.PoolsTab)} title="Join a Pool" wrapperStyle={{ marginTop: 24 }} />
     </View>
   );
   return renderContent();
