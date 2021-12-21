@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { FONT, COLORS } from '@src/styles';
+import { FONT } from '@src/styles';
 
 const styles = StyleSheet.create({
   container: {
@@ -11,17 +11,15 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
   title: {
-    fontSize: 20,
+    fontSize: FONT.SIZE.medium,
     fontFamily: FONT.NAME.bold,
     lineHeight: 24,
     marginBottom: 10,
-    color: COLORS.black,
   },
   subTitle: {
     fontFamily: FONT.NAME.medium,
     lineHeight: 18,
-    color: COLORS.newGrey,
-    fontSize: FONT.SIZE.medium,
+    fontSize: FONT.SIZE.regular,
   },
 });
 

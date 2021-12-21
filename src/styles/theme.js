@@ -346,14 +346,10 @@ const INPUT = {
 
 const BUTTON = {
   BLACK_TYPE: {
-    backgroundColor: COLORS.blue5,
-    borderRadius: 25,
     width: '100%',
     height: SIZES.button.height,
   },
   BLACK_TYPE_DISABLE: {
-    backgroundColor: COLORS.colorGrey,
-    borderRadius: 25,
     width: '100%',
     height: SIZES.button.height,
   },

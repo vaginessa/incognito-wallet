@@ -21,7 +21,6 @@ const style = StyleSheet.create({
     marginRight: 'auto',
     fontFamily: FONT.NAME.bold,
     fontSize: FONT.SIZE.superMedium,
-    color: COLORS.black,
     textAlign: 'left',
     maxWidth: 200,
   },
