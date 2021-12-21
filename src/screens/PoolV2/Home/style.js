@@ -65,20 +65,15 @@ export default StyleSheet.create({
   },
   rateChange: {
     position: 'absolute',
-    backgroundColor: 'white',
     paddingVertical: UTILS.heightScale(15),
     bottom: 0,
     left: 0,
     right: 0,
-    marginBottom: UTILS.heightScale(15),
   },
   rateStyle: {
-    fontFamily: FONT.NAME.medium,
-    fontSize: 18,
+    ...FONT.TEXT.incognitoP1,
   },
-  scrollView: {
-    marginBottom: UTILS.heightScale(70),
-  },
+  scrollView: {},
   migrateButton: {
     marginHorizontal: 1,
     height: 35,

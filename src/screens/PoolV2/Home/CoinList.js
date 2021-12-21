@@ -19,6 +19,7 @@ import { RefreshControl } from 'react-native';
 import { PRV_ID } from '@src/screens/DexV2/constants';
 import { useSelector } from 'react-redux';
 import { colorsSelector } from '@src/theme/theme.selector';
+
 import styles from './style';
 
 export const LockTimeComp = React.memo(() => {
@@ -244,7 +245,7 @@ const CoinList = ({
 
     if (histories?.length > 0) {
       return (
-        <View style={[styles.rateChange, { backgroundColor: colors.background1 }]}>
+        <View style={[styles.rateChange]}>
           <TouchableOpacity onPress={handleHistory}>
             <Row center spaceBetween style={mainStyles.flex}>
               <Text style={[styles.rateStyle, { marginLeft: 20 }]}>Provider history</Text>

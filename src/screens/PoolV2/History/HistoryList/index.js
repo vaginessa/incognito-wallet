@@ -3,13 +3,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 import { compose } from 'recompose';
-import { View, Text, TouchableOpacity, ActivityIndicator } from '@components/core';
+import { View, Text, TouchableOpacity, ActivityIndicator, LoadingContainer } from '@components/core';
 import { withLayout_2 } from '@components/Layout';
 import Header from '@components/Header/index';
 import { VirtualizedList } from 'react-native';
 import { useNavigation } from 'react-navigation-hooks';
 import ROUTE_NAMES from '@routers/routeNames';
-import LoadingContainer from '@components/LoadingContainer/LoadingContainer';
 import { ArrowRightGreyIcon } from '@components/Icons';
 import withHistories from '@screens/PoolV2/histories.enhance';
 import withDefaultAccount from '@components/Hoc/withDefaultAccount';
@@ -31,16 +30,16 @@ const History = ({
   };
 
   // eslint-disable-next-line react/prop-types
-  const renderHistoryItem = ({ item }) => (
+  const renderHistoryItem = ({ item, index }) => (
     <TouchableOpacity
       key={item.id}
-      style={[styles.historyItem, { borderBottomColor: COLORS.lightGrey31, borderBottomWidth: 1 }]}
+      style={[styles.historyItem, { borderBottomColor: COLORS.lightGrey31, borderBottomWidth: 1 }, index === 0 && {paddingTop: 0}]}
       onPress={() => viewDetail(item)}
     >
       <Text style={styles.buttonTitle}>{item.type}</Text>
       <View style={styles.row}>
         <Text style={[styles.content, styles.ellipsis]} numberOfLines={1}>{item.description}</Text>
-        <View style={[styles.row, styles.center, styles.status]}>
+        <View style={[styles.row, styles.center]}>
           <Text style={[styles.content, { color: item.statusColor }]} numberOfLines={1}>{item.status}</Text>
           <ArrowRightGreyIcon style={{ marginLeft: 10 }} />
         </View>
@@ -54,7 +53,7 @@ const History = ({
   return (
     <>
       <Header title="Provider history" onGoBack={() => navigation.navigate(ROUTE_NAMES.PoolV2)} />
-      <View style={[styles.wrapper, styles.historyTitle, globalStyled.defaultPadding3]} borderTop>
+      <View style={[styles.wrapper, styles.historyTitle]} borderTop paddingHorizontal>
         {histories.length ? (
           <VirtualizedList
             data={histories}

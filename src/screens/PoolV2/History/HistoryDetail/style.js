@@ -6,8 +6,7 @@ export default StyleSheet.create({
     marginVertical: 50,
   },
   buttonTitle: {
-    fontSize: 20,
-    ...FONT.STYLE.bold,
+    fontSize: FONT.SIZE.medium,
   },
   error: {
     color: COLORS.red,
@@ -16,12 +15,13 @@ export default StyleSheet.create({
     ...FONT.STYLE.bold,
   },
   content: {
-    ...FONT.STYLE.medium,
-    fontSize: 18,
+    fontFamily: FONT.STYLE.medium,
+    fontSize: FONT.SIZE.superMedium,
     marginTop: 5,
+    ...FONT.STYLE.bold,
   },
   historyItem: {
-    marginVertical: 30,
+    marginBottom: 30,
   },
   right: {
     textAlign: 'right',
@@ -35,7 +35,6 @@ export default StyleSheet.create({
     fontSize: 18,
   },
   info: {
-    ...FONT.STYLE.bold,
     fontSize: 18,
   },
 });

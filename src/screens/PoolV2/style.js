@@ -19,24 +19,22 @@ export default StyleSheet.create({
   },
   coinName: {
     fontFamily: FONT.NAME.bold,
-    fontSize: 20,
+    fontSize: FONT.SIZE.medium,
     marginBottom: 8,
   },
   coinInterest: {
-    fontSize: 18,
+    ...FONT.TEXT.incognitoP1,
     color: COLORS.green2,
-    fontFamily: FONT.NAME.medium,
     marginBottom: 8,
   },
   coinExtra: {
-    fontFamily: FONT.NAME.medium,
-    fontSize: 18,
+    ...FONT.TEXT.incognitoP1,
     marginBottom: 8,
   },
   coinExtraSmall: {
     fontFamily: FONT.NAME.medium,
     color: COLORS.newGrey,
-    fontSize: 16,
+    fontSize: FONT.SIZE.small,
     lineHeight: 18,
     marginBottom: 8,
   },
@@ -90,7 +88,7 @@ export default StyleSheet.create({
     paddingVertical: 4,
     backgroundColor: COLORS.lightGrey19,
     marginLeft: 8,
-    height: 24,
+    height: 18,
     borderRadius: 4,
   },
   lockText: {
