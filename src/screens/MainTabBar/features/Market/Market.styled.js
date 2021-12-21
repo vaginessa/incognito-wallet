@@ -9,7 +9,7 @@ export const headerStyled = StyleSheet.create({
   title: {
     fontWeight: '600',
     fontSize: 24,
-    lineHeight: 30,
+    lineHeight: 28,
   },
   wrapTab: {
     width: 49,
