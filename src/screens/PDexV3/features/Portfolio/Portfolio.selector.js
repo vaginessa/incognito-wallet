@@ -59,7 +59,7 @@ export const listShareSelector = createSelector(
         token1PoolValue,
         token2PoolValue,
       );
-      const principalStr = getPrincipal({
+      const principal = getPrincipal({
         token1,
         token2,
         shareData: {
@@ -101,7 +101,11 @@ export const listShareSelector = createSelector(
       const hookFactories = [
         {
           label: 'Principal',
-          value: principalStr,
+          value: principal.token1,
+        },
+        {
+          label: 'Principal',
+          value: principal.token2,
         },
         {
           label: 'Reward',
@@ -110,24 +114,15 @@ export const listShareSelector = createSelector(
       ];
       const apyStr = format.amount(apy, 0);
       const hookFactoriesDetail = [
-        // {
-        //   label: 'PoolId',
-        //   valueText: poolId,
-        //   copyable: true,
-        // },
         {
           label: 'APY',
           valueText: `${apyStr}%`,
         },
         {
           label: 'Principal',
-          valueText: principalStr,
+          valueText: principal.str,
           moreLines: true
         },
-        // {
-        //   label: 'Share',
-        //   valueText: shareStr,
-        // },
         ...hookRewards,
       ];
 
@@ -137,7 +132,7 @@ export const listShareSelector = createSelector(
         token1,
         token2,
         exchangeRateStr,
-        principalStr,
+        principal,
         shareStr,
         hookFactories,
         amp,

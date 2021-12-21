@@ -8,28 +8,35 @@ import {actionSetPoolModal} from '@screens/PDexV3/features/Portfolio/Portfolio.a
 import {actionToggleModal} from '@components/Modal';
 import ModalBottomSheet from '@components/Modal/features/ModalBottomSheet';
 import PortfolioModal from '@screens/PDexV3/features/Portfolio/Portfolio.detail';
-import {portfolioItemStyled as styled} from './Portfolio.styled';
+import styled from 'styled-components/native';
+import TwoTokenImage from '@screens/PDexV3/features/Portfolio/Portfolio.image';
+import {portfolioItemStyled as styles} from './Portfolio.styled';
 import {getDataByShareIdSelector} from './Portfolio.selector';
 
 const Hook = React.memo(({ label, value }) => (
   <RowSpaceText
     label={label}
     value={value}
-    style={{ marginBottom: 2 }}
+    style={{ marginBottom: 1 }}
   />
 ));
+
+const CustomTouchableOpacity = styled(TouchableOpacity)`
+  border-bottom-width: 1px;
+  border-bottom-color: ${({ theme }) => theme.border4};
+`;
 
 const Extra = React.memo(({ shareId }) => {
   const data = useSelector(getDataByShareIdSelector)(shareId);
   const { token1, token2, apyStr } = data || {};
   return (
-    <Row style={styled.extraContainer} centerVertical spaceBetween>
-      <Text style={styled.extraLabel}>
+    <Row style={styles.extraContainer} centerVertical spaceBetween>
+      <Text style={styles.extraLabel}>
         {`${token1?.symbol} / ${token2?.symbol}`}
       </Text>
-      <Text style={styled.extraLabel}>
-        {`${apyStr}% APY`}
-      </Text>
+      {/*<Text style={styles.extraLabel}>*/}
+      {/*  {`${apyStr}% APY`}*/}
+      {/*</Text>*/}
     </Row>
   );
 });
@@ -56,18 +63,19 @@ const PortfolioItem = ({ shareId, isLast, onWithdrawFeeLP }) => {
       );
     });
   };
-  const { hookFactories } = data || {};
+  const { hookFactories, token1, token2 } = data || {};
   return (
-    <TouchableOpacity
-      style={[styled.container, isLast && { borderBottomWidth: 0, marginBottom: 50 }]}
+    <CustomTouchableOpacity
+      style={[styles.container, isLast && { borderBottomWidth: 0, marginBottom: 50 }]}
       onPress={onPress}
       key={shareId}
     >
+      <TwoTokenImage iconUrl1={token1.iconUrl} iconUrl2={token2.iconUrl} />
       <Extra shareId={shareId} />
       {hookFactories.map((hook) => (
         <Hook {...hook} key={hook.label} />
       ))}
-    </TouchableOpacity>
+    </CustomTouchableOpacity>
   );
 };
 

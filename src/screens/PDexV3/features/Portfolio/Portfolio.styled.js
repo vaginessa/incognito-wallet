@@ -1,5 +1,6 @@
 import { StyleSheet } from 'react-native';
-import { COLORS, FONT } from '@src/styles';
+import { FONT } from '@src/styles';
+import globalStyled from '@src/theme/theme.styled';
 
 export const styled = StyleSheet.create({
   container: {
@@ -13,9 +14,8 @@ export const styled = StyleSheet.create({
 
 export const portfolioItemStyled = StyleSheet.create({
   container: {
-    paddingVertical: 16,
-    borderBottomColor: COLORS.colorGrey4,
-    borderBottomWidth: 1
+    ...globalStyled.defaultPaddingHorizontal,
+    paddingVertical: 12
   },
   hookContainer: {
     justifyContent: 'space-between',
@@ -26,18 +26,16 @@ export const portfolioItemStyled = StyleSheet.create({
     fontFamily: FONT.NAME.bold,
     fontSize: FONT.SIZE.small,
     lineHeight: FONT.SIZE.small + 3,
-    color: COLORS.lightGrey17,
   },
   hookValue: {
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.small,
     lineHeight: FONT.SIZE.small + 3,
-    color: COLORS.lightGrey31,
   },
   extraContainer: {
     justifyContent: 'space-between',
-    marginBottom: 8,
     alignItems: 'center',
+    marginTop: 8,
   },
   extraLabel: {
     fontFamily: FONT.NAME.medium,
@@ -61,6 +59,5 @@ export const portfolioItemStyled = StyleSheet.create({
   withdrawing: {
     height: 28,
     width: 85,
-    backgroundColor: COLORS.lightGrey32
   }
 });

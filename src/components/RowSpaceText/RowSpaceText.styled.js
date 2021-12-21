@@ -1,5 +1,5 @@
-import {StyleSheet} from 'react-native';
-import {COLORS, FONT} from '@src/styles';
+import { StyleSheet } from 'react-native';
+import { FONT } from '@src/styles';
 
 const styled = StyleSheet.create({
   hookContainer: {
@@ -21,7 +21,6 @@ const styled = StyleSheet.create({
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.small,
     lineHeight: FONT.SIZE.small + 7,
-    color: COLORS.lightGrey35,
     textAlign: 'right',
   },
 });

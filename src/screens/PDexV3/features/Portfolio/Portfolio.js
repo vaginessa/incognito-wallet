@@ -52,7 +52,7 @@ const PortfolioList = withTransaction(React.memo(({ onCreateWithdrawFeeLP }) => 
       )}
       keyExtractor={(item) => item?.shareId}
       showsVerticalScrollIndicator={false}
-      contentContainerStyle={[{ flexGrow: 1 }, globalStyled.defaultPaddingHorizontal]}
+      contentContainerStyle={[{ flexGrow: 1 }]}
       ListEmptyComponent={
         <EmptyBookIcon message="Your portfolio is empty" />
       }
