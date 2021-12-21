@@ -1,7 +1,7 @@
 import React, {memo} from 'react';
 import { RefreshControl, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
-import {ListView} from '@components/Token/index';
+import { ListView } from '@components/Token/index';
 import { BtnChecked } from '@components/Button';
 import { FONT } from '@src/styles';
 import { useDispatch } from 'react-redux';
@@ -20,6 +20,10 @@ const styled = StyleSheet.create({
     lineHeight: FONT.SIZE.small + 5,
     marginLeft: 5,
   },
+  scrollView: {
+    paddingLeft: 0,
+    paddingRight: 0
+  }
 });
 
 const MarketList = (props) => {
@@ -66,6 +70,7 @@ const MarketList = (props) => {
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
+      style={styled.scrollView}
       refreshControl={
         <RefreshControl refreshing={loading} onRefresh={onRefresh} />
       }

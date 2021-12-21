@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { FONT, COLORS } from '@src/styles';
+import { FONT } from '@src/styles';
 
 export default StyleSheet.create({
   container: {
@@ -10,7 +10,6 @@ export default StyleSheet.create({
   },
   submitBtn: {
     marginTop: 50,
-    borderRadius: 100,
     height: 50,
   },
   input: {

@@ -44,6 +44,7 @@ export function appTheme(darkMode: boolean) {
     border1: darkMode ? '#484848' : '#F7F7F7',
     border2: darkMode ? white : black,
     border3: darkMode ? '#484848' : '#D6D6D6',
+    border4: darkMode ? '#363636' : '#F2F4F5',
 
     contrast: darkMode ? white : black,
 

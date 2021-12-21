@@ -1,13 +1,15 @@
 import React from 'react';
 import { StyleSheet } from 'react-native';
-import { KeyboardAwareScrollView, Text } from '@src/components/core';
+import { KeyboardAwareScrollView, Text, View } from '@src/components/core';
 import { BtnChecked } from '@src/components/Button';
 import { ListToken } from '@src/components/Token';
 import PropTypes from 'prop-types';
 import { FONT } from '@src/styles';
+import globalStyled from '@src/theme/theme.styled';
 
 const styled = StyleSheet.create({
   hook: {
+    ...globalStyled.defaultPaddingHorizontal,
     flexDirection: 'row',
     alignItems: 'center',
     marginTop: 32,
@@ -18,6 +20,9 @@ const styled = StyleSheet.create({
     lineHeight: FONT.SIZE.small + 5,
     marginLeft: 5,
   },
+  paddingTop: {
+    paddingTop: 24
+  }
 });
 
 const ListAllToken = (props) => {
@@ -28,8 +33,8 @@ const ListAllToken = (props) => {
     renderItem,
   } = props;
   return (
-    <KeyboardAwareScrollView>
-      <ListToken {...tokensFactories[0]} renderItem={renderItem} styledListToken={{ paddingTop: 15 }} />
+    <KeyboardAwareScrollView defaultPadding={false} style={styled.paddingTop}>
+      <ListToken {...tokensFactories[0]} renderItem={renderItem}  />
       <BtnChecked
         btnStyle={[
           styled.hook,
@@ -41,7 +46,7 @@ const ListAllToken = (props) => {
       />
       <ListToken {...tokensFactories[1]} renderItem={renderItem} />
     </KeyboardAwareScrollView>
-  );                                                                                                                  
+  );
 };
 
 ListAllToken.propTypes = {

@@ -16,7 +16,7 @@ const CustomKeyboardAwareScrollView = styled(KeyboardAwareScrollView)`
 `;
 
 const Component = (props: KeyboardAwareScrollViewProps) => {
-  const { contentContainerStyle, fullFlex, paddingBottom, ...rest } = props;
+  const { contentContainerStyle, fullFlex, paddingBottom, defaultPadding = true, ...rest } = props;
   return (
     <CustomKeyboardAwareScrollView
       showsVerticalScrollIndicator={false}
@@ -26,7 +26,7 @@ const Component = (props: KeyboardAwareScrollViewProps) => {
       contentContainerStyle={[
         contentContainerStyle,
         fullFlex && { flex: 1 },
-        globalStyled.defaultPadding,
+        defaultPadding && globalStyled.defaultPadding,
         paddingBottom && { paddingBottom: 50 + BOTTOM_BAR_PADDING_BOTTOM},
       ]}
       {...rest}
