@@ -154,6 +154,9 @@ export const listShareSelector = createSelector(
         totalRewardUSD,
         totalRewardUSDStr,
         rewardUSDSymbolStr,
+        totalRewardAmount,
+        token1USD: principal.token1USD,
+        token2USD: principal.token2USD,
       };
     });
   },
@@ -184,6 +187,17 @@ export const totalShareSelector = createSelector(
     }, new BigNumber('0')).toNumber();
     const originalAmount = convert.toOriginalAmount(rewardUSD, 9, true);
     return format.amountVer2(originalAmount, 9);
+  }
+);
+
+export const totalShareUSDSelector = createSelector(
+  listShareSelector,
+  (listShare) => {
+    if (listShare.length === 0) return 0;
+    const rewardUSD = listShare.reduce((prev, cur) => {
+      return prev.plus(cur.token1USD).plus(cur.token2USD);
+    }, new BigNumber('0')).toNumber();
+    return format.amountVer2(rewardUSD, 9);
   }
 );
 

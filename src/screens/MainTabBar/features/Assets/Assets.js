@@ -15,6 +15,7 @@ import withHome from '@screens/PDexV3/features/Home/Home.enhance';
 import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@routers/routeNames';
 import { PoolReward } from '@screens/PDexV3/features/Share';
+import PortfolioReward from '@screens/PDexV3/features/Portfolio/Portfolio.reward';
 
 const HeaderPortfolioView = React.memo(() => {
   const navigation = useNavigation();
@@ -57,6 +58,7 @@ const TabAssets = () => {
       </View>
       <View tabID={TAB_REWARD_ID} label="Rewards">
         <HeaderRewardView />
+        <PortfolioReward />
       </View>
     </Tabs>
   );

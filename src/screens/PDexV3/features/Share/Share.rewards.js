@@ -3,11 +3,11 @@ import { HomeTabHeader } from '@screens/PDexV3/features/Home';
 import { useSelector } from 'react-redux';
 import {
   isFetchingSelector,
-  tradingVolume24hSelector
 } from '@src/screens/PDexV3/features/Pools';
+import { totalShareSelector } from '@screens/PDexV3/features/Portfolio';
 
 export default React.memo(() => {
-  const tradingVolume24h = useSelector(tradingVolume24hSelector);
+  const totalShare = useSelector(totalShareSelector);
   const loading = useSelector(isFetchingSelector);
-  return <HomeTabHeader title="Reward Balance" desc={`$${tradingVolume24h}`} loading={loading} />;
+  return <HomeTabHeader title="Reward Balance" desc={`$${totalShare}`} loading={loading} />;
 });

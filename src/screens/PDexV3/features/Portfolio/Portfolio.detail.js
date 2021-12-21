@@ -9,7 +9,7 @@ import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@routers/routeNames';
 import { Row } from '@src/components';
 import { actionToggleModal } from '@components/Modal';
-import { BtnPrimary } from '@components/core/Button';
+import { BtnPrimary, BtnSecondary } from '@components/core/Button';
 import PropTypes from 'prop-types';
 import { Text } from '@components/core';
 import { colorsSelector } from '@src/theme';
@@ -145,16 +145,16 @@ const PortfolioModal = ({ shareId, onWithdrawFeeLP }) => {
           </Text>
         )}
         <Row spaceBetween style={{ marginTop: 10 }}>
-          {/*{!!withdrawable && (*/}
-          {/*  <BtnSecondary*/}
-          {/*    title="Withdraw rewards"*/}
-          {/*    onPress={onClaimReward}*/}
-          {/*    wrapperStyle={[{ flex: 1 }, !!share && { marginRight: 8 }]}*/}
-          {/*    textStyle={{ color: COLORS.colorBlue }}*/}
-          {/*    background={COLORS.colorBlue}*/}
-          {/*    disabled={withdrawing || disableBtn}*/}
-          {/*  />*/}
-          {/*)}*/}
+          {!!withdrawable && (
+            <BtnSecondary
+              title="Withdraw rewards"
+              onPress={onClaimReward}
+              wrapperStyle={[{ flex: 1 }, !!share && { marginRight: 8 }]}
+              textStyle={{ color: COLORS.colorBlue }}
+              background={COLORS.colorBlue}
+              disabled={withdrawing || disableBtn}
+            />
+          )}
           {!!share && (
             <BtnPrimary
               title="Invest more"
