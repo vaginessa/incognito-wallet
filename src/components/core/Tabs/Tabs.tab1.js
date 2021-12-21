@@ -8,7 +8,7 @@ const styled = StyleSheet.create({
   btnStyle: {
     borderRadius: 100,
     padding: 0,
-    marginRight: 8,
+    marginRight: 4,
     overflow: 'hidden',
     backgroundColor: '#303030',
     height: 40
