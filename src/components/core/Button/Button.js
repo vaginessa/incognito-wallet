@@ -2,13 +2,14 @@ import React from 'react';
 import { TouchableOpacity, Text, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
 import { COLORS, FONT } from '@src/styles';
+import styled from 'styled-components/native';
 
 export const BtnPrimary = React.memo(
   ({ title, background, wrapperStyle, textStyle, onPress, disabled }) => {
     return (
       <TouchableOpacity
         style={[
-          styled.wrapper,
+          styles.wrapper,
           background && { backgroundColor: background },
           { opacity: disabled ? 0.5 : 1 },
           wrapperStyle,
@@ -16,33 +17,37 @@ export const BtnPrimary = React.memo(
         onPress={onPress}
         disabled={disabled}
       >
-        {!!title && <Text style={[styled.primaryText, textStyle]}>{title}</Text>}
+        {!!title && <Text style={[styles.primaryText, textStyle]}>{title}</Text>}
       </TouchableOpacity>
     );
   },
 );
 
+
+const TouchableSecondary = styled(TouchableOpacity)`
+  background: white;
+  border: 1px solid ${({ theme }) => theme.borderBtnSecondary};
+`;
+
 export const BtnSecondary = React.memo(
-  ({ title, background, wrapperStyle, textStyle, onPress, disabled }) => {
+  ({ title, wrapperStyle, textStyle, onPress, disabled }) => {
     return (
-      <TouchableOpacity
+      <TouchableSecondary
         style={[
-          styled.wrapper,
-          styled.border,
-          background && { borderColor: background },
+          styles.wrapper,
           { opacity: disabled ? 0.5 : 1 },
           wrapperStyle,
         ]}
         onPress={onPress}
         disabled={disabled}
       >
-        <Text style={[styled.normalText, textStyle]}>{title}</Text>
-      </TouchableOpacity>
+        <Text style={[styles.normalText, textStyle]}>{title}</Text>
+      </TouchableSecondary>
     );
   },
 );
 
-const styled = StyleSheet.create({
+const styles = StyleSheet.create({
   wrapper: {
     height: 50,
     justifyContent: 'center',
@@ -59,10 +64,6 @@ const styled = StyleSheet.create({
     ...FONT.STYLE.medium,
     color: COLORS.blue5,
     fontSize: FONT.SIZE.medium,
-  },
-  border: {
-    borderColor: COLORS.blue5,
-    borderWidth: 1,
   },
 });
 

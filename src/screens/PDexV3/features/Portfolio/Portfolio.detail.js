@@ -112,7 +112,7 @@ const PortfolioModal = ({ shareId, onWithdrawFeeLP }) => {
           <Row centerVertical>
             <TwoTokenImage iconUrl1={token1.iconUrl} iconUrl2={token2.iconUrl} />
             <Text
-              style={styles.title}
+              style={[styles.title, { marginLeft: 32 }]}
             >{`${token1.symbol} / ${token2.symbol}`}
             </Text>
           </Row>
