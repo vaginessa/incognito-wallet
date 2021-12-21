@@ -71,8 +71,8 @@ export const listPoolsSelector = createSelector(
         const priceChangeToAmount = format.amountVer2(priceChange, 0);
         const perChange24h = priceChange24H;
         const perChange24hToStr = `${format.toFixed(perChange24h, 2)}%`;
-        let perChange24hColor = COLORS.newGrey;
-        let perChange24hBGColor = COLORS.lightGrey35;
+        let perChange24hColor;
+        let perChange24hBGColor;
         if (perChange24h > 0) {
           perChange24hColor = COLORS.green;
           perChange24hBGColor = COLORS.green;

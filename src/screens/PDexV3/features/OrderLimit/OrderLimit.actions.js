@@ -110,22 +110,21 @@ export const actionSetPoolSelected = (payload) => async (dispatch) => {
   });
 };
 
-export const actionSetSellToken = (selltokenId, refresh) => async (
-  dispatch,
-) => {
-  try {
-    if (!selltokenId) {
-      return;
-    }
-    batch(() => {
-      if (refresh) {
-        dispatch(getBalance(selltokenId));
+export const actionSetSellToken =
+  (selltokenId, refresh) => async (dispatch) => {
+    try {
+      if (!selltokenId) {
+        return;
       }
-    });
-  } catch (error) {
-    new ExHandler(error).showErrorToast();
-  }
-};
+      batch(() => {
+        if (refresh) {
+          dispatch(getBalance(selltokenId));
+        }
+      });
+    } catch (error) {
+      new ExHandler(error).showErrorToast();
+    }
+  };
 
 export const actionSetBuyToken = (buytokenId, refresh) => async (dispatch) => {
   try {
@@ -142,24 +141,24 @@ export const actionSetBuyToken = (buytokenId, refresh) => async (dispatch) => {
   }
 };
 
-export const actionSetInputToken = ({ selltoken, buytoken, refresh }) => async (
-  dispatch,
-) => {
-  if (!selltoken || !buytoken) {
-    return;
-  }
-  try {
-    batch(() => {
-      dispatch(actionSetSellToken(selltoken, refresh));
-      dispatch(actionSetBuyToken(buytoken, refresh));
-      if (selltoken !== PRV.id && buytoken !== PRV.id && refresh) {
-        dispatch(getBalance(PRV.id));
+export const actionSetInputToken =
+  ({ selltoken, buytoken, refresh }) =>
+    async (dispatch) => {
+      if (!selltoken || !buytoken) {
+        return;
       }
-    });
-  } catch (error) {
-    throw error;
-  }
-};
+      try {
+        batch(() => {
+          dispatch(actionSetSellToken(selltoken, refresh));
+          dispatch(actionSetBuyToken(buytoken, refresh));
+          if (selltoken !== PRV.id && buytoken !== PRV.id && refresh) {
+            dispatch(getBalance(PRV.id));
+          }
+        });
+      } catch (error) {
+        throw error;
+      }
+    };
 export const actionSetDefaultPool = () => async (dispatch, getState) => {
   try {
     const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
@@ -180,78 +179,80 @@ export const actionSetDefaultPool = () => async (dispatch, getState) => {
   }
 };
 
-export const actionInit = (refresh = true) => async (dispatch, getState) => {
-  try {
-    dispatch(actionFetching());
-    let state = getState();
-    const pools = listPoolsIDsSelector(state);
-    const poolSelected = poolSelectedDataSelector(state);
-    if (!poolSelected?.poolId) {
-      const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
-      let defaultPoolId;
+export const actionInit =
+  (refresh = true) =>
+    async (dispatch, getState) => {
       try {
-        defaultPoolId = await pDexV3Inst.getDefaultPool();
-      } catch {
-        //
+        dispatch(actionFetching());
+        let state = getState();
+        const pools = listPoolsIDsSelector(state);
+        const poolSelected = poolSelectedDataSelector(state);
+        if (!poolSelected?.poolId) {
+          const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
+          let defaultPoolId;
+          try {
+            defaultPoolId = await pDexV3Inst.getDefaultPool();
+          } catch {
+          //
+          }
+          const isValidPool =
+          pools?.findIndex((poolId) => poolId === defaultPoolId) > -1;
+          if (!defaultPoolId || !isValidPool) {
+            defaultPoolId = defaultPoolSelector(state);
+            await dispatch(actionSetDefaultPool());
+          }
+          await dispatch(actionSetPoolSelected(defaultPoolId));
+        }
+        state = getState();
+        const pool = poolSelectedDataSelector(state);
+        if (isEmpty(pool)) {
+          return;
+        }
+        const activedTab = activedTabSelector(state)(ROOT_TAB_TRADE);
+        const token1: SelectedPrivacy = pool?.token1;
+        const token2: SelectedPrivacy = pool?.token2;
+        let selltokenId, buytokenId;
+        switch (activedTab) {
+        case TAB_BUY_LIMIT_ID: {
+          buytokenId = token1.tokenId;
+          selltokenId = token2.tokenId;
+          break;
+        }
+        case TAB_SELL_LIMIT_ID: {
+          selltokenId = token1.tokenId;
+          buytokenId = token2.tokenId;
+          break;
+        }
+        default:
+          break;
+        }
+        batch(() => {
+          dispatch(actionSetBuyTokenFetched(buytokenId));
+          dispatch(actionSetSellTokenFetched(selltokenId));
+          dispatch(actionSetPercent(0));
+          dispatch(
+            actionSetInputToken({
+              selltoken: selltokenId,
+              buytoken: buytokenId,
+              refresh,
+            }),
+          );
+          state = getState();
+          const { rate } = rateDataSelector(state);
+          dispatch(change(formConfigs.formName, formConfigs.rate, rate));
+          dispatch(focus(formConfigs.formName, formConfigs.rate));
+          if (refresh) {
+            dispatch(actionFetchPools());
+            dispatch(actionSetNFTTokenData());
+            dispatch(actionFetchOrdersHistory());
+          }
+        });
+      } catch (error) {
+        new ExHandler(error).showErrorToast;
+      } finally {
+        dispatch(actionFetched());
       }
-      const isValidPool =
-        pools?.findIndex((poolId) => poolId === defaultPoolId) > -1;
-      if (!defaultPoolId || !isValidPool) {
-        defaultPoolId = defaultPoolSelector(state);
-        await dispatch(actionSetDefaultPool());
-      }
-      await dispatch(actionSetPoolSelected(defaultPoolId));
-    }
-    state = getState();
-    const pool = poolSelectedDataSelector(state);
-    if (isEmpty(pool)) {
-      return;
-    }
-    const activedTab = activedTabSelector(state)(ROOT_TAB_TRADE);
-    const token1: SelectedPrivacy = pool?.token1;
-    const token2: SelectedPrivacy = pool?.token2;
-    let selltokenId, buytokenId;
-    switch (activedTab) {
-    case TAB_BUY_LIMIT_ID: {
-      buytokenId = token1.tokenId;
-      selltokenId = token2.tokenId;
-      break;
-    }
-    case TAB_SELL_LIMIT_ID: {
-      selltokenId = token1.tokenId;
-      buytokenId = token2.tokenId;
-      break;
-    }
-    default:
-      break;
-    }
-    batch(() => {
-      dispatch(actionSetBuyTokenFetched(buytokenId));
-      dispatch(actionSetSellTokenFetched(selltokenId));
-      dispatch(actionSetPercent(0));
-      dispatch(
-        actionSetInputToken({
-          selltoken: selltokenId,
-          buytoken: buytokenId,
-          refresh,
-        }),
-      );
-      state = getState();
-      const { rate } = rateDataSelector(state);
-      dispatch(change(formConfigs.formName, formConfigs.rate, rate));
-      dispatch(focus(formConfigs.formName, formConfigs.rate));
-      if (refresh) {
-        dispatch(actionFetchPools());
-        dispatch(actionSetNFTTokenData());
-        dispatch(actionFetchOrdersHistory());
-      }
-    });
-  } catch (error) {
-    new ExHandler(error).showErrorToast;
-  } finally {
-    dispatch(actionFetched());
-  }
-};
+    };
 
 export const actionFetchedOpenOrders = (payload) => ({
   type: ACTION_FETCHED_OPEN_ORDERS,
@@ -325,37 +326,36 @@ export const actionWithdrawingOrder = (payload) => ({
   payload,
 });
 
-export const actionWithdrawOrder = ({ requestTx, txType, nftid }) => async (
-  dispatch,
-  getState,
-) => {
-  try {
-    const state = getState();
-    const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
-    const pool = poolSelectedDataSelector(state);
-    const { sellTokenId, buyTokenId } = orderLimitDataSelector(state);
-    if (!requestTx || !pool?.poolId) {
-      return;
-    }
-    await dispatch(actionWithdrawingOrder(requestTx));
-    const poolid = pool?.poolId;
-    const data = {
-      withdrawTokenIDs: [sellTokenId, buyTokenId],
-      poolPairID: poolid,
-      orderID: requestTx,
-      amount: '0',
-      version: PrivacyVersion.ver2,
-      txType,
-      nftID: nftid,
+export const actionWithdrawOrder =
+  ({ requestTx, txType, nftid }) =>
+    async (dispatch, getState) => {
+      try {
+        const state = getState();
+        const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
+        const pool = poolSelectedDataSelector(state);
+        const { sellTokenId, buyTokenId } = orderLimitDataSelector(state);
+        if (!requestTx || !pool?.poolId) {
+          return;
+        }
+        await dispatch(actionWithdrawingOrder(requestTx));
+        const poolid = pool?.poolId;
+        const data = {
+          withdrawTokenIDs: [sellTokenId, buyTokenId],
+          poolPairID: poolid,
+          orderID: requestTx,
+          amount: '0',
+          version: PrivacyVersion.ver2,
+          txType,
+          nftID: nftid,
+        };
+        await pDexV3Inst.createAndSendWithdrawOrderRequestTx({ extra: data });
+        await dispatch(actionFetchWithdrawOrderTxs());
+      } catch (error) {
+        new ExHandler(error).showErrorToast();
+      } finally {
+        await dispatch(actionWithdrawingOrder(requestTx));
+      }
     };
-    await pDexV3Inst.createAndSendWithdrawOrderRequestTx({ extra: data });
-    await dispatch(actionFetchWithdrawOrderTxs());
-  } catch (error) {
-    new ExHandler(error).showErrorToast();
-  } finally {
-    await dispatch(actionWithdrawingOrder(requestTx));
-  }
-};
 
 export const actionFetchingBookOrder = (payload) => ({
   type: ACTION_FETCH_ORDERING,
@@ -366,9 +366,8 @@ export const actionBookOrder = () => async (dispatch, getState) => {
   await dispatch(actionFetchingBookOrder(true));
   try {
     const state = getState();
-    const { disabledBtn, activedTab, totalAmountData } = orderLimitDataSelector(
-      state,
-    );
+    const { disabledBtn, activedTab, totalAmountData } =
+      orderLimitDataSelector(state);
     if (disabledBtn) {
       return;
     }
@@ -378,10 +377,8 @@ export const actionBookOrder = () => async (dispatch, getState) => {
     let extra;
     switch (activedTab) {
     case TAB_BUY_LIMIT_ID: {
-      const {
-        originalAmount: minAcceptableAmount,
-        tokenData,
-      } = buyInputAmountSelector(state);
+      const { originalAmount: minAcceptableAmount, tokenData } =
+          buyInputAmountSelector(state);
       const sellToken: SelectedPrivacy = totalAmountToken;
       const buyToken: SelectedPrivacy = tokenData;
       const tokenIDToSell = sellToken?.tokenId;
@@ -398,10 +395,8 @@ export const actionBookOrder = () => async (dispatch, getState) => {
       break;
     }
     case TAB_SELL_LIMIT_ID: {
-      const {
-        originalAmount: sellAmount,
-        tokenData,
-      } = sellInputAmountSelector(state);
+      const { originalAmount: sellAmount, tokenData } =
+          sellInputAmountSelector(state);
       const sellToken: SelectedPrivacy = tokenData;
       const buyToken: SelectedPrivacy = totalAmountToken;
       const tokenIDToSell = sellToken?.tokenId;

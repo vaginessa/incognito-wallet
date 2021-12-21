@@ -5,8 +5,8 @@ import { View, StyleSheet } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import { ACCOUNT_CONSTANT } from 'incognito-chain-web-js/build/wallet';
 import { Row } from '@src/components';
-import { Divider, Text, TouchableOpacity } from '@src/components/core';
-import { COLORS, FONT } from '@src/styles';
+import { Text, TouchableOpacity } from '@src/components/core';
+import { FONT } from '@src/styles';
 import LoadingTx from '@src/components/LoadingTx';
 import RemoveSuccessDialog from '@src/screens/Setting/features/RemoveStorage/RemoveStorage.Dialog';
 import { useNavigation } from 'react-navigation-hooks';
@@ -21,6 +21,7 @@ import {
 const styled = StyleSheet.create({
   orderWrapper: {
     flex: 1,
+    marginBottom: 24,
   },
   orderValue: {
     fontSize: FONT.SIZE.small,
@@ -36,12 +37,10 @@ const styled = StyleSheet.create({
   btnWithdraw: {
     width: 60,
     height: 18,
-    backgroundColor: COLORS.colorGrey4,
   },
   btnTitleWithdraw: {
     fontSize: FONT.SIZE.small,
     fontFamily: FONT.NAME.medium,
-    color: COLORS.colorGrey3,
   },
   subText: {
     fontSize: FONT.SIZE.small,
@@ -142,14 +141,14 @@ const Order = React.memo(({ data, visibleDivider }) => {
           btnStyle={styled.btnWithdraw}
           titleStyle={styled.btnTitleWithdraw}
           title={btnTitleClaim}
-          onPress={() =>
+          onPress={() => {
             !!visibleBtnAction &&
-            onWithdrawOrder({
-              requestTx,
-              txType: ACCOUNT_CONSTANT.TX_TYPE.CLAIM_ORDER_LIMIT,
-              nftid,
-            })
-          }
+              onWithdrawOrder({
+                requestTx,
+                txType: ACCOUNT_CONSTANT.TX_TYPE.CLAIM_ORDER_LIMIT,
+                nftid,
+              });
+          }}
         />
       );
     } else if (btnCancel) {
@@ -203,11 +202,10 @@ const Order = React.memo(({ data, visibleDivider }) => {
         </View>
       </Row>
       {withdrawing && <LoadingTx />}
-      {visibleDivider && <Divider dividerStyled={styled.dividerStyled} />}
       <RemoveSuccessDialog
         visible={visible}
         onPressCancel={() => setVisible(false)}
-        onPressAccept={onWithdrawOrder}
+        onPressAccept={() => onWithdrawOrder()}
         title="Cancel order"
         subTitle={withdrawData?.subTitle || ''}
         acceptStr="Yes, cancel"

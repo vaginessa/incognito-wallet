@@ -30,7 +30,7 @@ const styled = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: 16,
+    marginBottom: 24,
   },
   orderId: {
     fontFamily: FONT.NAME.medium,

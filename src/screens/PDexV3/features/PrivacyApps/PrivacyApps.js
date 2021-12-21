@@ -3,9 +3,11 @@ import { StyleSheet } from 'react-native';
 import { withLayout_2 } from '@src/components/Layout';
 import { ScrollViewBorder } from '@components/core';
 import { PancakeIcon2 } from '@src/components/Icons';
+import { FONT } from '@src/styles';
 import { KEYS_PLATFORMS_SUPPORTED } from '@screens/PDexV3/features/Swap';
 import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
+import Header from '@src/components/Header';
 import PrivacyAppsItem from './PrivacyApps.item';
 
 const styled = StyleSheet.create({
@@ -52,6 +54,11 @@ const PrivacyApps = (props) => {
   }, []);
   return (
     <>
+      <Header
+        title="Privacy apps"
+        titleStyled={[{ ...FONT.TEXT.incognitoH4 }]}
+        hideBackButton
+      />
       <ScrollViewBorder style={styled.scrollview}>
         {factories.map((item) => (
           <PrivacyAppsItem key={item.id} {...item} />
