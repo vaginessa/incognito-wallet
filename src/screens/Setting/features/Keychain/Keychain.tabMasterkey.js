@@ -7,18 +7,20 @@ import KeychainSetting from '@screens/Setting/features/Keychain/Keychain.setting
 
 const TabMasterkey = () => {
   return (
-    <Tabs rootTabID={TABS.TAB_KEYCHAIN_MASTER_KEY_ID} borderTop={false}>
-      <View tabID={TABS.TAB_KEYCHAIN_MASTER_KEY_LIST_ID} label="Keychains">
-        <ScrollViewBorder style={styled.wrapper} showsVerticalScrollIndicator={false}>
-          <Accounts />
-        </ScrollViewBorder>
-      </View>
-      <View tabID={TABS.TAB_KEYCHAIN_MASTER_KEY_SETTING_ID} label="Actions">
-        <ScrollViewBorder style={styled.wrapper} showsVerticalScrollIndicator={false}>
-          <KeychainSetting />
-        </ScrollViewBorder>
-      </View>
-    </Tabs>
+    <View borderTop fullFlex style={{ overflow: 'visible', paddingHorizontal: 24, paddingTop: 24 }}>
+      <Tabs rootTabID={TABS.TAB_KEYCHAIN_MASTER_KEY_ID} borderTop={false}>
+        <View tabID={TABS.TAB_KEYCHAIN_MASTER_KEY_LIST_ID} label="Keychains">
+          <ScrollViewBorder style={styled.wrapper} showsVerticalScrollIndicator={false}>
+            <Accounts />
+          </ScrollViewBorder>
+        </View>
+        <View tabID={TABS.TAB_KEYCHAIN_MASTER_KEY_SETTING_ID} label="Actions">
+          <ScrollViewBorder style={styled.wrapper} showsVerticalScrollIndicator={false}>
+            <KeychainSetting />
+          </ScrollViewBorder>
+        </View>
+      </Tabs>
+    </View>
   );
 };
 

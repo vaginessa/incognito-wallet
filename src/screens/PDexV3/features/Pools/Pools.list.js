@@ -20,7 +20,6 @@ import { isFetchingSelector } from './Pools.selector';
 const styled = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 24,
   },
   headerText: {
     fontSize: FONT.SIZE.small,
