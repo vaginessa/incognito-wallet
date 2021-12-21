@@ -1,5 +1,6 @@
 import { StyleSheet } from 'react-native';
 import { FONT, COLORS } from '@src/styles';
+import globalStyled from '@src/theme/theme.styled';
 
 export const styled = StyleSheet.create({
   container: {
@@ -110,6 +111,7 @@ export const groupButtonStyled = StyleSheet.create({
 
 export const tokenStyled = StyleSheet.create({
   container: {
+    ...globalStyled.defaultPaddingHorizontal,
     flexDirection: 'row',
     alignItems: 'center',
   },

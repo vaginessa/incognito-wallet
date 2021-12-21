@@ -5,9 +5,11 @@ import { BtnChecked } from '@src/components/Button';
 import { ListToken } from '@src/components/Token';
 import PropTypes from 'prop-types';
 import { FONT } from '@src/styles';
+import globalStyled from '@src/theme/theme.styled';
 
 const styled = StyleSheet.create({
   hook: {
+    ...globalStyled.defaultPaddingHorizontal,
     flexDirection: 'row',
     alignItems: 'center',
     marginTop: 32,

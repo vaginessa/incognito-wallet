@@ -7,9 +7,11 @@ import { FONT } from '@src/styles';
 import { useDispatch } from 'react-redux';
 import { getPTokenList } from '@src/redux/actions/token';
 import { ScrollView, Text } from '@components/core';
+import globalStyled from '@src/theme/theme.styled';
 
 const styled = StyleSheet.create({
   hook: {
+    ...globalStyled.defaultPaddingHorizontal,
     flexDirection: 'row',
     alignItems: 'center',
     marginTop: 35,
@@ -56,7 +58,7 @@ const MarketList = (props) => {
         <BtnChecked
           btnStyle={[
             styled.hook,
-          tokensFactories[9]?.visible ? null : { marginBottom: 50 },
+            tokensFactories[1]?.visible ? null : { marginBottom: 50 },
           ]}
           onPress={onToggleUnVerifiedTokens}
           checked={toggleUnVerified}

@@ -49,6 +49,11 @@ export const itemStyled = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 16
+  },
+  swipeout: {
+    backgroundColor: 'transparent',
+    paddingVertical: 16,
+    borderBottomWidth: 1
   }
 });
 

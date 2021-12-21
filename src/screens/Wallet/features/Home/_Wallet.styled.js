@@ -105,8 +105,10 @@ export const styledFollow = StyleSheet.create({
     flex: 1,
   },
   token: {
-    paddingHorizontal: 25,
   },
+  scrollView: {
+    paddingHorizontal: 0
+  }
 });
 
 export const styledToken = StyleSheet.create({

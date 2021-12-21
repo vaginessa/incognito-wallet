@@ -18,6 +18,7 @@ import { itemStyled } from '@screens/Setting/features/Keychain/keychain.styled';
 import { DeleteFillIcon } from '@components/Icons/icon.delete';
 import incognito from '@assets/images/new-icons/incognito.png';
 import { colorsSelector } from '@src/theme/theme.selector';
+import styled from 'styled-components/native';
 
 const TokenDefault = React.memo((props) => {
   const { symbol, priceUsd, amount, pDecimals, decimalDigits, pricePrv, change, onPress, name, isGettingBalance, showGettingBalance, iconUrl } = props;
@@ -86,13 +87,14 @@ const TokenDefault = React.memo((props) => {
 
 const Token = (props) => {
   const { handleRemoveToken, swipable } = props;
+  const colors = useSelector(colorsSelector);
   if (swipable === true) {
     return (
       <Swipeout
         autoClose
         style={{
-          backgroundColor: 'transparent',
-          paddingBottom: 32
+          ...itemStyled.swipeout,
+          borderBottomColor: colors.border4,
         }}
         right={[
           {
@@ -110,7 +112,11 @@ const Token = (props) => {
     );
   }
   return (
-    <View style={{ paddingBottom: 32 }}>
+    <View style={{
+      ...itemStyled.swipeout,
+      borderBottomColor: colors.border4,
+    }}
+    >
       <TokenDefault {...props} />
     </View>
   );

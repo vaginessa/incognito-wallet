@@ -61,7 +61,7 @@ const Followed = () => {
           onRefresh={() => onRefresh(true)}
         />
       )}
-      style={{ paddingTop: 25 }}
+      style={styledFollow.scrollView}
       nestedScrollEnabled
     >
       <Token
