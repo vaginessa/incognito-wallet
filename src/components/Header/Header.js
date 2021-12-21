@@ -109,7 +109,6 @@ const Header = ({
           />
         );
       }
-      console.log('SANG TEST:::: ', style);
       return <SearchBox title={title} inputStyle={titleStyled} />;
     }
     return <HeaderTitle />;
