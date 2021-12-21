@@ -94,7 +94,7 @@ const style = StyleSheet.create({
   withdrawText: {
     marginRight: 15,
   },
-  stakeButton: {
+  actionButton: {
     height: 30,
     minWidth: 80,
   },
@@ -109,6 +109,14 @@ const style = StyleSheet.create({
   },
   centerAlign: {
     alignItems: 'center',
+  },
+  infoBtnStyle: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    justifyContent: 'center',
+    alignContent: 'center',
+    alignItems: 'center'
   },
   icon: {
     marginRight: 10,
@@ -187,7 +195,6 @@ export const rewardStyle = StyleSheet.create({
   },
   balance: {
     fontSize: FONT.SIZE.medium,
-    color: COLORS.newGrey,
     textAlign: 'center',
     height: '100%',
     ...FONT.STYLE.medium,

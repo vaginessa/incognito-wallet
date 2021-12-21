@@ -1,6 +1,6 @@
 import React, { memo } from 'react';
-import { ActivityIndicator, WebView } from '@components/core';
-import { View } from 'react-native';
+import { ActivityIndicator, WebView, View } from '@components/core';
+import {View2} from '@components/core/View';
 import enhance from '@screens/Node/MonitorDetail/MonitorDetail.enhance';
 import { Header } from '@src/components';
 import BottomBar from '@screens/Node/MonitorDetail/components/BottomBar';
@@ -32,27 +32,30 @@ const MonitorDetail = memo((props) => {
   };
 
   return (
-    <View style={{ marginHorizontal: 25, flex: 1 }}>
+    <View2 style={styles.container}>
       <Header title="Monitor Detail" />
-      <WebView
-        ref={(webview) => {
-          if (webview?.webViewRef?.current) {
-            webviewInstance = webview;
-          }
-        }}
-        containerStyle={{ flex: 1, paddingBottom: 70 }}
-        source={{ uri: url }}
-        allowsBackForwardNavigationGestures
-        onLoad={(e) => {}}
-        bounces
-        cacheEnabled={false}
-        cacheMode="LOAD_NO_CACHE"
-        showsVerticalScrollIndicator={false}
-        onLoadEnd={onPappLoaded}
-      />
-      {loading && <ActivityIndicator style={styles.loading} /> }
+      <View fullFlex borderTop style={{ overflow: 'hidden' }}>
+        <WebView
+          ref={(webview) => {
+            if (webview?.webViewRef?.current) {
+              webviewInstance = webview;
+            }
+          }}
+          containerStyle={{ flex: 1}}
+          source={{ uri: url }}
+          allowsBackForwardNavigationGestures
+          onLoad={(e) => {}}
+          bounces
+          cacheEnabled={false}
+          cacheMode="LOAD_NO_CACHE"
+          showsVerticalScrollIndicator={false}
+          onLoadEnd={onPappLoaded}
+        />
+        {loading && <ActivityIndicator style={styles.loading} /> }
+      </View>
+      
       <BottomBar onReload={onReload} onGoBack={onGoBack} onGoForward={onGoForward} />
-    </View>
+    </View2>
 
   );
 });
