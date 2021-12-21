@@ -34,6 +34,7 @@ export function appTheme(darkMode: boolean) {
     text9: darkMode ? white : '#8A8A8E',
     text10: darkMode ? '#757575' : '#9C9C9C',
     text11: '#757575',
+    text12: '#9C9C9C',
 
     // button
     btnBG1: darkMode ? '#1A73E8' : '#1A73E8',
