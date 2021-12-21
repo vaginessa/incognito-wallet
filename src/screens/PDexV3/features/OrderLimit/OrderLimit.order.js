@@ -185,19 +185,33 @@ const Order = React.memo(({ data, visibleDivider }) => {
               {infoStr}
             </Text>
           </Text>
-          <Text style={{ ...styled.subText, ...styled.mv8 }}>Price</Text>
+          <Text
+            style={{ ...styled.subText, color: colors.subText, ...styled.mv8 }}
+          >
+            Price
+          </Text>
           <Text style={{ ...styled.mainText, color: mainColor }}>
             {priceStr}
           </Text>
         </View>
         <View style={{ ...styled.orderItem, ...styled.block2 }}>
-          <Text style={styled.subText}>{timeStr}</Text>
-          <Text style={{ ...styled.subText, ...styled.mv8 }}>Amount</Text>
+          <Text style={{ ...styled.subText, color: colors.subText }}>
+            {timeStr}
+          </Text>
+          <Text
+            style={{ ...styled.subText, color: colors.subText, ...styled.mv8 }}
+          >
+            Amount
+          </Text>
           <Text style={styled.mainText}>{amountStr}</Text>
         </View>
         <View style={{ ...styled.orderItem, ...styled.block3 }}>
           {renderHook()}
-          <Text style={{ ...styled.subText, ...styled.mv8 }}>Fill</Text>
+          <Text
+            style={{ ...styled.subText, color: colors.subText, ...styled.mv8 }}
+          >
+            Fill
+          </Text>
           <Text style={styled.mainText}>{percentStr1}</Text>
         </View>
       </Row>
