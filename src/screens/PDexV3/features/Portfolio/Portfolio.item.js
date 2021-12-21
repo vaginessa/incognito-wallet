@@ -28,15 +28,15 @@ const CustomTouchableOpacity = styled(TouchableOpacity)`
 
 export const Extra = React.memo(({ shareId }) => {
   const data = useSelector(getDataByShareIdSelector)(shareId);
-  const { token1, token2 } = data || {};
+  const { token1, token2, principalUSD } = data || {};
   return (
     <Row style={[styles.extraContainer]} centerVertical spaceBetween>
       <Text style={styles.extraLabel}>
         {`${token1?.symbol} / ${token2?.symbol}`}
       </Text>
-      {/*<Text style={styles.extraLabel}>*/}
-      {/*  {`${apyStr}% APY`}*/}
-      {/*</Text>*/}
+      <Text style={styles.extraLabel}>
+        {`$${principalUSD}`}
+      </Text>
     </Row>
   );
 });

@@ -157,6 +157,7 @@ export const listShareSelector = createSelector(
         totalRewardAmount,
         token1USD: principal.token1USD,
         token2USD: principal.token2USD,
+        principalUSD: format.amountVer2(new BigNumber(principal.token1USD || 0).plus(principal.token2USD || 0).toNumber(), 9),
       };
     });
   },
@@ -193,9 +194,8 @@ export const totalShareSelector = createSelector(
 export const totalShareUSDSelector = createSelector(
   listShareSelector,
   (listShare) => {
-    if (listShare.length === 0) return 0;
     const rewardUSD = listShare.reduce((prev, cur) => {
-      return prev.plus(cur.token1USD).plus(cur.token2USD);
+      return prev.plus(cur.token1USD || 0).plus(cur.token2USD || 0);
     }, new BigNumber('0')).toNumber();
     return format.amountVer2(rewardUSD, 9);
   }
