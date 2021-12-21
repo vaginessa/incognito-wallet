@@ -238,12 +238,12 @@ const PriceHistoryCandles = () => {
         style={{
           width: '100%',
           height: 250,
-          backgroundColor: colors.primary,
-          display: visible ? 'flex' : 'none',
         }}
         source={{ uri }}
         onMessage={handleOnMessage}
         onLoad={() => setVisible(true)}
+        originWhitelist={['*']}
+        incognito
       />
       <Period {...{ handleFetchData }} />
     </View>
