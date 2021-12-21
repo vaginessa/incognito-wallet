@@ -100,11 +100,11 @@ export const listShareSelector = createSelector(
       }));
       const hookFactories = [
         {
-          label: 'Principal',
+          label: `${token1.symbol} Balance`,
           value: principal.token1,
         },
         {
-          label: 'Principal',
+          label: `${token2.symbol} Balance`,
           value: principal.token2,
         },
         {
@@ -119,9 +119,12 @@ export const listShareSelector = createSelector(
           valueText: `${apyStr}%`,
         },
         {
-          label: 'Principal',
-          valueText: principal.str,
-          moreLines: true
+          label: `${token1.symbol} Balance`,
+          valueText: principal.token1,
+        },
+        {
+          label: `${token2.symbol} Balance`,
+          valueText: principal.token2,
         },
         ...hookRewards,
       ];

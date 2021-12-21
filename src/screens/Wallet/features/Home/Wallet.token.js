@@ -18,7 +18,6 @@ import { itemStyled } from '@screens/Setting/features/Keychain/keychain.styled';
 import { DeleteFillIcon } from '@components/Icons/icon.delete';
 import incognito from '@assets/images/new-icons/incognito.png';
 import { colorsSelector } from '@src/theme/theme.selector';
-import styled from 'styled-components/native';
 
 const TokenDefault = React.memo((props) => {
   const { symbol, priceUsd, amount, pDecimals, decimalDigits, pricePrv, change, onPress, name, isGettingBalance, showGettingBalance, iconUrl } = props;

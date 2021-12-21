@@ -38,6 +38,7 @@ const styles = StyleSheet.create({
     width: 75,
     marginLeft: 5,
     borderRadius: 14,
+    marginBottom: 0
   },
   row: {
     alignItems: 'center',

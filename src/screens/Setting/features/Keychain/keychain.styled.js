@@ -1,6 +1,5 @@
 import {StyleSheet} from 'react-native';
 import {COLORS, FONT} from '@src/styles';
-import globalStyled from '@src/theme/theme.styled';
 
 export const itemStyled = StyleSheet.create({
   wrap: {
@@ -13,8 +12,6 @@ export const itemStyled = StyleSheet.create({
   wrapBin: {
     flex: 1,
     backgroundColor: COLORS.red,
-    borderTopRightRadius: 8,
-    borderBottomRightRadius: 8,
     justifyContent: 'center',
     alignItems: 'center'
   },
@@ -52,8 +49,9 @@ export const itemStyled = StyleSheet.create({
   },
   swipeout: {
     backgroundColor: 'transparent',
-    paddingVertical: 16,
-    borderBottomWidth: 1
+    borderBottomWidth: 1,
+    borderTopRightRadius: 8,
+    borderBottomRightRadius: 8,
   }
 });
 
