@@ -64,13 +64,47 @@ const fontSizes = {
   medium: 18,
   superMedium: 20,
   large: 22,
+  large24: 24,
   avgLarge: 28,
   veryLarge: 34,
   superLarge: 40,
+};
+
+const textStyle = {
+  incognitoH1: {
+    fontSize: fontSizes.medium,
+    fontFamily: fontNames.medium,
+  },
+  incognitoH2: {
+    fontSize: fontSizes.veryLarge,
+    fontFamily: fontNames.medium,
+  },
+  incognitoH3: {
+    fontSize: fontSizes.medium,
+    fontFamily: fontNames.medium,
+  },
+  incognitoH4: {
+    fontSize: fontSizes.large24,
+    fontFamily: fontNames.medium,
+  },
+  incognitoH5: {
+    fontSize: fontSizes.medium,
+    fontFamily: fontNames.medium,
+  },
+  incognitoH6: {
+    fontSize: fontSizes.medium,
+    fontFamily: fontNames.medium,
+  },
+
+  incognitoP1: {
+    fontSize: fontSizes.regular,
+    fontFamily: fontNames.medium,
+  },
 };
 
 export default {
   NAME: fontNames,
   SIZE: fontSizes,
   STYLE: fontStyle,
+  TEXT: textStyle,
 };

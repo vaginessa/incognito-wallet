@@ -2,21 +2,18 @@ import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-import {
-  ButtonRefresh,
-  ButtonChart,
-  BtnOrderHistory,
-} from '@src/components/Button';
+import { ButtonChart } from '@src/components/Button';
 import { Text, TouchableOpacity } from '@src/components/core';
 import { Row } from '@src/components';
 import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
-import { COLORS, FONT } from '@src/styles';
+import { FONT } from '@src/styles';
 import { ArrowGreyDown } from '@src/components/Icons';
 import {
   poolSelectedDataSelector,
   rateDataSelector,
 } from '@screens/PDexV3/features/OrderLimit';
+import { colorsSelector } from '@src/theme';
 
 const styled = StyleSheet.create({
   container: {
@@ -33,14 +30,10 @@ const styled = StyleSheet.create({
     flexDirection: 'row',
   },
   pool: {
-    fontSize: FONT.SIZE.medium,
-    fontFamily: FONT.NAME.medium,
-    color: COLORS.black,
+    ...FONT.TEXT.incognitoH2,
   },
   rate: {
-    fontSize: FONT.SIZE.avgLarge,
-    fontFamily: FONT.NAME.medium,
-    color: COLORS.black,
+    ...FONT.TEXT.incognitoP1,
     marginRight: 8,
   },
   priceChange24hWrapper: {
@@ -52,14 +45,13 @@ const styled = StyleSheet.create({
     paddingHorizontal: 5,
   },
   priceChange24h: {
-    fontSize: FONT.SIZE.superSmall,
-    fontFamily: FONT.NAME.medium,
-    color: COLORS.white,
+    ...FONT.TEXT.incognitoP1,
   },
   bottom: {
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
+    marginTop: 8,
   },
 });
 
@@ -70,6 +62,7 @@ export const GroupActions = ({
   canSelectPool = true,
 }) => {
   const navigation = useNavigation();
+  const colors = useSelector(colorsSelector);
   const { poolId, poolStr, perChange24hToStr, perChange24hColor } = useSelector(
     poolSelectedDataSelector,
   );
@@ -87,6 +80,7 @@ export const GroupActions = ({
       },
     });
   };
+  console.log('perChange24hColor', perChange24hColor);
   return (
     <View style={styled.container}>
       <Row style={styled.top}>
@@ -105,7 +99,7 @@ export const GroupActions = ({
       </Row>
       <Row style={styled.bottom}>
         <Text
-          style={{ ...styled.rate, color: perChange24hColor }}
+          style={{ ...styled.rate, color: perChange24hColor || colors.subText }}
           numberOfLines={1}
           ellipsizeMode="tail"
         >
@@ -114,12 +108,12 @@ export const GroupActions = ({
         <View
           style={{
             ...styled.priceChange24hWrapper,
-            backgroundColor: perChange24hColor,
           }}
         >
           <Text
             style={{
               ...styled.priceChange24h,
+              color: perChange24hColor || colors.subText,
             }}
             numberOfLines={1}
             ellipsizeMode="tail"

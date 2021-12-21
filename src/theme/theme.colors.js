@@ -1,3 +1,5 @@
+import { FONT } from '@src/styles';
+
 const white = '#FFFFFF';
 const black = '#000000';
 
@@ -65,6 +67,7 @@ export function appTheme(darkMode: boolean) {
     grey3: '#DDDDDD',
     grey4: '#F5F5F5',
     grey5: '#404040',
+    ctaMain: '#1A73E8',
 
     // text
     mainText: darkMode ? white : black,
