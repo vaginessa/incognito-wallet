@@ -5,11 +5,9 @@ import { BtnChecked } from '@src/components/Button';
 import { ListToken } from '@src/components/Token';
 import PropTypes from 'prop-types';
 import { FONT } from '@src/styles';
-import globalStyled from '@src/theme/theme.styled';
 
 const styled = StyleSheet.create({
   hook: {
-    ...globalStyled.defaultPaddingHorizontal,
     flexDirection: 'row',
     alignItems: 'center',
     marginTop: 32,
@@ -21,8 +19,8 @@ const styled = StyleSheet.create({
     marginLeft: 5,
   },
   paddingTop: {
-    paddingTop: 24
-  }
+    paddingTop: 24,
+  },
 });
 
 const ListAllToken = (props) => {
@@ -31,10 +29,14 @@ const ListAllToken = (props) => {
     onToggleUnVerifiedTokens,
     toggleUnVerified,
     renderItem,
+    styledContainer,
   } = props;
   return (
-    <KeyboardAwareScrollView defaultPadding={false} style={styled.paddingTop}>
-      <ListToken {...tokensFactories[0]} renderItem={renderItem}  />
+    <KeyboardAwareScrollView
+      defaultPadding={false}
+      style={[styled.paddingTop, styledContainer]}
+    >
+      <ListToken {...tokensFactories[0]} renderItem={renderItem} />
       <BtnChecked
         btnStyle={[
           styled.hook,

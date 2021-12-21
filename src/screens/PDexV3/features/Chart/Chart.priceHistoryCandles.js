@@ -15,6 +15,8 @@ import { ActivityIndicator } from '@src/components/core';
 import format from '@src/utils/format';
 import minBy from 'lodash/minBy';
 import { colorsSelector } from '@src/theme';
+import BigNumber from 'bignumber.js';
+import floor from 'lodash/floor';
 import { poolSelectedSelector } from './Chart.selector';
 
 const styled = StyleSheet.create({
@@ -88,10 +90,12 @@ export const Period = React.memo(({ handleFetchData }) => {
 const PriceHistoryCandles = () => {
   const [initted, setInitted] = React.useState(false);
   const [uri, setURI] = React.useState('');
+  const [visible, setVisible] = React.useState(false);
   const ref = React.useRef({});
   const pool = useSelector(poolSelectedSelector);
   const dispatch = useDispatch();
   const token2: SelectedPrivacy = pool?.token2;
+  const colors = useSelector(colorsSelector);
   const handlePostMessage = (message) => {
     if (ref?.current) {
       ref.current.postMessage(message);
@@ -134,20 +138,19 @@ const PriceHistoryCandles = () => {
           period,
           intervals,
         })) || [];
-      const candles = res.map((c, index) => {
+      const chartData = res.map((c, index) => {
         const { open, close, high, low, timestamp } = c;
+        const avg = new BigNumber(open).plus(close).dividedBy(2).toNumber();
+        const value = convert.toHumanAmountVer2(floor(avg), pDecimals);
         const result = {
-          open: convert.toHumanAmountVer2(open, pDecimals),
-          close: convert.toHumanAmountVer2(close, pDecimals),
-          high: convert.toHumanAmountVer2(high, pDecimals),
-          low: convert.toHumanAmountVer2(low, pDecimals),
           time: timestamp,
+          value,
         };
         return result;
       });
-      if (candles) {
+      if (chartData.length > 0) {
         let width = Number(ScreenWidth) - 50;
-        const minLow = minBy(candles, (c) => c?.low)?.low || 0;
+        const minLow = minBy(chartData, (c) => c?.low)?.low || 0;
         const precision =
           format.getDecimalsFromHumanAmount(minLow) || token2?.pDecimals;
         const minMove = 1 / Math.pow(10, precision);
@@ -162,19 +165,45 @@ const PriceHistoryCandles = () => {
                 timeScale: {
                   timeVisible: true,
                 },
+                layout: {
+                  backgroundColor: colors.primary,
+                  lineColor: colors.primary,
+                  textColor: colors.against,
+                },
+                watermark: {
+                  color: colors.primary,
+                },
+                crosshair: {
+                  color: 'transparent',
+                },
+                grid: {
+                  vertLines: {
+                    color: 'transparent',
+                  },
+                  horzLines: {
+                    color: 'transparent',
+                  },
+                },
               },
-              candlesStickConfigs: {
-                upColor: '#53B987',
-                downColor: '#EC4D5C',
+              areaStickConfigs: {
+                topColor: colors.ctaMain,
+                bottomColor: colors.ctaMain01,
+                lineColor: colors.ctaMain,
+                lineWidth: 2,
               },
-              candlesStickOptions: {
+              areaStickOptions: {
+                topColor: colors.ctaMain,
+                bottomColor: colors.ctaMain01,
+                lineColor: colors.ctaMain,
+                lineWidth: 2,
                 priceFormat: {
                   precision,
                   minMove,
                 },
               },
+              type: 'area',
             },
-            candles,
+            candles: chartData,
           })}`,
         );
       }
@@ -202,16 +231,19 @@ const PriceHistoryCandles = () => {
     handleInit();
   }, []);
   return (
-    <View style={styled.container}>
+    <View style={[styled.container]}>
       {!initted && <ActivityIndicator />}
       <WebView
         ref={ref}
         style={{
           width: '100%',
           height: 250,
+          backgroundColor: colors.primary,
+          display: visible ? 'flex' : 'none',
         }}
         source={{ uri }}
         onMessage={handleOnMessage}
+        onLoad={() => setVisible(true)}
       />
       <Period {...{ handleFetchData }} />
     </View>
