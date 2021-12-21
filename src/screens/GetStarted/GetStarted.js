@@ -1,5 +1,4 @@
-import { Text } from '@src/components/core';
-import { ActivityIndicator } from 'react-native';
+import { ActivityIndicator, Text } from '@src/components/core';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { ButtonBasic } from '@src/components/Button';
@@ -13,7 +12,7 @@ const GetStarted = React.memo((props) => {
     <View2 style={style.container}>
       {loading && (
         <View2 style={style.loadingContainer}>
-          <ActivityIndicator size="large" color="#828282" />
+          <ActivityIndicator size="large" />
         </View2>
       )}
       <View2 style={style.getStartedBlock}>

@@ -101,13 +101,13 @@ const GroupButton = React.memo(() => {
   );
   return (
     <View style={groupButtonStyled.container}>
-      {!guide && (
-        <Tooltip
-          content={<Hook />}
-          containerStyle={groupButtonStyled.tooltip}
-          triangleStyle={groupButtonStyled.triangleStyle}
-        />
-      )}
+      {/*{!guide && (*/}
+      {/*  <Tooltip*/}
+      {/*    content={<Hook />}*/}
+      {/*    containerStyle={groupButtonStyled.tooltip}*/}
+      {/*    triangleStyle={groupButtonStyled.triangleStyle}*/}
+      {/*  />*/}
+      {/*)}*/}
       <BtnPrimary onPress={onFeaturePress} title="Deposit" />
     </View>
   );
