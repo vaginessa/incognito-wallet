@@ -1,5 +1,5 @@
 import React, { memo } from 'react';
-import { ScrollView, Text, View } from 'react-native';
+import { ScrollView, Text } from 'react-native';
 import PropTypes from 'prop-types';
 import { styled as mainStyle } from '@screens/PDexV3/PDexV3.styled';
 import { Header, RowSpaceText, SuccessModal } from '@src/components';
@@ -16,7 +16,7 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import styled from '@screens/PDexV3/features/Liquidity/Liquidity.styled';
 import {Field, focus, getFormSyncErrors} from 'redux-form';
-import { AddBreakLine, RefreshControl } from '@components/core';
+import { AddBreakLine, RefreshControl, View } from '@components/core';
 import withLiquidity from '@screens/PDexV3/features/Liquidity/Liquidity.enhance';
 import {
   contributeSelector,
@@ -204,7 +204,7 @@ const Contribute = ({
   return (
     <>
       <Header style={styled.padding} />
-      <View style={styled.container}>
+      <View borderTop style={styled.container}>
         <ScrollView
           refreshControl={(
             <RefreshControl
