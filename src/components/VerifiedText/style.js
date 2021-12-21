@@ -12,7 +12,6 @@ export default StyleSheet.create({
   verifiedFlagContainer: {
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: COLORS.white,
     width: FLAG_SIZE,
     height: FLAG_SIZE,
     borderRadius: FLAG_SIZE,
