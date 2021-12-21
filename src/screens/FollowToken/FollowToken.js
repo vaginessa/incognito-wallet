@@ -45,7 +45,7 @@ const FollowTokenList = React.memo((props) => {
   return (
     <View2 style={styled.container}>
       <Header title="Add a coin" canSearch />
-      <View borderTop style={[{ paddingTop: 20, flex : 1 }]}>
+      <View borderTop style={[{ flex : 1 }]}>
         <ListAllToken
           {...rest}
           renderItem={({ item }) => (
