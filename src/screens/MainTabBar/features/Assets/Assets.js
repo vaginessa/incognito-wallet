@@ -16,6 +16,7 @@ import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@routers/routeNames';
 import { PoolReward } from '@screens/PDexV3/features/Share';
 import PortfolioReward from '@screens/PDexV3/features/Portfolio/Portfolio.reward';
+import SelectAccountButton from '@components/SelectAccountButton';
 
 const HeaderPortfolioView = React.memo(() => {
   const navigation = useNavigation();
@@ -48,6 +49,7 @@ const TabAssets = () => {
       rootTabID={ROOT_TAB_ASSETS}
       useTab1
       defaultTabHeader
+      rightCustom={<SelectAccountButton />}
     >
       <View tabID={TAB_COINS_ID} label="Coins">
         <Wallet hideBackButton />
