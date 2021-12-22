@@ -1,9 +1,5 @@
-import {
-  Platform,
-  //  PixelRatio,
-  //  Dimensions
-} from 'react-native';
-// import { isIOS } from '@src/utils/platform';
+import { isIOS } from '@src/utils/platform';
+import { Platform } from 'react-native';
 
 const FONT_FAMILY = Platform.OS === 'ios' ? 'SFProDisplay' : 'SF-Pro-Display-';
 const FONT_FAMILY_SPECIAL =
@@ -86,7 +82,6 @@ const textStyle = {
   incognitoH4: {
     fontSize: fontSizes.large24,
     fontFamily: fontNames.medium,
-    lineHeight: 30
   },
   incognitoH5: {
     fontSize: fontSizes.superMedium,
@@ -99,6 +94,7 @@ const textStyle = {
   incognitoP1: {
     fontSize: fontSizes.regular,
     fontFamily: fontNames.regular,
+    lineHeight: isIOS() ? 20 : 24,
   },
   incognitoP2: {
     fontSize: fontSizes.small,
