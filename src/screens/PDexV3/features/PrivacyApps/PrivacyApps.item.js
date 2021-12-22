@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Text, TouchableOpacity, Text3 } from '@components/core';
+import { Text, TouchableOpacity } from '@components/core';
 import PropTypes from 'prop-types';
 import { ButtonTyni } from '@src/components/Button';
 import { useSelector } from 'react-redux';

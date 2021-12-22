@@ -95,3 +95,4 @@ export { default as PrivacyAppsIcon } from './icon.privacyApps';
 export { default as PancakeIcon2 } from './icon.pancake2';
 export { default as AddCoinIcon } from './icon.addCoin';
 export { default as PaperIcon } from './icon.paper';
+export { default as TradeIconSuccess } from './icon.tradeSuccess';
