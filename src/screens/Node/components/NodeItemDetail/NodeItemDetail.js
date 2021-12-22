@@ -6,21 +6,25 @@ import Header from '@components/Header';
 import BtnMoreInfo from '@components/Button/BtnMoreInfo';
 import BtnThreeDotsVer from '@components/Button/BtnThreeDotsVer';
 import Rewards from '@screens/Node/components/Rewards';
+import HelpIcon from '@components/HelpScreen/Icon';
 import {
   Text,
   View,
   ScrollView,
   RoundCornerButton,
   TouchableOpacity,
+  ScrollViewBorder,
 } from '@components/core';
 import { RefreshControl } from 'react-native';
 import theme from '@src/styles/theme';
+import ROUTE_NAMES from '@routers/routeNames';
 import NodeStatus from '@screens/Node/components/NodeStatus';
 import { isEmpty } from 'lodash';
 import { compose } from 'recompose';
 import nodeItemDetailEnhanceData from '@screens/Node/components/NodeItemDetail/NodeItemDetail.enhanceData';
 import BottomBar from '@screens/Node/components/NodeBottomBar';
 import SlashStatus from '@screens/Node/components/SlashStatus';
+import { View2 } from '@src/components/core/View';
 
 const NodeItemDetail = memo(({
   isLoading,
@@ -183,40 +187,38 @@ const NodeItemDetail = memo(({
   );
 
   const renderRightHeader = () => (
-    <View style={styles.rightHeader}>
+    <View2 style={styles.rightHeader}>
       {!isEmpty(item?.PublicKeyMining) &&
         <BtnThreeDotsVer onPress={() => onPressMonitorDetail && onPressMonitorDetail(item?.PublicKeyMining)} />
       }
-      <BtnMoreInfo onPress={onHelpPress} />
-    </View>
+      <HelpIcon screen={ROUTE_NAMES.NodeItemsHelp} style={styles.infoBtnStyle} />
+    </View2>
   );
 
   return (
-    <>
-      <View style={styles.containerDetail}>
-        <Header
-          title="Node details"
-          rightHeader={renderRightHeader()}
-        />
-        <ScrollView
-          refreshControl={renderRefreshControl()}
-        >
-          {renderRewards()}
-          {renderButton()}
-          <View style={{ marginTop: 50 }}>
-            {renderItemText('Master key', item.MasterKey)}
-            {renderItemText('Keychain', name)}
-            {renderItemText('IP', `${ip}${!item.IsPNode ? (':' + port) : ''}`)}
-            { item?.IsPNode && renderItemText('Version', item?.Firmware) }
-            { !!item &&  <SlashStatus device={item} /> }
-            { !!item && (<NodeStatus isLoading={isLoading} item={item} />) }
-          </View>
-          {renderStakeInfo()}
-          {renderUpdateNode()}
-        </ScrollView>
-      </View>
+    <View2 fullFlex>
+      <Header
+        title="Node details"
+        rightHeader={renderRightHeader()}
+      />
+      <ScrollViewBorder
+        refreshControl={renderRefreshControl()}
+      >
+        {renderRewards()}
+        {renderButton()}
+        <View style={{ marginTop: 50 }}>
+          {renderItemText('Master key', item.MasterKey)}
+          {renderItemText('Keychain', name)}
+          {renderItemText('IP', `${ip}${!item.IsPNode ? (':' + port) : ''}`)}
+          { item?.IsPNode && renderItemText('Version', item?.Firmware) }
+          { !!item &&  <SlashStatus device={item} /> }
+          { !!item && (<NodeStatus isLoading={isLoading} item={item} />) }
+        </View>
+        {renderStakeInfo()}
+        {renderUpdateNode()}
+      </ScrollViewBorder>
       <BottomBar />
-    </>
+    </View2>
   );
 });
 

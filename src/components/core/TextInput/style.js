@@ -34,7 +34,7 @@ const style = StyleSheet.create({
   input: {
     flex: 1,
     fontFamily: FONT.NAME.medium,
-    fontSize: FONT.SIZE.superMedium,
+    fontSize: FONT.SIZE.medium,
     lineHeight: FONT.SIZE.superMedium + 4,
     marginRight: 5,
     padding: 0,

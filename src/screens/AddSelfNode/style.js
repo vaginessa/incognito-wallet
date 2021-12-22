@@ -4,20 +4,6 @@ import { COLORS, FONT } from '@src/styles';
 
 export const placeHolderColor = '#B9C9CA';
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#FFFFFF',
-    padding: scaleInApp(20),
-    paddingTop: 0,
-  },
-  item: {
-    marginTop: scaleInApp(30)
-  },
-  item_container_input:{
-    borderColor: '#E5E9EA',
-    borderBottomWidth: scaleInApp(1),
-    // paddingVertical: scaleInApp(10)
-  },
   group_list_account:{
     flexDirection:'column'
   },
@@ -58,7 +44,7 @@ const styles = StyleSheet.create({
   label: {
     fontSize: FONT.SIZE.superMedium,
     fontFamily: FONT.NAME.bold,
-    marginBottom: -55
+    // marginBottom: -55
   },
   button:{
     marginTop: 50,

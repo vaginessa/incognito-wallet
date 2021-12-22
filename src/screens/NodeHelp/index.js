@@ -1,5 +1,6 @@
 import React from 'react';
 import { Text, View } from '@src/components/core';
+import { Text4 } from '@src/components/core/Text';
 import MainLayout from '@components/MainLayout/index';
 import styles from './style';
 
@@ -40,44 +41,44 @@ const NodeHelp = () => (
       <Text style={styles.title}>
         Wi-Fi only
       </Text>
-      <Text style={styles.text}>
+      <Text4 style={styles.text}>
         During set up, mobile data for Android (or cellular, for iOS) should be switched off. You can do this from your
         device settings. You should remain connected to Wi-Fi. This is to prevent switching between networks, which may
         cause setup to fail. After setup, feel free to turn mobile data back on.
-      </Text>
-      <Text style={[styles.marginTop, styles.text]}>
+      </Text4>
+      <Text4 style={[styles.marginTop, styles.text]}>
         Of course, please make sure your home Wi-Fi details are correct. If your home Wi-Fi doesn’t show up in the list
         of networks, please restart your phone and try again.
-      </Text>
+      </Text4>
     </View>
     <View>
       <Text style={styles.title}>
         Enable location access
       </Text>
-      <Text style={styles.text}>
+      <Text4 style={styles.text}>
         This step is needed to help Node find your home Wi-Fi.
-      </Text>
+      </Text4>
     </View>
     <View style={{paddingBottom: 0, marginTop: 25}}>
       <Text style={styles.header}>
         Troubleshoot
       </Text>
-      <Text style={[styles.title, styles.text, styles.noMarginTop]}>
+      <Text4 style={[styles.title, styles.text, styles.noMarginTop]}>
         What to do if you encounter one of the following error messages:
-      </Text>
+      </Text4>
       {troubleshootCases.map(item => (
         <View key={item.id}>
           <Text style={styles.title}>
             {item.title}
           </Text>
-          <Text style={styles.text}>
+          <Text4 style={styles.text}>
             {item.description}
-          </Text>
+          </Text4>
         </View>
       ))}
-      <Text style={[styles.marginTop, styles.text]}>
+      <Text4 style={[styles.marginTop, styles.text]}>
         Still stuck? We’re here to help. Contact us at go@incognito.org
-      </Text>
+      </Text4>
     </View>
   </MainLayout>
 );

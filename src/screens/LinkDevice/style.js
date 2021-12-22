@@ -9,7 +9,7 @@ const styles = StyleSheet.create({
   },
   input: {
     fontFamily: FONT.NAME.medium,
-    fontSize: FONT.SIZE.superMedium,
+    fontSize: FONT.SIZE.medium,
     marginBottom: 50,
   },
 });

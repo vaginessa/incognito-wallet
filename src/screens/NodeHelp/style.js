@@ -6,7 +6,6 @@ const style = StyleSheet.create({
     paddingHorizontal: 25,
   },
   text: {
-    color: COLORS.newGrey,
     lineHeight: 30,
     ...FONT.STYLE.medium,
   },
@@ -15,14 +14,12 @@ const style = StyleSheet.create({
     marginTop: 30,
     lineHeight: 26,
     fontSize: 18,
-    color: COLORS.black,
   },
   title: {
     ...FONT.STYLE.medium,
     marginTop: 30,
     lineHeight: 26,
     fontSize: 16,
-    color: COLORS.black,
   },
   bold: {
     ...FONT.STYLE.bold,

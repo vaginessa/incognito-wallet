@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native';
 import { FONT, UTILS } from '@src/styles';
 
-const fontSize = UTILS.widthScale(34);
+const fontSize = FONT.SIZE.veryLarge;
 const lineHeight = fontSize + 4;
 
 export default StyleSheet.create({
@@ -26,8 +26,7 @@ export default StyleSheet.create({
     lineHeight: lineHeight,
   },
   symbolUSD: {
-    fontSize: 18,
-    fontFamily: FONT.NAME.medium,
+    ...FONT.TEXT.incognitoH1,
   },
   center: {
     textAlign: 'center',
@@ -72,8 +71,7 @@ export default StyleSheet.create({
     marginBottom: UTILS.heightScale(15),
   },
   rateStyle: {
-    fontFamily: FONT.NAME.medium,
-    fontSize: 18,
+    ...FONT.TEXT.incognitoP1,
   },
   scrollView: {
     marginBottom: UTILS.heightScale(70),

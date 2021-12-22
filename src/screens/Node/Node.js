@@ -75,12 +75,12 @@ const Node = (props) => {
     }
 
     return (
-      <View style={{ paddingHorizontal: 25 }}>
+      <View>
         <Rewards rewards={nodeRewards} />
         { !noRewards && (
           <RoundCornerButton
             onPress={handleWithdrawAll}
-            style={[theme.BUTTON.NODE_BUTTON, {marginBottom: 50}]}
+            style={[{marginBottom: 50}]}
             title={!withdrawable || withdrawing ? string.withdrawing : string.withdraw_all}
             disabled={!withdrawable || withdrawing}
           />
@@ -122,10 +122,10 @@ const Node = (props) => {
     return (
       <>
         {renderTotalRewards()}
-        <View style={{ flex: 1 }}>
+        <>
           <FlatList
             showsVerticalScrollIndicator={false}
-            contentContainerStyle={[{ flexGrow: 1}]}
+            contentContainerStyle={[{ flexGrow: 1,}]}
             style={style.list}
             data={listDevice}
             keyExtractor={getKeyExtractor}
@@ -150,15 +150,15 @@ const Node = (props) => {
             successTitle={string.cancel}
             buttonStyle={theme.BUTTON.NODE_BUTTON}
           />
-        </View>
+        </>
       </>
     );
   };
 
   return (
     <>
-      <View fullFlex borderTop>
-        {renderContent()}
+      <View fullFlex borderTop paddingHorizontal>
+        {renderContent()} 
         {renderModalActionsForNodePrevSetup()}
         <DialogLoader loading={loading} />
       </View>

@@ -104,7 +104,7 @@ class LinkDevice extends BaseScreen {
     container2.padding = 0;
     return (
       <View2 style={container2}>
-        <Header title="Add existing Node" style={{paddingTop: 4, marginTop: -4}}/>
+        <Header title="Add existing Node" />
         <View borderTop style={container}>
           <Loader loading={loading} />
           <InputQRField
@@ -114,7 +114,6 @@ class LinkDevice extends BaseScreen {
             label='QR Code'
             placeholder='Scan Node QR code'
             style={[styles.input]}
-            inputStyle={styles.inputStyle}
             labelStyle={theme.text.BUTTON_TITLE}
             value={qrCode}
           />
@@ -122,7 +121,6 @@ class LinkDevice extends BaseScreen {
             onPress={this.addNode}
             disabled={!nodeInfo}
             title='Add'
-            style={[theme.BUTTON.NODE_BUTTON]}
           />
         </View>
       </View2>
