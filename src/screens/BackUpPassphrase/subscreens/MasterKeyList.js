@@ -12,7 +12,7 @@ import { View, Text } from '@components/core';
 import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@routers/routeNames';
 import { removeMasterKey, switchMasterKey } from '@src/redux/actions/masterKey';
-import { THEME } from '@src/styles';
+import { FONT } from '@src/styles';
 
 const styles = StyleSheet.create({
   padding: {
@@ -23,8 +23,8 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   title: {
-    ...THEME.text.boldTextStyleSuperMedium,
     marginBottom: 5,
+    ...FONT.TEXT.label,
   },
 });
 

@@ -20,24 +20,22 @@ export default StyleSheet.create({
     marginBottom: 10,
   },
   title: {
-    fontFamily: FONT.NAME.bold,
-    fontSize: FONT.SIZE.superMedium,
-    lineHeight: FONT.SIZE.superMedium + 4,
+    ...FONT.TEXT.label,
+    lineHeight: FONT.SIZE.medium + 4,
     flex: 1
   },
   desc: {
-    fontFamily: FONT.NAME.medium,
-    fontSize: FONT.SIZE.medium,
-    lineHeight: FONT.SIZE.medium + 4,
+    ...FONT.TEXT.desc,
+    lineHeight: FONT.SIZE.regular + 4,
     alignSelf: 'flex-start'
   },
   titleGroup: {
     fontFamily: FONT.NAME.bold,
-    fontSize: FONT.SIZE.large,
-    lineHeight: FONT.SIZE.large + 4,
+    fontSize: FONT.SIZE.superMedium,
+    lineHeight: FONT.SIZE.superMedium + 4,
     flex: 1,
     marginTop: 5,
-    marginBottom: 25,
+    marginBottom: 20,
   },
   topGroup: {
     flex: 1,
@@ -49,7 +47,8 @@ export default StyleSheet.create({
     marginTop: 10,
   },
   copyAllButton: {
-    flex: 1
+    flex: 1,
+    height: 45,
   },
   copyNext: {
     paddingVertical: 15,
@@ -65,8 +64,8 @@ export default StyleSheet.create({
   btnQRCode: {
     justifyContent: 'center',
     alignItems: 'center',
-    height: 50,
-    width: 50,
+    height: 45,
+    width: 45,
     backgroundColor: '#ECECEC',
     marginRight: 5,
     borderRadius: 12,

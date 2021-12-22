@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
-import { THEME } from '@src/styles';
+import { FONT } from '@src/styles';
 import { Text, TouchableOpacity } from '@components/core';
 import { Text4 } from '@components/core/Text';
 
@@ -10,11 +10,11 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
   label: {
-    ...THEME.text.boldTextStyleSuperMedium
+    ...FONT.TEXT.label,
   },
   desc: {
-    marginTop: 5,
-    ...THEME.text.mediumTextMotto,
+    marginTop: 8,
+    ...FONT.TEXT.desc,
   },
 });
 

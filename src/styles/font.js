@@ -117,6 +117,14 @@ const textStyle = {
     fontSize: fontSizes.regular,
     lineHeight: fontSizes.regular + 4,
     fontFamily: fontNames.medium,
+  },
+  label: {
+    fontSize: fontSizes.medium,
+    fontFamily: fontNames.bold,
+  },
+  desc: {
+    fontSize: fontSizes.regular,
+    fontFamily: fontNames.medium,
   }
 };
 
