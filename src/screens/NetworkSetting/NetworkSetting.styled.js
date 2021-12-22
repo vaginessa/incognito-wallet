@@ -18,7 +18,7 @@ export const networkItemStyle = StyleSheet.create({
     flex: 1,
     opacity: 0.3,
     flexDirection: 'row',
-    marginBottom: 30,
+    marginBottom: 25,
   },
   editContainer: {
     marginBottom: SPACING.large,
@@ -37,8 +37,8 @@ export const networkItemStyle = StyleSheet.create({
     justifyContent: 'space-between',
   },
   networkName: {
-    fontSize: FONT.SIZE.superMedium,
-    lineHeight: FONT.SIZE.superMedium + 4,
+    fontSize: FONT.SIZE.medium,
+    lineHeight: FONT.SIZE.medium + 4,
     fontFamily: FONT.NAME.bold,
     marginBottom: 10,
   },
