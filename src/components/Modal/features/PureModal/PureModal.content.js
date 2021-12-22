@@ -1,16 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { View, StyleSheet } from 'react-native';
-import { COLORS, UTILS } from '@src/styles';
+import { colorsSelector } from '@src/theme';
+import { useSelector } from 'react-redux';
+import { UTILS } from '@src/styles';
 
 const styled = StyleSheet.create({
   container: {
-    // flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
   wrapper: {
-    backgroundColor: COLORS.white,
     marginHorizontal: 24,
     borderRadius: 13,
     width: UTILS.deviceWidth() - 50,
@@ -22,9 +22,18 @@ const styled = StyleSheet.create({
 
 const PureModalContent = (props) => {
   const { children, styledContainer, styledWrapper } = props;
+  const colors = useSelector(colorsSelector);
   return (
     <View style={[styled.container, styledContainer]}>
-      <View style={[styled.wrapper, styledWrapper]}>{children}</View>
+      <View
+        style={[
+          styled.wrapper,
+          { backgroundColor: colors.grey7 },
+          styledWrapper,
+        ]}
+      >
+        {children}
+      </View>
     </View>
   );
 };

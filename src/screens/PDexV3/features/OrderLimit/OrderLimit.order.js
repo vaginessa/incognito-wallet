@@ -128,8 +128,7 @@ const Order = React.memo(({ data, visibleDivider }) => {
               requestTx,
               nftid,
               txType: ACCOUNT_CONSTANT.TX_TYPE.CANCEL_ORDER_LIMIT,
-              subTitle:
-                'This will cancel your order. Are your sure to continute?',
+              subTitle: 'Are you sure you want to cancel this limit order?',
             })
           }
         />
@@ -220,7 +219,7 @@ const Order = React.memo(({ data, visibleDivider }) => {
         visible={visible}
         onPressCancel={() => setVisible(false)}
         onPressAccept={() => onWithdrawOrder()}
-        title="Cancel order"
+        title="Cancel this order"
         subTitle={withdrawData?.subTitle || ''}
         acceptStr="Yes, cancel"
         canStr="Keep it"

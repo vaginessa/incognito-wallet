@@ -4,36 +4,63 @@ import PropTypes from 'prop-types';
 import { TouchableOpacity } from '@src/components/core';
 import { Row } from '@src/components';
 import { FONT } from '@src/styles';
-import { Name } from './Token';
+import { useSelector } from 'react-redux';
+import { colorsSelector } from '@src/theme';
+import { Name, Symbol } from './Token';
 import { Icon } from './Token.shared';
 import withToken from './Token.enhance';
 
 const styled = StyleSheet.create({
   container: {
-    marginTop: 20,
+    paddingHorizontal: 24,
+    paddingVertical: 12,
+    borderBottomWidth: 2,
   },
   row: {
     alignItems: 'center',
   },
+  row1: {
+    flexDirection: 'column',
+    flex: 1,
+    justifyContent: 'flex-start',
+  },
   name: {
-    fontSize: FONT.SIZE.medium,
-    fontFamily: FONT.NAME.medium,
-    marginLeft: 12,
+    ...FONT.TEXT.incognitoH2,
+  },
+  symbol: {
+    marginBottom: 2,
+    ...FONT.TEXT.incognitoH6,
+  },
+  icon: {
+    width: 32,
+    height: 32,
+    marginRight: 14,
   },
 });
 
 const TokenTrade = (props) => {
-  const { style, ...rest } = props;
+  const { style, onPress, ...rest } = props;
+  const colors = useSelector(colorsSelector);
   return (
-    <TouchableOpacity style={styled.container} {...rest}>
+    <TouchableOpacity
+      style={[styled.container, { borderBottomColor: colors.grey8 }]}
+      onPress={onPress}
+    >
       <Row style={styled.row}>
-        <Icon {...props} />
-        <Name
-          styledName={styled.name}
-          shouldShowInfo={false}
-          {...props}
-          isVerified={false}
-        />
+        <Icon {...rest} style={styled.icon} />
+        <Row style={styled.row1}>
+          <Symbol
+            {...rest}
+            styledSymbol={styled.symbol}
+            visibleNetworkName={false}
+          />
+          <Name
+            {...rest}
+            styledName={[styled.name, { color: colors.subText }]}
+            shouldShowInfo={false}
+            isVerified={false}
+          />
+        </Row>
       </Row>
     </TouchableOpacity>
   );

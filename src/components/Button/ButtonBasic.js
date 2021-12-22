@@ -48,7 +48,7 @@ const ButtonBasic = (props) => {
     : containerStyle.push(btnStyle);
   if (disabled) {
     containerStyle.push({
-      backgroundColor: colors.grey5,
+      backgroundColor: colors.grey7,
     });
   }
   return (

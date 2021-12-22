@@ -9,7 +9,6 @@ import { useSearchBox } from '@src/components/Header';
 import { withLayout_2 } from '@src/components/Layout';
 import { useNavigation, useNavigationParam } from 'react-navigation-hooks';
 import { delay } from '@src/utils/delay';
-import globalStyled from '@src/theme/theme.styled';
 import { ListAllTokenSelectable } from './SelectToken';
 
 const styled = StyleSheet.create({
@@ -19,7 +18,10 @@ const styled = StyleSheet.create({
     flex: 1,
   },
   styledContainer: {
-    ...globalStyled.defaultPadding4,
+    paddingTop: 24,
+  },
+  checkBox: {
+    marginLeft: 24,
   },
 });
 
@@ -41,6 +43,7 @@ const SelectTokenModal = () => {
       <Header title="Select coins" style={styled.header} canSearch />
       <View style={styled.extra}>
         <ListAllTokenSelectable
+          styledCheckBox={styled.checkBox}
           availableTokens={availableTokens}
           renderItem={({ item }) => (
             <TokenTrade

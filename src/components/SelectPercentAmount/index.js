@@ -41,7 +41,7 @@ const SelectPercentAmount = (props) => {
     return [...Array(size)].map((item, index, arr) => {
       const percent = (((index + 1) / size) * 100).toFixed(0);
       const lastChild = index === arr.length - 1;
-      const isFilled = Number(percent) <= Number(selected);
+      const isFilled = Number(percent) === Number(selected);
       const percentStr = `${percent}%`;
       return (
         <TouchableOpacity
