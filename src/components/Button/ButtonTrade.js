@@ -10,7 +10,7 @@ const styled = StyleSheet.create({
   },
   titleStyle: {
     color: COLORS.white,
-    fontFamily: FONT.NAME.bold,
+    fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.regular,
     lineHeight: FONT.SIZE.regular + 5,
   },
