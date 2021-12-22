@@ -1,10 +1,9 @@
 import React, { memo } from 'react';
 import { View, StyleSheet } from 'react-native';
-import { Divider } from 'react-native-elements';
 import PropTypes from 'prop-types';
-import { COLORS } from '@src/styles';
+import styled from 'styled-components/native';
 
-export const styled = StyleSheet.create({
+export const styles = StyleSheet.create({
   arrowWrapper: {
     flexDirection: 'row',
     justifyContent: 'center',
@@ -12,18 +11,21 @@ export const styled = StyleSheet.create({
     marginTop: 24,
     marginBottom: 8
   },
-  divider: {
-    flex: 1,
-    borderBottomWidth: 1,
-    borderColor: COLORS.lightGrey19,
-  },
 });
 
-const AddBreakLine = ({ style }) => (
-  <View style={[styled.arrowWrapper, style]}>
-    <Divider style={styled.divider} />
-  </View>
-);
+const Divider = styled.View`
+  background-color: ${({ theme }) => theme.border1};
+  width: 100%;
+  height: 1px;
+`;
+
+const AddBreakLine = ({ style }) => {
+  return (
+    <View style={[styles.arrowWrapper, style]}>
+      <Divider style={styles.divider} />
+    </View>
+  );
+};
 
 AddBreakLine.defaultProps = {
   style: undefined
