@@ -30,7 +30,7 @@ const LOCALHOST_REGEX = /^localhost(:[0-9]+)?$/;
 
 export const TAG = 'AddSelfNode';
 const ViewInput = React.forwardRef((props,ref)=>{
-  const { item,item_container_input,label } = styles;
+  const { label } = styles;
   let inputView = useRef(null);
   const [text,setText] = useState('');
   useImperativeHandle(ref, () => ({
@@ -42,14 +42,13 @@ const ViewInput = React.forwardRef((props,ref)=>{
   return (
     <TextInput
       ref={inputView}
-      placeholderTextColor={COLORS.colorGreyMedium}
+      // placeholderTextColor={COLORS.colorGreyMedium}
       maxLength={200}
       labelStyle={label}
       onChangeText={(t) => setText(t)}
       underlineColorAndroid="transparent"
       inputStyle={styles.input}
-      inputContainerStyle={item_container_input}
-      containerStyle={item}
+      style={{marginTop: 0}}
       placeholder="192.168.1.1:9334"
       label="IP address or domain"
       defaultValue={text}
@@ -219,7 +218,7 @@ class AddSelfNode extends BaseScreen {
           <Loader loading={loading} />
           <ViewInput ref={this.inputView} />
           <RoundCornerButton
-            style={[styles.button, theme.BUTTON.NODE_BUTTON]}
+            style={[styles.button]}
             onPress={this.handleSetUpPress}
             title='Add'
           />

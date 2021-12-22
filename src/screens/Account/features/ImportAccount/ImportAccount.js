@@ -95,7 +95,7 @@ const ImportAccount = (props) => {
 
   const renderConfirm = () => {
     return (
-      <View paddingHorizontal>
+      <View borderTop fullFlex>
         <Text style={styleSheet.actionText}>
           This keychain is not linked to any of your current master keys. Import its master key to restore all associated keychains, or import this keychain only.
         </Text>
