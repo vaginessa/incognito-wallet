@@ -17,7 +17,7 @@ export const styled = StyleSheet.create({
   centerTab: {
     bottom: 0,
     borderRadius: 48,
-    top: -16,
+    top: -26,
     justifyContent: 'center',
     alignItems: 'center',
     position: 'absolute',
