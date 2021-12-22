@@ -81,9 +81,7 @@ const enhance = (WrappedComp) => (props) => {
               <TradeSuccessModal
                 title="Order initiated!"
                 desc={cfmTitle}
-                sub={
-                  'Your balance will update in a couple of\nminutes after the trade is finalized.'
-                }
+                sub="Your balance will update as the order fills."
                 handleTradeSucesss={() => {
                   batch(() => {
                     dispatch(actionInit());
@@ -120,7 +118,4 @@ const enhance = (WrappedComp) => (props) => {
   );
 };
 
-export default compose(
-  withLazy,
-  enhance,
-);
+export default compose(withLazy, enhance);

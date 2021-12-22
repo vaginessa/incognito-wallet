@@ -6,7 +6,12 @@ import Swipeout from 'react-native-swipeout';
 import { BtnDelete, BtnInfo } from '@src/components/Button';
 import replace from 'lodash/replace';
 import trim from 'lodash/trim';
-import { TouchableOpacity, ActivityIndicator, Text, View } from '@src/components/core';
+import {
+  TouchableOpacity,
+  ActivityIndicator,
+  Text,
+  View,
+} from '@src/components/core';
 import { useSelector } from 'react-redux';
 import { currencySelector, decimalDigitsSelector } from '@src/screens/Setting';
 import { prefixCurrency, pTokenSelector } from '@src/redux/selectors/shared';
@@ -16,13 +21,28 @@ import { styled } from './Token.styled';
 
 export const NormalText = (props) => {
   const prefix = useSelector(prefixCurrency);
-  const { style, stylePSymbol, containerStyle, text, hasPSymbol, showBalance, symbol, rightIcon, ellipsizeMode, numberOfLinesValue } = props;
+  const {
+    style,
+    stylePSymbol,
+    containerStyle,
+    text,
+    hasPSymbol,
+    showBalance,
+    symbol,
+    rightIcon,
+    ellipsizeMode,
+    numberOfLinesValue,
+  } = props;
   return (
     <View style={[styled.normalText, containerStyle]}>
       {hasPSymbol && showBalance && (
         <Text style={[styled.pSymbol, stylePSymbol]}>{prefix}</Text>
       )}
-      <Text numberOfLines={numberOfLinesValue} style={[styled.text, style]} ellipsizeMode={ellipsizeMode}>
+      <Text
+        numberOfLines={numberOfLinesValue}
+        style={[styled.text, style]}
+        ellipsizeMode={ellipsizeMode}
+      >
         {showBalance ? trim(text) : `••• ${symbol}`}
       </Text>
       {!!rightIcon && rightIcon}
@@ -40,7 +60,7 @@ NormalText.propTypes = {
   symbol: PropTypes.string,
   rightIcon: PropTypes.any,
   ellipsizeMode: PropTypes.string,
-  numberOfLinesValue: PropTypes.number
+  numberOfLinesValue: PropTypes.number,
 };
 
 NormalText.defaultProps = {
@@ -53,7 +73,7 @@ NormalText.defaultProps = {
   symbol: '',
   rightIcon: null,
   ellipsizeMode: 'tail',
-  numberOfLinesValue: 1
+  numberOfLinesValue: 1,
 };
 
 export const Name = (props) => {
@@ -167,7 +187,10 @@ export const ChangePrice = (props) => {
   }
   return (
     <NormalText
-      text={` ${isTokenDecrease ? '-' : '+'}${format.amountVer2(changeToNumber, 0)}%`}
+      text={` ${isTokenDecrease ? '-' : '+'}${format.amountVer2(
+        changeToNumber,
+        0,
+      )}%`}
       style={[
         {
           marginLeft: 5,
@@ -303,13 +326,18 @@ export const Symbol = (props) => {
     isBep2Token,
     isBep20Token,
     styledSymbol,
+    visibleNetworkName = true,
   } = props;
   return (
     <NormalText
       allowFontScaling={false}
       style={[styled.bottomText, styledSymbol]}
       text={`${symbol} ${
-        isErc20Token || isBep2Token || isBep20Token ? `(${networkName})` : ''
+        visibleNetworkName
+          ? isErc20Token || isBep2Token || isBep20Token
+            ? `(${networkName})`
+            : ''
+          : ''
       }`}
     />
   );
