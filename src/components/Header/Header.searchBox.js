@@ -1,11 +1,14 @@
 import { TextInput } from '@src/components/Input';
 import React from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, TouchableOpacity } from 'react-native';
 import { createForm } from '@components/core/reduxForm';
 import { Field } from 'redux-form';
 import PropTypes from 'prop-types';
 import { BaseTextInputCustom } from '@components/core/BaseTextInput';
 import { ScreenWidth } from '@utils/devices';
+import { Row } from '@src/components';
+import { CloseIcon } from '@components/Icons';
+import globalStyled from '@src/theme/theme.styled';
 
 const styled = StyleSheet.create({
   searchBox: {
@@ -63,16 +66,23 @@ const SearchBox = (props) => {
             );
           }
           return (
-            <TextInput
-              onChangeText={input?.onChange}
-              onBlur={input?.onBlur}
-              onFocus={input?.onFocus}
-              value={input?.value}
-              autoFocus
-              style={inputStyle}
-              placeholder={props?.title || ''}
-              {...rest}
-            />
+            <Row centerVertical>
+              <TextInput
+                onChangeText={input?.onChange}
+                onBlur={input?.onBlur}
+                onFocus={input?.onFocus}
+                value={input?.value}
+                autoFocus
+                style={inputStyle}
+                placeholder={props?.title || ''}
+                {...rest}
+              />
+              {!!input?.value && (
+                <TouchableOpacity style={{ paddingLeft: 12 }} onPress={() => input?.onChange && input?.onChange('')}>
+                  <CloseIcon />
+                </TouchableOpacity>
+              )}
+            </Row>
           );
         }}
       />
