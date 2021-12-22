@@ -7,8 +7,7 @@ export const styled = StyleSheet.create({
 
 export const headerStyled = StyleSheet.create({
   title: {
-    fontWeight: '600',
-    fontSize: 24,
+    ...FONT.TEXT.incognitoH4,
     lineHeight: 28,
   },
   wrapTab: {
