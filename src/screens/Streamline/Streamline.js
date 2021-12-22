@@ -2,7 +2,7 @@ import React from 'react';
 import Header from '@src/components/Header';
 import { BtnQuestionDefault, ButtonBasic } from '@src/components/Button';
 import srcQuestion from '@src/assets/images/icons/question_gray.png';
-import { LoadingContainer, ScrollView, View, Text } from '@src/components/core';
+import { LoadingContainer, ScrollView, View, Text, ScrollViewBorder } from '@src/components/core';
 import { Text4 } from '@src/components/core/Text';
 import LoadingTx from '@src/components/LoadingTx';
 import PropTypes from 'prop-types';
@@ -10,6 +10,8 @@ import { MAX_NO_INPUT_DEFRAGMENT } from '@screens/Streamline/Streamline.constant
 import {useNavigation} from 'react-navigation-hooks';
 import {useSelector} from 'react-redux';
 import {selectedPrivacySelector} from '@src/redux/selectors';
+import { compose } from 'recompose';
+import { withLayout_2 } from '@components/Layout';
 import withStreamline from './Streamline.enhance';
 import { useStreamLine } from './Streamline.useStreamline';
 import { styled } from './Streamline.styled';
@@ -108,14 +110,14 @@ const Streamline = (props) => {
       return <Pending />;
     }
     return (
-      <ScrollView style={styled.scrollview}>
+      <ScrollViewBorder style={styled.scrollview}>
         <Extra {...props} />
         {isFetching && <LoadingTx />}
-      </ScrollView>
+      </ScrollViewBorder>
     );
   };
   return (
-    <View style={styled.container}>
+    <>
       <Header
         title={`Consolidate ${selectPrivacy?.symbol ? selectPrivacy?.symbol : ''}`}
         customHeaderTitle={(
@@ -134,7 +136,7 @@ const Streamline = (props) => {
         }}
       />
       {renderMain()}
-    </View>
+    </>
   );
 };
 
@@ -143,4 +145,7 @@ Streamline.propTypes = {
   onClearData: PropTypes.func.isRequired,
 };
 
-export default withStreamline(Streamline);
+export default compose(
+  withStreamline,
+  withLayout_2,
+)(Streamline);

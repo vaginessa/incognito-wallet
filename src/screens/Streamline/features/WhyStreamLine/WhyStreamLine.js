@@ -1,9 +1,9 @@
 import React from 'react';
-import { View, StyleSheet, Text } from 'react-native';
+import { StyleSheet } from 'react-native';
 import Header from '@components/Header';
-import { FONT, COLORS } from '@src/styles';
+import { FONT } from '@src/styles';
 import { withLayout_2 } from '@src/components/Layout';
-import { ScrollView } from '@src/components/core';
+import { Text, ScrollViewBorder, Text3 } from '@src/components/core';
 
 const styled = StyleSheet.create({
   container: {
@@ -13,12 +13,10 @@ const styled = StyleSheet.create({
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.regular,
     lineHeight: FONT.SIZE.regular + 9,
-    color: COLORS.colorGreyBold,
     marginBottom: 30,
   },
   boldText: {
     fontFamily: FONT.NAME.bold,
-    color: COLORS.black,
   },
 });
 
@@ -31,23 +29,34 @@ const WhyStreamLine = () => {
     'When consolidation is recommended, you’ll see a notification in the main Assets screen of the relevant Keychain. You can also access this feature from your Settings tab.',
   ];
   return (
-    <View style={styled.container}>
+    <>
       <Header title="More on consolidating UTXOs" />
-      <ScrollView>
+      <ScrollViewBorder>
         {factories.map((item, id) => (
-          <Text
-            style={[
-              id === 0 ? { paddingTop: 32 } : null,
-              styled.text,
-              id === 3 ? styled.boldText : null,
-            ]}
-            key={id}
-          >
-            {item}
-          </Text>
+          id !== 3 ? (
+            <Text3
+              style={[
+                id === 0 ? { paddingTop: 32 } : null,
+                styled.text,
+              ]}
+              key={id}
+            >
+              {item}
+            </Text3>
+          ) : (
+            <Text
+              style={[
+                id === 0 ? { paddingTop: 32 } : null,
+                styled.text,
+              ]}
+              key={id}
+            >
+              {item}
+            </Text>
+          )
         ))}
-      </ScrollView>
-    </View>
+      </ScrollViewBorder>
+    </>
   );
 };
 
