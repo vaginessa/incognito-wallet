@@ -1,19 +1,15 @@
 import React from 'react';
 import ErrorBoundary from '@src/components/ErrorBoundary';
 import { useSelector } from 'react-redux';
-import { availableTokensSelector } from '@src/redux/selectors/shared';
+import { marketTokens } from '@src/redux/selectors/shared';
 import { useSearchBox } from '@src/components/Header';
 import { handleFilterTokenByKeySearch, useTokenList } from '@src/components/Token';
 import PropTypes from 'prop-types';
 import orderBy from 'lodash/orderBy';
-import { marketTabSelector } from '@screens/Setting';
-import { MarketTabs } from '@screens/MainTabBar/features/Market/Market.header';
-import { PRVIDSTR } from 'incognito-chain-web-js/build/wallet';
 
 const withSearch = (WrappedComp) => (props) => {
   const { filterField, orderField } = props;
-  const availableTokens = useSelector(availableTokensSelector);
-  const activeTab = useSelector(marketTabSelector);
+  const availableTokens = useSelector(marketTokens);
   let verifiedTokens = [];
   let unVerifiedTokens = [];
   availableTokens.map((token) =>
@@ -54,17 +50,9 @@ const withSearch = (WrappedComp) => (props) => {
   }, [availableTokens]);
 
   const tokensFactories = React.useMemo(() => {
-    let marketTokens = [];
-    if (activeTab === MarketTabs.ALL) {
-      marketTokens = _verifiedTokens
-        .concat(_unVerifiedTokens.filter(item => item.isFollowed))
-        .filter(token => !!token.defaultPoolPair);
-    } else {
-      marketTokens = _verifiedTokens
-        .filter(item => item.isFollowed || item.tokenId === PRVIDSTR)
-        .concat(_unVerifiedTokens.filter(item => item.isFollowed))
-        .filter(token => !!token.defaultPoolPair);
-    }
+    let marketTokens = _verifiedTokens
+      .concat(_unVerifiedTokens.filter(item => item.isFollowed))
+      .filter(token => !!token.defaultPoolPair);
     marketTokens = orderBy(marketTokens, item => Number(item[filterField] || '0'), [orderField]);
     const __verifiedTokens = orderBy(_verifiedTokens, item => Number(item[filterField] || '0'), [orderField]);
     const __unVerifiedTokens = orderBy(_unVerifiedTokens, item => Number(item[filterField] || '0'), [orderField]);
@@ -85,7 +73,7 @@ const withSearch = (WrappedComp) => (props) => {
         styledListToken: { paddingTop: 8 },
       }
     ];
-  }, [_unVerifiedTokens, _verifiedTokens, toggleUnVerified, filterField, orderField, activeTab]);
+  }, [_unVerifiedTokens, _verifiedTokens, toggleUnVerified, filterField, orderField]);
 
   React.useEffect(() => {
     if (toggleUnVerified && !keySearch) {
@@ -107,6 +95,7 @@ const withSearch = (WrappedComp) => (props) => {
     </ErrorBoundary>
   );
 };
+
 withSearch.defaultProps = {
   filterField: 'change',
   orderField: 'desc'

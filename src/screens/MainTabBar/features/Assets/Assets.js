@@ -51,7 +51,7 @@ const TabAssets = () => {
       defaultTabHeader
       rightCustom={<SelectAccountButton />}
     >
-      <View tabID={TAB_COINS_ID} label="Coins">
+      <View tabID={TAB_COINS_ID} label="Privacy coins">
         <Wallet hideBackButton />
       </View>
       <View tabID={TAB_LIQUIDITY_ID} label="Pools">
