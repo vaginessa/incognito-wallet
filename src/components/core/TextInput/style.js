@@ -20,8 +20,8 @@ const style = StyleSheet.create({
   },
   label: {
     fontFamily: FONT.NAME.bold,
-    fontSize: FONT.SIZE.superMedium,
-    lineHeight: FONT.SIZE.superMedium + 4,
+    fontSize: FONT.SIZE.medium,
+    lineHeight: FONT.SIZE.medium + 4,
   },
   labelFocus: {
     color: COLORS.primary,
@@ -34,8 +34,8 @@ const style = StyleSheet.create({
   input: {
     flex: 1,
     fontFamily: FONT.NAME.medium,
-    fontSize: FONT.SIZE.medium,
-    lineHeight: FONT.SIZE.superMedium + 4,
+    fontSize: FONT.SIZE.regular,
+    lineHeight: FONT.SIZE.regular + 4,
     marginRight: 5,
     padding: 0,
   },
