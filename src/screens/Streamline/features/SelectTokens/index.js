@@ -18,6 +18,8 @@ import { FONT } from '@src/styles';
 import { MAX_NO_INPUT_DEFRAGMENT } from '@screens/Streamline/Streamline.constant';
 import withDetectUTXOS from '@screens/Streamline/Streamline.detectUTXOS';
 import globalStyled from '@src/theme/theme.styled';
+import { compose } from 'recompose';
+import { withLayout_2 } from '@components/Layout';
 
 const Item = React.memo(({ item, maxSize, index, loading, onPress }) => {
   const { tokenID, unspentCoins } = item;
@@ -67,12 +69,16 @@ const Item = React.memo(({ item, maxSize, index, loading, onPress }) => {
 const SelectToken = React.memo(({ onSelectItem, onPullRefresh }) => {
   const { UTXOSFiltered: UTXOS, isLoading, isFetching } = useSelector(streamlineConsolidateSelector);
   const renderItem = (data) => <Item item={data?.item} index={data?.index} maxSize={UTXOS.length - 1} loading={isFetching} onPress={onSelectItem} />;
-  return ( 
-    <View2>
+  return (
+    <>
       <Header title="Consolidate" accountSelectable />
       {(isLoading) ?
-        (<LoadingContainer />) : (
-          <ScrollViewBorder>
+        (
+          <View2 fullFlex>
+            <LoadingContainer />
+          </View2>
+        ) : (
+          <View paddingHorizontal borderTop style={{ paddingTop: 8 }}>
             <FlatList
               data={UTXOS}
               refreshing={isFetching}
@@ -81,9 +87,9 @@ const SelectToken = React.memo(({ onSelectItem, onPullRefresh }) => {
               showsVerticalScrollIndicator={false}
               onRefresh={onPullRefresh}
             />
-          </ScrollViewBorder>
+          </View>
         )}
-    </View2>
+    </>
   );
 });
 
@@ -100,4 +106,7 @@ Item.propTypes = {
   onPress: PropTypes.func.isRequired,
 };
 
-export default withDetectUTXOS(SelectToken);
+export default compose(
+  withDetectUTXOS,
+  withLayout_2,
+)(SelectToken);

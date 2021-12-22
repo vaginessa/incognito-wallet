@@ -1,10 +1,9 @@
-import { Text, View, TouchableOpacity } from '@components/core';
+import { Text, View, TouchableOpacity, ActivityIndicator } from '@components/core';
 import { FONT } from '@src/styles';
 import PropTypes from 'prop-types';
 import React from 'react';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import theme from '@src/styles/theme';
-import { ActivityIndicator } from 'react-native';
 import { colorsSelector } from '@src/theme';
 import { useSelector } from 'react-redux';
 import styles from '../style';
