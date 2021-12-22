@@ -485,18 +485,18 @@ const InputsGroup = React.memo(() => {
     case TAB_SELL_LIMIT_ID: {
       return (
         <>
-          <RateInput />
-          <Divider dividerStyled={styled.dividerStyled} />
           <SellInput />
+          <Divider dividerStyled={styled.dividerStyled} />
+          <RateInput />
         </>
       );
     }
     case TAB_BUY_LIMIT_ID: {
       return (
         <>
-          <RateInput />
-          <Divider dividerStyled={styled.dividerStyled} />
           <BuyInput />
+          <Divider dividerStyled={styled.dividerStyled} />
+          <RateInput />
         </>
       );
     }

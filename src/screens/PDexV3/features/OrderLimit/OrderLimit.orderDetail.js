@@ -143,7 +143,7 @@ const OrderDetail = () => {
   return (
     <View style={styled.container}>
       <Header
-        title="Order detail"
+        title="Order details"
         rightHeader={<BtnCopy onPress={handleCopy} />}
       />
       <ScrollViewBorder

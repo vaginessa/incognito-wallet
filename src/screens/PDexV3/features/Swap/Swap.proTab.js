@@ -220,7 +220,7 @@ const TabPro = React.memo(() => {
   ];
   if (!isPrivacyApp) {
     extraFactories.unshift({
-      title: 'Switch platform',
+      title: 'Switch exchanges',
       onPressQuestionIcon: () => null,
       titleStyle: {
         fontSize: FONT.SIZE.small,

@@ -140,7 +140,7 @@ const PriceHistoryCandles = () => {
         })) || [];
       const chartData = res.map((c, index) => {
         const { open, close, high, low, timestamp } = c;
-        const avg = new BigNumber(open).plus(close).dividedBy(2).toNumber();
+        const avg = new BigNumber(high).plus(low).dividedBy(2).toNumber();
         const value = convert.toHumanAmountVer2(floor(avg), pDecimals);
         const result = {
           time: timestamp,
@@ -164,24 +164,26 @@ const PriceHistoryCandles = () => {
               lwChartOptions: {
                 timeScale: {
                   timeVisible: true,
+                  visible: true,
+                  borderColor: colors.grey8,
+                },
+                rightPriceScale: {
+                  timeVisible: true,
+                  visible: true,
+                  borderColor: colors.grey8,
                 },
                 layout: {
-                  backgroundColor: colors.primary,
-                  lineColor: colors.primary,
+                  backgroundColor: colors.grey9,
                   textColor: colors.against,
-                },
-                watermark: {
-                  color: colors.primary,
-                },
-                crosshair: {
-                  color: 'transparent',
                 },
                 grid: {
                   vertLines: {
-                    color: 'transparent',
+                    color: colors.grey8,
+                    visible: true,
                   },
                   horzLines: {
-                    color: 'transparent',
+                    color: colors.grey8,
+                    visible: true,
                   },
                 },
               },
@@ -238,8 +240,10 @@ const PriceHistoryCandles = () => {
         style={{
           width: '100%',
           height: 250,
+          backgroundColor: colors.grey9,
+          opacity: visible ? 1 : 0,
         }}
-        source={{ uri }}
+        source={{ uri: 'http://192.168.1.7:3002' }}
         onMessage={handleOnMessage}
         onLoad={() => setVisible(true)}
         originWhitelist={['*']}
