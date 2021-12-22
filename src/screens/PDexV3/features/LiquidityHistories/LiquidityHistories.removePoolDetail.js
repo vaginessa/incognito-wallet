@@ -20,7 +20,7 @@ const RemoveLPDetail = () => {
         copyable: true,
       },
       {
-        label: 'NFTID',
+        label: 'TicketID',
         valueText: nftId,
         copyable: true,
       },

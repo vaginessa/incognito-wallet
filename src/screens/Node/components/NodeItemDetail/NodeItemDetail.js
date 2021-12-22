@@ -13,9 +13,8 @@ import {
   ScrollView,
   RoundCornerButton,
   TouchableOpacity,
-  ScrollViewBorder,
+  ScrollViewBorder, RefreshControl,
 } from '@components/core';
-import { RefreshControl } from 'react-native';
 import theme from '@src/styles/theme';
 import ROUTE_NAMES from '@routers/routeNames';
 import NodeStatus from '@screens/Node/components/NodeStatus';

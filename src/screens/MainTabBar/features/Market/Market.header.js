@@ -51,7 +51,7 @@ const HeaderView = ({ onFilter }) => {
         <Row
           centerVertical
           spaceBetween
-          style={[headerStyled.wrapFilter, globalStyled.defaultPadding, globalStyled.defaultBorderSection]}
+          style={[headerStyled.wrapFilter, globalStyled.defaultPaddingHorizontal, globalStyled.defaultBorderSection]}
         >
           <Row centerVertical>
             <StyledTouchableOpacity style={headerStyled.wrapTab} onPress={() => onChangeTab(MarketTabs.ALL)}>
