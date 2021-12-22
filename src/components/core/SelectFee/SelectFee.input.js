@@ -33,7 +33,7 @@ const SelectFeeInput = (props) => {
   const { types, onChangeTypeFee, placeholder, editableInput, ...rest } = props;
   const colors = useSelector(colorsSelector);
   return (
-    <Row style={[styled.inputContainer, { backgroundColor: colors.grey5 }]}>
+    <Row style={[styled.inputContainer, { backgroundColor: colors.grey7 }]}>
       <View style={[styled.inputWrapper]}>
         <BaseTextInput
           style={{

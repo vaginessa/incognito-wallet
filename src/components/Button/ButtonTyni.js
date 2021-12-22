@@ -12,10 +12,12 @@ const styled = StyleSheet.create({
     paddingVertical: 3,
     paddingHorizontal: 12,
     borderRadius: 24,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   titleStyle: {
-    fontFamily: FONT.NAME.medium,
-    fontSize: FONT.SIZE.small,
+    ...FONT.TEXT.incognitoSMedium,
   },
 });
 

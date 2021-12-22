@@ -209,7 +209,8 @@ export const moreStyled = StyleSheet.create({
     paddingTop: 10,
   },
   title: {
-    ...FONT.TEXT.incognitoH4
+    ...FONT.TEXT.incognitoH4,
+    fontWeight: '600'
   },
   wrapBar: {
     width: ScreenWidth / 5,

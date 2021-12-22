@@ -33,7 +33,6 @@ const styled = StyleSheet.create({
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.regular,
     lineHeight: FONT.SIZE.regular + 5,
-    color: COLORS.newGrey,
     textAlign: 'center',
   },
   icon: {
@@ -71,7 +70,7 @@ const TradeSucessModal = (props) => {
         <Image source={srcOrdered} style={styled.icon} />
         <Text style={[styled.title, { color: colors.ctaMain }]}>{title}</Text>
       </Row>
-      <Text style={[styled.desc, { color: colors.primary }]}>{desc}</Text>
+      <Text style={[styled.desc]}>{desc}</Text>
       {sub && (
         <Text style={[styled.sub, { color: colors.subText }]}>{sub}</Text>
       )}

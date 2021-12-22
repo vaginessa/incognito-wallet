@@ -76,8 +76,8 @@ const textStyle = {
     fontFamily: fontNames.medium,
   },
   incognitoH2: {
-    fontSize: fontSizes.veryLarge,
-    fontFamily: fontNames.medium,
+    fontSize: fontSizes.small,
+    fontFamily: fontNames.regular,
   },
   incognitoH3: {
     fontSize: fontSizes.medium,
@@ -86,19 +86,27 @@ const textStyle = {
   incognitoH4: {
     fontSize: fontSizes.large24,
     fontFamily: fontNames.medium,
+    lineHeight: 30
   },
   incognitoH5: {
-    fontSize: fontSizes.medium,
+    fontSize: fontSizes.superMedium,
     fontFamily: fontNames.medium,
   },
   incognitoH6: {
     fontSize: fontSizes.medium,
     fontFamily: fontNames.medium,
   },
-
   incognitoP1: {
     fontSize: fontSizes.regular,
-    fontFamily: fontNames.medium,
+    fontFamily: fontNames.regular,
+  },
+  incognitoP2: {
+    fontSize: fontSizes.small,
+    fontFamily: fontNames.regular,
+  },
+  incognitoSMedium: {
+    fontSize: fontSizes.superSmall,
+    fontFamily: fontNames.regular,
   },
   formLabel: {
     fontSize: fontSizes.medium,

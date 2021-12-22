@@ -142,8 +142,8 @@ const SwapOrderDetail = () => {
   return (
     <View2 style={styled.container}>
       <Header
-        title="Swap detail"
-        rightHeader={<BtnCopy onPress={handleCopy} isHeader={true} />}
+        title="Swap details"
+        rightHeader={<BtnCopy onPress={handleCopy} isHeader />}
       />
       <ScrollViewBorder
         style={styled.scrollview}

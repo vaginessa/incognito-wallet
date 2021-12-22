@@ -65,7 +65,7 @@ export const SelectItem = React.memo(
               borderRadius: 0,
             }
             : {
-              backgroundColor: colors.grey5,
+              backgroundColor: colors.grey7,
             },
         ]}
       >

@@ -36,18 +36,18 @@ const PrivacyApps = (props) => {
         privacyAppId: KEYS_PLATFORMS_SUPPORTED.pancake,
         icon: <PancakeIcon2 />,
         headerTitle: 'pPancake',
-        headerSub: 'Private pancake',
+        headerSub: 'Private PancakeSwap',
         groupActions: [
           {
             id: 'BSC',
-            title: 'BSC',
+            title: 'Binance Smart Chain',
           },
           {
             id: 'DEX',
             title: 'DEX',
           },
         ],
-        desc: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard.',
+        desc: 'Trade anonymously on Binance Smart Chain’s leading DEX. Deep liquidity and super low fees – now with privacy.',
         onPressItem,
       },
     ];

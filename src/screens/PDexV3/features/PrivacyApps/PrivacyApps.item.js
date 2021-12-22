@@ -23,21 +23,23 @@ const styles = StyleSheet.create({
     marginRight: 16,
   },
   headerTitle: {
-    fontFamily: FONT.NAME.medium,
-    fontSize: FONT.SIZE.superMedium,
-    marginBottom: 2,
+    ...FONT.TEXT.incognitoH5,
   },
   headerSub: {
-    fontFamily: FONT.NAME.regular,
-    fontSize: FONT.SIZE.small,
+    ...FONT.TEXT.incognitoP2,
   },
   groupActions: {
     marginVertical: 16,
     backgroundColor: 'transparent',
   },
   desc: {
-    fontFamily: FONT.NAME.regular,
-    fontSize: FONT.SIZE.regular,
+    ...FONT.TEXT.incognitoP1,
+  },
+  headerHook: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    flex: 1,
   },
 });
 

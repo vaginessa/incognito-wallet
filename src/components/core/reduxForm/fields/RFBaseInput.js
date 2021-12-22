@@ -30,7 +30,7 @@ const renderCustomField = (props) => {
   const { onChange, onFocus, onBlur, ...restInput } = input;
   const colors = useSelector(colorsSelector);
   return (
-    <Row style={[styled.container, { backgroundColor: colors.grey5 }]}>
+    <Row style={[styled.container, { backgroundColor: colors.grey7 }]}>
       <BaseTextInput
         {...{
           ...rest,
