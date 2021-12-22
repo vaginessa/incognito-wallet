@@ -12,7 +12,6 @@ export default StyleSheet.create({
     ...FONT.STYLE.bold,
   },
   desc: {
-    color: COLORS.newGrey,
     fontSize: 16,
     lineHeight: isIOS() ? 25 : 30,
     ...FONT.STYLE.medium

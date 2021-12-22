@@ -42,9 +42,8 @@ const styles = StyleSheet.create({
     marginTop: scaleInApp(8)
   },
   label: {
-    fontSize: FONT.SIZE.superMedium,
+    fontSize: FONT.SIZE.medium,
     fontFamily: FONT.NAME.bold,
-    // marginBottom: -55
   },
   button:{
     marginTop: 50,
@@ -62,8 +61,8 @@ const styles = StyleSheet.create({
     paddingVertical:scaleInApp(5),
   },
   input: {
-    fontSize: FONT.SIZE.superMedium,
-    fontFamily: FONT.NAME.medium,
+    fontSize: FONT.SIZE.regular,
+    fontFamily: FONT.NAME.bold,
     height: 40,
   }
 });

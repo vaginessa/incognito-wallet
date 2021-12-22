@@ -108,6 +108,24 @@ const textStyle = {
     fontSize: fontSizes.superSmall,
     fontFamily: fontNames.regular,
   },
+  formLabel: {
+    fontSize: fontSizes.medium,
+    lineHeight: fontSizes.medium + 4,
+    fontFamily: fontNames.bold,
+  },
+  formInput: {
+    fontSize: fontSizes.regular,
+    lineHeight: fontSizes.regular + 4,
+    fontFamily: fontNames.medium,
+  },
+  label: {
+    fontSize: fontSizes.medium,
+    fontFamily: fontNames.bold,
+  },
+  desc: {
+    fontSize: fontSizes.regular,
+    fontFamily: fontNames.medium,
+  }
 };
 
 export default {

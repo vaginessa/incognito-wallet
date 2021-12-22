@@ -13,12 +13,16 @@ import srcQrCode from '@src/assets/images/icons/qr_code.png';
 import { ArrowRightGreyIcon } from '@src/components/Icons';
 import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
+import { useSelector } from 'react-redux';
+import { colorsSelector } from '@src/theme/theme.selector';
 import style from './BackupKeys.styled';
 import withBackupKeys from './BackupKeys.enhance';
+
 
 const BackupKeys = (props) => {
   const { onSaveAs, onCopyAll, noMasterless, masterless, getNameKey, onNext, onBack, backupDataStr} = props;
   const navigation = useNavigation();
+  const colors = useSelector(colorsSelector);
   
   const onNavigateToQrPage = (label, value) => {
     navigation.navigate(routeNames.ExportAccountModal, {
@@ -89,7 +93,7 @@ const BackupKeys = (props) => {
           </TouchableOpacity>
           <View style={style.bottomGroup}>
             <BtnQRCode
-              style={[style.btnQRCode]}
+              style={[style.btnQRCode, { backgroundColor: colors.background5 }]}
               onPress={()=> onNavigateToQrPage('Back up private keys', backupDataStr)}
               source={srcQrCode}
             />
