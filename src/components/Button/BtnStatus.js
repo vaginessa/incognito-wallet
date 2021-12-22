@@ -10,8 +10,8 @@ const styled = StyleSheet.create({
     justifyContent: 'center',
   },
   statusContainer: {
-    width: 14,
-    height: 14,
+    width: 12,
+    height: 12,
     borderRadius: 7,
     marginEnd: 15,
     alignSelf: 'center'

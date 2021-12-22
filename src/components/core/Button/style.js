@@ -9,7 +9,7 @@ export default StyleSheet.create({
   text: {
     ...THEME.opacityButton.buttonText,
     ...FONT.STYLE.medium,
-    fontSize: FONT.SIZE.regular,
+    fontSize: FONT.SIZE.medium,
   },
   textContainer: {
     marginHorizontal: 5,

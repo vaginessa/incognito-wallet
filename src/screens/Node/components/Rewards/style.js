@@ -22,7 +22,8 @@ const style = StyleSheet.create({
     alignContent: 'center'
   },
   balanceUpdate: {
-    fontSize: FONT.SIZE.superLarge,
+    fontSize: FONT.SIZE.veryLarge,
+    lineHeight: FONT.SIZE.veryLarge + 4,
     textAlign: 'center',
     ...FONT.STYLE.bold,
   },

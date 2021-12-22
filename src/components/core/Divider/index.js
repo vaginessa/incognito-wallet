@@ -16,7 +16,7 @@ const DividerComponent = ({ dividerStyled = null }) => {
     <View
       style={[
         styled.divider,
-        { backgroundColor: colors.grey1 },
+        { backgroundColor: colors.grey10 },
         dividerStyled,
       ]}
     />

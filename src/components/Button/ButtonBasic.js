@@ -13,7 +13,7 @@ import isArray from 'lodash/isArray';
 
 const styled = StyleSheet.create({
   container: {
-    borderRadius: 4,
+    borderRadius: 8,
     height: 50,
     alignItems: 'center',
     justifyContent: 'center',

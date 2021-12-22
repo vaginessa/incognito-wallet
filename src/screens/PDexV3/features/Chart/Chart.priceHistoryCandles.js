@@ -23,7 +23,6 @@ const styled = StyleSheet.create({
   container: {
     flex: 1,
     minHeight: 250,
-    marginBottom: 16,
   },
   btnStyle: {
     height: 24,
@@ -149,7 +148,7 @@ const PriceHistoryCandles = () => {
         return result;
       });
       if (chartData.length > 0) {
-        let width = Number(ScreenWidth) - 50;
+        let width = Number(ScreenWidth);
         const minLow = minBy(chartData, (c) => c?.low)?.low || 0;
         const precision =
           format.getDecimalsFromHumanAmount(minLow) || token2?.pDecimals;
@@ -243,7 +242,7 @@ const PriceHistoryCandles = () => {
           backgroundColor: colors.grey9,
           opacity: visible ? 1 : 0,
         }}
-        source={{ uri: 'http://192.168.1.7:3002' }}
+        source={{ uri }}
         onMessage={handleOnMessage}
         onLoad={() => setVisible(true)}
         originWhitelist={['*']}
