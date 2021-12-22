@@ -1,5 +1,5 @@
 import React from 'react';
-import { FlatList, RefreshControl, Text } from 'react-native';
+import { FlatList, RefreshControl } from 'react-native';
 import { Header, LoadingContainer } from '@src/components';
 import { compose } from 'recompose';
 import convertTokenListEnhance from '@screens/Home/features/ConvertTokenList/ConvertTokenList.enhance';
@@ -16,15 +16,15 @@ import { selectedPrivacySelector } from '@src/redux/selectors';
 import BigNumber from 'bignumber.js';
 import { ButtonBasic } from '@components/Button';
 import isEmpty from 'lodash/isEmpty';
-import { ActivityIndicator, Image, TouchableOpacity, View, ScrollViewBorder } from '@components/core';
+import { ActivityIndicator, Image, Text, TouchableOpacity, View } from '@components/core';
 import { Text4 } from '@components/core/Text';
-import { View2 } from '@components/core/View';
 import noTransaction from '@assets/images/icons/shield.png';
 import { styles } from '@screens/Wallet/features/HistoryToken/HistoryToken.empty';
 import { withLayout_2 } from '@components/Layout';
 import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@routers/routeNames';
 import { setSelectedPrivacy } from '@src/redux/actions/selectedPrivacy';
+import globalStyled from '@src/theme/theme.styled';
 
 const Item = React.memo(({ item, maxSize, index, loading }) => {
   const navigation = useNavigation();
@@ -129,31 +129,29 @@ const ConvertTokenList = React.memo(
       if (isFetching && !isRefreshing) return <LoadingContainer />;
       if (isEmpty(coins)) return renderEmptyView();
       return (
-        <View style={{ flex: 1, justifyContent: 'space-between' }}>
-          <ScrollViewBorder>
-            <FlatList
-              refreshControl={(
-                <RefreshControl
-                  refreshing={isRefreshing}
-                  onRefresh={onPullRefresh}
-                />
-              )}
-              data={coins}
-              showsVerticalScrollIndicator={false}
-              renderItem={renderItem}
-              keyExtractor={(item) => item.tokenID}
-            />
-            {renderButton()}
-          </ScrollViewBorder>
+        <View borderTop style={[{ flex: 1, justifyContent: 'space-between' }, globalStyled.defaultPaddingHorizontal]}>
+          <FlatList
+            refreshControl={(
+              <RefreshControl
+                refreshing={isRefreshing}
+                onRefresh={onPullRefresh}
+              />
+            )}
+            data={coins}
+            showsVerticalScrollIndicator={false}
+            renderItem={renderItem}
+            keyExtractor={(item) => item.tokenID}
+          />
+          {renderButton()}
         </View>
       );
     };
 
     return (
-      <View2 style={{ flex: 1 }}>
+      <>
         <Header title="Convert Coins" accountSelectable />
         {renderContent()}
-      </View2>
+      </>
     );
   },
 );
