@@ -76,11 +76,11 @@ const textStyle = {
     fontFamily: fontNames.medium,
   },
   incognitoH2: {
-    fontSize: fontSizes.small,
-    fontFamily: fontNames.regular,
+    fontSize: 34,
+    fontFamily: fontNames.medium,
   },
   incognitoH3: {
-    fontSize: fontSizes.medium,
+    fontSize: 28,
     fontFamily: fontNames.medium,
   },
   incognitoH4: {
