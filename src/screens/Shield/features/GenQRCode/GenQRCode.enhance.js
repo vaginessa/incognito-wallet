@@ -44,7 +44,7 @@ const enhance = (WrappedComp) => (props) => {
   const themeMode = useSelector(themeModeSelector);
   const renderHeader = React.useCallback(() => (
     <Header
-      title={`Deposit ${tokenSymbol}`}
+      title={`Shield ${tokenSymbol}`}
       titleStyled={styled.titleStyled}
       rightHeader={<BtnInfo isBlack={themeMode !== THEME_KEYS.DARK_THEME} onPress={handleToggleTooltip} />}
       onGoBack={handleGoBack}
