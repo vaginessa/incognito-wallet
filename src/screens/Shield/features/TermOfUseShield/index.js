@@ -9,12 +9,17 @@ import ic_radio_check from '@src/assets/images/icons/ic_radio_check.png';
 import withBridgeConnect from '@src/screens/Wallet/features/BridgeConnect/WalletConnect.enhance';
 import { ExHandler } from '@services/exception';
 import { compose } from 'recompose';
+import { RatioIcon } from '@components/Icons';
+import { Row } from '@src/components';
+import { useSelector } from 'react-redux';
+import { colorsSelector } from '@src/theme';
 
 const TermOfUseShield = (props) => {
   const { onNextPress, handleConnect, onSelected, selectedTerm, handleShield, selectedPrivacy } = props;
   const [isPressed, setIsPressed] = React.useState(false);
+  const colors = useSelector(colorsSelector);
   const terms = [
-    'Generate a deposit address',
+    'Generate a shielding address',
     `Connect your ${selectedPrivacy?.rootNetworkName} wallet`
   ];
 
@@ -57,22 +62,22 @@ const TermOfUseShield = (props) => {
 
   return (
     <>
-      <Header title="Deposit" />
+      <Header title={`Shield ${selectedPrivacy.symbol}`} />
       <ScrollViewBorder style={styled.scrollview}>
         <Text style={[styled.text, { marginBottom: 22 }]}>
-          {`To anonymize your coins, you'll need to send funds to Incognito. You can simply generate a deposit address, or connect directly with the bridge smart contract using your ${selectedPrivacy?.rootNetworkName} wallet.`}
+          {`To anonymize your coins, you'll need to send funds to Incognito. You can simply generate a shielding address, or connect directly with the bridge smart contract using your ${selectedPrivacy?.rootNetworkName} wallet.`}
         </Text>
         {terms && terms.map((item, index) => {
           return (
             <TouchableOpacity
-              style={index === selectedTerm ? styled.selectedButton : styled.unSelectedButon}
+              style={[styled.selectedButton, { backgroundColor: colors.btnBG3 }]}
               key={`key-${index}`}
               onPress={() => handlePress(index)}
             >
-              <View style={styled.contentView}>
-                <Image style={styled.icon} source={index === selectedTerm ? ic_radio_check : ic_radio} />
-                <Text style={[styled.text, { marginRight: 20, color: index === selectedTerm ? COLORS.black : COLORS.colorGreyBold }]}>{item}</Text>
-              </View>
+              <Row centerVertical style={styled.contentView}>
+                <RatioIcon style={styled.icon} selected={index === selectedTerm} />
+                <Text style={[styled.text, { marginRight: 20 }]}>{item}</Text>
+              </Row>
             </TouchableOpacity>
           );
         })}
@@ -106,13 +111,14 @@ const styled = StyleSheet.create({
   scrollview: {
   },
   text: {
-    fontFamily: FONT.NAME.specialMedium,
+    fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.regular,
     lineHeight: FONT.SIZE.medium + 4,
   },
   icon: {
     marginTop: 2,
     marginRight: 8,
+    tintColor: COLORS.blue5
   },
   contentView: {
     flexDirection: 'row',
@@ -120,16 +126,8 @@ const styled = StyleSheet.create({
   selectedButton: {
     padding: 12,
     borderRadius: 8,
-    borderWidth: 0,
     marginBottom: 16,
-    backgroundColor: '#EFEFEF',
-  },
-  unSelectedButon: {
-    padding: 12,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: COLORS.colorGreyLight,
-    marginBottom: 16
+    borderWidth: 0,
   },
   button: {
     marginTop: 30,

@@ -41,7 +41,7 @@ const Balance = React.memo(({ hideBalance }) => {
   return (
     <View style={[styledBalance.container]}>
       <Row centerVertical spaceBetween>
-        <Text3 style={styledBalance.title}>Coin balance</Text3>
+        <Text3 style={styledBalance.title}>Shielded balance</Text3>
         <AddToken />
       </Row>
       <Row style={styledBalance.wrapBalance} center>
@@ -110,7 +110,7 @@ const GroupButton = React.memo(() => {
       {/*    triangleStyle={groupButtonStyled.triangleStyle}*/}
       {/*  />*/}
       {/*)}*/}
-      <BtnPrimary onPress={onFeaturePress} title="Shield" />
+      <BtnPrimary onPress={onFeaturePress} title="Shield a coin" />
     </View>
   );
 });

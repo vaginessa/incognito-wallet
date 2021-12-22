@@ -18,9 +18,7 @@ export const styledHeaderTitle = StyleSheet.create({
     flexDirection: 'row',
   },
   title: {
-    fontFamily: FONT.NAME.specialMedium,
-    fontSize: FONT.SIZE.medium,
-    lineHeight: FONT.SIZE.medium + 4,
+    ...FONT.TEXT.incognitoH4,
   },
   searchStyled: {
     textTransform: 'none',

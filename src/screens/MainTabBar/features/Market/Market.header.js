@@ -4,7 +4,7 @@ import SelectDropdown from 'react-native-select-dropdown';
 import { headerStyled } from '@screens/MainTabBar/features/Market/Market.styled';
 import { Header, Row } from '@src/components';
 import { ArrowDownLine } from '@components/Icons/icon.arrowDown';
-import { StarIcon } from '@components/Icons';
+import { SearchIcon, StarIcon } from '@components/Icons';
 import {COLORS} from '@src/styles';
 import {useDispatch, useSelector} from 'react-redux';
 import {actionToggleMarketTab, marketTabSelector} from '@screens/Setting';
@@ -12,6 +12,8 @@ import styled from 'styled-components/native';
 import globalStyled from '@src/theme/theme.styled';
 import { Text, TouchableOpacity, View } from '@components/core';
 import { colorsSelector } from '@src/theme/theme.selector';
+import { useNavigation } from 'react-navigation-hooks';
+import routeNames from '@routers/routeNames';
 
 const headers = [
   { name: 'Gainers', filterField: 'change', orderField: 'desc' },
@@ -23,10 +25,6 @@ export const MarketTabs = {
   FAVORITE: 'favorite'
 };
 
-const StyledHeader = styled(Row)`
-  background-color: ${({ theme }) => theme.background2};
-`;
-
 const StyledTouchableOpacity = styled(TouchableOpacity)`
   background-color: ${({ theme }) => theme.btnBG2};
 `;
@@ -35,6 +33,7 @@ const HeaderView = ({ onFilter }) => {
   const dispatch = useDispatch();
   const colors = useSelector(colorsSelector);
   const activeTab = useSelector(marketTabSelector);
+  const navigation = useNavigation();
   const onChangeTab = (tab) => {
     dispatch(actionToggleMarketTab(tab));
   };
@@ -44,8 +43,12 @@ const HeaderView = ({ onFilter }) => {
       <Header
         title="Privacy Markets"
         titleStyled={headerStyled.title}
-        canSearch
         hideBackButton
+        rightHeader={(
+          <TouchableOpacity style={{ width: 40, alignItems: 'flex-end' }} onPress={() => navigation.navigate(routeNames.MarketSearchCoins)}>
+            <SearchIcon color={COLORS.lightGrey36} />
+          </TouchableOpacity>
+        )}
       />
       <View borderTop>
         <Row
