@@ -64,6 +64,7 @@ const Header = ({
   canSearch,
   dataSearch,
   toggleSearch,
+  autoFocus,
   accountSelectable,
   onGoBack,
   onHandleSearch,
@@ -96,7 +97,7 @@ const Header = ({
   });
 
   const renderHeaderTitle = () => {
-    if (toggleSearch) {
+    if (toggleSearch || autoFocus) {
       if (isNormalSearch) {
         return (
           <SearchBox
@@ -167,6 +168,7 @@ Header.defaultProps = {
   hideBackButton: false,
   disableAccountButton: false,
   handleSelectedAccount: null,
+  autoFocus: false
 };
 
 Header.propTypes = {
@@ -190,6 +192,7 @@ Header.propTypes = {
   hideBackButton: PropTypes.bool,
   disableAccountButton: PropTypes.bool,
   handleSelectedAccount: PropTypes.func,
+  autoFocus: PropTypes.bool
 };
 
 export default withHeader(React.memo(Header));
