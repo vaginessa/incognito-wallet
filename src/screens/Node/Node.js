@@ -1,5 +1,4 @@
 import React, { memo } from 'react';
-import { FlatList } from 'react-native';
 import nodeEnhance from '@screens/Node/Node.enhance';
 import DialogLoader from '@components/DialogLoader';
 import PropTypes from 'prop-types';
@@ -9,7 +8,7 @@ import WelcomeFirstTime from '@screens/Node/components/WelcomeFirstTime';
 import WelcomeNodes from '@screens/Node/components/Welcome';
 import { isEmpty } from 'lodash';
 import Rewards from '@screens/Node/components/Rewards';
-import {ActivityIndicator, RoundCornerButton, View} from '@components/core';
+import { ActivityIndicator, FlatList, RefreshControl, RoundCornerButton, View } from '@components/core';
 import theme from '@src/styles/theme';
 import { SuccessModal } from '@src/components';
 import NodeItem from '@screens/Node/components/NodeItem/NodeItem';
@@ -124,6 +123,7 @@ const Node = (props) => {
         {renderTotalRewards()}
         <>
           <FlatList
+            refreshControl={(<RefreshControl />)}
             showsVerticalScrollIndicator={false}
             contentContainerStyle={[{ flexGrow: 1,}]}
             style={style.list}
@@ -158,7 +158,7 @@ const Node = (props) => {
   return (
     <>
       <View fullFlex borderTop paddingHorizontal>
-        {renderContent()} 
+        {renderContent()}
         {renderModalActionsForNodePrevSetup()}
         <DialogLoader loading={loading} />
       </View>
