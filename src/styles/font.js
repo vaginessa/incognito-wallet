@@ -86,6 +86,7 @@ const textStyle = {
   incognitoH4: {
     fontSize: fontSizes.large24,
     fontFamily: fontNames.medium,
+    lineHeight: 30
   },
   incognitoH5: {
     fontSize: fontSizes.superMedium,

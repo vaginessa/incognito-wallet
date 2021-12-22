@@ -8,13 +8,13 @@ import { totalShareSelector } from '@screens/PDexV3/features/Portfolio';
 import { useNavigation } from 'react-navigation-hooks';
 import { TouchableOpacity } from 'react-native';
 import routeNames from '@routers/routeNames';
-import AddSolidIcon from '@components/Icons/icon.addSolid';
+import PaperIcon from '@components/Icons/icon.paper';
 
 const HistoryIcon = React.memo(() => {
   const navigation = useNavigation();
   return (
     <TouchableOpacity onPress={() => navigation.navigate(routeNames.LiquidityHistories)}>
-      <AddSolidIcon />
+      <PaperIcon />
     </TouchableOpacity>
   );
 });
