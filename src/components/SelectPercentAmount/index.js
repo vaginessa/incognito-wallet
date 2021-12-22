@@ -18,11 +18,13 @@ const styled = StyleSheet.create({
     width: '100%',
     justifyContent: 'center',
     alignItems: 'center',
+    display: 'flex',
   },
   percent: {
     fontSize: FONT.SIZE.superSmall,
     fontFamily: FONT.NAME.regular,
     textAlign: 'center',
+    flex: 1,
   },
   btnLastChild: {
     marginRight: 0,
@@ -67,7 +69,7 @@ const SelectPercentAmount = (props) => {
             numberOfLines={1}
             ellipsizeMode="tail"
           >
-            {lastChild ? lastPercent || percentStr : percentStr}
+            {`${lastChild ? lastPercent || percentStr : percentStr} `}
           </Text>
         </TouchableOpacity>
       );

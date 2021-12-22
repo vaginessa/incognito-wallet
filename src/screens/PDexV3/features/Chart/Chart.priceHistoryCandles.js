@@ -243,7 +243,7 @@ const PriceHistoryCandles = () => {
           backgroundColor: colors.grey9,
           opacity: visible ? 1 : 0,
         }}
-        source={{ uri: 'http://192.168.1.7:3002' }}
+        source={{ uri }}
         onMessage={handleOnMessage}
         onLoad={() => setVisible(true)}
         originWhitelist={['*']}

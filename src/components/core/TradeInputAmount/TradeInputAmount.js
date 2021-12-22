@@ -38,7 +38,7 @@ const styled = StyleSheet.create({
     fontSize: FONT.SIZE.avgLarge + 2,
     lineHeight: FONT.SIZE.avgLarge + 8,
     fontFamily: FONT.NAME.medium,
-    marginRight: 5,
+    marginRight: 10,
   },
   infinityIcon: {},
   // loadingIcon: {
