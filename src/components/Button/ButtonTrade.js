@@ -11,7 +11,7 @@ const styled = StyleSheet.create({
   titleStyle: {
     color: COLORS.white,
     fontFamily: FONT.NAME.medium,
-    fontSize: FONT.SIZE.regular,
+    fontSize: FONT.SIZE.medium,
     lineHeight: FONT.SIZE.regular + 5,
   },
 });
