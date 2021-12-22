@@ -88,8 +88,8 @@ const SendForm = (props) => {
     appConstant.DISABLED.UNSHIELD_DECENTRALIZED,
     handleSend,
   );
-  let placeholderAddress = selectedPrivacy?.isMainCrypto 
-    ? 'Incognito or ETH/BSC address' 
+  let placeholderAddress = selectedPrivacy?.isMainCrypto
+    ? 'Incognito or ETH/BSC address'
     : `Incognito${
       selectedPrivacy?.isIncognitoToken
         ? ' '
@@ -194,7 +194,7 @@ const SendForm = (props) => {
     }
     return null;
   };
-  
+
   React.useEffect(() => {
     const { toAddress, amount } = navigation.state?.params || {};
     if (toAddress) {
@@ -206,7 +206,7 @@ const SendForm = (props) => {
   }, [navigation.state?.params]);
 
   return (
-    <View style={[styled.container, globalStyled.defaultPadding3]} borderTop>
+    <View style={styled.container} borderTop>
       <KeyboardAwareScrollView>
         <Form>
           {({ handleSubmit }) => (
@@ -283,7 +283,7 @@ const SendForm = (props) => {
         </Form>
       </KeyboardAwareScrollView>
       {isSending && <LoadingTx text={textLoadingTx} />}
-      
+
     </View>
   );
 };

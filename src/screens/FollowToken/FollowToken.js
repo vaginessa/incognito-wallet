@@ -48,6 +48,7 @@ const FollowTokenList = React.memo((props) => {
       <View borderTop style={[{ flex : 1 }]}>
         <ListAllToken
           {...rest}
+          styledCheckBox={globalStyled.defaultPaddingHorizontal}
           renderItem={({ item }) => (
             <TokenFollow item={item} handleToggleFollowToken={handleToggleFollowToken} onPress={() => handleToggleFollowToken(item)} />
           )}

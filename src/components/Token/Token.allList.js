@@ -9,7 +9,6 @@ import globalStyled from '@src/theme/theme.styled';
 
 const styled = StyleSheet.create({
   hook: {
-    ...globalStyled.defaultPaddingHorizontal,
     flexDirection: 'row',
     alignItems: 'center',
     marginTop: 32,
@@ -32,6 +31,7 @@ const ListAllToken = (props) => {
     toggleUnVerified,
     renderItem,
     styledContainer,
+    styledCheckBox
   } = props;
   return (
     <KeyboardAwareScrollView
@@ -43,6 +43,7 @@ const ListAllToken = (props) => {
         btnStyle={[
           styled.hook,
           tokensFactories[1]?.visible ? null : { marginBottom: 50 },
+          styledCheckBox
         ]}
         onPress={onToggleUnVerifiedTokens}
         checked={toggleUnVerified}
@@ -53,11 +54,18 @@ const ListAllToken = (props) => {
   );
 };
 
+ListAllToken.defaultProps = {
+  styledContainer: null,
+  styledCheckBox: null
+};
+
 ListAllToken.propTypes = {
   tokensFactories: PropTypes.array.isRequired,
   onToggleUnVerifiedTokens: PropTypes.func.isRequired,
   toggleUnVerified: PropTypes.bool.isRequired,
   renderItem: PropTypes.func.isRequired,
+  styledContainer: PropTypes.any,
+  styledCheckBox: PropTypes.any
 };
 
 export default React.memo(ListAllToken);

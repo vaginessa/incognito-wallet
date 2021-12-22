@@ -30,7 +30,7 @@ const RemoveLPDetail = () => {
         copyable: true,
         openUrl: true,
         handleOpenLink: () => {
-          openLink(requestTx);
+          openLink({ txID: requestTx });
         }
       },
       {
@@ -48,7 +48,7 @@ const RemoveLPDetail = () => {
       copyable: true,
       openUrl: true,
       handleOpenLink: () => {
-        openLink(txID);
+        openLink({ txID: txID });
       }
     }));
     const amountHook = removeData.map(({ removeAmountSymbolStr: amount, removeAmount }, index) => ({
