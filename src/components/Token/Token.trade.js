@@ -25,7 +25,7 @@ const styled = StyleSheet.create({
     justifyContent: 'flex-start',
   },
   name: {
-    ...FONT.TEXT.incognitoH2,
+    ...FONT.TEXT.incognitoP2,
   },
   symbol: {
     marginBottom: 2,

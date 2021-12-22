@@ -23,7 +23,6 @@ const styled = StyleSheet.create({
   container: {
     flex: 1,
     minHeight: 250,
-    marginBottom: 16,
   },
   btnStyle: {
     height: 24,
@@ -149,7 +148,7 @@ const PriceHistoryCandles = () => {
         return result;
       });
       if (chartData.length > 0) {
-        let width = Number(ScreenWidth) - 50;
+        let width = Number(ScreenWidth);
         const minLow = minBy(chartData, (c) => c?.low)?.low || 0;
         const precision =
           format.getDecimalsFromHumanAmount(minLow) || token2?.pDecimals;

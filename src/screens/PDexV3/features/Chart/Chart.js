@@ -21,7 +21,7 @@ const Chart = ({ onRefresh, callback }) => {
         />
         <PriceHistoryCandles />
         <Details />
-        <OrderBook />
+        <OrderBook containerStyled={styled.containerStyled} />
       </ScrollViewBorder>
     </View>
   );

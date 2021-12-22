@@ -6,5 +6,11 @@ export const styled = StyleSheet.create({
   },
   scrollview: {
     flex: 1,
+    paddingHorizontal: 0,
+    paddingVertical: 0,
+  },
+  containerStyled: {
+    paddingHorizontal: 24,
+    marginTop: 16,
   },
 });
