@@ -18,9 +18,6 @@ const styled = StyleSheet.create({
     flex: 1,
     marginTop: 24,
   },
-  wrapper: {
-    paddingVertical: 24,
-  },
 });
 
 const TabOpenOrder = React.memo(() => {
@@ -40,14 +37,6 @@ const TabOpenOrder = React.memo(() => {
   );
 });
 
-const TabOrderBook = React.memo(() => {
-  return (
-    <View style={styled.wrapper}>
-      <OrderBook />
-    </View>
-  );
-});
-
 const GroupSubInfo = () => {
   return (
     <View style={styled.container}>
@@ -58,7 +47,7 @@ const GroupSubInfo = () => {
           upperCase={false}
           onChangeTab={() => null}
         >
-          <TabOrderBook />
+          <OrderBook />
         </View>
         <View
           tabID={TAB_HISTORY_ID}
