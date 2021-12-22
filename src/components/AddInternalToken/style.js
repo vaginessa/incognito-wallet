@@ -22,7 +22,7 @@ const style = StyleSheet.create({
     flexDirection: 'row',
   },
   verifyInfoLabel: {
-    fontSize: FONT.SIZE.medium,
+    fontSize: FONT.SIZE.regular,
     fontFamily: FONT.NAME.medium,
     lineHeight: FONT.SIZE.medium + 4,
     flex: 1,
@@ -34,13 +34,13 @@ const style = StyleSheet.create({
     marginBottom: 10,
   },
   input: {
-    fontSize: FONT.SIZE.medium,
-    lineHeight: FONT.SIZE.medium + 4,
+    fontSize: FONT.SIZE.regular,
+    lineHeight: FONT.SIZE.regular + 4,
     fontFamily: FONT.NAME.medium,
   },
   labelInput: {
-    fontSize: FONT.SIZE.superMedium,
-    lineHeight: FONT.SIZE.superMedium + 4,
+    fontSize: FONT.SIZE.medium,
+    lineHeight: FONT.SIZE.medium + 4,
     fontFamily: FONT.NAME.bold,
   },
   descriptionInput: {
@@ -75,9 +75,7 @@ const style = StyleSheet.create({
   },
   showMyAddressLabel: {
     flex: 1,
-    fontFamily: FONT.NAME.bold,
-    fontSize: FONT.SIZE.superMedium,
-    lineHeight: FONT.SIZE.superMedium + 10,
+    ...FONT.TEXT.formLabel,
   },
   switch: {
     marginBottom: 0,

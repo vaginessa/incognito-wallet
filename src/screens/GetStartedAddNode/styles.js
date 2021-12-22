@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
   title2: {
     width: '100%',
     fontFamily: FONT.NAME.bold,
-    fontSize: FONT.SIZE.superMedium,
+    fontSize: FONT.SIZE.medium,
     alignSelf: 'center',
     textAlign: 'center',
     lineHeight: 28,
@@ -114,7 +114,6 @@ const styles = StyleSheet.create({
   step3_text: {
     ...TextStyle.normalText,
     marginTop: 10,
-    color: COLORS.colorGreyBold,
     fontFamily: FONT.NAME.medium,
     alignSelf: 'center'
   },

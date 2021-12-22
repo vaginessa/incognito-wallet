@@ -12,7 +12,7 @@ import { styled } from './Chart.styled';
 const Chart = ({ onRefresh, callback }) => {
   return (
     <View style={styled.container}>
-      <Header title="Order Book" />
+      <Header title="Chart" />
       <ScrollViewBorder style={styled.scrollview}>
         <GroupActions
           canSelectPool={false}
@@ -21,7 +21,7 @@ const Chart = ({ onRefresh, callback }) => {
         />
         <PriceHistoryCandles />
         <Details />
-        <OrderBook />
+        <OrderBook containerStyled={styled.containerStyled} />
       </ScrollViewBorder>
     </View>
   );

@@ -20,7 +20,7 @@ const style = StyleSheet.create({
   itemLeft: {
     marginRight: 'auto',
     fontFamily: FONT.NAME.bold,
-    fontSize: FONT.SIZE.superMedium,
+    fontSize: FONT.SIZE.medium,
     textAlign: 'left',
     maxWidth: 200,
   },
@@ -193,10 +193,9 @@ export const rewardStyle = StyleSheet.create({
     backgroundColor: COLORS.primary,
   },
   balance: {
-    fontSize: FONT.SIZE.medium,
     textAlign: 'center',
     height: '100%',
-    ...FONT.STYLE.medium,
+    ...FONT.TEXT.incognitoP1,
   },
   prvStyle: {
     marginTop: isAndroid() ? 3 : 0,

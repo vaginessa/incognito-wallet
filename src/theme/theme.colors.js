@@ -69,6 +69,7 @@ export function appTheme(darkMode: boolean) {
     grey7: '#404040',
     grey8: '#363636',
     grey9: '#303030',
+    grey10: '#484848',
     ctaMain: '#1A73E8',
     ctaMain01: 'rgba(26, 115, 232, 0.1)',
     // text

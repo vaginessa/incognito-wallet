@@ -19,7 +19,8 @@ const styled = StyleSheet.create({
   container: {
     flex: 1,
     marginBottom: 16,
-    marginTop: 24,
+    paddingHorizontal: 24,
+    paddingTop: 32,
   },
   top: {
     justifyContent: 'space-between',
@@ -30,7 +31,7 @@ const styled = StyleSheet.create({
     flexDirection: 'row',
   },
   pool: {
-    ...FONT.TEXT.incognitoH2,
+    ...FONT.TEXT.incognitoH3,
   },
   rate: {
     ...FONT.TEXT.incognitoP1,
@@ -80,7 +81,6 @@ export const GroupActions = ({
       },
     });
   };
-  console.log('perChange24hColor', perChange24hColor);
   return (
     <View style={styled.container}>
       <Row style={styled.top}>

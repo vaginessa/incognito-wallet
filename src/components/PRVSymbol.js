@@ -7,7 +7,7 @@ import { FONT } from '@src/styles';
 
 const styles = StyleSheet.create({
   symbol: {
-    fontSize: 18,
+    fontSize: FONT.SIZE.regular,
   },
   font: {
     fontFamily: FONT.NAME.specialRegular,

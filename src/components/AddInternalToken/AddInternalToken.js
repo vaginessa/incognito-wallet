@@ -229,8 +229,6 @@ class AddInternalToken extends Component {
                   placeholder="Enter coin name"
                   label="Name"
                   validate={validator.combinedTokenName}
-                  inputStyle={styleSheet.input}
-                  labelStyle={styleSheet.labelInput}
                   noMarginTop
                 />
                 <Field
@@ -239,29 +237,23 @@ class AddInternalToken extends Component {
                   name="symbol"
                   placeholder="Enter coin ticker"
                   label="Ticker"
-                  inputStyle={styleSheet.input}
                   validate={validator.combinedTokenSymbol}
-                  labelStyle={styleSheet.labelInput}
                 />
                 <Field
                   component={InputField}
                   name="amount"
                   placeholder="Enter number of coins"
                   label="Total supply"
-                  inputStyle={styleSheet.input}
                   componentProps={{
                     keyboardType: 'decimal-pad',
                   }}
                   validate={[...validator.combinedNanoAmount]}
-                  labelStyle={styleSheet.labelInput}
                 />
                 <Field
                   component={InputField}
                   name="description"
                   label="Description"
                   validate={descriptionMaxLength}
-                  inputStyle={styleSheet.input}
-                  labelStyle={styleSheet.labelInput}
                   placeholder="Describe your coin"
                   maxLength={255}
                 />
@@ -276,8 +268,6 @@ class AddInternalToken extends Component {
                     placeholder="Enter creator name"
                     label="Creator"
                     maxLength={100}
-                    inputStyle={styleSheet.input}
-                    labelStyle={styleSheet.labelInput}
                   />
                   <Field
                     component={InputField}
@@ -288,8 +278,6 @@ class AddInternalToken extends Component {
                     maxLength={100}
                     placeholder="Enter project or coin URL"
                     label="Website"
-                    inputStyle={styleSheet.input}
-                    labelStyle={styleSheet.labelInput}
                   />
                   <Field
                     component={InputField}
@@ -301,8 +289,6 @@ class AddInternalToken extends Component {
                     maxLength={100}
                     placeholder="Enter project email address"
                     label="Email address"
-                    inputStyle={styleSheet.input}
-                    labelStyle={styleSheet.labelInput}
                     validate={isEmail}
                   />
                 </View>
@@ -321,7 +307,7 @@ class AddInternalToken extends Component {
                     <Field
                       component={SwitchField}
                       name="showOwnerAddress"
-                      style={[styleSheet.input, styleSheet.switch]}
+                      style={[styleSheet.switch]}
                     />
                   </View>
                 </View>
@@ -331,7 +317,6 @@ class AddInternalToken extends Component {
                     name="logo"
                     text="PNG format, < 50kb"
                     textButton="Upload"
-                    style={styleSheet.input}
                     validate={imageValidate}
                     label="Coin icon"
                   />
@@ -354,7 +339,6 @@ class AddInternalToken extends Component {
                   styleSheet.submitBtn,
                   disabled && styleSheet.submitBtnDisabed,
                 ]}
-                titleStyle={styleSheet.titleSubmitBtn}
                 onPress={handleSubmit(this.handleCreateSendToken)}
                 isAsync
                 isLoading={submitting}

@@ -24,6 +24,7 @@ import nodeItemDetailEnhanceData from '@screens/Node/components/NodeItemDetail/N
 import BottomBar from '@screens/Node/components/NodeBottomBar';
 import SlashStatus from '@screens/Node/components/SlashStatus';
 import { View2 } from '@src/components/core/View';
+import { FONT } from '@src/styles';
 
 const NodeItemDetail = memo(({
   isLoading,
@@ -104,7 +105,7 @@ const NodeItemDetail = memo(({
   const renderItemText = (text, value) => {
     return (
       <View style={[styles.balanceContainer, { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 30 }]}>
-        <Text style={[theme.text.boldTextStyleMedium]}>{text}</Text>
+        <Text style={{...FONT.TEXT.incognitoH5}}>{text}</Text>
         <Text style={[theme.text.boldTextStyleMedium, { maxWidth: 200 }]} numberOfLines={1}>{value || ''}</Text>
       </View>
     );
@@ -202,6 +203,9 @@ const NodeItemDetail = memo(({
       />
       <ScrollViewBorder
         refreshControl={renderRefreshControl()}
+        style={
+          {paddingBottom: 30}
+        }
       >
         {renderRewards()}
         {renderButton()}

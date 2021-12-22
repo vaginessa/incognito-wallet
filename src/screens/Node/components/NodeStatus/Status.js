@@ -1,4 +1,5 @@
 import { Text, View, TouchableOpacity, ActivityIndicator } from '@components/core';
+import { FONT } from '@src/styles';
 import PropTypes from 'prop-types';
 import React from 'react';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -11,7 +12,7 @@ const Status = ({ isLoading, isExpanded, onToggle, value, color }) => {
   const colors = useSelector(colorsSelector);
   return (
     <View style={[styles.balanceContainer, theme.MARGIN.marginBottomDefault, { flexDirection: 'row', justifyContent: 'space-between' }]}>
-      <Text style={[theme.text.boldTextStyleMedium]}>Status</Text>
+      <Text style={{...FONT.TEXT.incognitoH5}}>Status</Text>
       {
         isLoading
           ? <ActivityIndicator />
@@ -20,7 +21,7 @@ const Status = ({ isLoading, isExpanded, onToggle, value, color }) => {
               style={[{ flexDirection: 'row' }, styles.balanceContainer]}
               onPress={onToggle}
             >
-              <View style={{width: 12, height: 12, marginEnd: 5, borderRadius: 6, backgroundColor: color || 'white'}} />
+              <View style={{width: 10, height: 10, marginEnd: 5, borderRadius: 6, backgroundColor: color || 'white'}} />
               <Text style={[theme.text.boldTextStyleMedium, theme.MARGIN.marginRightDefault]}>{value || ''}</Text>
               <Ionicons name={isExpanded ? 'ios-arrow-up' : 'ios-arrow-down'} size={25} color={colors.arrowRightIcon} />
             </TouchableOpacity>

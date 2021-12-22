@@ -1,9 +1,5 @@
-import {
-  Platform,
-  //  PixelRatio,
-  //  Dimensions
-} from 'react-native';
-// import { isIOS } from '@src/utils/platform';
+import { isIOS } from '@src/utils/platform';
+import { Platform } from 'react-native';
 
 const FONT_FAMILY = Platform.OS === 'ios' ? 'SFProDisplay' : 'SF-Pro-Display-';
 const FONT_FAMILY_SPECIAL =
@@ -76,17 +72,16 @@ const textStyle = {
     fontFamily: fontNames.medium,
   },
   incognitoH2: {
-    fontSize: fontSizes.small,
-    fontFamily: fontNames.regular,
+    fontSize: 34,
+    fontFamily: fontNames.medium,
   },
   incognitoH3: {
-    fontSize: fontSizes.medium,
+    fontSize: 28,
     fontFamily: fontNames.medium,
   },
   incognitoH4: {
     fontSize: fontSizes.large24,
     fontFamily: fontNames.medium,
-    lineHeight: 30
   },
   incognitoH5: {
     fontSize: fontSizes.superMedium,
@@ -99,6 +94,7 @@ const textStyle = {
   incognitoP1: {
     fontSize: fontSizes.regular,
     fontFamily: fontNames.regular,
+    lineHeight: isIOS() ? 20 : 24,
   },
   incognitoP2: {
     fontSize: fontSizes.small,
@@ -108,6 +104,24 @@ const textStyle = {
     fontSize: fontSizes.superSmall,
     fontFamily: fontNames.regular,
   },
+  formLabel: {
+    fontSize: fontSizes.medium,
+    lineHeight: fontSizes.medium + 4,
+    fontFamily: fontNames.bold,
+  },
+  formInput: {
+    fontSize: fontSizes.regular,
+    lineHeight: fontSizes.regular + 4,
+    fontFamily: fontNames.medium,
+  },
+  label: {
+    fontSize: fontSizes.medium,
+    fontFamily: fontNames.bold,
+  },
+  desc: {
+    fontSize: fontSizes.regular,
+    fontFamily: fontNames.medium,
+  }
 };
 
 export default {

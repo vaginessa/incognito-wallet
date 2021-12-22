@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native';
+import { FONT } from '@src/styles';
 
 const globalStyled = StyleSheet.create({
   defaultPadding: {
@@ -25,7 +26,21 @@ const globalStyled = StyleSheet.create({
   },
   defaultBorderRadius: {
     borderRadius: 8,
-  }
+  },
+  defaultFormLabelText: {
+    fontSize: FONT.SIZE.medium,
+    lineHeight: FONT.SIZE.medium + 4,
+    fontFamily: FONT.NAME.bold,
+  },
+  defaultFormLabel: {
+    marginBottom: 8,
+  },
+  defaultFormInputText: {
+    fontSize: FONT.SIZE.regular,
+    lineHeight: FONT.SIZE.regular + 4,
+    fontFamily: FONT.NAME.medium,
+  },
+  
 });
 
 export default globalStyled;

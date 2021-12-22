@@ -6,7 +6,7 @@ import { detailsSelector } from './Chart.selector';
 
 const styled = StyleSheet.create({
   container: {
-    marginBottom: 15,
+    padding: 24,
   },
 });
 

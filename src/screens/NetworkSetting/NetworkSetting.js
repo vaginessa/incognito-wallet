@@ -44,7 +44,7 @@ class NetworkSetting extends Component {
 
     return (
       <>
-        <Header title="Network" style={{ paddingHorizontal: globalStyled.defaultPadding.paddingHorizontal }} />
+        <Header title="Network" /> 
         <ScrollViewBorder>
           {networks &&
             networks.map(
