@@ -1,13 +1,13 @@
 import React from 'react';
-import { StyleSheet, ScrollView, Text } from 'react-native';
-import { COLORS, FONT } from '@src/styles';
+import { StyleSheet, ScrollView } from 'react-native';
+import { FONT } from '@src/styles';
 import Header from '@src/components/Header';
 import { useSelector } from 'react-redux';
 import { selectedPrivacySelector } from '@src/redux/selectors';
 import LoadingContainer from '@components/LoadingContainer/index';
 import QrCodeGenerate from '@src/components/QrCodeGenerate';
 import { CopiableTextDefault as CopiableText } from '@src/components/CopiableText';
-import { TouchableOpacity, View } from '@src/components/core';
+import { Text3, TouchableOpacity, View, Text } from '@src/components/core';
 import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
 import { defaultAccountSelector } from '@src/redux/selectors/account';
@@ -23,12 +23,10 @@ export const homeStyle = StyleSheet.create({
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.regular,
     lineHeight: FONT.SIZE.regular + 4,
-    color: COLORS.colorGreyBold,
     textAlign: 'center',
     marginVertical: 30,
   },
   sub: {
-    color: COLORS.black,
     textDecorationLine: 'underline',
   },
 });
@@ -61,10 +59,10 @@ const ReceiveCrypto = () => {
             <TouchableOpacity
               onPress={() => navigation.navigate(routeNames.Shield)}
             >
-              <Text style={homeStyle.desc}>
+              <Text3 style={homeStyle.desc}>
                 {'To receive from outside Incognito,\n please use '}
                 <Text style={[homeStyle.desc, homeStyle.sub]}>Deposit.</Text>
-              </Text>
+              </Text3>
             </TouchableOpacity>
           )}
         </ScrollView>
