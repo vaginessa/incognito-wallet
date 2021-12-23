@@ -10,7 +10,7 @@ const Waiting = () => (
   <View style={styles.container}>
     <Text4 style={[styles.desc]}>This Node is currently waiting to be selected to create blocks and earn rewards. All Nodes have an equal chance of selection. Numbers may vary in the short-term, but will even out over time through random uniform distribution.</Text4>
     <TouchableOpacity onPress={() => linkingService.openCommunityUrl(CONSTANT_URLS.VALIDATOR_LIFECYCLE)}>
-      <Text style={{color: COLORS.colorBlue, marginTop: 20, fontFamily: FONT.NAME.bold }}>
+      <Text style={{color: COLORS.colorBlue, fontFamily: FONT.NAME.medium, marginTop: 20}}>
         Learn about the validator lifecycle
       </Text>
     </TouchableOpacity>
