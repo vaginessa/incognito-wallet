@@ -8,7 +8,8 @@ import SelectedPrivacy from '@src/models/selectedPrivacy';
 import { getShareDataValue } from '@screens/PDexV3/features/Liquidity/Liquidity.utils';
 
 export const convertToUSD = ({ amount, priceUsd, pDecimals }) => {
-  return Math.ceil(new BigNumber(amount).multipliedBy(priceUsd).multipliedBy(Math.pow(10, pDecimals)).toNumber());
+  const _amount = convertUtil.toNumber(amount, true);
+  return Math.ceil(new BigNumber(_amount).multipliedBy(priceUsd).multipliedBy(Math.pow(10, pDecimals)).toNumber());
 };
 
 export const getPairRate = ({ token1, token2, token1Value, token2Value }) => {
