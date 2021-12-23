@@ -110,8 +110,8 @@ const textStyle = {
     fontFamily: fontNames.bold,
   },
   formInput: {
-    fontSize: fontSizes.regular,
-    lineHeight: fontSizes.regular + 4,
+    fontSize: fontSizes.medium,
+    lineHeight: fontSizes.medium + 4,
     fontFamily: fontNames.medium,
   },
   label: {

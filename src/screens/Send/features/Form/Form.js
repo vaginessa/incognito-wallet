@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { KeyboardAwareScrollView, View, Text, Button  } from '@src/components/core';
-import globalStyled from '@src/theme/theme.styled';
 import { Field } from 'redux-form';
 import {
   createForm,
@@ -24,6 +23,7 @@ import useFeatureConfig from '@src/shared/hooks/featureConfig';
 import appConstant from '@src/constants/app';
 import { CONSTANT_COMMONS } from '@src/constants';
 import { colorsSelector } from '@src/theme/theme.selector';
+import { FONT } from '@src/styles';
 import { styledForm as styled } from './Form.styled';
 import withSendForm, { formName } from './Form.enhance';
 
@@ -188,7 +188,8 @@ const SendForm = (props) => {
           items={platforms}
           name="currencyType"
           label="Network type"
-          labelStyle={{color: colors.text1}}
+          labelStyle={[{color: colors.text1}, {...FONT.TEXT.formLabel}]}
+          // labelStyle={{color: colors.text1}}
         />
       );
     }

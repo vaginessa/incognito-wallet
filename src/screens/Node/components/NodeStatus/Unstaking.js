@@ -10,7 +10,7 @@ const Unstaking = () => (
   <View style={styles.container}>
     <Text4 style={styles.desc}>This Node will complete the unstaking process the next time it is randomly selected to create blocks. As such, unstaking times will vary. This may take anywhere between 4 hours to 21 days.</Text4>
     <TouchableOpacity onPress={() => linkingService.openCommunityUrl(CONSTANT_URLS.UNSTAKING_PROCESS)}>
-      <Text style={{marginVertical: 20, fontFamily: FONT.NAME.bold}}>
+      <Text style={{color: COLORS.colorBlue, marginVertical: 20, fontFamily: FONT.NAME.bold}}>
         Learn more about unstaking
       </Text>
     </TouchableOpacity>

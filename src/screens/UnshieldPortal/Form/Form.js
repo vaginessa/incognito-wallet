@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { View, Text } from 'react-native';
-import { KeyboardAwareScrollView, Modal, TextInput } from '@src/components/core';
+import { View } from 'react-native';
+import { KeyboardAwareScrollView, Modal, TextInput, Text, Button } from '@src/components/core';
 import { Field } from 'redux-form';
 import {
   createForm,
@@ -12,12 +12,12 @@ import {
 import { SEND } from '@src/constants/elements';
 import { generateTestId } from '@src/utils/misc';
 import PropTypes from 'prop-types';
-import { ButtonBasic } from '@src/components/Button';
 import { useSelector } from 'react-redux';
 import { selectedPrivacySelector } from '@src/redux/selectors';
 import LoadingTx from '@src/components/LoadingTx';
 import format from '@src/utils/format';
 import { CONSTANT_COMMONS } from '@src/constants';
+import { colorsSelector } from '@src/theme/theme.selector';
 import { styledForm as styled } from './Form.styled';
 import withSendForm from './Form.enhance';
 import { formName } from './Form.enhanceInit';
@@ -79,6 +79,7 @@ const SendForm = (props) => {
   const amountValidator = validatePortalAmount;
 
   const submitHandler = handlePressUnshieldPortal;
+  const colors = useSelector(colorsSelector);
 
   return (
     <View style={styled.container}>
@@ -121,6 +122,7 @@ const SendForm = (props) => {
                 name="incognitoNetworkFee"
                 label="Incognito network"
                 validate={validateBalancePRV}
+                canEditable={false}
                 prependView={(
                   <View style={[styled.spFeeItem]}>
                     <Text style={[styled.symbol]}>
@@ -161,8 +163,8 @@ const SendForm = (props) => {
                 name="unshieldCondition"
                 title="I agree to the unshielding conditions."
                 componentProps={{
-                  containerStyle: styled.unshieldPortalCheckbox,
-                  textStyle: styled.unshieldPortalCheckboxText
+                  containerStyle: {...styled.unshieldPortalCheckbox, color: colors.text1},
+                  textStyle: {...styled.unshieldPortalCheckboxText, color: colors.text4},
                 }}
                 validate={validateUnshieldPortalCondition}
                 onPress={(currentStatus) => {
@@ -184,11 +186,10 @@ const SendForm = (props) => {
                   }} 
                 />
               </Modal>
-              <ButtonBasic
+              <Button
                 title='Unshield my crypto'
-                btnStyle={[
+                buttonStyle={[
                   styled.submitBtn,
-                  styled.submitBtnUnShield
                 ]}
                 disabled={disabledForm}
                 onPress={handleSubmit(
