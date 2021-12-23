@@ -36,10 +36,14 @@ const CheckBoxIcon = React.memo(({ active, style }) => {
   const colors = useSelector(colorsSelector);
   return (
     <View style={[styled.box, style, { borderColor: colors.border2 }]}>
-      {active && <VectorCheck color={colors.against} />}
+      {active && <VectorCheck color={colors.ctaMain} />}
     </View>
   );
 });
+
+VectorCheck.propTypes = {
+  color: PropTypes.string.isRequired,
+};
 
 CheckBoxIcon.defaultProps = {
   active: false,
