@@ -165,7 +165,10 @@ export const listShareSelector = createSelector(
 
 export const listShareIDsSelector = createSelector(
   listShareSelector,
-  (listShare) => listShare.map((item) => item?.shareId),
+  (listShare) => listShare.reduce((prev, cur) => {
+    if (cur.share) prev.push(cur?.shareId);
+    return prev;
+  }, []),
 );
 
 export const getDataByShareIdSelector = createSelector(
