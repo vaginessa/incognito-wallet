@@ -25,7 +25,6 @@ export default StyleSheet.create({
   itemRight: {
     marginLeft: 'auto',
     ...FONT.STYLE.bold,
-    color: COLORS.black,
   },
   button: {
     marginTop: 40,
@@ -35,7 +34,6 @@ export default StyleSheet.create({
   },
   desc: {
     ...FONT.STYLE.medium,
-    color: COLORS.newGrey,
   },
   bold: {
     ...FONT.STYLE.bold,

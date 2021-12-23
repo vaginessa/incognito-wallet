@@ -9,6 +9,9 @@ const globalStyled = StyleSheet.create({
   defaultPaddingHorizontal: {
     paddingHorizontal: 24,
   },
+  defaultPaddingVertical: {
+    paddingVertical: 24,
+  },
   defaultBorderSection: {
     borderTopRightRadius: 26,
     borderTopLeftRadius: 26,
