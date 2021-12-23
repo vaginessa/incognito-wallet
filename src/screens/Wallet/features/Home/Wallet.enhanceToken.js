@@ -18,7 +18,7 @@ const enhance = (WrappedComp) => (props) => {
     ...props,
     ...token,
     isGettingBalance,
-    symbol: token?.externalSymbol || token?.symbol || '',
+    symbol: token?.symbol || token?.externalSymbol || '',
   };
   if (!token || !tokenId) {
     return null;

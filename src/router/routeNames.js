@@ -202,4 +202,5 @@ export default {
   Market: 'Market',
   SelectOptionModal: 'SelectOptionModal',
   PrivacyAppsPancake: 'PrivacyAppsPancake',
+  MarketSearchCoins: 'MarketSearchCoins'
 };

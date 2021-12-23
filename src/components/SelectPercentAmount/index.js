@@ -24,7 +24,7 @@ const styled = StyleSheet.create({
     fontSize: FONT.SIZE.superSmall,
     fontFamily: FONT.NAME.regular,
     textAlign: 'center',
-    flex: 1,
+    width: '100%',
   },
   btnLastChild: {
     marginRight: 0,

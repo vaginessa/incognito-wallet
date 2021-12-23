@@ -8,7 +8,7 @@ const styled = StyleSheet.create({
   btnStyle: {
     borderRadius: 100,
     padding: 0,
-    marginRight: 4,
+    marginRight: 0,
     overflow: 'hidden',
     backgroundColor: '#303030',
     height: 40
@@ -27,7 +27,7 @@ const styled = StyleSheet.create({
     fontSize: FONT.SIZE.regular,
     fontFamily: FONT.NAME.medium,
     lineHeight: FONT.SIZE.regular + 5,
-    paddingHorizontal: 16,
+    paddingHorizontal: 14,
     paddingVertical: 8,
   },
   titleDisabledStyle: {

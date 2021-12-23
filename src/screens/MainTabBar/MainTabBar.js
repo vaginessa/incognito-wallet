@@ -21,6 +21,7 @@ const CustomBottomTabBar = styledComp(BottomTabBar)`
   background-color: ${({ theme }) => theme.background2};
   display: flex;
   align-items: center;
+  height: 60px;
 `;
 
 const CustomSafeAreaView = styledComp(SafeAreaView)`
@@ -60,10 +61,13 @@ const TabNavigator = createBottomTabNavigator(
     Trade: {
       screen: TabTrade,
       navigationOptions: {
-        tabBarIcon: () => (
-          <View style={styled.centerTab}>
-            <TradeIcon />
-          </View>
+        tabBarIcon: ({ focused, tintColor }) => (
+          <>
+            <View style={styled.centerTab}>
+              <TradeIcon />
+            </View>
+            <Text style={[styled.label, { color: tintColor, marginTop: 26 }]}>{focused ? 'Trade' : ''}</Text>
+          </>
         ),
       },
     },
@@ -100,7 +104,6 @@ const TabNavigator = createBottomTabNavigator(
       showLabel: false,
       style: {
         borderTopWidth: 0,
-        paddingTop: 8,
       },
       shifting: false,
       labeled: false,

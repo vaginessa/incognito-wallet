@@ -144,9 +144,9 @@ export const OrderBook = React.memo(() => {
   );
 });
 
-const OrderBookContainer = () => {
+const OrderBookContainer = ({ containerStyled }) => {
   return (
-    <View style={styled.container}>
+    <View style={[styled.container, containerStyled]}>
       <Tabs rootTabID={ROOT_TAB_SUB_INFO}>
         <View
           tabID={TAB_ORDER_BOOK}
