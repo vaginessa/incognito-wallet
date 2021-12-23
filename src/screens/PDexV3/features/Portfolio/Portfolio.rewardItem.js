@@ -30,7 +30,7 @@ const RewardItem = ({ data, isLast, onWithdrawFeeLP }) => {
           <ModalBottomSheet
             style={{ height: '60%' }}
             customContent={
-              <PortfolioModal shareId={data.shareId} onWithdrawFeeLP={onWithdrawFeeLP} />
+              <PortfolioModal shareId={data.shareId} onWithdrawFeeLP={onWithdrawFeeLP} showRemove={false} />
             }
           />
         )})

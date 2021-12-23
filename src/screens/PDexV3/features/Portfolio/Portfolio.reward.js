@@ -21,7 +21,7 @@ const PortfolioReward = ({ onCreateWithdrawFeeLP }) => {
   const data = useSelector(listShareSelector);
   const listShare = React.useMemo(() => {
     if (!data) return [];
-    return orderBy(data, 'totalRewardAmount', 'desc');
+    return orderBy(data, 'totalRewardAmount', 'desc').filter(item => item.withdrawable);
   }, [data]);
   const getDataShare = useSelector(getDataByShareIdSelector);
   const onWithdrawFeeLP = ({ poolId, shareId }) => {
