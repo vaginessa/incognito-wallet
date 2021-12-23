@@ -9,6 +9,8 @@ import Loading from '@screens/DexV2/components/Loading';
 import withDefaultAccount from '@components/Hoc/withDefaultAccount';
 import mainStyles from '@screens/PoolV2/style';
 import { RefreshControl } from 'react-native';
+import { useSelector } from 'react-redux';
+import { colorsSelector } from '@src/theme';
 import withSuccess from './success.enhance';
 import withConfirm from './confirm.enhance';
 import withData from './data.enhance';
@@ -25,6 +27,7 @@ const ConfirmMigration = ({
   onRefresh,
   refreshing,
 }) => {
+  const colors = useSelector(colorsSelector);
   const renderRefreshControl = () => (
     <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
   );
@@ -34,7 +37,7 @@ const ConfirmMigration = ({
       <ScrollViewBorder refreshControl={renderRefreshControl()}>
         <View style={styles.mainInfo}>
           <Text style={styles.label}>Migrate</Text>
-          <Text style={styles.bigText} numberOfLines={3}>
+          <Text style={[styles.bigText, { color: colors.blue1 }]} numberOfLines={3}>
             {migrate} {coin.symbol}
           </Text>
         </View>
