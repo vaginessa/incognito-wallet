@@ -13,11 +13,11 @@ export default StyleSheet.create({
     flex: 1,
   },
   rewards: {
-    marginTop: UTILS.heightScale(23),
-    marginBottom: UTILS.heightScale(7.5),
+    marginTop: 32,
+    marginBottom: 4,
   },
   amount: {
-    fontFamily: FONT.NAME.bold,
+    fontFamily: FONT.NAME.medium,
     fontSize: fontSize,
     lineHeight: lineHeight,
   },
@@ -52,7 +52,7 @@ export default StyleSheet.create({
     marginBottom: UTILS.heightScale(30),
   },
   coinName: {
-    fontFamily: FONT.NAME.bold,
+    fontFamily: FONT.NAME.medium,
     fontSize: 20,
   },
   coinInterest: {
