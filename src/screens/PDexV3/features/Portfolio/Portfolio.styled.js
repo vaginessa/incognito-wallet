@@ -1,6 +1,7 @@
 import { StyleSheet } from 'react-native';
 import { FONT } from '@src/styles';
 import globalStyled from '@src/theme/theme.styled';
+import { isIOS } from '@utils/platform';
 
 export const styled = StyleSheet.create({
   container: {
@@ -41,6 +42,7 @@ export const portfolioItemStyled = StyleSheet.create({
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.medium,
     lineHeight: FONT.SIZE.medium + 9,
+    marginBottom: isIOS() ? 0 : 5
   },
   btnSmall: {
     height: 28,

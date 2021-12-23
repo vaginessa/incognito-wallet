@@ -1,6 +1,7 @@
 import { StyleSheet } from 'react-native';
 import { FONT, COLORS } from '@src/styles';
 import globalStyled from '@src/theme/theme.styled';
+import { isIOS } from '@utils/platform';
 
 export const styled = StyleSheet.create({
   container: {
@@ -137,6 +138,7 @@ export const tokenStyled = StyleSheet.create({
     fontSize: FONT.SIZE.medium,
     lineHeight: FONT.SIZE.medium + 7,
     textAlign: 'left',
+    marginBottom: isIOS() ? 0 : 5
   },
   grayText: {
     ...FONT.STYLE.medium,
