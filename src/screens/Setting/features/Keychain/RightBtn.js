@@ -9,7 +9,7 @@ import { colorsSelector } from '@src/theme/theme.selector';
 
 const styled = StyleSheet.create({
   btn: {
-    width: 90,
+    width: 100,
     height: 35,
     borderRadius: 25
   },
