@@ -13,7 +13,6 @@ export default StyleSheet.create({
     color: COLORS.red,
   },
   bigText: {
-    color: COLORS.green2,
     fontSize: 30,
     lineHeight: 45,
     ...FONT.STYLE.bold,
