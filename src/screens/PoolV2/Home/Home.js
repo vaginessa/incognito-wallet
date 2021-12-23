@@ -16,6 +16,7 @@ import { TouchableOpacity } from 'react-native';
 import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@routers/routeNames';
 import helperConst from '@src/constants/helper';
+import globalStyled from '@src/theme/theme.styled';
 import styles from './style';
 
 const BtnInfo = React.memo(() => {
@@ -60,7 +61,7 @@ const Home = ({
         <TotalReward
           total={displayClipTotalRewards}
           nativeToken={nativeToken}
-          subTitle="Compounding Rewards"
+          style={globalStyled.defaultPaddingHorizontal}
         />
         <Actions
           buy={!withdrawable}
@@ -126,9 +127,9 @@ Home.defaultProps = {
 };
 
 export default compose(
-  withLayout_2,
   withDefaultAccount,
   withHistories,
   withPoolData,
   withRetry,
+  withLayout_2,
 )(Home);

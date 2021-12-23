@@ -6,7 +6,6 @@ import {
   BaseTextInput,
   RoundCornerButton,
   TouchableOpacity,
-  Image,
 } from '@components/core';
 import mainStyle from '@screens/PoolV2/style';
 import { compose } from 'recompose';
@@ -19,12 +18,18 @@ import { useNavigation } from 'react-navigation-hooks';
 import ROUTE_NAMES from '@routers/routeNames';
 import { Header, Row } from '@src/components/';
 import { BtnInfinite } from '@components/Button/index';
-import convertUtil, { formatTime } from '@utils/convert';
+import convertUtil from '@utils/convert';
 import formatUtil from '@utils/format';
-import ic_radio from '@src/assets/images/icons/ic_radio.png';
-import ic_radio_check from '@src/assets/images/icons/ic_radio_check.png';
 import globalStyled from '@src/theme/theme.styled';
+import { RatioIcon } from '@components/Icons';
+import { useSelector } from 'react-redux';
+import { colorsSelector } from '@src/theme';
 import styles from './style';
+
+export const Line = React.memo(() => {
+  const colors = useSelector(colorsSelector);
+  return <View style={{ width: '100%', height: 1, backgroundColor: colors.border1 }} />;
+});
 
 const Provide = ({
   coins,
@@ -41,10 +46,11 @@ const Provide = ({
   initIndex,
 }) => {
   const navigation = useNavigation();
+  const colors = useSelector(colorsSelector);
   const [i, setI] = React.useState(initIndex);
   const [selectedTerm, setSelectedTerm] = React.useState(
     coin.locked && coin.terms
-      ? 
+      ?
       {
         apy: coin.terms[i].apy,
         lockTime: coin.terms[i].lockTime,
@@ -105,7 +111,8 @@ const Provide = ({
             <Text style={mainStyle.coinExtraSmall}>{coin.displayInterest}</Text>
           </Row>
         )}
-        <Text style={mainStyle.error}>{error}</Text>
+        <Line />
+        <Text style={[mainStyle.error, !!error && { marginBottom: 8 }]}>{error}</Text>
         {coin.locked &&
           coin.terms &&
           coin.terms.map((item, index) => {
@@ -117,15 +124,15 @@ const Provide = ({
                 key={`key-${index}`}
                 onPress={() => handlePress(index)}
               >
-                <Row style={styles.contentView}>
+                <Row centerVertical style={styles.contentView}>
                   <Text style={[styles.textLeft, { marginRight: 20 }]}>
                     {item.lockTime} Months
                   </Text>
-                  <Row style={styles.contentView}>
-                    <Text style={styles.textRight}>{item.apy}% APR</Text>
-                    <Image
+                  <Row centerVertical style={styles.contentView}>
+                    <Text style={[styles.textRight, { color: colors.blue1 }]}>{item.apy}% APR</Text>
+                    <RatioIcon
                       style={styles.textRight}
-                      source={index === i ? ic_radio_check : ic_radio}
+                      selected={index === i}
                     />
                   </Row>
                 </Row>
@@ -144,6 +151,7 @@ const Provide = ({
           right={`${coin.displayFullBalance} ${coin.symbol}`}
           style={mainStyle.coinExtraSmall}
           wrapperStyle={mainStyle.coinExtraSmallWrapper}
+          rightStyle={{ color: colors.text1 }}
         />
         <ExtraInfo
           token={feeToken}
@@ -152,6 +160,7 @@ const Provide = ({
             feeToken.symbol
           }`}
           style={mainStyle.coinExtraSmall}
+          rightStyle={{ color: colors.text1 }}
           wrapperStyle={mainStyle.coinExtraSmallWrapper}
         />
       </View>

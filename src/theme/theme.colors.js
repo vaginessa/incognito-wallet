@@ -79,5 +79,8 @@ export function appTheme(darkMode: boolean) {
     // button
     borderBtnColor: darkMode ? white : black,
     borderBtnSecondary: darkMode ? white : '#1A73E8',
+
+
+    blue1: '#6BA0FB'
   };
 }
