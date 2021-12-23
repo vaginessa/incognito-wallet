@@ -61,7 +61,6 @@ export const styledForm = StyleSheet.create({
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.medium,
     lineHeight: FONT.SIZE.medium + 4,
-    fontWeight: 'normal'
   },
   spFeeItem: {
     marginRight: 5,

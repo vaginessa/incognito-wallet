@@ -131,7 +131,6 @@ const SendForm = (props) => {
                   </View>
                 )}
               />
-
               <TextInput
                 label="Bitcoin network (est.)"
                 canEditable={false}
@@ -144,7 +143,6 @@ const SendForm = (props) => {
                   </View>
                 )}
               />
-
               <TextInput
                 label="Received (est.)"
                 canEditable={false}
@@ -157,14 +155,13 @@ const SendForm = (props) => {
                   </View>
                 )}
               />  
-             
               <Field
                 component={CheckboxField}
                 name="unshieldCondition"
                 title="I agree to the unshielding conditions."
                 componentProps={{
                   containerStyle: {...styled.unshieldPortalCheckbox, color: colors.text1},
-                  textStyle: {...styled.unshieldPortalCheckboxText, color: colors.text4},
+                  titleStyle: {...styled.unshieldPortalCheckboxText, color: colors.text4},
                 }}
                 validate={validateUnshieldPortalCondition}
                 onPress={(currentStatus) => {
