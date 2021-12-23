@@ -17,6 +17,7 @@ import { currencySelector, decimalDigitsSelector } from '@src/screens/Setting';
 import { prefixCurrency, pTokenSelector } from '@src/redux/selectors/shared';
 import { formatAmount, formatPrice } from '@components/Token/Token.utils';
 import format from '@utils/format';
+import { colorsSelector } from '@src/theme';
 import { styled } from './Token.styled';
 
 export const NormalText = (props) => {
@@ -214,15 +215,15 @@ ChangePrice.defaultProps = {
 };
 
 export const Price = (props) => {
-  const { priceUsd, pricePrv } = props;
+  const { priceUsd, pricePrv, textStyle } = props;
   const { isToggleUSD } = useSelector(pTokenSelector);
-
   return (
     <View style={styled.priceContainer}>
       <NormalText
         text={formatPrice(isToggleUSD ? priceUsd : pricePrv)}
         hasPSymbol
-        style={styled.bottomText}
+        stylePSymbol={textStyle}
+        style={[styled.bottomText, textStyle]}
       />
     </View>
   );
@@ -231,11 +232,13 @@ export const Price = (props) => {
 Price.propTypes = {
   priceUsd: PropTypes.number,
   pricePrv: PropTypes.number,
+  textStyle: PropTypes.any
 };
 
 Price.defaultProps = {
   priceUsd: 0,
   pricePrv: 0,
+  textStyle: null
 };
 
 export const Amount = (props) => {

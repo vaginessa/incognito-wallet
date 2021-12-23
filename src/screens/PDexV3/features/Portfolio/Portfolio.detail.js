@@ -149,7 +149,7 @@ const PortfolioModal = ({ shareId, onWithdrawFeeLP, showRemove = true }) => {
         <Row spaceBetween style={{ marginTop: 10 }}>
           {!!withdrawable && (
             <BtnSecondary
-              title="Withdraw all rewards"
+              title="Withdraw rewards?"
               onPress={onClaimReward}
               wrapperStyle={[{ flex: 1 }, !!share && { marginRight: 8 }]}
               textStyle={{ color: COLORS.colorBlue }}
