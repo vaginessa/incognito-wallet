@@ -42,7 +42,6 @@ const PNode = memo((props) => {
 
   // If Fetching not show
   const renderItemRight = () => (
-    // <Button title='Stake' onPress={() => onStake(item)} style={styles.actionButton} />
     <View style={styles.itemRight}>
       {!hasAccount
         ? <Button title='Import' onPress={onImportAccount} style={styles.actionButton} />
