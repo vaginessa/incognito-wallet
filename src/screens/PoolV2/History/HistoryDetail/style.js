@@ -15,10 +15,8 @@ export default StyleSheet.create({
     ...FONT.STYLE.bold,
   },
   content: {
-    fontFamily: FONT.STYLE.medium,
-    fontSize: FONT.SIZE.superMedium,
+    ...FONT.TEXT.incognitoH4,
     marginTop: 5,
-    ...FONT.STYLE.bold,
   },
   historyItem: {
     marginBottom: 30,

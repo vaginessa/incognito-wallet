@@ -5,7 +5,6 @@ import { View, Text, ScrollViewBorder } from '@components/core';
 import { withLayout_2 } from '@components/Layout';
 import Header from '@components/Header/index';
 import ExtraInfo from '@screens/DexV2/components/ExtraInfo';
-import globalStyled from '@src/theme/theme.styled';
 import { colorsSelector } from '@src/theme';
 import { useSelector } from 'react-redux';
 import styles from './style';
@@ -22,25 +21,25 @@ const HistoryDetail = ({ history }) => {
           <Text style={styles.content}>{history.description}</Text>
         </View>
         <ExtraInfo
-          style={[styles.extra, {color: colors.text12}]}
+          style={[styles.extra, {color: colors.text3}]}
           rightStyle={[styles.info, {color: colors.text1}]}
           left="ID:"
           right={history.id}
         />
         <ExtraInfo
-          style={[styles.extra, {color: colors.text12}]}
+          style={[styles.extra, {color: colors.text3}]}
           rightStyle={[styles.info, {color: colors.text1}]}
           left="Time:"
           right={history.time}
         />
         <ExtraInfo
-          style={[styles.extra, {color: colors.text12}]}
+          style={[styles.extra, {color: colors.text3}]}
           rightStyle={[styles.info, { color: history.statusColor }]}
           left="Status:"
           right={history.status}
         />
         <ExtraInfo
-          style={[styles.extra, {color: colors.text12}]}
+          style={[styles.extra, {color: colors.text3}]}
           rightStyle={[styles.info, {color: colors.text1}]}
           left="Account:"
           right={history.account}
@@ -48,13 +47,13 @@ const HistoryDetail = ({ history }) => {
         {history?.locked && (
           <>
             <ExtraInfo
-              style={[styles.extra, {color: colors.text12}]}
+              style={[styles.extra, {color: colors.text3}]}
               rightStyle={[styles.info, {color: colors.text1}]}
               left="Lock term:"
               right={history?.lockTime + ' Months'}
             />
             <ExtraInfo
-              style={[styles.extra, {color: colors.text12}]}
+              style={[styles.extra, {color: colors.text3}]}
               rightStyle={[styles.info, {color: colors.text1}]}
               left="Term ends:"
               right={history?.unlockDate}

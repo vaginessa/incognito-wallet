@@ -12,7 +12,7 @@ const ImageCached = (props) => {
     error: false,
   });
 
-  if ((!!error || !uri) && !!defaultImage) {
+  if (!!error || !uri) {
     return <AppIcon style={style} {...rest} />;
   }
   return (

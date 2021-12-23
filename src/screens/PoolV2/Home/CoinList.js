@@ -11,7 +11,7 @@ import {
   Image,
 } from '@components/core';
 import mainStyles from '@screens/PoolV2/style';
-import { Row, PRVSymbol } from '@src/components/';
+import { Row, PRVSymbol, ImageCached } from '@src/components';
 import {ArrowRightGreyIcon, LockIcon} from '@components/Icons';
 import { useNavigation } from 'react-navigation-hooks';
 import ROUTE_NAMES from '@routers/routeNames';
@@ -20,7 +20,9 @@ import { PRV_ID } from '@src/screens/DexV2/constants';
 import { useSelector } from 'react-redux';
 import { colorsSelector } from '@src/theme/theme.selector';
 
+import { selectedPrivacySelector } from '@src/redux/selectors';
 import styles from './style';
+
 
 export const LockTimeComp = React.memo(() => {
   const colors = useSelector(colorsSelector);
@@ -67,6 +69,7 @@ const CoinList = ({
   account,
   isLoadingHistories,
 }) => {
+  const getPrivacyDataByTokenID = useSelector(selectedPrivacySelector.getPrivacyDataByTokenID);
   const navigation = useNavigation();
   const colors = useSelector(colorsSelector);
   const handleHistory = () => {
@@ -186,46 +189,50 @@ const CoinList = ({
         {groupedUserData.map((item) => {
           const mapCoin = item.coin;
           if (!mapCoin) return null;
+          const { iconUrl } = getPrivacyDataByTokenID(item.id);
           return (
-            <View key={`${item.id} ${item.locked}`} style={mainStyles.coin}>
-              <View key={`${item.id} ${item.locked}`}>
-                <View>
-                  <Row>
-                    <View>
-                      {renderMainCoin(item)}
-                      {renderUpToAPY(item)}
-                    </View>
-                    <View style={[mainStyles.flex]}>
-                      <Text style={[mainStyles.coinName, mainStyles.textRight]}>
-                        {item.displayBalance}
-                      </Text>
-                      {!!item.displayPendingBalance && (
-                        <Text style={[mainStyles.coinExtra, mainStyles.textRight]}>
-                          + {item.displayPendingBalance}
+            <View style={{ flexDirection: 'row' }}>
+              <ImageCached uri={iconUrl} style={{ width: 32, height: 32, marginTop: 10, marginRight: 14 }} />
+              <View key={`${item.id} ${item.locked}`} style={[mainStyles.coin, { flex: 1 }]}>
+                <View key={`${item.id} ${item.locked}`}>
+                  <View>
+                    <Row>
+                      <View>
+                        {renderMainCoin(item)}
+                        {renderUpToAPY(item)}
+                      </View>
+                      <View style={[mainStyles.flex]}>
+                        <Text style={[mainStyles.coinName, mainStyles.textRight]}>
+                          {item.displayBalance}
                         </Text>
-                      )}
-                      {!!item.displayUnstakeBalance && (
-                        <Text style={[mainStyles.coinExtra, mainStyles.textRight]}>
-                          - {item.displayUnstakeBalance}
-                        </Text>
-                      )}
-                      <Row
-                        style={[mainStyles.textRight, mainStyles.justifyRight]}
-                        center
-                      >
-                        {item.locked && <SumIconComp />}
-                        <PRVSymbol style={[mainStyles.coinInterest, {color: colors.text6}]} />
-                        <Text style={[mainStyles.coinInterest, {color: colors.text6}]}>
-                          &nbsp;{item.displayReward}
-                        </Text>
-                      </Row>
-                      {!!item.displayWithdrawReward && (
-                        <Text style={[mainStyles.coinExtra, mainStyles.textRight]}>
-                          - {item.displayWithdrawReward}
-                        </Text>
-                      )}
-                    </View>
-                  </Row>
+                        {!!item.displayPendingBalance && (
+                          <Text style={[mainStyles.coinExtra, mainStyles.textRight]}>
+                            + {item.displayPendingBalance}
+                          </Text>
+                        )}
+                        {!!item.displayUnstakeBalance && (
+                          <Text style={[mainStyles.coinExtra, mainStyles.textRight]}>
+                            - {item.displayUnstakeBalance}
+                          </Text>
+                        )}
+                        <Row
+                          style={[mainStyles.textRight, mainStyles.justifyRight]}
+                          center
+                        >
+                          {item.locked && <SumIconComp />}
+                          <PRVSymbol style={[mainStyles.coinInterest, {color: colors.text6}]} />
+                          <Text style={[mainStyles.coinInterest, {color: colors.text6}]}>
+                            {item.displayReward}
+                          </Text>
+                        </Row>
+                        {!!item.displayWithdrawReward && (
+                          <Text style={[mainStyles.coinExtra, mainStyles.textRight]}>
+                            - {item.displayWithdrawReward}
+                          </Text>
+                        )}
+                      </View>
+                    </Row>
+                  </View>
                 </View>
               </View>
             </View>

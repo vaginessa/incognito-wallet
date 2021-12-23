@@ -13,8 +13,9 @@ import { ArrowRightGreyIcon } from '@components/Icons';
 import withHistories from '@screens/PoolV2/histories.enhance';
 import withDefaultAccount from '@components/Hoc/withDefaultAccount';
 import { LIMIT } from '@screens/PoolV2/constants';
-import {COLORS} from '@src/styles';
 import globalStyled from '@src/theme/theme.styled';
+import { useSelector } from 'react-redux';
+import { colorsSelector } from '@src/theme';
 import styles from './style';
 
 const History = ({
@@ -25,6 +26,7 @@ const History = ({
   isLoadingMoreHistories,
 }) => {
   const navigation = useNavigation();
+  const colors = useSelector(colorsSelector);
   const viewDetail = (item) => {
     navigation.navigate(ROUTE_NAMES.PoolV2HistoryDetail, { history: item });
   };
@@ -33,7 +35,11 @@ const History = ({
   const renderHistoryItem = ({ item, index }) => (
     <TouchableOpacity
       key={item.id}
-      style={[styles.historyItem, { borderBottomColor: COLORS.lightGrey31, borderBottomWidth: 1 }, index === 0 && {paddingTop: 0}]}
+      style={[
+        styles.historyItem,
+        { borderBottomColor: colors.border4, borderBottomWidth: 1 }, index === 0 && {paddingTop: 0},
+        globalStyled.defaultPaddingHorizontal
+      ]}
       onPress={() => viewDetail(item)}
     >
       <Text style={styles.buttonTitle}>{item.type}</Text>
@@ -53,7 +59,7 @@ const History = ({
   return (
     <>
       <Header title="Provider history" onGoBack={() => navigation.navigate(ROUTE_NAMES.PoolV2)} />
-      <View style={[styles.wrapper, styles.historyTitle]} borderTop paddingHorizontal>
+      <View style={[styles.wrapper, styles.historyTitle, { paddingTop: 24 }]} borderTop>
         {histories.length ? (
           <VirtualizedList
             data={histories}
