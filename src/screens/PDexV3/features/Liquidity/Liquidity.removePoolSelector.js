@@ -27,7 +27,9 @@ export const feeAmountSelector = createSelector(
   getPrivacyDataByTokenIDSelector,
   ({ feeAmount, feeToken }, getPrivacyDataByTokenID) => {
     const token = getPrivacyDataByTokenID(feeToken);
-    return { feeAmount, feeToken, token, feeAmountStr: format.amountFull(feeAmount, token.pDecimals) };
+    const tokenAmount = token.amount;
+    const showFaucet = tokenAmount < feeAmount;
+    return { feeAmount, feeToken, token, feeAmountStr: format.amountFull(feeAmount, token.pDecimals, showFaucet) };
   },
 );
 
