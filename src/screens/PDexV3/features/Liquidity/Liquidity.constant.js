@@ -22,7 +22,7 @@ export const TYPES = {
 
 export const LIQUIDITY_MESSAGES = {
   addLiquidity: 'Add liquidity',
-  createPool : 'Create liquidity',
+  createPool : 'Contribute liquidity',
   removePool : 'Remove liquidity',
   estRate: (onPress) => (
     <Text style={styled.warning}>Are you sure? This varies significantly from normal market rates.&nbsp;
