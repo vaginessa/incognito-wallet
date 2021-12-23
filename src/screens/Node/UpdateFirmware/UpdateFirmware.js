@@ -1,16 +1,18 @@
 import React, { memo } from 'react';
-import {ScrollView, StyleSheet, View} from 'react-native';
+import { StyleSheet, View} from 'react-native';
 import PropTypes from 'prop-types';
 import withEnhance from '@screens/Node/UpdateFirmware/UpdateFirmware.enhance';
 import withData from '@screens/Node/UpdateFirmware/UpdateFirware.enhanceData';
 import { Header } from '@src/components';
+import { Text4 } from '@components/core/Text';
 import { compose } from 'recompose';
 import { withLayout_2 } from '@components/Layout';
 import styles from '@screens/Node/UpdateWifi/style';
 import theme from '@src/styles/theme';
 import {
   RoundCornerButton,
-  Text
+  Text,
+  ScrollViewBorder
 } from '@components/core';
 import { MESSAGES } from '@src/constants';
 import { isEmpty } from 'lodash';
@@ -24,12 +26,12 @@ const UpdateFirmware = memo(({
 }) => {
 
   const renderTitle = () => (
-    <Text style={[theme.text.blackMedium, UpdateFirmwareStyles.title]}>
+    <Text4 style={[theme.text.blackMedium, UpdateFirmwareStyles.title]}>
       { updateSuccess
         ? MESSAGES.UPDATE_FIRMWARE_NODE_DONE
         : MESSAGES.MAKE_UPDATE_FIRMWARE_NODE
       }
-    </Text>
+    </Text4>
   );
 
   const renderError = () => {
@@ -40,7 +42,7 @@ const UpdateFirmware = memo(({
   return (
     <View style={{ flex: 1 }}>
       <Header title='Update Node' onGoBack={onGoBack} />
-      <ScrollView>
+      <ScrollViewBorder>
         {renderTitle()}
         {renderError()}
         <RoundCornerButton
@@ -50,7 +52,7 @@ const UpdateFirmware = memo(({
           style={[styles.button, theme.BUTTON.NODE_BUTTON, { marginTop: 0 }]}
           onPress={onButtonPress}
         />
-      </ScrollView>
+      </ScrollViewBorder>
     </View>
   );
 });
@@ -71,7 +73,6 @@ const UpdateFirmwareStyles = StyleSheet.create({
   title: {
     lineHeight: 30,
     marginBottom: 50,
-    marginTop: 42
   }
 });
 

@@ -123,15 +123,13 @@ const Node = (props) => {
         {renderTotalRewards()}
         <>
           <FlatList
-            refreshControl={(<RefreshControl />)}
+            refreshControl={(<RefreshControl refreshing={isRefreshing} onRefresh={refreshData}/>)}
             showsVerticalScrollIndicator={false}
             contentContainerStyle={[{ flexGrow: 1,}]}
             style={style.list}
             data={listDevice}
             keyExtractor={getKeyExtractor}
             renderItem={renderNode}
-            onRefresh={refreshData}
-            refreshing={isRefreshing}
           />
           {/*<View style={{ marginHorizontal: 25 }}>*/}
           {/*  <RoundCornerButton*/}

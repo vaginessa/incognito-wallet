@@ -14,7 +14,6 @@ const style = StyleSheet.create({
     fontFamily: FONT.NAME.bold,
     fontSize: FONT.SIZE.superMedium,
     lineHeight: FONT.SIZE.superMedium + 4,
-    color: COLORS.black,
   },
   input: {
     fontFamily: FONT.NAME.medium,
@@ -48,17 +47,21 @@ const style = StyleSheet.create({
     alignItems: 'center'
   },
   selectedBtn: {
-    backgroundColor: '#EFEFEF',
+    // backgroundColor: '#EFEFEF',
   },
   unSelectBtn: {
     borderColor: COLORS.colorGreyLight,
   },
   textSelectBox: {
-    color: COLORS.colorGreyBold,
     fontFamily: FONT.NAME.specialMedium,
     fontSize: FONT.SIZE.regular,
     lineHeight: FONT.SIZE.medium + 4,
     marginLeft: 10,
+  },
+  icon: {
+    marginTop: 2,
+    marginRight: 8,
+    tintColor: COLORS.blue5
   },
 });
 

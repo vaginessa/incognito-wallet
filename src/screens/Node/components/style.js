@@ -133,7 +133,6 @@ const style = StyleSheet.create({
   },
   text: {
     ...FONT.STYLE.medium,
-    color: COLORS.newGrey,
   },
   bold: {
     ...FONT.STYLE.bold,

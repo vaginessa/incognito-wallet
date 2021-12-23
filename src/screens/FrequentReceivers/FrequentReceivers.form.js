@@ -1,6 +1,6 @@
 /* eslint-disable import/no-cycle */
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
 import Header from '@src/components/Header';
 import { Field } from 'redux-form';
@@ -9,9 +9,8 @@ import {
   validator,
   createForm,
 } from '@src/components/core/reduxForm';
-import { ButtonBasic } from '@src/components/Button';
 import Icons from 'react-native-vector-icons/Fontisto';
-import { TouchableOpacity } from '@src/components/core';
+import { TouchableOpacity, View, Button } from '@src/components/core';
 import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
 import { CONSTANT_COMMONS } from '@src/constants';
@@ -20,12 +19,8 @@ import { selectedReceiverSelector } from '@src/redux/selectors/receivers';
 import withForm from './FrequentReceivers.withForm';
 
 const styled = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
   form: {
     flex: 1,
-    marginTop: 15,
   },
   submitBtn: {
     marginTop: 50,
@@ -72,55 +67,59 @@ const Form = (props) => {
     shouldShowNetwork,
   } = props;
   return (
-    <View style={styled.container}>
+    <>
       <Header title={headerTitle} />
-      <FormDt style={styled.form}>
-        {({ handleSubmit }) => (
-          <View>
-            <Field
-              componentProps={{
-                style: {
-                  marginTop: 0,
-                },
-              }}
-              component={InputField}
-              placeholder="Name"
-              name="name"
-              label="Name"
-              validate={isRequired}
-              maxLength={50}
-            />
-            <Field
-              component={InputField}
-              label="Address"
-              name="address"
-              placeholder="Address"
-              validate={isRequired}
-              componentProps={{
-                canEditable: false,
-              }}
-            />
-            {shouldShowNetwork && (
+      <View fullFlex borderTop paddingHorizontal>
+        <FormDt style={styled.form}>
+          {({ handleSubmit }) => (
+            <View>
+              <Field
+                componentProps={{
+                  style: {
+                    marginTop: 0,
+                  },
+                }}
+                component={InputField}
+                placeholder="Name"
+                name="name"
+                label="Name"
+                validate={isRequired}
+                maxLength={50}
+              />
               <Field
                 component={InputField}
-                label="Network"
-                name="networkName"
+                label="Address"
+                name="address"
+                placeholder="Address"
+                validate={isRequired}
                 componentProps={{
                   canEditable: false,
                 }}
-                prependView={<Hook />}
               />
-            )}
-            <ButtonBasic
-              title={titleBtnSubmit}
-              btnStyle={styled.submitBtn}
-              onPress={handleSubmit(onSaveReceiver)}
-              disabled={disabledBtn}
-            />
-          </View>
-        )}
-      </FormDt>
-    </View>
+              {shouldShowNetwork && (
+                <Field
+                  component={InputField}
+                  label="Network"
+                  name="networkName"
+                  componentProps={{
+                    canEditable: false,
+                  }}
+                  prependView={<Hook />}
+                />
+              )}
+              <Button
+                title={titleBtnSubmit}
+                buttonStyle={styled.submitBtn}
+                onPress={handleSubmit(onSaveReceiver)}
+                disabled={disabledBtn}
+              />
+            </View>
+          )}
+        </FormDt>
+
+      </View>
+      
+    </>
   );
 };
 

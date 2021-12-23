@@ -1,4 +1,5 @@
 import { Text, View, TouchableOpacity, ActivityIndicator } from '@components/core';
+import { Text4 } from '@components/core/Text';
 import { FONT } from '@src/styles';
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -12,7 +13,7 @@ const Status = ({ isLoading, isExpanded, onToggle, value, color }) => {
   const colors = useSelector(colorsSelector);
   return (
     <View style={[styles.balanceContainer, theme.MARGIN.marginBottomDefault, { flexDirection: 'row', justifyContent: 'space-between' }]}>
-      <Text style={{...FONT.TEXT.incognitoH5}}>Status</Text>
+      <Text4 style={{...FONT.TEXT.incognitoH6}}>Status</Text4>
       {
         isLoading
           ? <ActivityIndicator />

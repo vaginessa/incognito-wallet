@@ -10,11 +10,11 @@ import HelpIcon from '@components/HelpScreen/Icon';
 import {
   Text,
   View,
-  ScrollView,
   RoundCornerButton,
   TouchableOpacity,
   ScrollViewBorder, RefreshControl,
 } from '@components/core';
+import { Text4 } from '@components/core/Text';
 import theme from '@src/styles/theme';
 import ROUTE_NAMES from '@routers/routeNames';
 import NodeStatus from '@screens/Node/components/NodeStatus';
@@ -105,7 +105,7 @@ const NodeItemDetail = memo(({
   const renderItemText = (text, value) => {
     return (
       <View style={[styles.balanceContainer, { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 30 }]}>
-        <Text style={{...FONT.TEXT.incognitoH5}}>{text}</Text>
+        <Text4 style={{...FONT.TEXT.incognitoH6}}>{text}</Text4>
         <Text style={[theme.text.boldTextStyleMedium, { maxWidth: 200 }]} numberOfLines={1}>{value || ''}</Text>
       </View>
     );
@@ -125,9 +125,9 @@ const NodeItemDetail = memo(({
       <TouchableOpacity
         onPress={onChangeWifiPress}
       >
-        <Text style={[styles.text, styles.bold, styles.bigText]}>
+        <Text4 style={[styles.text, styles.bold, styles.bigText]}>
           Change Wi-Fi
-        </Text>
+        </Text4>
       </TouchableOpacity>
     );
   };
@@ -135,9 +135,9 @@ const NodeItemDetail = memo(({
   const renderUnstake = (onPress) => {
     return (
       <TouchableOpacity style={{ marginBottom: 30 }} onPress={onPress}>
-        <Text style={[styles.text, styles.bold, styles.bigText]}>
+        <Text4 style={[styles.text, styles.bold, styles.bigText]}>
           Unstake this Node
-        </Text>
+        </Text4>
       </TouchableOpacity>
     );
   };
@@ -152,9 +152,9 @@ const NodeItemDetail = memo(({
     ) {
       return (
         <TouchableOpacity style={{ marginTop: 30 }} onPress={onUpdateNode}>
-          <Text style={[styles.text, styles.bold, styles.bigText]}>
+          <Text4 style={[styles.text, styles.bold, styles.bigText]}>
             Update firmware
-          </Text>
+          </Text4>
         </TouchableOpacity>
       );
     }
