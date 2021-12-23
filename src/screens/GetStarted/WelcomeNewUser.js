@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
 
 const WelcomeNewUser = ({ onCreate, onImport }) => {
   return (
-    <View borderTop fullFlex paddingHorizontal>
+    <View borderTop fullFlex>
       <Text style={styles.title}>Privacy is freedom.</Text>
       <RoundCornerButton
         style={styles.button}
