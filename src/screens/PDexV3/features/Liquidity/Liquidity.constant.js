@@ -21,7 +21,7 @@ export const TYPES = {
 };
 
 export const LIQUIDITY_MESSAGES = {
-  addLiquidity: 'Add liquidity',
+  addLiquidity: 'Contribute liquidity',
   createPool : 'Contribute liquidity',
   removePool : 'Remove liquidity',
   estRate: (onPress) => (
@@ -52,11 +52,11 @@ export const formConfigsRemovePool = {
 export const SUCCESS_MODAL = {
   ADD_POOL: {
     title: 'Liquidity contributed',
-    desc: 'Please wait a few minutes for your added liquidity to display.'
+    desc: 'Please wait a few minutes for your contribution to display..'
   },
   CREATE_POOL: {
     title: 'Liquidity contributed',
-    desc: 'Please wait a few minutes for your added liquidity to display.'
+    desc: 'Please wait a few minutes for your contribution to display.'
   },
   REMOVE_POOL: {
     title: 'Remove liquidity contribution',
