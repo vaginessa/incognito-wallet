@@ -41,7 +41,7 @@ SuccessModal.defaultProps = {
   title: null,
   content: null,
   subContent: null,
-  buttonText: 'Ok',
+  buttonText: 'OK',
 };
 
 SuccessModal.propTypes = {

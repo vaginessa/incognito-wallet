@@ -59,7 +59,7 @@ const enhance = (WrappedComp) => (props) => {
                 swapInfo?.sellInputAmountStr || ''
               } for ${swapInfo?.buyInputAmountStr || ''}.`}
               handleTradeSucesss={() => initSwapForm()}
-              sub="Your balance will update as the order fills."
+              sub="Your balance will update in a couple of minutes after the swap is finalized."
             />
           ),
           visible: true,

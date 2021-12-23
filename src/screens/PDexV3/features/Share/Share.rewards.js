@@ -22,5 +22,5 @@ const HistoryIcon = React.memo(() => {
 export default React.memo(() => {
   const totalShare = useSelector(totalShareSelector);
   const loading = useSelector(isFetchingSelector);
-  return <HomeTabHeader title="Reward Balance" desc={`$${totalShare}`} loading={loading} rightIcon={<HistoryIcon />} />;
+  return <HomeTabHeader title="Total rewards" desc={`$${totalShare}`} loading={loading} rightIcon={<HistoryIcon />} />;
 });

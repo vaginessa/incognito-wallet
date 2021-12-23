@@ -95,7 +95,7 @@ export const listShareSelector = createSelector(
       const totalRewardUSDStr = format.amountVer2(totalRewardAmount, 9);
       const rewardUSDSymbolStr = `$${totalRewardUSDStr}`;
       const hookRewards = mapRewards.map((item, index) => ({
-        label: `Reward ${index + 1}`,
+        label: `Fees collected`,
         valueText: item.rewardStr,
       }));
       const hookFactories = [
@@ -108,14 +108,14 @@ export const listShareSelector = createSelector(
           value: principal.token2,
         },
         {
-          label: 'Reward',
+          label: 'Fees collected',
           value: rewardUSDSymbolStr,
         },
       ];
       const apyStr = format.amount(apy, 0);
       const hookFactoriesDetail = [
         {
-          label: 'APY',
+          label: 'APR',
           valueText: `${apyStr}%`,
         },
         {

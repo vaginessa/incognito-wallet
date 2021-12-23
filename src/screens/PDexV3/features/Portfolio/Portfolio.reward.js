@@ -55,7 +55,7 @@ const PortfolioReward = ({ onCreateWithdrawFeeLP }) => {
       showsVerticalScrollIndicator={false}
       contentContainerStyle={[{ flexGrow: 1, paddingTop: 8 }]}
       ListEmptyComponent={
-        <EmptyBookIcon message="Your portfolio is empty" />
+        <EmptyBookIcon message="Join a pool to start earning rewards." />
       }
       style={styled.list}
     />

@@ -273,7 +273,7 @@ const CreatePool = ({
       <SuccessModal
         closeSuccessDialog={onClose}
         title={SUCCESS_MODAL.ADD_POOL.title}
-        buttonTitle="Ok"
+        buttonTitle="OK"
         extraInfo={SUCCESS_MODAL.ADD_POOL.desc}
         visible={visible}
       />

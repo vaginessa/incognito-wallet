@@ -232,7 +232,7 @@ const Contribute = ({
       <SuccessModal
         closeSuccessDialog={onClose}
         title={SUCCESS_MODAL.CREATE_POOL.title}
-        buttonTitle="Ok"
+        buttonTitle="OK"
         extraInfo={SUCCESS_MODAL.CREATE_POOL.desc}
         visible={visible}
       />

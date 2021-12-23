@@ -149,7 +149,7 @@ const PortfolioModal = ({ shareId, onWithdrawFeeLP, showRemove = true }) => {
         <Row spaceBetween style={{ marginTop: 10 }}>
           {!!withdrawable && (
             <BtnSecondary
-              title="Withdraw rewards"
+              title="Withdraw all rewards"
               onPress={onClaimReward}
               wrapperStyle={[{ flex: 1 }, !!share && { marginRight: 8 }]}
               textStyle={{ color: COLORS.colorBlue }}
@@ -158,10 +158,11 @@ const PortfolioModal = ({ shareId, onWithdrawFeeLP, showRemove = true }) => {
           )}
           {!!share && (
             <BtnPrimary
-              title="Invest more"
+              title="Contribute more"
               onPress={onInvestPress}
               wrapperStyle={{ flex: 1 }}
               background={COLORS.colorBlue}
+              disabled={!validNFT}
             />
           )}
         </Row>
