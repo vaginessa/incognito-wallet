@@ -30,13 +30,17 @@ import {
   TAB_SELL_LIMIT_ID,
 } from '@screens/PDexV3/features/Trade/Trade.constant';
 import orderBy from 'lodash/orderBy';
-import { formConfigs, OPEN_ORDERS_STATE, HISTORY_ORDERS_STATE } from './OrderLimit.constant';
+import {
+  formConfigs,
+  OPEN_ORDERS_STATE,
+  HISTORY_ORDERS_STATE,
+} from './OrderLimit.constant';
 import { getInputAmount as getInputTokenAmount } from './OrderLimit.utils';
 
 const BTN_WITHDRAW_ORDER = {
   [ACCOUNT_CONSTANT.TX_STATUS.PROCESSING]: 'ing',
   [ACCOUNT_CONSTANT.TX_STATUS.TXSTATUS_PENDING]: 'ing',
-  [ACCOUNT_CONSTANT.TX_STATUS.TXSTATUS_SUCCESS]: 'ing',
+  [ACCOUNT_CONSTANT.TX_STATUS.TXSTATUS_SUCCESS]: 'ed',
 };
 
 export const orderLimitSelector = createSelector(
@@ -527,9 +531,10 @@ export const mappingOrderHistorySelector = createSelector(
         let btnCancel = '';
         let btnClaim = '';
         if (cancelTxId) {
-          btnCancel = BTN_WITHDRAW_ORDER[cancelTxStatus]
-            ? `${btnTitleCancel}${BTN_WITHDRAW_ORDER[cancelTxStatus]}`
-            : '';
+          const btnCancelStatus = BTN_WITHDRAW_ORDER[cancelTxStatus];
+          if (btnCancelStatus) {
+            btnCancel = `${btnTitleCancel}${isCompleted ? 'ed' : 'ing'}`;
+          }
           statusStr = btnCancel || statusStr;
         }
         if (claimTxId) {
@@ -643,25 +648,24 @@ export const mappingOrderHistorySelector = createSelector(
 export const historySelector = createSelector(
   orderLimitSelector,
   mappingOrderHistorySelector,
-  (orderLimitState, mappingOrderHistory) =>
-    (field) => {
-      let history = [];
-      const { data, isFetching } = orderLimitState[field];
-      try {
-        if (!data) {
-          return history;
-        }
-        history = data
-          .map((order) => mappingOrderHistory(order))
-          .filter((order) => !!order?.requestTx);
-      } catch (error) {
-        console.log('historySelector-error', error);
+  (orderLimitState, mappingOrderHistory) => (field) => {
+    let history = [];
+    const { data, isFetching } = orderLimitState[field];
+    try {
+      if (!data) {
+        return history;
       }
-      return {
-        history,
-        isFetching,
-      };
-    },
+      history = data
+        .map((order) => mappingOrderHistory(order))
+        .filter((order) => !!order?.requestTx);
+    } catch (error) {
+      console.log('historySelector-error', error);
+    }
+    return {
+      history,
+      isFetching,
+    };
+  },
 );
 
 export const orderHistorySelector = createSelector(

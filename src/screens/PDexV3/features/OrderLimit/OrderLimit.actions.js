@@ -504,6 +504,10 @@ export const actionFetchDataOrderDetail = () => async (dispatch, getState) => {
       version: PrivacyVersion.ver2,
     };
     _order = await pDexV3.getOrderLimitDetail(params);
+    _order = {
+      ..._order,
+      requestime: _order?.requestime * 1000,
+    };
   } catch (error) {
     _order = { ...order };
     new ExHandler(error).showErrorToast();
