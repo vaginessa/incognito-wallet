@@ -42,14 +42,12 @@ export const styled = StyleSheet.create({
   emptyTitle: {
     fontFamily: FONT.NAME.bold,
     fontSize: FONT.SIZE.medium,
-    color: COLORS.black,
     lineHeight: 30,
     marginBottom: 30,
   },
   emptyText: {
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.medium,
-    color: COLORS.black,
     lineHeight: 30,
     marginBottom: 30,
   },

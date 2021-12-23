@@ -72,6 +72,7 @@ const Order = React.memo(({ data }) => {
     return null;
   }
   const { statusStr, swapStr, requestTx, tradeID } = data;
+
   const handleNavOrderDetail = async () => {
     await dispatch(actionFetchedOrderDetail(data));
     navigation.navigate(routeNames.OrdeSwapDetail);

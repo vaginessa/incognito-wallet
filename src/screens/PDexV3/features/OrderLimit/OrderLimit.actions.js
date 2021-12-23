@@ -9,10 +9,11 @@ import {
   actionFetchPools,
   defaultPoolSelector,
   listPoolsIDsSelector,
+  getAllTokenIDsInPoolsSelector,
 } from '@screens/PDexV3/features/Pools';
 import { actionSetNFTTokenData } from '@src/redux/actions/account';
 import isEmpty from 'lodash/isEmpty';
-import { change, focus } from 'redux-form';
+import { change, focus, reset } from 'redux-form';
 import { actionGetPDexV3Inst } from '@screens/PDexV3';
 import { batch } from 'react-redux';
 import { actionSetDefaultPair } from '@screens/PDexV3/features/Swap';
@@ -21,6 +22,7 @@ import {
   TAB_BUY_LIMIT_ID,
   TAB_SELL_LIMIT_ID,
 } from '@screens/PDexV3/features/Trade/Trade.constant';
+import { differenceBy, orderBy } from 'lodash';
 import {
   ACTION_FETCHING,
   ACTION_FETCHED,
@@ -43,6 +45,8 @@ import {
   ACTION_FETCHING_ORDER_DETAIL,
   ACTION_FETCHED_ORDER_DETAIL,
   ACTION_RESET_ORDERS_HISTORY,
+  OPEN_ORDERS_STATE,
+  HISTORY_ORDERS_STATE,
 } from './OrderLimit.constant';
 import {
   poolSelectedDataSelector,
@@ -53,8 +57,11 @@ import {
   buyInputAmountSelector,
 } from './OrderLimit.selector';
 
-export const actionResetOrdersHistory = () => ({
+export const actionResetOrdersHistory = (
+  payload = { field: HISTORY_ORDERS_STATE },
+) => ({
   type: ACTION_RESET_ORDERS_HISTORY,
+  payload,
 });
 
 export const actionSetPercent = (payload) => ({
@@ -180,10 +187,13 @@ export const actionSetDefaultPool = () => async (dispatch, getState) => {
 };
 
 export const actionInit =
-  (refresh = true) =>
+  (refresh = true, shouldFetchOpenOrders = false) =>
     async (dispatch, getState) => {
       try {
         dispatch(actionFetching());
+        if (refresh) {
+          dispatch(reset(formConfigs.formName));
+        }
         let state = getState();
         const pools = listPoolsIDsSelector(state);
         const poolSelected = poolSelectedDataSelector(state);
@@ -241,10 +251,13 @@ export const actionInit =
           const { rate } = rateDataSelector(state);
           dispatch(change(formConfigs.formName, formConfigs.rate, rate));
           dispatch(focus(formConfigs.formName, formConfigs.rate));
+          if (shouldFetchOpenOrders) {
+            dispatch(actionFetchOrdersHistory(OPEN_ORDERS_STATE));
+          }
           if (refresh) {
             dispatch(actionFetchPools());
             dispatch(actionSetNFTTokenData());
-            dispatch(actionFetchOrdersHistory());
+            dispatch(actionFetchOrdersHistory(HISTORY_ORDERS_STATE));
           }
         });
       } catch (error) {
@@ -264,18 +277,16 @@ export const actionFetchedWithdrawingOrderTxs = (payload) => ({
   payload,
 });
 
+//
+
 export const actionFetchWithdrawOrderTxs = () => async (dispatch, getState) => {
   let withdrawTxs = [];
   try {
     const state = getState();
     const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
-    const pool = poolSelectedDataSelector(state);
-    if (!pool?.poolId) {
-      return [];
-    }
-    const poolid = pool?.poolId;
+    const poolIds = listPoolsIDsSelector(state);
     withdrawTxs = await pDexV3Inst.getWithdrawOrderTxs({
-      poolid,
+      poolIds,
     });
   } catch (error) {
     new ExHandler(error).showErrorToast();
@@ -284,8 +295,9 @@ export const actionFetchWithdrawOrderTxs = () => async (dispatch, getState) => {
   }
 };
 
-export const actionFetchingOrdersHistory = () => ({
+export const actionFetchingOrdersHistory = (payload) => ({
   type: ACTION_FETCHING_ORDERS_HISTORY,
+  payload,
 });
 
 export const actionFetchedOrdersHistory = (payload) => ({
@@ -293,33 +305,70 @@ export const actionFetchedOrdersHistory = (payload) => ({
   payload,
 });
 
-export const actionFetchFailOrderHistory = () => ({
+export const actionFetchFailOrderHistory = (payload) => ({
   type: ACTION_FETCH_FAIL_ORDERS_HISTORY,
+  payload,
 });
 
-export const actionFetchOrdersHistory = () => async (dispatch, getState) => {
-  try {
-    await dispatch(actionFetchingOrdersHistory());
-    const state = getState();
-    const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
-    const pool = poolSelectedDataSelector(state);
-    if (!pool) {
-      return;
+export const actionFetchOrdersHistory =
+  (field) => async (dispatch, getState) => {
+    let data = [];
+    try {
+      await dispatch(actionFetchingOrdersHistory({ field }));
+      const state = getState();
+      const pool = poolSelectedDataSelector(state);
+      if (!pool) {
+        return;
+      }
+      const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
+      switch (field) {
+      case OPEN_ORDERS_STATE: {
+        const tokenIds = getAllTokenIDsInPoolsSelector(state);
+        dispatch(actionFetchWithdrawOrderTxs());
+        let [orderFromStorage, openOrders] = await Promise.all([
+          pDexV3Inst.getOrderLimitHistoryFromStorage({
+            tokenIds,
+            version: PrivacyVersion.ver2,
+          }),
+          pDexV3Inst.getOpenOrderLimitHistoryFromApi({
+            version: PrivacyVersion.ver2,
+          }),
+        ]);
+        openOrders = openOrders.map((order) => ({
+          ...order,
+          requestime: order?.requestime * 1000,
+        }));
+        orderFromStorage = differenceBy(
+          orderFromStorage,
+          openOrders,
+          (h) => h?.requestTx,
+        );
+        openOrders = [...orderFromStorage, ...openOrders];
+        openOrders = orderBy(openOrders, 'requestime', 'desc');
+        data = [...openOrders];
+        break;
+      }
+      case HISTORY_ORDERS_STATE: {
+        data =
+            (await pDexV3Inst.getOrderLimitHistoryFromApi({
+              poolid: pool?.poolId,
+              version: PrivacyVersion.ver2,
+            })) || [];
+        data = data.map((order) => ({
+          ...order,
+          requestime: order?.requestime * 1000,
+        }));
+        break;
+      }
+      default:
+        break;
+      }
+      await dispatch(actionFetchedOrdersHistory({ field, data }));
+    } catch (error) {
+      await dispatch(actionFetchFailOrderHistory({ field }));
+      new ExHandler(error).showErrorToast();
     }
-    dispatch(actionFetchWithdrawOrderTxs());
-    const orders =
-      (await pDexV3Inst.getOrderLimitHistory({
-        poolid: pool?.poolId,
-        version: PrivacyVersion.ver2,
-        token1ID: pool?.token1Id,
-        token2ID: pool?.token2Id,
-      })) || [];
-    await dispatch(actionFetchedOrdersHistory(orders));
-  } catch (error) {
-    await dispatch(actionFetchFailOrderHistory());
-    new ExHandler(error).showErrorToast();
-  }
-};
+  };
 
 export const actionWithdrawingOrder = (payload) => ({
   type: ACTION_WITHDRAWING_ORDER,
@@ -349,7 +398,7 @@ export const actionWithdrawOrder =
           nftID: nftid,
         };
         await pDexV3Inst.createAndSendWithdrawOrderRequestTx({ extra: data });
-        await dispatch(actionFetchWithdrawOrderTxs());
+        dispatch(actionInit(true, true));
       } catch (error) {
         new ExHandler(error).showErrorToast();
       } finally {
@@ -441,9 +490,9 @@ export const actionFetchDataOrderDetail = () => async (dispatch, getState) => {
   if (!order?.requestTx || !pool) {
     return;
   }
+  const { poolId, token1Id, token2Id } = pool;
   try {
     const { requestTx, fromStorage } = order;
-    const { poolId, token1Id, token2Id } = pool;
     await dispatch(actionFetchingOrderDetail());
     const pDexV3 = await dispatch(actionGetPDexV3Inst());
     const params = {
@@ -460,7 +509,7 @@ export const actionFetchDataOrderDetail = () => async (dispatch, getState) => {
     new ExHandler(error).showErrorToast();
   } finally {
     _order = _order || order;
-    dispatch(actionFetchWithdrawOrderTxs());
+    dispatch(actionFetchWithdrawOrderTxs(poolId));
     dispatch(actionSetNFTTokenData());
     await dispatch(actionFetchedOrderDetail(_order));
   }

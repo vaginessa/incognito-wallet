@@ -30,7 +30,7 @@ const Home = ({ onRefresh }) => {
         <View tabID={TABS.TAB_REMOVE_POOL_HISTORIES_ID} label="Remove">
           <RemovePoolHistories />
         </View>
-        <View tabID={TABS.TAB_WITHDRAW_REWARD_HISTORIES_ID} label="Withdraw rewards">
+        <View tabID={TABS.TAB_WITHDRAW_REWARD_HISTORIES_ID} label="Rewards">
           <WithdrawRewardHistories />
         </View>
       </Tabs>

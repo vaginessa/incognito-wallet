@@ -83,9 +83,7 @@ const enhance = (WrappedComp) => (props) => {
                 desc={cfmTitle}
                 sub="Your balance will update as the order fills."
                 handleTradeSucesss={() => {
-                  batch(() => {
-                    dispatch(actionInit());
-                  });
+                  onRefresh();
                 }}
               />
             ),
@@ -100,7 +98,7 @@ const enhance = (WrappedComp) => (props) => {
     }
   };
   const onRefresh = () => {
-    dispatch(actionInit());
+    dispatch(actionInit(true, true));
   };
   const callback = async (poolId) => {
     dispatch(actionResetOrdersHistory());
