@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import {ListAllToken, TokenFollow} from '@src/components/Token';
 import { View } from '@components/core';
 import globalStyled from '@src/theme/theme.styled';
+import { FONT } from '@src/styles';
 import { styled } from './Shield.styled';
 import withShield from './Shield.enhance';
 
@@ -15,8 +16,15 @@ const Shield = (props) => {
       <Header
         title="Search coins"
         canSearch
+        titleStyled={FONT.TEXT.incognitoH4}
         hideBackButton={hideBackButton}
-        rightHeader={<BtnQuestionDefault style={{ marginLeft: 8 }} onPress={handleWhyShield} customStyle={{ height: 24, width: 24 }} />}
+        rightHeader={(
+          <BtnQuestionDefault
+            style={{ marginLeft: 8 }}
+            onPress={handleWhyShield}
+            customStyle={styled.rightItem}
+          />
+        )}
       />
       <View borderTop style={styled.container}>
         <ListAllToken
