@@ -12,6 +12,8 @@ import Header from '@components/Header/index';
 import { useNavigation } from 'react-navigation-hooks';
 import ROUTE_NAMES from '@routers/routeNames';
 import mainStyles from '@screens/PoolV2/style';
+import { colorsSelector } from '@src/theme';
+import { useSelector } from 'react-redux';
 import withData from './data.enhance';
 import styles from './style';
 
@@ -20,6 +22,7 @@ const LockHistory = ({
   lockHistories,
 }) => {
   const navigation = useNavigation();
+  const colors = useSelector(colorsSelector);
 
   const renderEmptyList = () => {
     return (
@@ -37,11 +40,11 @@ const LockHistory = ({
       </View>
     );
   };
- 
+
   return (
     <>
       <Header title="Staking service" onGoBack={() => navigation.navigate(ROUTE_NAMES.PoolV2)} />
-      { lockHistories.length > 0 
+      { lockHistories.length > 0
         ? (
           <ScrollViewBorder style={mainStyles.coinContainerNoMargin}>
             {lockHistories.map((item, index) => {
@@ -60,8 +63,8 @@ const LockHistory = ({
                           center
                         >
                           {item.locked && <SumIconComp />}
-                          <PRVSymbol style={mainStyles.coinInterest} />
-                          <Text style={mainStyles.coinInterest}>
+                          <PRVSymbol style={[mainStyles.coinInterest, { color: colors.blue1 }]} />
+                          <Text style={[mainStyles.coinInterest, { color: colors.blue1 }]}>
                             &nbsp;{item.displayReward}
                           </Text>
                         </Row>
@@ -79,7 +82,7 @@ const LockHistory = ({
               );
             })}
           </ScrollViewBorder>
-        ) 
+        )
         : renderEmptyList()
       }
     </>

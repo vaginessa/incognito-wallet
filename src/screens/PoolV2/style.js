@@ -24,7 +24,6 @@ export default StyleSheet.create({
   },
   coinInterest: {
     ...FONT.TEXT.incognitoP1,
-    color: COLORS.green2,
     marginBottom: 8,
   },
   coinExtra: {
