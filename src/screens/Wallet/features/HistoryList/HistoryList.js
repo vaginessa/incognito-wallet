@@ -1,7 +1,7 @@
 import React from 'react';
 import Swipeout from 'react-native-swipeout';
 import {
-  LoadingContainer,
+  LoadingContainer, RefreshControl,
   Text,
   TouchableOpacity,
   View,
@@ -71,7 +71,7 @@ const HistoryItem = React.memo(({ history }) => {
       <View style={[styleSheet.row]}>
         <NormalText
           text={txTypeStr}
-          style={styleSheet.title}
+          style={[styleSheet.title, { maxWidth: 250 }]}
           testId={TOKEN.TRANSACTION_TYPE}
         />
         <NormalText
@@ -120,15 +120,18 @@ const HistoryList = (props) => {
   }
   return (
     <FlatList
+      refreshControl={(
+        <RefreshControl
+          refreshing={refreshing && !initing}
+          onRefresh={() =>
+            typeof onRefreshHistoryList === 'function' && onRefreshHistoryList()}
+        />
+      )}
       data={histories}
       renderItem={({ item: history }) => {
         return <HistoryItemWrapper {...{ history, onCancelEtaHistory }} />;
       }}
       keyExtractor={(item) => item?.txId || item?.id}
-      onRefresh={() =>
-        typeof onRefreshHistoryList === 'function' && onRefreshHistoryList()
-      }
-      refreshing={refreshing && !initing}
       onEndReached={() =>
         typeof onLoadmoreHistory === 'function' && onLoadmoreHistory()
       }

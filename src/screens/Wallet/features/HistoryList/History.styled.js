@@ -25,7 +25,7 @@ const style = StyleSheet.create({
     marginBottom: 10,
   },
   itemContainer: {
-    paddingVertical: 8,
+    marginBottom: 16,
   },
   amountText: {
     flex: 1,
@@ -70,6 +70,7 @@ const style = StyleSheet.create({
     ...FONT.STYLE.medium,
     fontSize: FONT.SIZE.regular,
     lineHeight: FONT.SIZE.regular + 8,
+    marginBottom: 4
   },
   text: {
     ...FONT.STYLE.medium,
