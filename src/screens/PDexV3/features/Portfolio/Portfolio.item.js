@@ -1,7 +1,6 @@
 import {Row, RowSpaceText} from '@src/components';
-import {Text} from '@src/components/core';
 import React from 'react';
-import {TouchableOpacity} from 'react-native';
+import { TouchableOpacity } from 'react-native';
 import {batch, useDispatch, useSelector} from 'react-redux';
 import PropTypes from 'prop-types';
 import {actionSetPoolModal} from '@screens/PDexV3/features/Portfolio/Portfolio.actions';
@@ -10,6 +9,8 @@ import ModalBottomSheet from '@components/Modal/features/ModalBottomSheet';
 import PortfolioModal from '@screens/PDexV3/features/Portfolio/Portfolio.detail';
 import styled from 'styled-components/native';
 import TwoTokenImage from '@screens/PDexV3/features/Portfolio/Portfolio.image';
+import { NormalText } from '@components/Token/Token';
+import { isIOS } from '@utils/platform';
 import {portfolioItemStyled as styles} from './Portfolio.styled';
 import {getDataByShareIdSelector} from './Portfolio.selector';
 
@@ -17,7 +18,7 @@ export const Hook = React.memo(({ label, value }) => (
   <RowSpaceText
     label={label}
     value={value}
-    style={{ marginBottom: 1 }}
+    style={{ marginBottom: isIOS() ? 1 : 7 }}
   />
 ));
 
@@ -31,12 +32,14 @@ export const Extra = React.memo(({ shareId }) => {
   const { token1, token2, principalUSD } = data || {};
   return (
     <Row style={[styles.extraContainer]} centerVertical spaceBetween>
-      <Text style={styles.extraLabel}>
-        {`${token1?.symbol} / ${token2?.symbol}`}
-      </Text>
-      <Text style={styles.extraLabel}>
-        {`$${principalUSD}`}
-      </Text>
+      <NormalText
+        style={styles.extraLabel}
+        text={`${token1?.symbol} / ${token2?.symbol}`}
+      />
+      <NormalText
+        style={styles.extraLabel}
+        text={`$${principalUSD}`}
+      />
     </Row>
   );
 });
