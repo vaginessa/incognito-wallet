@@ -41,6 +41,7 @@ const MarketSearchCoins = (props) => {
       <Header
         title="Search privacy coins"
         canSearch
+        autoFocus
         titleStyled={headerStyled.title}
       />
       <View fullFlex borderTop style={{ overflow: 'hidden', paddingTop: 0 }}>
