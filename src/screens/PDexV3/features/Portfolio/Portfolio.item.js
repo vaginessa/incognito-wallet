@@ -18,7 +18,7 @@ export const Hook = React.memo(({ label, value }) => (
   <RowSpaceText
     label={label}
     value={value}
-    style={{ marginBottom: isIOS() ? 1 : 5 }}
+    style={{ marginBottom: isIOS() ? 1 : 7 }}
   />
 ));
 
