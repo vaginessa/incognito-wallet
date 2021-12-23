@@ -1,9 +1,9 @@
 import { MAX_FEE_PER_TX } from '@components/EstimateFee/EstimateFee.utils';
 
 const HEADER_TABS = {
-  Add: 'Add',
+  Add: 'Contribute',
   Remove: 'Remove',
-  Withdraw: 'Withdraw'
+  Withdraw: 'Withdraw rewards'
 };
 
 const INPUT_FIELDS = {

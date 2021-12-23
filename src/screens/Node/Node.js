@@ -103,9 +103,7 @@ const Node = (props) => {
 
     if (showWelcome) {
       return (
-        <View style={{ marginHorizontal: 25 }}>
-          <WelcomeFirstTime onPressOk={onClearNetworkNextTime} />
-        </View>
+        <WelcomeFirstTime onPressOk={onClearNetworkNextTime} />
       );
     }
 
@@ -123,7 +121,7 @@ const Node = (props) => {
         {renderTotalRewards()}
         <>
           <FlatList
-            refreshControl={(<RefreshControl refreshing={isRefreshing} onRefresh={refreshData}/>)}
+            refreshControl={(<RefreshControl refreshing={isRefreshing} onRefresh={refreshData} />)}
             showsVerticalScrollIndicator={false}
             contentContainerStyle={[{ flexGrow: 1,}]}
             style={style.list}

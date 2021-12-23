@@ -18,13 +18,12 @@ export default StyleSheet.create({
     marginBottom: 20,
   },
   coinName: {
-    fontFamily: FONT.NAME.bold,
+    fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.medium,
     marginBottom: 8,
   },
   coinInterest: {
     ...FONT.TEXT.incognitoP1,
-    color: COLORS.green2,
     marginBottom: 8,
   },
   coinExtra: {
@@ -53,13 +52,13 @@ export default StyleSheet.create({
     fontSize: 16,
     minHeight: 20,
     fontFamily: FONT.NAME.regular,
-    marginBottom: 8,
+    marginTop: 8
   },
   disabled: {
     opacity: 0.5,
   },
   input: {
-    fontFamily: FONT.NAME.bold,
+    fontFamily: FONT.NAME.medium,
     fontSize: 26,
     height: isAndroid() ? 52 : 'auto',
     padding: 0,
@@ -69,7 +68,6 @@ export default StyleSheet.create({
   },
   inputContainer: {
     marginBottom: 8,
-    paddingHorizontal: 16,
     paddingVertical: 13,
     borderRadius: 8,
   },
@@ -85,10 +83,8 @@ export default StyleSheet.create({
   wrapperLock: {
     paddingHorizontal: 8,
     alignItems: 'center',
-    paddingVertical: 4,
-    backgroundColor: COLORS.lightGrey19,
     marginLeft: 8,
-    height: 18,
+    height: 24,
     borderRadius: 4,
   },
   lockText: {
@@ -99,7 +95,6 @@ export default StyleSheet.create({
   btnMirage: {
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: COLORS.black,
     marginLeft: 8,
     height: 24,
     paddingHorizontal: 8,
@@ -130,6 +125,6 @@ export default StyleSheet.create({
     width: 14,
     height: 16,
     marginBottom: 8,
-    marginRight: 9,
+    marginLeft: 4,
   },
 });

@@ -62,7 +62,7 @@ export const balanceStyled = StyleSheet.create({
   },
   pSymbol: {
     fontFamily: FONT.NAME.specialRegular,
-    fontSize: FONT.SIZE.medium,
+    fontSize: FONT.SIZE.regular,
     lineHeight: FONT.SIZE.medium + 4,
   },
 });

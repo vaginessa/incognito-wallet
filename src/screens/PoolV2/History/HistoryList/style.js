@@ -11,7 +11,7 @@ export default StyleSheet.create({
   buttonTitle: {
     fontSize: FONT.SIZE.medium,
     marginBottom: 5,
-    ...FONT.STYLE.bold,
+    ...FONT.STYLE.medium,
   },
   error: {
     color: COLORS.red,

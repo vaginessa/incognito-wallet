@@ -26,14 +26,14 @@ const style = StyleSheet.create({
   randomNameText: {
     flex: 1,
     fontFamily: FONT.NAME.medium,
-    fontSize: FONT.SIZE.regular,
-    lineHeight: FONT.SIZE.regular + 4,
+    fontSize: FONT.SIZE.medium,
+    lineHeight: FONT.SIZE.medium + 4,
   },
   randomNameChangeBtn: {},
   randomNameChangeBtnText: {
     fontFamily: FONT.NAME.medium,
-    fontSize: FONT.SIZE.regular,
-    lineHeight: FONT.SIZE.regular + 4,
+    fontSize: FONT.SIZE.medium,
+    lineHeight: FONT.SIZE.medium + 4,
   },
   randomNameLabel: {
     fontSize: FONT.SIZE.medium,

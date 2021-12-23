@@ -36,7 +36,6 @@ const WhyStreamLine = () => {
           id !== 3 ? (
             <Text3
               style={[
-                id === 0 ? { paddingTop: 32 } : null,
                 styled.text,
               ]}
               key={id}
@@ -46,7 +45,6 @@ const WhyStreamLine = () => {
           ) : (
             <Text
               style={[
-                id === 0 ? { paddingTop: 32 } : null,
                 styled.text,
               ]}
               key={id}

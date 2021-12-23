@@ -9,7 +9,6 @@ export default StyleSheet.create({
     flex: 1,
   },
   wrapper: {
-    paddingTop: 20,
     flex: 1,
     overflow: 'hidden'
   },
@@ -42,9 +41,9 @@ export default StyleSheet.create({
 
   },
   actionButton: {
-    marginTop: UTILS.heightScale(37),
-    marginHorizontal: 4,
-    flex: 1,
+    marginTop: 24,
+    width: '48%',
+    marginBottom: 0
   },
   coinContainer: {
     marginTop: UTILS.heightScale(30),

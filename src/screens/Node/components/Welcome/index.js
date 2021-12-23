@@ -10,7 +10,7 @@ import styles from './style';
 
 const WelcomeNodes = ({ onAddPNode, onAddVNode }) => {
   return (
-    <ScrollViewBorder contentContainerStyle={styles.pNode}>
+    <ScrollViewBorder contentContainerStyle={styles.pNode} style={{ paddingHorizontal: 0 }}>
       <Image style={styles.pNodeImg} source={nodeImg} resizeMode="contain" resizeMethod="resize" />
       <RoundCornerButton
         style={[styles.pNodeButton, theme.BUTTON.NODE_BUTTON]}

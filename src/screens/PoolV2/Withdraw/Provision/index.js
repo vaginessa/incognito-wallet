@@ -18,6 +18,7 @@ import withCoinData from './coin.enhance';
 import withConfirm from './confirm.enhance';
 import withSuccess from './success.enhance';
 import styles from './style';
+import { Line } from '../../Provide/Input';
 
 const Provide = ({
   coin,
@@ -37,7 +38,7 @@ const Provide = ({
   return (
     <>
       <Header title={`Withdraw ${coin.symbol} provision`} />
-      <View style={[mainStyle.coinContainerNoMargin, globalStyled.defaultPadding3]} borderTop>
+      <View style={[mainStyle.coinContainerNoMargin, globalStyled.defaultPadding2]} borderTop>
         <Row center spaceBetween style={mainStyle.inputContainer}>
           <BaseTextInput
             style={mainStyle.input}
@@ -51,6 +52,7 @@ const Provide = ({
             onPress={handleMax}
           />
         </Row>
+        <Line />
         <Text style={mainStyle.error}>{error}</Text>
         <RoundCornerButton
           title="Withdraw provisions"
