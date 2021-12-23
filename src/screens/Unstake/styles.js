@@ -5,7 +5,6 @@ import screenTheme from '@screens/Node/theme';
 export default StyleSheet.create({
   title: {
     fontSize: 18,
-    marginTop: 40,
     marginBottom: 15,
     ...FONT.STYLE.medium,
   },
@@ -24,7 +23,7 @@ export default StyleSheet.create({
     marginTop: 30,
   },
   desc: {
-    color: COLORS.newGrey,
+    ...FONT.TEXT.incognitoP1,
   },
   firstLine: {
     marginBottom: 20,

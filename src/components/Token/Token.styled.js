@@ -71,9 +71,7 @@ export const styled = StyleSheet.create({
     color: COLORS.green,
   },
   bottomText: {
-    fontSize: FONT.SIZE.medium,
-    fontFamily: FONT.NAME.medium,
-    lineHeight: FONT.SIZE.medium + 4,
+    ...FONT.TEXT.incognitoP1,
   },
   normalText: {
     flexDirection: 'row',

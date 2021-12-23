@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const PortfolioModal = ({ shareId, onWithdrawFeeLP }) => {
+const PortfolioModal = ({ shareId, onWithdrawFeeLP, showRemove = true }) => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const colors = useSelector(colorsSelector);
@@ -116,13 +116,15 @@ const PortfolioModal = ({ shareId, onWithdrawFeeLP }) => {
             >{`${token1.symbol} / ${token2.symbol}`}
             </Text>
           </Row>
-          <BtnPrimary
-            title="Withdraw"
-            textStyle={[styles.btnText, { color: colors.background10 }]}
-            wrapperStyle={[styles.btnSmall, { backgroundColor: colors.background4 }]}
-            onPress={onWithdrawPress}
-            disabled={disableBtn || !share}
-          />
+          {showRemove && (
+            <BtnPrimary
+              title="Remove"
+              textStyle={[styles.btnText, { color: colors.background10 }]}
+              wrapperStyle={[styles.btnSmall, { backgroundColor: colors.background4 }]}
+              onPress={onWithdrawPress}
+              disabled={disableBtn || !share}
+            />
+          )}
         </Row>
         <ScrollView
           style={styles.scrollView}
@@ -147,20 +149,20 @@ const PortfolioModal = ({ shareId, onWithdrawFeeLP }) => {
         <Row spaceBetween style={{ marginTop: 10 }}>
           {!!withdrawable && (
             <BtnSecondary
-              title="Withdraw rewards"
+              title="Withdraw rewards?"
               onPress={onClaimReward}
               wrapperStyle={[{ flex: 1 }, !!share && { marginRight: 8 }]}
               textStyle={{ color: COLORS.colorBlue }}
-              background={COLORS.colorBlue}
               disabled={withdrawing || disableBtn}
             />
           )}
           {!!share && (
             <BtnPrimary
-              title="Invest more"
+              title="Contribute more"
               onPress={onInvestPress}
               wrapperStyle={{ flex: 1 }}
               background={COLORS.colorBlue}
+              disabled={!validNFT}
             />
           )}
         </Row>

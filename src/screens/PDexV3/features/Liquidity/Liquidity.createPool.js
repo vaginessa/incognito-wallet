@@ -170,7 +170,7 @@ const ButtonCreatePool = React.memo(({ onSubmit }) => {
   const amountSelector = useSelector(createPoolSelector.inputAmountSelector);
   const inputAmount = amountSelector(formConfigsCreatePool.formName, formConfigsCreatePool.inputToken);
   const outputAmount = amountSelector(formConfigsCreatePool.formName, formConfigsCreatePool.outputToken);
-  const { feeAmount, feeAmountStr } = useSelector(createPoolSelector.feeAmountSelector);
+  const { feeAmount, feeAmountStr, showFaucet } = useSelector(createPoolSelector.feeAmountSelector);
   const { amp, estOutputStr } = useSelector(createPoolSelector.ampValueSelector);
   const formErrors = useSelector((state) =>
     getFormSyncErrors(formConfigsCreatePool.formName)(state),
@@ -220,7 +220,7 @@ const ButtonCreatePool = React.memo(({ onSubmit }) => {
         title={LIQUIDITY_MESSAGES.createPool}
         onPress={handleSubmit}
       />
-      <NetworkFee feeStr={feeAmountStr} />
+      {showFaucet && <NetworkFee feeStr={feeAmountStr} />}
     </>
   );
 });
@@ -273,7 +273,7 @@ const CreatePool = ({
       <SuccessModal
         closeSuccessDialog={onClose}
         title={SUCCESS_MODAL.ADD_POOL.title}
-        buttonTitle="Ok"
+        buttonTitle="OK"
         extraInfo={SUCCESS_MODAL.ADD_POOL.desc}
         visible={visible}
       />

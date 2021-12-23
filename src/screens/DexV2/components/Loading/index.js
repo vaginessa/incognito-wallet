@@ -1,6 +1,6 @@
 import { Modal } from 'react-native';
 import PropTypes from 'prop-types';
-import { ActivityIndicator, Text, View } from '@components/core/index';
+import { ActivityIndicator, Text, Text3, View } from '@components/core/index';
 import { COLORS } from '@src/styles';
 import React from 'react';
 import KeepAwake from 'react-native-keep-awake';
@@ -35,11 +35,11 @@ const Loading = ({ open, showPercent }) => {
     <Modal animationType="fade" transparent visible={open}>
       <View style={stylesheet.container}>
         <View style={stylesheet.wrapper}>
-          <ActivityIndicator size="large" color={COLORS.black} />
+          <ActivityIndicator size="large" />
           {
             showPercent && (
               <>
-                <Text style={[stylesheet.percent, { color: COLORS.black }]}>{`${percent}%`}</Text>
+                <Text style={stylesheet.percent}>{`${percent}%`}</Text>
                 {!!global.isDebug() && !!message && (
                   <Text style={stylesheet.desc}>{message}</Text>
                 )}
@@ -49,9 +49,9 @@ const Loading = ({ open, showPercent }) => {
           <Text style={stylesheet.desc}>
               Completing this action...
           </Text>
-          <Text style={stylesheet.desc}>
+          <Text3 style={stylesheet.desc}>
             Please do not navigate away from the app.
-          </Text>
+          </Text3>
         </View>
         <KeepAwake />
       </View>

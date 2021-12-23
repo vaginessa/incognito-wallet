@@ -7,6 +7,7 @@ import {TokenBasic as Token, ListAllToken, TokenFollow} from '@src/components/To
 import PropTypes from 'prop-types';
 import routeNames from '@src/router/routeNames';
 import { useNavigation } from 'react-navigation-hooks';
+import { FONT } from '@src/styles';
 import { styled } from './FollowToken.styled';
 import withFollowToken from './FollowToken.enhance';
 
@@ -44,7 +45,7 @@ const FollowTokenList = React.memo((props) => {
   const { handleToggleFollowToken, ...rest } = props;
   return (
     <View2 style={styled.container}>
-      <Header title="Add a coin" canSearch />
+      <Header title="Add a coin" canSearch titleStyled={FONT.TEXT.incognitoH4} />
       <View borderTop style={[{ flex : 1 }]}>
         <ListAllToken
           {...rest}

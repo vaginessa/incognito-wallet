@@ -130,7 +130,6 @@ const text = {
     fontFamily: FONTS.NAME.medium,
   },
   blackMedium: {
-    color: COLORS.black,
     fontSize: fontSizes.medium,
     fontFamily: FONTS.NAME.medium,
   },

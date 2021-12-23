@@ -9,7 +9,6 @@ export default StyleSheet.create({
     alignItems: 'center',
   },
   wrapper: {
-    backgroundColor: COLORS.white,
     marginHorizontal: 25,
     borderRadius: 13,
     width: UTILS.deviceWidth() - 50,
@@ -18,7 +17,6 @@ export default StyleSheet.create({
     position: 'relative',
   },
   desc: {
-    color: COLORS.colorGreyBold,
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.regular,
     lineHeight: FONT.SIZE.regular + 5,
@@ -26,7 +24,6 @@ export default StyleSheet.create({
     marginTop: 15,
   },
   percent: {
-    color: COLORS.black,
     fontFamily: FONT.NAME.bold,
     fontSize: FONT.SIZE.superMedium,
     lineHeight: FONT.SIZE.superMedium + 5,

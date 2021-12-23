@@ -21,7 +21,7 @@ const PortfolioReward = ({ onCreateWithdrawFeeLP }) => {
   const data = useSelector(listShareSelector);
   const listShare = React.useMemo(() => {
     if (!data) return [];
-    return orderBy(data, 'totalRewardAmount', 'desc');
+    return orderBy(data, 'totalRewardAmount', 'desc').filter(item => item.withdrawable);
   }, [data]);
   const getDataShare = useSelector(getDataByShareIdSelector);
   const onWithdrawFeeLP = ({ poolId, shareId }) => {
@@ -53,9 +53,9 @@ const PortfolioReward = ({ onCreateWithdrawFeeLP }) => {
       )}
       keyExtractor={(item) => item?.shareId}
       showsVerticalScrollIndicator={false}
-      contentContainerStyle={[{ flexGrow: 1, paddingTop: 24 }]}
+      contentContainerStyle={[{ flexGrow: 1, paddingTop: 8 }]}
       ListEmptyComponent={
-        <EmptyBookIcon message="Your portfolio is empty" />
+        <EmptyBookIcon message="Join a pool to start earning rewards." />
       }
       style={styled.list}
     />

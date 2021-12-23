@@ -7,10 +7,8 @@ export const styled = StyleSheet.create({
     paddingHorizontal: 25,
   },
   scrollview: {
-    marginTop: 22,
   },
   text: {
-    color: COLORS.colorGreyBold,
     fontFamily: FONT.NAME.specialMedium,
     fontSize: FONT.SIZE.regular,
     lineHeight: FONT.SIZE.medium + 4,
@@ -21,24 +19,16 @@ export const styled = StyleSheet.create({
   },
   contentView: {
     flexDirection: 'row',
+    marginHorizontal: 10,
   },
   selectedButton: {
     padding: 12,
-    borderRadius: 16,
-    borderWidth: 0,
-    marginBottom: 16,
-    backgroundColor: '#EFEFEF',
-  },
-  unSelectedButon: {
-    padding: 12,
-    borderRadius: 16,
+    borderRadius: 8,
     borderWidth: 1,
-    borderColor: COLORS.colorGreyLight,
-    marginBottom: 16
+    marginBottom: 16,
   },
   button: {
     marginTop: 30,
-    backgroundColor: COLORS.black,
   },
   warning: {
     paddingHorizontal: 15,

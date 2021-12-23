@@ -150,7 +150,7 @@ const RemovePool = ({
 }) => {
   const navigation = useNavigation();
   const isFetching = useSelector(removePoolSelector.isFetchingSelector);
-  const { feeAmountStr } = useSelector(removePoolSelector.feeAmountSelector);
+  const { feeAmountStr, showFaucet } = useSelector(removePoolSelector.feeAmountSelector);
   const onSubmit = (params) => {
     typeof onRemoveContribute === 'function' && onRemoveContribute(params);
   };
@@ -168,7 +168,7 @@ const RemovePool = ({
       <View style={styled.padding}>
         {!!error && <Text style={styled.warning}>{error}</Text>}
         <RemoveLPButton onSubmit={onSubmit} />
-        <NetworkFee feeStr={feeAmountStr} />
+        {showFaucet && <NetworkFee feeStr={feeAmountStr} />}
       </View>
     </>
   );
@@ -195,7 +195,7 @@ const RemovePool = ({
       <SuccessModal
         closeSuccessDialog={onClose}
         title={SUCCESS_MODAL.REMOVE_POOL.title}
-        buttonTitle="Back to dashboard"
+        buttonTitle="OK"
         extraInfo={SUCCESS_MODAL.REMOVE_POOL.desc}
         visible={visible}
       />

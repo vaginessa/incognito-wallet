@@ -1,6 +1,5 @@
 import { FONT } from '@src/styles';
 import { StyleSheet } from 'react-native';
-import globalStyled from '@src/theme/theme.styled';
 
 export const settingStyle = StyleSheet.create({
   textVersion: {
@@ -12,7 +11,5 @@ export const settingStyle = StyleSheet.create({
     marginTop: 20
   },
   container: {
-    // paddingHorizontal: globalStyled.defaultPadding.paddingHorizontal,
-    // paddingTop: globalStyled.defaultPadding.paddingTop,
   }
 });

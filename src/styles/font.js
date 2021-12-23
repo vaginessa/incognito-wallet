@@ -82,6 +82,7 @@ const textStyle = {
   incognitoH4: {
     fontSize: fontSizes.large24,
     fontFamily: fontNames.medium,
+    lineHeight: isIOS() ? 30 : 26,
   },
   incognitoH5: {
     fontSize: fontSizes.superMedium,
@@ -110,8 +111,8 @@ const textStyle = {
     fontFamily: fontNames.bold,
   },
   formInput: {
-    fontSize: fontSizes.regular,
-    lineHeight: fontSizes.regular + 4,
+    fontSize: fontSizes.medium,
+    lineHeight: fontSizes.medium + 4,
     fontFamily: fontNames.medium,
   },
   label: {

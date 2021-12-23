@@ -15,8 +15,8 @@ const styles = StyleSheet.create({
     borderRadius: 16
   },
   rightIcon: {
-    position: 'absolute',
-    left: 18,
+    // position: 'absolute',
+    left: -16,
     width: 33,
     height: 33,
     borderRadius: 16,
@@ -31,5 +31,10 @@ const TwoTokenImage = React.memo(({ iconUrl1 , iconUrl2 }) => {
     </View>
   );
 });
+
+TwoTokenImage.propTypes = {
+  iconUrl1: PropTypes.string.isRequired,
+  iconUrl2: PropTypes.string.isRequired,
+};
 
 export default TwoTokenImage;

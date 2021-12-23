@@ -78,6 +78,7 @@ const Setting = () => {
         <Header title="Settings" />
       )}
       <ScrollViewBorder
+        style={{ paddingHorizontal: 0 }}
         showsVerticalScrollIndicator={false}
       >
         <View style={settingStyle.container}>

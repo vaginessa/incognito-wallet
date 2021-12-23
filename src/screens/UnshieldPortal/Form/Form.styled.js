@@ -12,7 +12,7 @@ export const styledForm = StyleSheet.create({
     marginVertical: 50,
   },
   submitBtnUnShield: {
-    backgroundColor: COLORS.orange,
+    // backgroundColor: COLORS.orange,
   },
   warningText: {
     fontFamily: FONT.NAME.regular,
@@ -61,17 +61,14 @@ export const styledForm = StyleSheet.create({
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.medium,
     lineHeight: FONT.SIZE.medium + 4,
-    color: COLORS.black2,
-    fontWeight: 'normal'
   },
   spFeeItem: {
     marginRight: 5,
   },
   symbol: {
     fontFamily: FONT.NAME.medium,
-    fontSize: FONT.SIZE.superMedium,
-    lineHeight: FONT.SIZE.superMedium + 4,
-    color: COLORS.black,
+    fontSize: FONT.SIZE.medium,
+    lineHeight: FONT.SIZE.medium + 4,
   },
 });
 
