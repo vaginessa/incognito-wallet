@@ -1,5 +1,5 @@
 import React from 'react';
-import { FlatList, RefreshControl } from 'react-native';
+import { FlatList } from 'react-native';
 import { Header, LoadingContainer } from '@src/components';
 import { compose } from 'recompose';
 import convertTokenListEnhance from '@screens/Home/features/ConvertTokenList/ConvertTokenList.enhance';
@@ -16,7 +16,7 @@ import { selectedPrivacySelector } from '@src/redux/selectors';
 import BigNumber from 'bignumber.js';
 import { ButtonBasic } from '@components/Button';
 import isEmpty from 'lodash/isEmpty';
-import { ActivityIndicator, Image, Text, TouchableOpacity, View } from '@components/core';
+import { ActivityIndicator, Image, Text, TouchableOpacity, View, RefreshControl } from '@components/core';
 import { Text4 } from '@components/core/Text';
 import noTransaction from '@assets/images/icons/shield.png';
 import { styles } from '@screens/Wallet/features/HistoryToken/HistoryToken.empty';
@@ -46,7 +46,7 @@ const Item = React.memo(({ item, maxSize, index, loading }) => {
     <TouchableOpacity onPress={onPress}>
       <View
         style={[
-          styled.container,
+          index !== 0 && styled.container,
           styled.extraTop,
           styled.row,
           maxSize === index && { marginBottom: 40 },
@@ -54,18 +54,18 @@ const Item = React.memo(({ item, maxSize, index, loading }) => {
       >
         <View style={styled.column}>
           <View style={{ flexDirection: 'row' }}>
-            <NormalText text={token?.name || 'Incognito Token'} style={styled.boldText} />
+            <NormalText text={token?.name || 'Incognito Token'} style={FONT.TEXT.label} />
             {!!token?.isVerified && <TokenVerifiedIcon />}
           </View>
           {!loading && (
-            <Text
+            <Text4
               style={[
-                balanceStyled.pSymbol,
-                { fontFamily: FONT.NAME.medium, marginTop: 5 },
+                FONT.TEXT.desc,
+                { marginTop: 5 },
               ]}
             >
               {`${unspentCoins.length} UTXOS`}
-            </Text>
+            </Text4>
           )}
         </View>
         {loading ? (
@@ -74,7 +74,7 @@ const Item = React.memo(({ item, maxSize, index, loading }) => {
           <Text
             style={[
               styled.bottomText,
-              styled.boldText,
+              FONT.TEXT.label,
               { flex: 1, marginLeft: 20, textAlign: 'right' },
             ]}
           >
@@ -129,7 +129,7 @@ const ConvertTokenList = React.memo(
       if (isFetching && !isRefreshing) return <LoadingContainer />;
       if (isEmpty(coins)) return renderEmptyView();
       return (
-        <View borderTop style={[{ flex: 1, justifyContent: 'space-between' }, globalStyled.defaultPaddingHorizontal]}>
+        <View borderTop paddingHorizontal fullFlex style={[{justifyContent: 'space-between'}]}>
           <FlatList
             refreshControl={(
               <RefreshControl

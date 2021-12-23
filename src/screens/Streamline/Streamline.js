@@ -2,7 +2,7 @@ import React from 'react';
 import Header from '@src/components/Header';
 import { BtnQuestionDefault, ButtonBasic } from '@src/components/Button';
 import srcQuestion from '@src/assets/images/icons/question_gray.png';
-import { LoadingContainer, ScrollView, View, Text, ScrollViewBorder } from '@src/components/core';
+import { LoadingContainer, View, Text, ScrollViewBorder } from '@src/components/core';
 import { Text4 } from '@src/components/core/Text';
 import LoadingTx from '@src/components/LoadingTx';
 import PropTypes from 'prop-types';
@@ -24,7 +24,7 @@ const Hook = React.memo((props) => {
   return (
     <View style={styled.hook}>
       <Text4 style={styled.hookTitle}>{title}</Text4>
-      <Text4 style={styled.hookDesc}>{desc}</Text4>
+      <Text style={styled.hookDesc}>{desc}</Text>
     </View>
   );
 });
@@ -39,13 +39,13 @@ const Extra = () => {
   const selectPrivacy = useSelector(selectedPrivacySelector.selectedPrivacy);
   return (
     <>
-      <Text style={[styled.tooltip, { marginBottom: 30 }]}>
+      <Text4 style={[styled.tooltip, { marginBottom: 30 }]}>
         Consolidate your UTXOs to ensure successful transactions of any amount.
-      </Text>
-      <Text style={styled.tooltip}>
-        There are {noUTXOS} UTXOs {selectPrivacy?.symbol} in this keychain. You can consolidate{' '}
+      </Text4>
+      <Text4 style={styled.tooltip}>
+        There are <Text style={styled.tooltip}>{noUTXOS} UTXOs {selectPrivacy?.symbol}</Text> in this keychain. You can consolidate{' '}
         {noUTXOS} UTXOs {selectPrivacy?.symbol} at a time.
-      </Text>
+      </Text4>
       <ButtonBasic
         btnStyle={styled.btnStyle}
         title="Consolidate"
@@ -63,9 +63,9 @@ const Empty = React.memo(() => {
   return (
     <View style={styled.emptyContainer}>
       <Text style={styled.emptyTitle}>Consolidation complete.</Text>
-      <Text style={styled.emptyText}>
+      <Text4 style={styled.emptyText}>
         You’re now running at peak efficiency.
-      </Text>
+      </Text4>
     </View>
   );
 });
@@ -75,12 +75,12 @@ const Pending = React.memo(() => {
 
   if (noUTXOS > MAX_NO_INPUT_DEFRAGMENT) {
     return (
-      <View style={styled.pendingContainer}>
+      <View fullFlex paddingHorizontal borderTop>
         <Text style={styled.emptyTitle}>Consolidation in process.</Text>
-        <Text style={styled.emptyText}>
-          Your remaining UTXOS {noUTXOS}. Please make another
+        <Text4 style={styled.emptyText}>
+          Your remaining UTXOs: {noUTXOS}. Please make another
           consolidation after this one is complete.
-        </Text>
+        </Text4>
       </View>
     );
   }

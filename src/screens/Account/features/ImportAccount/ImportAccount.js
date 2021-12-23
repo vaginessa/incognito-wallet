@@ -96,19 +96,19 @@ const ImportAccount = (props) => {
   const renderConfirm = () => {
     return (
       <View borderTop fullFlex>
-        <Text style={styleSheet.actionText}>
+        <Text4 style={styleSheet.actionText}>
           This keychain is not linked to any of your current master keys. Import its master key to restore all associated keychains, or import this keychain only.
-        </Text>
+        </Text4>
         <View style={styleSheet.actions}>
-          <ButtonBasic
+          <Button
             title="Import master key"
-            btnStyle={[styleSheet.submitBtn, styleSheet.action]}
+            buttonStyle={[styleSheet.submitBtn, styleSheet.action]}
             onPress={importing ? undefined : handleImportMasterKey}
             disabled={importing}
           />
-          <ButtonBasic
+          <Button
             title={importing ? 'Importing...' : 'Import keychain only'}
-            btnStyle={[styleSheet.submitBtn, styleSheet.action]}
+            buttonStyle={[styleSheet.submitBtn, styleSheet.action]}
             onPress={importing ? undefined : onConfirm}
             disabled={importing}
           />
