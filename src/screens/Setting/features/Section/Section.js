@@ -15,7 +15,13 @@ export const SectionItem = (
   const colors = useSelector(colorsSelector);
   return (
     <TouchableOpacity
-      style={[sectionStyle.container, lastItem && sectionStyle.lastItem, styleItem, nonPaddingTop && sectionStyle.nonPaddingTop, { borderBottomColor: colors.border1 }]}
+      style={[
+        sectionStyle.container,
+        lastItem && sectionStyle.lastItem,
+        styleItem,
+        nonPaddingTop && sectionStyle.nonPaddingTop,
+        { borderBottomColor: colors.border4 }
+      ]}
       onPress={handlePress}
     >
       <Row centerVertical spaceBetween>
@@ -38,7 +44,7 @@ const Section = (props) => {
   const { label, items, customItems, headerRight, labelStyle, headerIcon: HeaderIcon } = props;
   const colors = useSelector(colorsSelector);
   return (
-    <View style={[sectionStyle.container, { borderBottomColor: colors.border1 }]}>
+    <View style={[sectionStyle.container, { borderBottomColor: colors.border4 }]}>
       <Row style={sectionStyle.header}>
         <Row centerVertical>
           {!!HeaderIcon && (
