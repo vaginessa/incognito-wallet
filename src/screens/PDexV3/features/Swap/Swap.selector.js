@@ -599,13 +599,20 @@ export const mappingOrderHistorySelector = createSelector(
 export const swapHistorySelector = createSelector(
   swapSelector,
   mappingOrderHistorySelector,
-  ({ swapHistory, selltoken, buytoken }, mappingOrderHistory) => {
-    const history = swapHistory?.data
-      ?.map((order) => mappingOrderHistory(order))
-      .filter(
-        ({ sellTokenId, buyTokenId }) =>
-          xor([selltoken, buytoken], [sellTokenId, buyTokenId]).length === 0,
-      );
+  (
+    {
+      swapHistory,
+      // selltoken, buytoken
+    },
+    mappingOrderHistory,
+  ) => {
+    const history = swapHistory?.data?.map((order) =>
+      mappingOrderHistory(order),
+    );
+    // .filter(
+    //   ({ sellTokenId, buyTokenId }) =>
+    //     xor([selltoken, buytoken], [sellTokenId, buyTokenId]).length === 0,
+    // );
     return {
       ...swapHistory,
       history,

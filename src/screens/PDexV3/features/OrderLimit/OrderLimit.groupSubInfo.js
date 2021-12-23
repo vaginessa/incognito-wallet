@@ -1,10 +1,12 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { useSelector } from 'react-redux';
-import { Tabs, FlatList, ActivityIndicator } from '@src/components/core';
+import { Tabs } from '@src/components/core';
 import { OrderBook } from '@screens/PDexV3/features/Chart/Chart.orderBook';
-import { openOrdersSelector } from './OrderLimit.selector';
-import Order from './OrderLimit.order';
+import {
+  openOrdersSelector,
+  orderHistorySelector,
+} from './OrderLimit.selector';
 import History, { useHistoryOrders } from './OrderLimit.orderHistory';
 import {
   TAB_OPEN_ORDER,
@@ -20,24 +22,10 @@ const styled = StyleSheet.create({
   },
 });
 
-const TabOpenOrder = React.memo(() => {
-  const { history = [], isFetching } = useSelector(openOrdersSelector);
-  useHistoryOrders();
-  return (
-    <View style={styled.wrapper}>
-      {isFetching && <ActivityIndicator style={{ marginBottom: 16 }} />}
-      <FlatList
-        data={history}
-        keyExtractor={(item) => item?.requestTx}
-        renderItem={({ item, index }) => (
-          <Order data={item} visibleDivider={index !== history.length - 1} />
-        )}
-      />
-    </View>
-  );
-});
-
 const GroupSubInfo = () => {
+  const orderHistory = useSelector(orderHistorySelector);
+  const openOrders = useSelector(openOrdersSelector);
+  useHistoryOrders();
   return (
     <View style={styled.container}>
       <Tabs rootTabID={ROOT_TAB_SUB_INFO}>
@@ -50,12 +38,20 @@ const GroupSubInfo = () => {
           <OrderBook />
         </View>
         <View
-          tabID={TAB_HISTORY_ID}
-          label="Orders"
+          tabID={TAB_OPEN_ORDER}
+          label="Open orders"
           onChangeTab={() => null}
           upperCase={false}
         >
-          <History />
+          <History {...openOrders} />
+        </View>
+        <View
+          tabID={TAB_HISTORY_ID}
+          label="History"
+          onChangeTab={() => null}
+          upperCase={false}
+        >
+          <History {...orderHistory} />
         </View>
       </Tabs>
     </View>

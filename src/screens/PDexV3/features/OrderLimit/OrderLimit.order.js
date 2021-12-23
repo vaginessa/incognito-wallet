@@ -88,7 +88,6 @@ const Order = React.memo(({ data, visibleDivider }) => {
       task.push(setVisible(false));
     }
     await Promise.all(task);
-    await dispatch(actionInit(true));
   };
   if (!data) {
     return null;
@@ -112,6 +111,7 @@ const Order = React.memo(({ data, visibleDivider }) => {
     percentStr1,
     visibleBtnAction,
     nftid,
+    pooId
   } = data;
   const renderHook = () => {
     let comp = null;
@@ -129,6 +129,7 @@ const Order = React.memo(({ data, visibleDivider }) => {
               nftid,
               txType: ACCOUNT_CONSTANT.TX_TYPE.CANCEL_ORDER_LIMIT,
               subTitle: 'Are you sure you want to cancel this limit order?',
+              pooId,
             })
           }
         />
