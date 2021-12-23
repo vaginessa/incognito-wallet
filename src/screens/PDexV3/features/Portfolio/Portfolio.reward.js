@@ -53,7 +53,7 @@ const PortfolioReward = ({ onCreateWithdrawFeeLP }) => {
       )}
       keyExtractor={(item) => item?.shareId}
       showsVerticalScrollIndicator={false}
-      contentContainerStyle={[{ flexGrow: 1, paddingTop: 24 }]}
+      contentContainerStyle={[{ flexGrow: 1, paddingTop: 8 }]}
       ListEmptyComponent={
         <EmptyBookIcon message="Join a pool to start earning rewards." />
       }

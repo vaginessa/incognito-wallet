@@ -190,7 +190,7 @@ const Contribute = ({
   error,
 }) => {
   const isFetching = useSelector(contributeSelector.statusSelector);
-  const { feeAmountStr } = useSelector(contributeSelector.feeAmountSelector);
+  const { feeAmountStr, showFaucet } = useSelector(contributeSelector.feeAmountSelector);
   const onSubmit = (params) => {
     typeof onCreateContributes === 'function' && onCreateContributes(params);
   };
@@ -221,7 +221,7 @@ const Contribute = ({
                 <View style={styled.padding}>
                   {!!error && <Text style={styled.warning}>{error}</Text>}
                   <ContributeButton onSubmit={onSubmit} />
-                  <NetworkFee feeStr={feeAmountStr} />
+                  {showFaucet && <NetworkFee feeStr={feeAmountStr} />}
                   <Extra />
                 </View>
               </>

@@ -150,7 +150,7 @@ const RemovePool = ({
 }) => {
   const navigation = useNavigation();
   const isFetching = useSelector(removePoolSelector.isFetchingSelector);
-  const { feeAmountStr } = useSelector(removePoolSelector.feeAmountSelector);
+  const { feeAmountStr, showFaucet } = useSelector(removePoolSelector.feeAmountSelector);
   const onSubmit = (params) => {
     typeof onRemoveContribute === 'function' && onRemoveContribute(params);
   };
@@ -168,7 +168,7 @@ const RemovePool = ({
       <View style={styled.padding}>
         {!!error && <Text style={styled.warning}>{error}</Text>}
         <RemoveLPButton onSubmit={onSubmit} />
-        <NetworkFee feeStr={feeAmountStr} />
+        {showFaucet && <NetworkFee feeStr={feeAmountStr} />}
       </View>
     </>
   );

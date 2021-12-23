@@ -177,9 +177,6 @@ class SelectedPrivacy {
     this.defaultPoolPair = pTokenData?.defaultPoolPair;
     this.defaultPairToken = pTokenData?.defaultPairToken;
     this.network = pTokenData.network;
-    if (tokenId !== PRV_ID) {
-      this.symbol = `p${this.symbol}`;
-    }
     this.hasSameSymbol = pTokenData.hasSameSymbol;
   }
 }

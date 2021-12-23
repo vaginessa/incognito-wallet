@@ -1,6 +1,17 @@
 import React from 'react';
 import srcThreeDotsVerIcon from '@src/assets/images/icons/three_dots_ver.png';
-import { Image1 } from '@components/core';
+import { Image1, View } from '@components/core';
+import { StyleSheet } from 'react-native';
+
+const styles = StyleSheet.create({
+  container: {
+    borderRadius: 20,
+    width: 40,
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center'
+  }
+});
 
 const ThreeDotsVerIcon = props => {
   const defaultStyle = {
@@ -9,11 +20,13 @@ const ThreeDotsVerIcon = props => {
   };
   const {style, source, ...rest} = props;
   return (
-    <Image1
-      source={srcThreeDotsVerIcon}
-      style={[defaultStyle, style]}
-      {...rest}
-    />
+    <View style={styles.container}>
+      <Image1
+        source={srcThreeDotsVerIcon}
+        style={[defaultStyle, style]}
+        {...rest}
+      />
+    </View>
   );
 };
 

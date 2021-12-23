@@ -14,7 +14,6 @@ export default StyleSheet.create({
   },
   inputStyle: {
     ...FONT.STYLE.medium,
-    color: COLORS.newGrey,
     fontSize: 20,
     marginTop: 10,
   },
