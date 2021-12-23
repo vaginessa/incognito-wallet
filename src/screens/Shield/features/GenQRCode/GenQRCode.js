@@ -194,7 +194,7 @@ const Extra = (props) => {
 
   const renderShieldUserAddress = () => (
     <>
-      <NormalText style={[styled.title, {color: colors.text1}]} text="Send to this deposit address" />
+      <NormalText style={[styled.title, {color: colors.text1}]} text="Send to this shielding address" />
       <View style={styled.qrCode}>
         <QrCodeGenerate value={address} size={175} />
       </View>
@@ -204,12 +204,12 @@ const Extra = (props) => {
         <NormalText
           style={[styled.text, {color: colors.text1}]}
           text={`Send only ${selectedPrivacy?.externalSymbol ||
-            selectedPrivacy?.symbol} to this deposit address.`}
+            selectedPrivacy?.symbol} to this shielding address.`}
         />
         <NormalText
           style={{ marginTop: 10, color: colors.text1}}
           text={`Sending coins or tokens other than ${selectedPrivacy?.externalSymbol ||
-            selectedPrivacy?.symbol} to this address may result in the loss of your deposit.`}
+            selectedPrivacy?.symbol} to this address may result in the loss of your funds.`}
         />
         <NormalText
           text="Use at your own risk."

@@ -26,7 +26,7 @@ export const LIQUIDITY_MESSAGES = {
   removePool : 'Remove liquidity',
   estRate: (onPress) => (
     <Text style={styled.warning}>Are you sure? This varies significantly from normal market rates.&nbsp;
-      <Text style={{textDecorationLine: 'underline' }} onPress={onPress}>[Switch to market rate.]</Text>
+      <Text style={{textDecorationLine: 'underline' }} onPress={onPress}>Switch to market rate.</Text>
     </Text>
   )
 };

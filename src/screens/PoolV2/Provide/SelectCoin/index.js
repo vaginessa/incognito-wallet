@@ -39,25 +39,26 @@ const SelectCoin = ({ coins }) => {
   const renderUpToAPY = (item) => {
     return (
       <Row style={{ alignItems: 'center', marginBottom: 8 }}>
+        <Text
+          style={[
+            mainStyle.coinExtra,
+            { marginBottom: 0, marginTop: 2 },
+            { color: colors.blue1 },
+          ]}
+        >
+          {item.displayInterest}
+        </Text>
         {item.locked && (
           <Image
             source={upToIcon}
             style={{
               width: 14,
               height: 16,
-              marginRight: 4,
+              marginLeft: 4,
+              tintColor: colors.blue1
             }}
           />
         )}
-        <Text
-          style={[
-            mainStyle.coinExtra,
-            { marginBottom: 0, marginTop: 2 },
-            { color: colors.text7 },
-          ]}
-        >
-          {item.displayInterest}
-        </Text>
       </Row>
     );
   };

@@ -6,6 +6,7 @@ import { useNavigation } from 'react-navigation-hooks';
 import { Row } from '@src/components/';
 import mainStyle from '@screens/PoolV2/style';
 import globalStyled from '@src/theme/theme.styled';
+import { BtnSecondary } from '@components/core/Button';
 import styles from './style';
 
 const Actions = ({
@@ -37,9 +38,9 @@ const Actions = ({
   };
 
   const provideButton = (
-    <RoundCornerButton
+    <BtnSecondary
       title={buy ? 'Provide now' : 'Provide more'}
-      style={[styles.actionButton, mainStyle.button]}
+      wrapperStyle={[styles.actionButton, mainStyle.button]}
       onPress={handleProvide}
     />
   );
@@ -59,7 +60,7 @@ const Actions = ({
   );
 
   return (
-    <Row center style={[styles.actions, globalStyled.defaultPadding3]}>
+    <Row spaceBetween style={[styles.actions, globalStyled.defaultPaddingHorizontal]}>
       {provideButton}
       {buy ? buyButton : withdrawButton}
     </Row>

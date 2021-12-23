@@ -79,7 +79,7 @@ const enhance = (WrappedComp) => (props) => {
           actionToggleModal({
             data: (
               <TradeSuccessModal
-                title="Order initiated!"
+                title="Order placed!"
                 desc={cfmTitle}
                 sub="Your balance will update as the order fills."
                 handleTradeSucesss={() => {

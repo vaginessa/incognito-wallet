@@ -23,8 +23,9 @@ import { colorsSelector } from '@src/theme/theme.selector';
 import styles from './style';
 
 export const LockTimeComp = React.memo(() => {
+  const colors = useSelector(colorsSelector);
   return (
-    <Row style={mainStyles.wrapperLock}>
+    <Row style={[mainStyles.wrapperLock, { backgroundColor: colors.background3 }]}>
       <LockIcon />
     </Row>
   );
@@ -44,6 +45,16 @@ export const SumIconComp = React.memo(() => {
   );
 });
 
+export const UpToIconComp = () => {
+  const colors = useSelector(colorsSelector);
+  return (
+    <Image
+      source={upToIcon}
+      style={[mainStyles.iconUp, { tintColor: colors.blue1 }]}
+    />
+  );
+};
+
 const CoinList = ({
   coins,
   groupedCoins,
@@ -62,15 +73,6 @@ const CoinList = ({
     navigation.navigate(ROUTE_NAMES.PoolV2History, {
       coins,
     });
-  };
-
-  const UpToIconComp = () => {
-    return (
-      <Image
-        source={upToIcon}
-        style={mainStyles.iconUp}
-      />
-    ); 
   };
 
   const renderEmpty = () => {
@@ -130,7 +132,7 @@ const CoinList = ({
 
   const renderBtnMirage = (item) => {
     return (
-      <TouchableOpacity style={mainStyles.btnMirage} onPress={() => handleOpenMigrate(item)}>
+      <TouchableOpacity style={[mainStyles.btnMirage, { backgroundColor: colors.background3 }]} onPress={() => handleOpenMigrate(item)}>
         <Text style={mainStyles.mirageText}>Migrate</Text>
       </TouchableOpacity>
     );
@@ -164,8 +166,8 @@ const CoinList = ({
   const renderUpToAPY = (item) => {
     return (
       <Row style={{alignItems: 'center'}}>
+        <Text style={[mainStyles.coinExtra, { color: colors.blue1 }]}>{item.coin.displayInterest}</Text>
         {item.locked && <UpToIconComp />}
-        <Text style={[mainStyles.coinExtra, {color: colors.text7}]}>{item.coin.displayInterest}</Text>
       </Row>
     );
   };
@@ -268,7 +270,7 @@ const CoinList = ({
   return (
     <View style={mainStyles.coinContainer}>
       {renderContent()}
-      {renderBottom()}
+      {/*{renderBottom()}*/}
     </View>
   );
 };
