@@ -125,9 +125,9 @@ const NodeItemDetail = memo(({
       <TouchableOpacity
         onPress={onChangeWifiPress}
       >
-        <Text style={[styles.text, styles.bold, styles.bigText]}>
+        <Text4 style={[styles.text, styles.bold, styles.bigText]}>
           Change Wi-Fi
-        </Text>
+        </Text4>
       </TouchableOpacity>
     );
   };
@@ -152,9 +152,9 @@ const NodeItemDetail = memo(({
     ) {
       return (
         <TouchableOpacity style={{ marginTop: 30 }} onPress={onUpdateNode}>
-          <Text style={[styles.text, styles.bold, styles.bigText]}>
+          <Text4 style={[styles.text, styles.bold, styles.bigText]}>
             Update firmware
-          </Text>
+          </Text4>
         </TouchableOpacity>
       );
     }
