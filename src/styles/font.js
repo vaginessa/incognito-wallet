@@ -108,12 +108,12 @@ const textStyle = {
     fontSize: fontSizes.superSmall,
     fontFamily: fontNames.regular,
   },
-  formLabel: {
+  formInput: {
     fontSize: fontSizes.medium,
     lineHeight: fontSizes.medium + 4,
     fontFamily: fontNames.bold,
   },
-  formInput: {
+  formLabel: {
     fontSize: fontSizes.regular,
     lineHeight: fontSizes.regular + 4,
     fontFamily: fontNames.medium,
