@@ -1,10 +1,12 @@
 import { FONT } from '@src/styles';
 import { StyleSheet } from 'react-native';
+import globalStyled from '@src/theme/theme.styled';
 
 const HEADER_HEIGHT = 35;
 
 export const sectionStyle = StyleSheet.create({
   container: {
+    ...globalStyled.defaultPaddingHorizontal,
     paddingVertical: 16,
     borderBottomWidth: 1,
   },
@@ -31,12 +33,13 @@ export const sectionStyle = StyleSheet.create({
   label: {
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.medium,
-    lineHeight: FONT.SIZE.medium + 9,
+    lineHeight: FONT.SIZE.medium + 8,
   },
   desc: {
     fontFamily: FONT.NAME.medium,
+    fontWeight: '400',
     fontSize: FONT.SIZE.regular,
-    lineHeight: FONT.SIZE.regular + 9,
+    lineHeight: FONT.SIZE.regular + 8,
     flex: 1,
     marginLeft: 40
   },

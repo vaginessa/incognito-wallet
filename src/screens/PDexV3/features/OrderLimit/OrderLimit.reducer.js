@@ -1,6 +1,6 @@
 import { PRV_ID } from '@src/constants/common';
 import { ACCOUNT_CONSTANT } from 'incognito-chain-web-js/build/wallet';
-import { ACTION_SET_FOCUS_TOKEN } from '../Swap/Swap.constant';
+import { ACTION_SET_FOCUS_TOKEN } from '@screens/PDexV3/features/Swap';
 import {
   ACTION_FETCHING,
   ACTION_FETCHED,
@@ -45,6 +45,11 @@ const initialState = {
     isFetched: false,
     data: [],
   },
+  openOrders: {
+    isFetching: false,
+    isFetched: false,
+    data: [],
+  },
   withdrawingOrderTxs: [],
   withdrawOrderTxs: [],
   ordering: false,
@@ -78,36 +83,37 @@ export default (state = initialState, action) => {
     };
   }
   case ACTION_RESET_ORDERS_HISTORY: {
+    const { field } = action.payload;
     return {
       ...state,
-      ordersHistory: { ...initialState.ordersHistory },
+      [field]: { ...initialState[field] },
     };
   }
   case ACTION_FETCHING_ORDERS_HISTORY: {
-    const { ordersHistory } = state;
+    const { field } = action.payload;
     return {
       ...state,
-      ordersHistory: { ...ordersHistory, isFetching: true },
+      [field]: { ...state[field], isFetching: true },
     };
   }
   case ACTION_FETCHED_ORDERS_HISTORY: {
-    const { ordersHistory } = state;
+    const { field, data } = action.payload;
     return {
       ...state,
-      ordersHistory: {
-        ...ordersHistory,
+      [field]: {
+        ...state[field],
         isFetching: false,
         isFetched: true,
-        data: [...action.payload],
+        data,
       },
     };
   }
   case ACTION_FETCH_FAIL_ORDERS_HISTORY: {
-    const { ordersHistory } = state;
+    const { field } = action.payload;
     return {
       ...state,
-      ordersHistory: {
-        ...ordersHistory,
+      [field]: {
+        ...state[field],
         isFetched: false,
         isFetching: false,
       },

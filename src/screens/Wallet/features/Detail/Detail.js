@@ -1,5 +1,5 @@
 import React from 'react';
-import { TouchableOpacity } from 'react-native';
+import { SafeAreaView, TouchableOpacity } from 'react-native';
 import { View } from '@src/components/core';
 import { View2 } from '@src/components/core/View';
 import globalStyled from '@src/theme/theme.styled';
@@ -38,6 +38,7 @@ import { ThreeDotsVerIcon } from '@components/Icons';
 import { actionToggleModal } from '@components/Modal';
 import ModalBottomSheet from '@components/Modal/features/ModalBottomSheet';
 import { Row } from '@src/components';
+import { colorsSelector } from '@src/theme';
 import {
   styled,
   groupBtnStyled,
@@ -80,25 +81,28 @@ const GroupButton = React.memo(() => {
   };
 
   return (
-    <View style={groupBtnStyled.groupButton}>
-      <BtnPrimary
-        title="Buy"
-        wrapperStyle={groupBtnStyled.btnStyle}
-        background={COLORS.green}
-        onPress={handleBuy}
-      />
-      <BtnPrimary
-        title="Sell"
-        wrapperStyle={groupBtnStyled.btnStyle}
-        background={COLORS.red2}
-        onPress={handleSell}
-      />
-    </View>
+    <SafeAreaView>
+      <View2 style={groupBtnStyled.groupButton}>
+        <BtnPrimary
+          title="Buy"
+          wrapperStyle={groupBtnStyled.btnStyle}
+          background={COLORS.green}
+          onPress={handleBuy}
+        />
+        <BtnPrimary
+          title="Sell"
+          wrapperStyle={groupBtnStyled.btnStyle}
+          background={COLORS.red2}
+          onPress={handleSell}
+        />
+      </View2>
+    </SafeAreaView>
   );
 });
 
 const Balance = React.memo(() => {
   const selected = useSelector(selectedPrivacySelector.selectedPrivacy);
+  const colors = useSelector(colorsSelector);
   const isGettingBalance = useSelector(
     sharedSelector.isGettingBalance,
   ).includes(selected?.tokenId);
@@ -119,7 +123,7 @@ const Balance = React.memo(() => {
     <View style={balanceStyled.container}>
       <Amount {...amountProps} />
       <View style={balanceStyled.hook}>
-        <Price pricePrv={selected.pricePrv} priceUsd={selected.priceUsd} />
+        <Price pricePrv={selected.pricePrv} priceUsd={selected.priceUsd} textStyle={{ color: colors.text3 }} />
         <ChangePrice {...changePriceProps} />
       </View>
     </View>
@@ -156,7 +160,7 @@ const CustomRightHeader = () => {
         data: (
           <ModalBottomSheet
             style={{ height: '15%' }}
-            contentView={
+            contentView={(
               <Row style={groupBtnStyled.groupButton}>
                 <BtnSecondary
                   title="Receive"
@@ -170,7 +174,7 @@ const CustomRightHeader = () => {
                   disabled={isSendDisabled}
                 />
               </Row>
-            }
+            )}
           />
         ),
         visible: true,
@@ -216,11 +220,11 @@ const Detail = (props) => {
           onGoBack={onGoBack}
           handleSelectedAccount={onRefresh}
         />
-        <View borderTop style={[{flex : 1}, globalStyled.defaultPadding3]}>
+        <View borderTop fullFlex paddingHorizontal style={{ paddingBottom: 0 }}>
           <Balance />
-          <GroupButton />
           <History {...{ ...props, refreshing }} />
         </View>
+        <GroupButton />
       </View2>
     </>
   );
