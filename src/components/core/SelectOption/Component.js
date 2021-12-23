@@ -1,14 +1,16 @@
 /* eslint-disable */
 import PropTypes from 'prop-types';
 import React from 'react';
-import { View, Picker, Platform, Text, TouchableOpacity, Image } from 'react-native';
-import RNComponent from 'react-native-picker-select';
-import ic_radio from '@src/assets/images/icons/ic_radio.png';
-import ic_radio_check from '@src/assets/images/icons/ic_radio_check.png';
-import { COLORS } from '@src/styles';
+import { Text, TouchableOpacity } from 'react-native';
+import { Text4 } from '@components/core/Text';
+import { View } from '@components/core';
+import { RatioIcon } from '@components/Icons';
+import { colorsSelector } from '@src/theme';
+import { useSelector } from 'react-redux';
 import styleSheet from './style';
 
 const SelectOption = ({ containerStyle, inputStyle, labelStyle, style, prependView, label, items, onChange, value }) => {
+  const colors = useSelector(colorsSelector);
   return (
     <View style={[styleSheet.container, style]}>
       {label && (
@@ -39,8 +41,8 @@ const SelectOption = ({ containerStyle, inputStyle, labelStyle, style, prependVi
                 onPress={() => onChange(item.value)}
               >
                 <View style={styleSheet.optionContent}>
-                  <Image style={styleSheet.icon} source={isSelected ? ic_radio_check : ic_radio} />
-                  <Text style={[styleSheet.textSelectBox, { color: isSelected ? COLORS.black : COLORS.colorGreyBold }]}>{item.label}</Text>
+                  <RatioIcon style={styleSheet.icon} selected={isSelected} />
+                  <Text4 style={[styleSheet.textSelectBox, isSelected && { color: colors.text1 }]}>{item.label}</Text4>
                 </View>
               </TouchableOpacity>
             );

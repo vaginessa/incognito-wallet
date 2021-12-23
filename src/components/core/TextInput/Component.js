@@ -9,6 +9,7 @@ import {
 import { Icon } from 'react-native-elements';
 import { COLORS } from '@src/styles';
 import { Text } from '@components/core';
+import { Text4 } from '@components/core/Text';
 import { colorsSelector } from '@src/theme/theme.selector';
 import { useSelector } from 'react-redux';
 import styleSheet from './style';
@@ -102,7 +103,7 @@ const TextInput = ({
               styleSheet.input,
               oldVersion && styleSheet.oldInput,
               inputStyle,
-              {color: colors.text9},
+              {color: colors.text4},
             ]}
             onFocus={handleFocus}
             onBlur={handleBlur}
@@ -116,13 +117,13 @@ const TextInput = ({
             {...props}
           />
         ) : (
-          <Text
+          <Text4
             style={styleSheet.input}
             numberOfLines={1}
             ellipsizeMode="middle"
           >
             {props?.defaultValue || ''}
-          </Text>
+          </Text4>
         )}
 
         {clearable && focus && (
