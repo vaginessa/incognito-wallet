@@ -105,7 +105,7 @@ const CoinInfo = (props) => {
               style={[
                 styled.label,
                 styled.labelIsVerified,
-                isVerified ? { color: COLORS.green } : { color: COLORS.orange },
+                isVerified ? { color: COLORS.green, width: 65 } : { color: COLORS.orange, width: 90 },
               ]}
             >
               {isVerified ? 'Verified' : 'Unverified'}
