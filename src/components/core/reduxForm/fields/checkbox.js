@@ -1,10 +1,12 @@
 import React from 'react';
-import { CheckBox } from '@src/components/core';
+import { Text, TouchableOpacity } from '@components/core';
+import { CheckBoxIcon } from '@src/components/Icons';
+import Row from '@src/components/Row';
 import createField from './createField';
 
 const renderCustomField = ({ input, ...props }) => {
   const { value } = input;
-  const { onPress, title, containerStyle } = props;
+  const { onPress, title, containerStyle, titleStyle } = props;
   let _value = false;
 
   try {
@@ -12,19 +14,31 @@ const renderCustomField = ({ input, ...props }) => {
   } catch (e) {
     _value = false;
   }
-  
+
   return (
-    <CheckBox
-      {...props}
-      title={title}
-      checked={_value}
-      containerStyle={{
-        ...containerStyle,
-        padding: 0
-      }}
+    <TouchableOpacity 
       onPress={() => typeof onPress === 'function' && onPress(_value)}
-    />
+      style={[containerStyle]}
+    >
+      <Row centerVertical>
+        <CheckBoxIcon active={!!_value} />
+        <Text style={[titleStyle, {marginLeft: 10}]}>{title}</Text>
+      </Row>
+    </TouchableOpacity>
   );
+  
+  // return (
+  //   <CheckBox
+  //     {...props}
+  //     title={title}
+  //     checked={_value}
+  //     containerStyle={{
+  //       ...containerStyle,
+  //       padding: 0
+  //     }}
+  //     onPress={() => typeof onPress === 'function' && onPress(_value)}
+  //   />
+  // );
 };
 
 const CheckboxField = createField({

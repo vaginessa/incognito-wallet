@@ -7,7 +7,6 @@ import Header from '@src/components/Header';
 import { useSelector } from 'react-redux';
 import { colorsSelector } from '@src/theme/theme.selector';
 import { RatioIcon } from '@components/Icons';
-import { FONT } from '@src/styles';
 import { styled } from './styled';
 
 export const UnshieldPortalCondition = (props) => {
