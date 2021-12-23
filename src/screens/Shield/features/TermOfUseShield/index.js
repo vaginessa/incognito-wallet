@@ -88,7 +88,7 @@ const TermOfUseShield = (props) => {
           onPress={handlePressNext}
         />
         {selectedTerm === (terms.length - 1) && (
-          <Text style={styled.warningText}>Your wallet will launch and prompt you to approve the connection. Simply follow the instructions to complete the deposit process.</Text>
+          <Text style={styled.warningText}>Your wallet will launch and prompt you to approve the connection. Simply follow the instructions to complete the shielding process.</Text>
         )}
       </ScrollViewBorder>
     </>
