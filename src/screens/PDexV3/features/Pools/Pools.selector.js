@@ -5,6 +5,7 @@ import { COLORS } from '@src/styles';
 import { getExchangeRate } from '@screens/PDexV3';
 import BigNumber from 'bignumber.js';
 import convert from '@src/utils/convert';
+import uniq from 'lodash/uniq';
 import isEqual from 'lodash/isEqual';
 
 export const poolsSelector = createSelector(
@@ -164,8 +165,23 @@ export const listPoolsVerifySelector = createSelector(
 
 export const findPoolByPairSelector = createSelector(
   listPoolsVerifySelector,
-  (pools) => ({ token1Id, token2Id }) =>
-    pools.find(({ token1, token2 }) =>
-      isEqual([token1?.tokenId, token2?.tokenId], [token1Id, token2Id]),
-    ) || pools.find(({ token1 }) => token1?.tokenId === token1Id),
+  (pools) =>
+    ({ token1Id, token2Id }) =>
+      pools.find(({ token1, token2 }) =>
+        isEqual([token1?.tokenId, token2?.tokenId], [token1Id, token2Id]),
+      ) || pools.find(({ token1 }) => token1?.tokenId === token1Id),
+);
+
+export const getAllTokenIDsInPoolsSelector = createSelector(
+  listPoolsVerifySelector,
+  (pools) =>
+    uniq(
+      pools.reduce((prev, cur) => {
+        const {
+          token1: { tokenId: token1ID },
+          token2: { tokenId: token2ID },
+        } = cur;
+        return [...prev, token1ID, token2ID];
+      }, []),
+    ),
 );
