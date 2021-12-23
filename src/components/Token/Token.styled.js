@@ -3,7 +3,7 @@ import { FONT, COLORS, UTILS } from '@src/styles';
 
 export const styled = StyleSheet.create({
   container: {
-    paddingVertical: 15,
+    paddingTop: 24,
   },
   extra: {
     flexDirection: 'row',

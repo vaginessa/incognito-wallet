@@ -1,19 +1,20 @@
 import React, { memo } from 'react';
-import { FlatList, Text } from 'react-native';
+import {  } from 'react-native';
 import styles from '@screens/Home/features/Convert/Convert.styled';
-import { ActivityIndicator, View } from '@components/core';
+import { ActivityIndicator, View, Text, FlatList, Button } from '@components/core';
+import { Text4 } from '@components/core/Text';
 import { Icon } from 'react-native-elements';
 import { COLORS } from '@src/styles';
 import { ScreenHeight } from '@utils/devices';
 import { useDispatch, useSelector } from 'react-redux';
 import { convertCoinsDataSelector, convertGetConvertStepSelector } from '@screens/Home/features/Convert/Convert.selector';
-import { ButtonBasic } from '@components/Button';
 import { actionConvertCoins } from '@screens/Home/features/Convert/Convert.actions';
 import { MESSAGES } from '@screens/Dex/constants';
 import { getDefaultAccountWalletSelector } from '@src/redux/selectors/shared';
 import {Row} from '@src/components';
 import {CONSTANT_CONFIGS} from '@src/constants';
 import {defaultAccountSelector} from '@src/redux/selectors/account';
+import { colorsSelector } from '@src/theme';
 import {useNavigation} from 'react-navigation-hooks';
 import routeNames from '@routers/routeNames';
 
@@ -24,6 +25,7 @@ const ConvertStep = () => {
   const steps = useSelector(convertGetConvertStepSelector);
   const accountWallet = useSelector(getDefaultAccountWalletSelector);
   const defaultAccount = useSelector(defaultAccountSelector);
+  const colors = useSelector(colorsSelector);
   const flatListRef = React.useRef(null);
   const [message, setMessage] = React.useState('');
   const onFaucetPress = () => {
@@ -36,7 +38,7 @@ const ConvertStep = () => {
     const { key, name, tokenID } = data?.item;
     const status = messages.find((item) => item?.tokenID === tokenID);
     const percent = percents[tokenID] || 0;
-    let statusColor = COLORS.black;
+    let statusColor = colors.contrast;
     let error;
     if (status) {
       const { errorMessage } = status;
@@ -55,9 +57,9 @@ const ConvertStep = () => {
               type="material-community"
             />
           )}
-          <Text style={styles.stepText}>
+          <Text4 style={styles.stepText}>
             {`${name || 'Incognito Token'} (${percent}%)`}
-          </Text>
+          </Text4>
         </View>
         {!!error && <Text style={styles.warningText}>{error}</Text>}
       </>
@@ -95,7 +97,7 @@ const ConvertStep = () => {
   }, []);
 
   return(
-    <View style={{ marginTop: 30, flex: 1 }}>
+    <View borderTop paddingHorizontal fullFlex>
       <View style={[{ maxHeight: ScreenHeight * 0.4 }]}>
         <FlatList
           ref={flatListRef}
@@ -106,15 +108,15 @@ const ConvertStep = () => {
       </View>
       <Text style={styles.text}>{message}</Text>
       <Row style={{ justifyContent: 'space-between' }}>
-        <ButtonBasic
+        <Button
           title={isConverted ? 'Converted' : isConverting ? 'Converting...' : 'Convert'}
-          btnStyle={{ marginTop: 30, marginBottom: 50, width: '48%' }}
+          buttonStyle={{ marginTop: 30, marginBottom: 50, width: '48%' }}
           onPress={handleConvert}
           disabled={isConverting || isConverted}
         />
-        <ButtonBasic
+        <Button
           title="Faucet"
-          btnStyle={{ marginTop: 30, marginBottom: 50, width: '48%' }}
+          buttonStyle={{ marginTop: 30, marginBottom: 50, width: '48%' }}
           onPress={onFaucetPress}
         />
       </Row>
