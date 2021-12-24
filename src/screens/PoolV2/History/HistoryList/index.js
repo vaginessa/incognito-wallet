@@ -3,10 +3,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 import { compose } from 'recompose';
-import { View, Text, TouchableOpacity, ActivityIndicator, LoadingContainer } from '@components/core';
+import { View, Text, TouchableOpacity, ActivityIndicator, LoadingContainer, RefreshControl } from '@components/core';
 import { withLayout_2 } from '@components/Layout';
 import Header from '@components/Header/index';
-import { VirtualizedList } from 'react-native';
+import { FlatList, VirtualizedList } from 'react-native';
 import { useNavigation } from 'react-navigation-hooks';
 import ROUTE_NAMES from '@routers/routeNames';
 import { ArrowRightGreyIcon } from '@components/Icons';
@@ -62,12 +62,16 @@ const History = ({
       <View style={[styles.wrapper, styles.historyTitle, { paddingTop: 24 }]} borderTop>
         {histories.length ? (
           <VirtualizedList
+            refreshControl={(
+              <RefreshControl
+                refreshing={isLoadingHistories}
+                onRefresh={onReloadHistories}
+              />
+            )}
             data={histories}
             renderItem={renderHistoryItem}
             getItem={(data, index) => data[index]}
             getItemCount={data => data.length}
-            refreshing={isLoadingHistories}
-            onRefresh={onReloadHistories}
             keyExtractor={(item, index) => `list-item-${index}`}
             onEndReached={(histories || []).length >= LIMIT ? onLoadMoreHistories : _.noop}
             onEndReachedThreshold={0.1}

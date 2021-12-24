@@ -84,4 +84,10 @@ export default StyleSheet.create({
     flexDirection: 'row',
     width: '100%',
   },
+  rightIcon: {
+    width: 32,
+    height: 32,
+    justifyContent: 'center',
+    alignItems: 'center'
+  }
 });
