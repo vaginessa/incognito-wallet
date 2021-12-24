@@ -14,6 +14,7 @@ import formatUtil from '@utils/format';
 import { BtnInfinite } from '@components/Button/index';
 import convertUtil from '@utils/convert';
 import globalStyled from '@src/theme/theme.styled';
+import { Text4 } from '@src/components/core/Text';
 import withCoinData from './coin.enhance';
 import withConfirm from './confirm.enhance';
 import withSuccess from './success.enhance';
@@ -39,6 +40,7 @@ const Provide = ({
     <>
       <Header title={`Withdraw ${coin.symbol} provision`} />
       <View style={[mainStyle.coinContainerNoMargin, globalStyled.defaultPadding2]} borderTop>
+        <Text4 style={mainStyle.label}>Amount</Text4>
         <Row center spaceBetween style={mainStyle.inputContainer}>
           <BaseTextInput
             style={mainStyle.input}
