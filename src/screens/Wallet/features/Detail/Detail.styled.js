@@ -50,9 +50,7 @@ export const balanceStyled = StyleSheet.create({
     maxWidth: ScreenWidth
   },
   changePrice: {
-    fontFamily: FONT.NAME.medium,
-    fontSize: FONT.SIZE.medium,
-    lineHeight: FONT.SIZE.medium + 4,
+    ...FONT.TEXT.incognitoP1,
   },
   hook: {
     flexDirection: 'row',
