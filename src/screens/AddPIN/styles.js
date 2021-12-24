@@ -26,7 +26,6 @@ if (deviceWidth > 400) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
   },
   title: {
     fontSize: 20,

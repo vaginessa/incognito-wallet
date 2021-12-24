@@ -1,9 +1,9 @@
 import React from 'react';
-import Svg, { Path, Rect } from 'react-native-svg';
+import Svg, { Path } from 'react-native-svg';
 import {View} from 'react-native';
 import PropTypes from 'prop-types';
 
-const SelectMore = (props) => (
+const VectorUnMore = (props) => (
   <Svg
     width={24}
     height={24}
@@ -11,28 +11,22 @@ const SelectMore = (props) => (
     fill="none"
     {...props}
   >
-    <Rect
-      x={10.3333}
-      y={2}
-      width={3.33333}
-      height={20}
-      rx={1.66667}
-      fill="#1A73E8"
+    <Path
+      d="M20.0545 3H3.94552C3.42332 3 3 3.42415 3 3.94737V4.89474C3 5.41795 3.42332 5.84211 3.94552 5.84211H20.0545C20.5767 5.84211 21 5.41795 21 4.89474V3.94737C21 3.42415 20.5767 3 20.0545 3Z"
+      fill="#9C9C9C"
     />
-    <Rect
-      x={22}
-      y={10.3334}
-      width={3.33333}
-      height={20}
-      rx={1.66667}
-      transform="rotate(90 22 10.3334)"
-      fill="#1A73E8"
+    <Path
+      d="M20.0545 10.5789H3.94577C3.42357 10.5789 3.00024 11.003 3.00024 11.5262V12.4736C3.00024 12.9968 3.42357 13.421 3.94577 13.421H20.0545C20.5767 13.421 21 12.9968 21 12.4736V11.5262C21 11.003 20.5767 10.5789 20.0545 10.5789Z"
+      fill="#9C9C9C"
+    />
+    <Path
+      d="M20.0545 18.158H3.94577C3.42357 18.158 3.00024 18.5821 3.00024 19.1053V20.0527C3.00024 20.5759 3.42357 21.0001 3.94577 21.0001H20.0545C20.5767 21.0001 21 20.5759 21 20.0527V19.1053C21 18.5821 20.5767 18.158 20.0545 18.158Z"
+      fill="#9C9C9C"
     />
   </Svg>
 );
 
-
-const UnSelectMore = (props) => (
+const VectorMore = (props) => (
   <Svg
     width={24}
     height={24}
@@ -40,29 +34,24 @@ const UnSelectMore = (props) => (
     fill="none"
     {...props}
   >
-    <Rect
-      x={10.3333}
-      y={2}
-      width={3.33333}
-      height={20}
-      rx={1.66667}
-      fill="#DDDDDD"
+    <Path
+      d="M20.0545 3H3.94552C3.42332 3 3 3.42415 3 3.94737V4.89474C3 5.41795 3.42332 5.84211 3.94552 5.84211H20.0545C20.5767 5.84211 21 5.41795 21 4.89474V3.94737C21 3.42415 20.5767 3 20.0545 3Z"
+      fill="#1A73E8"
     />
-    <Rect
-      x={22}
-      y={10.3334}
-      width={3.33333}
-      height={20}
-      rx={1.66667}
-      transform="rotate(90 22 10.3334)"
-      fill="#DDDDDD"
+    <Path
+      d="M20.0545 10.5789H3.94577C3.42357 10.5789 3.00024 11.003 3.00024 11.5262V12.4736C3.00024 12.9968 3.42357 13.421 3.94577 13.421H20.0545C20.5767 13.421 21 12.9968 21 12.4736V11.5262C21 11.003 20.5767 10.5789 20.0545 10.5789Z"
+      fill="#1A73E8"
+    />
+    <Path
+      d="M20.0545 18.158H3.94577C3.42357 18.158 3.00024 18.5821 3.00024 19.1053V20.0527C3.00024 20.5759 3.42357 21.0001 3.94577 21.0001H20.0545C20.5767 21.0001 21 20.5759 21 20.0527V19.1053C21 18.5821 20.5767 18.158 20.0545 18.158Z"
+      fill="#1A73E8"
     />
   </Svg>
 );
 
 const MoreIcon = React.memo(({ style, active }) => (
   <View style={style}>
-    {active ? <SelectMore /> : <UnSelectMore />}
+    {active ? <VectorMore /> : <VectorUnMore />}
   </View>
 ));
 
