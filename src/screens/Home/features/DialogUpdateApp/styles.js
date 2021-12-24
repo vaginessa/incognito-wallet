@@ -8,7 +8,6 @@ const style = StyleSheet.create({
     justifyContent: 'center',
   },
   wrapper: {
-    backgroundColor: COLORS.white,
     borderRadius: 13,
   },
   title: {
