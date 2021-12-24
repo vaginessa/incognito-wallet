@@ -17,6 +17,7 @@ import withValidate from '@screens/PoolV2/validate.enhance';
 import { useNavigation } from 'react-navigation-hooks';
 import ROUTE_NAMES from '@routers/routeNames';
 import { Header, Row } from '@src/components/';
+import { Text4 } from '@src/components/core/Text';
 import { BtnInfinite } from '@components/Button/index';
 import convertUtil from '@utils/convert';
 import formatUtil from '@utils/format';
@@ -96,6 +97,7 @@ const Provide = ({
         style={[mainStyle.coinContainerNoMargin, globalStyled.defaultPadding2]}
         borderTop
       >
+        <Text4 style={mainStyle.label}>Amount</Text4>
         <Row center spaceBetween style={mainStyle.inputContainer}>
           <BaseTextInput
             style={mainStyle.input}

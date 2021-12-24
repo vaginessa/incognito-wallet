@@ -127,4 +127,9 @@ export default StyleSheet.create({
     marginBottom: 8,
     marginLeft: 4,
   },
+  label: {
+    fontSize: FONT.SIZE.small,
+    ...FONT.STYLE.normal,
+    lineHeight: 21,
+  },
 });
