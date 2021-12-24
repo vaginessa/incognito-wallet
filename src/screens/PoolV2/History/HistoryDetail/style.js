@@ -6,7 +6,17 @@ export default StyleSheet.create({
     marginVertical: 50,
   },
   buttonTitle: {
-    fontSize: FONT.SIZE.medium,
+    fontSize: FONT.SIZE.incognitoP2,
+    backgroundColor: '#404040',
+    minHeight: 24,
+    alignSelf: 'flex-start',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    borderRadius: 4,
+    paddingVertical: 4,
+    paddingHorizontal: 8,
+    marginVertical: 5,
   },
   error: {
     color: COLORS.red,
@@ -15,7 +25,7 @@ export default StyleSheet.create({
     ...FONT.STYLE.bold,
   },
   content: {
-    ...FONT.TEXT.incognitoH4,
+    ...FONT.TEXT.incognitoH2,
     marginTop: 5,
   },
   historyItem: {
@@ -30,9 +40,9 @@ export default StyleSheet.create({
   },
   extra: {
     ...FONT.STYLE.medium,
-    fontSize: 18,
+    fontSize: 16,
   },
   info: {
-    fontSize: 18,
+    fontSize: 16,
   },
 });

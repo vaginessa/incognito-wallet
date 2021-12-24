@@ -23,25 +23,25 @@ const HistoryDetail = ({ history }) => {
         <ExtraInfo
           style={[styles.extra, {color: colors.text3}]}
           rightStyle={[styles.info, {color: colors.text1}]}
-          left="ID:"
+          left="ID"
           right={history.id}
         />
         <ExtraInfo
           style={[styles.extra, {color: colors.text3}]}
           rightStyle={[styles.info, {color: colors.text1}]}
-          left="Time:"
+          left="Time"
           right={history.time}
         />
         <ExtraInfo
           style={[styles.extra, {color: colors.text3}]}
           rightStyle={[styles.info, { color: history.statusColor }]}
-          left="Status:"
+          left="Status"
           right={history.status}
         />
         <ExtraInfo
           style={[styles.extra, {color: colors.text3}]}
           rightStyle={[styles.info, {color: colors.text1}]}
-          left="Account:"
+          left="Account"
           right={history.account}
         />
         {history?.locked && (
@@ -49,13 +49,13 @@ const HistoryDetail = ({ history }) => {
             <ExtraInfo
               style={[styles.extra, {color: colors.text3}]}
               rightStyle={[styles.info, {color: colors.text1}]}
-              left="Lock term:"
+              left="Lock term"
               right={history?.lockTime + ' Months'}
             />
             <ExtraInfo
               style={[styles.extra, {color: colors.text3}]}
               rightStyle={[styles.info, {color: colors.text1}]}
-              left="Term ends:"
+              left="Term ends"
               right={history?.unlockDate}
             />
           </>
