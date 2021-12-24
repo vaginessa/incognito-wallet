@@ -120,7 +120,7 @@ class AddStakeContainer extends BaseScreen {
     return (
       <View2 fullFlex>
         <Header title="Stake" />
-        <View fullFlex borderTop>
+        <View paddingHorizontal fullFlex borderTop>
           <AddStake
             account={account}
             navigation={navigation}
@@ -135,7 +135,7 @@ class AddStakeContainer extends BaseScreen {
             onSwitchAccount={actionSwitchAccount}
             onSwitchMasterKey={switchMasterKey}
           />
-        </View>       
+        </View>
       </View2>
     );
   }
