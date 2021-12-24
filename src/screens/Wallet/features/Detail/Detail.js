@@ -82,7 +82,7 @@ const GroupButton = React.memo(() => {
 
   return (
     <SafeAreaView>
-      <View2 style={groupBtnStyled.groupButton}>
+      <View2 style={[groupBtnStyled.groupButton, {...globalStyled.defaultPaddingHorizontal}]}>
         <BtnPrimary
           title="Buy"
           wrapperStyle={groupBtnStyled.btnStyle}
