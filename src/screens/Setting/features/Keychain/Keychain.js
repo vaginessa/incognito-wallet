@@ -6,7 +6,6 @@ import { settingSelector } from '@screens/Setting/Setting.selector';
 import AccountSection from '@screens/Setting/features/AccountSection';
 import routeNames from '@src/router/routeNames';
 import { Text, View } from '@src/components/core';
-import { View2 } from  '@components/core/View';
 import { SectionItem } from '@screens/Setting/features/Section';
 import {
   currentMasterKeySelector,
