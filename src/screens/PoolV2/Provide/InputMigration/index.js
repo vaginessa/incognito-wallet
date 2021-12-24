@@ -15,6 +15,7 @@ import { BtnInfinite } from '@components/Button/index';
 import convertUtil from '@utils/convert';
 import formatUtil from '@utils/format';
 import { RatioIcon } from '@components/Icons';
+import { Text4 } from '@src/components/core/Text';
 import globalStyled from '@src/theme/theme.styled';
 import { useSelector } from 'react-redux';
 import { colorsSelector } from '@src/theme';
@@ -63,6 +64,7 @@ const InputMigration = ({
     <>
       <Header title='Migrate' />
       <View style={[mainStyle.coinContainerNoMargin, globalStyled.defaultPadding3]} borderTop>
+        <Text4 style={mainStyle.label}>Amount</Text4>
         <Row center spaceBetween style={mainStyle.inputContainer}>
           <BaseTextInput
             style={mainStyle.input}
