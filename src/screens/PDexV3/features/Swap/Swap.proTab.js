@@ -19,7 +19,6 @@ import {
   SelectOptionInput,
   SelectOptionModal,
 } from '@src/components/SelectOption';
-import { AppIcon, PancakeIcon } from '@src/components/Icons';
 import { actionToggleModal } from '@src/components/Modal';
 import {
   feetokenDataSelector,
@@ -50,6 +49,11 @@ const styled = StyleSheet.create({
   container: {
     flex: 1,
     marginTop: 16,
+  },
+  icon: {
+    width: 15,
+    height: 15,
+    borderRadius: 15,
   },
 });
 
@@ -135,18 +139,7 @@ const TabPro = React.memo(() => {
   const options = React.useMemo(
     () =>
       platforms.map((platform) => {
-        let icon = null;
         const isSelected = platform.isSelected;
-        switch (platform.id) {
-        case KEYS_PLATFORMS_SUPPORTED.incognito:
-          icon = <AppIcon />;
-          break;
-        case KEYS_PLATFORMS_SUPPORTED.pancake:
-          icon = <PancakeIcon />;
-          break;
-        default:
-          break;
-        }
         return {
           ...platform,
           onPressItem: async (id) => {
@@ -156,7 +149,6 @@ const TabPro = React.memo(() => {
             dispatch(actionSwitchPlatform(id));
             dispatch(actionToggleModal());
           },
-          icon,
         };
       }),
     [platforms],
@@ -231,13 +223,14 @@ const TabPro = React.memo(() => {
           actived={platformSelected}
           isSelectItem={false}
           onPressItem={() => {
-            dispatch(
-              actionToggleModal({
-                visible: true,
-                shouldCloseModalWhenTapOverlay: true,
-                data: <SelectOptionModal options={options} />,
-              }),
-            );
+            options.length > 1 &&
+              dispatch(
+                actionToggleModal({
+                  visible: true,
+                  shouldCloseModalWhenTapOverlay: true,
+                  data: <SelectOptionModal options={options} />,
+                }),
+              );
           }}
         />
       ),

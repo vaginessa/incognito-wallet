@@ -7,6 +7,8 @@ import { FONT } from '@src/styles';
 import ModalBottomSheet from '@src/components/Modal/features/ModalBottomSheet';
 import { useSelector } from 'react-redux';
 import { colorsSelector } from '@src/theme';
+import { AppIcon, PancakeIcon } from '@src/components/Icons';
+import { KEYS_PLATFORMS_SUPPORTED } from '@src/screens/PDexV3/features/Swap';
 
 const styled = StyleSheet.create({
   touchWrapper: {
@@ -20,9 +22,13 @@ const styled = StyleSheet.create({
     flex: 1,
   },
   title: {
-    fontSize: FONT.SIZE.regular,
-    fontFamily: FONT.NAME.medium,
+    ...FONT.TEXT.incognitoP1,
     marginLeft: 10,
+    flex: 1,
+  },
+  titleSelectItem: {
+    ...FONT.TEXT.incognitoH6,
+    marginLeft: 14,
     flex: 1,
   },
   desc: {
@@ -33,6 +39,8 @@ const styled = StyleSheet.create({
   },
   left: {
     maxWidth: 120,
+    display: 'flex',
+    alignItems: 'center',
   },
   right: {
     flex: 1,
@@ -41,12 +49,50 @@ const styled = StyleSheet.create({
   scrollview: {
     flex: 1,
     paddingHorizontal: 0,
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+  },
+  icon: {
+    width: 24,
+    height: 24,
+    borderRadius: 24,
+  },
+  selectedIcon: {
+    width: 15,
+    height: 15,
+    borderRadius: 15,
   },
 });
 
 export const SelectItem = React.memo(
-  ({ id, title, desc, icon, onPressItem, itemStyled, isSelectItem }) => {
+  ({
+    id,
+    title,
+    desc,
+    onPressItem,
+    itemStyled,
+    isSelectItem,
+    lastChild = false,
+    firstChild = false,
+  }) => {
     const colors = useSelector(colorsSelector);
+    let icon = null;
+    switch (id) {
+    case KEYS_PLATFORMS_SUPPORTED.incognito:
+      icon = (
+        <AppIcon style={!isSelectItem ? styled.selectedIcon : styled.icon} />
+      );
+      break;
+    case KEYS_PLATFORMS_SUPPORTED.pancake:
+      icon = (
+        <PancakeIcon
+          style={!isSelectItem ? styled.selectedIcon : styled.icon}
+        />
+      );
+      break;
+    default:
+      break;
+    }
     return (
       <TouchableOpacity
         onPress={() => {
@@ -59,10 +105,17 @@ export const SelectItem = React.memo(
           styled.touchWrapper,
           isSelectItem
             ? {
-              backgroundColor: 'transparent',
               padding: 0,
-              marginBottom: 30,
               borderRadius: 0,
+              paddingHorizontal: 24,
+              paddingVertical: 16,
+              borderBottomWidth: 2,
+              borderBottomColor: lastChild ? 'transparent' : colors.grey8,
+              display: 'flex',
+              alignItems: 'center',
+              flexDirection: 'row',
+              borderTopLeftRadius: firstChild ? 24 : 0,
+              borderTopRightRadius: firstChild ? 24 : 0,
             }
             : {
               backgroundColor: colors.grey7,
@@ -72,7 +125,11 @@ export const SelectItem = React.memo(
         <Row style={[styled.item, itemStyled]}>
           <Row style={styled.left}>
             {icon && icon}
-            <Text style={styled.title} numberOfLines={1} ellipsizeMode="tail">
+            <Text
+              style={isSelectItem ? styled.titleSelectItem : styled.title}
+              numberOfLines={1}
+              ellipsizeMode="tail"
+            >
               {title}
             </Text>
           </Row>
@@ -103,11 +160,22 @@ SelectItem.propTypes = {
 const SelectOptionModal = ({ options }) => {
   return (
     <ModalBottomSheet
-      style={{ height: '30%', minHeight: 300 }}
+      style={{
+        height: 130,
+        paddingHorizontal: 0,
+        paddingVertical: 0,
+      }}
       customContent={(
         <ScrollView style={styled.scrollview}>
-          {options.map((option) => (
-            <SelectItem key={option?.id} {...option} />
+          {options.map((option, index, arr) => (
+            <SelectItem
+              key={option?.id}
+              {...{
+                ...option,
+                lastChild: index === arr.length - 1,
+                firstChild: index === 0,
+              }}
+            />
           ))}
         </ScrollView>
       )}

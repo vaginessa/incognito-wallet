@@ -12,9 +12,9 @@ import RemoveSuccessDialog from '@src/screens/Setting/features/RemoveStorage/Rem
 import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
 import { colorsSelector } from '@src/theme';
+import { CancelIcon } from '@src/components/Icons';
 import {
   actionWithdrawOrder,
-  actionInit,
   actionFetchedOrderDetail,
 } from './OrderLimit.actions';
 
@@ -111,7 +111,7 @@ const Order = React.memo(({ data, visibleDivider }) => {
     percentStr1,
     visibleBtnAction,
     nftid,
-    pooId
+    pooId,
   } = data;
   const renderHook = () => {
     let comp = null;
@@ -128,7 +128,7 @@ const Order = React.memo(({ data, visibleDivider }) => {
               requestTx,
               nftid,
               txType: ACCOUNT_CONSTANT.TX_TYPE.CANCEL_ORDER_LIMIT,
-              subTitle: 'Are you sure you want to cancel this limit order?',
+              subTitle: 'Are you sure you want to cancel\nthis limit order?',
               pooId,
             })
           }
@@ -224,6 +224,11 @@ const Order = React.memo(({ data, visibleDivider }) => {
         subTitle={withdrawData?.subTitle || ''}
         acceptStr="Yes, cancel"
         canStr="Keep it"
+        icon={(
+          <Row center style={{ marginBottom: 7 }}>
+            <CancelIcon />
+          </Row>
+        )}
       />
     </TouchableOpacity>
   );

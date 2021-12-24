@@ -1,36 +1,21 @@
 import React from 'react';
-import { View } from '@src/components/core';
-import { Image, StyleSheet } from 'react-native';
-import srcSwapIcon from '@src/assets/images/new-icons/swap.png';
-import { COLORS } from '@src/styles';
+import Svg, { Circle, Path } from 'react-native-svg';
 
-const styled = StyleSheet.create({
-  icon: {
-    width: '100%',
-    height: '100%',
-  },
-  wrapper: {
-    width: 32,
-    height: 32,
-    borderWidth: 1,
-    borderRadius: 32,
-    borderColor: COLORS.colorGrey4,
-    shadowOffset: {
-      width: 0,
-      height: 0,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 6,
-  },
-});
-
-const SwapIcon = (props) => {
-  const { style, source, ...rest } = props;
-  return (
-    <View style={styled.wrapper}>
-      <Image source={srcSwapIcon} style={[styled.icon, style]} {...rest} />
-    </View>
-  );
-};
+const SwapIcon = (props) => (
+  <Svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={32}
+    height={32}
+    viewBox="0 0 32 32"
+    fill="none"
+    {...props}
+  >
+    <Circle cx={16} cy={16} r={16} fill="#757575" />
+    <Path
+      d="M15.328 11.0504L15.328 19.0617C15.3278 19.0854 15.3204 19.1085 15.3068 19.1279C15.2933 19.1474 15.2741 19.1622 15.2519 19.1706C15.2298 19.1789 15.2056 19.1804 15.1826 19.1748C15.1595 19.1691 15.1388 19.1567 15.123 19.139L11.5647 15.0952C11.4448 14.968 11.2803 14.8924 11.1057 14.8842C10.9312 14.876 10.7603 14.9359 10.629 15.0512C10.4978 15.1666 10.4165 15.3284 10.4022 15.5025C10.3879 15.6767 10.4417 15.8495 10.5524 15.9847L15.159 21.2197C15.2645 21.3392 15.3941 21.435 15.5394 21.5006C15.6847 21.5662 15.8423 21.6001 16.0018 21.6001C16.1612 21.6001 16.3188 21.5662 16.4641 21.5006C16.6094 21.435 16.7391 21.3392 16.8445 21.2197L21.4502 15.9857C21.5595 15.8504 21.6122 15.6781 21.5975 15.5048C21.5827 15.3315 21.5015 15.1706 21.3709 15.0557C21.2402 14.9409 21.0703 14.8809 20.8965 14.8885C20.7228 14.896 20.5586 14.9704 20.4384 15.0961L16.8801 19.1399C16.8643 19.1576 16.8435 19.1701 16.8205 19.1757C16.7975 19.1813 16.7733 19.1799 16.7511 19.1715C16.7289 19.1632 16.7098 19.1483 16.6962 19.1289C16.6827 19.1095 16.6753 19.0864 16.675 19.0627L16.675 11.0504C16.6704 10.8747 16.5974 10.7078 16.4715 10.5852C16.3456 10.4626 16.1768 10.394 16.0011 10.394C15.8253 10.394 15.6565 10.4626 15.5307 10.5852C15.4048 10.7078 15.3317 10.8747 15.3271 11.0504L15.328 11.0504Z"
+      fill="white"
+    />
+  </Svg>
+);
 
 export default SwapIcon;

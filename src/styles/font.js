@@ -86,7 +86,7 @@ const textStyle = {
   },
   incognitoH5: {
     fontSize: fontSizes.superMedium,
-    fontFamily: fontNames.medium,
+    fontFamily: fontNames.bold,
   },
   incognitoH6: {
     fontSize: fontSizes.medium,
@@ -94,7 +94,7 @@ const textStyle = {
   },
   incognitoP1: {
     fontSize: fontSizes.regular,
-    fontFamily: fontNames.regular,
+    fontFamily: fontNames.medium,
     lineHeight: isIOS() ? 20 : 24,
   },
   incognitoP2: {
