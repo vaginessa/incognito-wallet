@@ -1,7 +1,6 @@
 import { StyleSheet } from 'react-native';
 import { FONT, COLORS, UTILS } from '@src/styles';
 import { ScreenWidth } from '@utils/devices';
-import globalStyled from '@src/theme/theme.styled';
 
 const maxWidth = UTILS.screenWidth() - 190;
 
@@ -14,7 +13,6 @@ export const styled = StyleSheet.create({
 
 export const groupBtnStyled = StyleSheet.create({
   groupButton: {
-    ...globalStyled.defaultPaddingHorizontal,
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingVertical: 16,
