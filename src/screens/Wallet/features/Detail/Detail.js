@@ -161,10 +161,10 @@ const CustomRightHeader = () => {
           <ModalBottomSheet
             style={{ height: '15%' }}
             contentView={(
-              <Row style={groupBtnStyled.groupButton}>
+              <Row style={[groupBtnStyled.groupButton, { paddingVertical: 0 }]}>
                 <BtnSecondary
                   title="Receive"
-                  wrapperStyle={groupBtnStyled.btnStyle}
+                  wrapperStyle={[groupBtnStyled.btnStyle, { marginTop: 0 }]}
                   onPress={handleReceive}
                 />
                 <BtnPrimary
