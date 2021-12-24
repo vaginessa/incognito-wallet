@@ -52,7 +52,7 @@ export const formConfigsRemovePool = {
 export const SUCCESS_MODAL = {
   ADD_POOL: {
     title: 'Liquidity contributed',
-    desc: 'Please wait a few minutes for your contribution to display..'
+    desc: 'Please wait a few minutes for your contribution to display.'
   },
   CREATE_POOL: {
     title: 'Liquidity contributed',
