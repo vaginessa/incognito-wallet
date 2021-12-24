@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
   },
   btnClose: {
     position: 'absolute',
-    top: 5,
+    top: 15,
     right: 5,
   },
 });

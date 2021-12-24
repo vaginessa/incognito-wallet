@@ -51,7 +51,7 @@ const PortfolioList = withTransaction(React.memo(({ onCreateWithdrawFeeLP }) => 
       showsVerticalScrollIndicator={false}
       contentContainerStyle={[{ flexGrow: 1 }]}
       ListEmptyComponent={
-        <EmptyBookIcon message="Your portfolio is empty" />
+        <EmptyBookIcon message="Join a pool to contribute liquidity and earn rewards." />
       }
       style={styled.list}
     />
