@@ -4,10 +4,10 @@ import {
   ProgressBarAndroid,
   ProgressViewIOS,
   Platform,
+  View, Text, TouchableOpacity
 } from 'react-native';
 import React, { PureComponent } from 'react';
 import Dialog, { DialogContent } from 'react-native-popup-dialog';
-import { View, Text } from '@components/core';
 import { CONSTANT_CONFIGS } from '@src/constants';
 import { COLORS } from '@src/styles';
 
@@ -20,6 +20,8 @@ import {
   actionToggleBackupAllKeys,
 } from '@src/screens/Setting';
 import {actionLogEvent} from '@screens/Performance';
+import { BtnPrimary } from '@components/core/Button';
+import { colorsSelector } from '@src/theme';
 import { BtnClose, ButtonBasic } from '../Button';
 import styles from './styles';
 
@@ -199,7 +201,7 @@ class AppUpdater extends PureComponent {
 
   render() {
     const { downloading, updating, news, appVersion } = this.state;
-    const { isToggleBackupAllKeys } = this.props;
+    const { isToggleBackupAllKeys, colors } = this.props;
     const disabled = !(updating || downloading || !!news) && !news;
     return (
       <View>
@@ -215,8 +217,8 @@ class AppUpdater extends PureComponent {
               size={18}
             />
             <View style={styles.hook}>
-              <Text style={styles.title}>{`What's new in ${appVersion}?`}</Text>
-              <Text style={styles.desc}>{news}</Text>
+              <Text style={[styles.title, { color: colors.text1 }]}>{`What's new in ${appVersion}?`}</Text>
+              <Text style={[styles.desc, { color: colors.text3 }]}>{news}</Text>
             </View>
           </DialogContent>
         </Dialog>
@@ -225,24 +227,20 @@ class AppUpdater extends PureComponent {
           dialogStyle={styles.dialog}
           onTouchOutside={this.handleRemindBackupAllKeys}
         >
-          <DialogContent>
+          <DialogContent style={{ backgroundColor: colors.background3 }}>
             <BtnClose
               style={styles.btnClose}
               onPress={this.handleRemindBackupAllKeys}
-              size={18}
+              size={30}
             />
             <View style={styles.hook}>
-              <Text style={styles.title}>Updated new version</Text>
-              <Text style={styles.desc}>
+              <Text style={[styles.title, { color: colors.text1 }]}>Updated new version</Text>
+              <Text style={[styles.desc, { color: colors.text3 }]}>
                 {
                   'Congratulations, welcome to the latest Incognito app with Privacy version 2.\n Please back up all keychains in a safe place prior to doing any other actions, it will help you recover funds in unexpected circumstances.\n(Note: take your own risk if you ignore it)'
                 }
               </Text>
-              <ButtonBasic
-                title="Go to backup"
-                onPress={this.handleRemindBackupAllKeys}
-                btnStyle={{ marginTop: 30 }}
-              />
+              <BtnPrimary title="Go to backup" onPress={this.handleRemindBackupAllKeys} wrapperStyle={{ marginTop: 30 }} />
             </View>
           </DialogContent>
         </Dialog>
@@ -253,6 +251,7 @@ class AppUpdater extends PureComponent {
 
 const mapState = (state) => ({
   isToggleBackupAllKeys: isToggleBackupAllKeysSelector(state),
+  colors: colorsSelector(state)
 });
 
 const mapDispatch = (dispatch) => ({
