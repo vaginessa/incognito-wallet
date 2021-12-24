@@ -202,7 +202,7 @@ const CoinList = ({
                         {renderUpToAPY(item)}
                       </View>
                       <View style={[mainStyles.flex]}>
-                        <Text style={[mainStyles.coinName, mainStyles.textRight]}>
+                        <Text style={[mainStyles.coinName, mainStyles.textRight, { marginBottom: 10 }]}>
                           {item.displayBalance}
                         </Text>
                         {!!item.displayPendingBalance && (
