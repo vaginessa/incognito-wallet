@@ -14,10 +14,10 @@ import {
 import { Text, Text3, Toast, TouchableOpacity } from '@src/components/core';
 import { ExHandler } from '@src/services/exception';
 import debounce from 'lodash/debounce';
-import { COLORS, FONT } from '@src/styles';
+import { FONT } from '@src/styles';
 import Row from '@components/Row';
 import { switchMasterKey } from '@src/redux/actions/masterKey';
-import { CheckBoxIcon } from '@components/Icons';
+import { RatioIcon } from '@components/Icons';
 import styled from 'styled-components/native';
 
 const itemStyled = StyleSheet.create({
@@ -31,6 +31,7 @@ const itemStyled = StyleSheet.create({
   },
   container: {
     marginLeft: 10,
+    flex: 1
   },
   name: {
     fontFamily: FONT.NAME.medium,
@@ -108,7 +109,7 @@ const AccountItem = React.memo(
             <Text style={itemStyled.name} numberOfLines={1}>
               {accountName}
             </Text>
-            <CheckBoxIcon active={isCurrentAccount} />
+            <RatioIcon selected={isCurrentAccount} />
           </Row>
           <Text3
             style={itemStyled.address}

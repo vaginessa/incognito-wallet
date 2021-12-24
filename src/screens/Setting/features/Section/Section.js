@@ -31,7 +31,7 @@ export const SectionItem = (
               {CMPIcon}
             </View>
           )}
-          {title && <Text style={[sectionStyle.label]}>{title}</Text>}
+          {!!title && <Text style={[sectionStyle.label]}>{title}</Text>}
         </Row>
         <ArrowRightGreyIcon style={{ width: 6, height: 10 }} />
       </Row>
