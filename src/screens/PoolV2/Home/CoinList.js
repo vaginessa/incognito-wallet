@@ -8,19 +8,19 @@ import {
   ScrollView,
   TouchableOpacity,
   ActivityIndicator,
-  Image,
+  Image, RefreshControl,
 } from '@components/core';
 import mainStyles from '@screens/PoolV2/style';
 import { Row, PRVSymbol, ImageCached } from '@src/components';
 import {ArrowRightGreyIcon, LockIcon} from '@components/Icons';
 import { useNavigation } from 'react-navigation-hooks';
 import ROUTE_NAMES from '@routers/routeNames';
-import { RefreshControl } from 'react-native';
 import { PRV_ID } from '@src/screens/DexV2/constants';
 import { useSelector } from 'react-redux';
 import { colorsSelector } from '@src/theme/theme.selector';
 
 import { selectedPrivacySelector } from '@src/redux/selectors';
+import globalStyled from '@src/theme/theme.styled';
 import styles from './style';
 
 
@@ -95,7 +95,7 @@ const CoinList = ({
               <Text style={mainStyles.coinName}>{item.name}</Text>
               <Row style={[mainStyles.flex, mainStyles.emptyRight]}>
                 {item.locked && <UpToIconComp />}
-                <Text style={[mainStyles.coinExtra, mainStyles.textRight, {color: colors.text7}]}>{item.displayInterest}</Text>
+                <Text style={[mainStyles.coinExtra, mainStyles.textRight, { color: colors.blue1, marginLeft: 4 }]}>{item.displayInterest}</Text>
               </Row>
             </Row>
           ))}
@@ -184,16 +184,16 @@ const CoinList = ({
             onRefresh={() => onLoad(account)}
           />
         )}
-        style={styles.scrollView}
+        style={[styles.scrollView, { paddingHorizontal: 0 }]}
       >
         {groupedUserData.map((item) => {
           const mapCoin = item.coin;
           if (!mapCoin) return null;
           const { iconUrl } = getPrivacyDataByTokenID(item.id);
           return (
-            <View style={{ flexDirection: 'row' }}>
+            <View style={[globalStyled.defaultPaddingHorizontal, { flexDirection: 'row', borderBottomColor: colors.border4, borderBottomWidth: 1, marginBottom: 15 }]}>
               <ImageCached uri={iconUrl} style={{ width: 32, height: 32, marginTop: 10, marginRight: 14 }} />
-              <View key={`${item.id} ${item.locked}`} style={[mainStyles.coin, { flex: 1 }]}>
+              <View key={`${item.id} ${item.locked}`} style={[mainStyles.coin, { flex: 1, marginBottom: 10 }]}>
                 <View key={`${item.id} ${item.locked}`}>
                   <View>
                     <Row>

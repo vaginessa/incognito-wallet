@@ -68,6 +68,9 @@ export const listShareSelector = createSelector(
           token2PoolValue,
         }
       });
+      const principalUSDHuman = new BigNumber(principal.token1USDHuman).plus(principal.token2USDHuman).toNumber();
+      const principalUSD = format.amountVer2(Math.ceil(new BigNumber(principalUSDHuman).multipliedBy(Math.pow(10, 9)).toNumber()), 9);
+
       const shareStr = getShareStr(share, totalShare);
       const validNFT = !!getValidRealAmountNFT(nftId);
       const disableBtn = isFetchingNFT || !validNFT;
@@ -95,7 +98,7 @@ export const listShareSelector = createSelector(
       const totalRewardUSDStr = format.amountVer2(totalRewardAmount, 9);
       const rewardUSDSymbolStr = `$${totalRewardUSDStr}`;
       const hookRewards = mapRewards.map((item, index) => ({
-        label: `Fees collected`,
+        label: 'Fees collected',
         valueText: item.rewardStr,
       }));
       const hookFactories = [
@@ -155,9 +158,9 @@ export const listShareSelector = createSelector(
         totalRewardUSDStr,
         rewardUSDSymbolStr,
         totalRewardAmount,
-        token1USD: principal.token1USD,
-        token2USD: principal.token2USD,
-        principalUSD: format.amountVer2(new BigNumber(principal.token1USD || 0).plus(principal.token2USD || 0).toNumber(), 9),
+        token1USDHuman: principal.token1USDHuman,
+        token2USDHuman: principal.token2USDHuman,
+        principalUSD,
       };
     });
   },
@@ -197,10 +200,10 @@ export const totalShareSelector = createSelector(
 export const totalShareUSDSelector = createSelector(
   listShareSelector,
   (listShare) => {
-    const rewardUSD = listShare.reduce((prev, cur) => {
-      return prev.plus(cur.token1USD || 0).plus(cur.token2USD || 0);
+    const principalUSD = listShare.reduce((prev, cur) => {
+      return prev.plus(cur.token1USDHuman || 0).plus(cur.token2USDHuman || 0);
     }, new BigNumber('0')).toNumber();
-    return format.amountVer2(rewardUSD, 9);
+    return format.amountVer2(Math.ceil(new BigNumber(principalUSD).multipliedBy(Math.pow(10, 9)).toNumber()), 9);
   }
 );
 

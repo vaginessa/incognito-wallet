@@ -1,7 +1,7 @@
 import React from 'react';
 import {isNaN} from 'lodash';
 import formatUtils from '@utils/format';
-import { Text, View, Text3 } from '@components/core';
+import { Text, View, Text3, ActivityIndicator } from '@components/core';
 import PRVSymbol from '@components/PRVSymbol';
 import {CONSTANT_COMMONS} from '@src/constants';
 import HelpIcon from '@components/HelpScreen/Icon';
@@ -10,9 +10,12 @@ import Row from '@src/components/Row';
 import convert from '@src/utils/convert';
 import { useSelector } from 'react-redux';
 import { colorsSelector } from '@src/theme';
+import PaperIcon from '@components/Icons/icon.paper';
+import { TouchableOpacity } from 'react-native';
+import styles from '@screens/PoolV2/Home/style';
 import styled from './TotalReward.styled';
 
-const TotalReward = ({ total, nativeToken, subTitle, style, balanceStyle, helperScreen }) => {
+const TotalReward = ({ total, nativeToken, subTitle, style, balanceStyle, helperScreen, isLoading, showRight, onRightPress }) => {
   const colors = useSelector(colorsSelector);
   const displayClipTotalUSDRewards = React.useMemo(() => {
     const pDecimals = nativeToken?.pDecimals || 0;
@@ -27,14 +30,33 @@ const TotalReward = ({ total, nativeToken, subTitle, style, balanceStyle, helper
     return formatUtils.amountFull(totalAmount, pDecimals, true);
   }, [total, nativeToken]);
 
+  const renderRight = () => {
+    if (isLoading) {
+      return (
+        <View style={styles.rightIcon}>
+          <ActivityIndicator />
+        </View>
+      );
+    }
+
+    if (showRight) {
+      return (
+        <TouchableOpacity style={styles.rightIcon} onPress={onRightPress}>
+          <PaperIcon />
+        </TouchableOpacity>
+      );
+    }
+  };
+
   return (
     <View style={style}>
-      <Row style={[styled.rewards, { marginBottom: 0 }, balanceStyle]}>
+      <Row centerVertical spaceBetween style={[styled.rewards, { marginBottom: 0 }, balanceStyle]}>
         <Text>
           <PRVSymbol style={styled.symbol} />
           &nbsp;
           <Text style={styled.amount}>{total}</Text>
         </Text>
+        {renderRight()}
       </Row>
       <Row style={[styled.rewards, { marginTop: 0 }]}>
         <Text3>
@@ -66,7 +88,10 @@ TotalReward.propTypes = {
   subTitle: PropTypes.string,
   style: PropTypes.any,
   balanceStyle: PropTypes.any,
-  helperScreen: PropTypes.string
+  helperScreen: PropTypes.string,
+  isLoading: PropTypes.bool,
+  showRight: PropTypes.bool,
+  onRightPress: PropTypes.func
 };
 
 TotalReward.defaultProps = {
@@ -74,7 +99,10 @@ TotalReward.defaultProps = {
   subTitle: '',
   style: null,
   balanceStyle: null,
-  helperScreen: ''
+  helperScreen: '',
+  isLoading: false,
+  showRight: false,
+  onRightPress: null
 };
 
 export default React.memo(TotalReward);
