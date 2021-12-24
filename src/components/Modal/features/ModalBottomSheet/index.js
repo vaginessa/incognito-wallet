@@ -30,6 +30,8 @@ const styles = StyleSheet.create({
 
 const CustomSafeAreaView = styled(SafeAreaView)`
   background-color: ${({ theme }) => theme.background1};
+  border-top-left-radius: 24;
+  border-top-right-radius: 24;
 `;
 
 const ModalBottomSheet = ({

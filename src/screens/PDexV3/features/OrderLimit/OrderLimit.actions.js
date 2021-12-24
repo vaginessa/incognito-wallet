@@ -324,7 +324,6 @@ export const actionFetchOrdersHistory =
       switch (field) {
       case OPEN_ORDERS_STATE: {
         const tokenIds = getAllTokenIDsInPoolsSelector(state);
-        dispatch(actionFetchWithdrawOrderTxs());
         let [orderFromStorage, openOrders] = await Promise.all([
           pDexV3Inst.getOrderLimitHistoryFromStorage({
             tokenIds,
@@ -363,6 +362,7 @@ export const actionFetchOrdersHistory =
       default:
         break;
       }
+      await dispatch(actionFetchWithdrawOrderTxs());
       await dispatch(actionFetchedOrdersHistory({ field, data }));
     } catch (error) {
       await dispatch(actionFetchFailOrderHistory({ field }));
@@ -398,7 +398,7 @@ export const actionWithdrawOrder =
           nftID: nftid,
         };
         await pDexV3Inst.createAndSendWithdrawOrderRequestTx({ extra: data });
-        dispatch(actionInit(true, true));
+        await dispatch(actionFetchWithdrawOrderTxs());
       } catch (error) {
         new ExHandler(error).showErrorToast();
       } finally {
@@ -513,7 +513,7 @@ export const actionFetchDataOrderDetail = () => async (dispatch, getState) => {
     new ExHandler(error).showErrorToast();
   } finally {
     _order = _order || order;
-    dispatch(actionFetchWithdrawOrderTxs(poolId));
+    dispatch(actionFetchWithdrawOrderTxs());
     dispatch(actionSetNFTTokenData());
     await dispatch(actionFetchedOrderDetail(_order));
   }

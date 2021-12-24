@@ -97,3 +97,4 @@ export { default as AddCoinIcon } from './icon.addCoin';
 export { default as PaperIcon } from './icon.paper';
 export { default as RatioIcon } from './icon.ratio';
 export { default as TradeIconSuccess } from './icon.tradeSuccess';
+export { default as CancelIcon } from './icon.cancel';

@@ -71,7 +71,7 @@ const Order = React.memo(({ data }) => {
   if (!data?.requestTx) {
     return null;
   }
-  const { statusStr, swapStr, requestTx, tradeID } = data;
+  const { statusStr, swapStr, requestTx, tradeID, exchange } = data;
 
   const handleNavOrderDetail = async () => {
     await dispatch(actionFetchedOrderDetail(data));
@@ -89,7 +89,7 @@ const Order = React.memo(({ data }) => {
             >
               {`#${tradeID || requestTx}`}
             </Text>
-            <Text style={[styled.title, { color: colors.subText }]}>Swap</Text>
+            <Text style={[styled.title, { color: colors.subText }]}>{exchange}</Text>
           </Row>
           <Row style={styled.row}>
             <Text style={[styled.swap]}>{swapStr}</Text>

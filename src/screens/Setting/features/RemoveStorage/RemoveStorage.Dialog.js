@@ -5,6 +5,8 @@ import { Text4 } from '@components/core/Text';
 import PropTypes from 'prop-types';
 import { FONT } from '@src/styles';
 import { BtnPrimary, BtnSecondary } from '@components/core/Button/Button';
+import { colorsSelector } from '@src/theme';
+import { useSelector } from 'react-redux';
 
 const styles = StyleSheet.create({
   modalBackground: {
@@ -16,26 +18,22 @@ const styles = StyleSheet.create({
   },
   wrapContent: {
     width: '100%',
-    borderRadius: 13,
-    paddingHorizontal: 16,
+    borderRadius: 16,
+    padding: 24,
     minHeight: 200,
     justifyContent: 'center',
   },
   title: {
-    ...FONT.STYLE.bold,
-    fontSize: FONT.SIZE.superMedium,
-    alignSelf: 'center',
+    ...FONT.TEXT.incognitoH5,
+    textAlign: 'center',
   },
   subTitle: {
-    ...FONT.STYLE.medium,
-    fontSize: FONT.SIZE.regular,
-    alignSelf: 'center',
+    ...FONT.TEXT.incognitoP1,
     textAlign: 'center',
-    marginTop: 15,
+    marginVertical: 16,
   },
   buttonStyle: {
     height: 50,
-    marginTop: 24,
     width: '48%',
   },
 });
@@ -57,20 +55,31 @@ const RemoveDialog = (props) => {
     subTitle,
     acceptStr,
     canStr,
+    icon,
   } = props;
+  const colors = useSelector(colorsSelector);
   return (
     <Modal visible={visible} animationType="fade" transparent>
       <View style={styles.modalBackground}>
         <View style={styles.wrapContent}>
-          <Text style={styles.title}>{title || CONTENT.title}</Text>
-          <Text4 style={styles.subTitle}>{subTitle || CONTENT.subTitle}</Text4>
+          {icon && icon}
+          <Text style={[styles.title, { color: colors.grey1 }]}>
+            {title || CONTENT.title}
+          </Text>
+          <Text4 style={[styles.subTitle]}>
+            {subTitle || CONTENT.subTitle}
+          </Text4>
           <View
             style={{ flexDirection: 'row', justifyContent: 'space-between' }}
           >
             <BtnSecondary
               onPress={() => onPressAccept()}
               title={acceptStr || CONTENT.accept}
-              wrapperStyle={styles.buttonStyle}
+              wrapperStyle={[
+                styles.buttonStyle,
+                { backgroundColor: colors.grey1, borderColor: 'transparent' },
+              ]}
+              textStyle={{ color: colors.against }}
             />
             <BtnPrimary
               onPress={() => onPressCancel()}
@@ -91,6 +100,7 @@ RemoveDialog.propTypes = {
   title: PropTypes.string,
   subTitle: PropTypes.string,
   acceptStr: PropTypes.string,
+  icon: PropTypes.element,
 };
 
 RemoveDialog.defaultProps = {
