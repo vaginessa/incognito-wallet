@@ -49,7 +49,7 @@ const HistoryDetail = () => {
       valueTextStyle: [itemStyled.mediumTitle, { color: statusColor }]
     },
     {
-      label: 'NFTID',
+      label: 'TicketID',
       valueText: nftId,
       copyable: true,
       disabled: !nftId

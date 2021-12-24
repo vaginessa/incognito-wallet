@@ -143,7 +143,6 @@ const style = StyleSheet.create({
   rightHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    maxWidth: 60,
     justifyContent: 'space-between',
   },
   warningDesc: {
@@ -152,6 +151,13 @@ const style = StyleSheet.create({
     lineHeight: isIOS() ? 25 : 30,
     marginTop: 10,
     ...FONT.STYLE.medium
+  },
+  infoIcon: {
+    width: 40,
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 20
   }
 });
 
