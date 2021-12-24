@@ -25,6 +25,9 @@ import BottomBar from '@screens/Node/components/NodeBottomBar';
 import SlashStatus from '@screens/Node/components/SlashStatus';
 import { View2 } from '@src/components/core/View';
 import { FONT } from '@src/styles';
+import { useNavigation } from 'react-navigation-hooks';
+import { useSelector } from 'react-redux';
+import { colorsSelector } from '@src/theme';
 
 const NodeItemDetail = memo(({
   isLoading,
@@ -51,7 +54,8 @@ const NodeItemDetail = memo(({
   onRefresh,
   onPressMonitorDetail
 }) => {
-
+  const navigation = useNavigation();
+  const colors = useSelector(colorsSelector);
   const renderRewards = () => {
     if (rewardsList && rewardsList.length > 0) {
       return (<Rewards rewards={rewardsList} />);
@@ -191,7 +195,9 @@ const NodeItemDetail = memo(({
       {!isEmpty(item?.PublicKeyMining) &&
         <BtnThreeDotsVer onPress={() => onPressMonitorDetail && onPressMonitorDetail(item?.PublicKeyMining)} />
       }
-      <HelpIcon screen={ROUTE_NAMES.NodeItemsHelp} style={styles.infoBtnStyle} />
+      <TouchableOpacity style={[styles.infoIcon, { backgroundColor: colors.background1 }]} onPress={() => navigation.navigate(ROUTE_NAMES.NodeItemsHelp)}>
+        <HelpIcon screen={ROUTE_NAMES.NodeItemsHelp} style={styles.infoBtnStyle} />
+      </TouchableOpacity>
     </View2>
   );
 

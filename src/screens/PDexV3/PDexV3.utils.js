@@ -84,12 +84,16 @@ export const getPrincipal = ({ token1, token2, shareData }) => {
   });
   const token1USD = convertToUSD({ amount: maxInputShareDisplayStr, priceUsd: token1.priceUsd, pDecimals: token1.pDecimals });
   const token2USD = convertToUSD({ amount: maxOutputShareDisplayStr, priceUsd: token2.priceUsd, pDecimals: token2.pDecimals });
+  const token1USDHuman = convertUtil.toHumanAmount(token1USD, token1.pDecimals);
+  const token2USDHuman = convertUtil.toHumanAmount(token2USD, token2.pDecimals);
   return {
     token1: `${maxInputShareDisplayStr} ${token1.symbol}`,
     token2: `${maxOutputShareDisplayStr} ${token2.symbol}`,
     str: `${maxInputShareDisplayStr} ${token1.symbol} + ${maxOutputShareDisplayStr} ${token2.symbol}`,
     token1USD,
     token2USD,
+    token1USDHuman,
+    token2USDHuman,
   };
 };
 

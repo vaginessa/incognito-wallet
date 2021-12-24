@@ -51,6 +51,13 @@ const Home = ({
   displayFullTotalRewardsNonLock,
 }) => {
   const navigation = useNavigation();
+
+  const handleHistory = () => {
+    navigation.navigate(routeNames.PoolV2History, {
+      coins: config.coins,
+    });
+  };
+
   const renderContent = () => {
     if (!config || !userData) {
       return <LoadingContainer />;
@@ -62,6 +69,9 @@ const Home = ({
           total={displayClipTotalRewards}
           nativeToken={nativeToken}
           style={globalStyled.defaultPaddingHorizontal}
+          showRight={histories.length > 0}
+          isLoading={isLoadingHistories}
+          onRightPress={handleHistory}
         />
         <Actions
           buy={!withdrawable}
