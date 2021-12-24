@@ -210,7 +210,7 @@ class AppUpdater extends PureComponent {
           onTouchOutside={this.closeNewsDialog}
           dialogStyle={styles.dialog}
         >
-          <DialogContent>
+          <DialogContent style={{ backgroundColor: colors.background3 }}>
             <BtnClose
               style={styles.btnClose}
               onPress={this.closeNewsDialog}
