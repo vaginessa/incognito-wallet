@@ -6,7 +6,7 @@ import { compose } from 'recompose';
 import { View, Text, TouchableOpacity, ActivityIndicator, LoadingContainer, RefreshControl } from '@components/core';
 import { withLayout_2 } from '@components/Layout';
 import Header from '@components/Header/index';
-import { FlatList, VirtualizedList } from 'react-native';
+import { VirtualizedList } from 'react-native';
 import { useNavigation } from 'react-navigation-hooks';
 import ROUTE_NAMES from '@routers/routeNames';
 import { ArrowRightGreyIcon } from '@components/Icons';
