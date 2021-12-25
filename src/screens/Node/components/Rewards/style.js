@@ -22,21 +22,21 @@ const style = StyleSheet.create({
     alignContent: 'center'
   },
   balanceUpdate: {
-    fontSize: FONT.SIZE.superLarge,
-    color: COLORS.black,
+    fontSize: FONT.SIZE.veryLarge,
+    lineHeight: FONT.SIZE.veryLarge + 4,
     textAlign: 'center',
     ...FONT.STYLE.bold,
   },
   rewards: {
     width: '100%',
     height: 70,
-    marginTop: 42,
+    marginTop: 32,
   },
   noDot: {
-    marginBottom: 30,
+    marginBottom: 10,
   },
   haveDot: {
-    marginBottom: 50,
+    marginBottom: 10,
   }
 });
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import {StyleSheet, TouchableOpacity} from 'react-native';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 import PropTypes from 'prop-types';
+import AddSolidIcon from '@components/Icons/icon.addSolid';
 
 const styled = StyleSheet.create({
   btnStyle: {
@@ -15,7 +15,7 @@ const BtnAdd = props => {
   const {btnStyle} = props;
   return (
     <TouchableOpacity style={[styled.btnStyle, btnStyle]} {...props}>
-      <Ionicons name="ios-add-circle" size={25} />
+      <AddSolidIcon />
     </TouchableOpacity>
   );
 };

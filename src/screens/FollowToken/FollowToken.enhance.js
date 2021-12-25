@@ -9,7 +9,7 @@ import {
 } from '@src/redux/actions/token';
 import { withTokenVerified } from '@src/components/Token';
 
-const enhance = (WrappedComp) => (props) => {
+export const withFollow = (WrappedComp) => (props) => {
   const dispatch = useDispatch();
   const handleToggleFollowToken = async (token) => {
     try {
@@ -36,6 +36,6 @@ const enhance = (WrappedComp) => (props) => {
 
 export default compose(
   withTokenVerified,
-  enhance,
+  withFollow,
   withLayout_2,
 );

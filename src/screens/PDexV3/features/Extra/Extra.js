@@ -1,11 +1,13 @@
 import { Row } from '@src/components';
 import { Text } from '@src/components/core';
 import PropTypes from 'prop-types';
-import { COLORS, FONT } from '@src/styles';
+import { FONT } from '@src/styles';
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { BtnQuestionDefault } from '@src/components/Button';
 import srcQuestionIcon from '@src/assets/images/icons/help-inline.png';
+import { useSelector } from 'react-redux';
+import { colorsSelector } from '@src/theme';
 
 export const styled = StyleSheet.create({
   container: {
@@ -19,7 +21,6 @@ export const styled = StyleSheet.create({
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.regular,
     lineHeight: FONT.SIZE.regular + 5,
-    color: COLORS.black,
     marginRight: 10,
   },
   hook: {
@@ -36,19 +37,16 @@ export const styled = StyleSheet.create({
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.small,
     lineHeight: FONT.SIZE.small + 7,
-    color: COLORS.colorGrey3,
     marginRight: 5,
   },
   value: {
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.small,
     lineHeight: FONT.SIZE.small + 7,
-    color: COLORS.black,
     flex: 1,
     textAlign: 'right',
   },
   bold: {
-    color: COLORS.black,
     fontFamily: FONT.NAME.bold,
   },
   hookCustomStyleBtnQuestion: {
@@ -70,12 +68,14 @@ export const Hook = React.memo((props) => {
     styledHook,
     customStyledLabel,
   } = props;
+  const colors = useSelector(colorsSelector);
   return (
     <Row style={[styled.hook, styledHook]}>
       <Row style={styled.labelContainer}>
         <Text
           style={[
             styled.label,
+            { color: colors.subText },
             boldLabel && styled.bold,
             customStyledLabel ?? customStyledLabel,
           ]}
@@ -98,7 +98,12 @@ export const Hook = React.memo((props) => {
         <Text
           numberOfLines={1}
           ellipsizeMode="tail"
-          style={[styled.value, boldValue && styled.bold, customStyledValue]}
+          style={[
+            styled.value,
+            { color: colors.mainText },
+            boldValue && styled.bold,
+            customStyledValue,
+          ]}
         >
           {value}
         </Text>
@@ -108,25 +113,12 @@ export const Hook = React.memo((props) => {
 });
 
 const Extra = (props) => {
-  const {
-    title,
-    hooks,
-    // hasQuestionIcon,
-    // onPressQuestionIcon,
-    containerStyle,
-    titleStyle,
-  } = props;
+  const { title, hooks, containerStyle, titleStyle } = props;
   return (
     <View style={{ ...styled.container, ...containerStyle }}>
       {title && (
         <Row style={styled.titleContainer}>
-          <Text style={{...styled.title, ...titleStyle}}>{title}</Text>
-          {/* {hasQuestionIcon && (
-            <BtnQuestionDefault
-              icon={srcQuestionIcon}
-              onPress={onPressQuestionIcon}
-            />
-          )} */}
+          <Text style={{ ...styled.title, ...titleStyle }}>{title}</Text>
         </Row>
       )}
       {hooks}

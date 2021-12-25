@@ -1,30 +1,49 @@
 import React from 'react';
-import { Text, View } from 'react-native';
 import PropTypes from 'prop-types';
 import withToken from '@src/components/Token/Token.enhance';
 import { TokenVerifiedIcon } from '@src/components/Icons';
-import round from 'lodash/round';
 import Swipeout from 'react-native-swipeout';
 import { BtnDelete, BtnInfo } from '@src/components/Button';
 import replace from 'lodash/replace';
 import trim from 'lodash/trim';
-import { TouchableOpacity, ActivityIndicator } from '@src/components/core';
+import {
+  TouchableOpacity,
+  ActivityIndicator,
+  Text,
+  View,
+} from '@src/components/core';
 import { useSelector } from 'react-redux';
 import { currencySelector, decimalDigitsSelector } from '@src/screens/Setting';
 import { prefixCurrency, pTokenSelector } from '@src/redux/selectors/shared';
 import { formatAmount, formatPrice } from '@components/Token/Token.utils';
 import format from '@utils/format';
+import { colorsSelector } from '@src/theme';
 import { styled } from './Token.styled';
 
 export const NormalText = (props) => {
   const prefix = useSelector(prefixCurrency);
-  const { style, stylePSymbol, containerStyle, text, hasPSymbol, showBalance, symbol, rightIcon } = props;
+  const {
+    style,
+    stylePSymbol,
+    containerStyle,
+    text,
+    hasPSymbol,
+    showBalance,
+    symbol,
+    rightIcon,
+    ellipsizeMode,
+    numberOfLinesValue,
+  } = props;
   return (
     <View style={[styled.normalText, containerStyle]}>
       {hasPSymbol && showBalance && (
         <Text style={[styled.pSymbol, stylePSymbol]}>{prefix}</Text>
       )}
-      <Text numberOfLines={1} style={[styled.text, style]} ellipsizeMode="tail">
+      <Text
+        numberOfLines={numberOfLinesValue}
+        style={[styled.text, style]}
+        ellipsizeMode={ellipsizeMode}
+      >
         {showBalance ? trim(text) : `••• ${symbol}`}
       </Text>
       {!!rightIcon && rightIcon}
@@ -40,7 +59,9 @@ NormalText.propTypes = {
   hasPSymbol: PropTypes.bool,
   showBalance: PropTypes.bool,
   symbol: PropTypes.string,
-  rightIcon: PropTypes.any
+  rightIcon: PropTypes.any,
+  ellipsizeMode: PropTypes.string,
+  numberOfLinesValue: PropTypes.number,
 };
 
 NormalText.defaultProps = {
@@ -51,7 +72,9 @@ NormalText.defaultProps = {
   hasPSymbol: false,
   showBalance: true,
   symbol: '',
-  rightIcon: null
+  rightIcon: null,
+  ellipsizeMode: 'tail',
+  numberOfLinesValue: 1,
 };
 
 export const Name = (props) => {
@@ -165,7 +188,10 @@ export const ChangePrice = (props) => {
   }
   return (
     <NormalText
-      text={` ${isTokenDecrease ? '-' : '+'}${format.amountVer2(changeToNumber, 0)}%`}
+      text={` ${isTokenDecrease ? '-' : '+'}${format.amountVer2(
+        changeToNumber,
+        0,
+      )}%`}
       style={[
         {
           marginLeft: 5,
@@ -189,15 +215,15 @@ ChangePrice.defaultProps = {
 };
 
 export const Price = (props) => {
-  const { priceUsd, pricePrv } = props;
+  const { priceUsd, pricePrv, textStyle } = props;
   const { isToggleUSD } = useSelector(pTokenSelector);
-
   return (
     <View style={styled.priceContainer}>
       <NormalText
         text={formatPrice(isToggleUSD ? priceUsd : pricePrv)}
         hasPSymbol
-        style={styled.bottomText}
+        stylePSymbol={textStyle}
+        style={[styled.bottomText, textStyle]}
       />
     </View>
   );
@@ -206,11 +232,13 @@ export const Price = (props) => {
 Price.propTypes = {
   priceUsd: PropTypes.number,
   pricePrv: PropTypes.number,
+  textStyle: PropTypes.any
 };
 
 Price.defaultProps = {
   priceUsd: 0,
   pricePrv: 0,
+  textStyle: null
 };
 
 export const Amount = (props) => {
@@ -301,13 +329,18 @@ export const Symbol = (props) => {
     isBep2Token,
     isBep20Token,
     styledSymbol,
+    visibleNetworkName = true,
   } = props;
   return (
     <NormalText
       allowFontScaling={false}
       style={[styled.bottomText, styledSymbol]}
       text={`${symbol} ${
-        isErc20Token || isBep2Token || isBep20Token ? `(${networkName})` : ''
+        visibleNetworkName
+          ? isErc20Token || isBep2Token || isBep20Token
+            ? `(${networkName})`
+            : ''
+          : ''
       }`}
     />
   );

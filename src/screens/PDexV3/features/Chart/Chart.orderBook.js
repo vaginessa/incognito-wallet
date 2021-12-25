@@ -1,21 +1,28 @@
 import { Row } from '@src/components';
-import { Text } from '@src/components/core';
+import { Tabs, Text } from '@src/components/core';
 import { COLORS, FONT } from '@src/styles';
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
+import {
+  TAB_ORDER_BOOK,
+  ROOT_TAB_SUB_INFO,
+  TAB_HISTORY_ID,
+} from '@screens/PDexV3/features/OrderLimit';
 import { v4 } from 'uuid';
 import { actionFetchOrderBook } from './Chart.actions';
 import { orderBookSelector } from './Chart.selector';
 
 const styled = StyleSheet.create({
   container: {
+    flex: 1,
     marginBottom: 30,
   },
   wrapper: {
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
+    paddingVertical: 24,
   },
   price: {
     fontFamily: FONT.NAME.medium,
@@ -35,13 +42,6 @@ const styled = StyleSheet.create({
     maxWidth: '49%',
   },
   wrapperItem: { justifyContent: 'space-between', marginBottom: 15 },
-  title: {
-    fontFamily: FONT.NAME.bold,
-    fontSize: FONT.SIZE.superMedium,
-    lineHeight: FONT.SIZE.superMedium + 5,
-    color: COLORS.black,
-    marginBottom: 30,
-  },
 });
 
 const Item = React.memo((props) => {
@@ -144,11 +144,20 @@ export const OrderBook = React.memo(() => {
   );
 });
 
-const OrderBookContainer = () => {
+const OrderBookContainer = ({ containerStyled }) => {
   return (
-    <View style={styled.container}>
-      <Text style={styled.title}>Order Book</Text>
-      <OrderBook />
+    <View style={[styled.container, containerStyled]}>
+      <Tabs rootTabID={ROOT_TAB_SUB_INFO}>
+        <View
+          tabID={TAB_ORDER_BOOK}
+          label="Order book"
+          upperCase={false}
+          onChangeTab={() => null}
+        >
+          <OrderBook />
+        </View>
+        <View tabID="" label="" />
+      </Tabs>
     </View>
   );
 };

@@ -11,11 +11,12 @@ const ImageCached = (props) => {
     loading: false,
     error: false,
   });
-  if ((!!error || !uri) && !!defaultImage) {
+
+  if (!!error || !uri) {
     return <AppIcon style={style} {...rest} />;
   }
   return (
-    <View style={style}>
+    <>
       <FastImage
         style={style}
         source={{
@@ -23,28 +24,29 @@ const ImageCached = (props) => {
           priority: FastImage.priority.high,
           cache: FastImage.cacheControl.web,
         }}
-        resizeMode={FastImage.resizeMode.stretch}
+        resizeMode={FastImage.resizeMode.cover}
         onLoadStart={() => setState((value) => ({ ...value, loading: true }))}
         onLoadEnd={() => setState((value) => ({ ...value, loading: false }))}
         onError={() => setState({ error: true, loading: false })}
         {...rest}
       />
       {loading && (
-        <View style={styled.loading} zIndex={999}>
+        <View style={[styled.loading]} zIndex={999}>
           <ActivityIndicator />
         </View>
       )}
-    </View>
+    </>
   );
 };
 
 const styled = StyleSheet.create({
   loading: {
-    position: 'absolute',
-    width: '100%',
-    height: '100%',
+    width: 32,
+    height: 32,
     justifyContent: 'center',
     alignItems: 'center',
+    position: 'absolute',
+    left: 24
   },
 });
 

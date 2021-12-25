@@ -1,8 +1,8 @@
 import React from 'react';
-import { View } from 'react-native';
 import Header from '@src/components/Header';
 import { useNavigationParam } from 'react-navigation-hooks';
-import { DropdownMenu, KeyboardAwareScrollView } from '@src/components/core';
+import { DropdownMenu, ScrollViewBorder, KeyboardAwareScrollView, View } from '@src/components/core';
+import { View2 } from '@src/components/core/View';
 import PropTypes from 'prop-types';
 import withListAllReceivers from './FrequentReceivers.enhance';
 import Item from './FrequentReceivers.item';
@@ -38,7 +38,6 @@ const ListReceivers = (props) => {
           key={index}
           customStyle={[
             { marginBottom: 30 },
-            index === 0 ? { paddingTop: 40 } : null,
           ]}
         />
       ))}
@@ -49,20 +48,18 @@ const ListReceivers = (props) => {
 const ListAllReceivers = (props) => {
   const { receivers, isEmpty } = props;
   return (
-    <View style={styled.container}>
+    <View2 fullFlex>
       <Header
         title="Search by name or address"
         style={styled.header}
         canSearch
       />
-      <KeyboardAwareScrollView
-        style={{
-          marginHorizontal: 25,
-        }}
-      >
-        <ListReceivers {...{ receivers, isEmpty }} />
-      </KeyboardAwareScrollView>
-    </View>
+      <ScrollViewBorder>
+        <View fullFlex>
+          <ListReceivers {...{ receivers, isEmpty }} />
+        </View>
+      </ScrollViewBorder>
+    </View2>
   );
 };
 

@@ -60,7 +60,7 @@ const NodeItem = (props) => {
         onPress: () => onRemove(item),
       }]}
     >
-      <View style={{ paddingHorizontal: 25 }}>
+      <View>
         {renderNode()}
       </View>
     </Swipeout>

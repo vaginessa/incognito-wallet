@@ -2,7 +2,9 @@ import { StyleSheet } from 'react-native';
 import { FONT, COLORS } from '@src/styles';
 
 export const commonStyled = StyleSheet.create({
-  container: {},
+  container: {
+    flex: 1
+  },
   label: {
     fontFamily: FONT.NAME.regular,
     fontSize: FONT.SIZE.regular,

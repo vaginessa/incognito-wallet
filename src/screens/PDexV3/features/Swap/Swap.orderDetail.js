@@ -1,8 +1,9 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
+import { View2 } from '@src/components/core/View';
 import { withLayout_2 } from '@src/components/Layout';
 import Header from '@components/Header';
-import { ScrollView, RefreshControl, Text } from '@components/core';
+import { ScrollViewBorder, RefreshControl, Text } from '@components/core';
 import { useDispatch, useSelector } from 'react-redux';
 import { BtnCopy } from '@src/components/Button';
 import { ExHandler } from '@src/services/exception';
@@ -32,7 +33,15 @@ const SwapOrderDetail = () => {
     if (!order) {
       return [];
     }
-    let ft = [
+    let ft = [];
+    if (order?.tradeID) {
+      ft.push({
+        label: 'Trade ID',
+        value: `#${order?.tradeID}`,
+        copiable: true,
+      });
+    }
+    ft = ft.concat([
       {
         label: 'Request Tx',
         value: `#${order?.requestTx}`,
@@ -71,7 +80,7 @@ const SwapOrderDetail = () => {
         label: 'Fee',
         value: order?.tradingFeeStr,
       },
-    ];
+    ]);
     if (!order?.tradingFeeByPRV) {
       ft.push({
         label: 'Network fee',
@@ -109,6 +118,10 @@ const SwapOrderDetail = () => {
         value: order?.respondTxs.map((responseTx) => `\n${responseTx}`).join(),
       });
     }
+    ft.push({
+      label: 'Exchange',
+      value: order?.exchange,
+    });
     return ft.filter(
       (ftItem) => !!ftItem && (!!ftItem?.value || !!ftItem?.customValue),
     );
@@ -127,12 +140,12 @@ const SwapOrderDetail = () => {
     dispatch(actionFetchDataOrderDetail());
   }, []);
   return (
-    <View style={styled.container}>
+    <View2 style={styled.container}>
       <Header
-        title="Swap detail"
-        rightHeader={<BtnCopy onPress={handleCopy} />}
+        title="Swap details"
+        rightHeader={<BtnCopy onPress={handleCopy} isHeader />}
       />
-      <ScrollView
+      <ScrollViewBorder
         style={styled.scrollview}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
@@ -142,8 +155,8 @@ const SwapOrderDetail = () => {
           factories?.map((item) => (
             <TradeOrderDetail key={item?.label} {...item} />
           ))}
-      </ScrollView>
-    </View>
+      </ScrollViewBorder>
+    </View2>
   );
 };
 

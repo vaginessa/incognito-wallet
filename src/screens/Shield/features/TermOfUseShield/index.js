@@ -1,22 +1,25 @@
 import React from 'react';
-import { View, StyleSheet, ScrollView, Text, TouchableOpacity, Image } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import Header from '@src/components/Header';
 import { COLORS, FONT } from '@src/styles';
 import PropTypes from 'prop-types';
-import { RoundCornerButton } from '@components/core';
+import { RoundCornerButton, ScrollViewBorder, Text } from '@components/core';
 import ic_radio from '@src/assets/images/icons/ic_radio.png';
 import ic_radio_check from '@src/assets/images/icons/ic_radio_check.png';
 import withBridgeConnect from '@src/screens/Wallet/features/BridgeConnect/WalletConnect.enhance';
 import { ExHandler } from '@services/exception';
 import { compose } from 'recompose';
-import {isAndroid} from '@utils/platform';
+import { RatioIcon } from '@components/Icons';
+import { Row } from '@src/components';
+import { useSelector } from 'react-redux';
+import { colorsSelector } from '@src/theme';
 
 const TermOfUseShield = (props) => {
   const { onNextPress, handleConnect, onSelected, selectedTerm, handleShield, selectedPrivacy } = props;
   const [isPressed, setIsPressed] = React.useState(false);
-  const android = isAndroid();
+  const colors = useSelector(colorsSelector);
   const terms = [
-    'Generate a deposit address',
+    'Generate a shielding address',
     `Connect your ${selectedPrivacy?.rootNetworkName} wallet`
   ];
 
@@ -58,23 +61,23 @@ const TermOfUseShield = (props) => {
   };
 
   return (
-    <View style={styled.container}>
-      <Header title="Deposit" />
-      <ScrollView style={styled.scrollview}>
+    <>
+      <Header title={`Shield ${selectedPrivacy.symbol}`} />
+      <ScrollViewBorder style={styled.scrollview}>
         <Text style={[styled.text, { marginBottom: 22 }]}>
-          {`To anonymize your coins, you'll need to send funds to Incognito. You can simply generate a deposit address, or connect directly with the bridge smart contract using your ${selectedPrivacy?.rootNetworkName} wallet.`}
+          {`To anonymize your coins, you'll need to send funds to Incognito. You can simply generate a shielding address, or connect directly with the bridge smart contract using your ${selectedPrivacy?.rootNetworkName} wallet.`}
         </Text>
         {terms && terms.map((item, index) => {
           return (
             <TouchableOpacity
-              style={index === selectedTerm ? styled.selectedButton : styled.unSelectedButon}
+              style={[styled.selectedButton, { backgroundColor: colors.btnBG3 }]}
               key={`key-${index}`}
               onPress={() => handlePress(index)}
             >
-              <View style={styled.contentView}>
-                <Image style={styled.icon} source={index === selectedTerm ? ic_radio_check : ic_radio} />
-                <Text style={[styled.text, { marginRight: 20, color: index === selectedTerm ? COLORS.black : COLORS.colorGreyBold }]}>{item}</Text>
-              </View>
+              <Row centerVertical style={styled.contentView}>
+                <RatioIcon style={styled.icon} selected={index === selectedTerm} />
+                <Text style={[styled.text, { marginRight: 20 }]}>{item}</Text>
+              </Row>
             </TouchableOpacity>
           );
         })}
@@ -85,10 +88,10 @@ const TermOfUseShield = (props) => {
           onPress={handlePressNext}
         />
         {selectedTerm === (terms.length - 1) && (
-          <Text style={styled.warningText}>Your wallet will launch and prompt you to approve the connection. Simply follow the instructions to complete the deposit process.</Text>
+          <Text style={styled.warningText}>Your wallet will launch and prompt you to approve the connection. Simply follow the instructions to complete the shielding process.</Text>
         )}
-      </ScrollView>
-    </View>
+      </ScrollViewBorder>
+    </>
   );
 };
 
@@ -105,42 +108,29 @@ export default compose(
 )(TermOfUseShield);
 
 const styled = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
   scrollview: {
-    marginTop: 22,
   },
   text: {
-    color: COLORS.colorGreyBold,
-    fontFamily: FONT.NAME.specialMedium,
+    fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.regular,
     lineHeight: FONT.SIZE.medium + 4,
   },
   icon: {
     marginTop: 2,
     marginRight: 8,
+    tintColor: COLORS.blue5
   },
   contentView: {
     flexDirection: 'row',
   },
   selectedButton: {
     padding: 12,
-    borderRadius: 16,
-    borderWidth: 0,
+    borderRadius: 8,
     marginBottom: 16,
-    backgroundColor: '#EFEFEF',
-  },
-  unSelectedButon: {
-    padding: 12,
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: COLORS.colorGreyLight,
-    marginBottom: 16
+    borderWidth: 0,
   },
   button: {
     marginTop: 30,
-    backgroundColor: COLORS.black,
   },
   warningText: {
     ...FONT.STYLE.medium,

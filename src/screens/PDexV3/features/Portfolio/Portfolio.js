@@ -11,14 +11,12 @@ import {EmptyBookIcon} from '@components/Icons';
 import uniq from 'lodash/uniq';
 import {
   getDataByShareIdSelector,
-  isFetchingSelector,
   listShareIDsSelector,
 } from './Portfolio.selector';
 import { styled } from './Portfolio.styled';
 import PortfolioItem from './Portfolio.item';
 
 const PortfolioList = withTransaction(React.memo(({ onCreateWithdrawFeeLP }) => {
-  const isFetching = useSelector(isFetchingSelector);
   const dispatch = useDispatch();
   const data = useSelector(listShareIDsSelector);
   const getDataShare = useSelector(getDataByShareIdSelector);
@@ -49,11 +47,11 @@ const PortfolioList = withTransaction(React.memo(({ onCreateWithdrawFeeLP }) => 
           isLast={index === data.length - 1}
         />
       )}
-      keyExtractor={(item) => item?.shareId}
+      keyExtractor={(item) => item}
       showsVerticalScrollIndicator={false}
-      contentContainerStyle={{ flexGrow: 1 }}
+      contentContainerStyle={[{ flexGrow: 1 }]}
       ListEmptyComponent={
-        <EmptyBookIcon message="Your portfolio is empty" />
+        <EmptyBookIcon message="Join a pool to contribute liquidity and earn rewards." />
       }
       style={styled.list}
     />

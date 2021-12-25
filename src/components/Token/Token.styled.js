@@ -3,7 +3,7 @@ import { FONT, COLORS, UTILS } from '@src/styles';
 
 export const styled = StyleSheet.create({
   container: {
-    paddingVertical: 15,
+    paddingTop: 24,
   },
   extra: {
     flexDirection: 'row',
@@ -37,14 +37,12 @@ export const styled = StyleSheet.create({
     fontFamily: FONT.NAME.bold,
     fontSize: FONT.SIZE.superMedium,
     lineHeight: FONT.SIZE.superMedium + 4,
-    color: COLORS.black,
   },
   displayName: {
     maxWidth: '80%',
   },
   text: {
     fontFamily: FONT.NAME.medium,
-    color: COLORS.colorGreyBold,
     maxWidth: UTILS.screenWidth() / 2 - 50,
     fontSize: FONT.SIZE.medium,
     lineHeight: FONT.SIZE.medium + 4,
@@ -59,7 +57,6 @@ export const styled = StyleSheet.create({
     fontFamily: FONT.NAME.specialRegular,
     fontSize: FONT.SIZE.medium,
     lineHeight: FONT.SIZE.medium + 4,
-    color: COLORS.colorGreyBold,
   },
   pSymbolBold: {
     fontFamily: FONT.NAME.specialRegular,
@@ -74,9 +71,7 @@ export const styled = StyleSheet.create({
     color: COLORS.green,
   },
   bottomText: {
-    fontSize: FONT.SIZE.medium,
-    fontFamily: FONT.NAME.medium,
-    lineHeight: FONT.SIZE.medium + 4,
+    ...FONT.TEXT.incognitoP1,
   },
   normalText: {
     flexDirection: 'row',

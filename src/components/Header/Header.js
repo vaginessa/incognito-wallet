@@ -1,11 +1,13 @@
 import React from 'react';
-import {View, Text, BackHandler, SafeAreaView} from 'react-native';
+import { BackHandler, SafeAreaView } from 'react-native';
 import { BtnCircleBack } from '@src/components/Button';
 import PropTypes from 'prop-types';
 import { useFocusEffect, useNavigation } from 'react-navigation-hooks';
 import debounce from 'lodash/debounce';
-import { TouchableOpacity } from '@src/components/core';
+import { TouchableOpacity, Text } from '@src/components/core';
+import { View2 } from '@src/components/core/View';
 import SelectAccountButton from '@src/components/SelectAccountButton';
+import { SearchIcon } from '@src/components/Icons';
 import { styled, styledHeaderTitle } from './Header.styled';
 import SearchBox from './Header.searchBox';
 import withHeader from './Header.enhance';
@@ -23,8 +25,8 @@ export const HeaderTitle = () => {
     styledContainerHeaderTitle,
   } = headerProps;
   const Title = () => (
-    <View style={[styledHeaderTitle.container]}>
-      <View
+    <View2 style={[styledHeaderTitle.container]}>
+      <View2
         style={[styledHeaderTitle.containerTitle, styledContainerHeaderTitle]}
       >
         <Text
@@ -37,10 +39,10 @@ export const HeaderTitle = () => {
         >
           {title}
         </Text>
-      </View>
+      </View2>
 
       {customHeaderTitle && customHeaderTitle}
-    </View>
+    </View2>
   );
   if (!canSearch) {
     return <Title />;
@@ -51,6 +53,7 @@ export const HeaderTitle = () => {
       onPress={onHandleSearch}
     >
       <Title />
+      <SearchIcon />
     </TouchableOpacity>
   );
 };
@@ -61,6 +64,7 @@ const Header = ({
   canSearch,
   dataSearch,
   toggleSearch,
+  autoFocus,
   accountSelectable,
   onGoBack,
   onHandleSearch,
@@ -93,7 +97,7 @@ const Header = ({
   });
 
   const renderHeaderTitle = () => {
-    if (toggleSearch) {
+    if (toggleSearch || autoFocus) {
       if (isNormalSearch) {
         return (
           <SearchBox
@@ -106,7 +110,7 @@ const Header = ({
           />
         );
       }
-      return <SearchBox title={title} />;
+      return <SearchBox title={title} inputStyle={titleStyled} />;
     }
     return <HeaderTitle />;
   };
@@ -127,20 +131,20 @@ const Header = ({
       }}
     >
       <SafeAreaView>
-        <View style={[styled.container, style]}>
+        <View2 style={[styled.container, style]}>
           {!hideBackButton && <BtnCircleBack onPress={_handleGoBack} />}
           {renderHeaderTitle()}
           {!!rightHeader && rightHeader}
           {accountSelectable && (
-            <View>
+            <View2>
               <SelectAccountButton
                 disabled={disableAccountButton}
                 ignoredAccounts={ignoredAccounts}
                 handleSelectedAccount={handleSelectedAccount}
               />
-            </View>
+            </View2>
           )}
-        </View>
+        </View2>
       </SafeAreaView>
     </HeaderContext.Provider>
   );
@@ -164,6 +168,7 @@ Header.defaultProps = {
   hideBackButton: false,
   disableAccountButton: false,
   handleSelectedAccount: null,
+  autoFocus: false
 };
 
 Header.propTypes = {
@@ -187,6 +192,7 @@ Header.propTypes = {
   hideBackButton: PropTypes.bool,
   disableAccountButton: PropTypes.bool,
   handleSelectedAccount: PropTypes.func,
+  autoFocus: PropTypes.bool
 };
 
 export default withHeader(React.memo(Header));

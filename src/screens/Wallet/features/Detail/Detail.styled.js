@@ -15,12 +15,13 @@ export const groupBtnStyled = StyleSheet.create({
   groupButton: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    paddingVertical: 16,
   },
   btnStyle: {
-    width: '100%',
-    maxWidth: '49%',
+    width: '49%',
     justifyContent: 'center',
     alignItems: 'center',
+    marginBottom: 0
   },
   titleStyle: {
     fontFamily: FONT.NAME.medium,
@@ -31,41 +32,33 @@ export const groupBtnStyled = StyleSheet.create({
 
 export const balanceStyled = StyleSheet.create({
   container: {
-    marginBottom: 30,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 22,
+    marginBottom: 0
   },
   amount: {
     fontFamily: FONT.NAME.medium,
-    fontSize: FONT.SIZE.superLarge,
-    color: COLORS.black,
+    fontSize: FONT.SIZE.veryLarge,
     maxWidth: '100%',
-    lineHeight: FONT.SIZE.superLarge + 4,
+    lineHeight: FONT.SIZE.veryLarge + 4,
     textAlign: 'center',
   },
   amountBasePRV: {
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.medium,
-    color: COLORS.colorGreyBold,
-    lineHeight: FONT.SIZE.medium + 4,
+    lineHeight: FONT.SIZE.medium + 10,
     maxWidth: ScreenWidth
   },
   changePrice: {
-    fontFamily: FONT.NAME.medium,
-    fontSize: FONT.SIZE.medium,
-    lineHeight: FONT.SIZE.medium + 4,
+    ...FONT.TEXT.incognitoP1,
   },
   hook: {
     flexDirection: 'row',
     marginTop: 10,
-    justifyContent: 'center',
     alignItems: 'center',
+    marginBottom: 0
   },
   pSymbol: {
-    color: COLORS.colorGreyBold,
     fontFamily: FONT.NAME.specialRegular,
-    fontSize: FONT.SIZE.medium,
+    fontSize: FONT.SIZE.regular,
     lineHeight: FONT.SIZE.medium + 4,
   },
 });

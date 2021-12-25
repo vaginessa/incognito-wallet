@@ -1,5 +1,5 @@
 import React, { memo } from 'react';
-import { RefreshControl, ScrollView, Text, View } from 'react-native';
+import { ScrollView, Text } from 'react-native';
 import PropTypes from 'prop-types';
 import { styled as mainStyle } from '@screens/PDexV3/PDexV3.styled';
 import { Header, RowSpaceText, SuccessModal } from '@src/components';
@@ -16,7 +16,7 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import styled from '@screens/PDexV3/features/Liquidity/Liquidity.styled';
 import {Field, focus, getFormSyncErrors} from 'redux-form';
-import { AddBreakLine } from '@components/core';
+import { AddBreakLine, RefreshControl, View } from '@components/core';
 import withLiquidity from '@screens/PDexV3/features/Liquidity/Liquidity.enhance';
 import {
   contributeSelector,
@@ -28,6 +28,7 @@ import { compose } from 'recompose';
 import withTransaction from '@screens/PDexV3/features/Liquidity/Liquidity.enhanceTransaction';
 import NetworkFee from '@src/components/NetworkFee';
 import {actionToggleModal} from '@components/Modal';
+import { withLayout_2 } from '@components/Layout';
 
 const initialFormValues = {
   inputToken: '',
@@ -189,7 +190,7 @@ const Contribute = ({
   error,
 }) => {
   const isFetching = useSelector(contributeSelector.statusSelector);
-  const { feeAmountStr } = useSelector(contributeSelector.feeAmountSelector);
+  const { feeAmountStr, showFaucet } = useSelector(contributeSelector.feeAmountSelector);
   const onSubmit = (params) => {
     typeof onCreateContributes === 'function' && onCreateContributes(params);
   };
@@ -202,8 +203,8 @@ const Contribute = ({
   }, []);
   return (
     <>
-      <View style={styled.container}>
-        <Header style={styled.padding} />
+      <Header style={styled.padding} />
+      <View borderTop style={styled.container}>
         <ScrollView
           refreshControl={(
             <RefreshControl
@@ -220,7 +221,7 @@ const Contribute = ({
                 <View style={styled.padding}>
                   {!!error && <Text style={styled.warning}>{error}</Text>}
                   <ContributeButton onSubmit={onSubmit} />
-                  <NetworkFee feeStr={feeAmountStr} />
+                  {showFaucet && <NetworkFee feeStr={feeAmountStr} />}
                   <Extra />
                 </View>
               </>
@@ -231,7 +232,7 @@ const Contribute = ({
       <SuccessModal
         closeSuccessDialog={onClose}
         title={SUCCESS_MODAL.CREATE_POOL.title}
-        buttonTitle="Ok"
+        buttonTitle="OK"
         extraInfo={SUCCESS_MODAL.CREATE_POOL.desc}
         visible={visible}
       />
@@ -257,5 +258,6 @@ Contribute.propTypes = {
 
 export default compose(
   withLiquidity,
+  withLayout_2,
   withTransaction,
 )(memo(Contribute));

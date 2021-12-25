@@ -23,7 +23,6 @@ const HeaderNode = (props) => {
   return (
     <Header
       title={errorStorage ? '' : 'Power'}
-      style={{ paddingHorizontal: 25 }}
       rightHeader={RightButton}
     />
   );

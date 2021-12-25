@@ -1,7 +1,7 @@
 import { MAX_FEE_PER_TX } from '@components/EstimateFee/EstimateFee.utils';
 
 const HEADER_TABS = {
-  Add: 'Add',
+  Add: 'Contribute',
   Remove: 'Remove',
   Withdraw: 'Withdraw'
 };
@@ -26,7 +26,7 @@ const LIQUIDITY_TITLES = {
   ADD_POOL: {
     title: TYPE_LIQUIDITY.ADD_POOL,
     subTitle: 'Provide',
-    successTitle: 'Liquidity added',
+    successTitle: 'Liquidity contributed',
     successDesc: 'Please wait a few minutes for your\n' +
       'added liquidity to display.\n' +
       'Thanks for providing privacy.',
@@ -35,7 +35,7 @@ const LIQUIDITY_TITLES = {
   CREATE_POOL: {
     title: TYPE_LIQUIDITY.CREATE_POOL,
     subTitle: 'Provide',
-    successTitle: 'Liquidity added',
+    successTitle: 'Liquidity contributed',
     successDesc: 'Please wait a few minutes for your\n' +
       'added liquidity to display.\n' +
       'Thanks for providing privacy.',

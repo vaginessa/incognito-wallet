@@ -1,5 +1,6 @@
 import React, {memo} from 'react';
-import { Text, View, StyleSheet, ScrollView } from 'react-native';
+import { StyleSheet } from 'react-native';
+import { View, Text, ScrollViewBorder } from '@components/core';
 import { Header } from '@src/components';
 import { COLORS, FONT } from '@src/styles';
 import PropTypes from 'prop-types';
@@ -31,14 +32,14 @@ const HelperScreen = ({ title, contents, style }) => {
   };
 
   return (
-    <View style={styles.container}>
+    <>
       <Header title={title} />
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollViewBorder showsVerticalScrollIndicator={false}>
         <View style={[styles.wrapper, style]}>
           {renderContent()}
         </View>
-      </ScrollView>
-    </View>
+      </ScrollViewBorder>
+    </>
   );
 };
 

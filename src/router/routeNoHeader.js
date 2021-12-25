@@ -140,6 +140,9 @@ import PairList from '@screens/PDexV3/features/PairList';
 import MainTabBar from '@screens/MainTabBar';
 import More from '@screens/MainTabBar/features/More';
 import Market from '@screens/MainTabBar/features/Market';
+import { SelectOptionModal } from '@components/SelectOption';
+import { PrivacyAppsPancake } from '@screens/PDexV3/features/PrivacyApps';
+import MarketSearchCoins from '@screens/MainTabBar/features/Market/Market.searchCoins';
 
 const masterKeyRoutes = [
   {
@@ -323,6 +326,14 @@ const pDexV3Routes = [
   {
     screen: SelectTokenModal,
     name: routeNames.SelectTokenModal,
+  },
+  {
+    screen: PrivacyAppsPancake,
+    name: routeNames.PrivacyAppsPancake,
+  },
+  {
+    screen: MarketSearchCoins,
+    name: routeNames.MarketSearchCoins,
   },
 ];
 
@@ -698,6 +709,10 @@ const routes = [
     screen: WebView,
     name: routeNames.WebView,
   },
+  {
+    screen: SelectOptionModal,
+    name: routeNames.SelectOptionModal,
+  },
   ...masterKeyRoutes,
   ...devRoutes,
   ...pDexV3Routes,
@@ -706,7 +721,7 @@ const routes = [
 
 export const getRoutesNoHeader = () =>
   routes.reduce((result, route) => {
-    result[(route?.name)] = navigationOptionsHandler(route?.screen, {
+    result[route?.name] = navigationOptionsHandler(route?.screen, {
       header: () => null,
     });
     return result;

@@ -44,6 +44,8 @@ export const ACTION_RESET_ORDERS_HISTORY =
   '[pDexV3][orderLimit] Reset orders history';
 
 export const ROOT_TAB_SUB_INFO = 'ROOT_TAB_SUB_INFO';
-export const TAB_OPEN_ORDER = '[order_limit_sub_info] open order';
-export const TAB_ORDER_BOOK = '[order_limit_sub_info] order book';
-export const TAB_HISTORY_ID = '[order_limit_sub_info] history order';
+export const TAB_OPEN_ORDER = 'openOrders';
+export const TAB_ORDER_BOOK = 'orderBook';
+export const TAB_HISTORY_ID = 'ordersHistory';
+export const OPEN_ORDERS_STATE = 'openOrders';
+export const HISTORY_ORDERS_STATE = 'ordersHistory';

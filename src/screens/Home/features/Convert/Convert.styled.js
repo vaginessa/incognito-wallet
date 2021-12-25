@@ -26,11 +26,9 @@ const styles = StyleSheet.create({
     color: COLORS.orange,
     fontSize: 14,
     marginTop: -20,
-    marginBottom: 20,
   },
   warning: {
     ...FONT.STYLE.medium,
-    color: COLORS.orange,
     fontSize: 14,
     marginTop: -20,
     marginBottom: 20,
@@ -97,7 +95,6 @@ const styles = StyleSheet.create({
   },
   text: {
     ...TextStyle.normalText,
-    color: COLORS.black,
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.regular,
     marginTop: 15,
@@ -155,10 +152,10 @@ const styles = StyleSheet.create({
   log: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 25,
+    marginBottom: 20,
   },
   logIcon: {
-    marginRight: 15,
+    marginRight: 10,
     width: 20,
     height: 20,
     paddingTop: 3,
@@ -172,7 +169,6 @@ const styles = StyleSheet.create({
   stepText: {
     ...FONT.STYLE.medium,
     fontFamily: FONT.NAME.medium,
-    color: COLORS.newGrey,
     fontSize: FONT.SIZE.regular
   }
 });

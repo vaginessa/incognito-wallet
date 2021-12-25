@@ -7,10 +7,21 @@ import BackButton from '@components/BackButtonV2';
 import { useNavigation, useNavigationParam } from 'react-navigation-hooks';
 import { withLayout_2 } from '@components/Layout/index';
 import {Text, VirtualizedList} from 'react-native';
-import formatUtil from '@utils/format';
+import styled from 'styled-components/native';
+import globalStyled from '@src/theme/theme.styled';
 import TokenItem from './TokenItem';
 import styles from './style';
 import withTokenSelect from './enhance';
+
+const CustomTouchableOpacity = styled(TouchableOpacity)`
+  border-bottom-width: 1px;
+  border-bottom-color: ${({ theme }) => theme.border4};
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: row;
+  padding-top: 8px;
+  padding-bottom: 8px;
+`;
 
 const TokenSelect = ({
   tokens,
@@ -33,7 +44,7 @@ const TokenSelect = ({
       rightValue = token[rightField];
     }
     return (
-      <TouchableOpacity style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }} key={token.id} onPress={() => selectToken(token)}>
+      <CustomTouchableOpacity key={token.id} onPress={() => selectToken(token)}>
         <TokenItem
           symbol={token.symbol || token.displaySymbol}
           id={token.id}
@@ -45,13 +56,13 @@ const TokenSelect = ({
             <Text style={styles.tokenName} numberOfLines={2}>{rightValue}</Text>
           </View>
         )}
-      </TouchableOpacity>
+      </CustomTouchableOpacity>
     );
   };
 
   return (
-    <View style={[styles.container]}>
-      <View style={[styles.row]}>
+    <>
+      <View style={[styles.row, globalStyled.defaultPaddingHorizontal]}>
         <BackButton />
         <BaseTextInput
           placeholder={placeholder}
@@ -59,16 +70,18 @@ const TokenSelect = ({
           style={styles.input}
         />
       </View>
-      <VirtualizedList
-        data={tokens}
-        renderItem={renderTokenItem}
-        getItem={(data, index) => data[index]}
-        getItemCount={data => data.length}
-        keyExtractor={(item) => item.id}
-        showsVerticalScrollIndicator={false}
-        showsHorizontalScrollIndicator={false}
-      />
-    </View>
+      <View borderTop style={[styles.container]}>
+        <VirtualizedList
+          data={tokens}
+          renderItem={renderTokenItem}
+          getItem={(data, index) => data[index]}
+          getItemCount={data => data.length}
+          keyExtractor={(item) => item.id}
+          showsVerticalScrollIndicator={false}
+          showsHorizontalScrollIndicator={false}
+        />
+      </View>
+    </>
   );
 };
 

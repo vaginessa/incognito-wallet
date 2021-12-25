@@ -6,24 +6,30 @@ export default StyleSheet.create({
     marginVertical: 50,
   },
   buttonTitle: {
-    fontSize: 20,
-    ...FONT.STYLE.bold,
+    fontSize: FONT.SIZE.incognitoP2,
+    backgroundColor: '#404040',
+    minHeight: 24,
+    alignSelf: 'flex-start',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    borderRadius: 4,
+    paddingVertical: 4,
+    paddingHorizontal: 8,
+    marginVertical: 5,
   },
   error: {
     color: COLORS.red,
   },
   bold: {
     ...FONT.STYLE.bold,
-    color: COLORS.black,
   },
   content: {
-    ...FONT.STYLE.medium,
-    fontSize: 18,
+    ...FONT.TEXT.incognitoH2,
     marginTop: 5,
-    color: COLORS.lightGrey16,
   },
   historyItem: {
-    marginVertical: 30,
+    marginBottom: 30,
   },
   right: {
     textAlign: 'right',
@@ -34,11 +40,9 @@ export default StyleSheet.create({
   },
   extra: {
     ...FONT.STYLE.medium,
-    fontSize: 18,
+    fontSize: 16,
   },
   info: {
-    ...FONT.STYLE.bold,
-    color: COLORS.black,
-    fontSize: 18,
+    fontSize: 16,
   },
 });

@@ -24,13 +24,13 @@ const Home = ({ onRefresh }) => {
         styledTabs={mainStyle.tab1}
         styledTabList={mainStyle.styledTabList1}
       >
-        <View tabID={TABS.TAB_CONTRIBUTE_HISTORIES_ID} label="Add">
+        <View tabID={TABS.TAB_CONTRIBUTE_HISTORIES_ID} label="Contribute">
           <ContributeHistories />
         </View>
         <View tabID={TABS.TAB_REMOVE_POOL_HISTORIES_ID} label="Remove">
           <RemovePoolHistories />
         </View>
-        <View tabID={TABS.TAB_WITHDRAW_REWARD_HISTORIES_ID} label="Withdraw">
+        <View tabID={TABS.TAB_WITHDRAW_REWARD_HISTORIES_ID} label="Rewards">
           <WithdrawRewardHistories />
         </View>
       </Tabs>
@@ -43,6 +43,6 @@ Home.propTypes = {
 };
 
 export default compose(
-  withLayout_2,
   withHistories,
+  withLayout_2,
 )(memo(Home));

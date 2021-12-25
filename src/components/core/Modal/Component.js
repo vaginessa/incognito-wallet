@@ -1,10 +1,13 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Modal as RNComponent, Text } from 'react-native';
+import { Modal as RNComponent } from 'react-native';
 import { SafeAreaView } from 'react-navigation';
 import { Icon } from 'react-native-elements';
 import { COLORS } from '@src/styles';
-import { TouchableOpacity, View } from '..';
+import { View2 } from '@components/core/View';
+import { useSelector } from 'react-redux';
+import { colorsSelector } from '@src/theme/theme.selector';
+import { Text, TouchableOpacity, View } from '..';
 import styleSheet from './style';
 
 const Modal = ({
@@ -17,52 +20,56 @@ const Modal = ({
   closeOnBack,
   isShowHeader,
   ...otherProps
-}) => (
-  <RNComponent
-    transparent={transparent}
-    animationType="fade"
-    onRequestClose={closeOnBack && close}
-    {...otherProps}
-  >
-    <SafeAreaView
-      style={[
-        styleSheet.containerSafeView,
-        transparent && { backgroundColor: 'transparent' },
-      ]}
-      forceInset={{ bottom: 'never' }}
+}) => {
+  const colors = useSelector(colorsSelector);
+  return (
+    <RNComponent
+      transparent={transparent}
+      animationType="fade"
+      onRequestClose={closeOnBack && close}
+      {...otherProps}
     >
-      <View style={[styleSheet.container, containerStyle]}>
-        {isShowHeader && (close || headerText) && (
-          <View style={styleSheet.header}>
-            <TouchableOpacity onPress={close} style={styleSheet.closeBtn}>
-              <Icon
-                name="close"
-                type="material"
-                size={30}
-                color={COLORS.colorGreyBold}
-              />
-            </TouchableOpacity>
-            <Text
-              style={styleSheet.headerText}
-              numberOfLines={1}
-              ellipsizeMode="tail"
-            >
-              {headerText}
-            </Text>
-          </View>
-        )}
+      <SafeAreaView
+        style={[
+          styleSheet.containerSafeView,
+          transparent && { backgroundColor: 'transparent' },
+          { backgroundColor: colors.background2 }
+        ]}
+        forceInset={{ bottom: 'never' }}
+      >
+        <View style={[styleSheet.container, containerStyle]}>
+          {isShowHeader && (close || headerText) && (
+            <View2 style={styleSheet.header}>
+              <TouchableOpacity onPress={close} style={styleSheet.closeBtn}>
+                <Icon
+                  name="close"
+                  type="material"
+                  size={30}
+                  color={colors.text1}
+                />
+              </TouchableOpacity>
+              <Text
+                style={styleSheet.headerText}
+                numberOfLines={1}
+                ellipsizeMode="tail"
+              >
+                {headerText}
+              </Text>
+            </View2>
+          )}
 
-        {children}
-      </View>
-    </SafeAreaView>
-  </RNComponent>
-);
+          {children}
+        </View>
+      </SafeAreaView>
+    </RNComponent>
+  );
+};
 
 Modal.defaultProps = {
   children: null,
   close: null,
   containerStyle: null,
-  closeBtnColor: COLORS.colorGreyBold,
+  closeBtnColor: COLORS.white,
   isShowHeader: true,
   transparent: false,
   headerText: null,

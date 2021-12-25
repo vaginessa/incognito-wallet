@@ -12,8 +12,9 @@ import {
   createMasterKey,
   initMasterKey,
 } from '@src/redux/actions/masterKey';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import routeNames from '@routers/routeNames';
+import { colorsSelector } from '@src/theme/theme.selector';
 
 const styles = StyleSheet.create({
   desc: {
@@ -40,9 +41,6 @@ const styles = StyleSheet.create({
   wordStyle: {
     fontFamily: FONT.NAME.medium,
   },
-  selected: {
-    backgroundColor: COLORS.black2,
-  },
   selectedText: {
     color: COLORS.white,
   },
@@ -63,6 +61,7 @@ const VerifyPassphrase = () => {
   const [wordsIndex, setWordsIndex] = useState([]);
   const [error, setError] = useState('');
   const [creating, setCreating] = useState(false);
+  const colors = useSelector(colorsSelector);
   const dispatch = useDispatch();
 
   const displayWords = useMemo(() => {
@@ -139,7 +138,7 @@ const VerifyPassphrase = () => {
         {displayWords.map((word, index) => (
           <TouchableOpacity
             key={`${word}-${index}`}
-            style={[styles.word, wordsIndex.includes(index) && styles.selected]}
+            style={[styles.word, wordsIndex.includes(index) && {backgroundColor: colors.background9}, {borderColor: colors.border3}]}
             onPress={() => handleToggleWord(index)}
           >
             <Text

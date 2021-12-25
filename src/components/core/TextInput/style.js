@@ -19,10 +19,7 @@ const style = StyleSheet.create({
     borderBottomColor: COLORS.primary,
   },
   label: {
-    fontFamily: FONT.NAME.bold,
-    fontSize: FONT.SIZE.superMedium,
-    lineHeight: FONT.SIZE.superMedium + 4,
-    color: COLORS.black,
+    ...FONT.TEXT.formLabel
   },
   labelFocus: {
     color: COLORS.primary,
@@ -34,10 +31,7 @@ const style = StyleSheet.create({
   },
   input: {
     flex: 1,
-    fontFamily: FONT.NAME.medium,
-    fontSize: FONT.SIZE.superMedium,
-    lineHeight: FONT.SIZE.superMedium + 4,
-    color: COLORS.colorGreyBold,
+    ...FONT.TEXT.formInput,
     marginRight: 5,
     padding: 0,
   },
@@ -49,7 +43,7 @@ const style = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 10,
+    marginBottom: 8,
   },
 });
 

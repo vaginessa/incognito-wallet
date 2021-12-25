@@ -21,7 +21,6 @@ export const styled = StyleSheet.create({
   },
   boldText: {
     fontFamily: FONT.NAME.bold,
-    color: COLORS.black,
   },
   smallText: {
     fontSize: 13,
@@ -49,7 +48,6 @@ export const styled = StyleSheet.create({
     height: 40,
   },
   title: {
-    color: COLORS.black,
     fontSize: FONT.SIZE.medium,
     lineHeight: FONT.SIZE.medium + 7,
   },
@@ -126,7 +124,6 @@ export const styled = StyleSheet.create({
   },
 
   btnConnect: {
-    backgroundColor: COLORS.colorGrey,
     height: 40,
     paddingHorizontal: 15,
     width: '100%',
@@ -135,17 +132,10 @@ export const styled = StyleSheet.create({
     fontFamily: FONT.NAME.medium,
     fontSize: 15,
     lineHeight: 19,
-    color: COLORS.black,
     marginRight: 5,
-  },
-  connectHook: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   btnShield: {
     marginTop: 40,
-    backgroundColor: COLORS.black,
   },
   wrapMessage: {
     alignSelf: 'center',
@@ -165,6 +155,10 @@ export const styled = StyleSheet.create({
   unSelectBtn: {
     borderColor: COLORS.colorGreyLight,
   },
+  icon: {
+    marginTop: 2,
+    marginRight: 8,
+  },
   optionBtn: {
     flex: 1,
     height: 45,
@@ -183,7 +177,6 @@ export const styled = StyleSheet.create({
     alignItems: 'center'
   },
   textSelectBox: {
-    color: COLORS.colorGreyBold,
     fontFamily: FONT.NAME.specialMedium,
     fontSize: FONT.SIZE.regular,
     lineHeight: FONT.SIZE.medium + 4,

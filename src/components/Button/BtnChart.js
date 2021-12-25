@@ -1,13 +1,16 @@
 import React from 'react';
 import { TouchableOpacity, Image, StyleSheet } from 'react-native';
 import srcChartIcon from '@src/assets/images/new-icons/candle.png';
+import { Image1 } from '@components/core';
+import styled from 'styled-components/native';
 
-const styled = StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
-    width: 24,
-    height: 24,
+    width: 40,
+    height: 40,
     justifyContent: 'center',
     alignItems: 'center',
+    borderRadius: 20,
   },
   icon: {
     width: 20.7,
@@ -15,12 +18,16 @@ const styled = StyleSheet.create({
   },
 });
 
+const CustomTouchableOpacity = styled(TouchableOpacity)`
+  background-color: ${({ theme }) => theme.background1};
+`;
+
 const BtnChart = (props) => {
   const { style, ...rest } = props;
   return (
-    <TouchableOpacity style={[styled.container, style]} {...rest}>
-      <Image source={srcChartIcon} style={styled.icon} />
-    </TouchableOpacity>
+    <CustomTouchableOpacity style={[styles.container, style]} {...rest}>
+      <Image1 source={srcChartIcon} style={styles.icon} />
+    </CustomTouchableOpacity>
   );
 };
 

@@ -17,4 +17,8 @@ export const styled = StyleSheet.create({
   styledContainerName: {
     maxWidth: '100%',
   },
+  rightItem: {
+    height: 24,
+    width: 24
+  }
 });

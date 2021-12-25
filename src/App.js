@@ -17,6 +17,7 @@ import PropTypes from 'prop-types';
 import Performance from '@screens/Performance';
 import {devSelector} from '@screens/Dev';
 import {CONSTANT_KEYS} from '@src/constants';
+import { ThemeProvider } from '@src/theme/theme';
 import {MAIN_WEBSITE} from './constants/config';
 import LocalDatabase from './utils/LocalDatabase';
 import ModalConnection from './components/Modal/ModalConnection';
@@ -132,20 +133,22 @@ export const AppWrapper = (props) => () => {
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
-        <StatusBar currentScreen={currentScreen} />
-        <AppScreen>
-          <App {...{...props, currentScreen, setCurrentScreen}} />
-          {isShowDeviceLog && <DeviceLog />}
-          <QrScanner />
-          <Toast />
-          <ModalConnection
-            isVisible={false}
-            onPressSetting={() => {
-              openSettingApp();
-            }}
-            onPressOk={() => listenNetworkChanges()}
-          />
-        </AppScreen>
+        <ThemeProvider>
+          <StatusBar currentScreen={currentScreen} />
+          <AppScreen>
+            <App {...{...props, currentScreen, setCurrentScreen}} />
+            {isShowDeviceLog && <DeviceLog />}
+            <QrScanner />
+            <Toast />
+            <ModalConnection
+              isVisible={false}
+              onPressSetting={() => {
+                openSettingApp();
+              }}
+              onPressOk={() => listenNetworkChanges()}
+            />
+          </AppScreen>
+        </ThemeProvider>
       </PersistGate>
     </Provider>
   );

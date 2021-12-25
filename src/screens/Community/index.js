@@ -10,6 +10,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { COLORS } from '@src/styles';
 import { Keyboard } from 'react-native';
 import { isIOS } from '@utils/platform';
+import { View2 } from '@components/core/View';
 import styles from './style';
 
 const Community = ({ navigation, isFocused }) => {
@@ -135,26 +136,27 @@ const Community = ({ navigation, isFocused }) => {
   };
 
   return (
-    <View style={styles.container}>
+    <View2 style={styles.container}>
       <Header title="Community" style={{ paddingLeft: 20 }} />
-      <WebView
-        key={`${url}`}
-        startInLoadingState
-        onLoadEnd={(data) => {
-          setLoading(false);
-        }}
-        onShouldStartLoadWithRequest={event => {
-          if (event.url.startsWith('http')) {
-            return true;
-          }
-          return false;
-        }}
-        userAgent="Mozilla/5.0 (iPhone; CPU iPhone OS 10_3 like Mac OS X) AppleWebKit/602.1.50 (KHTML, like Gecko) CriOS/56.0.2924.75 Mobile/14E5239e Safari/602.1"
-        source={{ uri: url }}
-        ref={webViewRef}
-        useWebKit
-        onNavigationStateChange={stateHandler}
-        injectedJavaScript={`
+      <View fullFlex borderTop style={{ overflow: 'hidden' }}>
+        <WebView
+          key={`${url}`}
+          startInLoadingState
+          onLoadEnd={(data) => {
+            setLoading(false);
+          }}
+          onShouldStartLoadWithRequest={event => {
+            if (event.url.startsWith('http')) {
+              return true;
+            }
+            return false;
+          }}
+          userAgent="Mozilla/5.0 (iPhone; CPU iPhone OS 10_3 like Mac OS X) AppleWebKit/602.1.50 (KHTML, like Gecko) CriOS/56.0.2924.75 Mobile/14E5239e Safari/602.1"
+          source={{ uri: url }}
+          ref={webViewRef}
+          useWebKit
+          onNavigationStateChange={stateHandler}
+          injectedJavaScript={`
         (function() {
           function wrap(fn) {
             return function wrapper() {
@@ -173,17 +175,17 @@ const Community = ({ navigation, isFocused }) => {
       
         true;
       `}
-        onMessage={async ({ nativeEvent: state }) => {
-          if (state.data === 'navigationStateChange') {
-            if (typeof state?.url === 'string' && state.url.includes(MAIN_WEBSITE)) {
-              await LocalDatabase.setUriWebviewCommunity(state?.url);
+          onMessage={async ({ nativeEvent: state }) => {
+            if (state.data === 'navigationStateChange') {
+              if (typeof state?.url === 'string' && state.url.includes(MAIN_WEBSITE)) {
+                await LocalDatabase.setUriWebviewCommunity(state?.url);
+              }
             }
-          }
-        }}
-      />
-      {/* {loading && <ActivityIndicator style={styles.loading} />} */}
-      {/* No need to add back button here */}
-      {/* {backable && (
+          }}
+        />
+        {/* {loading && <ActivityIndicator style={styles.loading} />} */}
+        {/* No need to add back button here */}
+        {/* {backable && (
         <TouchableOpacity onPress={goBack} style={styles.backBtn}>
           <Image
             style={{
@@ -196,8 +198,9 @@ const Community = ({ navigation, isFocused }) => {
           />
         </TouchableOpacity>
       )} */}
+      </View>
       {showBottomBar && renderBottomBar()}
-    </View>
+    </View2>
   );
 };
 

@@ -33,21 +33,15 @@ const style = StyleSheet.create({
     marginHorizontal: 30,
   },
   text: {
-    fontFamily: FONT.NAME.medium,
-    fontSize: FONT.SIZE.medium,
-    lineHeight: FONT.SIZE.medium + 3,
-    color: COLORS.colorGreyBold,
+    ...FONT.TEXT.formInput,
     marginVertical: 10,
   },
   label: {
-    fontFamily: FONT.NAME.bold,
-    fontSize: FONT.SIZE.superMedium,
-    lineHeight: FONT.SIZE.superMedium + 4,
-    color: COLORS.black,
+    ...FONT.TEXT.formLabel,
   },
   circle: {
-    width: 60,
-    height: 60,
+    width: 50,
+    height: 50,
     borderRadius: 30,
     backgroundColor: COLORS.colorGrey,
   },
@@ -58,9 +52,8 @@ const style = StyleSheet.create({
     justifyContent: 'center',
   },
   chooseFile: {
+    ...FONT.TEXT.formInput,
     fontFamily: FONT.NAME.bold,
-    fontSize: FONT.SIZE.medium,
-    color: COLORS.colorGreyBold,
     marginRight: 10,
   },
   hook: {

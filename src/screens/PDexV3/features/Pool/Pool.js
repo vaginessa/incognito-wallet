@@ -1,19 +1,22 @@
 import { Row } from '@src/components';
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   actionToggleFollowingPool,
   getDataByPoolIdSelector,
 } from '@screens/PDexV3/features/Pools';
 import PropTypes from 'prop-types';
-import { TouchableOpacity } from '@src/components/core';
+import { Text, TouchableOpacity } from '@src/components/core';
 import { BtnStar } from '@src/components/Button';
+import TwoTokenImage from '@screens/PDexV3/features/Portfolio/Portfolio.image';
+import { colorsSelector } from '@src/theme';
 import { styled } from './Pool.styled';
 
 export const PoolItem = React.memo((props) => {
-  const { poolId, onPressPool, style } = props;
+  const { poolId, onPressPool, style, isLast } = props;
   const data = useSelector(getDataByPoolIdSelector)(poolId);
+  const colors = useSelector(colorsSelector);
   if (!data) {
     return null;
   }
@@ -21,6 +24,8 @@ export const PoolItem = React.memo((props) => {
     isFollowed,
     poolTitle,
     apyStr,
+    token1,
+    token2
   } = data || {};
 
   const dispatch = useDispatch();
@@ -29,11 +34,12 @@ export const PoolItem = React.memo((props) => {
   return (
     <TouchableOpacity
       onPress={() => typeof onPressPool === 'function' && onPressPool(poolId)}
-      style={[styled.container, style]}
+      style={[styled.container, isLast && { marginBottom: 70 }, { borderBottomWidth: 1, borderBottomColor: colors.border4 }, style]}
     >
-      <Row>
+      <Row centerVertical>
+        <TwoTokenImage iconUrl1={token1.iconUrl} iconUrl2={token2.iconUrl} />
         <View style={styled.block1}>
-          <Row style={styled.rowName}>
+          <Row style={styled.rowName} centerVertical>
             <Text style={styled.name}>{poolTitle}</Text>
           </Row>
           {/*<Text style={styled.subText}>{`Vol: ${volumeSuffixStr}`}</Text>*/}
@@ -50,20 +56,22 @@ export const PoolItem = React.memo((props) => {
 });
 
 const Pool = (props) => {
-  const { poolId, onPressPool } = props;
+  const { poolId, onPressPool, isLast } = props;
   if (!poolId) {
     return null;
   }
-  return <PoolItem poolId={poolId} onPressPool={onPressPool} />;
+  return <PoolItem poolId={poolId} onPressPool={onPressPool} isLast={isLast} />;
 };
 
 Pool.defaultProps = {
   onPressPool: null,
+  isLast: false,
 };
 
 Pool.propTypes = {
   poolId: PropTypes.string.isRequired,
   onPressPool: PropTypes.func,
+  isLast: PropTypes.bool,
 };
 
 PoolItem.defaultProps = {
@@ -75,6 +83,7 @@ PoolItem.propTypes = {
   poolId: PropTypes.string.isRequired,
   onPressPool: PropTypes.func,
   style: PropTypes.object,
+  isLast: PropTypes.bool.isRequired
 };
 
 export default React.memo(Pool);

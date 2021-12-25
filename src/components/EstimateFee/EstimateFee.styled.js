@@ -9,13 +9,11 @@ export const styled = StyleSheet.create({
     fontFamily: FONT.NAME.bold,
     fontSize: FONT.SIZE.superMedium,
     lineHeight: FONT.SIZE.superMedium + 4,
-    color: COLORS.black,
   },
   feeText: {
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.superMedium,
     lineHeight: FONT.SIZE.superMedium + 4,
-    color: COLORS.black,
   },
   spFeeContainer: {
     flexDirection: 'row',
@@ -30,10 +28,9 @@ export const styled = StyleSheet.create({
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.superMedium,
     lineHeight: FONT.SIZE.superMedium + 4,
-    color: COLORS.colorGreyBold,
   },
   isActived: {
-    color: COLORS.black,
+    // color: COLORS.white,
   },
   tail: {
     marginRight: 0,

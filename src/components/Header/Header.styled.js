@@ -1,11 +1,13 @@
 import { StyleSheet } from 'react-native';
-import { FONT, COLORS } from '@src/styles';
+import { FONT } from '@src/styles';
+import globalStyled from '@src/theme/theme.styled';
 
 export const styled = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
-    height: 50,
+    height: 64,
+    paddingHorizontal: globalStyled.defaultPadding.paddingHorizontal,
   },
 });
 
@@ -16,14 +18,10 @@ export const styledHeaderTitle = StyleSheet.create({
     flexDirection: 'row',
   },
   title: {
-    fontFamily: FONT.NAME.specialMedium,
-    fontSize: FONT.SIZE.medium,
-    lineHeight: FONT.SIZE.medium + 4,
-    color: COLORS.black,
+    ...FONT.TEXT.incognitoH4,
   },
   searchStyled: {
     textTransform: 'none',
-    color: COLORS.colorGreyMedium,
     maxWidth: '100%',
   },
   containerTitle: {},

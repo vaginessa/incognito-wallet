@@ -21,12 +21,12 @@ export const TYPES = {
 };
 
 export const LIQUIDITY_MESSAGES = {
-  addLiquidity: 'Add liquidity',
-  createPool : 'Create liquidity',
+  addLiquidity: 'Contribute liquidity',
+  createPool : 'Contribute liquidity',
   removePool : 'Remove liquidity',
   estRate: (onPress) => (
-    <Text style={styled.warning}>the exchange rate of two tokens is wrong, click here to get suggested&nbsp;
-      <Text style={{textDecorationLine: 'underline' }} onPress={onPress}>rate</Text>.
+    <Text style={styled.warning}>Are you sure? This varies significantly from normal market rates.&nbsp;
+      <Text style={{textDecorationLine: 'underline' }} onPress={onPress}>Switch to market rate.</Text>
     </Text>
   )
 };
@@ -51,15 +51,15 @@ export const formConfigsRemovePool = {
 
 export const SUCCESS_MODAL = {
   ADD_POOL: {
-    title: 'Liquidity added',
-    desc: 'Please wait a few minutes for your added liquidity to display.'
+    title: 'Liquidity contributed',
+    desc: 'Please wait a few minutes for your contribution to display.'
   },
   CREATE_POOL: {
-    title: 'Liquidity added',
-    desc: 'Please wait a few minutes for your added liquidity to display.'
+    title: 'Liquidity contributed',
+    desc: 'Please wait a few minutes for your contribution to display.'
   },
   REMOVE_POOL: {
-    title: 'Remove added',
-    desc: 'Please wait a few minutes for your added remove pool to display.'
+    title: 'Remove liquidity contribution',
+    desc: 'Please wait a few minutes for your pool balance to update.'
   }
 };

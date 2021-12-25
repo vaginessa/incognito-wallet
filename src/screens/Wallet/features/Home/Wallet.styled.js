@@ -1,10 +1,11 @@
 import { StyleSheet } from 'react-native';
 import { FONT, COLORS } from '@src/styles';
+import globalStyled from '@src/theme/theme.styled';
+import { isIOS } from '@utils/platform';
 
 export const styled = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.white,
   },
 });
 
@@ -19,7 +20,6 @@ export const headerStyled = StyleSheet.create({
     position: 'absolute',
     width: 8,
     height: 8,
-    backgroundColor: COLORS.blue5,
     right: 15,
     borderRadius: 4
   },
@@ -27,40 +27,31 @@ export const headerStyled = StyleSheet.create({
 
 export const styledBalance = StyleSheet.create({
   container: {
-    marginTop: 16,
-    justifyContent: 'center',
-    alignItems: 'center',
+    marginTop: 32,
   },
   title: {
     fontFamily: FONT.NAME.regular,
     fontSize: FONT.SIZE.small,
     lineHeight: FONT.SIZE.small + 7,
-    color: COLORS.lightGrey36,
   },
   balance: {
     fontFamily: FONT.NAME.medium,
-    fontSize: FONT.SIZE.superLarge,
-    lineHeight: FONT.SIZE.superLarge + 12,
-    color: COLORS.black,
+    fontSize: FONT.SIZE.veryLarge,
+    lineHeight: FONT.SIZE.veryLarge + 10,
     maxWidth: '85%',
     height: '100%',
-    textAlign: 'center'
   },
   pSymbol: {
     fontFamily: FONT.NAME.specialRegular,
-    fontSize: FONT.SIZE.superLarge,
-    lineHeight: FONT.SIZE.superLarge + 12,
-    color: COLORS.black,
+    fontSize: FONT.SIZE.veryLarge,
+    lineHeight: FONT.SIZE.veryLarge + 10,
     height: '100%',
   },
   balanceContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    textAlign: 'center',
     width: '100%',
   },
   wrapBalance: {
-    minHeight: FONT.SIZE.superLarge + 12,
+    minHeight: FONT.SIZE.veryLarge + 10,
   },
   iconHide: {
     marginLeft: 5
@@ -121,8 +112,10 @@ export const groupButtonStyled = StyleSheet.create({
 
 export const tokenStyled = StyleSheet.create({
   container: {
+    ...globalStyled.defaultPaddingHorizontal,
     flexDirection: 'row',
     alignItems: 'center',
+    marginVertical: 16
   },
   wrapFirst: {
     flex: 1,
@@ -132,7 +125,7 @@ export const tokenStyled = StyleSheet.create({
   wrapSecond: {
     flex: 1,
     alignItems: 'flex-end',
-    height: '100%'
+    // height: '100%'
   },
   wrapThird: {
     flex: 1,
@@ -140,18 +133,17 @@ export const tokenStyled = StyleSheet.create({
   rowHeight: {
     height: FONT.SIZE.regular + 8,
   },
-  blackText: {
+  mainText: {
     ...FONT.STYLE.medium,
     fontSize: FONT.SIZE.medium,
     lineHeight: FONT.SIZE.medium + 7,
     textAlign: 'left',
-    color: COLORS.black
+    marginBottom: isIOS() ? 0 : 5
   },
   grayText: {
     ...FONT.STYLE.medium,
     fontSize: FONT.SIZE.small,
     lineHeight: FONT.SIZE.small + 5,
-    color: COLORS.lightGrey36
   },
   centerVertical: {
     justifyContent: 'center'
@@ -177,17 +169,5 @@ export const tokenStyled = StyleSheet.create({
 
 export const styledAddToken = StyleSheet.create({
   container: {
-    paddingVertical: 10,
-    paddingHorizontal: 24,
-    position: 'absolute',
-    bottom: 0,
-    left: -25,
-    backgroundColor: COLORS.white,
-    borderTopRightRadius: 8,
-  },
-  title: {
-    fontFamily: FONT.NAME.medium,
-    fontSize: FONT.SIZE.regular,
-    color: COLORS.black,
   },
 });

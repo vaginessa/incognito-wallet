@@ -1,5 +1,5 @@
 import React, {memo} from 'react';
-import {RefreshControl, ScrollView, Text, View} from 'react-native';
+import { ScrollView, Text } from 'react-native';
 import PropTypes from 'prop-types';
 import {styled as mainStyle} from '@screens/PDexV3/PDexV3.styled';
 import {Header, RowSpaceText, SuccessModal} from '@src/components';
@@ -9,7 +9,7 @@ import {
   SUCCESS_MODAL,
 } from '@screens/PDexV3/features/Liquidity/Liquidity.constant';
 import {createForm, RFTradeInputAmount as TradeInputAmount, validator} from '@components/core/reduxForm';
-import {AddBreakLine} from '@components/core';
+import { AddBreakLine, View, RefreshControl } from '@components/core';
 import {useDispatch, useSelector} from 'react-redux';
 import {change, Field, focus, getFormSyncErrors} from 'redux-form';
 import withLiquidity from '@screens/PDexV3/features/Liquidity/Liquidity.enhance';
@@ -23,6 +23,9 @@ import {useNavigation} from 'react-navigation-hooks';
 import routeNames from '@routers/routeNames';
 import NetworkFee from '@src/components/NetworkFee';
 import {actionToggleModal} from '@components/Modal';
+import { withLayout_2 } from '@components/Layout';
+import SelectedPrivacy from '@models/selectedPrivacy';
+import { formConfigs } from '@screens/PDexV3/features/Swap';
 
 const initialFormValues = {
   inputToken: '',
@@ -72,13 +75,9 @@ const InputsGroup = () => {
   }), [focusField, isTyping, inputToken.loadingBalance, outputToken.loadingBalance]);
 
   const onSelectSymbol = (callback, tokens) => {
-    navigation.navigate(routeNames.TokenSelectScreen, {
-      onSelectToken: callback,
-      tokens: tokens.map(coin => ({
-        ...coin,
-        id: coin.tokenId,
-      })),
-      placeholder: 'Search coins',
+    navigation.navigate(routeNames.SelectTokenModal, {
+      data: tokens,
+      onPress: callback
     });
   };
 
@@ -113,6 +112,7 @@ const InputsGroup = () => {
         onPressSymbol={() => {
           if (loading.input) return;
           onSelectSymbol(((token) => {
+            console.log('SANG TEST:::: ', token);
             setTimeout(() =>
               dispatch(liquidityActions.actionUpdateCreatePoolInputToken(token.tokenId)),
             300);
@@ -169,7 +169,7 @@ const ButtonCreatePool = React.memo(({ onSubmit }) => {
   const amountSelector = useSelector(createPoolSelector.inputAmountSelector);
   const inputAmount = amountSelector(formConfigsCreatePool.formName, formConfigsCreatePool.inputToken);
   const outputAmount = amountSelector(formConfigsCreatePool.formName, formConfigsCreatePool.outputToken);
-  const { feeAmount, feeAmountStr } = useSelector(createPoolSelector.feeAmountSelector);
+  const { feeAmount, feeAmountStr, showFaucet } = useSelector(createPoolSelector.feeAmountSelector);
   const { amp, estOutputStr } = useSelector(createPoolSelector.ampValueSelector);
   const formErrors = useSelector((state) =>
     getFormSyncErrors(formConfigsCreatePool.formName)(state),
@@ -219,7 +219,7 @@ const ButtonCreatePool = React.memo(({ onSubmit }) => {
         title={LIQUIDITY_MESSAGES.createPool}
         onPress={handleSubmit}
       />
-      <NetworkFee feeStr={feeAmountStr} />
+      {showFaucet && <NetworkFee feeStr={feeAmountStr} />}
     </>
   );
 });
@@ -258,8 +258,8 @@ const CreatePool = ({
   }, []);
   return (
     <>
-      <View style={styled.container}>
-        <Header style={styled.padding} />
+      <Header style={styled.padding} />
+      <View borderTop style={styled.container}>
         <ScrollView
           refreshControl={(<RefreshControl refreshing={isFetching} onRefresh={onInitCreatePool} />)}
           showsVerticalScrollIndicator={false}
@@ -272,7 +272,7 @@ const CreatePool = ({
       <SuccessModal
         closeSuccessDialog={onClose}
         title={SUCCESS_MODAL.ADD_POOL.title}
-        buttonTitle="Ok"
+        buttonTitle="OK"
         extraInfo={SUCCESS_MODAL.ADD_POOL.desc}
         visible={visible}
       />
@@ -299,5 +299,6 @@ ButtonCreatePool.propTypes = {
 
 export default compose(
   withLiquidity,
+  withLayout_2,
   withTransaction,
 )(memo(CreatePool));

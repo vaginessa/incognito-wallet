@@ -3,6 +3,9 @@ import { View, Text, StyleSheet, TextInput } from 'react-native';
 import PropTypes from 'prop-types';
 import { BtnMax } from '@src/components/Button';
 import { COLORS, FONT } from '@src/styles';
+
+import { colorsSelector } from '@src/theme/theme.selector';
+import { useSelector } from 'react-redux';
 import { commonStyled as styled } from './input.styled';
 
 const inputStyled = StyleSheet.create({
@@ -15,7 +18,6 @@ const inputStyled = StyleSheet.create({
     fontFamily: FONT.NAME.specialMedium,
     fontSize: FONT.SIZE.medium,
     lineHeight: FONT.SIZE.medium + 4,
-    color: COLORS.black,
     padding: 0,
   },
 });
@@ -37,6 +39,7 @@ const Input = React.forwardRef((props, ref) => {
     isFocused: false,
   });
   const { isFocused } = state;
+  const colors = useSelector(colorsSelector);
   const onFocus = () => {
     setState({ ...state, isFocused: true });
     if (typeof rest.onFocus === 'function') {
@@ -72,7 +75,11 @@ const Input = React.forwardRef((props, ref) => {
         <TextInput
           {...rest}
           ref={ref}
-          style={[inputStyled.input, rest.style ? rest.style : null]}
+          style={[
+            inputStyled.input,
+            rest.style ? rest.style : null,
+            { color: colors.text1 },
+          ]}
           onFocus={onFocus}
           onBlur={onBlur}
           autoCapitalize="none"
@@ -81,6 +88,7 @@ const Input = React.forwardRef((props, ref) => {
           autoCompleteType="off"
           autoCorrect={false}
           allowFontScaling={false}
+          placeholderTextColor={colors.subText}
         />
         {inputMax.visible && <BtnMax onPress={inputMax.handleShowMax} />}
       </View>

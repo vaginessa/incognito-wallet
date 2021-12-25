@@ -116,7 +116,7 @@ export const getBalanceFinish = (tokenSymbol) => ({
 });
 
 export const getBalance = (tokenId) => async (dispatch, getState) => {
-  new Validator('tokenId', tokenId).required().string();
+  new Validator('getTokenBalance-tokenId', tokenId).required().string();
   const state = getState();
   const wallet = walletSelector(state);
   const account = accountSelector.defaultAccountSelector(state);

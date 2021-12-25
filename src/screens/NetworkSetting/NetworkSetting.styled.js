@@ -18,7 +18,7 @@ export const networkItemStyle = StyleSheet.create({
     flex: 1,
     opacity: 0.3,
     flexDirection: 'row',
-    marginBottom: 30,
+    marginBottom: 25,
   },
   editContainer: {
     marginBottom: SPACING.large,
@@ -37,16 +37,14 @@ export const networkItemStyle = StyleSheet.create({
     justifyContent: 'space-between',
   },
   networkName: {
-    fontSize: FONT.SIZE.superMedium,
-    lineHeight: FONT.SIZE.superMedium + 4,
-    color: COLORS.black,
+    fontSize: FONT.SIZE.medium,
+    lineHeight: FONT.SIZE.medium + 4,
     fontFamily: FONT.NAME.bold,
     marginBottom: 10,
   },
   networkAddr: {
     fontSize: FONT.SIZE.regular,
     lineHeight: FONT.SIZE.regular + 3,
-    color: COLORS.colorGreyBold,
     fontFamily: FONT.NAME.medium,
   },
   textInfoContainer: {
@@ -58,7 +56,6 @@ export const networkItemStyle = StyleSheet.create({
     width: 10,
     height: 10,
     borderRadius: 5,
-    backgroundColor: COLORS.black,
     marginTop: 8,
   },
 });

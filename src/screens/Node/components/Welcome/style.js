@@ -21,7 +21,6 @@ const style = StyleSheet.create({
     justifyContent: 'flex-start'
   },
   pNode: {
-    backgroundColor: COLORS.white,
     paddingBottom: 150,
   },
   pNodeImg: {
@@ -38,7 +37,6 @@ const style = StyleSheet.create({
   },
   buyText: {
     textAlign: 'left',
-    color: COLORS.black,
     fontFamily: FONT.NAME.bold,
     fontSize: FONT.SIZE.superMedium,
     lineHeight: 20,
@@ -46,7 +44,6 @@ const style = StyleSheet.create({
   },
   getNode: {
     textAlign: 'left',
-    color: COLORS.newGrey,
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.medium,
     lineHeight: 18,

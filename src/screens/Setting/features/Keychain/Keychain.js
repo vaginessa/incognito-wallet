@@ -1,11 +1,11 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { useSelector } from 'react-redux';
 import { useNavigation } from 'react-navigation-hooks';
 import { settingSelector } from '@screens/Setting/Setting.selector';
 import AccountSection from '@screens/Setting/features/AccountSection';
 import routeNames from '@src/router/routeNames';
-import { Text } from '@src/components/core';
+import { Text, View } from '@src/components/core';
 import { SectionItem } from '@screens/Setting/features/Section';
 import {
   currentMasterKeySelector,
@@ -13,13 +13,15 @@ import {
 } from '@src/redux/selectors/masterKey';
 import MainLayout from '@components/MainLayout';
 import { THEME } from '@src/styles';
+import globalStyled from '@src/theme/theme.styled';
 import withKeychain from './Keychain.enhance';
 import RightBtn from './RightBtn';
 import BtnInfo from './BtnInfo';
 
 const styled = StyleSheet.create({
   extra: {
-    paddingHorizontal: 25,
+    paddingHorizontal: globalStyled.defaultPadding.paddingHorizontal,
+    backgroundColor: 'red',
   },
   warning: {
     lineHeight: 24,

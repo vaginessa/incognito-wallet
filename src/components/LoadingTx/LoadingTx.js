@@ -10,9 +10,11 @@ import { useSelector } from 'react-redux';
 import { defaultAccountSelector } from '@src/redux/selectors/account';
 import { walletSelector } from '@src/redux/selectors/wallet';
 import BtnClose from '@src/components/Button/BtnClose';
+import { colorsSelector } from '@src/theme';
 import styleSheet from './style';
 
 const LoadingTx = (props) => {
+  const colors = useSelector(colorsSelector);
   const account = props?.account || useSelector(defaultAccountSelector);
   const wallet = props?.wallet || useSelector(walletSelector);
   const initialState = {
@@ -47,7 +49,7 @@ const LoadingTx = (props) => {
   const renderModalContent = () => {
     return (
       <View style={styleSheet.container}>
-        <View style={styleSheet.wrapper}>
+        <View style={[styleSheet.wrapper, { backgroundColor: colors.grey7 }]}>
           {percent === 100 && (
             <BtnClose
               style={styleSheet.btnClose}
@@ -55,7 +57,7 @@ const LoadingTx = (props) => {
               size={20}
             />
           )}
-          <ActivityIndicator size="large" color={COLORS.black} />
+          <ActivityIndicator size="large" />
           <Text style={styleSheet.percent}>{`${displayPercent}%`}</Text>
           {!!text && (
             <Text style={[styleSheet.desc, styleSheet.extraDesc]}>{text}</Text>

@@ -1,5 +1,5 @@
 import React, { memo } from 'react';
-import { StyleSheet, View, ScrollView, Text } from 'react-native';
+import { StyleSheet, View, ScrollView } from 'react-native';
 import { COLORS, FONT } from '@src/styles';
 import { batch, useDispatch, useSelector } from 'react-redux';
 import { getDataByShareIdSelector } from '@screens/PDexV3/features/Portfolio/Portfolio.selector';
@@ -9,12 +9,16 @@ import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@routers/routeNames';
 import { Row } from '@src/components';
 import { actionToggleModal } from '@components/Modal';
-import { BtnSecondary, BtnPrimary } from '@components/core/Button';
+import { BtnPrimary, BtnSecondary } from '@components/core/Button';
 import PropTypes from 'prop-types';
+import { Text } from '@components/core';
+import { colorsSelector } from '@src/theme';
+import TwoTokenImage from '@screens/PDexV3/features/Portfolio/Portfolio.image';
 
 const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
+    paddingTop: 16
   },
   content: {
     flex: 1,
@@ -23,19 +27,18 @@ const styles = StyleSheet.create({
     ...FONT.STYLE.medium,
     fontSize: FONT.SIZE.medium,
     lineHeight: FONT.SIZE.medium + 9,
-    color: '#101111',
+    marginLeft: 6
   },
   btnText: {
     ...FONT.STYLE.medium,
-    color: COLORS.lightGrey34,
     fontSize: FONT.SIZE.small,
   },
   btnSmall: {
-    height: 28,
-    width: 125,
+    height: 24,
+    width: 75,
     marginLeft: 5,
     borderRadius: 14,
-    backgroundColor: COLORS.lightGrey19,
+    marginBottom: 0
   },
   row: {
     alignItems: 'center',
@@ -48,13 +51,11 @@ const styles = StyleSheet.create({
     fontFamily: FONT.NAME.medium,
   },
   leftText: {
-    color: COLORS.lightGrey34,
     fontSize: FONT.SIZE.small,
     lineHeight: FONT.SIZE.small + 7,
     fontFamily: FONT.NAME.medium,
   },
   rightText: {
-    color: COLORS.black,
     fontSize: FONT.SIZE.small,
     lineHeight: FONT.SIZE.small + 7,
     fontFamily: FONT.NAME.medium,
@@ -64,9 +65,10 @@ const styles = StyleSheet.create({
   },
 });
 
-const PortfolioModal = ({ shareId, onWithdrawFeeLP }) => {
+const PortfolioModal = ({ shareId, onWithdrawFeeLP, showRemove = true }) => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
+  const colors = useSelector(colorsSelector);
   const data = useSelector(getDataByShareIdSelector)(shareId);
   const onClose = () => dispatch(actionToggleModal());
   const onWithdrawPress = () => {
@@ -101,23 +103,28 @@ const PortfolioModal = ({ shareId, onWithdrawFeeLP }) => {
     }, 500);
   };
   if (!data) return null;
-  const { withdrawable, withdrawing, validNFT, disableBtn, share } = data;
+  const { withdrawable, withdrawing, validNFT, disableBtn, share, } = data;
   const { hookFactoriesDetail, token1, token2 } = data || {};
   return (
     <View style={styles.wrapper}>
       <View style={styles.content}>
         <Row style={styles.row} centerVertical>
-          <Text
-            style={styles.title}
-          >{`${token1.symbol} / ${token2.symbol}`}
-          </Text>
-          <BtnPrimary
-            title="Remove liquidity"
-            textStyle={styles.btnText}
-            wrapperStyle={styles.btnSmall}
-            onPress={onWithdrawPress}
-            disabled={disableBtn || !share}
-          />
+          <Row centerVertical>
+            <TwoTokenImage iconUrl1={token1.iconUrl} iconUrl2={token2.iconUrl} />
+            <Text
+              style={[styles.title, { marginLeft: 0 }]}
+            >{`${token1.symbol} / ${token2.symbol}`}
+            </Text>
+          </Row>
+          {showRemove && (
+            <BtnPrimary
+              title="Remove"
+              textStyle={[styles.btnText, { color: colors.background10 }]}
+              wrapperStyle={[styles.btnSmall, { backgroundColor: colors.background4 }]}
+              onPress={onWithdrawPress}
+              disabled={disableBtn || !share}
+            />
+          )}
         </Row>
         <ScrollView
           style={styles.scrollView}
@@ -127,8 +134,8 @@ const PortfolioModal = ({ shareId, onWithdrawFeeLP }) => {
             <Hook
               key={hook?.label}
               {...hook}
-              labelStyle={styles.leftText}
-              valueTextStyle={styles.rightText}
+              labelStyle={[styles.leftText, { color: colors.text3 }]}
+              valueTextStyle={[styles.rightText, { color: colors.text1 }]}
               style={styles.wrapHook}
             />
           ))}
@@ -146,16 +153,16 @@ const PortfolioModal = ({ shareId, onWithdrawFeeLP }) => {
               onPress={onClaimReward}
               wrapperStyle={[{ flex: 1 }, !!share && { marginRight: 8 }]}
               textStyle={{ color: COLORS.colorBlue }}
-              background={COLORS.colorBlue}
               disabled={withdrawing || disableBtn}
             />
           )}
           {!!share && (
             <BtnPrimary
-              title="Invest more"
+              title="Contribute more"
               onPress={onInvestPress}
               wrapperStyle={{ flex: 1 }}
               background={COLORS.colorBlue}
+              disabled={!validNFT}
             />
           )}
         </Row>

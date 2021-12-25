@@ -13,10 +13,13 @@ import ExtraInfo from '@screens/DexV2/components/ExtraInfo';
 import formatUtil from '@utils/format';
 import { BtnInfinite } from '@components/Button/index';
 import convertUtil from '@utils/convert';
+import globalStyled from '@src/theme/theme.styled';
+import { Text4 } from '@src/components/core/Text';
 import withCoinData from './coin.enhance';
 import withConfirm from './confirm.enhance';
 import withSuccess from './success.enhance';
 import styles from './style';
+import { Line } from '../../Provide/Input';
 
 const Provide = ({
   coin,
@@ -34,9 +37,10 @@ const Provide = ({
   };
 
   return (
-    <View style={mainStyle.flex}>
+    <>
       <Header title={`Withdraw ${coin.symbol} provision`} />
-      <View style={mainStyle.coinContainer}>
+      <View style={[mainStyle.coinContainerNoMargin, globalStyled.defaultPadding2]} borderTop>
+        <Text4 style={mainStyle.label}>Amount</Text4>
         <Row center spaceBetween style={mainStyle.inputContainer}>
           <BaseTextInput
             style={mainStyle.input}
@@ -50,6 +54,7 @@ const Provide = ({
             onPress={handleMax}
           />
         </Row>
+        <Line />
         <Text style={mainStyle.error}>{error}</Text>
         <RoundCornerButton
           title="Withdraw provisions"
@@ -68,7 +73,7 @@ const Provide = ({
         </Text>
       </View>
       <Loading open={withdrawing} />
-    </View>
+    </>
   );
 };
 

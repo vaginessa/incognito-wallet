@@ -1,9 +1,10 @@
 import React from 'react';
 import Swipeout from 'react-native-swipeout';
 import { BtnDelete } from '@src/components/Button';
-import { TouchableOpacity } from '@src/components/core';
-import { View, Text, StyleSheet } from 'react-native';
-import { FONT, COLORS } from '@src/styles';
+import { TouchableOpacity, View, Text } from '@src/components/core';
+import { Text4 } from '@src/components/core/Text';
+import {  StyleSheet } from 'react-native';
+import { FONT } from '@src/styles';
 import { ExHandler } from '@src/services/exception';
 import { useDispatch, useSelector } from 'react-redux';
 import { actionDelete } from '@src/redux/actions/receivers';
@@ -13,12 +14,10 @@ import { isKeychainAddressSelector } from '@src/redux/selectors/receivers';
 const itemStyled = StyleSheet.create({
   hook: {
     flex: 1,
-    backgroundColor: COLORS.white,
     paddingVertical: 15,
     paddingLeft: 25,
   },
   name: {
-    color: COLORS.black,
     fontFamily: FONT.NAME.bold,
     fontSize: FONT.SIZE.superMedium,
     lineHeight: FONT.SIZE.superMedium + 4,
@@ -26,7 +25,6 @@ const itemStyled = StyleSheet.create({
     maxWidth: '50%',
   },
   address: {
-    color: COLORS.colorGreyBold,
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.medium,
     lineHeight: FONT.SIZE.medium + 4,
@@ -65,13 +63,13 @@ const Item = ({
         <Text style={itemStyled.name} numberOfLines={1} ellipsizeMode="tail">
           {name}
         </Text>
-        <Text
+        <Text4
           style={itemStyled.address}
           ellipsizeMode="middle"
           numberOfLines={1}
         >
           {address}
-        </Text>
+        </Text4>
       </View>
     </TouchableOpacity>
   );

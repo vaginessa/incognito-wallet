@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native';
-import { FONT, COLORS, UTILS } from '@src/styles';
+import { FONT, UTILS } from '@src/styles';
 
-const fontSize = UTILS.widthScale(34);
+const fontSize = FONT.SIZE.veryLarge;
 const lineHeight = fontSize + 4;
 
 export default StyleSheet.create({
@@ -13,23 +13,20 @@ export default StyleSheet.create({
     flex: 1,
   },
   rewards: {
-    marginTop: UTILS.heightScale(23),
-    marginBottom: UTILS.heightScale(7.5),
+    marginTop: 32,
+    marginBottom: 4,
   },
   amount: {
-    fontFamily: FONT.NAME.bold,
+    fontFamily: FONT.NAME.medium,
     fontSize: fontSize,
     lineHeight: lineHeight,
   },
   symbol: {
     fontSize: fontSize,
     lineHeight: lineHeight,
-    color: COLORS.dark1,
   },
   symbolUSD: {
-    fontSize: 18,
-    fontFamily: FONT.NAME.medium,
-    color: COLORS.newGrey,
+    ...FONT.TEXT.incognitoH1,
   },
   center: {
     textAlign: 'center',
@@ -55,12 +52,11 @@ export default StyleSheet.create({
     marginBottom: UTILS.heightScale(30),
   },
   coinName: {
-    fontFamily: FONT.NAME.bold,
+    fontFamily: FONT.NAME.medium,
     fontSize: 20,
   },
   coinInterest: {
     fontSize: 20,
-    color: COLORS.green2,
     fontFamily: FONT.NAME.medium,
     textAlign: 'right',
     flex: 1,
@@ -75,9 +71,7 @@ export default StyleSheet.create({
     marginBottom: UTILS.heightScale(15),
   },
   rateStyle: {
-    fontFamily: FONT.NAME.medium,
-    color: COLORS.newGrey,
-    fontSize: 18,
+    ...FONT.TEXT.incognitoP1,
   },
   scrollView: {
     marginBottom: UTILS.heightScale(70),

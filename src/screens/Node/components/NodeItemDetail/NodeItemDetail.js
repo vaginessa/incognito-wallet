@@ -6,21 +6,28 @@ import Header from '@components/Header';
 import BtnMoreInfo from '@components/Button/BtnMoreInfo';
 import BtnThreeDotsVer from '@components/Button/BtnThreeDotsVer';
 import Rewards from '@screens/Node/components/Rewards';
+import HelpIcon from '@components/HelpScreen/Icon';
 import {
   Text,
   View,
-  ScrollView,
   RoundCornerButton,
   TouchableOpacity,
+  ScrollViewBorder, RefreshControl,
 } from '@components/core';
-import { RefreshControl } from 'react-native';
+import { Text4 } from '@components/core/Text';
 import theme from '@src/styles/theme';
+import ROUTE_NAMES from '@routers/routeNames';
 import NodeStatus from '@screens/Node/components/NodeStatus';
 import { isEmpty } from 'lodash';
 import { compose } from 'recompose';
 import nodeItemDetailEnhanceData from '@screens/Node/components/NodeItemDetail/NodeItemDetail.enhanceData';
 import BottomBar from '@screens/Node/components/NodeBottomBar';
 import SlashStatus from '@screens/Node/components/SlashStatus';
+import { View2 } from '@src/components/core/View';
+import { FONT } from '@src/styles';
+import { useNavigation } from 'react-navigation-hooks';
+import { useSelector } from 'react-redux';
+import { colorsSelector } from '@src/theme';
 
 const NodeItemDetail = memo(({
   isLoading,
@@ -47,7 +54,8 @@ const NodeItemDetail = memo(({
   onRefresh,
   onPressMonitorDetail
 }) => {
-
+  const navigation = useNavigation();
+  const colors = useSelector(colorsSelector);
   const renderRewards = () => {
     if (rewardsList && rewardsList.length > 0) {
       return (<Rewards rewards={rewardsList} />);
@@ -101,7 +109,7 @@ const NodeItemDetail = memo(({
   const renderItemText = (text, value) => {
     return (
       <View style={[styles.balanceContainer, { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 30 }]}>
-        <Text style={[theme.text.boldTextStyleMedium]}>{text}</Text>
+        <Text4 style={{...FONT.TEXT.incognitoH6}}>{text}</Text4>
         <Text style={[theme.text.boldTextStyleMedium, { maxWidth: 200 }]} numberOfLines={1}>{value || ''}</Text>
       </View>
     );
@@ -121,9 +129,9 @@ const NodeItemDetail = memo(({
       <TouchableOpacity
         onPress={onChangeWifiPress}
       >
-        <Text style={[styles.text, styles.bold, styles.bigText]}>
+        <Text4 style={[styles.text, styles.bold, styles.bigText]}>
           Change Wi-Fi
-        </Text>
+        </Text4>
       </TouchableOpacity>
     );
   };
@@ -131,9 +139,9 @@ const NodeItemDetail = memo(({
   const renderUnstake = (onPress) => {
     return (
       <TouchableOpacity style={{ marginBottom: 30 }} onPress={onPress}>
-        <Text style={[styles.text, styles.bold, styles.bigText]}>
+        <Text4 style={[styles.text, styles.bold, styles.bigText]}>
           Unstake this Node
-        </Text>
+        </Text4>
       </TouchableOpacity>
     );
   };
@@ -148,9 +156,9 @@ const NodeItemDetail = memo(({
     ) {
       return (
         <TouchableOpacity style={{ marginTop: 30 }} onPress={onUpdateNode}>
-          <Text style={[styles.text, styles.bold, styles.bigText]}>
+          <Text4 style={[styles.text, styles.bold, styles.bigText]}>
             Update firmware
-          </Text>
+          </Text4>
         </TouchableOpacity>
       );
     }
@@ -183,40 +191,43 @@ const NodeItemDetail = memo(({
   );
 
   const renderRightHeader = () => (
-    <View style={styles.rightHeader}>
+    <View2 style={styles.rightHeader}>
       {!isEmpty(item?.PublicKeyMining) &&
         <BtnThreeDotsVer onPress={() => onPressMonitorDetail && onPressMonitorDetail(item?.PublicKeyMining)} />
       }
-      <BtnMoreInfo onPress={onHelpPress} />
-    </View>
+      <TouchableOpacity style={[styles.infoIcon, { backgroundColor: colors.background1 }]} onPress={() => navigation.navigate(ROUTE_NAMES.NodeItemsHelp)}>
+        <HelpIcon screen={ROUTE_NAMES.NodeItemsHelp} style={styles.infoBtnStyle} />
+      </TouchableOpacity>
+    </View2>
   );
 
   return (
-    <>
-      <View style={styles.containerDetail}>
-        <Header
-          title="Node details"
-          rightHeader={renderRightHeader()}
-        />
-        <ScrollView
-          refreshControl={renderRefreshControl()}
-        >
-          {renderRewards()}
-          {renderButton()}
-          <View style={{ marginTop: 50 }}>
-            {renderItemText('Master key', item.MasterKey)}
-            {renderItemText('Keychain', name)}
-            {renderItemText('IP', `${ip}${!item.IsPNode ? (':' + port) : ''}`)}
-            { item?.IsPNode && renderItemText('Version', item?.Firmware) }
-            { !!item &&  <SlashStatus device={item} /> }
-            { !!item && (<NodeStatus isLoading={isLoading} item={item} />) }
-          </View>
-          {renderStakeInfo()}
-          {renderUpdateNode()}
-        </ScrollView>
-      </View>
+    <View2 fullFlex>
+      <Header
+        title="Node details"
+        rightHeader={renderRightHeader()}
+      />
+      <ScrollViewBorder
+        refreshControl={renderRefreshControl()}
+        style={
+          {paddingBottom: 30}
+        }
+      >
+        {renderRewards()}
+        {renderButton()}
+        <View style={{ marginTop: 50 }}>
+          {renderItemText('Master key', item.MasterKey)}
+          {renderItemText('Keychain', name)}
+          {renderItemText('IP', `${ip}${!item.IsPNode ? (':' + port) : ''}`)}
+          { item?.IsPNode && renderItemText('Version', item?.Firmware) }
+          { !!item &&  <SlashStatus device={item} /> }
+          { !!item && (<NodeStatus isLoading={isLoading} item={item} />) }
+        </View>
+        {renderStakeInfo()}
+        {renderUpdateNode()}
+      </ScrollViewBorder>
       <BottomBar />
-    </>
+    </View2>
   );
 });
 

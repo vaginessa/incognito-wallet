@@ -1,5 +1,5 @@
 import React, { memo } from 'react';
-import { Text, TouchableOpacity, View } from '@components/core';
+import { Text, TouchableOpacity, View, Button } from '@components/core';
 import PropTypes from 'prop-types';
 import BtnStatus from '@src/components/Button/BtnStatus';
 import BtnWithBlur from '@src/components/Button/BtnWithBlur';
@@ -44,9 +44,9 @@ const PNode = memo((props) => {
   const renderItemRight = () => (
     <View style={styles.itemRight}>
       {!hasAccount
-        ? <BtnWithBlur text='Import' onPress={onImportAccount} />
+        ? <Button title='Import' onPress={onImportAccount} style={styles.actionButton} />
         : (!hasStaked && unstakedPNode)
-          ? <BtnWithBlur text='Stake' onPress={() => onStake(item)} />
+          ? <Button title='Stake' onPress={() => onStake(item)} style={styles.actionButton} />
           : null}
     </View>
   );

@@ -1,4 +1,4 @@
-import { RoundCornerButton, TextInput } from '@components/core';
+import { RoundCornerButton, ScrollViewBorder, TextInput } from '@components/core';
 import Loader from '@components/DialogLoader';
 import routeNames from '@routers/routeNames';
 import BaseScreen from '@screens/BaseScreen';
@@ -10,7 +10,7 @@ import LocalDatabase from '@utils/LocalDatabase';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { useImperativeHandle, useRef, useState } from 'react';
-import { KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
+import { KeyboardAvoidingView, Platform } from 'react-native';
 import { getTimeZone } from 'react-native-localize';
 import Header from '@src/components/Header';
 import theme from '@src/styles/theme';
@@ -30,7 +30,7 @@ const LOCALHOST_REGEX = /^localhost(:[0-9]+)?$/;
 
 export const TAG = 'AddSelfNode';
 const ViewInput = React.forwardRef((props,ref)=>{
-  const { item,item_container_input,label } = styles;
+  const { label } = styles;
   let inputView = useRef(null);
   const [text,setText] = useState('');
   useImperativeHandle(ref, () => ({
@@ -42,14 +42,13 @@ const ViewInput = React.forwardRef((props,ref)=>{
   return (
     <TextInput
       ref={inputView}
-      placeholderTextColor={COLORS.colorGreyMedium}
+      // placeholderTextColor={COLORS.colorGreyMedium}
       maxLength={200}
       labelStyle={label}
       onChangeText={(t) => setText(t)}
       underlineColorAndroid="transparent"
       inputStyle={styles.input}
-      inputContainerStyle={item_container_input}
-      containerStyle={item}
+      style={{marginTop: 0}}
       placeholder="192.168.1.1:9334"
       label="IP address or domain"
       defaultValue={text}
@@ -213,20 +212,18 @@ class AddSelfNode extends BaseScreen {
   render() {
     const {loading} = this.state;
     return (
-      <ScrollView keyboardShouldPersistTaps="handled">
-        <Loader loading={loading} />
-        <KeyboardAvoidingView contentContainerStyle={{flex:1}} keyboardVerticalOffset={200} behavior="padding">
-          <Header
-            title="Node Virtual"
-          />
+      <>
+        <Header title="Node Virtual" />
+        <ScrollViewBorder keyboardShouldPersistTaps="handled">
+          <Loader loading={loading} />
           <ViewInput ref={this.inputView} />
           <RoundCornerButton
-            style={[styles.button, theme.BUTTON.NODE_BUTTON]}
+            style={[styles.button]}
             onPress={this.handleSetUpPress}
             title='Add'
           />
-        </KeyboardAvoidingView>
-      </ScrollView>
+        </ScrollViewBorder>
+      </>
     );
   }
 }

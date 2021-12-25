@@ -1,34 +1,46 @@
 import React, { memo } from 'react';
-import { ScrollView, Text, View } from 'react-native';
+import { ScrollViewBorder, Text, View } from '@components/core';
+import { View2 } from '@components/core/View';
 import { styled } from '@screens/Shield/features/ShieldDecentralizeDescription/styled';
 import Header from '@components/Header/Header';
 import { withLayout_2 } from '@components/Layout';
 import { useSelector } from 'react-redux';
 import { selectedPrivacySelector } from '@src/redux/selectors';
 
-const CONTENTS = [
-  {
-    content: 'The shielding process is a cross-chain action, and requires an Ethereum smart contract interaction.\n'
-  },
-  {
-    content: 'The fee is the cost of this interaction. Paid to the Ethereum miners, it is based on current gas prices on the Ethereum network\n'
-  },
-  {
-    content: 'The shielding process will complete when the amount shielded is sufficient to cover the required gas fees.\n'
-  },
-];
+const CONTENTS = (network) => {
+  return [
+    {
+      content: `The shielding process is a cross-chain action, and requires an ${network} smart contract interaction.\n`,
+    },
+    {
+      content: `The fee is the cost of this interaction. Paid to the ${network} miners, it is based on current gas prices on the ${network} network\n`,
+    },
+    {
+      content:
+        'The shielding process will complete when the amount shielded is sufficient to cover the required gas fees.\n',
+    },
+  ];
+};
 
 const ShieldDecentralizeDescription = () => {
   const selectedPrivacy = useSelector(selectedPrivacySelector.selectedPrivacy);
   return (
-    <View style={styled.container}>
-      <Header title={`Shield ${selectedPrivacy?.externalSymbol || selectedPrivacy?.symbol}`} />
-      <ScrollView>
+    <View2 style={styled.container}>
+      <Header
+        title={`Shield ${
+          selectedPrivacy?.externalSymbol || selectedPrivacy?.symbol
+        }`}
+      />
+      <ScrollViewBorder>
         <View style={styled.wrapper}>
-          {CONTENTS.map((item, index) => <Text style={styled.content} key={`content-${index}`}>{item.content}</Text>)}
+          {CONTENTS(selectedPrivacy?.rootNetworkName).map((item, index) => (
+            <Text style={styled.content} key={`content-${index}`}>
+              {item.content}
+            </Text>
+          ))}
         </View>
-      </ScrollView>
-    </View>
+      </ScrollViewBorder>
+    </View2>
   );
 };
 

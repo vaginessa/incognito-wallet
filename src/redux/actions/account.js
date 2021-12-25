@@ -30,6 +30,7 @@ import { actionGetPDexV3Inst } from '@src/screens/PDexV3';
 import MasterKeyModel from '@src/models/masterKey';
 import { batch } from 'react-redux';
 import uniq from 'lodash/uniq';
+import { cachePromise } from '@src/services/cache';
 import { getBalance as getTokenBalance, setListToken } from './token';
 
 export const setAccount = (
@@ -113,52 +114,61 @@ export const actionUpdateDefaultAccount = (account) => ({
   data: account,
 });
 
-export const actionSetSignPublicKeyEncode = (defaultAccount) => async (
-  dispatch,
-  getState,
-) => {
-  try {
-    const state = getState();
-    const wallet = walletSelector(state);
-    const account = defaultAccount || defaultAccountSelector(state);
-    const signPublicKeyEncode = await accountService.getSignPublicKeyEncode({
-      wallet,
-      account,
-    });
-    if (signPublicKeyEncode) {
-      dispatch(setSignPublicKeyEncode(signPublicKeyEncode));
+export const actionSetSignPublicKeyEncode =
+  (defaultAccount) => async (dispatch, getState) => {
+    try {
+      const state = getState();
+      const wallet = walletSelector(state);
+      const account = defaultAccount || defaultAccountSelector(state);
+      const signPublicKeyEncode = await accountService.getSignPublicKeyEncode({
+        wallet,
+        account,
+      });
+      if (signPublicKeyEncode) {
+        dispatch(setSignPublicKeyEncode(signPublicKeyEncode));
+      }
+    } catch (error) {
+      new ExHandler(error).showErrorToast();
     }
-  } catch (error) {
-    new ExHandler(error).showErrorToast();
-  }
-};
+  };
 
 export const actionSetFetchingNFT = () => ({
   type: type.ACTION_FETCHING_NFT,
   data: { isFetching: true },
 });
 
-export const actionSetNFTTokenData = () => async (dispatch) => {
-  let nftPayload = {
-    nftToken: '',
-    nftTokenAvailable: '',
-    initNFTToken: false,
-    list: [],
-    pending: false,
-    listNFTToken: [],
-  };
-  try {
-    dispatch(actionSetFetchingNFT());
-    const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
-    nftPayload = await pDexV3Inst.getNFTTokenData({
-      version: PrivacyVersion.ver2,
-    });
-    dispatch(actionFetchedNFT(nftPayload));
-  } catch (error) {
-    new ExHandler(error).showErrorToast();
-  }
-  return nftPayload;
-};
+export const actionSetNFTTokenData =
+  (noCache = true) =>
+    async (dispatch) => {
+      let nftPayload = {
+        nftToken: '',
+        nftTokenAvailable: '',
+        initNFTToken: false,
+        list: [],
+        pending: false,
+        listNFTToken: [],
+      };
+      try {
+        dispatch(actionSetFetchingNFT());
+        const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
+        const otaKey = pDexV3Inst.getOTAKey();
+        if (noCache) {
+          nftPayload = await pDexV3Inst.getNFTTokenData({
+            version: PrivacyVersion.ver2,
+          });
+        } else {
+          nftPayload = await cachePromise(`${otaKey}-LIST-NFT-TOKEN-DATA`, () =>
+            pDexV3Inst.getNFTTokenData({
+              version: PrivacyVersion.ver2,
+            }),
+          );
+        }
+        dispatch(actionFetchedNFT(nftPayload));
+      } catch (error) {
+        new ExHandler(error).showErrorToast();
+      }
+      return nftPayload;
+    };
 
 export const setDefaultAccount = (account) => async (dispatch) => {
   try {
@@ -226,32 +236,30 @@ export const actionSwitchAccountFetchFail = () => ({
   type: type.ACTION_SWITCH_ACCOUNT_FETCH_FAIL,
 });
 
-export const actionSwitchAccount = (
-  accountName,
-  shouldLoadBalance = true,
-) => async (dispatch, getState) => {
-  try {
-    new Validator('actionSwitchAccount-accountName', accountName)
-      .required()
-      .string();
-    new Validator(
-      'actionSwitchAccount-shouldLoadBalance',
-      shouldLoadBalance,
-    ).boolean();
-    const state = getState();
-    const account = accountSelector.getAccountByName(state)(accountName);
-    const masterKey: MasterKeyModel = currentMasterKeySelector(state);
-    const defaultAccountName = accountSelector.defaultAccountNameSelector(
-      state,
-    );
-    if (defaultAccountName !== account?.name) {
-      dispatch(switchMasterKey(masterKey?.name, accountName));
-    }
-    return account;
-  } catch (error) {
-    throw error;
-  }
-};
+export const actionSwitchAccount =
+  (accountName, shouldLoadBalance = true) =>
+    async (dispatch, getState) => {
+      try {
+        new Validator('actionSwitchAccount-accountName', accountName)
+          .required()
+          .string();
+        new Validator(
+          'actionSwitchAccount-shouldLoadBalance',
+          shouldLoadBalance,
+        ).boolean();
+        const state = getState();
+        const account = accountSelector.getAccountByName(state)(accountName);
+        const masterKey: MasterKeyModel = currentMasterKeySelector(state);
+        const defaultAccountName =
+        accountSelector.defaultAccountNameSelector(state);
+        if (defaultAccountName !== account?.name) {
+          dispatch(switchMasterKey(masterKey?.name, accountName));
+        }
+        return account;
+      } catch (error) {
+        throw error;
+      }
+    };
 
 export const actionReloadFollowingToken = () => async (dispatch, getState) => {
   try {
@@ -263,7 +271,8 @@ export const actionReloadFollowingToken = () => async (dispatch, getState) => {
     const keyInfo = await accountWallet.getKeyInfo({
       version: PrivacyVersion.ver2,
     });
-    const isFollowedDefaultTokens = await accountWallet.isFollowedDefaultTokens();
+    const isFollowedDefaultTokens =
+      await accountWallet.isFollowedDefaultTokens();
     if (!isFollowedDefaultTokens) {
       const coinIDs = keyInfo.coinindex
         ? Object.keys(keyInfo.coinindex).map((tokenID) => tokenID)
@@ -319,40 +328,39 @@ export const actionFetchFailCreateAccount = () => ({
   type: type.ACTION_FETCH_FAIL_CREATE_ACCOUNT,
 });
 
-export const actionFetchCreateAccount = ({ accountName }) => async (
-  dispatch,
-  getState,
-) => {
-  console.time('TOTAL_TIME_CREATE_ACCOUNT');
-  const state = getState();
-  const create = accountSelector.createAccountSelector(state);
-  let wallet = walletSelector(state);
-  const masterKey: MasterKeyModel = currentMasterKeySelector(state);
-  let serializedAccount;
-  if (!!create || !accountName || !wallet) {
-    return;
-  }
-  try {
-    dispatch(actionFetchingCreateAccount());
-    const account = await accountService.createAccount(accountName, wallet);
-    serializedAccount = new AccountModel(
-      accountService.toSerializedAccountObj(account),
-    );
-    storeWalletAccountIdsOnAPI(wallet);
-    batch(() => {
-      dispatch(actionFetchedCreateAccount());
-      if (serializedAccount?.name) {
-        dispatch(switchMasterKey(masterKey?.name, serializedAccount?.name));
-        dispatch(loadAllMasterKeyAccounts());
+export const actionFetchCreateAccount =
+  ({ accountName }) =>
+    async (dispatch, getState) => {
+      console.time('TOTAL_TIME_CREATE_ACCOUNT');
+      const state = getState();
+      const create = accountSelector.createAccountSelector(state);
+      let wallet = walletSelector(state);
+      const masterKey: MasterKeyModel = currentMasterKeySelector(state);
+      let serializedAccount;
+      if (!!create || !accountName || !wallet) {
+        return;
       }
-    });
-    console.timeEnd('TOTAL_TIME_CREATE_ACCOUNT');
-    return serializedAccount;
-  } catch (error) {
-    dispatch(actionFetchFailCreateAccount());
-    throw error;
-  }
-};
+      try {
+        dispatch(actionFetchingCreateAccount());
+        const account = await accountService.createAccount(accountName, wallet);
+        serializedAccount = new AccountModel(
+          accountService.toSerializedAccountObj(account),
+        );
+        storeWalletAccountIdsOnAPI(wallet);
+        batch(() => {
+          dispatch(actionFetchedCreateAccount());
+          if (serializedAccount?.name) {
+            dispatch(switchMasterKey(masterKey?.name, serializedAccount?.name));
+            dispatch(loadAllMasterKeyAccounts());
+          }
+        });
+        console.timeEnd('TOTAL_TIME_CREATE_ACCOUNT');
+        return serializedAccount;
+      } catch (error) {
+        dispatch(actionFetchFailCreateAccount());
+        throw error;
+      }
+    };
 
 export const actionFetchingImportAccount = () => ({
   type: type.ACTION_FETCHING_IMPORT_ACCOUNT,
@@ -366,57 +374,58 @@ export const actionFetchFailImportAccount = () => ({
   type: type.ACTION_FETCH_FAIL_IMPORT_ACCOUNT,
 });
 
-export const actionFetchImportAccount = ({ accountName, privateKey }) => async (
-  dispatch,
-  getState,
-) => {
-  const state = getState();
-  const importAccount = accountSelector.importAccountSelector(state);
-  const masterless = masterlessKeyChainSelector(state);
-  const masterKeys = noMasterLessSelector(state);
-  let selectedMasterKey = masterless;
-  if (!!importAccount || !accountName || !privateKey) {
-    return;
-  }
-  try {
-    dispatch(actionFetchingImportAccount());
-    const { aesKey } = await getPassphrase();
-    for (const masterKey of masterKeys) {
+export const actionFetchImportAccount =
+  ({ accountName, privateKey }) =>
+    async (dispatch, getState) => {
+      const state = getState();
+      const importAccount = accountSelector.importAccountSelector(state);
+      const masterless = masterlessKeyChainSelector(state);
+      const masterKeys = noMasterLessSelector(state);
+      let selectedMasterKey = masterless;
+      if (!!importAccount || !accountName || !privateKey) {
+        return;
+      }
       try {
-        const isCreated = await masterKey.wallet.hasCreatedAccount(privateKey);
-        if (isCreated) {
-          selectedMasterKey = masterKey;
-          break;
+        dispatch(actionFetchingImportAccount());
+        const { aesKey } = await getPassphrase();
+        for (const masterKey of masterKeys) {
+          try {
+            const isCreated = await masterKey.wallet.hasCreatedAccount(
+              privateKey,
+            );
+            if (isCreated) {
+              selectedMasterKey = masterKey;
+              break;
+            }
+          } catch (e) {
+            console.debug('CHECK CREATED ERROR', e);
+          }
         }
-      } catch (e) {
-        console.debug('CHECK CREATED ERROR', e);
+        let wallet = selectedMasterKey.wallet;
+        const isImported = await accountService.importAccount(
+          privateKey,
+          accountName,
+          aesKey,
+          wallet,
+        );
+        if (isImported) {
+          if (selectedMasterKey !== masterless) {
+            storeWalletAccountIdsOnAPI(wallet);
+          }
+          batch(() => {
+            dispatch(switchMasterKey(selectedMasterKey.name, accountName));
+            dispatch(actionFetchedImportAccount());
+            dispatch(loadAllMasterKeyAccounts());
+          });
+        } else {
+          throw new Error('Import keychain error');
+        }
+        return isImported;
+      } catch (error) {
+        dispatch(actionFetchFailImportAccount());
+        throw error;
       }
-    }
-    let wallet = selectedMasterKey.wallet;
-    const isImported = await accountService.importAccount(
-      privateKey,
-      accountName,
-      aesKey,
-      wallet,
-    );
-    if (isImported) {
-      if (selectedMasterKey !== masterless) {
-        storeWalletAccountIdsOnAPI(wallet);
-      }
-      batch(() => {
-        dispatch(switchMasterKey(selectedMasterKey.name, accountName));
-        dispatch(actionFetchedImportAccount());
-        dispatch(loadAllMasterKeyAccounts());
-      });
-    } else {
-      throw new Error('Import keychain error');
-    }
-    return isImported;
-  } catch (error) {
-    dispatch(actionFetchFailImportAccount());
-    throw error;
-  }
-};
+    };
 
 export const actionFetchBurnerAddress = () => async (dispatch, getState) => {
   try {

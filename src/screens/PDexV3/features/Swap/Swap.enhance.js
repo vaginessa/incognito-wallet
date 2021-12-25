@@ -7,17 +7,20 @@ import { focus } from 'redux-form';
 import { actionCheckNeedFaucetPRV } from '@src/redux/actions/token';
 import FaucetPRVModal from '@src/components/Modal/features/FaucetPRVModal';
 import RemoveSuccessDialog from '@src/screens/Setting/features/RemoveStorage/RemoveStorage.Dialog';
-import { formConfigs } from './Swap.constant';
+import { compose } from 'recompose';
+import withLazy from '@src/components/LazyHoc/LazyHoc';
+import { formConfigs, KEYS_PLATFORMS_SUPPORTED } from './Swap.constant';
 import {
   actionInitSwapForm,
   actionReset,
   actionFetchSwap,
   actionToggleProTab,
+  actionSetDefaultExchange,
 } from './Swap.actions';
 import {
   swapInfoSelector,
   swapFormErrorSelector,
-  sellInputTokenSeletor,
+  sellInputTokenSelector,
   feetokenDataSelector,
 } from './Swap.selector';
 
@@ -25,10 +28,14 @@ const enhance = (WrappedComp) => (props) => {
   const dispatch = useDispatch();
   const swapInfo = useSelector(swapInfoSelector);
   const formErrors = useSelector(swapFormErrorSelector);
-  const sellInputToken = useSelector(sellInputTokenSeletor);
+  const sellInputToken = useSelector(sellInputTokenSelector);
   const feeTokenData = useSelector(feetokenDataSelector);
   const [visibleSignificant, setVisibleSignificant] = React.useState(false);
   const [ordering, setOrdering] = React.useState(false);
+  const {
+    isPrivacyApp = false,
+    exchange = KEYS_PLATFORMS_SUPPORTED.incognito,
+  } = props;
   const unmountSwap = () => {
     dispatch(actionReset());
   };
@@ -48,12 +55,11 @@ const enhance = (WrappedComp) => (props) => {
           data: (
             <TradeSuccessModal
               title="Swap initiated!"
-              desc={`You placed an order to sell\n${swapInfo?.sellInputAmountStr ||
-                ''} for ${swapInfo?.buyInputAmountStr || ''}.`}
+              desc={`You placed an order to sell\n${
+                swapInfo?.sellInputAmountStr || ''
+              } for ${swapInfo?.buyInputAmountStr || ''}.`}
               handleTradeSucesss={() => initSwapForm()}
-              sub={
-                'Your balance will update in a couple of\nminutes after the trade is finalized.'
-              }
+              sub="Your balance will update in a couple of minutes after the swap is finalized."
             />
           ),
           visible: true,
@@ -106,8 +112,14 @@ const enhance = (WrappedComp) => (props) => {
       setOrdering(false);
     }
   };
-  React.useEffect(() => {
+  const handleInitSwapForm = async () => {
+    if (isPrivacyApp) {
+      await dispatch(actionSetDefaultExchange({ isPrivacyApp, exchange }));
+    }
     initSwapForm(true);
+  };
+  React.useEffect(() => {
+    handleInitSwapForm();
     return () => {
       unmountSwap();
     };
@@ -131,4 +143,4 @@ const enhance = (WrappedComp) => (props) => {
   );
 };
 
-export default enhance;
+export default compose(withLazy, enhance);

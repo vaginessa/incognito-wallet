@@ -1,15 +1,15 @@
-import { Text, View } from '@src/components/core';
-import { COLORS } from '@src/styles';
+import { Text } from '@src/components/core';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import QRCode from 'react-native-qrcode-svg';
+import { View } from 'react-native';
 import styleSheet from './style';
 
 const QrCodeGenerate = ({ value, size, style }) => {
   const [error, setError] = useState(null);
 
   return (
-    <View style={[styleSheet.container, style]}>
+    <View style={[styleSheet.container, style, { width: size + 32 }]}>
       {error ? (
         <Text>Can not show QR code</Text>
       ) : (
@@ -20,15 +20,11 @@ const QrCodeGenerate = ({ value, size, style }) => {
 };
 
 QrCodeGenerate.defaultProps = {
-  size: 200,
-  bgColor: COLORS.dark1,
-  fgColor: COLORS.white
+  size: 150,
 };
 
 QrCodeGenerate.propTypes = {
   value: PropTypes.string.isRequired,
-  bgColor: PropTypes.string,
-  fgColor: PropTypes.string,
   size: PropTypes.number
 };
 

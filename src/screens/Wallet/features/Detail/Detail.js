@@ -1,5 +1,8 @@
 import React from 'react';
-import { TouchableOpacity, View } from 'react-native';
+import { SafeAreaView, TouchableOpacity } from 'react-native';
+import { View } from '@src/components/core';
+import { View2 } from '@src/components/core/View';
+import globalStyled from '@src/theme/theme.styled';
 import Header from '@src/components/Header';
 import {
   selectedPrivacySelector,
@@ -35,6 +38,7 @@ import { ThreeDotsVerIcon } from '@components/Icons';
 import { actionToggleModal } from '@components/Modal';
 import ModalBottomSheet from '@components/Modal/features/ModalBottomSheet';
 import { Row } from '@src/components';
+import { colorsSelector } from '@src/theme';
 import {
   styled,
   groupBtnStyled,
@@ -77,25 +81,28 @@ const GroupButton = React.memo(() => {
   };
 
   return (
-    <View style={groupBtnStyled.groupButton}>
-      <BtnPrimary
-        title="Buy"
-        wrapperStyle={groupBtnStyled.btnStyle}
-        background={COLORS.green}
-        onPress={handleBuy}
-      />
-      <BtnPrimary
-        title="Sell"
-        wrapperStyle={groupBtnStyled.btnStyle}
-        background={COLORS.red2}
-        onPress={handleSell}
-      />
-    </View>
+    <SafeAreaView>
+      <View2 style={[groupBtnStyled.groupButton, {...globalStyled.defaultPaddingHorizontal}]}>
+        <BtnPrimary
+          title="Buy"
+          wrapperStyle={groupBtnStyled.btnStyle}
+          background={COLORS.green}
+          onPress={handleBuy}
+        />
+        <BtnPrimary
+          title="Sell"
+          wrapperStyle={groupBtnStyled.btnStyle}
+          background={COLORS.red2}
+          onPress={handleSell}
+        />
+      </View2>
+    </SafeAreaView>
   );
 });
 
 const Balance = React.memo(() => {
   const selected = useSelector(selectedPrivacySelector.selectedPrivacy);
+  const colors = useSelector(colorsSelector);
   const isGettingBalance = useSelector(
     sharedSelector.isGettingBalance,
   ).includes(selected?.tokenId);
@@ -116,7 +123,7 @@ const Balance = React.memo(() => {
     <View style={balanceStyled.container}>
       <Amount {...amountProps} />
       <View style={balanceStyled.hook}>
-        <Price pricePrv={selected.pricePrv} priceUsd={selected.priceUsd} />
+        <Price pricePrv={selected.pricePrv} priceUsd={selected.priceUsd} textStyle={{ color: colors.text3 }} />
         <ChangePrice {...changePriceProps} />
       </View>
     </View>
@@ -153,11 +160,11 @@ const CustomRightHeader = () => {
         data: (
           <ModalBottomSheet
             style={{ height: '15%' }}
-            contentView={
-              <Row style={groupBtnStyled.groupButton}>
+            contentView={(
+              <Row style={[groupBtnStyled.groupButton, { paddingVertical: 0 }]}>
                 <BtnSecondary
                   title="Receive"
-                  wrapperStyle={groupBtnStyled.btnStyle}
+                  wrapperStyle={[groupBtnStyled.btnStyle, { marginTop: 0 }]}
                   onPress={handleReceive}
                 />
                 <BtnPrimary
@@ -167,7 +174,7 @@ const CustomRightHeader = () => {
                   disabled={isSendDisabled}
                 />
               </Row>
-            }
+            )}
           />
         ),
         visible: true,
@@ -205,7 +212,7 @@ const Detail = (props) => {
   const { onRefresh } = useHistoryEffect();
   return (
     <>
-      <View style={[styled.container, { marginHorizontal: 25 }]}>
+      <View2 style={[styled.container]}>
         <Header
           title={selected?.name}
           customHeaderTitle={<BtnInfo />}
@@ -213,10 +220,12 @@ const Detail = (props) => {
           onGoBack={onGoBack}
           handleSelectedAccount={onRefresh}
         />
-        <Balance />
+        <View borderTop fullFlex paddingHorizontal style={{ paddingBottom: 0 }}>
+          <Balance />
+          <History {...{ ...props, refreshing }} />
+        </View>
         <GroupButton />
-        <History {...{ ...props, refreshing }} />
-      </View>
+      </View2>
     </>
   );
 };
