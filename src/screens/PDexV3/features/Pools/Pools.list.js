@@ -1,13 +1,13 @@
 import React from 'react';
 import {
   FlatList,
-  KeyboardAwareScrollView,
   Text,
   RefreshControl,
+  View,
 } from '@src/components/core';
 import { BaseTextInputCustom } from '@src/components/core/BaseTextInput';
 import { FONT, COLORS } from '@src/styles';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { Row } from '@src/components';
 import Pool from '@screens/PDexV3/features/Pool';
@@ -84,27 +84,27 @@ export const PoolsList = React.memo(({ onPressPool, pools }) => {
     return orderBy(pools, 'isFollowed', 'desc');
   }, [pools]);
   return (
-    <KeyboardAwareScrollView
-      refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-      }
-    >
-      <FlatList
-        data={data}
-        renderItem={({ item, index }) => (
-          <Pool
-            poolId={item.poolId}
-            onPressPool={() => {
-              console.log(item.poolId);
-              onPressPool(item.poolId, item);
-            }}
-            isLast={data && (data.length - 1 === index)}
-          />
-        )}
-        keyExtractor={({ poolId }) => poolId}
-        showsVerticalScrollIndicator={false}
-      />
-    </KeyboardAwareScrollView>
+    <FlatList
+      data={data}
+      refreshControl={() => (
+        <RefreshControl
+          refreshing={refreshing}
+          onRefresh={onRefresh}
+        />
+      )}
+      renderItem={({ item, index }) => (
+        <Pool
+          poolId={item.poolId}
+          onPressPool={() => {
+            console.log(item.poolId);
+            onPressPool(item.poolId, item);
+          }}
+          isLast={data && (data.length - 1 === index)}
+        />
+      )}
+      keyExtractor={({ poolId }) => poolId}
+      showsVerticalScrollIndicator={false}
+    />
   );
 });
 
@@ -131,7 +131,7 @@ const PoolsListContainer = (props) => {
     setText('');
   }, [listPools]);
   return (
-    <View style={[styled.container, style]}>
+    <>
       <Row style={[globalStyled.defaultPaddingHorizontal, { marginBottom: 16 }]} centerVertical>
         <BtnCircleBack onPress={_handleGoBack} />
         <BaseTextInputCustom
@@ -144,8 +144,10 @@ const PoolsListContainer = (props) => {
           }}
         />
       </Row>
-      <PoolsList onPressPool={onPressPool} pools={pools} />
-    </View>
+      <View style={[styled.container, style]} borderTop>
+        <PoolsList onPressPool={onPressPool} pools={pools} />
+      </View>
+    </>
   );
 };
 
