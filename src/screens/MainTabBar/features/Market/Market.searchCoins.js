@@ -52,7 +52,7 @@ const MarketSearchCoins = (props) => {
               item={item}
               key={item.tokenId}
               hideStar
-              onPress={onOrderPress}
+              onPress={() => onOrderPress(item)}
             />
           )}
         />
