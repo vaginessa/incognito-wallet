@@ -404,7 +404,7 @@ export const actionWithdrawOrder =
         };
         await pDexV3Inst.createAndSendWithdrawOrderRequestTx({ extra: data });
         dispatch(actionFetchWithdrawOrderTxs());
-        dispatch(actionSetNFTTokenData());
+        dispatch(actionSetNFTTokenDataNoCache());
       } catch (error) {
         new ExHandler(error).showErrorToast();
       } finally {
@@ -471,7 +471,7 @@ export const actionBookOrder = () => async (dispatch, getState) => {
       break;
     }
     const tx = await pDexV3Inst.createAndSendOrderRequestTx({ extra });
-    dispatch(actionSetNFTTokenData());
+    dispatch(actionSetNFTTokenDataNoCache());
     dispatch(actionFetchOrdersHistory(OPEN_ORDERS_STATE));
     return tx;
   } catch (error) {

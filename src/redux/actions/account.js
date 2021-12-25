@@ -152,14 +152,17 @@ export const actionSetNFTTokenData =
         dispatch(actionSetFetchingNFT());
         const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
         const otaKey = pDexV3Inst.getOTAKey();
-        nftPayload = await cachePromise(
-          `${otaKey}-LIST-NFT-TOKEN-DATA`,
-          () =>
+        if (noCache) {
+          nftPayload = await pDexV3Inst.getNFTTokenData({
+            version: PrivacyVersion.ver2,
+          });
+        } else {
+          nftPayload = await cachePromise(`${otaKey}-LIST-NFT-TOKEN-DATA`, () =>
             pDexV3Inst.getNFTTokenData({
               version: PrivacyVersion.ver2,
             }),
-          noCache ? 0 : 1e9,
-        );
+          );
+        }
         dispatch(actionFetchedNFT(nftPayload));
       } catch (error) {
         new ExHandler(error).showErrorToast();
