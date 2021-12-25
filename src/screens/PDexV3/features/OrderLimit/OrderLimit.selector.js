@@ -637,6 +637,8 @@ export const mappingOrderHistorySelector = createSelector(
           amountStr,
           visibleBtnAction,
           cancelTxId,
+          token1ID: token1.tokenId,
+          token2ID: token2.tokenId,
         };
         return result;
       } catch (error) {
