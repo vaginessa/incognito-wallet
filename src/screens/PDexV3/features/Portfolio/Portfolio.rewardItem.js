@@ -48,7 +48,7 @@ const RewardItem = ({ data, isLast, onWithdrawFeeLP }) => {
       <Row centerVertical spaceBetween>
         <Row centerVertical>
           <TwoTokenImage iconUrl1={token1.iconUrl} iconUrl2={token2.iconUrl} />
-          <Text style={[styles.extraLabel, { marginLeft: 32 }]}>
+          <Text style={[styles.extraLabel, { marginLeft: 0 }]}>
             {`${token1?.symbol} / ${token2?.symbol}`}
           </Text>
         </Row>
