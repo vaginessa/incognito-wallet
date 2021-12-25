@@ -21,7 +21,6 @@ export default StyleSheet.create({
   title: {
     fontSize: FONT.SIZE.medium,
     lineHeight: FONT.SIZE.medium + 5,
-    color: COLORS.colorGreyBold,
     fontFamily: FONT.NAME.medium,
     marginBottom: 30,
   },
@@ -38,7 +37,6 @@ export default StyleSheet.create({
   errorMsg: {
     fontSize: FONT.SIZE.regular,
     lineHeight: FONT.SIZE.regular + 5,
-    color: COLORS.colorGreyBold,
     fontFamily: FONT.NAME.medium,
   },
   retryBtn: {
