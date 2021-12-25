@@ -111,7 +111,6 @@ const Order = React.memo(({ data, visibleDivider }) => {
     percentStr1,
     visibleBtnAction,
     nftid,
-    pooId,
   } = data;
   const renderHook = () => {
     let comp = null;
@@ -125,11 +124,9 @@ const Order = React.memo(({ data, visibleDivider }) => {
           onPress={() =>
             !!visibleBtnAction &&
             onPressWithdrawOrder({
-              requestTx,
-              nftid,
+              ...data,
               txType: ACCOUNT_CONSTANT.TX_TYPE.CANCEL_ORDER_LIMIT,
               subTitle: 'Are you sure you want to cancel\nthis limit order?',
-              pooId,
             })
           }
         />

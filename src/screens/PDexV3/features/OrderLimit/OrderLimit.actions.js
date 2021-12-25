@@ -12,7 +12,9 @@ import {
   getAllTokenIDsInPoolsSelector,
 } from '@screens/PDexV3/features/Pools';
 import { actionSetNFTTokenData as actionSetNFTTokenDataNoCache } from '@src/redux/actions/account';
-import { listNFTTokenSelector } from '@src/redux/selectors/account';
+import {
+  nftTokenDataSelector,
+} from '@src/redux/selectors/account';
 import isEmpty from 'lodash/isEmpty';
 import { change, focus, reset } from 'redux-form';
 import { actionGetPDexV3Inst } from '@screens/PDexV3';
@@ -58,9 +60,6 @@ import {
   sellInputAmountSelector,
   buyInputAmountSelector,
 } from './OrderLimit.selector';
-
-export const actionSetNFTTokenData = () => async (dispatch) =>
-  dispatch(actionSetNFTTokenDataNoCache(false));
 
 export const actionResetOrdersHistory = (
   payload = { field: HISTORY_ORDERS_STATE },
@@ -259,7 +258,7 @@ export const actionInit =
           dispatch(actionFetchPools());
         });
         if (refresh) {
-          await dispatch(actionSetNFTTokenData());
+          await dispatch(actionSetNFTTokenDataNoCache());
         }
       } catch (error) {
         new ExHandler(error).showErrorToast;
@@ -323,7 +322,12 @@ export const actionFetchOrdersHistory =
       }
       await dispatch(actionFetchingOrdersHistory({ field }));
       const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
-      const listNFTToken = listNFTTokenSelector(state);
+      const nftData = nftTokenDataSelector(state);
+      let listNFTToken = nftData?.listNFTToken;
+      if(!listNFTToken || listNFTToken?.length === 0){
+        const data = await dispatch(actionSetNFTTokenDataNoCache());
+        listNFTToken = [...data?.listNFTToken];
+      }
       switch (field) {
       case OPEN_ORDERS_STATE: {
         const tokenIds = getAllTokenIDsInPoolsSelector(state);
@@ -381,20 +385,17 @@ export const actionWithdrawingOrder = (payload) => ({
 });
 
 export const actionWithdrawOrder =
-  ({ requestTx, txType, nftid }) =>
+  ({ requestTx, txType, nftid, poolId: poolid, token1ID, token2ID }) =>
     async (dispatch, getState) => {
       try {
         const state = getState();
         const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
-        const pool = poolSelectedDataSelector(state);
-        const { sellTokenId, buyTokenId } = orderLimitDataSelector(state);
-        if (!requestTx || !pool?.poolId) {
+        if (!requestTx || !poolid) {
           return;
         }
         await dispatch(actionWithdrawingOrder(requestTx));
-        const poolid = pool?.poolId;
         const data = {
-          withdrawTokenIDs: [sellTokenId, buyTokenId],
+          withdrawTokenIDs: [token1ID, token2ID],
           poolPairID: poolid,
           orderID: requestTx,
           amount: '0',
@@ -522,7 +523,7 @@ export const actionFetchDataOrderDetail = () => async (dispatch, getState) => {
   } finally {
     _order = _order || order;
     dispatch(actionFetchWithdrawOrderTxs());
-    dispatch(actionSetNFTTokenData());
+    dispatch(actionSetNFTTokenDataNoCache());
     await dispatch(actionFetchedOrderDetail(_order));
   }
 };
