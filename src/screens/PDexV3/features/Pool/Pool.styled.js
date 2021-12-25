@@ -1,13 +1,15 @@
 import { COLORS, FONT } from '@src/styles';
 import { StyleSheet } from 'react-native';
+import globalStyled from '@src/theme/theme.styled';
 
 export const styled = StyleSheet.create({
   container: {
-    marginBottom: 25,
+    ...globalStyled.defaultPaddingHorizontal,
+    paddingVertical: 16
   },
   rowName: {
     alignItems: 'center',
-    marginBottom: 8,
+    // marginBottom: 8,
   },
   name: {
     marginRight: 5,
@@ -21,7 +23,7 @@ export const styled = StyleSheet.create({
     fontSize: FONT.SIZE.small,
     lineHeight: FONT.SIZE.small + 2,
     fontFamily: FONT.NAME.medium,
-    marginBottom: 8,
+    // marginBottom: 8,
   },
   block1: {
     flex: 1,

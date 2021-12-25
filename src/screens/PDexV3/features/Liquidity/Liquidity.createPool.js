@@ -24,6 +24,8 @@ import routeNames from '@routers/routeNames';
 import NetworkFee from '@src/components/NetworkFee';
 import {actionToggleModal} from '@components/Modal';
 import { withLayout_2 } from '@components/Layout';
+import SelectedPrivacy from '@models/selectedPrivacy';
+import { formConfigs } from '@screens/PDexV3/features/Swap';
 
 const initialFormValues = {
   inputToken: '',
@@ -73,13 +75,9 @@ const InputsGroup = () => {
   }), [focusField, isTyping, inputToken.loadingBalance, outputToken.loadingBalance]);
 
   const onSelectSymbol = (callback, tokens) => {
-    navigation.navigate(routeNames.TokenSelectScreen, {
-      onSelectToken: callback,
-      tokens: tokens.map(coin => ({
-        ...coin,
-        id: coin.tokenId,
-      })),
-      placeholder: 'Search coins',
+    navigation.navigate(routeNames.SelectTokenModal, {
+      data: tokens,
+      onPress: callback
     });
   };
 
@@ -114,6 +112,7 @@ const InputsGroup = () => {
         onPressSymbol={() => {
           if (loading.input) return;
           onSelectSymbol(((token) => {
+            console.log('SANG TEST:::: ', token);
             setTimeout(() =>
               dispatch(liquidityActions.actionUpdateCreatePoolInputToken(token.tokenId)),
             300);
