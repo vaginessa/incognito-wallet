@@ -398,7 +398,8 @@ export const actionWithdrawOrder =
           nftID: nftid,
         };
         await pDexV3Inst.createAndSendWithdrawOrderRequestTx({ extra: data });
-        await dispatch(actionFetchWithdrawOrderTxs());
+        dispatch(actionFetchWithdrawOrderTxs());
+        dispatch(actionSetNFTTokenData());
       } catch (error) {
         new ExHandler(error).showErrorToast();
       } finally {
