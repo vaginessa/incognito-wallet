@@ -47,12 +47,12 @@ export const SumIconComp = React.memo(() => {
   );
 });
 
-export const UpToIconComp = () => {
+export const UpToIconComp = ({ style }) => {
   const colors = useSelector(colorsSelector);
   return (
     <Image
       source={upToIcon}
-      style={[mainStyles.iconUp, { tintColor: colors.blue1 }]}
+      style={[mainStyles.iconUp, { tintColor: colors.blue1 }, style]}
     />
   );
 };
@@ -88,18 +88,32 @@ const CoinList = ({
               onRefresh={() => onLoad(account)}
             />
           )}
-          style={styles.scrollView}
+          style={[styles.scrollView, { paddingHorizontal: 0 }]}
         >
-          {groupedCoins.map((item) => (
-            <Row style={mainStyles.coin} key={`${item.id} ${item.locked}`}>
-              <Text style={mainStyles.coinName}>{item.name}</Text>
-              <Row style={[mainStyles.flex, mainStyles.emptyRight]}>
-                {item.locked && <UpToIconComp />}
-                <Text style={[mainStyles.coinExtra, mainStyles.textRight, { color: colors.blue1, marginLeft: 4 }]}>{item.displayInterest}</Text>
+          {groupedCoins.map((item) => {
+            const { iconUrl } = getPrivacyDataByTokenID(item.id);
+            return (
+              <Row
+                centerVertical
+                style={[
+                  mainStyles.coin,
+                  { borderBottomWidth: 1, borderBottomColor: colors.border4, paddingVertical: 16, marginBottom: 0 },
+                  globalStyled.defaultPaddingHorizontal,
+                ]}
+                key={`${item.id} ${item.locked}`}
+              >
+                <ImageCached uri={iconUrl} style={{ width: 32, height: 32, marginRight: 14 }} />
+                <Text style={[mainStyles.coinName, { marginBottom: 0 }]}>{item.name}</Text>
+                <Row style={[mainStyles.flex, mainStyles.emptyRight]}>
+                  {item.locked && <UpToIconComp style={{ marginBottom: 0 }} />}
+                  <Text style={[mainStyles.coinExtra, mainStyles.textRight, { color: colors.blue1, marginLeft: 4, marginBottom: 0 }]}>{item.displayInterest}</Text>
+                </Row>
               </Row>
-            </Row>
-          ))}
-          {renderRate()}
+            );
+          })}
+          <View style={[globalStyled.defaultPaddingHorizontal, { marginVertical: 15 }]}>
+            {renderRate()}
+          </View>
         </ScrollView>
       </>
     );
