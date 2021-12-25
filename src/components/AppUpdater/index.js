@@ -214,7 +214,7 @@ class AppUpdater extends PureComponent {
             <BtnClose
               style={styles.btnClose}
               onPress={this.closeNewsDialog}
-              size={18}
+              size={30}
             />
             <View style={styles.hook}>
               <Text style={[styles.title, { color: colors.text1 }]}>{`What's new in ${appVersion}?`}</Text>

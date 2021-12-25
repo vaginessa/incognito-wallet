@@ -1,4 +1,4 @@
-import { ActivityIndicator, Text } from '@src/components/core';
+import { ActivityIndicator, Text, Text3 } from '@src/components/core';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { ButtonBasic } from '@src/components/Button';
@@ -9,7 +9,7 @@ import style from './style';
 const GetStarted = React.memo((props) => {
   const { loading, errorMsg = '', onRetry } = props;
   return (
-    <View2 style={style.container}>
+    <View2 style={[style.container, { paddingHorizontal: 24 }]}>
       {loading && (
         <View2 style={style.loadingContainer}>
           <ActivityIndicator size="large" />
@@ -23,7 +23,7 @@ const GetStarted = React.memo((props) => {
         )}
         {!!errorMsg && !loading && (
           <>
-            <Text style={[style.errorMsg, style.centerText]}>{errorMsg}</Text>
+            <Text3 style={[style.errorMsg, style.centerText]}>{errorMsg}</Text3>
             <ButtonBasic
               btnStyle={style.retryBtn}
               title="Retry"

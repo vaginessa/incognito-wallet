@@ -1,11 +1,13 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import NetInfo from '@react-native-community/netinfo';
 import ErrorBoundary from '@src/components/ErrorBoundary';
-import { LoadingContainer } from '@src/components/core';
+import { LoadingContainer, Text, View } from '@src/components/core';
 import { ExHandler } from '@src/services/exception';
 import { COLORS, FONT } from '@src/styles';
 import { ButtonBasic } from '@src/components/Button';
+import { compose } from 'recompose';
+import { withLayout_2 } from '@components/Layout';
 
 const styled = StyleSheet.create({
   container: {
@@ -16,7 +18,6 @@ const styled = StyleSheet.create({
   text: {
     textAlign: 'center',
     fontFamily: FONT.NAME.medium,
-    color: COLORS.colorGreyBold,
     fontSize: FONT.SIZE.regular,
     lineHeight: FONT.SIZE.regular + 3,
   },
@@ -54,7 +55,7 @@ const enhance = (WrappedComp) => (props) => {
   }
   if (!connected) {
     return (
-      <View style={styled.container}>
+      <View style={styled.container} borderTop>
         <Text style={styled.text}>
           Your internet connection is currently unstable. Please check your
           network settings and try again!
@@ -75,4 +76,7 @@ const enhance = (WrappedComp) => (props) => {
   );
 };
 
-export default enhance;
+export default compose(
+  withLayout_2,
+  enhance
+);
