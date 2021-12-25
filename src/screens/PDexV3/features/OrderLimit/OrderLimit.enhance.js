@@ -1,5 +1,5 @@
 import React from 'react';
-import { useSelector, useDispatch, batch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { getFormSyncErrors, focus } from 'redux-form';
 import ErrorBoundary from '@src/components/ErrorBoundary';
 import { compose } from 'recompose';
@@ -11,7 +11,11 @@ import { actionCheckNeedFaucetPRV } from '@src/redux/actions/token';
 import { nftTokenDataSelector } from '@src/redux/selectors/account';
 import FaucetPRVModal from '@src/components/Modal/features/FaucetPRVModal';
 import withLazy from '@src/components/LazyHoc/LazyHoc';
-import { formConfigs } from './OrderLimit.constant';
+import {
+  formConfigs,
+  HISTORY_ORDERS_STATE,
+  OPEN_ORDERS_STATE,
+} from './OrderLimit.constant';
 import {
   orderLimitDataSelector,
   orderLimitSelector,
@@ -22,6 +26,7 @@ import {
   actionBookOrder,
   actionSetPoolSelected,
   actionResetOrdersHistory,
+  actionFetchOrdersHistory,
 } from './OrderLimit.actions';
 
 const enhance = (WrappedComp) => (props) => {
@@ -83,7 +88,7 @@ const enhance = (WrappedComp) => (props) => {
                 desc={cfmTitle}
                 sub="Your balance will update as the order fills."
                 handleTradeSucesss={() => {
-                  onRefresh();
+                  console.log('book order limit');
                 }}
               />
             ),
@@ -99,6 +104,8 @@ const enhance = (WrappedComp) => (props) => {
   };
   const onRefresh = () => {
     dispatch(actionInit(true, true));
+    dispatch(actionFetchOrdersHistory(HISTORY_ORDERS_STATE));
+    dispatch(actionFetchOrdersHistory(OPEN_ORDERS_STATE));
   };
   const callback = async (poolId) => {
     dispatch(actionResetOrdersHistory());

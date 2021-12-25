@@ -664,6 +664,7 @@ export const historySelector = createSelector(
     return {
       history,
       isFetching,
+      field,
     };
   },
 );
