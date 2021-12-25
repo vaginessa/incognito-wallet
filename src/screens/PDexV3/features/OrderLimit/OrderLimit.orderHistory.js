@@ -16,16 +16,17 @@ const styled = StyleSheet.create({
   },
 });
 
-export const useHistoryOrders = () => {
+export const useHistoryOrders = ({ field }) => {
   const poolId = useSelector(poolIdSelector);
   const dispatch = useDispatch();
   React.useEffect(() => {
-    dispatch(actionFetchOrdersHistory());
+    dispatch(actionFetchOrdersHistory(field));
   }, [poolId]);
   return { poolId };
 };
 
-const OrderHistory = ({ history, isFetching }) => {
+const OrderHistory = ({ history, isFetching, field }) => {
+  useHistoryOrders({ field });
   return (
     <View style={styled.container}>
       <FlatList

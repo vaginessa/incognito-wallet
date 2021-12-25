@@ -11,7 +11,8 @@ import {
   listPoolsIDsSelector,
   getAllTokenIDsInPoolsSelector,
 } from '@screens/PDexV3/features/Pools';
-import { actionSetNFTTokenData } from '@src/redux/actions/account';
+import { actionSetNFTTokenData as actionSetNFTTokenDataNoCache } from '@src/redux/actions/account';
+import { listNFTTokenSelector } from '@src/redux/selectors/account';
 import isEmpty from 'lodash/isEmpty';
 import { change, focus, reset } from 'redux-form';
 import { actionGetPDexV3Inst } from '@screens/PDexV3';
@@ -47,6 +48,7 @@ import {
   ACTION_RESET_ORDERS_HISTORY,
   OPEN_ORDERS_STATE,
   HISTORY_ORDERS_STATE,
+  ROOT_TAB_SUB_INFO,
 } from './OrderLimit.constant';
 import {
   poolSelectedDataSelector,
@@ -56,6 +58,9 @@ import {
   sellInputAmountSelector,
   buyInputAmountSelector,
 } from './OrderLimit.selector';
+
+export const actionSetNFTTokenData = () => async (dispatch) =>
+  dispatch(actionSetNFTTokenDataNoCache(false));
 
 export const actionResetOrdersHistory = (
   payload = { field: HISTORY_ORDERS_STATE },
@@ -187,7 +192,7 @@ export const actionSetDefaultPool = () => async (dispatch, getState) => {
 };
 
 export const actionInit =
-  (refresh = true, shouldFetchOpenOrders = false) =>
+  (refresh = true) =>
     async (dispatch, getState) => {
       try {
         dispatch(actionFetching());
@@ -251,15 +256,11 @@ export const actionInit =
           const { rate } = rateDataSelector(state);
           dispatch(change(formConfigs.formName, formConfigs.rate, rate));
           dispatch(focus(formConfigs.formName, formConfigs.rate));
-          if (shouldFetchOpenOrders) {
-            dispatch(actionFetchOrdersHistory(OPEN_ORDERS_STATE));
-          }
-          if (refresh) {
-            dispatch(actionFetchPools());
-            dispatch(actionSetNFTTokenData());
-            dispatch(actionFetchOrdersHistory(HISTORY_ORDERS_STATE));
-          }
+          dispatch(actionFetchPools());
         });
+        if (refresh) {
+          await dispatch(actionSetNFTTokenData());
+        }
       } catch (error) {
         new ExHandler(error).showErrorToast;
       } finally {
@@ -314,13 +315,15 @@ export const actionFetchOrdersHistory =
   (field) => async (dispatch, getState) => {
     let data = [];
     try {
-      await dispatch(actionFetchingOrdersHistory({ field }));
       const state = getState();
       const pool = poolSelectedDataSelector(state);
-      if (!pool) {
+      const activedTab = activedTabSelector(state)(ROOT_TAB_SUB_INFO);
+      if (!pool || !field || field !== activedTab) {
         return;
       }
+      await dispatch(actionFetchingOrdersHistory({ field }));
       const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
+      const listNFTToken = listNFTTokenSelector(state);
       switch (field) {
       case OPEN_ORDERS_STATE: {
         const tokenIds = getAllTokenIDsInPoolsSelector(state);
@@ -331,6 +334,7 @@ export const actionFetchOrdersHistory =
           }),
           pDexV3Inst.getOpenOrderLimitHistoryFromApi({
             version: PrivacyVersion.ver2,
+            listNFTToken,
           }),
         ]);
         openOrders = openOrders.map((order) => ({
@@ -352,6 +356,7 @@ export const actionFetchOrdersHistory =
             (await pDexV3Inst.getOrderLimitHistoryFromApi({
               poolid: pool?.poolId,
               version: PrivacyVersion.ver2,
+              listNFTToken,
             })) || [];
         data = data.map((order) => ({
           ...order,
@@ -466,6 +471,8 @@ export const actionBookOrder = () => async (dispatch, getState) => {
       break;
     }
     const tx = await pDexV3Inst.createAndSendOrderRequestTx({ extra });
+    dispatch(actionSetNFTTokenData());
+    dispatch(actionFetchOrdersHistory(OPEN_ORDERS_STATE));
     return tx;
   } catch (error) {
     new ExHandler(error).showErrorToast();

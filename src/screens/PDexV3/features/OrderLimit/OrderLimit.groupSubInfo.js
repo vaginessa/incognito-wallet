@@ -25,7 +25,6 @@ const styled = StyleSheet.create({
 const GroupSubInfo = () => {
   const orderHistory = useSelector(orderHistorySelector);
   const openOrders = useSelector(openOrdersSelector);
-  useHistoryOrders();
   return (
     <View style={styled.container}>
       <Tabs rootTabID={ROOT_TAB_SUB_INFO}>
