@@ -30,6 +30,7 @@ import {
   ACTION_CHANGE_ESTIMATE_DATA,
   ACTION_SET_DEFAULT_EXCHANGE,
   ACTION_FREE_HISTORY_ORDERS,
+  ACTION_SET_ERROR,
 } from './Swap.constant';
 
 const initialState = {
@@ -40,10 +41,12 @@ const initialState = {
       // incognito
       feePrv: {},
       feeToken: {},
+      error: null,
     },
     [KEYS_PLATFORMS_SUPPORTED.pancake]: {
       // pancake
       feePrv: {},
+      error: null,
     },
   },
   buytoken: '',
@@ -75,10 +78,20 @@ const initialState = {
   useMax: false,
   defaultExchange: KEYS_PLATFORMS_SUPPORTED.incognito,
   isPrivacyApp: false,
+  error: null,
 };
 
 export default (state = initialState, action) => {
   switch (action.type) {
+  case ACTION_SET_ERROR: {
+    const { platformId, error } = action.payload;
+    const { data } = state;
+    const newState = {
+      ...state,
+      data: { ...data, [platformId]: { ...data[platformId], error } },
+    };
+    return newState;
+  }
   case ACTION_FREE_HISTORY_ORDERS: {
     return {
       ...state,
@@ -228,6 +241,7 @@ export default (state = initialState, action) => {
     return {
       ...state,
       isFetching: action.payload,
+      data: Object.assign({}, initialState.data),
     };
   }
   case ACTION_FETCHED: {

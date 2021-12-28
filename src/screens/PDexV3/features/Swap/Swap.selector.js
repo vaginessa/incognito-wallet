@@ -14,7 +14,6 @@ import orderBy from 'lodash/orderBy';
 import memoize from 'lodash/memoize';
 import { getExchangeRate, getPairRate, getPoolSize } from '@screens/PDexV3';
 import BigNumber from 'bignumber.js';
-import xor from 'lodash/xor';
 import {
   formConfigs,
   KEYS_PLATFORMS_SUPPORTED,
@@ -183,6 +182,12 @@ export const isExchangeVisibleSelector = createSelector(
       );
       return !!foundPlatform?.visible;
     }),
+);
+
+export const isPlatformSelectedSelector = createSelector(
+  platformIdSelectedSelector,
+  (platformIdSelected) =>
+    memoize((platformId) => platformIdSelected === platformId),
 );
 
 // fee data selector
@@ -651,4 +656,14 @@ export const defaultExchangeSelector = createSelector(
 export const isPrivacyAppSelector = createSelector(
   swapSelector,
   ({ isPrivacyApp }) => isPrivacyApp,
+);
+
+export const errorEstimateTradeSelector = createSelector(
+  swapSelector,
+  platformIdSelectedSelector,
+  ({ data }, platformId) => {
+    console.log('platformId', platformId);
+    console.log('data', data, data[platformId]);
+    return data[platformId]?.error || '';
+  },
 );

@@ -39,7 +39,7 @@ export const ACTION_CHANGE_STATUS_VISIBLE_PLATFORM =
 export const ACTION_SAVE_LAST_FIELD = '[pDexV3][swap] Save last field';
 export const ACTION_CHANGE_ESTIMATE_DATA =
   '[pDexV3][swap] Change estimate data';
-
+export const ACTION_SET_ERROR = '[pDexV3][swap] Action set error';
 export const ACTION_SET_DEFAULT_EXCHANGE =
   '[pDexV3][swap] Set default exchange';
 export const ACTION_FREE_HISTORY_ORDERS = '[pDexV3][swap] Free history orders';
