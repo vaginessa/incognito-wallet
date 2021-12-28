@@ -335,8 +335,8 @@ export const actionEstimateTradeForPDex =
         maxBuyOriginalAmount,
       };
     }
+    const { payFeeByPRV, field } = feetokenDataSelector(state);
     try {
-      const { payFeeByPRV, field } = feetokenDataSelector(state);
       const { sellamount, buyamount } = payload;
       const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
       const estPDexData = await pDexV3Inst.getEstimateTrade(payload);
@@ -376,6 +376,8 @@ export const actionEstimateTradeForPDex =
       );
     } catch (error) {
       console.log('actionEstimateTradeForPDex ERROR', error);
+      state = getState();
+
       dispatch(
         actionSetError({
           error,
@@ -775,9 +777,20 @@ export const actionEstimateTrade =
         dispatch(actionSetFocusToken(''));
         dispatch(actionFetched({ isFetched }));
         state = getState();
+        const { availableAmountText, availableOriginalAmount } =
+        sellInputTokenSelector(state);
         const errorEstTrade = errorEstimateTradeSelector(state);
         if (errorEstTrade) {
           new ExHandler(errorEstTrade).showErrorToast();
+          if (useMax && availableOriginalAmount) {
+            dispatch(
+              change(
+                formConfigs.formName,
+                formConfigs.selltoken,
+                availableAmountText,
+              ),
+            );
+          }
         }
       }
     };
@@ -1196,10 +1209,11 @@ export const actionChangeSelectedPlatform = (payload) => ({
 export const actionSwitchPlatform =
   (platformId) => async (dispatch, getState) => {
     try {
-      const state = getState();
       await dispatch(actionChangeSelectedPlatform(platformId));
+      const state = getState();
       const { field } = feetokenDataSelector(state);
-      if (!field) {
+      const errorEstTrade = errorEstimateTradeSelector(state);
+      if (!field || errorEstTrade) {
         return;
       }
       switch (platformId) {

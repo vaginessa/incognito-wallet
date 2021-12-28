@@ -351,7 +351,9 @@ export const feetokenDataSelector = createSelector(
         minFeeOriginalPRV,
         minFeeOriginalToken,
         availableFixedSellAmountPRV,
+        availableOriginalSellAmountPRV: sellAmountPRV,
         availableFixedSellAmountToken,
+        availableOriginalSellAmountToken: sellAmountToken,
         tradePath,
         maxGet,
         allPoolSize,
@@ -661,9 +663,5 @@ export const isPrivacyAppSelector = createSelector(
 export const errorEstimateTradeSelector = createSelector(
   swapSelector,
   platformIdSelectedSelector,
-  ({ data }, platformId) => {
-    console.log('platformId', platformId);
-    console.log('data', data, data[platformId]);
-    return data[platformId]?.error || '';
-  },
+  ({ data }, platformId) => data[platformId]?.error || '',
 );
