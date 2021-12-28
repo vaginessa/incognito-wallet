@@ -23,7 +23,6 @@ import difference from 'lodash/difference';
 import { isUsePRVToPayFeeSelector } from '@screens/Setting';
 import flatten from 'lodash/flatten';
 import orderBy from 'lodash/orderBy';
-import { BIG_COINS } from '@src/screens/DexV2/constants';
 import {
   ACTION_FETCHING,
   ACTION_FETCHED,
@@ -52,7 +51,8 @@ import {
   ACTION_SAVE_LAST_FIELD,
   ACTION_CHANGE_ESTIMATE_DATA,
   ACTION_SET_DEFAULT_EXCHANGE,
-  ACTION_FREE_HISTORY_ORDERS
+  ACTION_FREE_HISTORY_ORDERS,
+  ACTION_SET_ERROR,
 } from './Swap.constant';
 import {
   buytokenSelector,
@@ -73,6 +73,8 @@ import {
   defaultExchangeSelector,
   isPrivacyAppSelector,
   isExchangeVisibleSelector,
+  isPlatformSelectedSelector,
+  errorEstimateTradeSelector,
 } from './Swap.selector';
 import {
   calMintAmountExpected,
@@ -80,6 +82,11 @@ import {
   findBestRateOfMaxBuyAmount,
   findBestRateOfMinSellAmount,
 } from './Swap.utils';
+
+export const actionSetError = (payload) => ({
+  type: ACTION_SET_ERROR,
+  payload,
+});
 
 export const actionSetDefaultExchange = ({ isPrivacyApp, exchange }) => ({
   type: ACTION_SET_DEFAULT_EXCHANGE,
@@ -318,17 +325,17 @@ export const actionEstimateTradeForPDex =
   (payload) => async (dispatch, getState) => {
     let minSellOriginalAmount = 0;
     let maxBuyOriginalAmount = 0;
+    let state = getState();
+    const isExchangeVisible = isExchangeVisibleSelector(state)(
+      KEYS_PLATFORMS_SUPPORTED.incognito,
+    );
+    if (!isExchangeVisible) {
+      return {
+        minSellOriginalAmount,
+        maxBuyOriginalAmount,
+      };
+    }
     try {
-      let state = getState();
-      const isExchangeVisible = isExchangeVisibleSelector(state)(
-        KEYS_PLATFORMS_SUPPORTED.incognito,
-      );
-      if (!isExchangeVisible) {
-        return {
-          minSellOriginalAmount,
-          maxBuyOriginalAmount,
-        };
-      }
       const { payFeeByPRV, field } = feetokenDataSelector(state);
       const { sellamount, buyamount } = payload;
       const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
@@ -361,11 +368,20 @@ export const actionEstimateTradeForPDex =
       }
       await dispatch(
         actionChangeEstimateData({
-          [KEYS_PLATFORMS_SUPPORTED.incognito]: estPDexData,
+          [KEYS_PLATFORMS_SUPPORTED.incognito]: {
+            ...estPDexData,
+            error: null,
+          },
         }),
       );
     } catch (error) {
       console.log('actionEstimateTradeForPDex ERROR', error);
+      dispatch(
+        actionSetError({
+          error,
+          platformId: KEYS_PLATFORMS_SUPPORTED.incognito,
+        }),
+      );
     }
     return {
       minSellOriginalAmount,
@@ -446,18 +462,18 @@ export const actionEstimateTradeForPancake =
   (payload) => async (dispatch, getState) => {
     let minSellOriginalAmount = 0;
     let maxBuyOriginalAmount = 0;
+    let state = getState();
+    const isExchangeVisible = isExchangeVisibleSelector(state)(
+      KEYS_PLATFORMS_SUPPORTED.pancake,
+    );
+    if (!isExchangeVisible) {
+      return {
+        minSellOriginalAmount,
+        maxBuyOriginalAmount,
+      };
+    }
     try {
       const { selltoken, buytoken, sellamount, buyamount } = payload;
-      let state = getState();
-      const isExchangeVisible = isExchangeVisibleSelector(state)(
-        KEYS_PLATFORMS_SUPPORTED.pancake,
-      );
-      if (!isExchangeVisible) {
-        return {
-          minSellOriginalAmount,
-          maxBuyOriginalAmount,
-        };
-      }
       const isPairSup = isPairSupportedTradeOnPancakeSelector(state);
       const { field } = feetokenDataSelector(state);
       const getPancakeTokenParamReq = findTokenPancakeByIdSelector(state);
@@ -567,11 +583,15 @@ export const actionEstimateTradeForPancake =
             tradeID,
             feeAddress,
             signAddress,
+            error: null,
           },
         }),
       );
     } catch (error) {
       console.log('ERROR-actionEstimateTradeForPancake', error);
+      dispatch(
+        actionSetError({ platformId: KEYS_PLATFORMS_SUPPORTED.pancake, error }),
+      );
     }
     return {
       minSellOriginalAmount,
@@ -648,11 +668,9 @@ export const actionFindBestRateBetweenPlatforms =
         default:
           break;
         }
-        console.log('existed', KEYS_PLATFORMS_SUPPORTED[platformIdHasBestRate]);
         platformIdHasBestRate = KEYS_PLATFORMS_SUPPORTED[platformIdHasBestRate]
           ? platformIdHasBestRate
           : KEYS_PLATFORMS_SUPPORTED.incognito;
-        console.log('platformIdHasBestRate', platformIdHasBestRate);
         if (platformIdHasBestRate) {
           await dispatch(actionSwitchPlatform(platformIdHasBestRate));
         }
@@ -665,10 +683,10 @@ export const actionEstimateTrade =
   ({ field = formConfigs.selltoken, useMax = false } = {}) =>
     async (dispatch, getState) => {
       let isFetched = false;
+      let state = getState();
       try {
         const params = { field, useMax };
         dispatch(actionFetching(true));
-        let state = getState();
         const inputAmount = inputAmountSelector(state);
         let sellInputToken, buyInputToken, inputToken, inputPDecimals;
         sellInputToken = inputAmount(formConfigs.selltoken);
@@ -756,6 +774,11 @@ export const actionEstimateTrade =
       } finally {
         dispatch(actionSetFocusToken(''));
         dispatch(actionFetched({ isFetched }));
+        state = getState();
+        const errorEstTrade = errorEstimateTradeSelector(state);
+        if (errorEstTrade) {
+          new ExHandler(errorEstTrade).showErrorToast();
+        }
       }
     };
 
