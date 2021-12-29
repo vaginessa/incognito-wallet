@@ -75,6 +75,7 @@ import {
   isPrivacyAppSelector,
   isExchangeVisibleSelector,
   errorEstimateTradeSelector,
+  listPairsIDVerifiedSelector,
 } from './Swap.selector';
 import {
   calMintAmountExpected,
@@ -859,7 +860,7 @@ export const actionInitSwapForm =
   ({ refresh = true, defaultPair = {}, shouldFetchHistory = false } = {}) =>
     async (dispatch, getState) => {
       try {
-        const state = getState();
+        let state = getState();
         const defaultExchange = defaultExchangeSelector(state);
         const isUsePRVToPayFee = isUsePRVToPayFeeSelector(state);
         let pair = defaultPair || defaultPairSelector(state);
@@ -877,9 +878,11 @@ export const actionInitSwapForm =
         const isDefaultPairExisted =
         difference([pair?.selltoken, pair?.buytoken], pairs).length === 0;
         if (!pair?.selltoken || !pair?.buytoken || !isDefaultPairExisted) {
+          state = getState();
+          const listPairs = listPairsIDVerifiedSelector(state);
           pair = {
-            selltoken: pairs[0],
-            buytoken: pairs[1],
+            selltoken: listPairs[0],
+            buytoken: listPairs[1],
           };
           batch(() => {
             dispatch(actionSetSellTokenFetched(pair.selltoken));
