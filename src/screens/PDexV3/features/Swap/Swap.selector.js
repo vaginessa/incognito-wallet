@@ -71,11 +71,22 @@ export const listPairsSelector = createSelector(
       return [];
     }
     let list = pairs.map((tokenID) => getPrivacyDataByTokenID(tokenID));
-    return orderBy(
+    const result = orderBy(
       list,
-      ['priority', 'hasIcon', 'verified'],
+      ['priority', 'hasIcon', 'isVerified'],
       ['asc', 'desc', 'desc'],
     );
+    return result;
+  },
+);
+
+export const listPairsIDVerifiedSelector = createSelector(
+  listPairsSelector,
+  (pairs) => {
+    const result = pairs
+      .filter((token: SelectedPrivacy) => token?.isVerified)
+      .map((token) => token?.tokenId);
+    return result;
   },
 );
 

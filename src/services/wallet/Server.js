@@ -43,6 +43,9 @@ const MAIN_NET_SERVER = {
   tradeServices: 'https://api-coinservice.incognito.org',
   portalServices: 'https://api-portalv4.incognito.org',
   webviewChartServices: 'https://chart-webview.incognito.org',
+  bscConfigs: BSC_CONSTANT.BSC_MAINNET_CONFIGS,
+  pancakeConfigs: PANCAKE_CONSTANTS.PANCAKE_MAINNET_CONFIGS,
+  web3Configs: WEB3_CONSTANT.WEB3_MAINNET_CONFIGS,
 };
 const BETA_SERVER = {
   id: 'beta',
@@ -62,6 +65,9 @@ const BETA_SERVER = {
   tradeServices: 'https://api-coinservice-beta.incognito.org',
   portalServices: 'http://139.162.55.124:8010',
   webviewChartServices: 'https://chart-webview.incognito.org',
+  bscConfigs: BSC_CONSTANT.BSC_MAINNET_CONFIGS,
+  pancakeConfigs: PANCAKE_CONSTANTS.PANCAKE_MAINNET_CONFIGS,
+  web3Configs: WEB3_CONSTANT.WEB3_MAINNET_CONFIGS,
 };
 const TEST_NET_SERVER = {
   id: 'testnet',

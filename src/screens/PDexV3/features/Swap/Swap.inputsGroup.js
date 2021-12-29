@@ -95,7 +95,6 @@ const SwapInputsGroup = React.memo(() => {
       break;
     }
   };
-
   return (
     <View style={styled.inputGroups}>
       <Field
