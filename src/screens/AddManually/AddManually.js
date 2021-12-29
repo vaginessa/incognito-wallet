@@ -1,10 +1,14 @@
 import React from 'react';
-import { View } from 'react-native';
 import {
   Text,
   TouchableOpacity,
   KeyboardAwareScrollView,
+  View,
 } from '@src/components/core';
+import { colorsSelector } from '@src/theme/theme.selector';
+import { View2 } from '@src/components/core/View';
+import globalStyled from '@src/theme/theme.styled';
+import { useSelector } from 'react-redux';
 import AddERC20Token from '@src/components/AddERC20Token';
 import AddBep2Token from '@src/components/AddBep2Token';
 import AddBep20Token from '@src/components/AddBep20Token';
@@ -20,8 +24,9 @@ import withAddManually, {
 } from './AddManually.enhance';
 import AddManuallyModal from './AddManually.modal';
 
-const SelectType = () => {
+const SelectType = (props) => {
   const { toggleChooseType, type } = React.useContext(AddManuallyContext);
+  const { colors } = props;
   return (
     <View style={styles.selectType}>
       <View style={styles.selectNetworkButtonGroup}>
@@ -33,7 +38,7 @@ const SelectType = () => {
           <Text style={styles.text}>{type}</Text>
           <Icons
             name="angle-right"
-            style={styles.selectNetworkValueIcon}
+            style={[styles.selectNetworkValueIcon, {color: colors?.text1} ]}
             size={16}
           />
         </TouchableOpacity>
@@ -59,19 +64,22 @@ const AddManually = () => {
   const { type } = React.useContext(AddManuallyContext);
   const navigation = useNavigation();
   const onGoBack = () => navigation.navigate(routeNames.FollowToken);
+  const colors = useSelector(colorsSelector);
   return (
-    <View style={styles.container}>
+    <View2 style={styles.container}>
       <Header title="Add manually" onGoBack={onGoBack} />
-      <KeyboardAwareScrollView>
-        <View style={styles.extra}>
-          <SelectType />
-          {type === TYPES.BEP2.value && <AddBep2Token />}
-          {type === TYPES.ERC20.value && <AddERC20Token />}
-          {type === TYPES.BEP20.value && <AddBep20Token />}
-        </View>
-      </KeyboardAwareScrollView>
-      <ModalSelectType />
-    </View>
+      <View borderTop fullFlex>
+        <KeyboardAwareScrollView>
+          <View style={styles.extra}>
+            <SelectType colors={colors} />
+            {type === TYPES.BEP2.value && <AddBep2Token />}
+            {type === TYPES.ERC20.value && <AddERC20Token />}
+            {type === TYPES.BEP20.value && <AddBep20Token />}
+          </View>
+        </KeyboardAwareScrollView>
+        <ModalSelectType />
+      </View>
+    </View2>
   );
 };
 

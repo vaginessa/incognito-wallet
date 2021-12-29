@@ -8,6 +8,9 @@ import {
 import Row from '@src/components/Row';
 import Modal from 'react-native-modal';
 import {SuccessIcon} from '@components/Icons';
+import { useSelector } from 'react-redux';
+import { colorsSelector } from '@src/theme/theme.selector';
+
 import styles from './style';
 
 const SuccessModal = (props) => {
@@ -22,13 +25,14 @@ const SuccessModal = (props) => {
     onSuccess,
     successTitle,
   } = props;
+  const colors = useSelector(colorsSelector);
 
   return (
     <Modal isVisible={visible} overlayStyle={styles.dialog}>
       <View style={[styles.dialogContent]}>
-        <SuccessIcon />
+        <SuccessIcon fill={colors.icon1} />
         {!!title && (
-          <Text style={styles.dialogTitle}>
+          <Text style={[styles.dialogTitle]}>
             {title}
           </Text>
         )}

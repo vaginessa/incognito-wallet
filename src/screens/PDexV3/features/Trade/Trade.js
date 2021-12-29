@@ -1,4 +1,4 @@
-import { batch, useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Tabs } from '@src/components/core';
 import Row from '@src/components/Row';
@@ -22,8 +22,9 @@ import {
 import { styled } from './Trade.styled';
 import withTrade from './Trade.enhance';
 
-const Trade = () => {
+const Trade = (props) => {
   const tabIndex = useNavigationParam('tabIndex');
+  const { onRefresh } = props;
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const visibleBtnChart = useSelector(visibleBtnChartSelector);
@@ -35,7 +36,7 @@ const Trade = () => {
         useTab1
         defaultTabIndex={0}
         styledTabList={styled.styledTabList}
-        rightCustom={
+        rightCustom={(
           <Row style={styled.rightHeader}>
             {visibleBtnChart && (
               <ButtonChart
@@ -43,9 +44,11 @@ const Trade = () => {
                 style={{ marginRight: 15 }}
               />
             )}
-            <SelectAccountButton />
+            <View>
+              <SelectAccountButton handleSelectedAccount={onRefresh} />
+            </View>
           </Row>
-        }
+        )}
       >
         <View
           tabID={TAB_BUY_LIMIT_ID}
@@ -61,7 +64,7 @@ const Trade = () => {
         >
           <OrderLimit />
         </View>
-        <View tabID={TAB_SWAP_ID} label="Swap" onChangeTab={() => null}>
+        <View tabID={TAB_SWAP_ID} label="Swap">
           <TabSwap />
         </View>
       </Tabs>

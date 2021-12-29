@@ -14,6 +14,9 @@ import { CONSTANT_COMMONS } from '@src/constants';
 import withAccount from '@screens/DexV2/components/account.enhance';
 import ShieldDecentralized from '@screens/Shield/features/ShieldDecentralized';
 import { PRV_ID } from '@src/screens/Dex/constants';
+import { useSelector } from 'react-redux';
+import { themeModeSelector } from '@src/theme/theme.selector';
+import { THEME_KEYS } from '@src/theme/theme.consts';
 
 const enhance = (WrappedComp) => (props) => {
   const {
@@ -38,12 +41,12 @@ const enhance = (WrappedComp) => (props) => {
   const handleGoBack = () => {
     navigation.navigate(routeNames.Shield);
   };
-
+  const themeMode = useSelector(themeModeSelector);
   const renderHeader = React.useCallback(() => (
     <Header
       title={`Shield ${tokenSymbol}`}
       titleStyled={styled.titleStyled}
-      rightHeader={<BtnInfo isBlack onPress={handleToggleTooltip} />}
+      rightHeader={<BtnInfo isBlack={themeMode !== THEME_KEYS.DARK_THEME} onPress={handleToggleTooltip} />}
       onGoBack={handleGoBack}
     />
   ), [tokenSymbol]);

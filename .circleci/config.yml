@@ -19,7 +19,7 @@ jobs:
   checkout_code:
     executor:
       name: rn/linux_js
-      node_version: '12.12.0'
+      node_version: '12'
     steps:
       - checkout
       - persist_to_workspace:
@@ -28,7 +28,7 @@ jobs:
   generate_data:
     executor:
       name: rn/linux_js
-      node_version: '12.12.0'
+      node_version: '12'
     steps:
       - attach_workspace:
           at: .
@@ -143,6 +143,7 @@ jobs:
       - run: yarn deployIOS:prod
       - run: curl -X POST -H 'Content-type:application/json' --data '{"text":"'"Deploy iOS $APP_VERSION production successfully! $LAST_COMMIT_MESSAGE"'"}' $SLACK_HOOK
   push_play_store:
+    resource_class: "large"
     executor:
       name: rn/linux_android
     steps:
@@ -280,7 +281,7 @@ workflows:
           filters:
             branches:
               only:
-                - master
+                - inc-production
       - generate_data:
           requires:
             - checkout_code

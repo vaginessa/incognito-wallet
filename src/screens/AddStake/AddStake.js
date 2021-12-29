@@ -1,4 +1,5 @@
-import { ActivityIndicator, View, Text, Button, TouchableOpacity, ScrollView } from '@src/components/core';
+import { ActivityIndicator, View, Text, Button, TouchableOpacity, ScrollViewBorder } from '@src/components/core';
+import { Text4 } from '@src/components/core/Text';
 import PropTypes from 'prop-types';
 import React from 'react';
 import BaseScreen from '@src/screens/BaseScreen';
@@ -11,6 +12,7 @@ import { COLORS } from '@src/styles';
 import NavigationService from '@src/services/NavigationService';
 import routeNames from '@src/router/routeNames';
 import accountService from '@services/wallet/accountService';
+import globalStyled from '@src/theme/theme.styled';
 import styles from './styles';
 
 const pDecimals = CONSTANT_COMMONS.DECIMALS.MAIN_CRYPTO_CURRENCY;
@@ -70,8 +72,8 @@ class AddStake extends BaseScreen {
     const formatAmount = formatUtils.amount(amount, pDecimals);
     return (
       <View style={styles.buy}>
-        <Text style={[styles.desc, styles.firstLine]}>You need {formatAmount} PRV to stake this node.</Text>
-        <Text style={styles.desc}>Please make sure you also have enough to cover the network fee.</Text>
+        <Text4 style={[styles.desc, styles.firstLine]}>You need <Text style={[styles.desc, styles.firstLine]}>{formatAmount} PRV</Text>  to stake this node.</Text4>
+        <Text4 style={styles.desc}>Please make sure you also have enough to cover the network fee.</Text4>
         <Button
           style={[styles.button, theme.BUTTON.BLACK_TYPE]}
           title="Buy PRV"
@@ -83,7 +85,7 @@ class AddStake extends BaseScreen {
 
   renderStatusStakeOwnFund = (text, onPress, shouldDropDown) => {
     return (
-      <View style={[styles.balanceContainer, theme.MARGIN.marginTopDefault, { flexDirection: 'row', justifyContent: 'space-between' }]}>
+      <View style={[{ flexDirection: 'row', justifyContent: 'space-between' }]}>
         <Text style={[theme.text.boldTextStyleMedium]}>{text}</Text>
         <TouchableOpacity
           style={[{ flexDirection: 'row' }, styles.balanceContainer]}
@@ -109,11 +111,11 @@ class AddStake extends BaseScreen {
       <View style={{marginTop: 20, marginBottom: 20}}>
         <Text style={styles.title}>{account.AccountName}</Text>
         <View style={styles.row}>
-          <Text style={styles.desc}>PRV balance</Text>
+          <Text4 style={styles.desc}>PRV balance</Text4>
           <Text style={styles.itemRight}>{formatUtils.amount(balance, pDecimals)} {symbol}</Text>
         </View>
         <View style={styles.row}>
-          <Text style={styles.desc}>Fee</Text>
+          <Text4 style={styles.desc}>Fee</Text4>
           <Text style={styles.itemRight}>{formatUtils.amount(fee, pDecimals)} {symbol}</Text>
         </View>
         {isNotEnoughBalance ? this.renderBuy() : this.renderStake()}
@@ -139,10 +141,10 @@ class AddStake extends BaseScreen {
     }
 
     return (
-      <ScrollView paddingBottom>
+      <ScrollViewBorder>
         {this.renderStatusStakeOwnFund('Stake with your own funds', ()=>this.setState({blockStatus1: !blockStatus1}), blockStatus1)}
         {blockStatus1 && this.renderSelfStake()}
-      </ScrollView>
+      </ScrollViewBorder>
     );
   }
 }

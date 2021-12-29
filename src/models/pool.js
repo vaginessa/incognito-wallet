@@ -135,12 +135,12 @@ export class PoolHistory {
       'Successful',
     ][data.Status];
 
-    this.statusColor = COLORS.newGrey;
+    this.statusColor = COLORS.white;
     if (this.status === 'Unsuccessful') {
-      this.statusColor = COLORS.red1;
+      this.statusColor = COLORS.red;
     }
     if (this.status === 'Successful') {
-      this.statusColor = COLORS.green2;
+      this.statusColor = COLORS.green1;
     }
 
     this.type = [

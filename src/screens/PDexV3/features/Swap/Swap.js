@@ -5,7 +5,6 @@ import { createForm } from '@components/core/reduxForm';
 import { useSelector } from 'react-redux';
 import LoadingTx from '@src/components/LoadingTx';
 import { KeyboardAwareScrollView, RefreshControl } from '@src/components/core';
-import NetworkFee from '@src/components/NetworkFee';
 import { styled } from './Swap.styled';
 import { formConfigs } from './Swap.constant';
 import withSwap from './Swap.enhance';
@@ -32,7 +31,7 @@ const Swap = (props) => {
   return (
     <>
       <KeyboardAwareScrollView
-        style={styled.scrollview}
+        style={[styled.scrollview]}
         refreshControl={
           <RefreshControl
             refreshing={swapInfo?.refreshing}
@@ -49,7 +48,6 @@ const Swap = (props) => {
                 onPress={handleConfirm}
                 title={swapInfo?.btnSwapText || ''}
               />
-              <NetworkFee />
             </>
           )}
         </Form>

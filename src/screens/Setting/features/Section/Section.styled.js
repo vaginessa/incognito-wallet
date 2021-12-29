@@ -1,13 +1,14 @@
-import { COLORS, FONT } from '@src/styles';
+import { FONT } from '@src/styles';
 import { StyleSheet } from 'react-native';
+import globalStyled from '@src/theme/theme.styled';
 
 const HEADER_HEIGHT = 35;
 
 export const sectionStyle = StyleSheet.create({
   container: {
+    ...globalStyled.defaultPaddingHorizontal,
     paddingVertical: 16,
-    borderBottomColor: COLORS.colorGrey4,
-    borderBottomWidth: 1
+    borderBottomWidth: 1,
   },
   header: {
     flexDirection: 'row',
@@ -20,31 +21,25 @@ export const sectionStyle = StyleSheet.create({
     flexDirection: 'row',
   },
   infoContainer: {},
-  item: {
-    paddingVertical: 16,
-    borderBottomColor: COLORS.colorGrey4,
-    borderBottomWidth: 1
-  },
   subItem: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
   },
   lastItem: {},
-  items: {
-    backgroundColor: COLORS.white,
+  nonPaddingTop: {
+    paddingTop: 0,
   },
   label: {
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.medium,
-    lineHeight: FONT.SIZE.medium + 9,
-    color: COLORS.black,
+    lineHeight: FONT.SIZE.medium + 8,
   },
   desc: {
     fontFamily: FONT.NAME.medium,
+    fontWeight: '400',
     fontSize: FONT.SIZE.regular,
-    lineHeight: FONT.SIZE.regular + 9,
-    color: COLORS.lightGrey33,
+    lineHeight: FONT.SIZE.regular + 8,
     flex: 1,
     marginLeft: 40
   },

@@ -1,5 +1,4 @@
 import React, { memo } from 'react';
-import { FlatList, Text, View } from 'react-native';
 import nodeEnhance from '@screens/Node/Node.enhance';
 import DialogLoader from '@components/DialogLoader';
 import PropTypes from 'prop-types';
@@ -9,7 +8,7 @@ import WelcomeFirstTime from '@screens/Node/components/WelcomeFirstTime';
 import WelcomeNodes from '@screens/Node/components/Welcome';
 import { isEmpty } from 'lodash';
 import Rewards from '@screens/Node/components/Rewards';
-import {ActivityIndicator, RoundCornerButton} from '@components/core';
+import { ActivityIndicator, FlatList, RefreshControl, RoundCornerButton, View } from '@components/core';
 import theme from '@src/styles/theme';
 import { SuccessModal } from '@src/components';
 import NodeItem from '@screens/Node/components/NodeItem/NodeItem';
@@ -75,12 +74,12 @@ const Node = (props) => {
     }
 
     return (
-      <View style={{ paddingHorizontal: 25 }}>
+      <View>
         <Rewards rewards={nodeRewards} />
         { !noRewards && (
           <RoundCornerButton
             onPress={handleWithdrawAll}
-            style={[theme.BUTTON.NODE_BUTTON, {marginBottom: 50}]}
+            style={[{marginBottom: 50}]}
             title={!withdrawable || withdrawing ? string.withdrawing : string.withdraw_all}
             disabled={!withdrawable || withdrawing}
           />
@@ -104,36 +103,31 @@ const Node = (props) => {
 
     if (showWelcome) {
       return (
-        <View style={{ marginHorizontal: 25 }}>
-          <WelcomeFirstTime onPressOk={onClearNetworkNextTime} />
-        </View>
+        <WelcomeFirstTime onPressOk={onClearNetworkNextTime} />
       );
     }
 
     if (!isFetching && isEmpty(listDevice)) {
       return (
-        <View style={{ marginHorizontal: 25 }}>
-          <WelcomeNodes
-            onAddVNode={handleAddVirtualNodePress}
-            onAddPNode={handleAddNodePress}
-          />
-        </View>
+        <WelcomeNodes
+          onAddVNode={handleAddVirtualNodePress}
+          onAddPNode={handleAddNodePress}
+        />
       );
     }
 
     return (
       <>
         {renderTotalRewards()}
-        <View style={{ flex: 1 }}>
+        <>
           <FlatList
+            refreshControl={(<RefreshControl refreshing={isRefreshing} onRefresh={refreshData} />)}
             showsVerticalScrollIndicator={false}
-            contentContainerStyle={[{ flexGrow: 1}]}
+            contentContainerStyle={[{ flexGrow: 1,}]}
             style={style.list}
             data={listDevice}
             keyExtractor={getKeyExtractor}
             renderItem={renderNode}
-            onRefresh={refreshData}
-            refreshing={isRefreshing}
           />
           {/*<View style={{ marginHorizontal: 25 }}>*/}
           {/*  <RoundCornerButton*/}
@@ -152,14 +146,14 @@ const Node = (props) => {
             successTitle={string.cancel}
             buttonStyle={theme.BUTTON.NODE_BUTTON}
           />
-        </View>
+        </>
       </>
     );
   };
 
   return (
     <>
-      <View style={{ flex: 1 }}>
+      <View fullFlex borderTop paddingHorizontal>
         {renderContent()}
         {renderModalActionsForNodePrevSetup()}
         <DialogLoader loading={loading} />

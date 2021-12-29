@@ -1,14 +1,19 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { View as RNComponent, StyleSheet } from 'react-native';
+import styled from 'styled-components/native';
 
-const styles = StyleSheet.create({
-  flex: {
-    flex: 1,
-  },
-});
+const Container = styled.View`
+  flex: 1;
+  background-color: ${({ theme }) => theme.background1};
+`;
 
-const FlexView = ({ style, ...otherProps }) => <RNComponent style={[style, styles.flex]} {...otherProps} />;
+const FlexView = (props) => {
+  const { style, ...rest } = props;
+  return (
+    <Container {...rest} style={[style]} />
+  );
+};
+
 
 FlexView.propTypes = {
   style: PropTypes.any,

@@ -1,23 +1,26 @@
 import React from 'react';
-import { Text, StyleSheet } from 'react-native';
-import { KeyboardAwareScrollView } from '@src/components/core';
+import { StyleSheet } from 'react-native';
+import { KeyboardAwareScrollView, Text, View } from '@src/components/core';
 import { BtnChecked } from '@src/components/Button';
 import { ListToken } from '@src/components/Token';
 import PropTypes from 'prop-types';
-import { COLORS, FONT } from '@src/styles';
+import { FONT } from '@src/styles';
+import globalStyled from '@src/theme/theme.styled';
 
 const styled = StyleSheet.create({
   hook: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 35,
+    marginTop: 32,
   },
   hookText: {
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.small,
     lineHeight: FONT.SIZE.small + 5,
-    color: COLORS.black,
     marginLeft: 5,
+  },
+  paddingTop: {
+    paddingTop: 24,
   },
 });
 
@@ -27,14 +30,20 @@ const ListAllToken = (props) => {
     onToggleUnVerifiedTokens,
     toggleUnVerified,
     renderItem,
+    styledContainer,
+    styledCheckBox
   } = props;
   return (
-    <KeyboardAwareScrollView>
-      <ListToken {...tokensFactories[0]} renderItem={renderItem} styledListToken={{ paddingTop: 15 }} />
+    <KeyboardAwareScrollView
+      defaultPadding={false}
+      style={[styled.paddingTop, styledContainer]}
+    >
+      <ListToken {...tokensFactories[0]} renderItem={renderItem} />
       <BtnChecked
         btnStyle={[
           styled.hook,
           tokensFactories[1]?.visible ? null : { marginBottom: 50 },
+          styledCheckBox
         ]}
         onPress={onToggleUnVerifiedTokens}
         checked={toggleUnVerified}
@@ -45,11 +54,18 @@ const ListAllToken = (props) => {
   );
 };
 
+ListAllToken.defaultProps = {
+  styledContainer: null,
+  styledCheckBox: null
+};
+
 ListAllToken.propTypes = {
   tokensFactories: PropTypes.array.isRequired,
   onToggleUnVerifiedTokens: PropTypes.func.isRequired,
   toggleUnVerified: PropTypes.bool.isRequired,
   renderItem: PropTypes.func.isRequired,
+  styledContainer: PropTypes.any,
+  styledCheckBox: PropTypes.any
 };
 
 export default React.memo(ListAllToken);

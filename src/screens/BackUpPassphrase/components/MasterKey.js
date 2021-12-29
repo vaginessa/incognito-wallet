@@ -3,19 +3,22 @@ import PropTypes from 'prop-types';
 import { Row } from '@src/components';
 import { Text, TouchableOpacity } from '@components/core';
 import { StyleSheet } from 'react-native';
-import { COLORS, THEME } from '@src/styles';
+import { COLORS, THEME, FONT } from '@src/styles';
 import { ExportIcon } from '@components/Icons';
 import Swipeout from 'react-native-swipeout';
+import { useSelector } from 'react-redux';
+import { colorsSelector } from '@src/theme/theme.selector';
 
 const styles = StyleSheet.create({
   container: {
-    marginVertical: 15,
+    marginVertical: 10,
   },
   flex: {
     flex: 1,
   },
   name: {
-    ...THEME.text.mediumTextMotto,
+    fontSize: FONT.SIZE.regular,
+    ...FONT.TEXT.desc,
     minHeight: 35,
     justifyContent: 'center',
     textAlignVertical: 'center',
@@ -26,17 +29,18 @@ const styles = StyleSheet.create({
   },
   swipeOutButton: {
     paddingHorizontal: 25,
-    backgroundColor: COLORS.white,
+    borderRadius: 4,
   },
   active: {
-    ...THEME.text.mediumText,
+    ...FONT.STYLE.bold,
   }
 });
 
 const MasterKey = ({ name, number, onPress, onDelete, isActive }) => {
+  const colors = useSelector(colorsSelector);
   return (
     <Swipeout
-      style={[styles.swipeOutButton]}
+      style={[styles.swipeOutButton, { backgroundColor: colors.background5 }]}
       right={
         onDelete
           ? [{
@@ -48,14 +52,14 @@ const MasterKey = ({ name, number, onPress, onDelete, isActive }) => {
       }
     >
       <TouchableOpacity onPress={onPress}>
-        <Row style={styles.container} spaceBetween center>
+        <Row style={[styles.container, { backgroundColor: colors.background5 }]} spaceBetween center>
           <Text
             style={[styles.name, isActive && styles.active, styles.flex]}
             numberOfLines={1}
           >
             {name}
           </Text>
-          <Row center>
+          <Row center style={{backgroundColor: colors.background5}}>
             <Text style={[styles.name, styles.number]}>{number}</Text>
             <ExportIcon />
           </Row>

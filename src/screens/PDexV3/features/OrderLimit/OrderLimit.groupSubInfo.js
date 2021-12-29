@@ -1,10 +1,12 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { useSelector } from 'react-redux';
-import { Tabs, FlatList, ActivityIndicator } from '@src/components/core';
+import { Tabs } from '@src/components/core';
 import { OrderBook } from '@screens/PDexV3/features/Chart/Chart.orderBook';
-import { openOrdersSelector } from './OrderLimit.selector';
-import Order from './OrderLimit.order';
+import {
+  openOrdersSelector,
+  orderHistorySelector,
+} from './OrderLimit.selector';
 import History, { useHistoryOrders } from './OrderLimit.orderHistory';
 import {
   TAB_OPEN_ORDER,
@@ -18,54 +20,37 @@ const styled = StyleSheet.create({
     flex: 1,
     marginTop: 24,
   },
-  wrapper: {
-    paddingVertical: 24,
-  },
-});
-
-const TabOpenOrder = React.memo(() => {
-  const { history = [], isFetching } = useSelector(openOrdersSelector);
-  useHistoryOrders();
-  return (
-    <View style={styled.wrapper}>
-      {isFetching && <ActivityIndicator style={{ marginBottom: 16 }} />}
-      <FlatList
-        data={history}
-        keyExtractor={(item) => item?.requestTx}
-        renderItem={({ item, index }) => (
-          <Order data={item} visibleDivider={index !== history.length - 1} />
-        )}
-      />
-    </View>
-  );
-});
-
-const TabOrderBook = React.memo(() => {
-  return (
-    <View style={styled.wrapper}>
-      <OrderBook />
-    </View>
-  );
 });
 
 const GroupSubInfo = () => {
+  const orderHistory = useSelector(orderHistorySelector);
+  const openOrders = useSelector(openOrdersSelector);
   return (
     <View style={styled.container}>
-      <Tabs
-        rootTabID={ROOT_TAB_SUB_INFO}
-        styledTabs={styled.styledTabs}
-        useTab1
-      >
+      <Tabs rootTabID={ROOT_TAB_SUB_INFO}>
         <View
           tabID={TAB_ORDER_BOOK}
           label="Order book"
           upperCase={false}
           onChangeTab={() => null}
         >
-          <TabOrderBook />
+          <OrderBook />
         </View>
-        <View tabID={TAB_HISTORY_ID} label="Order" onChangeTab={() => null} upperCase={false}>
-          <History />
+        <View
+          tabID={TAB_OPEN_ORDER}
+          label="Open orders"
+          onChangeTab={() => null}
+          upperCase={false}
+        >
+          <History {...openOrders} />
+        </View>
+        <View
+          tabID={TAB_HISTORY_ID}
+          label="History"
+          onChangeTab={() => null}
+          upperCase={false}
+        >
+          <History {...orderHistory} />
         </View>
       </Tabs>
     </View>

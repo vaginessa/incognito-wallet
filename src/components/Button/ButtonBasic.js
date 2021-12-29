@@ -1,31 +1,28 @@
 import React from 'react';
-import { StyleSheet, Text } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import PropTypes from 'prop-types';
+import { colorsSelector } from '@src/theme';
+import { useSelector } from 'react-redux';
 import { COLORS, FONT } from '@src/styles';
 import {
   ActivityIndicator,
   TouchableOpacity,
-  View,
+  Text,
 } from '@src/components/core';
 import isArray from 'lodash/isArray';
 
 const styled = StyleSheet.create({
   container: {
-    backgroundColor: COLORS.colorPrimary,
-    borderRadius: 100,
+    borderRadius: 8,
     height: 50,
     alignItems: 'center',
     justifyContent: 'center',
     maxWidth: '100%',
   },
   title: {
-    color: COLORS.white,
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.medium,
     textAlign: 'center',
-  },
-  disabled: {
-    backgroundColor: COLORS.colorGreyMedium,
   },
 });
 
@@ -35,16 +32,24 @@ const ButtonBasic = (props) => {
     btnStyle = null,
     titleStyle = null,
     customContent,
-    disabled = false,
+    disabled = true,
     loading = false,
     ...rest
   } = props;
-  let containerStyle = [styled.container];
+  const colors = useSelector(colorsSelector);
+  let containerStyle = [
+    {
+      ...styled.container,
+      backgroundColor: colors.ctaMain,
+    },
+  ];
   isArray(btnStyle)
     ? containerStyle.push(...btnStyle)
     : containerStyle.push(btnStyle);
   if (disabled) {
-    containerStyle.push(styled.disabled);
+    containerStyle.push({
+      backgroundColor: colors.grey7,
+    });
   }
   return (
     <TouchableOpacity style={containerStyle} {...rest}>
@@ -58,7 +63,21 @@ const ButtonBasic = (props) => {
               color={COLORS.white}
             />
           ) : null}
-          <Text style={[styled.title, titleStyle]}>{title}</Text>
+          <Text
+            style={[
+              styled.title,
+              disabled
+                ? {
+                  color: colors.ctaMain,
+                }
+                : {
+                  color: colors.mainText,
+                },
+              titleStyle,
+            ]}
+          >
+            {title}
+          </Text>
         </View>
       )}
     </TouchableOpacity>

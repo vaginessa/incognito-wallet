@@ -1,5 +1,6 @@
 import { StyleSheet } from 'react-native';
-import { FONT, COLORS } from '@src/styles';
+import { FONT } from '@src/styles';
+import globalStyled from '@src/theme/theme.styled';
 
 export const styled = StyleSheet.create({
   container: {
@@ -12,17 +13,16 @@ export const styled = StyleSheet.create({
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.regular,
     lineHeight: FONT.SIZE.regular + 5,
-    color: COLORS.colorGreyBold,
   },
   boldText: {
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.medium,
     lineHeight: FONT.SIZE.medium + 6,
-    color: COLORS.black,
   },
   addManually: {
-    marginBottom: 40,
-    marginTop: 15,
+    ...globalStyled.defaultPaddingHorizontal,
+    paddingBottom: 40,
+    paddingTop: 15,
   },
   listToken: {
     flex: 1,

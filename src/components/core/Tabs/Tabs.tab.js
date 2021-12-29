@@ -1,34 +1,34 @@
 import React from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 import PropTypes from 'prop-types';
-import { ButtonBasic } from '@src/components/Button';
-import { COLORS } from '@src/styles';
+import { FONT } from '@src/styles';
+import styled from 'styled-components/native';
 
-const styled = StyleSheet.create({
+const styles = StyleSheet.create({
   btnStyle: {
-    flex: 1,
-    height: '100%'
+    marginRight: 24,
+    paddingBottom: 16,
   },
   btnStyleEnabled: {
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    backgroundColor: COLORS.white,
+    borderBottomColor: '#1A73E8',
+    borderBottomWidth: 2,
   },
   btnStyleDisabled: {
     backgroundColor: 'transparent',
     borderColor: 'transparent',
   },
   titleStyle: {
-    color: COLORS.colorBlue,
+    ...FONT.STYLE.medium,
+    fontSize: FONT.SIZE.regular,
   },
   titleDisabledStyle: {
-    color: COLORS.colorGreyMedium,
   },
 });
+
+const CustomText = styled(Text)`
+  color: ${({ disabled, theme }) => disabled ? theme.text11 : theme.text1 };
+  line-height: 24px;
+`;
 
 const Tab = (props) => {
   const {
@@ -45,23 +45,27 @@ const Tab = (props) => {
   const onClick = () => typeof onClickTab === 'function' && onClickTab(tabID);
   const disabled = tabID !== activeTab;
   return (
-    <ButtonBasic
-      title={label}
+    <TouchableOpacity
       onPress={onClick}
-      btnStyle={
+      style={
         tabStyled
           ? [tabStyled, disabled ? tabStyledDisabled : null]
           : [
-            styled.btnStyle,
-            disabled ? styled.btnStyleDisabled : { ...styled.btnStyleEnabled, ...tabStyledEnabled },
+            styles.btnStyle,
+            disabled ? styles.btnStyleDisabled : { ...styles.btnStyleEnabled, ...tabStyledEnabled },
           ]
       }
-      titleStyle={
-        titleStyled
-          ? [titleStyled, disabled && titleDisabledStyled]
-          : [styled.titleStyle, disabled ? styled.titleDisabledStyle : null]
-      }
-    />
+    >
+      <CustomText
+        disabled={disabled}
+        style={
+          titleStyled
+            ? [titleStyled, disabled && titleDisabledStyled]
+            : [styles.titleStyle, disabled ? styles.titleDisabledStyle : null]
+        }
+      >{label}
+      </CustomText>
+    </TouchableOpacity>
   );
 };
 

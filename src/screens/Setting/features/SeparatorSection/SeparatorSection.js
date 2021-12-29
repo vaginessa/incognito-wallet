@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { Switch } from '@components/core';
+import { Switch, View } from '@components/core';
+import { Text5 } from '@src/components/core/Text';
 import RNRestart from 'react-native-restart';
 import {
   getDecimalSeparator,
   setDecimalSeparator as saveDecimalSeparator,
 } from '@src/resources/separator';
 import Section, { sectionStyle } from '@screens/Setting/features/Section';
-import { Text, View } from 'react-native';
 import { SeparatorIcon } from '@components/Icons';
 
 const SeparatorSection = () => {
@@ -38,9 +38,9 @@ const SeparatorSection = () => {
           onPress={togglePin}
           style={[sectionStyle.subItem]}
         >
-          <Text style={[sectionStyle.desc]}>
+          <Text5 style={[sectionStyle.desc]}>
             {'Use decimal comma\ninstead of point'}
-          </Text>
+          </Text5>
         </View>,
       ]}
     />

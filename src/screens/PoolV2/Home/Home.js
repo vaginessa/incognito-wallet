@@ -16,6 +16,7 @@ import { TouchableOpacity } from 'react-native';
 import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@routers/routeNames';
 import helperConst from '@src/constants/helper';
+import globalStyled from '@src/theme/theme.styled';
 import styles from './style';
 
 const BtnInfo = React.memo(() => {
@@ -50,17 +51,27 @@ const Home = ({
   displayFullTotalRewardsNonLock,
 }) => {
   const navigation = useNavigation();
+
+  const handleHistory = () => {
+    navigation.navigate(routeNames.PoolV2History, {
+      coins: config.coins,
+    });
+  };
+
   const renderContent = () => {
     if (!config || !userData) {
       return <LoadingContainer />;
     }
 
     return (
-      <View style={styles.wrapper}>
+      <View style={styles.wrapper} borderTop>
         <TotalReward
           total={displayClipTotalRewards}
           nativeToken={nativeToken}
-          subTitle="Compounding Rewards"
+          style={globalStyled.defaultPaddingHorizontal}
+          showRight={histories.length > 0}
+          isLoading={isLoadingHistories}
+          onRightPress={handleHistory}
         />
         <Actions
           buy={!withdrawable}
@@ -87,7 +98,7 @@ const Home = ({
   };
 
   return (
-    <View style={styles.container}>
+    <>
       <Header
         title="Provide"
         customHeaderTitle={<BtnInfo />}
@@ -97,7 +108,7 @@ const Home = ({
         }}
       />
       {renderContent()}
-    </View>
+    </>
   );
 };
 
@@ -126,9 +137,9 @@ Home.defaultProps = {
 };
 
 export default compose(
-  withLayout_2,
   withDefaultAccount,
   withHistories,
   withPoolData,
   withRetry,
+  withLayout_2,
 )(Home);

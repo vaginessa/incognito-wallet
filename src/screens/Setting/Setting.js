@@ -1,4 +1,4 @@
-import { Text, View } from '@src/components/core';
+import { Text, View, ScrollView, ScrollViewBorder } from '@src/components/core';
 import React, { useState } from 'react';
 import AppUpdater from '@components/AppUpdater/index';
 import { useNavigation, useNavigationParam } from 'react-navigation-hooks';
@@ -8,11 +8,14 @@ import CurrencySection from '@screens/Setting/features/CurrencySection/CurrencyS
 import RemoveStorage from '@screens/Setting/features/RemoveStorage/RemoveStorage';
 import ConvertCoinsSection from '@screens/Setting/features/ConvertCoinsSection';
 import DeviceInfo from 'react-native-device-info';
-import { SafeAreaView, ScrollView } from 'react-native';
+import { SafeAreaView } from 'react-native';
 import { NetworkIcon, SecurityIcon } from '@components/Icons';
 import { Header } from '@src/components';
+import globalStyled from '@src/theme/theme.styled';
 import codePush from 'react-native-code-push';
 import HideBalance from '@screens/Setting/features/HideBalance';
+import { compose } from 'recompose';
+import { withLayout_2 } from '@components/Layout';
 import PINSection from './features/PINSection';
 import SeparatorSection from './features/SeparatorSection';
 import DevSection from './features/DevSection';
@@ -26,6 +29,7 @@ import withSetting from './Setting.enhance';
 import DecimalDigitsSection from './features/DecimalDigitsSection';
 import ExportCSVSection from './features/ExportCSVSection';
 import RemoveBalanceCached from './features/RemoveBalanceCached';
+
 // import PayFeeByPRV from './features/PayFeeByPRV';
 
 const Setting = () => {
@@ -43,10 +47,11 @@ const Setting = () => {
           onReloadedNetworks: actionFetchServers,
         }),
       icon: <NetworkIcon />,
+      nonPaddingTop: true,
     },
     {
       title: 'Tickets',
-      desc: 'Manage your tickets',
+      desc: 'View and mint tickets',
       handlePress: () => navigation?.navigate(routeNames.NFTToken),
       icon: <SecurityIcon />,
     },
@@ -68,25 +73,25 @@ const Setting = () => {
   }, []);
 
   return (
-    <SafeAreaView>
+    <>
       {!!showHeader && (
-        <Header title="Setting" style={{ paddingHorizontal: 25 }} />
+        <Header title="Settings" />
       )}
-      <ScrollView
-        style={{ paddingHorizontal: 25 }}
+      <ScrollViewBorder
+        style={{ paddingHorizontal: 0 }}
         showsVerticalScrollIndicator={false}
       >
-        <View>
-          {sectionItemFactories.map((item) => (
-            <SectionItem data={item} key={`${item.title} ${item.desc}`} />
+        <View style={settingStyle.container}>
+          {sectionItemFactories.map((item, index) => (
+            <SectionItem data={item} key={`${item.title} ${item.desc}`} firstItem={index === 0} />
           ))}
           {/* <PayFeeByPRV /> */}
           <PINSection />
           <SeparatorSection />
           <DecimalDigitsSection />
-          <CurrencySection />
+          {/*<CurrencySection />*/}
           <AddressBookSection />
-          <ExportCSVSection handlePress={handlePressExportCSV} />
+          {/*<ExportCSVSection handlePress={handlePressExportCSV} />*/}
           <UTXOSection />
           <ConvertCoinsSection />
           <RemoveStorage />
@@ -94,14 +99,20 @@ const Setting = () => {
           <HideBalance />
           {global.isDebug() && <DevSection />}
         </View>
-        <Text style={[settingStyle.textVersion]}>
-          {`v${AppUpdater.appVersion}${
-            global.isDebug() ? ` (${DeviceInfo.getBuildNumber()})` : ''
-          }`}
-        </Text>
-      </ScrollView>
-    </SafeAreaView>
+        <View>
+          <Text style={[settingStyle.textVersion]}>
+            {`v${AppUpdater.appVersion}${
+              global.isDebug() ? ` (${DeviceInfo.getBuildNumber()})` : ''
+            }`}
+          </Text>
+        </View>
+
+      </ScrollViewBorder>
+    </>
   );
 };
 
-export default withSetting(Setting);
+export default compose(
+  withLayout_2,
+  withSetting
+)(Setting);

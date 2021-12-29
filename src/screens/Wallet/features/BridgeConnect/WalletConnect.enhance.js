@@ -18,7 +18,7 @@ const walletConnectEnhance = WrappedComp => props => {
   const handleDepositETH = async (depositAmount = 0.000001, address, incAddress, isBSC) => {
     const client = isBSC ? web3BSC : web3;
     const contractAddress = isBSC ? CONSTANTS.INC_BSC_CONTRACT_ADDRESS : CONSTANTS.INC_CONTRACT_ADDRESS;
-    const ethAmt = new BigNumber(depositAmount).multipliedBy(1e18).toString();
+    const ethAmt = '0x' + (new BigNumber(depositAmount).multipliedBy(1e18).toString(16));
     const incInstance = new client.eth.Contract(INC_CONTRACT_ABI);
     /** deposit ETH */
     const depData = incInstance.methods.deposit(incAddress).encodeABI();
@@ -67,7 +67,7 @@ const walletConnectEnhance = WrappedComp => props => {
     const decimals = await tokenInstance.methods
       .decimals()
       .call();
-    const transferValue =new BigNumber(transferAmount).multipliedBy(10 ** decimals).toString();
+    const transferValue = '0x' + (new BigNumber(transferAmount).multipliedBy(10 ** decimals).toString(16));
     const contractAddress = isBSC ? CONSTANTS.INC_BSC_CONTRACT_ADDRESS : CONSTANTS.INC_CONTRACT_ADDRESS;
     /** deposit ERC20 */
     const incInstance = new client.eth.Contract(INC_CONTRACT_ABI, contractAddress);

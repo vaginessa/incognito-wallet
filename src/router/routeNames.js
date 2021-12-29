@@ -4,7 +4,7 @@ export default {
   RootMiner: 'RootMiner',
   // RootTab: 'RootTab',
   Wallet: 'Assets',
-  Setting: 'Setting',
+  Setting: 'Settings',
   NetworkSetting: 'NetworkSetting',
   CreateAccount: 'CreateAccount',
   ImportAccount: 'ImportAccount',
@@ -199,5 +199,8 @@ export default {
   PoolsTab: 'PoolsTab',
   SelectTokenModal: 'SelectTokenModal',
   More: 'More',
-  Market: 'Market'
+  Market: 'Market',
+  SelectOptionModal: 'SelectOptionModal',
+  PrivacyAppsPancake: 'PrivacyAppsPancake',
+  MarketSearchCoins: 'MarketSearchCoins'
 };

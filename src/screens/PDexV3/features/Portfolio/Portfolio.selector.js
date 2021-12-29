@@ -59,7 +59,7 @@ export const listShareSelector = createSelector(
         token1PoolValue,
         token2PoolValue,
       );
-      const principalStr = getPrincipal({
+      const principal = getPrincipal({
         token1,
         token2,
         shareData: {
@@ -68,6 +68,9 @@ export const listShareSelector = createSelector(
           token2PoolValue,
         }
       });
+      const principalUSDHuman = new BigNumber(principal.token1USDHuman).plus(principal.token2USDHuman).toNumber();
+      const principalUSD = format.amountVer2(Math.ceil(new BigNumber(principalUSDHuman).multipliedBy(Math.pow(10, 9)).toNumber()), 9);
+
       const shareStr = getShareStr(share, totalShare);
       const validNFT = !!getValidRealAmountNFT(nftId);
       const disableBtn = isFetchingNFT || !validNFT;
@@ -93,39 +96,38 @@ export const listShareSelector = createSelector(
       const totalRewardUSD = mapRewards.reduce((prev, curr) => new BigNumber(prev).plus(curr.rewardUSD).toNumber(), 0);
       const totalRewardAmount = Math.ceil(new BigNumber(totalRewardUSD).multipliedBy(Math.pow(10, 9)).toNumber());
       const totalRewardUSDStr = format.amountVer2(totalRewardAmount, 9);
-      const rewardUSDSymbolStr = `${totalRewardUSDStr} $`;
+      const rewardUSDSymbolStr = `$${totalRewardUSDStr}`;
       const hookRewards = mapRewards.map((item, index) => ({
-        label: `Reward${index + 1}`,
+        label: 'Fees collected',
         valueText: item.rewardStr,
       }));
       const hookFactories = [
         {
-          label: 'Principal',
-          value: principalStr,
+          label: `${token1.symbol} Balance`,
+          value: principal.token1,
         },
         {
-          label: 'Reward',
+          label: `${token2.symbol} Balance`,
+          value: principal.token2,
+        },
+        {
+          label: 'Fees collected',
           value: rewardUSDSymbolStr,
         },
       ];
+      const apyStr = format.amount(apy, 0);
       const hookFactoriesDetail = [
         {
-          label: 'PoolId',
-          valueText: poolId,
-          copyable: true,
+          label: 'APR',
+          valueText: `${apyStr}%`,
         },
         {
-          label: 'APY',
-          valueText: `${apy}%`,
+          label: `${token1.symbol} Balance`,
+          valueText: principal.token1,
         },
         {
-          label: 'Principal',
-          valueText: principalStr,
-          moreLines: true
-        },
-        {
-          label: 'Share',
-          valueText: shareStr,
+          label: `${token2.symbol} Balance`,
+          valueText: principal.token2,
         },
         ...hookRewards,
       ];
@@ -136,11 +138,12 @@ export const listShareSelector = createSelector(
         token1,
         token2,
         exchangeRateStr,
-        principalStr,
+        principal,
         shareStr,
         hookFactories,
         amp,
         apy,
+        apyStr,
         token1PoolValue,
         token2PoolValue,
         hookFactoriesDetail,
@@ -154,6 +157,10 @@ export const listShareSelector = createSelector(
         totalRewardUSD,
         totalRewardUSDStr,
         rewardUSDSymbolStr,
+        totalRewardAmount,
+        token1USDHuman: principal.token1USDHuman,
+        token2USDHuman: principal.token2USDHuman,
+        principalUSD,
       };
     });
   },
@@ -161,7 +168,10 @@ export const listShareSelector = createSelector(
 
 export const listShareIDsSelector = createSelector(
   listShareSelector,
-  (listShare) => listShare.map((item) => item?.shareId),
+  (listShare) => listShare.reduce((prev, cur) => {
+    if (cur.share) prev.push(cur?.shareId);
+    return prev;
+  }, []),
 );
 
 export const getDataByShareIdSelector = createSelector(
@@ -183,7 +193,17 @@ export const totalShareSelector = createSelector(
       return prev.plus(cur.totalRewardUSD);
     }, new BigNumber('0')).toNumber();
     const originalAmount = convert.toOriginalAmount(rewardUSD, 9, true);
-    return format.amountSuffix(originalAmount, 9);
+    return format.amountVer2(originalAmount, 9);
+  }
+);
+
+export const totalShareUSDSelector = createSelector(
+  listShareSelector,
+  (listShare) => {
+    const principalUSD = listShare.reduce((prev, cur) => {
+      return prev.plus(cur.token1USDHuman || 0).plus(cur.token2USDHuman || 0);
+    }, new BigNumber('0')).toNumber();
+    return format.amountVer2(Math.ceil(new BigNumber(principalUSD).multipliedBy(Math.pow(10, 9)).toNumber()), 9);
   }
 );
 

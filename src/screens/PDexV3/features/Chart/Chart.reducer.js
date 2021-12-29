@@ -24,7 +24,7 @@ const initialState = {
   },
   priceHistory: {
     data: [],
-    period: '15m',
+    period: '1d',
     datapoint: 100,
     fetching: false,
   },

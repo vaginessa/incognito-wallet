@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { StyleSheet, Text, View } from 'react-native';
-import { TouchableOpacity } from '@src/components/core';
-import { COLORS, FONT } from '@src/styles';
+import { StyleSheet, View, TouchableOpacity } from 'react-native';
+import { Text } from '@src/components/core';
+import { FONT } from '@src/styles';
 import { Row } from '@src/components';
 import { ArrowFillIcon } from '@components/Icons';
+import styled from 'styled-components/native';
 
-const styled = StyleSheet.create({
+const styles = StyleSheet.create({
   title: {
     ...FONT.STYLE.medium,
-    color: COLORS.black,
     fontSize: FONT.SIZE.superMedium,
     lineHeight: FONT.SIZE.superMedium + 10,
     marginRight: 4,
@@ -28,6 +28,14 @@ const styled = StyleSheet.create({
   }
 });
 
+const CustomRow = styled(Row)`
+  background-color: ${({ theme }) => theme.btnBG3};
+  height: 50px;
+  border-radius: 8px;
+  padding-left: 16px;
+  padding-right: 16px;
+`;
+
 const GroupItem = ({ name, child, isLast }) => {
   const [expand, setExpand] = useState(true);
 
@@ -37,16 +45,16 @@ const GroupItem = ({ name, child, isLast }) => {
 
   return (
     <View style={[isLast && { marginBottom: 30 }]}>
-      <TouchableOpacity style={styled.group} onPress={toggleExpand}>
-        <Row centerVertical>
-          <Text style={styled.title}>{name}</Text>
-          <View style={styled.wrapArrow}>
+      <TouchableOpacity style={styles.group} onPress={toggleExpand}>
+        <CustomRow centerVertical spaceBetween>
+          <Text style={styles.title}>{name}</Text>
+          <View style={styles.wrapArrow}>
             <ArrowFillIcon position={expand ? 'DOWN' : 'UP'} />
           </View>
-        </Row>
+        </CustomRow>
       </TouchableOpacity>
       {expand && (
-        <View style={styled.child}>
+        <View style={styles.child}>
           {child}
         </View>
       )}

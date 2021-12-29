@@ -5,7 +5,6 @@ import { KeyboardAwareScrollView, RefreshControl } from '@src/components/core';
 import { createForm } from '@src/components/core/reduxForm';
 import { ButtonBasic } from '@src/components/Button';
 import LoadingTx from '@src/components/LoadingTx';
-import NetworkFee from '@src/components/NetworkFee';
 import GroupSubInfo from './OrderLimit.groupSubInfo';
 import { formConfigs } from './OrderLimit.constant';
 import { styled } from './OrderLimit.styled';
@@ -32,6 +31,9 @@ const OrderLimit = (props) => {
     orderLimitDataSelector,
   );
   const { handleConfirm, onRefresh } = props;
+  React.useEffect(() => {
+    onRefresh();
+  }, []);
   return (
     <>
       <KeyboardAwareScrollView
@@ -52,7 +54,6 @@ const OrderLimit = (props) => {
           title={btnActionTitle}
           onPress={handleConfirm}
         />
-        <NetworkFee />
         <GroupSubInfo />
       </KeyboardAwareScrollView>
       {!!ordering && <LoadingTx />}

@@ -7,6 +7,7 @@ import { InputExtension as Input } from '@components/core/TextInput';
 import _ from 'lodash';
 import NodeService from '@services/NodeService';
 import { RoundCornerButton, Text, View } from '@components/core';
+import { Text4 } from '@components/core/Text';
 import theme from '@src/styles/theme';
 import Util from '@src/utils/Util';
 import { SuccessModal } from '@src/components';
@@ -321,9 +322,9 @@ const NodeUpdateWifi = () => {
 
     return (
       <View>
-        <Text style={[theme.text.blackMedium, { lineHeight: 30, marginBottom: 20 }]}>
+        <Text4 style={[theme.text.blackMedium, { lineHeight: 30, marginBottom: 20 }]}>
           {MESSAGES.UPDATE_WIFI_INSTRUCTION}
-        </Text>
+        </Text4>
         <Input
           underlineColorAndroid="transparent"
           containerStyle={styles.input}
@@ -360,7 +361,7 @@ const NodeUpdateWifi = () => {
   };
 
   return (
-    <MainLayout header="Change Wi-Fi" loading={loading}>
+    <MainLayout header="Change Wi-Fi" loading={loading} contentStyle={{flex:1}}>
       {renderContent()}
       <SuccessModal
         title={MESSAGES.CHANGE_WIFI_SUCCESSFULLY_TITLE}

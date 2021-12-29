@@ -24,6 +24,5 @@ export default StyleSheet.create({
   headerText: {
     fontSize: 20,
     marginHorizontal: 60,
-    color: COLORS.white
   }
 });

@@ -5,8 +5,7 @@ import {
   handleFilterTokenByKeySearch,
   TokenTrade,
 } from '@src/components/Token';
-import { BaseTextInputCustom } from '@src/components/core/BaseTextInput';
-import { FONT } from '@src/styles';
+import { useSearchBox } from '@src/components/Header';
 import { withLayout_2 } from '@src/components/Layout';
 import { useNavigation, useNavigationParam } from 'react-navigation-hooks';
 import { delay } from '@src/utils/delay';
@@ -14,57 +13,37 @@ import { ListAllTokenSelectable } from './SelectToken';
 
 const styled = StyleSheet.create({
   container: { flex: 1 },
-  input: {
-    fontSize: FONT.SIZE.small,
-    lineHeight: FONT.SIZE.small + 5,
-  },
   extra: {
     marginTop: 16,
     flex: 1,
   },
-  header: {
-    marginBottom: 10,
+  styledContainer: {
+    paddingTop: 24,
+  },
+  checkBox: {
+    marginLeft: 24,
   },
 });
 
-const SelectTokenModal = (props) => {
+const SelectTokenModal = () => {
   const data = useNavigationParam('data');
   const onPress = useNavigationParam('onPress');
+  const [availableTokens, keySearch] = useSearchBox({
+    data,
+    shouldCleanSearch: false,
+    handleFilter: () =>
+      handleFilterTokenByKeySearch({ tokens: data, keySearch }),
+  });
   const { goBack } = useNavigation();
-  const [text, setText] = React.useState(text);
-  const [availableTokens, setAvailableTokens] = React.useState([]);
-  const onChange = (text) => {
-    setText(text);
-    if (!text) {
-      return setAvailableTokens(data);
-    }
-    const tokens = handleFilterTokenByKeySearch({
-      tokens: data,
-      keySearch: text,
-    });
-    setAvailableTokens(tokens);
-  };
-  React.useEffect(() => {
-    setAvailableTokens(data);
-    setText('');
-  }, [data]);
   if (!data) {
     return null;
   }
   return (
     <View style={styled.container}>
-      <Header title="Select coins" style={styled.header} />
-      <BaseTextInputCustom
-        value={text}
-        inputProps={{
-          onChangeText: onChange,
-          placeholder: 'Search coins',
-          style: styled.input,
-          autFocus: true,
-        }}
-      />
+      <Header title="Select coins" style={styled.header} canSearch />
       <View style={styled.extra}>
         <ListAllTokenSelectable
+          styledCheckBox={styled.checkBox}
           availableTokens={availableTokens}
           renderItem={({ item }) => (
             <TokenTrade
@@ -78,6 +57,7 @@ const SelectTokenModal = (props) => {
               tokenId={item?.tokenId}
             />
           )}
+          styledContainer={styled.styledContainer}
         />
       </View>
     </View>

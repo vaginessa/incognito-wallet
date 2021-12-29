@@ -33,14 +33,14 @@ const style = StyleSheet.create({
     height: 25,
   },
   navigation: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    height: 60,
+    // position: 'absolute',
+    // bottom: 0,
+    // left: 0,
+    // height: 60,
     width: '100%',
     flexDirection: 'row',
-    backgroundColor: 'white',
     alignItems: 'center',
+    height: 55
   },
   back: {
     width: '25%',

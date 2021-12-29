@@ -8,10 +8,14 @@ import { Header, Row } from '@src/components/';
 import { COINS } from '@src/constants';
 import Loading from '@screens/DexV2/components/Loading';
 import withDefaultAccount from '@components/Hoc/withDefaultAccount';
+import globalStyled from '@src/theme/theme.styled';
+import { Text4 } from '@src/components/core/Text';
 import withConfirm from './confirm.enhance';
 import withRewards from './reward.enhance';
 import withSuccess from './success.enhance';
 import styles from './style';
+import { Line } from '../../Provide/Input';
+
 
 const Provide = ({
   displayFullTotalRewardsNonLock,
@@ -22,12 +26,13 @@ const Provide = ({
 }) => {
   const coin = COINS.PRV;
   return (
-    <View style={mainStyle.flex}>
+    <>
       <Header title="Withdraw rewards" />
-      <View style={mainStyle.coinContainer}>
+      <View style={[mainStyle.coinContainerNoMargin, globalStyled.defaultPadding2]} borderTop>
+        <Text4 style={mainStyle.label}>Amount</Text4>
         <Row center spaceBetween style={mainStyle.inputContainer}>
           <BaseTextInput
-            style={mainStyle.input}
+            style={[mainStyle.input, {color: 'red'}]}
             placeholder="0"
             editable={false}
             value={displayFullTotalRewardsNonLock}
@@ -35,10 +40,11 @@ const Provide = ({
           />
           <Text style={mainStyle.symbol}>{coin.symbol}</Text>
         </Row>
+        <Line />
         <Text style={mainStyle.error} numberOfLines={2}>{error}</Text>
         <RoundCornerButton
           title="Withdraw rewards"
-          style={[mainStyle.button, styles.button]}
+          style={[mainStyle.button, styles.button, {marginTop: 0}]}
           disabled={!!error || disable}
           onPress={onConfirm}
         />
@@ -47,7 +53,7 @@ const Provide = ({
         </Text>
       </View>
       <Loading open={withdrawing} />
-    </View>
+    </>
   );
 };
 

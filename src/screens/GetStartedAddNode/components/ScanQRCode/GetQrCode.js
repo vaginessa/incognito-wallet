@@ -1,6 +1,7 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Image, TouchableOpacity, Text } from 'react-native';
+import {Text4} from '@components/core/Text';
 import _ from 'lodash';
 import images from '@src/assets';
 import DeviceLog from '@components/DeviceLog/index';
@@ -53,12 +54,12 @@ const GetQrcode = React.memo(({ onSuccess, qrCode = '' }) => {
       {!isPassedValidate ? (
         <TouchableOpacity onPress={handleQrcode}>
           <Image style={styles.content_step1QRCode} source={images.ic_getstarted_qrcode} />
-          <Text style={styles.step3_text}>Tap to scan</Text>
+          <Text4 style={styles.step3_text}>Tap to scan</Text4>
         </TouchableOpacity>
       ) : (loading ? ViewUtil.loadingComponent() : (
         <>
           <Image style={styles.nodeVerifiedImage} source={nodeVerified} />
-          <Text style={[styles.step3_text, { color: COLORS.colorGreyBold }]}>Hello, Node:</Text>
+          <Text4 style={[styles.step3_text]}>Hello, Node:</Text4>
         </>
       )
       )}

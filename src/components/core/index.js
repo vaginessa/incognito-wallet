@@ -41,3 +41,7 @@ export { default as TradeInputAmount } from './TradeInputAmount';
 export { default as SwapButton } from './SwapButton';
 export { default as Divider } from './Divider';
 export { default as AddBreakLine } from './AddBreakLine';
+export { default as Text3 } from './Text/Text3';
+export { default as ScrollViewBorder } from './ScrollView/ScrollViewBorder';
+export { default as View5 } from './View/View5';
+export { default as Image1 } from './Image/Image1';

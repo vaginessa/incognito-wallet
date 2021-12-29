@@ -4,7 +4,7 @@ import storageService from '@src/services/storage';
 import { View } from 'react-native';
 import routeNames from '@routers/routeNames';
 import { connect } from 'react-redux';
-import { Text, Alert, Switch } from '@components/core';
+import { Text, Alert, Switch, Text3 } from '@components/core';
 import { sectionStyle } from '@screens/Setting/features/Section/Section.styled';
 import { CONSTANT_KEYS } from '@src/constants';
 import { useNavigation } from 'react-navigation-hooks';
@@ -63,7 +63,7 @@ const PINSection = ({ pin }) => {
           onPress={handlePressToggle}
           style={[sectionStyle.subItem]}
         >
-          <Text style={[sectionStyle.desc]}>Passcode</Text>
+          <Text3 style={sectionStyle.desc}>Passcode lock</Text3>
         </View>,
       ]}
       headerRight={<Switch onValueChange={handlePressToggle} value={!!pin} />}

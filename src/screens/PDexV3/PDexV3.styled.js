@@ -1,11 +1,11 @@
 import {StyleSheet} from 'react-native';
 import {COLORS, FONT} from '@src/styles';
+import globalStyled from '@src/theme/theme.styled';
 
 export const styled = StyleSheet.create({
   container: {
     paddingHorizontal: 25,
     flex: 1,
-    backgroundColor: COLORS.white
   },
   fullFlex: {
     flex: 1,
@@ -40,6 +40,8 @@ export const styled = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    ...globalStyled.defaultPaddingHorizontal,
+    paddingBottom: 16
   },
   styledTabList1: {
   },

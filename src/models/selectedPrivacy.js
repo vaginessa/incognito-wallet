@@ -54,11 +54,15 @@ function combineData(pData, incognitoData, defaultData) {
 function getIconUrl(chainTokenImageUri) {
   let uri;
 
+  if (this.tokenId === PRV_ID) {
+    return 'https://statics.incognito.org/wallet/cryptocurrency-icons/32@2x/color/prv@2x.png';
+  }
+
   if (this.isMainCrypto || this.isPToken) {
     let formatedSymbol = String(
       this.symbol || this.externalSymbol,
-    ).toLowerCase();
-    uri = `${CONSTANT_CONFIGS.CRYPTO_ICON_URL}/${formatedSymbol}@2x.png`;
+    ).toUpperCase();
+    uri = `${CONSTANT_CONFIGS.CRYPTO_ICON_URL}/${formatedSymbol}.png`;
   } else {
     uri = chainTokenImageUri;
   }

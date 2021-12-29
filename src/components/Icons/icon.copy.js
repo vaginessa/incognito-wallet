@@ -1,6 +1,6 @@
 import React from 'react';
-import { Image, StyleSheet } from 'react-native';
-import { View } from '@src/components/core';
+import { StyleSheet } from 'react-native';
+import { Image1, View } from '@src/components/core';
 import srcCopy from '@src/assets/images/new-icons/copy.png';
 
 const styled = StyleSheet.create({
@@ -9,6 +9,7 @@ const styled = StyleSheet.create({
     height: 24,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: 'transparent',
   },
   icon: {
     width: 15.09,
@@ -18,8 +19,13 @@ const styled = StyleSheet.create({
 
 const IconCopy = (props) => {
   return (
-    <View style={[styled.container, props?.containerStyle]}>
-      <Image style={[styled.icon, props?.style]} source={srcCopy} />
+    <View
+      style={[
+        styled.container,
+        props?.containerStyle,
+      ]}
+    >
+      <Image1 style={[styled.icon, props?.style]} source={srcCopy} />
     </View>
   );
 };

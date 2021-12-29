@@ -12,11 +12,14 @@ export const styled = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    marginBottom: 16,
+    paddingHorizontal: 16,
   },
   btnOrderHistory: {
     marginRight: 15,
   },
   rightHeader: {
+    backgroundColor: 'transparent'
   },
   styledTabList: {
     borderBottomWidth: 0,

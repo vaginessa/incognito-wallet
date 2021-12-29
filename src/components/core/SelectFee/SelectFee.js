@@ -2,6 +2,8 @@ import React from 'react';
 import { View, StyleSheet, TouchableWithoutFeedback } from 'react-native';
 import PropTypes from 'prop-types';
 import { Text } from '@src/components/core';
+import { useSelector } from 'react-redux';
+import { colorsSelector } from '@src/theme';
 import { Row } from '@src/components';
 import { COLORS, FONT } from '@src/styles';
 import { v4 } from 'uuid';
@@ -14,20 +16,17 @@ const styled = StyleSheet.create({
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.medium,
     lineHeight: FONT.SIZE.medium + 5,
-    color: COLORS.colorGrey3,
     textAlign: 'right',
     marginRight: 10,
   },
   tail: {
     marginRight: 0,
   },
-  isActived: {
-    color: COLORS.black,
-  },
 });
 
 const SelectFeeItem = (props) => {
   const { symbol, tokenId, isActived, tail, canSelected, ...rest } = props;
+  const colors = useSelector(colorsSelector);
   return (
     <TouchableWithoutFeedback {...rest}>
       <View style={[styled.feeItem, tail ? styled.tail : null]}>
@@ -35,7 +34,7 @@ const SelectFeeItem = (props) => {
           style={[
             styled.symbol,
             tail && styled.tail,
-            isActived ? styled.isActived : null,
+            { color: isActived ? colors.mainText : colors.subText },
           ]}
         >
           {symbol}

@@ -31,6 +31,19 @@ export const ACTION_FETCHED_ORDER_DETAIL =
 export const ACTION_SET_DEFAULT_PAIR = '[pDexV3][swap] Set default pair';
 export const ACTION_TOGGLE_PRO_TAB = '[pDexV3][swap] Toggle pro tab';
 
+export const ACTION_CHANGE_SELECTED_PLATFORM =
+  '[pDexV3][swap] Change selected platform';
+export const ACTION_CHANGE_STATUS_VISIBLE_PLATFORM =
+  '[pDexV3][swap] Change status visible platform';
+
+export const ACTION_SAVE_LAST_FIELD = '[pDexV3][swap] Save last field';
+export const ACTION_CHANGE_ESTIMATE_DATA =
+  '[pDexV3][swap] Change estimate data';
+export const ACTION_SET_ERROR = '[pDexV3][swap] Action set error';
+export const ACTION_SET_DEFAULT_EXCHANGE =
+  '[pDexV3][swap] Set default exchange';
+export const ACTION_REMOVE_ERROR = '[pDexV3][swap] Action remove error from platforms';
+export const ACTION_FREE_HISTORY_ORDERS = '[pDexV3][swap] Free history orders';
 export const TAB_SIMPLE_ID = '[swap] simple';
 export const TAB_PRO_ID = '[swap] pro';
 export const ROOT_TAB_ID = 'ROOT_TAB_SWAP';
@@ -45,3 +58,25 @@ export const formConfigs = {
   slippagetolerance: 'slippagetolerance',
   feetoken: 'feetoken',
 };
+
+export const KEYS_PLATFORMS_SUPPORTED = {
+  incognito: 'incognito',
+  pancake: 'pancake',
+};
+
+export const PLATFORMS_SUPPORTED = [
+  {
+    id: KEYS_PLATFORMS_SUPPORTED.incognito,
+    title: 'Incognito',
+    desc: '',
+    visible: true,
+    isSelected: true,
+  },
+  {
+    id: KEYS_PLATFORMS_SUPPORTED.pancake,
+    title: 'Pancake',
+    desc: '',
+    visible: true,
+    isSelected: false,
+  },
+];

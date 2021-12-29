@@ -1,6 +1,6 @@
 import React from 'react';
-import { Image, StyleSheet } from 'react-native';
-import { View } from '@src/components/core';
+import { StyleSheet, View } from 'react-native';
+import { Image, Image1 } from '@src/components/core';
 import srcIcon from '@src/assets/images/new-icons/wallet.png';
 
 const styled = StyleSheet.create({
@@ -19,7 +19,7 @@ const styled = StyleSheet.create({
 const IconWallet = (props) => {
   return (
     <View style={[styled.container, props?.containerStyle]}>
-      <Image style={[styled.icon, props?.style]} source={srcIcon} />
+      <Image1 style={[styled.icon, props?.style]} source={srcIcon} />
     </View>
   );
 };

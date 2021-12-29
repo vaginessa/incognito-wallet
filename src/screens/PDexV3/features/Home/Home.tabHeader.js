@@ -1,40 +1,39 @@
 import React from 'react';
-import {View, Text, StyleSheet} from 'react-native';
-import { COLORS, FONT } from '@src/styles';
+import { View, StyleSheet } from 'react-native';
+import { FONT } from '@src/styles';
 import PropTypes from 'prop-types';
-import {ActivityIndicator} from '@components/core';
+import { ActivityIndicator, Text, Text3 } from '@components/core';
+import { Row } from '@src/components';
 
 export const styled = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center'
   },
   title: {
-    color: COLORS.lightGrey33,
     fontFamily: FONT.NAME.regular,
     fontSize: FONT.SIZE.small,
     lineHeight: FONT.SIZE.small + 5,
   },
   desc: {
-    color: COLORS.black,
     fontFamily: FONT.NAME.medium,
-    fontSize: FONT.SIZE.superLarge,
-    lineHeight: FONT.SIZE.superLarge + 8,
-    textAlign: 'center'
+    fontSize: FONT.SIZE.veryLarge,
+    lineHeight: FONT.SIZE.veryLarge + 10,
   },
   wrapLoading: {
     position: 'relative',
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: FONT.SIZE.superLarge + 8
+    alignItems: 'flex-start',
+    paddingTop: 10,
+    height: 44
   }
 });
 
-const HomeTabHeader = ({ title, desc, loading }) => {
+const HomeTabHeader = ({ title, desc, loading, rightIcon }) => {
   return (
-    <View style={styled.container}>
-      <Text style={styled.title}>{title}</Text>
+    <View style={[styled.container]}>
+      <Row centerVertical spaceBetween>
+        <Text3 style={styled.title}>{title}</Text3>
+        {rightIcon}
+      </Row>
       {loading ? (
         <View style={styled.wrapLoading}>
           <ActivityIndicator />
@@ -53,7 +52,8 @@ HomeTabHeader.defaultProps = {
 HomeTabHeader.propTypes = {
   title: PropTypes.string.isRequired,
   desc: PropTypes.string.isRequired,
-  loading: PropTypes.bool
+  loading: PropTypes.bool,
+  rightIcon: PropTypes.any.isRequired
 };
 
 export default React.memo(HomeTabHeader);

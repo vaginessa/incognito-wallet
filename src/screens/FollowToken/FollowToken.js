@@ -1,11 +1,13 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, TouchableOpacity } from '@src/components/core';
+import { View2 } from '@src/components/core/View';
+import globalStyled from '@src/theme/theme.styled';
 import Header from '@src/components/Header';
 import {TokenBasic as Token, ListAllToken, TokenFollow} from '@src/components/Token';
 import PropTypes from 'prop-types';
 import routeNames from '@src/router/routeNames';
 import { useNavigation } from 'react-navigation-hooks';
-import { TouchableOpacity } from '@src/components/core';
+import { FONT } from '@src/styles';
 import { styled } from './FollowToken.styled';
 import withFollowToken from './FollowToken.enhance';
 
@@ -42,16 +44,19 @@ export const Item = ({ item, handleToggleFollowToken }) =>
 const FollowTokenList = React.memo((props) => {
   const { handleToggleFollowToken, ...rest } = props;
   return (
-    <View style={styled.container}>
-      <Header title="Add a coin" canSearch />
-      <ListAllToken
-        {...rest}
-        renderItem={({ item }) => (
-          <TokenFollow item={item} handleToggleFollowToken={handleToggleFollowToken} onPress={() => handleToggleFollowToken(item)} />
-        )}
-      />
+    <View2 style={styled.container}>
+      <Header title="Add a coin" canSearch titleStyled={FONT.TEXT.incognitoH4} />
+      <View borderTop style={[{ flex : 1 }]}>
+        <ListAllToken
+          {...rest}
+          styledCheckBox={globalStyled.defaultPaddingHorizontal}
+          renderItem={({ item }) => (
+            <TokenFollow item={item} handleToggleFollowToken={handleToggleFollowToken} onPress={() => handleToggleFollowToken(item)} />
+          )}
+        />
+      </View>
       <AddManually />
-    </View>
+    </View2>
   );
 });
 

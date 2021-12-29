@@ -1,35 +1,43 @@
 import React from 'react';
 import ErrorBoundary from '@src/components/ErrorBoundary';
-import { SafeAreaView, StyleSheet, View } from 'react-native';
-import { COLORS } from '@src/styles';
+import { StyleSheet } from 'react-native';
 import withLazy from '@components/LazyHoc/LazyHoc';
-import {compose} from 'recompose';
+import { compose } from 'recompose';
+import { View2 } from '@components/core/View';
+import styled from 'styled-components/native';
 
-const styled = StyleSheet.create({
+const _styled = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.white,
   },
   wrapper: {
-    paddingHorizontal: 25,
     flex: 1,
     paddingBottom: 0,
   },
 });
 
+const SafeAreaView = styled.SafeAreaView`
+  background-color: ${({ theme }) => theme.background2};
+`;
+
+const SafeAreaViewBottom = styled.SafeAreaView`
+  background-color: ${({ theme }) => theme.background1};
+`;
+
+
 const enhance = (WrappedComp) => (props) => {
   return (
     <ErrorBoundary>
-      <SafeAreaView style={[styled.container, props?.containerStyled]}>
-        <View style={[styled.wrapper, props?.wrapperStyled]}>
+      <SafeAreaView style={[_styled.container, props?.containerStyled]}>
+        <View2 style={[_styled.wrapper, props?.wrapperStyled]}>
           <WrappedComp {...props} />
-        </View>
+        </View2>
       </SafeAreaView>
+      <SafeAreaViewBottom />
     </ErrorBoundary>
   );
 };
 
 export default compose(
-  withLazy,
   enhance
 );

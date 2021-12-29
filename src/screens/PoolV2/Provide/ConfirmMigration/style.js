@@ -13,25 +13,22 @@ export default StyleSheet.create({
     color: COLORS.red,
   },
   bigText: {
-    color: COLORS.green2,
     fontSize: 30,
     lineHeight: 45,
     ...FONT.STYLE.bold,
   },
   mainInfo: {
-    marginVertical: UTILS.heightScale(38),
+    marginVertical: UTILS.heightScale(10),
   },
   bold: {
     ...FONT.STYLE.bold,
     color: COLORS.black,
   },
   extra: {
-    color: COLORS.newGrey,
     fontSize: 16,
     lineHeight: 19,
   },
   extraRight: {
-    color: COLORS.black,
   },
   warning: {
     color: COLORS.orange,

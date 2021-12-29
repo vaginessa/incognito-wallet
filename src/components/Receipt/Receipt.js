@@ -1,7 +1,7 @@
 import React from 'react';
-import { View, Text } from 'react-native';
 import PropTypes from 'prop-types';
-import { TouchableOpacity } from '@src/components/core';
+import { TouchableOpacity, View, Text } from '@src/components/core';
+import { Text4 } from '@src/components/core/Text';
 import linkingService from '@src/services/linking';
 import IconOpenUrl from '@src/components/Icons/icon.openUrl';
 import Header from '@src/components/Header';
@@ -12,9 +12,9 @@ const Hook = ({ label, desc, renderTx = false }) => {
   const handleOpenUrl = () => linkingService.openUrl(desc);
   let renderComponent = () => (
     <View style={styled.hook}>
-      <Text style={styled.label} ellipsizeMode="middle" numberOfLines={1}>
+      <Text4 style={styled.label} ellipsizeMode="middle" numberOfLines={1}>
         {`${label}:`}
-      </Text>
+      </Text4>
       <Text style={styled.desc} ellipsizeMode="middle" numberOfLines={1}>
         {desc}
       </Text>
@@ -23,7 +23,7 @@ const Hook = ({ label, desc, renderTx = false }) => {
   );
   if (renderTx) {
     return (
-      <TouchableOpacity onPress={handleOpenUrl}>
+      <TouchableOpacity onPress={handleOpenUrl}> 
         {renderComponent()}
       </TouchableOpacity>
     );
@@ -35,16 +35,20 @@ const ReceiptModal = (props) => {
   const { infoFactories, onBack, btnSaveReceiver, title } = props;
 
   return (
-    <View style={styled.container}>
+    <>
       <Header onGoBack={onBack} />
-      <Text style={styled.title}>{title}</Text>
-      <View style={styled.infoContainer}>
-        {infoFactories.map((item, key) =>
-          item.disabled ? null : <Hook key={key} {...item} />,
-        )}
+      <View borderTop paddingHorizontal fullFlex>
+        <Text style={styled.title}>{title}</Text>
+        <View style={styled.infoContainer}>
+          {infoFactories.map((item, key) =>
+            item.disabled ? null : <Hook key={key} {...item} />,
+          )}
+        </View>
+        {btnSaveReceiver}
+
       </View>
-      {btnSaveReceiver}
-    </View>
+      
+    </>
   );
 };
 

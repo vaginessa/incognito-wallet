@@ -1,11 +1,16 @@
 import React, { memo } from 'react';
-import { RefreshControl, ScrollView, Text, View } from 'react-native';
+import { RefreshControl } from 'react-native';
+import { View2 } from '@components/core/View';
+import { colorsSelector } from '@src/theme/theme.selector';
 import PropTypes from 'prop-types';
 import { styled } from '@screens/Shield/features/GenQRCode/GenQRCode.styled';
 import {
   ActivityIndicator,
   BaseTextInput,
-  RoundCornerButton,
+  ScrollViewBorder, 
+  Text, 
+  View, 
+  RoundCornerButton 
 } from '@components/core';
 import { useWalletConnect } from '@walletconnect/react-native-dapp';
 import { ANALYTICS, CONSTANT_COMMONS } from '@src/constants';
@@ -24,7 +29,7 @@ import ExtraInfo from '@screens/DexV2/components/ExtraInfo';
 import styles from '@screens/PoolV2/Provide/Input/style';
 import routeNames from '@routers/routeNames';
 import {COLORS} from '@src/styles';
-import { useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { requestUpdateMetrics } from '@src/redux/actions/app';
 
 const ShieldDecentralized = (props) => {
@@ -81,6 +86,7 @@ const ShieldDecentralized = (props) => {
       ? SHIELD_BUTTON_TITLE.SHIELD
       : SHIELD_BUTTON_TITLE.APPROVE_SHIELD;
   }, [externalSymbol, isConnect]);
+  const colors = useSelector(colorsSelector);
 
   const handleShield = () => {
     setIsPressed(true);
@@ -263,17 +269,15 @@ const ShieldDecentralized = (props) => {
         <ButtonBasic
           onPress={onConnectorPress}
           customContent={(
-            <View style={styled.connectHook}>
-              <Text
-                numberOfLines={1}
-                style={styled.connectStyle}
-                ellipsizeMode="tail"
-              >
-                {SHIELD_BUTTON_TITLE.DISCONNECT}
-              </Text>
-            </View>
+            <Text
+              numberOfLines={1}
+              style={styled.connectStyle}
+              ellipsizeMode="tail"
+            >
+              {SHIELD_BUTTON_TITLE.DISCONNECT}
+            </Text>
           )}
-          btnStyle={styled.btnConnect}
+          btnStyle={[styled.btnConnect, {backgroundColor: colors.background8}]}
         />
       </View>
     );
@@ -300,19 +304,19 @@ const ShieldDecentralized = (props) => {
   }, [connector, tokenIDInput]);
 
   return (
-    <ScrollView
-      refreshControl={
-        <RefreshControl refreshing={refresh} onRefresh={handleRefresh} />
-      }
-    >
-      <View style={{ flex: 1 }}>
-        <Header
-          title={`Shield ${externalSymbol}`}
-          rightHeader={renderRightHeader()}
-        />
+    <View2 style={{ flex: 1 }}>
+      <Header
+        title={`Shield ${externalSymbol}`}
+        rightHeader={renderRightHeader()}
+      />
+      <ScrollViewBorder
+        refreshControl={
+          <RefreshControl refreshing={refresh} onRefresh={handleRefresh} />
+        }
+      >
         {renderContent()}
-      </View>
-    </ScrollView>
+      </ScrollViewBorder>
+    </View2>
   );
 };
 

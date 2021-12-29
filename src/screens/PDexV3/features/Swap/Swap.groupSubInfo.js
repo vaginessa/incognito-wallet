@@ -14,12 +14,13 @@ const styled = StyleSheet.create({
 const GroupSubInfo = () => {
   return (
     <View style={styled.container}>
-      <Tabs
-        rootTabID={ROOT_TAB_SUB_INFO}
-        styledTabs={styled.styledTabs}
-        useTab1
-      >
-        <View tabID={TAB_HISTORY_ID} label="Swap history" onChangeTab={() => null} upperCase={false}>
+      <Tabs rootTabID={ROOT_TAB_SUB_INFO}>
+        <View
+          tabID={TAB_HISTORY_ID}
+          label="Swap history"
+          onChangeTab={() => null}
+          upperCase={false}
+        >
           <History />
         </View>
         <View tabID="" label="" />

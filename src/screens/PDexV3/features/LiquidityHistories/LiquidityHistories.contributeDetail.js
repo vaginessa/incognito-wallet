@@ -1,5 +1,5 @@
 import React, {memo} from 'react';
-import {ScrollView, View} from 'react-native';
+import {ScrollView} from 'react-native';
 import {styled as mainStyle} from '@screens/PDexV3/PDexV3.styled';
 import {Header, Row} from '@src/components';
 import {useNavigationParam} from 'react-navigation-hooks';
@@ -12,6 +12,9 @@ import withContributeDetail
   from '@screens/PDexV3/features/LiquidityHistories/LiquidityHistories.enhanceContributeDetail';
 import {ACCOUNT_CONSTANT} from 'incognito-chain-web-js/build/wallet';
 import PropTypes from 'prop-types';
+import { compose } from 'recompose';
+import { withLayout_2 } from '@components/Layout';
+import { View } from '@components/core';
 import styled from './LiquidityHistories.styled';
 
 const ContributeDetail = ({ handleRefund, handleRetry }) => {
@@ -84,7 +87,7 @@ const ContributeDetail = ({ handleRefund, handleRetry }) => {
           }
         },
         {
-          label: `Amount${index}`,
+          label: `Amount ${index}`,
           valueText: item.contributeAmountSymbolStr,
         },
       ];
@@ -101,7 +104,7 @@ const ContributeDetail = ({ handleRefund, handleRetry }) => {
         }
       },
       {
-        label: `Refund${index + 1}`,
+        label: `Refund ${index + 1}`,
         valueText: item.returnAmountSymbolStr,
         disabled: !item.returnAmount,
       },
@@ -109,36 +112,38 @@ const ContributeDetail = ({ handleRefund, handleRetry }) => {
     return [...headHook, ...flatten(contributeHook), ...flatten(refunds)];
   }, [history]);
   return (
-    <View style={mainStyle.container}>
+    <>
       <Header title="Detail" />
-      <ScrollView>
-        {hookFactories.map(data => (
-          <Hook
-            key={data?.label}
-            {...data}
-            labelStyle={styled.leftText}
-            valueTextStyle={styled.rightText}
-            style={{ marginTop: 8 }}
-          />
-        ))}
-        {!!refundData && (
-          <Row spaceBetween style={{ marginTop: 15 }}>
-            <ButtonBasic
-              title={refundData.title}
-              btnStyle={{ flex: 1 }}
-              onPress={onRefundTx}
+      <View borderTop style={mainStyle.container}>
+        <ScrollView contentContainerStyle={{ paddingTop: 12 }}>
+          {hookFactories.map(data => (
+            <Hook
+              key={data?.label}
+              {...data}
+              labelStyle={styled.leftText}
+              valueTextStyle={styled.rightText}
+              style={{ marginTop: 8 }}
             />
-            {!!retryData && (
+          ))}
+          {!!refundData && (
+            <Row spaceBetween style={{ marginTop: 15 }}>
               <ButtonBasic
-                title={retryData.title}
-                btnStyle={{ flex: 1, marginLeft: 20 }}
-                onPress={onRetryTx}
+                title={refundData.title}
+                btnStyle={{ flex: 1 }}
+                onPress={onRefundTx}
               />
-            )}
-          </Row>
-        )}
-      </ScrollView>
-    </View>
+              {!!retryData && (
+                <ButtonBasic
+                  title={retryData.title}
+                  btnStyle={{ flex: 1, marginLeft: 20 }}
+                  onPress={onRetryTx}
+                />
+              )}
+            </Row>
+          )}
+        </ScrollView>
+      </View>
+    </>
   );
 };
 
@@ -147,4 +152,7 @@ ContributeDetail.propTypes = {
   handleRetry: PropTypes.func.isRequired,
 };
 
-export default withContributeDetail(memo(ContributeDetail));
+export default compose(
+  withContributeDetail,
+  withLayout_2,
+)(memo(ContributeDetail));

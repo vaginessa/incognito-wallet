@@ -1,14 +1,18 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { View, ScrollView, Text, TouchableOpacity, Image , RoundCornerButton } from '@src/components/core';
+import { View, ScrollViewBorder, Text, TouchableOpacity, Image , RoundCornerButton } from '@src/components/core';
+import { View2 } from '@src/components/core/View';
+import { Text4 } from '@src/components/core/Text';
 import Header from '@src/components/Header';
-import ic_radio from '@src/assets/images/icons/ic_radio.png';
-import ic_radio_check from '@src/assets/images/icons/ic_radio_check.png';
+import { useSelector } from 'react-redux';
+import { colorsSelector } from '@src/theme/theme.selector';
+import { RatioIcon } from '@components/Icons';
 import { styled } from './styled';
 
 export const UnshieldPortalCondition = (props) => {
   const [selectedId, setSelectedId] = useState(null);
   const { onConfirm, onGoBack } = props;
+  const colors = useSelector(colorsSelector);
   const OPTIONS = [
     {
       id: 'to_user_wallet',
@@ -22,9 +26,9 @@ export const UnshieldPortalCondition = (props) => {
     }
   ];
   return (
-    <View style={styled.container}>
+    <View2>
       <Header title="Unshielding options" onGoBack={onGoBack} />
-      <ScrollView style={styled.scrollview}>
+      <ScrollViewBorder style={styled.scrollview}>
         <Text style={[styled.text, { marginBottom: 22 }]}>
         Please read the conditions and select an option.
         </Text>
@@ -32,13 +36,13 @@ export const UnshieldPortalCondition = (props) => {
           OPTIONS.map(option => (
             <>
               <TouchableOpacity
-                style={option.id === selectedId ? styled.selectedButton : styled.unSelectedButon}
+                style={[styled.selectedButton, {borderColor: colors.border1}]}
                 key={option.id}
                 onPress={() => setSelectedId(option.id)}
               >
                 <View style={styled.contentView}>
-                  <Image style={styled.icon} source={option.id === selectedId ? ic_radio_check : ic_radio} />
-                  <Text style={[styled.text, option.id === selectedId ? styled.labelTextActive : styled.labelText ]}>{option.label}</Text>
+                  <RatioIcon style={styled.icon} selected={option.id === selectedId} />
+                  <Text4 style={[styled.text]}>{option.label}</Text4>
                 </View>
               </TouchableOpacity>
               {
@@ -57,8 +61,8 @@ export const UnshieldPortalCondition = (props) => {
           disabled={!selectedId}
           onPress={onConfirm}
         />
-      </ScrollView>
-    </View>
+      </ScrollViewBorder>
+    </View2>
   );
 };
 

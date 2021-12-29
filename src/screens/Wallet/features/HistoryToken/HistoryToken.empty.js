@@ -11,10 +11,8 @@ export const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 15,
   },
   text: {
-    color: COLORS.colorGreyBold,
     textAlign: 'center',
     lineHeight: FONT.SIZE.regular + 5,
     fontSize: FONT.SIZE.regular,

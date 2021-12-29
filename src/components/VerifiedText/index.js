@@ -4,6 +4,7 @@ import React, { Component } from 'react';
 import Icons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {generateTestId} from '@utils/misc';
 import {WALLET} from '@src/constants/elements';
+import { Row } from '@src/components';
 import styleSheet from './style';
 
 class VerifiedText extends Component {
@@ -17,14 +18,14 @@ class VerifiedText extends Component {
     const { text, isVerified, containerStyle, style, ...textProps } = this.props;
 
     return (
-      <View style={[styleSheet.container, containerStyle]}>
+      <Row style={[styleSheet.container, containerStyle]} centerVertical>
         <Text {...textProps} style={[styleSheet.text, style]} {...generateTestId(WALLET.TOKEN_CODE)}>{text}</Text>
         { isVerified && (
           <View style={styleSheet.verifiedFlagContainer}>
             <Icons style={styleSheet.verifiedFlag} name='check-circle' size={14} />
           </View>
         ) }
-      </View>
+      </Row>
     );
   }
 }

@@ -24,7 +24,7 @@ export const useTabFactories = () => {
   const hooksFactories = React.useMemo(() => {
     let result = [
       {
-        label: `${selltoken?.symbol} Balance`,
+        label: `${selltoken?.symbol || ''} Balance`,
         value: swapInfo?.balanceStr,
       },
     ];
@@ -32,18 +32,12 @@ export const useTabFactories = () => {
       result.push({
         label: 'Fee',
         value: feeTokenData?.totalFeePRVText ?? '',
-        hasQuestionIcon: true,
-        onPressQuestionIcon: () => null,
       });
     } else {
-      result.push(
-        {
-          label: 'Fee',
-          value: feeTokenData?.feeAmountText ?? '',
-          hasQuestionIcon: true,
-          onPressQuestionIcon: () => null,
-        },
-      );
+      result.push({
+        label: 'Fee',
+        value: feeTokenData?.feeAmountText ?? '',
+      });
     }
     return result.filter((hook) => !isEmpty(hook));
   }, [swapInfo]);

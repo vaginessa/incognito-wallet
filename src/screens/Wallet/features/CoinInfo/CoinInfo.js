@@ -1,7 +1,8 @@
 import React from 'react';
-import { View, Text, Clipboard } from 'react-native';
+import { Clipboard } from 'react-native';
 import Header from '@src/components/Header';
-import { ScrollView, TouchableOpacity, Toast } from '@src/components/core';
+import { ScrollView, TouchableOpacity, Toast, View, Text } from '@src/components/core';
+import { View2 } from '@components/core/View';
 import LinkingService from '@src/services/linking';
 import { CopyIcon, OpenUrlIcon } from '@src/components/Icons';
 import PropTypes from 'prop-types';
@@ -9,12 +10,13 @@ import { COLORS } from '@src/styles';
 import { TokenBasic } from '@src/components/Token';
 import { BtnInfo } from '@src/components/Button';
 import { useNavigation } from 'react-navigation-hooks';
+import { Row } from '@src/components';
 import withCoinInfo from './CoinInfo.enhance';
 import { styled } from './CoinInfo.styled';
 
 const InfoItem = ({ label, value, copyable, link, onlyLabel, labelStyle }) => {
   const renderComponent = (numberOfLinesValue) => (
-    <View style={styled.infoContainer}>
+    <Row style={styled.infoContainer} centerVertical>
       {!!label && (
         <Text
           numberOfLines={1}
@@ -25,17 +27,19 @@ const InfoItem = ({ label, value, copyable, link, onlyLabel, labelStyle }) => {
         </Text>
       )}
       {!!value && (
-        <Text
-          numberOfLines={numberOfLinesValue || 1}
-          ellipsizeMode="middle"
-          style={styled.value}
-        >
-          {value}
-        </Text>
+        <View style={{ flex: 5 }}>
+          <Text
+            numberOfLines={numberOfLinesValue || 1}
+            ellipsizeMode="middle"
+            style={styled.value}
+          >
+            {value}
+          </Text>
+        </View>
       )}
       {copyable && <CopyIcon />}
       {!!link && <OpenUrlIcon />}
-    </View>
+    </Row>
   );
   const handleCopyText = () => {
     Clipboard.setString(value);
@@ -73,13 +77,13 @@ const CoinInfo = (props) => {
   const navigation = useNavigation();
   const onGoBack = () => navigation.goBack();
   return (
-    <View style={styled.container}>
+    <View2 style={styled.container}>
       <Header
         title="Coin info"
         titleStyled={styled.headerTitleStyle}
         onGoBack={onGoBack}
       />
-      <View style={styled.wrapper}>
+      <View style={[styled.wrapper, {backgroundColor: 'red', marginTop: 0, overflow: 'hidden'}]} borderTop>
         <ScrollView>
           <TokenBasic
             tokenId={tokenId}
@@ -101,7 +105,7 @@ const CoinInfo = (props) => {
               style={[
                 styled.label,
                 styled.labelIsVerified,
-                isVerified ? { color: COLORS.green } : { color: COLORS.orange },
+                isVerified ? { color: COLORS.green, width: 65 } : { color: COLORS.orange, width: 90 },
               ]}
             >
               {isVerified ? 'Verified' : 'Unverified'}
@@ -113,7 +117,7 @@ const CoinInfo = (props) => {
           ))}
         </ScrollView>
       </View>
-    </View>
+    </View2>
   );
 };
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { useSelector, useDispatch, batch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { getFormSyncErrors, focus } from 'redux-form';
 import ErrorBoundary from '@src/components/ErrorBoundary';
 import { compose } from 'recompose';
@@ -10,7 +10,12 @@ import { LoadingContainer } from '@src/components/core';
 import { actionCheckNeedFaucetPRV } from '@src/redux/actions/token';
 import { nftTokenDataSelector } from '@src/redux/selectors/account';
 import FaucetPRVModal from '@src/components/Modal/features/FaucetPRVModal';
-import { formConfigs } from './OrderLimit.constant';
+import withLazy from '@src/components/LazyHoc/LazyHoc';
+import {
+  formConfigs,
+  HISTORY_ORDERS_STATE,
+  OPEN_ORDERS_STATE,
+} from './OrderLimit.constant';
 import {
   orderLimitDataSelector,
   orderLimitSelector,
@@ -21,11 +26,14 @@ import {
   actionBookOrder,
   actionSetPoolSelected,
   actionResetOrdersHistory,
+  actionFetchOrdersHistory,
 } from './OrderLimit.actions';
 
 const enhance = (WrappedComp) => (props) => {
   const dispatch = useDispatch();
-  const { cfmTitle, disabledBtn } = useSelector(orderLimitDataSelector);
+  const { cfmTitle, disabledBtn, accountBalance } = useSelector(
+    orderLimitDataSelector,
+  );
   const { isFetching, isFetched } = useSelector(orderLimitSelector);
   const { nftTokenAvailable } = useSelector(nftTokenDataSelector);
   const sellInputAmount = useSelector(sellInputAmountSelector);
@@ -52,7 +60,7 @@ const enhance = (WrappedComp) => (props) => {
       }
       if (!sellInputAmount.isMainCrypto) {
         const needFaucet = await dispatch(
-          actionCheckNeedFaucetPRV(<FaucetPRVModal />),
+          actionCheckNeedFaucetPRV(<FaucetPRVModal />, accountBalance),
         );
         if (needFaucet) {
           return;
@@ -76,15 +84,11 @@ const enhance = (WrappedComp) => (props) => {
           actionToggleModal({
             data: (
               <TradeSuccessModal
-                title="Order initiated!"
+                title="Order placed!"
                 desc={cfmTitle}
-                sub={
-                  'Your balance will update in a couple of\nminutes after the trade is finalized.'
-                }
+                sub="Your balance will update as the order fills."
                 handleTradeSucesss={() => {
-                  batch(() => {
-                    dispatch(actionInit());
-                  });
+                  console.log('book order limit');
                 }}
               />
             ),
@@ -99,16 +103,16 @@ const enhance = (WrappedComp) => (props) => {
     }
   };
   const onRefresh = () => {
-    dispatch(actionInit());
+    dispatch(actionInit(true, true));
+    dispatch(actionFetchOrdersHistory(HISTORY_ORDERS_STATE));
+    dispatch(actionFetchOrdersHistory(OPEN_ORDERS_STATE));
   };
   const callback = async (poolId) => {
     dispatch(actionResetOrdersHistory());
     await dispatch(actionSetPoolSelected(poolId));
     dispatch(actionInit(true));
   };
-  React.useEffect(() => {
-    dispatch(actionInit(true));
-  }, []);
+
   if (isFetching && !isFetched) {
     return <LoadingContainer />;
   }
@@ -119,4 +123,4 @@ const enhance = (WrappedComp) => (props) => {
   );
 };
 
-export default compose(enhance);
+export default compose(withLazy, enhance);

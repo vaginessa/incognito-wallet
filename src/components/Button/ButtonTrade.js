@@ -10,8 +10,8 @@ const styled = StyleSheet.create({
   },
   titleStyle: {
     color: COLORS.white,
-    fontFamily: FONT.NAME.bold,
-    fontSize: FONT.SIZE.regular,
+    fontFamily: FONT.NAME.medium,
+    fontSize: FONT.SIZE.medium,
     lineHeight: FONT.SIZE.regular + 5,
   },
 });

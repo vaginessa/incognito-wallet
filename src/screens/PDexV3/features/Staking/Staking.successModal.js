@@ -1,25 +1,38 @@
-import React, {memo} from 'react';
-import {Text, StyleSheet, View} from 'react-native';
+import React, { memo } from 'react';
+import { Text, StyleSheet, View } from 'react-native';
 import PropTypes from 'prop-types';
-import {COLORS, FONT} from '@src/styles';
-import {BTNPrimary} from '@components/core/Button';
-import {useDispatch} from 'react-redux';
-import {actionToggleModal} from '@components/Modal';
-import {SuccessIcon} from '@components/Icons';
+import { COLORS, FONT } from '@src/styles';
+import { BtnPrimary } from '@components/core/Button';
+import { useDispatch, useSelector } from 'react-redux';
+import { actionToggleModal } from '@components/Modal';
+import { colorsSelector } from '@src/theme/theme.selector';
+import { SuccessIcon } from '@components/Icons';
 
-const SuccessModal = ({ onButtonPress, title, content, subContent, buttonText }) => {
+const SuccessModal = ({
+  onButtonPress,
+  title,
+  content,
+  subContent,
+  buttonText,
+}) => {
   const dispatch = useDispatch();
   const onPress = () => {
     typeof onButtonPress === 'function' && onButtonPress();
     dispatch(actionToggleModal());
   };
+  const colors = useSelector(colorsSelector);
+
   return (
     <View style={styled.container}>
-      <SuccessIcon />
+      <SuccessIcon fill={colors.icon1} />
       {!!title && <Text style={styled.title}>{title}</Text>}
-      {!!content && (<Text style={styled.content}>{content}</Text>)}
-      {!!subContent && (<Text style={styled.content}>{subContent}</Text>)}
-      <BTNPrimary title={buttonText} wrapperStyle={styled.button} onPress={onPress} />
+      {!!content && <Text style={styled.content}>{content}</Text>}
+      {!!subContent && <Text style={styled.content}>{subContent}</Text>}
+      <BtnPrimary
+        title={buttonText}
+        wrapperStyle={styled.button}
+        onPress={onPress}
+      />
     </View>
   );
 };
@@ -28,7 +41,7 @@ SuccessModal.defaultProps = {
   title: null,
   content: null,
   subContent: null,
-  buttonText: 'Ok'
+  buttonText: 'OK',
 };
 
 SuccessModal.propTypes = {
@@ -55,7 +68,7 @@ const styled = StyleSheet.create({
     fontSize: FONT.SIZE.superMedium,
     lineHeight: FONT.SIZE.superMedium + 5,
     textAlign: 'center',
-    marginTop: 8
+    marginTop: 8,
   },
   content: {
     ...FONT.STYLE.medium,
@@ -68,8 +81,8 @@ const styled = StyleSheet.create({
   button: {
     width: '100%',
     marginTop: 37,
-    marginBottom: 0
-  }
+    marginBottom: 0,
+  },
 });
 
 export default memo(SuccessModal);

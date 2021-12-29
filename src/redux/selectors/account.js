@@ -57,23 +57,19 @@ export const listAccount = listAccountSelector;
 
 export const defaultAccount = defaultAccountSelector;
 
-export const getAccountByName = createSelector(
-  listAccount,
-  (accounts) =>
-    memoize((accountName) =>
-      accounts.find(
-        (account) =>
-          account?.name === accountName || account?.AccountName === accountName,
-      ),
+export const getAccountByName = createSelector(listAccount, (accounts) =>
+  memoize((accountName) =>
+    accounts.find(
+      (account) =>
+        account?.name === accountName || account?.AccountName === accountName,
     ),
+  ),
 );
 
-export const getAccountByPublicKey = createSelector(
-  listAccount,
-  (accounts) =>
-    memoize((publicKey) =>
-      accounts.find((account) => account?.PublicKeyCheckEncode === publicKey),
-    ),
+export const getAccountByPublicKey = createSelector(listAccount, (accounts) =>
+  memoize((publicKey) =>
+    accounts.find((account) => account?.PublicKeyCheckEncode === publicKey),
+  ),
 );
 
 export const isGettingAccountBalanceSelector = createSelector(
@@ -142,6 +138,11 @@ export const nftTokenDataSelector = createSelector(
       titleStr,
     };
   },
+);
+
+export const listNFTTokenSelector = createSelector(
+  nftTokenDataSelector,
+  (nftState) => nftState?.listNFTToken || [],
 );
 
 export const defaultAccountWalletSelector = createSelector(

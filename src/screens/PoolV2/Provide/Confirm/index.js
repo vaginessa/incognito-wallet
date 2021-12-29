@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { compose } from 'recompose';
-import { View, Text, RoundCornerButton, ScrollView } from '@components/core';
+import { View, Text, RoundCornerButton, ScrollViewBorder } from '@components/core';
 import ExtraInfo from '@screens/DexV2/components/ExtraInfo';
 import format from '@utils/format';
 import { withLayout_2 } from '@components/Layout';
@@ -10,6 +10,8 @@ import Loading from '@screens/DexV2/components/Loading';
 import withDefaultAccount from '@components/Hoc/withDefaultAccount';
 import mainStyles from '@screens/PoolV2/style';
 import { RefreshControl } from 'react-native';
+import { useSelector } from 'react-redux';
+import { colorsSelector } from '@src/theme';
 import withSuccess from './success.enhance';
 import withConfirm from './confirm.enhance';
 import withData from './data.enhance';
@@ -29,6 +31,7 @@ const Confirm = ({
   refreshing,
   unlockTimeFormat,
 }) => {
+  const colors = useSelector(colorsSelector);
   const renderRefreshControl = () => (
     <RefreshControl
       refreshing={refreshing}
@@ -36,12 +39,12 @@ const Confirm = ({
     />
   );
   return (
-    <View style={{ flex: 1 }}>
+    <>
       <Header title="Confirmation" />
-      <ScrollView refreshControl={renderRefreshControl()}>
+      <ScrollViewBorder refreshControl={renderRefreshControl()}>
         <View style={styles.mainInfo}>
           <Text style={styles.label}>Provide</Text>
-          <Text style={styles.bigText} numberOfLines={3}>{provide} {coin.symbol}</Text>
+          <Text style={[styles.bigText, { color: colors.blue1 }]} numberOfLines={3}>{provide} {coin.symbol}</Text>
         </View>
         {
           unlockTimeFormat
@@ -77,9 +80,9 @@ const Confirm = ({
           onPress={onConfirm}
           disabled={!!error || disable}
         />
-      </ScrollView>
+      </ScrollViewBorder>
       <Loading open={providing} />
-    </View>
+    </>
   );
 };
 

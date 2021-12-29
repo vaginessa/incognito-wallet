@@ -1,13 +1,13 @@
 import { Header } from '@src/components';
 import { useDispatch, useSelector } from 'react-redux';
-import { ScrollView, Text } from '@src/components/core';
+import { ScrollView, Text, View, ScrollViewBorder } from '@src/components/core';
 import { withLayout_2 } from '@src/components/Layout';
 import React from 'react';
-import { View } from 'react-native';
 import CopiableText from '@src/components/CopiableText';
 import { useFocusEffect, useNavigation } from 'react-navigation-hooks';
 import { nftTokenDataSelector } from '@src/redux/selectors/account';
 import { actionSetNFTTokenData } from '@src/redux/actions/account';
+import globalStyled from '@src/theme/theme.styled';
 import NFTTokenHook from './NFTToken.hook';
 import { styled } from './NFTToken.styled';
 import { FormMint } from './NFTToken.mint';
@@ -67,16 +67,16 @@ const NFTToken = (props) => {
     [],
   );
   return (
-    <View style={styled.container}>
+    <>
       <Header title="Tickets" />
-      <ScrollView style={styled.scrollview}>
+      <ScrollViewBorder style={styled.scrollview}>
         {hookFactories.map((hook) => (
           <NFTTokenHook {...hook} key={hook.label} />
         ))}
         <ListNFTToken />
         <FormMint />
-      </ScrollView>
-    </View>
+      </ScrollViewBorder>
+    </>
   );
 };
 

@@ -1,18 +1,22 @@
 import React from 'react';
 import {
   FlatList,
-  KeyboardAwareScrollView,
   Text,
   RefreshControl,
+  View,
 } from '@src/components/core';
 import { BaseTextInputCustom } from '@src/components/core/BaseTextInput';
 import { FONT, COLORS } from '@src/styles';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { Row } from '@src/components';
 import Pool from '@screens/PDexV3/features/Pool';
 import PropTypes from 'prop-types';
 import orderBy from 'lodash/orderBy';
+import globalStyled from '@src/theme/theme.styled';
+import { BtnCircleBack } from '@components/Button';
+import debounce from 'lodash/debounce';
+import { useNavigation } from 'react-navigation-hooks';
 import { actionFetchPools } from './Pools.actions';
 import { handleFilterPoolByKeySeach } from './Pools.utils';
 import { isFetchingSelector } from './Pools.selector';
@@ -20,13 +24,16 @@ import { isFetchingSelector } from './Pools.selector';
 const styled = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 24,
   },
   headerText: {
     fontSize: FONT.SIZE.small,
     color: COLORS.colorGrey3,
     fontFamily: FONT.NAME.medium,
   },
+  input: {
+    width: 200,
+    height: 40
+  }
 });
 
 const HEADER_FACTORIES = [
@@ -77,34 +84,37 @@ export const PoolsList = React.memo(({ onPressPool, pools }) => {
     return orderBy(pools, 'isFollowed', 'desc');
   }, [pools]);
   return (
-    <KeyboardAwareScrollView
-      refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-      }
-    >
-      <FlatList
-        data={data}
-        style={{ paddingTop: 30 }}
-        renderItem={({ item }) => (
-          <Pool
-            poolId={item.poolId}
-            onPressPool={() => {
-              console.log(item.poolId);
-              onPressPool(item.poolId, item);
-            }}
-          />
-        )}
-        keyExtractor={({ poolId }) => poolId}
-        showsVerticalScrollIndicator={false}
-      />
-    </KeyboardAwareScrollView>
+    <FlatList
+      data={data}
+      refreshControl={() => (
+        <RefreshControl
+          refreshing={refreshing}
+          onRefresh={onRefresh}
+        />
+      )}
+      renderItem={({ item, index }) => (
+        <Pool
+          poolId={item.poolId}
+          onPressPool={() => {
+            console.log(item.poolId);
+            onPressPool(item.poolId, item);
+          }}
+          isLast={data && (data.length - 1 === index)}
+        />
+      )}
+      keyExtractor={({ poolId }) => poolId}
+      showsVerticalScrollIndicator={false}
+    />
   );
 });
 
 const PoolsListContainer = (props) => {
   const { onPressPool, listPools, style } = props;
+  const navigation = useNavigation();
   const [text, setText] = React.useState(text);
   const [pools, setPools] = React.useState([]);
+  const handleGoBack = () => navigation.goBack();
+  const _handleGoBack = debounce(handleGoBack, 100);
   const onChange = (text) => {
     setText(text);
     if (!text) {
@@ -121,19 +131,23 @@ const PoolsListContainer = (props) => {
     setText('');
   }, [listPools]);
   return (
-    <View style={[styled.container, style]}>
-      <BaseTextInputCustom
-        value={text}
-        inputProps={{
-          onChangeText: onChange,
-          placeholder: 'Search coins',
-          style: styled.input,
-          autFocus: true,
-        }}
-      />
-      {/*<PoolsListHeader />*/}
-      <PoolsList onPressPool={onPressPool} pools={pools} />
-    </View>
+    <>
+      <Row style={[globalStyled.defaultPaddingHorizontal, { marginBottom: 16 }]} centerVertical>
+        <BtnCircleBack onPress={_handleGoBack} />
+        <BaseTextInputCustom
+          value={text}
+          inputProps={{
+            onChangeText: onChange,
+            placeholder: 'Search coins',
+            style: styled.input,
+            autFocus: true,
+          }}
+        />
+      </Row>
+      <View style={[styled.container, style]} borderTop>
+        <PoolsList onPressPool={onPressPool} pools={pools} />
+      </View>
+    </>
   );
 };
 

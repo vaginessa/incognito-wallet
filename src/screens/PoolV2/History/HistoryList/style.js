@@ -4,15 +4,14 @@ import { StyleSheet } from 'react-native';
 export default StyleSheet.create({
   wrapper: {
     flex: 1,
-    marginBottom: 10,
   },
   button: {
     marginVertical: 50,
   },
   buttonTitle: {
-    fontSize: 20,
+    fontSize: FONT.SIZE.medium,
     marginBottom: 5,
-    ...FONT.STYLE.bold,
+    ...FONT.STYLE.medium,
   },
   error: {
     color: COLORS.red,
@@ -22,14 +21,14 @@ export default StyleSheet.create({
     color: COLORS.black,
   },
   content: {
-    fontSize: 18,
+    fontSize: FONT.SIZE.regular,
     color: COLORS.lightGrey16,
   },
   historyItem: {
     paddingVertical: 15,
   },
   historyTitle: {
-    paddingTop: 30,
+    overflow: 'hidden',
   },
   right: {
     textAlign: 'right',
@@ -41,8 +40,6 @@ export default StyleSheet.create({
   center: {
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  status: {
   },
   ellipsis: {
     flex: 1,

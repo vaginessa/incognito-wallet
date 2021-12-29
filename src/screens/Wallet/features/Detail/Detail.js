@@ -1,5 +1,8 @@
 import React from 'react';
-import {TouchableOpacity, View} from 'react-native';
+import { SafeAreaView, TouchableOpacity } from 'react-native';
+import { View } from '@src/components/core';
+import { View2 } from '@src/components/core/View';
+import globalStyled from '@src/theme/theme.styled';
 import Header from '@src/components/Header';
 import {
   selectedPrivacySelector,
@@ -7,33 +10,35 @@ import {
   tokenSelector,
   accountSelector,
 } from '@src/redux/selectors';
-import {useDispatch, useSelector} from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { BtnInfo } from '@src/components/Button';
 import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
-import {
-  Amount,
-  AmountBasePRV,
-  AmountBaseUSDT,
-  ChangePrice, Price,
-} from '@src/components/Token/Token';
+import { Amount, ChangePrice, Price } from '@src/components/Token/Token';
 import HistoryToken from '@screens/Wallet/features/HistoryToken';
 import MainCryptoHistory from '@screens/Wallet/features/MainCryptoHistory';
 import { isGettingBalance as isGettingTokenBalanceSelector } from '@src/redux/selectors/token';
 import { isGettingBalance as isGettingMainCryptoBalanceSelector } from '@src/redux/selectors/account';
 import useFeatureConfig from '@src/shared/hooks/featureConfig';
-import { pTokenSelector } from '@src/redux/selectors/shared';
 import { useHistoryEffect } from '@screens/Wallet/features/History';
 import appConstant from '@src/constants/app';
-import {actionChangeTab} from '@components/core/Tabs/Tabs.actions';
-import {ROOT_TAB_TRADE, TAB_BUY_LIMIT_ID, TAB_SELL_LIMIT_ID} from '@screens/PDexV3/features/Trade/Trade.constant';
-import {actionInit, actionSetPoolSelected} from '@screens/PDexV3/features/OrderLimit';
-import {BTNBorder, BTNPrimary} from '@components/core/Button';
-import {COLORS} from '@src/styles';
-import {ThreeDotsVerIcon} from '@components/Icons';
-import {actionToggleModal} from '@components/Modal';
+import { actionChangeTab } from '@components/core/Tabs/Tabs.actions';
+import {
+  ROOT_TAB_TRADE,
+  TAB_BUY_LIMIT_ID,
+  TAB_SELL_LIMIT_ID,
+} from '@screens/PDexV3/features/Trade/Trade.constant';
+import {
+  actionInit,
+  actionSetPoolSelected,
+} from '@screens/PDexV3/features/OrderLimit';
+import { BtnSecondary, BtnPrimary } from '@components/core/Button';
+import { COLORS } from '@src/styles';
+import { ThreeDotsVerIcon } from '@components/Icons';
+import { actionToggleModal } from '@components/Modal';
 import ModalBottomSheet from '@components/Modal/features/ModalBottomSheet';
-import {Row} from '@src/components';
+import { Row } from '@src/components';
+import { colorsSelector } from '@src/theme';
 import {
   styled,
   groupBtnStyled,
@@ -45,11 +50,10 @@ const GroupButton = React.memo(() => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const selected = useSelector(selectedPrivacySelector.selectedPrivacy);
-  const handleSend = () => {
+  const handleBuy = () => {
     navigation.navigate(routeNames.Trade, { tabIndex: 0 });
     const poolId = selected.defaultPoolPair;
     if (poolId) {
-      navigation.navigate(routeNames.Trade, { tabIndex: 0 });
       dispatch(
         actionChangeTab({ rootTabID: ROOT_TAB_TRADE, tabID: TAB_BUY_LIMIT_ID }),
       );
@@ -59,12 +63,15 @@ const GroupButton = React.memo(() => {
       }, 200);
     }
   };
-  const handleReceive = () => {
+  const handleSell = () => {
     const poolId = selected.defaultPoolPair;
     navigation.navigate(routeNames.Trade, { tabIndex: 1 });
     if (poolId) {
       dispatch(
-        actionChangeTab({ rootTabID: ROOT_TAB_TRADE, tabID: TAB_SELL_LIMIT_ID }),
+        actionChangeTab({
+          rootTabID: ROOT_TAB_TRADE,
+          tabID: TAB_SELL_LIMIT_ID,
+        }),
       );
       dispatch(actionSetPoolSelected(poolId));
       setTimeout(() => {
@@ -74,25 +81,28 @@ const GroupButton = React.memo(() => {
   };
 
   return (
-    <View style={groupBtnStyled.groupButton}>
-      <BTNPrimary
-        title="Buy"
-        wrapperStyle={groupBtnStyled.btnStyle}
-        background={COLORS.green}
-        onPress={handleSend}
-      />
-      <BTNPrimary
-        title="Sell"
-        wrapperStyle={groupBtnStyled.btnStyle}
-        background={COLORS.red2}
-        onPress={handleReceive}
-      />
-    </View>
+    <SafeAreaView>
+      <View2 style={[groupBtnStyled.groupButton, {...globalStyled.defaultPaddingHorizontal}]}>
+        <BtnPrimary
+          title="Buy"
+          wrapperStyle={groupBtnStyled.btnStyle}
+          background={COLORS.green}
+          onPress={handleBuy}
+        />
+        <BtnPrimary
+          title="Sell"
+          wrapperStyle={groupBtnStyled.btnStyle}
+          background={COLORS.red2}
+          onPress={handleSell}
+        />
+      </View2>
+    </SafeAreaView>
   );
 });
 
 const Balance = React.memo(() => {
   const selected = useSelector(selectedPrivacySelector.selectedPrivacy);
+  const colors = useSelector(colorsSelector);
   const isGettingBalance = useSelector(
     sharedSelector.isGettingBalance,
   ).includes(selected?.tokenId);
@@ -113,7 +123,7 @@ const Balance = React.memo(() => {
     <View style={balanceStyled.container}>
       <Amount {...amountProps} />
       <View style={balanceStyled.hook}>
-        <Price pricePrv={selected.pricePrv} priceUsd={selected.priceUsd} />
+        <Price pricePrv={selected.pricePrv} priceUsd={selected.priceUsd} textStyle={{ color: colors.text3 }} />
         <ChangePrice {...changePriceProps} />
       </View>
     </View>
@@ -145,33 +155,38 @@ const CustomRightHeader = () => {
     handleSend,
   );
   const onToggle = () => {
-    dispatch(actionToggleModal({
-      data: (
-        <ModalBottomSheet
-          style={{ height: '15%' }}
-          contentView={(
-            <Row style={groupBtnStyled.groupButton}>
-              <BTNBorder
-                title="Receive"
-                wrapperStyle={groupBtnStyled.btnStyle}
-                onPress={handleReceive}
-              />
-              <BTNPrimary
-                title="Send"
-                wrapperStyle={groupBtnStyled.btnStyle}
-                onPress={onPressSend}
-                disabled={isSendDisabled}
-              />
-            </Row>
-          )}
-        />
-      ),
-      visible: true,
-      shouldCloseModalWhenTapOverlay: true
-    }));
+    dispatch(
+      actionToggleModal({
+        data: (
+          <ModalBottomSheet
+            style={{ height: '15%' }}
+            contentView={(
+              <Row style={[groupBtnStyled.groupButton, { paddingVertical: 0 }]}>
+                <BtnSecondary
+                  title="Receive"
+                  wrapperStyle={[groupBtnStyled.btnStyle, { marginTop: 0 }]}
+                  onPress={handleReceive}
+                />
+                <BtnPrimary
+                  title="Send"
+                  wrapperStyle={groupBtnStyled.btnStyle}
+                  onPress={onPressSend}
+                  disabled={isSendDisabled}
+                />
+              </Row>
+            )}
+          />
+        ),
+        visible: true,
+        shouldCloseModalWhenTapOverlay: true,
+      }),
+    );
   };
   return (
-    <TouchableOpacity style={{ height: 30, justifyContent: 'center' }} onPress={onToggle}>
+    <TouchableOpacity
+      style={{ height: 30, justifyContent: 'center' }}
+      onPress={onToggle}
+    >
       <ThreeDotsVerIcon />
     </TouchableOpacity>
   );
@@ -197,7 +212,7 @@ const Detail = (props) => {
   const { onRefresh } = useHistoryEffect();
   return (
     <>
-      <View style={[styled.container, { marginHorizontal: 25 }]}>
+      <View2 style={[styled.container]}>
         <Header
           title={selected?.name}
           customHeaderTitle={<BtnInfo />}
@@ -205,10 +220,12 @@ const Detail = (props) => {
           onGoBack={onGoBack}
           handleSelectedAccount={onRefresh}
         />
-        <Balance />
+        <View borderTop fullFlex paddingHorizontal style={{ paddingBottom: 0 }}>
+          <Balance />
+          <History {...{ ...props, refreshing }} />
+        </View>
         <GroupButton />
-        <History {...{ ...props, refreshing }} />
-      </View>
+      </View2>
     </>
   );
 };

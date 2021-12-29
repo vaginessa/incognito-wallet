@@ -1,14 +1,23 @@
 import React, {memo} from 'react';
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import PropTypes from 'prop-types';
 import {ImageCached, Row} from '@src/components';
 import {formatPrice} from '@components/Token';
 import replace from 'lodash/replace';
-import round from 'lodash/round';
 import {COLORS, FONT} from '@src/styles';
 import {NormalText} from '@components/Token/Token';
 import incognito from '@assets/images/new-icons/incognito.png';
 import {BtnStar} from '@components/Button';
+import format from '@utils/format';
+import { Text } from '@components/core';
+import styled from 'styled-components/native';
+
+const CustomTouchableOpacity = styled(TouchableOpacity)`
+  padding-left: 24px;
+  padding-right: 24px;
+  border-bottom-width: 1px;
+  border-bottom-color: ${({ theme }) => theme.border4};
+`;
 
 const TokenFollow = ({ item, hideStar, handleToggleFollowToken, onPress }) => {
   const { symbol, priceUsd, change, tokenId, isFollowed, name } = item;
@@ -16,7 +25,7 @@ const TokenFollow = ({ item, hideStar, handleToggleFollowToken, onPress }) => {
     const price = priceUsd;
     const isTokenDecrease = change && change[0] === '-';
     const changeToNumber = Number(replace(change, '-', ''));
-    const changeStr = changeToNumber === 0 ? '0%' : `${isTokenDecrease ? '-' : '+'}${round(changeToNumber, 2)}%`;
+    const changeStr = changeToNumber === 0 ? '0%' : `${isTokenDecrease ? '-' : '+'}${format.amountVer2(changeToNumber, 0)}%`;
     const changeColor = changeToNumber === 0 ? COLORS.lightGrey34 : (isTokenDecrease ? COLORS.red : COLORS.green);
     return {
       price: formatPrice(price),
@@ -25,82 +34,82 @@ const TokenFollow = ({ item, hideStar, handleToggleFollowToken, onPress }) => {
     };
   }, [priceUsd]);
   return (
-    <TouchableOpacity key={tokenId} onPress={onPress}>
-      <Row style={styled.wrapItem}>
-        <View centerVertical style={styled.sectionFirst}>
+    <CustomTouchableOpacity key={tokenId} onPress={onPress}>
+      <Row style={styles.wrapItem}>
+        <View centerVertical style={styles.sectionFirst}>
           <Row centerVertical>
-            <ImageCached uri={item.iconUrl} style={styled.icon} defaultImage={incognito} />
+            <ImageCached uri={item.iconUrl} style={styles.icon} defaultImage={incognito} />
             <View>
               <NormalText
-                style={styled.blackLabel}
+                style={styles.blackLabel}
                 text={symbol}
               />
               <NormalText
-                style={styled.greyText}
+                style={styles.greyText}
                 text={name}
               />
             </View>
           </Row>
         </View>
-        <View style={styled.sectionSecond}>
+        <View style={styles.sectionSecond}>
           <NormalText
             text={balance.price}
-            containerStyle={styled.containerStyle}
+            containerStyle={styles.containerStyle}
             hasPSymbol
-            style={styled.blackLabel}
+            style={styles.blackLabel}
             stylePSymbol={[
-              styled.blackLabel,
+              styles.blackLabel,
               { fontFamily: FONT.NAME.specialRegular }
             ]}
           />
           <NormalText
-            style={[styled.greyText, { color: balance.changeColor }]}
-            containerStyle={styled.containerStyle}
+            style={[styles.greyText, { color: balance.changeColor }]}
+            containerStyle={styles.containerStyle}
             text={balance.changeStr}
           />
         </View>
         {!hideStar && (
-          <TouchableOpacity style={styled.iconStar} onPress={() => handleToggleFollowToken(item)}>
+          <TouchableOpacity style={styles.iconStar} onPress={() => handleToggleFollowToken(item)}>
             <BtnStar onPress={() => handleToggleFollowToken(item)} isBlue={isFollowed} />
           </TouchableOpacity>
         )}
       </Row>
-    </TouchableOpacity>
+    </CustomTouchableOpacity>
   );
 };
 
 export const FollowHeader = React.memo(({ hideStar }) => {
   return (
-    <Row style={styled.wrapHeader}>
-      <View centerVertical style={styled.sectionFirst}>
-        <Text style={styled.headerLabel}>Assets</Text>
+    <Row style={styles.wrapHeader}>
+      <View centerVertical style={styles.sectionFirst}>
+        <Text style={styles.headerLabel}>Assets</Text>
       </View>
-      <View centerVertical style={styled.sectionSecond}>
-        <Text style={styled.headerLabel}>Price</Text>
+      <View centerVertical style={styles.sectionSecond}>
+        <Text style={styles.headerLabel}>Price</Text>
       </View>
-      <View centerVertical style={styled.sectionThird}>
-        <Text style={styled.headerLabel}>Change</Text>
+      <View centerVertical style={styles.sectionThird}>
+        <Text style={styles.headerLabel}>Change</Text>
       </View>
-      {!hideStar && <View style={styled.iconStar} />}
+      {!hideStar && <View style={styles.iconStar} />}
     </Row>
   );
 });
 
-export const styled = StyleSheet.create({
+export const styles = StyleSheet.create({
   wrapItem: {
-    paddingBottom: 32,
+    paddingBottom: 16,
+    paddingTop: 11
   },
   blackLabel: {
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.medium,
     textAlign: 'left',
-    color: COLORS.black,
     lineHeight: FONT.SIZE.medium + 9,
   },
   icon: {
     marginRight: 12,
     width: 32,
-    height: 32
+    height: 32,
   },
   sectionFirst: {
     flex: 1,
@@ -137,8 +146,9 @@ export const styled = StyleSheet.create({
   },
   iconStar: {
     width: 24,
-    paddingTop: 2,
+    height: FONT.SIZE.medium + 9,
     alignItems: 'flex-end',
+    justifyContent: 'center'
   },
 });
 

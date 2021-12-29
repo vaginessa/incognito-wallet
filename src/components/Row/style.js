@@ -3,6 +3,7 @@ import { StyleSheet } from 'react-native';
 export default StyleSheet.create({
   row: {
     flexDirection: 'row',
+    backgroundColor: 'transparent',
   },
   center: {
     alignItems: 'center',
@@ -12,6 +13,6 @@ export default StyleSheet.create({
     justifyContent: 'space-between',
   },
   centerVertical: {
-    alignItems: 'center'
-  }
+    alignItems: 'center',
+  },
 });

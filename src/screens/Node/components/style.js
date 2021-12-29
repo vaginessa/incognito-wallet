@@ -20,8 +20,7 @@ const style = StyleSheet.create({
   itemLeft: {
     marginRight: 'auto',
     fontFamily: FONT.NAME.bold,
-    fontSize: FONT.SIZE.superMedium,
-    color: COLORS.black,
+    fontSize: FONT.SIZE.medium,
     textAlign: 'left',
     maxWidth: 200,
   },
@@ -94,7 +93,7 @@ const style = StyleSheet.create({
   withdrawText: {
     marginRight: 15,
   },
-  stakeButton: {
+  actionButton: {
     height: 30,
     minWidth: 80,
   },
@@ -109,6 +108,14 @@ const style = StyleSheet.create({
   },
   centerAlign: {
     alignItems: 'center',
+  },
+  infoBtnStyle: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    justifyContent: 'center',
+    alignContent: 'center',
+    alignItems: 'center'
   },
   icon: {
     marginRight: 10,
@@ -126,7 +133,6 @@ const style = StyleSheet.create({
   },
   text: {
     ...FONT.STYLE.medium,
-    color: COLORS.newGrey,
   },
   bold: {
     ...FONT.STYLE.bold,
@@ -137,7 +143,6 @@ const style = StyleSheet.create({
   rightHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    maxWidth: 60,
     justifyContent: 'space-between',
   },
   warningDesc: {
@@ -146,6 +151,13 @@ const style = StyleSheet.create({
     lineHeight: isIOS() ? 25 : 30,
     marginTop: 10,
     ...FONT.STYLE.medium
+  },
+  infoIcon: {
+    width: 40,
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 20
   }
 });
 
@@ -186,11 +198,9 @@ export const rewardStyle = StyleSheet.create({
     backgroundColor: COLORS.primary,
   },
   balance: {
-    fontSize: FONT.SIZE.medium,
-    color: COLORS.newGrey,
     textAlign: 'center',
     height: '100%',
-    ...FONT.STYLE.medium,
+    ...FONT.TEXT.incognitoP1,
   },
   prvStyle: {
     marginTop: isAndroid() ? 3 : 0,

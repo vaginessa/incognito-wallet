@@ -11,6 +11,7 @@ import icFaceId from '@src/assets/images/icons/ic_faceid.png';
 import routeNames from '@src/router/routeNames';
 import { withNavigation } from 'react-navigation';
 import { compose } from 'recompose';
+import { withLayout_2 } from '@components/Layout';
 import styles from './styles';
 
 export const TAG = 'AddPIN';
@@ -245,7 +246,7 @@ class AddPIN extends React.Component {
     const userPin = nextPin ? pin2 : pin1;
     console.log('this.state', this.state);
     return (
-      <View style={styles.container}>
+      <View style={styles.container} borderTop>
         {(action === 'login' || action === 'remove') && bioSupportedType && (
           <TouchableOpacity
             style={styles.fingerprint}
@@ -311,6 +312,7 @@ class AddPIN extends React.Component {
               >
                 <Icon
                   containerStyle={styles.icon}
+                  color="white"
                   type="material"
                   name="chevron-left"
                   size={35}
@@ -331,6 +333,7 @@ class AddPIN extends React.Component {
             >
               <Icon
                 containerStyle={styles.icon}
+                color="white"
                 type="material"
                 name="backspace"
                 size={20}
@@ -367,6 +370,7 @@ const mapDispatchToProps = { updatePin, actionAuthen };
 
 export default compose(
   withNavigation,
+  withLayout_2,
   connect(
     mapStateToProps,
     mapDispatchToProps,

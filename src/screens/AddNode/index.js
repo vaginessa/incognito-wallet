@@ -1,6 +1,8 @@
 import routeNames from '@routers/routeNames';
 import React from 'react';
-import { TouchableOpacity, View, Text } from 'react-native';
+import { TouchableOpacity } from 'react-native';
+import { View, Text } from '@src/components/core';
+import { Text4 } from '@src/components/core/Text';
 import Header from '@src/components/Header';
 import { withLayout_2 } from '@components/Layout';
 import { useNavigation } from 'react-navigation-hooks';
@@ -23,9 +25,9 @@ const listItems = [
 const AddNode = () => {
   const navigation = useNavigation();
   return (
-    <View style={styles.container}>
+    <>
       <Header title="Add a Node" />
-      <View style={styles.content}>
+      <View borderTop paddingHorizontal fullFlex>
         {listItems?.map(item => (
           <TouchableOpacity
             key={item.routeName}
@@ -35,13 +37,13 @@ const AddNode = () => {
             <Text style={styles.title}>
               {item?.title}
             </Text>
-            <Text style={styles.subTitle}>
+            <Text4 style={styles.subTitle}>
               {item?.subTitle}
-            </Text>
+            </Text4>
           </TouchableOpacity>
         ))}
       </View>
-    </View>
+    </>
   );
 };
 

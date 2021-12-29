@@ -1,11 +1,14 @@
-import { Dimensions, View, Text, Clipboard } from 'react-native';
+import { Dimensions, Clipboard } from 'react-native';
 import { compose } from 'recompose';
 import {
-  ScrollView,
+  ScrollViewBorder,
   Toast,
   RefreshControl,
   TouchableOpacity,
+  View,
+  Text,
 } from '@src/components/core';
+import { View2 } from '@src/components/core/View';
 import { actionFetchTx } from '@src/redux/actions/history';
 import {
   historyDetailFactoriesSelector,
@@ -189,14 +192,14 @@ const History = () => {
     Toast.showSuccess('Copied');
   };
   return (
-    <View style={styled.container}>
+    <View2 style={styled.container}>
       <Header
         title="Transaction detail"
         customHeaderTitle={
-          <BtnCopy style={{ marginLeft: 10 }} onPress={onCopyData} />
+          <BtnCopy style={{ marginLeft: 10 }} isHeader onPress={onCopyData} />
         }
       />
-      <ScrollView
+      <ScrollViewBorder
         refreshControl={
           <RefreshControl refreshing={fetching} onRefresh={handleRefresh} />
         }
@@ -214,8 +217,8 @@ const History = () => {
           />
         )}
         <View style={{ height: 50 }} />
-      </ScrollView>
-    </View>
+      </ScrollViewBorder>
+    </View2>
   );
 };
 

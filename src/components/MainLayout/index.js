@@ -2,14 +2,15 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { compose } from 'recompose';
 import {
-  View,
-  ScrollView,
-  FlexView,
+  ScrollViewBorder,
   LoadingContainer,
   KeyboardAwareScrollView,
+  View
 } from '@components/core';
+import { FlexView2 } from  '@components/core/FlexView';
 import { withLayout_2 } from '@components/Layout';
 import Header from '@components/Header';
+import globalStyled from '@src/theme/theme.styled';
 import styles from './style';
 
 const MainLayout = ({
@@ -26,9 +27,10 @@ const MainLayout = ({
   noHeader,
   canSearch,
   keyboardAware,
+  noPaddingBottom,
 }) => {
   return (
-    <FlexView style={[noPadding && styles.noPaddingStyle]}>
+    <FlexView2 style={[noPadding && styles.noPaddingStyle]}>
       {!noHeader && (
         <Header
           canSearch={canSearch}
@@ -42,35 +44,39 @@ const MainLayout = ({
       )}
       {loading ? <LoadingContainer /> :
         scrollable ? !keyboardAware ? (
-          <ScrollView
-            paddingBottom
+          <ScrollViewBorder
+            paddingBottom={!noPaddingBottom}
             contentContainerStyle={[
               styles.content,
               contentStyle,
             ]}
           >
             {children}
-          </ScrollView>
+          </ScrollViewBorder>
         ) :  (
           <KeyboardAwareScrollView
             contentContainerStyle={[
               styles.content,
               contentStyle,
             ]}
+            fullFlex
           >
             {children}
           </KeyboardAwareScrollView>
         ) : (
-          <View style={[
-            styles.content,
-            contentStyle
-          ]}
+          <View
+            borderTop
+            paddingHorizontal
+            style={[
+              styles.content,
+              contentStyle,
+            ]}
           >
             {children}
           </View>
         )
       }
-    </FlexView>
+    </FlexView2>
   );
 };
 

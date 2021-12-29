@@ -1,13 +1,13 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Text, View } from 'react-native';
 import clipboard from '@src/services/clipboard';
 import { BtnQRCode, BtnCopy } from '@src/components/Button';
 import Header from '@src/components/Header';
 import srcQrCodeLight from '@src/assets/images/icons/qr_code_light.png';
 import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
-import { ScrollView } from '@src/components/core';
+import { View, Text, ScrollViewBorder } from '@src/components/core';
+import { Text3 } from '@src/components/core/Text';
 import withExportAccount from './ExportAccount.enhance';
 import styleSheet from './ExportAccount.styled';
 
@@ -24,7 +24,7 @@ const ExportItem = ({ label, data, onPress, onPressQRCode }) => (
         <BtnCopy onPress={onPress} />
       </View>
     </View>
-    <Text style={styleSheet.itemData}>{data}</Text>
+    <Text3 style={styleSheet.itemData}>{data}</Text3>
   </View>
 );
 
@@ -54,25 +54,23 @@ const ExportAccount = ({ account, token, title }) => {
       />
     ) : null;
   return (
-    <View style={styleSheet.container}>
+    <>
       <Header title={title} />
-      <View style={styleSheet.wrapper}>
-        <ScrollView>
-          {renderItem('Your incognito address', account?.PaymentAddress)}
-          {renderItem('Private key', account?.PrivateKey)}
-          {renderItem('Public key', account?.PublicKeyCheckEncode)}
-          {renderItem('Readonly key', account?.ReadonlyKey)}
-          {renderItem('Validator key', account?.ValidatorKey)}
-          {renderItem('Validator Public key', account?.BLSPublicKey)}
-          {renderItem('OTA key', account?.OTAKey)}
-          {__DEV__ || global.isDEV ? renderItem('Device token', token) : null}
-          {renderItem('ID', account?.ID.toString())}
-          {__DEV__ || global.isDEV
-            ? renderItem('Shard', parseShard(account?.PublicKeyBytes))
-            : null}
-        </ScrollView>
-      </View>
-    </View>
+      <ScrollViewBorder>
+        {renderItem('Your incognito address', account?.PaymentAddress)}
+        {renderItem('Private key', account?.PrivateKey)}
+        {renderItem('Public key', account?.PublicKeyCheckEncode)}
+        {renderItem('Readonly key', account?.ReadonlyKey)}
+        {renderItem('Validator key', account?.ValidatorKey)}
+        {renderItem('Validator Public key', account?.BLSPublicKey)}
+        {renderItem('OTA key', account?.OTAKey)}
+        {__DEV__ || global.isDEV ? renderItem('Device token', token) : null}
+        {renderItem('ID', account?.ID.toString())}
+        {__DEV__ || global.isDEV
+          ? renderItem('Shard', parseShard(account?.PublicKeyBytes))
+          : null}
+      </ScrollViewBorder>
+    </>
   );
 };
 

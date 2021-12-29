@@ -1,13 +1,12 @@
 import React, { memo } from 'react';
-import { SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { SafeAreaView, ScrollView, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
 import { COLORS, FONT } from '@src/styles';
-import { useKeyboard } from '@src/components/UseEffect/useKeyboard';
-import debounce from 'lodash/debounce';
+import styled from 'styled-components/native';
+import { Text, View } from '@components/core';
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: COLORS.white,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     padding: 24,
@@ -25,10 +24,15 @@ const styles = StyleSheet.create({
     ...FONT.STYLE.medium,
     fontSize: FONT.SIZE.superMedium,
     lineHeight: FONT.SIZE.superMedium + 10,
-    color: COLORS.black,
     marginBottom: 22,
   },
 });
+
+const CustomSafeAreaView = styled(SafeAreaView)`
+  background-color: ${({ theme }) => theme.background1};
+  border-top-left-radius: 24;
+  border-top-right-radius: 24;
+`;
 
 const ModalBottomSheet = ({
   title,
@@ -44,17 +48,21 @@ const ModalBottomSheet = ({
         ...style,
       }}
     >
-      <SafeAreaView style={styles.safeScreen}>
+      <CustomSafeAreaView style={styles.safeScreen}>
         {customContent ? (
           customContent
         ) : (
           <>
             {!!title && <Text style={styles.title}>{title}</Text>}
             {!!headerView && headerView}
-            {!!contentView && <ScrollView showsVerticalScrollIndicator={false}>{contentView}</ScrollView>}
+            {!!contentView && (
+              <ScrollView showsVerticalScrollIndicator={false}>
+                {contentView}
+              </ScrollView>
+            )}
           </>
         )}
-      </SafeAreaView>
+      </CustomSafeAreaView>
     </View>
   );
 };

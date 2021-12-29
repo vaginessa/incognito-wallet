@@ -1,3 +1,4 @@
+import { PRV_ID } from '@src/constants/common';
 import { ACCOUNT_CONSTANT } from 'incognito-chain-web-js/build/wallet';
 import {
   ACTION_FETCHING,
@@ -21,14 +22,33 @@ import {
   ACTION_FETCHED_ORDER_DETAIL,
   ACTION_SET_DEFAULT_PAIR,
   ACTION_TOGGLE_PRO_TAB,
+  PLATFORMS_SUPPORTED,
+  KEYS_PLATFORMS_SUPPORTED,
+  ACTION_CHANGE_SELECTED_PLATFORM,
+  ACTION_CHANGE_STATUS_VISIBLE_PLATFORM,
+  ACTION_SAVE_LAST_FIELD,
+  ACTION_CHANGE_ESTIMATE_DATA,
+  ACTION_SET_DEFAULT_EXCHANGE,
+  ACTION_FREE_HISTORY_ORDERS,
+  ACTION_SET_ERROR,
+  ACTION_REMOVE_ERROR,
 } from './Swap.constant';
 
 const initialState = {
   isFetching: false,
   isFetched: false,
   data: {
-    feePrv: {},
-    feeToken: {},
+    [KEYS_PLATFORMS_SUPPORTED.incognito]: {
+      // incognito
+      feePrv: {},
+      feeToken: {},
+      error: null,
+    },
+    [KEYS_PLATFORMS_SUPPORTED.pancake]: {
+      // pancake
+      feePrv: {},
+      error: null,
+    },
   },
   buytoken: '',
   selltoken: '',
@@ -52,10 +72,94 @@ const initialState = {
     fetching: false,
   },
   toggleProTab: false,
+  pDEXPairs: [],
+  pancakeTokens: [],
+  platforms: [...PLATFORMS_SUPPORTED],
+  field: '',
+  useMax: false,
+  defaultExchange: KEYS_PLATFORMS_SUPPORTED.incognito,
+  isPrivacyApp: false,
+  error: null,
 };
 
 export default (state = initialState, action) => {
   switch (action.type) {
+  case ACTION_REMOVE_ERROR: {
+    const { data } = state;
+    const newData = Object.keys(data).reduce((obj, key) => {
+      obj[key].error = null;
+      return obj;
+    }, {});
+    return {
+      ...state,
+      data: Object.assign({}, newData),
+    };
+  }
+  case ACTION_SET_ERROR: {
+    const { platformId, error } = action.payload;
+    const { data } = state;
+    const newState = {
+      ...state,
+      data: { ...data, [platformId]: { ...data[platformId], error } },
+    };
+    return newState;
+  }
+  case ACTION_FREE_HISTORY_ORDERS: {
+    return {
+      ...state,
+      swapHistory: Object.assign({}, initialState.swapHistory),
+    };
+  }
+  case ACTION_SET_DEFAULT_EXCHANGE: {
+    const { exchange, isPrivacyApp } = action.payload;
+    return {
+      ...state,
+      defaultExchange: exchange,
+      platforms: state.platforms.map((platform) =>
+        isPrivacyApp && exchange === platform.id
+          ? { ...platform, visible: true }
+          : { ...platform, visible: false },
+      ),
+      isPrivacyApp,
+    };
+  }
+  case ACTION_SAVE_LAST_FIELD: {
+    return {
+      ...state,
+      field: action.payload,
+    };
+  }
+  case ACTION_CHANGE_STATUS_VISIBLE_PLATFORM: {
+    const platformID = action.payload;
+    return {
+      ...state,
+      platforms: [...state.platforms].map((platform) =>
+        platform.id === platformID
+          ? { ...platform, visible: true }
+          : platform,
+      ),
+    };
+  }
+  case ACTION_CHANGE_SELECTED_PLATFORM: {
+    const platformID = action.payload;
+    let feetoken = state.feetoken;
+    switch (platformID) {
+    case KEYS_PLATFORMS_SUPPORTED.pancake:
+      feetoken = PRV_ID;
+      break;
+    default:
+      break;
+    }
+    const newState = {
+      ...state,
+      platforms: [...state.platforms].map((platform) => ({
+        ...platform,
+        isSelected: platformID === platform.id,
+      })),
+      feetoken,
+    };
+    return newState;
+  }
   case ACTION_TOGGLE_PRO_TAB: {
     return {
       ...state,
@@ -122,9 +226,12 @@ export default (state = initialState, action) => {
     };
   }
   case ACTION_FETCHED_LIST_PAIRS: {
+    const { pairs, pDEXPairs, pancakeTokens } = action.payload;
     return {
       ...state,
-      pairs: action.payload,
+      pairs,
+      pDEXPairs,
+      pancakeTokens,
     };
   }
   case ACTION_FETCH_SWAP: {
@@ -146,15 +253,23 @@ export default (state = initialState, action) => {
     return {
       ...state,
       isFetching: action.payload,
+      data: Object.assign({}, initialState.data),
     };
   }
   case ACTION_FETCHED: {
     return {
       ...state,
+      isFetched: action.payload,
       isFetching: false,
-      isFetched: true,
-      data: { ...action.payload },
     };
+  }
+  case ACTION_CHANGE_ESTIMATE_DATA: {
+    const payload = action.payload;
+    const newState = {
+      ...state,
+      data: { ...state.data, ...payload },
+    };
+    return newState;
   }
   case ACTION_FETCH_FAIL: {
     return {

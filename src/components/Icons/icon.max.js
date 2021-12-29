@@ -1,19 +1,31 @@
 import React from 'react';
-import { StyleSheet, TouchableOpacity, Text } from 'react-native';
+import { StyleSheet, TouchableOpacity } from 'react-native';
 import PropTypes from 'prop-types';
-import { COLORS, FONT } from '@src/styles';
+import { FONT } from '@src/styles';
+import { Text } from '@src/components/core';
+import { useSelector } from 'react-redux';
+import { colorsSelector } from '@src/theme';
 
 const styled = StyleSheet.create({
+  container: {
+    borderWidth: 1,
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 4,
+  },
   btnMax: {
-    fontSize: FONT.SIZE.regular,
+    fontSize: FONT.SIZE.small,
     fontFamily: FONT.NAME.medium,
-    color: COLORS.colorGrey3,
   },
 });
 
 const MaxIcon = React.memo(({ onPress, style }) => {
+  const colors = useSelector(colorsSelector);
   return (
-    <TouchableOpacity onPress={onPress} style={style}>
+    <TouchableOpacity
+      onPress={onPress}
+      style={[styled.container, { borderColor: colors.borderBtnColor }, style]}
+    >
       <Text style={styled.btnMax}>MAX</Text>
     </TouchableOpacity>
   );

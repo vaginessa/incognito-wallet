@@ -1,11 +1,14 @@
 import { FONT, THEME, COLORS } from '@src/styles';
 import { StyleSheet } from 'react-native';
 import { isIOS } from '@src/utils/platform';
+import globalStyled from '@src/theme/theme.styled';
 
 const style = StyleSheet.create({
   container: {
-    flex: 1,
     marginBottom: isIOS() ? 30 : 50,
+  },
+  issuanceFee: {
+    marginTop: 16
   },
   form: {
     flex: 1,
@@ -19,10 +22,9 @@ const style = StyleSheet.create({
     flexDirection: 'row',
   },
   verifyInfoLabel: {
-    fontSize: FONT.SIZE.medium,
+    fontSize: FONT.SIZE.regular,
     fontFamily: FONT.NAME.medium,
     lineHeight: FONT.SIZE.medium + 4,
-    color: COLORS.black,
     flex: 1,
   },
   block: {
@@ -32,24 +34,20 @@ const style = StyleSheet.create({
     marginBottom: 10,
   },
   input: {
-    fontSize: FONT.SIZE.medium,
-    lineHeight: FONT.SIZE.medium + 4,
+    fontSize: FONT.SIZE.regular,
+    lineHeight: FONT.SIZE.regular + 4,
     fontFamily: FONT.NAME.medium,
-    color: COLORS.colorGreyBold,
   },
   labelInput: {
-    fontSize: FONT.SIZE.superMedium,
-    lineHeight: FONT.SIZE.superMedium + 4,
+    fontSize: FONT.SIZE.medium,
+    lineHeight: FONT.SIZE.medium + 4,
     fontFamily: FONT.NAME.bold,
-    color: COLORS.black,
   },
   descriptionInput: {
     marginTop: 30,
   },
   submitBtn: {
     marginVertical: 50,
-    borderRadius: 100,
-    backgroundColor: COLORS.orange,
     height: 50,
   },
   titleSubmitBtn: {
@@ -77,10 +75,7 @@ const style = StyleSheet.create({
   },
   showMyAddressLabel: {
     flex: 1,
-    fontFamily: FONT.NAME.bold,
-    fontSize: FONT.SIZE.superMedium,
-    lineHeight: FONT.SIZE.superMedium + 10,
-    color: COLORS.black,
+    ...FONT.TEXT.formLabel,
   },
   switch: {
     marginBottom: 0,

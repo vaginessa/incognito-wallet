@@ -2,20 +2,18 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { StyleSheet } from 'react-native';
 import { Text } from '@src/components/core';
-import { COLORS, FONT } from '@src/styles';
+import { FONT } from '@src/styles';
 import { useFaucet } from '@src/components/Modal/features/FaucetPRVModal';
 
 const styled = StyleSheet.create({
   subText: {
     fontSize: FONT.SIZE.superSmall,
     fontFamily: FONT.NAME.regular,
-    color: COLORS.colorGrey3,
     textAlign: 'center',
   },
   topup: {
     fontSize: FONT.SIZE.superSmall,
     fontFamily: FONT.NAME.medium,
-    color: COLORS.black,
     textDecorationLine: 'underline',
   },
 });
@@ -26,11 +24,11 @@ const NetworkFee = ({ style, feeStr }) => {
     <Text style={[styled.subText, style]}>
       {
         feeStr
-          ? `Incognito collects a small network fee of ${feeStr}PRV to pay the miners who help power the network.`
-          : 'Incognito collects a small network fee of PRV to pay the miners\nwho help power the network.'
+          ? `Incognito collects a small network fee of ${feeStr} PRV to pay the miners who help power the network. Get some from the `
+          : 'Incognito collects a small network fee of PRV to pay the miners\nwho help power the network. Get some from the '
       }
       <Text style={styled.topup} onPress={navigateFaucet}>
-        Top up now!
+        faucet.
       </Text>
     </Text>
   );

@@ -3,7 +3,9 @@ import PropTypes from 'prop-types';
 import { View, StyleSheet } from 'react-native';
 import { BaseTextInput } from '@src/components/core';
 import { Row } from '@src/components';
-import { COLORS, FONT } from '@src/styles';
+import { FONT } from '@src/styles';
+import { useSelector } from 'react-redux';
+import { colorsSelector } from '@src/theme';
 import SelectFee from './SelectFee';
 
 const styled = StyleSheet.create({
@@ -11,29 +13,28 @@ const styled = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: COLORS.colorGrey4,
     height: 50,
     borderRadius: 8,
     flexDirection: 'row',
-    paddingHorizontal: 15,
+    paddingHorizontal: 16,
   },
   inputWrapper: {
     flex: 1,
     maxWidth: '50%',
   },
   input: {
-    fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.medium,
     lineHeight: FONT.SIZE.medium + 5,
-    color: COLORS.black,
+    fontFamily: FONT.NAME.medium,
   },
 });
 
 const SelectFeeInput = (props) => {
   const { types, onChangeTypeFee, placeholder, editableInput, ...rest } = props;
+  const colors = useSelector(colorsSelector);
   return (
-    <Row style={styled.inputContainer}>
-      <View style={styled.inputWrapper}>
+    <Row style={[styled.inputContainer, { backgroundColor: colors.grey7 }]}>
+      <View style={[styled.inputWrapper]}>
         <BaseTextInput
           style={{
             ...styled.input,

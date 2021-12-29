@@ -8,6 +8,7 @@ import { CONSTANT_COMMONS } from '@src/constants';
 import { ExHandler } from '@services/exception';
 import accountService from '@services/wallet/accountService';
 import { FlexView, Toast } from '@components/core';
+import View, { View2 } from '@components/core/View';
 import LocalDatabase from '@utils/LocalDatabase';
 import _ from 'lodash';
 import Device from '@models/device';
@@ -117,23 +118,25 @@ class AddStakeContainer extends BaseScreen {
     const { device, amount, fee, isStaking, balance } = this.state;
     const account = device.Account;
     return (
-      <FlexView>
+      <View2 fullFlex>
         <Header title="Stake" />
-        <AddStake
-          account={account}
-          navigation={navigation}
-          type={stakeType}
-          amount={amount}
-          fee={fee}
-          onStake={this.handleStake}
-          onBuy={this.handleBuy}
-          isStaking={isStaking}
-          balance={balance}
-          isVNode={device.IsVNode}
-          onSwitchAccount={actionSwitchAccount}
-          onSwitchMasterKey={switchMasterKey}
-        />
-      </FlexView>
+        <View paddingHorizontal fullFlex borderTop>
+          <AddStake
+            account={account}
+            navigation={navigation}
+            type={stakeType}
+            amount={amount}
+            fee={fee}
+            onStake={this.handleStake}
+            onBuy={this.handleBuy}
+            isStaking={isStaking}
+            balance={balance}
+            isVNode={device.IsVNode}
+            onSwitchAccount={actionSwitchAccount}
+            onSwitchMasterKey={switchMasterKey}
+          />
+        </View>
+      </View2>
     );
   }
 }

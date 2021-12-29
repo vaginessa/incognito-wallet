@@ -8,20 +8,26 @@ import {
   ScrollView,
   TouchableOpacity,
   ActivityIndicator,
-  Image,
+  Image, RefreshControl,
 } from '@components/core';
 import mainStyles from '@screens/PoolV2/style';
-import { Row, PRVSymbol } from '@src/components/';
+import { Row, PRVSymbol, ImageCached } from '@src/components';
 import {ArrowRightGreyIcon, LockIcon} from '@components/Icons';
 import { useNavigation } from 'react-navigation-hooks';
 import ROUTE_NAMES from '@routers/routeNames';
-import { RefreshControl } from 'react-native';
 import { PRV_ID } from '@src/screens/DexV2/constants';
+import { useSelector } from 'react-redux';
+import { colorsSelector } from '@src/theme/theme.selector';
+
+import { selectedPrivacySelector } from '@src/redux/selectors';
+import globalStyled from '@src/theme/theme.styled';
 import styles from './style';
 
+
 export const LockTimeComp = React.memo(() => {
+  const colors = useSelector(colorsSelector);
   return (
-    <Row style={mainStyles.wrapperLock}>
+    <Row style={[mainStyles.wrapperLock, { backgroundColor: colors.background3 }]}>
       <LockIcon />
     </Row>
   );
@@ -41,6 +47,16 @@ export const SumIconComp = React.memo(() => {
   );
 });
 
+export const UpToIconComp = ({ style }) => {
+  const colors = useSelector(colorsSelector);
+  return (
+    <Image
+      source={upToIcon}
+      style={[mainStyles.iconUp, { tintColor: colors.blue1 }, style]}
+    />
+  );
+};
+
 const CoinList = ({
   coins,
   groupedCoins,
@@ -53,21 +69,13 @@ const CoinList = ({
   account,
   isLoadingHistories,
 }) => {
+  const getPrivacyDataByTokenID = useSelector(selectedPrivacySelector.getPrivacyDataByTokenID);
   const navigation = useNavigation();
-
+  const colors = useSelector(colorsSelector);
   const handleHistory = () => {
     navigation.navigate(ROUTE_NAMES.PoolV2History, {
       coins,
     });
-  };
-
-  const UpToIconComp = () => {
-    return (
-      <Image
-        source={upToIcon}
-        style={mainStyles.iconUp}
-      />
-    ); 
   };
 
   const renderEmpty = () => {
@@ -80,18 +88,32 @@ const CoinList = ({
               onRefresh={() => onLoad(account)}
             />
           )}
-          style={styles.scrollView}
+          style={[styles.scrollView, { paddingHorizontal: 0 }]}
         >
-          {groupedCoins.map((item) => (
-            <Row style={mainStyles.coin} key={`${item.id} ${item.locked}`}>
-              <Text style={mainStyles.coinName}>{item.name}</Text>
-              <Row style={[mainStyles.flex, mainStyles.emptyRight]}>
-                {item.locked && <UpToIconComp />}
-                <Text style={[mainStyles.coinExtra, mainStyles.textRight]}>{item.displayInterest}</Text>
+          {groupedCoins.map((item) => {
+            const { iconUrl } = getPrivacyDataByTokenID(item.id);
+            return (
+              <Row
+                centerVertical
+                style={[
+                  mainStyles.coin,
+                  { borderBottomWidth: 1, borderBottomColor: colors.border4, paddingVertical: 16, marginBottom: 0 },
+                  globalStyled.defaultPaddingHorizontal,
+                ]}
+                key={`${item.id} ${item.locked}`}
+              >
+                <ImageCached uri={iconUrl} style={{ width: 32, height: 32, marginRight: 14 }} />
+                <Text style={[mainStyles.coinName, { marginBottom: 0 }]}>{item.name}</Text>
+                <Row style={[mainStyles.flex, mainStyles.emptyRight]}>
+                  {item.locked && <UpToIconComp style={{ marginBottom: 0 }} />}
+                  <Text style={[mainStyles.coinExtra, mainStyles.textRight, { color: colors.blue1, marginLeft: 4, marginBottom: 0 }]}>{item.displayInterest}</Text>
+                </Row>
               </Row>
-            </Row>
-          ))}
-          {renderRate()}
+            );
+          })}
+          <View style={[globalStyled.defaultPaddingHorizontal, { marginVertical: 15 }]}>
+            {renderRate()}
+          </View>
         </ScrollView>
       </>
     );
@@ -127,7 +149,7 @@ const CoinList = ({
 
   const renderBtnMirage = (item) => {
     return (
-      <TouchableOpacity style={mainStyles.btnMirage} onPress={() => handleOpenMigrate(item)}>
+      <TouchableOpacity style={[mainStyles.btnMirage, { backgroundColor: colors.background3 }]} onPress={() => handleOpenMigrate(item)}>
         <Text style={mainStyles.mirageText}>Migrate</Text>
       </TouchableOpacity>
     );
@@ -135,7 +157,7 @@ const CoinList = ({
 
   const renderBtnViewDetails = (item) => {
     return (
-      <TouchableOpacity style={mainStyles.btnViewDetail} onPress={() => handleShowLockHistory(item)}>
+      <TouchableOpacity style={[mainStyles.btnViewDetail, {borderColor: colors.contrast}]} onPress={() => handleShowLockHistory(item)}>
         <Text style={mainStyles.viewDetailText}>View details</Text>
       </TouchableOpacity>
     );
@@ -161,8 +183,8 @@ const CoinList = ({
   const renderUpToAPY = (item) => {
     return (
       <Row style={{alignItems: 'center'}}>
+        <Text style={[mainStyles.coinExtra, { color: colors.blue1 }]}>{item.coin.displayInterest}</Text>
         {item.locked && <UpToIconComp />}
-        <Text style={mainStyles.coinExtra}>{item.coin.displayInterest}</Text>
       </Row>
     );
   };
@@ -176,51 +198,55 @@ const CoinList = ({
             onRefresh={() => onLoad(account)}
           />
         )}
-        style={styles.scrollView}
+        style={[styles.scrollView, { paddingHorizontal: 0 }]}
       >
         {groupedUserData.map((item) => {
           const mapCoin = item.coin;
           if (!mapCoin) return null;
+          const { iconUrl } = getPrivacyDataByTokenID(item.id);
           return (
-            <View key={`${item.id} ${item.locked}`} style={mainStyles.coin}>
-              <View key={`${item.id} ${item.locked}`}>
-                <View>
-                  <Row>
-                    <View>
-                      {renderMainCoin(item)}
-                      {renderUpToAPY(item)}
-                    </View>
-                    <View style={[mainStyles.flex]}>
-                      <Text style={[mainStyles.coinName, mainStyles.textRight]}>
-                        {item.displayBalance}
-                      </Text>
-                      {!!item.displayPendingBalance && (
-                        <Text style={[mainStyles.coinExtra, mainStyles.textRight]}>
-                          + {item.displayPendingBalance}
+            <View style={[globalStyled.defaultPaddingHorizontal, { flexDirection: 'row', borderBottomColor: colors.border4, borderBottomWidth: 1, marginBottom: 15 }]}>
+              <ImageCached uri={iconUrl} style={{ width: 32, height: 32, marginTop: 10, marginRight: 14 }} />
+              <View key={`${item.id} ${item.locked}`} style={[mainStyles.coin, { flex: 1, marginBottom: 10 }]}>
+                <View key={`${item.id} ${item.locked}`}>
+                  <View>
+                    <Row>
+                      <View>
+                        {renderMainCoin(item)}
+                        {renderUpToAPY(item)}
+                      </View>
+                      <View style={[mainStyles.flex]}>
+                        <Text style={[mainStyles.coinName, mainStyles.textRight, { marginBottom: 10 }]}>
+                          {item.displayBalance}
                         </Text>
-                      )}
-                      {!!item.displayUnstakeBalance && (
-                        <Text style={[mainStyles.coinExtra, mainStyles.textRight]}>
-                          - {item.displayUnstakeBalance}
-                        </Text>
-                      )}
-                      <Row
-                        style={[mainStyles.textRight, mainStyles.justifyRight]}
-                        center
-                      >
-                        {item.locked && <SumIconComp />}
-                        <PRVSymbol style={mainStyles.coinInterest} />
-                        <Text style={mainStyles.coinInterest}>
-                          &nbsp;{item.displayReward}
-                        </Text>
-                      </Row>
-                      {!!item.displayWithdrawReward && (
-                        <Text style={[mainStyles.coinExtra, mainStyles.textRight]}>
-                          - {item.displayWithdrawReward}
-                        </Text>
-                      )}
-                    </View>
-                  </Row>
+                        {!!item.displayPendingBalance && (
+                          <Text style={[mainStyles.coinExtra, mainStyles.textRight]}>
+                            + {item.displayPendingBalance}
+                          </Text>
+                        )}
+                        {!!item.displayUnstakeBalance && (
+                          <Text style={[mainStyles.coinExtra, mainStyles.textRight]}>
+                            - {item.displayUnstakeBalance}
+                          </Text>
+                        )}
+                        <Row
+                          style={[mainStyles.textRight, mainStyles.justifyRight]}
+                          center
+                        >
+                          {item.locked && <SumIconComp />}
+                          <PRVSymbol style={[mainStyles.coinInterest, {color: colors.text6}]} />
+                          <Text style={[mainStyles.coinInterest, {color: colors.text6}]}>
+                            {item.displayReward}
+                          </Text>
+                        </Row>
+                        {!!item.displayWithdrawReward && (
+                          <Text style={[mainStyles.coinExtra, mainStyles.textRight]}>
+                            - {item.displayWithdrawReward}
+                          </Text>
+                        )}
+                      </View>
+                    </Row>
+                  </View>
                 </View>
               </View>
             </View>
@@ -242,11 +268,11 @@ const CoinList = ({
 
     if (histories?.length > 0) {
       return (
-        <View style={styles.rateChange}>
+        <View style={[styles.rateChange]}>
           <TouchableOpacity onPress={handleHistory}>
             <Row center spaceBetween style={mainStyles.flex}>
-              <Text style={styles.rateStyle}>Provider history</Text>
-              <ArrowRightGreyIcon style={[{ marginLeft: 10 }]} />
+              <Text style={[styles.rateStyle, { marginLeft: 20 }]}>Provider history</Text>
+              <ArrowRightGreyIcon style={[{ marginRight: 10 }]} />
             </Row>
           </TouchableOpacity>
         </View>
@@ -265,7 +291,7 @@ const CoinList = ({
   return (
     <View style={mainStyles.coinContainer}>
       {renderContent()}
-      {renderBottom()}
+      {/*{renderBottom()}*/}
     </View>
   );
 };

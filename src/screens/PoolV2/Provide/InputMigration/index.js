@@ -14,9 +14,13 @@ import { Header, Row } from '@src/components/';
 import { BtnInfinite } from '@components/Button/index';
 import convertUtil from '@utils/convert';
 import formatUtil from '@utils/format';
-import ic_radio from '@src/assets/images/icons/ic_radio.png';
-import ic_radio_check from '@src/assets/images/icons/ic_radio_check.png';
+import { RatioIcon } from '@components/Icons';
+import { Text4 } from '@src/components/core/Text';
+import globalStyled from '@src/theme/theme.styled';
+import { useSelector } from 'react-redux';
+import { colorsSelector } from '@src/theme';
 import styles from './style';
+import { Line } from '../Input';
 
 const InputMigration = ({
   data,
@@ -31,6 +35,7 @@ const InputMigration = ({
   const navigation = useNavigation();
   const [i, setI] = React.useState(initIndex);
   const [selectedTerm, setSelectedTerm] = React.useState({apy: coin.terms[i].apy, lockTime: coin.terms[i].lockTime, termID: coin.terms[i].termID});
+  const colors = useSelector(colorsSelector);
 
   const handleProvide = () => {
     navigation.navigate(ROUTE_NAMES.PoolV2ProvideMigrateConfirm, {
@@ -56,9 +61,10 @@ const InputMigration = ({
 
 
   return (
-    <View style={mainStyle.flex}>
+    <>
       <Header title='Migrate' />
-      <View style={mainStyle.coinContainer}>
+      <View style={[mainStyle.coinContainerNoMargin, globalStyled.defaultPadding3]} borderTop>
+        <Text4 style={mainStyle.label}>Amount</Text4>
         <Row center spaceBetween style={mainStyle.inputContainer}>
           <BaseTextInput
             style={mainStyle.input}
@@ -69,8 +75,9 @@ const InputMigration = ({
           />
           <BtnInfinite style={mainStyle.symbol} onPress={handleMax} />
         </Row>
+        <Line />
         {!!error && <Text style={mainStyle.error}>{error}</Text>}
-        <Text style={mainStyle.coinExtraSmall}>Migrate your PRV from instant access to a fixed term ({selectedTerm?.lockTime} months) to get {selectedTerm?.apy}% APR.</Text>
+        <Text style={[mainStyle.coinExtraSmall, {marginTop: 8}]}>Migrate your PRV from instant access to a fixed term ({selectedTerm?.lockTime} months) to get {selectedTerm?.apy}% APR.</Text>
         {coin.terms && coin.terms.map((item, index) => {
           return (
             <TouchableOpacity
@@ -80,9 +87,12 @@ const InputMigration = ({
             >
               <Row style={styles.contentView}>
                 <Text style={[styles.textLeft, { marginRight: 20}]}>{item.lockTime} Months</Text>               
-                <Row style={styles.contentView}>
-                  <Text style={styles.textRight}>{item.apy}% APR </Text>
-                  <Image style={styles.textRight} source={index === i ? ic_radio_check : ic_radio} />
+                <Row centerVertical style={styles.contentView}>
+                  <Text style={[styles.textRight, { color: colors.blue1 }]}>{item.apy}% APR</Text>
+                  <RatioIcon
+                    style={styles.textRight}
+                    selected={index === i}
+                  />
                 </Row>
               </Row>
             </TouchableOpacity>
@@ -100,7 +110,7 @@ const InputMigration = ({
           style={mainStyle.coinExtraSmall}
         />
       </View>
-    </View>
+    </>
   );
 };
 

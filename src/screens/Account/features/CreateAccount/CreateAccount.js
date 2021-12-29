@@ -1,10 +1,9 @@
-import { View } from 'react-native';
 import { Field } from 'redux-form';
 import { createForm, InputField } from '@src/components/core/reduxForm';
 import PropTypes from 'prop-types';
 import React from 'react';
 import Header from '@src/components/Header';
-import { ButtonBasic } from '@src/components/Button';
+import { View, Button } from '@src/components/core';
 // eslint-disable-next-line import/no-cycle
 import withCreateAccount from './CreateAccount.enhance';
 import styled from './CreateAccount.styled';
@@ -22,34 +21,36 @@ const CreateAccount = ({
   handleCreateAccount,
 }) => {
   return (
-    <View style={styled.container}>
+    <>
       <Header title="Create keychain" />
-      <Form style={styled.form}>
-        {({ handleSubmit, submitting }) => (
-          <View>
-            <Field
-              autoFocus
-              component={InputField}
-              name="accountName"
-              placeholder="Keychain name"
-              label="Keychain name"
-              validate={getAccountValidator()}
-              componentProps={{
-                style: {
-                  marginTop: 0,
-                },
-              }}
-            />
-            <ButtonBasic
-              title={!submitting ? 'Create keychain' : 'Creating keychain...'}
-              btnStyle={styled.submitBtn}
-              onPress={handleSubmit(handleCreateAccount)}
-              disabled={disabledForm || submitting}
-            />
-          </View>
-        )}
-      </Form>
-    </View>
+      <View fullFlex borderTop paddingHorizontal>
+        <Form style={styled.form}>
+          {({ handleSubmit, submitting }) => (
+            <>
+              <Field
+                autoFocus
+                component={InputField}
+                name="accountName"
+                placeholder="Keychain name"
+                label="Keychain name"
+                validate={getAccountValidator()}
+                componentProps={{
+                  style: {
+                    marginTop: 0,
+                  },
+                }}
+              />
+              <Button
+                title={!submitting ? 'Create keychain' : 'Creating keychain...'}
+                buttonStyle={styled.submitBtn}
+                onPress={handleSubmit(handleCreateAccount)}
+                disabled={disabledForm || submitting}
+              />
+            </>
+          )}
+        </Form>
+      </View>  
+    </>
   );
 };
 

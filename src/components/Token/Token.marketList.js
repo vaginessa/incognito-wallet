@@ -1,14 +1,17 @@
 import React, {memo} from 'react';
-import {RefreshControl, ScrollView, StyleSheet, Text} from 'react-native';
+import { StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
-import {ListView} from '@components/Token/index';
-import {BtnChecked} from '@components/Button';
-import {COLORS, FONT} from '@src/styles';
-import {useDispatch} from 'react-redux';
-import {getPTokenList} from '@src/redux/actions/token';
+import { ListView } from '@components/Token/index';
+import { BtnChecked } from '@components/Button';
+import { FONT } from '@src/styles';
+import { useDispatch } from 'react-redux';
+import { getPTokenList } from '@src/redux/actions/token';
+import { RefreshControl, ScrollView, Text } from '@components/core';
+import globalStyled from '@src/theme/theme.styled';
 
 const styled = StyleSheet.create({
   hook: {
+    ...globalStyled.defaultPaddingHorizontal,
     flexDirection: 'row',
     alignItems: 'center',
     marginTop: 35,
@@ -17,9 +20,12 @@ const styled = StyleSheet.create({
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.small,
     lineHeight: FONT.SIZE.small + 5,
-    color: COLORS.black,
     marginLeft: 5,
   },
+  scrollView: {
+    paddingLeft: 0,
+    paddingRight: 0
+  }
 });
 
 const MarketList = (props) => {
@@ -52,7 +58,7 @@ const MarketList = (props) => {
         <BtnChecked
           btnStyle={[
             styled.hook,
-          tokensFactories[9]?.visible ? null : { marginBottom: 50 },
+            tokensFactories[1]?.visible ? null : { marginBottom: 50 },
           ]}
           onPress={onToggleUnVerifiedTokens}
           checked={toggleUnVerified}
@@ -66,10 +72,10 @@ const MarketList = (props) => {
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
+      style={styled.scrollView}
       refreshControl={
         <RefreshControl refreshing={loading} onRefresh={onRefresh} />
       }
-      contentContainerStyle={{ paddingTop: 20 }}
     >
       {!keySearch && (
         <ListView {...tokensFactories[2]} renderItem={renderItem} />
