@@ -86,12 +86,10 @@ export default (state = initialState, action) => {
   switch (action.type) {
   case ACTION_REMOVE_ERROR: {
     const { data } = state;
-    console.log('data', data);
     const newData = Object.keys(data).reduce((obj, key) => {
       obj[key].error = null;
       return obj;
     }, {});
-    console.log('newData', newData);
     return {
       ...state,
       data: Object.assign({}, newData),
