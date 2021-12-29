@@ -182,6 +182,7 @@ export const listShareSelector = createSelector(
         token1USDHuman: principal.token1USDHuman,
         token2USDHuman: principal.token2USDHuman,
         principalUSD,
+        orderRewards,
       };
     });
   },
