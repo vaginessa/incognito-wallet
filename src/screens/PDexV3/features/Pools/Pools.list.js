@@ -21,7 +21,7 @@ import { actionFetchPools } from './Pools.actions';
 import { handleFilterPoolByKeySeach } from './Pools.utils';
 import { isFetchingSelector } from './Pools.selector';
 
-const styled = StyleSheet.create({
+export const styled = StyleSheet.create({
   container: {
     flex: 1,
   },
