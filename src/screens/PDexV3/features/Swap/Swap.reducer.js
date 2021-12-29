@@ -31,6 +31,7 @@ import {
   ACTION_SET_DEFAULT_EXCHANGE,
   ACTION_FREE_HISTORY_ORDERS,
   ACTION_SET_ERROR,
+  ACTION_REMOVE_ERROR,
 } from './Swap.constant';
 
 const initialState = {
@@ -83,6 +84,17 @@ const initialState = {
 
 export default (state = initialState, action) => {
   switch (action.type) {
+  case ACTION_REMOVE_ERROR: {
+    const { data } = state;
+    const newData = Object.keys(data).reduce((obj, key) => {
+      obj[key].error = null;
+      return obj;
+    }, {});
+    return {
+      ...state,
+      data: Object.assign({}, newData),
+    };
+  }
   case ACTION_SET_ERROR: {
     const { platformId, error } = action.payload;
     const { data } = state;

@@ -149,15 +149,28 @@ export const platformsVisibleSelector = createSelector(
 );
 
 export const platformsSupportedSelector = createSelector(
+  swapSelector,
   platformsVisibleSelector,
   isPairSupportedTradeOnPancakeSelector,
-  (platforms, isPairSupportedTradeOnPancake) => {
-    if (!isPairSupportedTradeOnPancake) {
-      return platforms.filter(
-        (platform) => platform.id !== KEYS_PLATFORMS_SUPPORTED.pancake,
-      );
+  ({ data }, platforms, isPairSupportedTradeOnPancake) => {
+    let _platforms = [...platforms];
+    try {
+      if (!isPairSupportedTradeOnPancake) {
+        _platforms = _platforms.filter(
+          (platform) => platform.id !== KEYS_PLATFORMS_SUPPORTED.pancake,
+        );
+      }
+      _platforms = _platforms.filter(({ id: platformId }) => {
+        const hasError = !data[platformId]?.error;
+        return hasError;
+      });
+      if (_platforms.length === 0 || !_platforms) {
+        _platforms = [PLATFORMS_SUPPORTED[0]];
+      }
+    } catch (error) {
+      console.log('error', error);
     }
-    return platforms;
+    return _platforms;
   },
 );
 
