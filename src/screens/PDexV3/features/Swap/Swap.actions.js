@@ -53,6 +53,7 @@ import {
   ACTION_SET_DEFAULT_EXCHANGE,
   ACTION_FREE_HISTORY_ORDERS,
   ACTION_SET_ERROR,
+  ACTION_REMOVE_ERROR,
 } from './Swap.constant';
 import {
   buytokenSelector,
@@ -73,7 +74,6 @@ import {
   defaultExchangeSelector,
   isPrivacyAppSelector,
   isExchangeVisibleSelector,
-  isPlatformSelectedSelector,
   errorEstimateTradeSelector,
 } from './Swap.selector';
 import {
@@ -86,6 +86,10 @@ import {
 export const actionSetError = (payload) => ({
   type: ACTION_SET_ERROR,
   payload,
+});
+
+export const actionRemoveError = () => ({
+  type: ACTION_REMOVE_ERROR,
 });
 
 export const actionSetDefaultExchange = ({ isPrivacyApp, exchange }) => ({
@@ -771,11 +775,6 @@ export const actionEstimateTrade =
           }),
         );
         isFetched = true;
-      } catch (error) {
-        new ExHandler(error).showErrorToast();
-      } finally {
-        dispatch(actionSetFocusToken(''));
-        dispatch(actionFetched({ isFetched }));
         state = getState();
         const { availableAmountText, availableOriginalAmount } =
         sellInputTokenSelector(state);
@@ -792,6 +791,11 @@ export const actionEstimateTrade =
             );
           }
         }
+      } catch (error) {
+        new ExHandler(error).showErrorToast();
+      } finally {
+        dispatch(actionSetFocusToken(''));
+        dispatch(actionFetched({ isFetched }));
       }
     };
 
