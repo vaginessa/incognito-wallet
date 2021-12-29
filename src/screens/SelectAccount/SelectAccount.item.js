@@ -89,10 +89,10 @@ const AccountItem = React.memo(
         ).showErrorToast();
       } finally {
         await dispatch(actionSwitchAccountFetched());
+        await dispatch(actionSwitchAccountFetched());
         if (typeof handleSelectedAccount === 'function') {
           handleSelectedAccount();
         }
-        await dispatch(actionSwitchAccountFetched());
       }
     };
 
