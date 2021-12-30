@@ -84,7 +84,7 @@ const PoolsListContainer = (props) => {
           value={text}
           inputProps={{
             onChangeText: onChange,
-            placeholder: 'Search coins',
+            placeholder: 'Select pools',
             style: styled.input,
             autFocus: true,
           }}
