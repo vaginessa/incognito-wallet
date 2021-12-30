@@ -18,6 +18,6 @@ const withTab = (WrappedComp) => (props) => {
 };
 
 export default compose(
-  withPin,
+  // withPin,
   withTab
 );
