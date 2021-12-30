@@ -1,6 +1,6 @@
 {
   "name": "incognito-wallet",
-  "version": "5.0.0",
+  "version": "5.0.2",
   "private": true,
   "rnpm": {
     "assets": [
