@@ -416,12 +416,12 @@ export const actionHandleInjectEstDataForPancake =
       }
       switch (field) {
       case formConfigs.selltoken: {
-        inputPDecimals = tokenSellPancake.pDecimals;
+        inputPDecimals = tokenBuyPancake.pDecimals;
         inputToken = formConfigs.buytoken;
         break;
       }
       case formConfigs.buytoken: {
-        inputPDecimals = tokenBuyPancake.pDecimals;
+        inputPDecimals = tokenSellPancake.pDecimals;
         inputToken = formConfigs.selltoken;
         break;
       }

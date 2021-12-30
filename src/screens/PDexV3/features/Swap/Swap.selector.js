@@ -570,10 +570,20 @@ export const mappingOrderHistorySelector = createSelector(
         feeToken: feeTokenId,
         fromStorage,
         price,
+        statusCode,
       } = order;
       let statusStr = capitalize(status);
       if (fromStorage) {
-        statusStr = 'Processing';
+        switch (statusCode) {
+        case ACCOUNT_CONSTANT.TX_STATUS.TXSTATUS_CANCELED:
+        case ACCOUNT_CONSTANT.TX_STATUS.TXSTATUS_FAILED: {
+          statusStr = 'Failed';
+          break;
+        }
+        default:
+          statusStr = 'Processing';
+          break;
+        }
       }
       const sellToken: SelectedPrivacy = getPrivacyDataByTokenID(sellTokenId);
       const buyToken: SelectedPrivacy = getPrivacyDataByTokenID(buyTokenId);
@@ -583,7 +593,7 @@ export const mappingOrderHistorySelector = createSelector(
       const sellStr = `${amountStr} ${sellToken.symbol}`;
       const buyStr = `${priceStr} ${buyToken.symbol}`;
       const timeStr = format.formatDateTime(
-        fromStorage ? requestime : requestime * 1000,
+        requestime,
         'DD MMM HH:mm',
       );
       const rate = getPairRate({
