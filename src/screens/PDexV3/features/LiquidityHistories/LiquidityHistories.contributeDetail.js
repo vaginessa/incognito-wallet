@@ -15,6 +15,7 @@ import PropTypes from 'prop-types';
 import { compose } from 'recompose';
 import { withLayout_2 } from '@components/Layout';
 import { View } from '@components/core';
+import { BtnSecondary } from '@components/core/Button';
 import styled from './LiquidityHistories.styled';
 
 const ContributeDetail = ({ handleRefund, handleRetry }) => {
@@ -128,18 +129,18 @@ const ContributeDetail = ({ handleRefund, handleRetry }) => {
           ))}
           {!!refundData && (
             <Row spaceBetween style={{ marginTop: 15 }}>
+              {!!retryData && (
+                <BtnSecondary
+                  title={retryData.title}
+                  wrapperStyle={{ flex: 1, marginRight: 20 }}
+                  onPress={onRetryTx}
+                />
+              )}
               <ButtonBasic
                 title={refundData.title}
                 btnStyle={{ flex: 1 }}
                 onPress={onRefundTx}
               />
-              {!!retryData && (
-                <ButtonBasic
-                  title={retryData.title}
-                  btnStyle={{ flex: 1, marginLeft: 20 }}
-                  onPress={onRetryTx}
-                />
-              )}
             </Row>
           )}
         </ScrollView>
