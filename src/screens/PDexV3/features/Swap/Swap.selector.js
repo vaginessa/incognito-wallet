@@ -45,17 +45,19 @@ export const findTokenPancakeByIdSelector = createSelector(
 export const hashmapContractIDsSelector = createSelector(
   pancakePairsSelector,
   (pancakeTokens) =>
-    pancakeTokens.reduce((curr, token) => {
-      const { symbol, contractIdGetRate, decimals } = token;
-      curr = {
-        ...curr,
-        [toLower(contractIdGetRate)]: {
-          symbol: toLower(symbol),
-          decimals,
-        },
-      };
-      return curr;
-    }, {}),
+    pancakeTokens
+      .filter((token) => token?.isPopular === true)
+      .reduce((curr, token) => {
+        const { symbol, contractIdGetRate, decimals } = token;
+        curr = {
+          ...curr,
+          [toLower(contractIdGetRate)]: {
+            symbol: toLower(symbol),
+            decimals,
+          },
+        };
+        return curr;
+      }, {}),
 );
 
 export const purePairsSelector = createSelector(
@@ -592,10 +594,7 @@ export const mappingOrderHistorySelector = createSelector(
       const priceStr = format.amountVer2(price, buyToken.pDecimals);
       const sellStr = `${amountStr} ${sellToken.symbol}`;
       const buyStr = `${priceStr} ${buyToken.symbol}`;
-      const timeStr = format.formatDateTime(
-        requestime,
-        'DD MMM HH:mm',
-      );
+      const timeStr = format.formatDateTime(requestime, 'DD MMM HH:mm');
       const rate = getPairRate({
         token1Value: amount,
         token2Value: price,
