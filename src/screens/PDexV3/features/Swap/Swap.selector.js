@@ -593,7 +593,7 @@ export const mappingOrderHistorySelector = createSelector(
       const sellStr = `${amountStr} ${sellToken.symbol}`;
       const buyStr = `${priceStr} ${buyToken.symbol}`;
       const timeStr = format.formatDateTime(
-        fromStorage ? requestime : requestime * 1000,
+        requestime,
         'DD MMM HH:mm',
       );
       const rate = getPairRate({
