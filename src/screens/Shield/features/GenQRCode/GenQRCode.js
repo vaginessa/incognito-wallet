@@ -1,5 +1,5 @@
 import React from 'react';
-import { TouchableOpacity, Image, View as View3 } from 'react-native';
+import { TouchableOpacity, View as View3 } from 'react-native';
 import { View, ScrollViewBorder, Text } from '@components/core';
 import { View2 } from '@src/components/core/View';
 import { useDispatch, useSelector } from 'react-redux';
@@ -10,7 +10,7 @@ import PropTypes from 'prop-types';
 import { CopiableTextDefault as CopiableText } from '@src/components/CopiableText';
 import LoadingContainer from '@src/components/LoadingContainer';
 import { ButtonBasic, BtnInfo } from '@src/components/Button';
-import { ClockWiseIcon } from '@src/components/Icons';
+import { ClockWiseIcon, RatioIcon } from '@src/components/Icons';
 import Tooltip from '@src/components/Tooltip/Tooltip';
 import { COLORS } from '@src/styles';
 import { isEmpty } from 'lodash';
@@ -22,8 +22,6 @@ import { defaultAccountSelector } from '@src/redux/selectors/account';
 import {
   actionGetPRVBep20FeeToShield,
 } from '@screens/Shield/Shield.actions';
-import ic_radio from '@src/assets/images/icons/ic_radio.png';
-import ic_radio_check from '@src/assets/images/icons/ic_radio_check.png';
 import { PRV_ID } from '@src/screens/DexV2/constants';
 import { ExHandler } from '@src/services/exception';
 import { colorsSelector, themeModeSelector } from '@src/theme/theme.selector';
@@ -229,7 +227,7 @@ const Extra = (props) => {
         <QrCodeGenerate value={address} size={175} />
       </View>
       <View style={styled.hook}>{renderMinPortalShieldAmount()}</View>
-      <CopiableText data={address} textStyle={{color: colors.text1}} btnStyle={{backgroundColor: colors.background6}}/>
+      <CopiableText data={address} textStyle={{color: colors.text1}} btnStyle={{backgroundColor: colors.background6}} />
     </>
   );
 
@@ -383,22 +381,21 @@ const GenQRCode = (props) => {
           <TouchableOpacity
             style={[
               styled.optionBtn,
-              isSelected ? styled.selectedBtn : styled.unSelectBtn,
-              {marginBottom: 10},
+              { borderColor: colors.border1 },
+              { marginBottom: 10 },
             ]}
             key={`key-${index}`}
             onPress={() => handlePress(index)}
             disabled={isLoadingBsc}
           >
             <View3 style={styled.optionContent}>
-              <Image
+              <RatioIcon
                 style={styled.icon}
-                source={isSelected ? ic_radio_check : ic_radio}
+                selected={isSelected}
               />
               <Text
                 style={[
                   styled.textSelectBox,
-                  { color: isSelected ? COLORS.black : COLORS.colorGreyBold },
                 ]}
               >
                 {item}
