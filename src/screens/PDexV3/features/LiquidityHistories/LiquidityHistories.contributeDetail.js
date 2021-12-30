@@ -51,7 +51,7 @@ const ContributeDetail = ({ handleRefund, handleRetry }) => {
     handleRetry(params);
   };
   const hookFactories = React.useMemo(() => {
-    const { pairId, poolId, statusStr, contributes, storageValue, timeStr, returnValue } = history;
+    const { pairId, poolId, statusStr, contributes, storageValue, timeStr, returnValue, statusColor } = history;
     const headHook = [
       {
         label: 'PoolId',
@@ -68,6 +68,7 @@ const ContributeDetail = ({ handleRefund, handleRetry }) => {
       {
         label: 'Status',
         valueText: statusStr,
+        rightColor: statusColor,
       },
       {
         label: 'Time',
@@ -121,7 +122,7 @@ const ContributeDetail = ({ handleRefund, handleRetry }) => {
               key={data?.label}
               {...data}
               labelStyle={styled.leftText}
-              valueTextStyle={styled.rightText}
+              valueTextStyle={[styled.rightText, !!data.rightColor && { color: data?.rightColor }]}
               style={{ marginTop: 8 }}
             />
           ))}
