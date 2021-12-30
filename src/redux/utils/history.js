@@ -30,8 +30,8 @@ const PORTAL_SHIELD_STATUS_DETAIL = {
 };
 
 export const TX_STATUS_COLOR = {
-  [TX_STATUS.PROCESSING]: COLORS.colorGreyBold,
-  [TX_STATUS.TXSTATUS_UNKNOWN]: COLORS.orange,
+  [TX_STATUS.PROCESSING]: COLORS.lightGrey36,
+  [TX_STATUS.TXSTATUS_CANCELED]: COLORS.orange,
   [TX_STATUS.TXSTATUS_FAILED]: COLORS.red,
   [TX_STATUS.TXSTATUS_PENDING]: COLORS.colorBlue,
   [TX_STATUS.TXSTATUS_SUCCESS]: COLORS.green,
@@ -47,8 +47,10 @@ export const getStatusColorShield = (history) => {
       // centralized
       if (STATUS_CODE_SHIELD_CENTRALIZED.COMPLETE.includes(status)) {
         statusColor = COLORS.green;
+      } else if (STATUS_CODE_SHIELD_CENTRALIZED.TIMED_OUT.includes(status)) {
+        statusColor = COLORS.orange;
       } else {
-        statusColor = COLORS.colorGreyBold;
+        statusColor = COLORS.lightGrey36;
       }
       break;
     }
@@ -57,8 +59,10 @@ export const getStatusColorShield = (history) => {
       // decetralized
       if (STATUS_CODE_SHIELD_DECENTRALIZED.COMPLETE.includes(status)) {
         statusColor = COLORS.green;
+      } else if (STATUS_CODE_SHIELD_DECENTRALIZED.TIMED_OUT.includes(status)) {
+        statusColor = COLORS.orange;
       } else {
-        statusColor = COLORS.colorGreyBold;
+        statusColor = COLORS.lightGrey36;
       }
       break;
     }
@@ -84,7 +88,7 @@ export const getStatusColorUnshield = (history) => {
       if (STATUS_CODE_UNSHIELD_CENTRALIZED.COMPLETE === status) {
         statusColor = COLORS.green;
       } else {
-        statusColor = COLORS.colorGreyBold;
+        statusColor = COLORS.lightGrey36;
       }
       break;
     }
@@ -94,7 +98,7 @@ export const getStatusColorUnshield = (history) => {
       if (STATUS_CODE_UNSHIELD_DECENTRALIZED.COMPLETE === status) {
         statusColor = COLORS.green;
       } else {
-        statusColor = COLORS.colorGreyBold;
+        statusColor = COLORS.lightGrey36;
       }
       break;
     }
@@ -121,7 +125,7 @@ export const getPortalStatusColor = (history) => {
       } else if (status === STATUS_CODE_SHIELD_PORTAL.FAILED) {
         statusColor = COLORS.red;
       } else {
-        statusColor = COLORS.colorGreyBold;
+        statusColor = COLORS.lightGrey36;
       }
       break;
     }
@@ -132,7 +136,7 @@ export const getPortalStatusColor = (history) => {
       } else if (status === STATUS_CODE_UNSHIELD_PORTAL.REFUND) {
         statusColor = COLORS.red;
       } else {
-        statusColor = COLORS.colorGreyBold;
+        statusColor = COLORS.lightGrey36;
       }
       break;
     }
