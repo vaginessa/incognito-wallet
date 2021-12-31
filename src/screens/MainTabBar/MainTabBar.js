@@ -108,7 +108,7 @@ const TabNavigator = createBottomTabNavigator(
       shifting: false,
       labeled: false,
       keyboardHidesTabBar: true,
-      safeAreaInset: { bottom: 'always', top: 'never' },
+      safeAreaInset: { bottom: 'never', top: 'never' },
       borderWidth: 0
     }
   },
