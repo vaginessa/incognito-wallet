@@ -45,9 +45,9 @@ export const getStatusColorShield = (history) => {
     switch (decentralized) {
     case 0: {
       // centralized
-      if (STATUS_CODE_SHIELD_CENTRALIZED.COMPLETE.includes(status)) {
+      if (STATUS_CODE_SHIELD_CENTRALIZED.COMPLETE === status || STATUS_CODE_SHIELD_CENTRALIZED.COMPLETE.includes(status)) {
         statusColor = COLORS.green;
-      } else if (STATUS_CODE_SHIELD_CENTRALIZED.TIMED_OUT.includes(status)) {
+      } else if (STATUS_CODE_SHIELD_CENTRALIZED.TIMED_OUT === status || STATUS_CODE_SHIELD_CENTRALIZED.TIMED_OUT.includes(status)) {
         statusColor = COLORS.orange;
       } else {
         statusColor = COLORS.lightGrey36;
@@ -58,9 +58,9 @@ export const getStatusColorShield = (history) => {
     case 2:
     case 3: {
       // decetralized
-      if (STATUS_CODE_SHIELD_DECENTRALIZED.COMPLETE.includes(status)) {
+      if (STATUS_CODE_SHIELD_DECENTRALIZED.COMPLETE === status || STATUS_CODE_SHIELD_DECENTRALIZED.COMPLETE.includes(status)) {
         statusColor = COLORS.green;
-      } else if (STATUS_CODE_SHIELD_DECENTRALIZED.TIMED_OUT.includes(status)) {
+      } else if (STATUS_CODE_SHIELD_DECENTRALIZED.TIMED_OUT === status || STATUS_CODE_SHIELD_DECENTRALIZED.TIMED_OUT.includes(status)) {
         statusColor = COLORS.orange;
       } else {
         statusColor = COLORS.lightGrey36;

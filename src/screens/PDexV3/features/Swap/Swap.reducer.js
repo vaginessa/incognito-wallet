@@ -247,7 +247,7 @@ export default (state = initialState, action) => {
     };
   }
   case ACTION_RESET: {
-    return initialState;
+    return Object.assign({}, initialState);
   }
   case ACTION_FETCHING: {
     return {
