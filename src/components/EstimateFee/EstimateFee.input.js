@@ -112,7 +112,7 @@ const EstimateFeeInput = (props) => {
             keyboardType: 'decimal-pad',
             editable: false,
             inputStyle: {
-              color: COLORS.black,
+              // color: COLORS.black,
             },
           }}
           label="Fee"
