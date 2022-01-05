@@ -86,7 +86,7 @@ const PoolsListContainer = (props) => {
             onChangeText: onChange,
             placeholder: 'Select pools',
             style: styled.input,
-            autFocus: true,
+            autoFocus: true,
           }}
         />
       </Row>

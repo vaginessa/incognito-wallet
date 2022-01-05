@@ -1,6 +1,7 @@
 import { StyleSheet } from 'react-native';
 import {FontStyle} from '@src/styles/TextStyle';
 import {COLORS} from '@src/styles';
+import globalStyled from '@src/theme/theme.styled';
 
 export const styled = StyleSheet.create({
   container: {
@@ -47,5 +48,11 @@ export const styled = StyleSheet.create({
   },
   tabEnable: {
     backgroundColor: COLORS.colorBlue
+  },
+  btnSearchPool: {
+    ...globalStyled.defaultPaddingHorizontal,
+    position: 'absolute',
+    bottom: 24,
+    width: '100%'
   }
 });
