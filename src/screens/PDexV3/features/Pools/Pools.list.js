@@ -86,7 +86,7 @@ export const PoolsList = React.memo(({ onPressPool, pools }) => {
   return (
     <FlatList
       data={data}
-      refreshControl={() => (
+      refreshControl={(
         <RefreshControl
           refreshing={refreshing}
           onRefresh={onRefresh}
@@ -102,6 +102,7 @@ export const PoolsList = React.memo(({ onPressPool, pools }) => {
           isLast={data && (data.length - 1 === index)}
         />
       )}
+      contentContainerStyle={{ paddingTop: 20 }}
       keyExtractor={({ poolId }) => poolId}
       showsVerticalScrollIndicator={false}
     />
@@ -109,7 +110,7 @@ export const PoolsList = React.memo(({ onPressPool, pools }) => {
 });
 
 const PoolsListContainer = (props) => {
-  const { onPressPool, listPools, style } = props;
+  const { onPressPool, listPools, style, canSearch } = props;
   const navigation = useNavigation();
   const [text, setText] = React.useState(text);
   const [pools, setPools] = React.useState([]);
@@ -132,18 +133,20 @@ const PoolsListContainer = (props) => {
   }, [listPools]);
   return (
     <>
-      <Row style={[globalStyled.defaultPaddingHorizontal, { marginBottom: 16 }]} centerVertical>
-        <BtnCircleBack onPress={_handleGoBack} />
-        <BaseTextInputCustom
-          value={text}
-          inputProps={{
-            onChangeText: onChange,
-            placeholder: 'Search coins',
-            style: styled.input,
-            autFocus: true,
-          }}
-        />
-      </Row>
+      {canSearch && (
+        <Row style={[globalStyled.defaultPaddingHorizontal, { marginBottom: 16 }]} centerVertical>
+          <BtnCircleBack onPress={_handleGoBack} />
+          <BaseTextInputCustom
+            value={text}
+            inputProps={{
+              onChangeText: onChange,
+              placeholder: 'Search coins',
+              style: styled.input,
+              autFocus: true,
+            }}
+          />
+        </Row>
+      )}
       <View style={[styled.container, style]} borderTop>
         <PoolsList onPressPool={onPressPool} pools={pools} />
       </View>
@@ -158,12 +161,14 @@ PoolsList.propTypes = {
 
 PoolsListContainer.defaultProps = {
   style: undefined,
+  canSearch: true
 };
 
 PoolsListContainer.propTypes = {
   onPressPool: PropTypes.func.isRequired,
   listPools: PropTypes.array.isRequired,
   style: PropTypes.any,
+  canSearch: PropTypes.bool
 };
 
 export default React.memo(PoolsListContainer);
