@@ -1,7 +1,7 @@
 import React from 'react';
 import ErrorBoundary from '@src/components/ErrorBoundary';
 import Modal from '@components/Modal';
-import withPin from '@components/pin.enhance';
+// import withPin from '@components/pin.enhance';
 import { compose } from 'recompose';
 
 const withTab = (WrappedComp) => (props) => {
@@ -18,6 +18,6 @@ const withTab = (WrappedComp) => (props) => {
 };
 
 export default compose(
-  withPin,
+  // withPin,
   withTab
 );
