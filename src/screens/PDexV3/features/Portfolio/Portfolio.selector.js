@@ -9,6 +9,7 @@ import {
 import format from '@src/utils/format';
 import convert from '@utils/convert';
 import {getValidRealAmountNFTSelector, isFetchingNFTSelector} from '@src/redux/selectors/account';
+import { getNetworkName } from '@screens/Wallet/features/CoinInfo/CoinInfo.enhance';
 
 export const portfolioSelector = createSelector(
   (state) => state.pDexV3,
@@ -128,6 +129,14 @@ export const listShareSelector = createSelector(
         {
           label: `${token2.symbol} Balance`,
           valueText: principal.token2,
+        },
+        {
+          label: `${token1.symbol} Origin`,
+          valueText: getNetworkName(token1),
+        },
+        {
+          label: `${token2.symbol} Origin`,
+          valueText: getNetworkName(token2),
         },
         ...hookRewards,
       ];
