@@ -3,7 +3,7 @@ import {
   FlatList,
   Text,
   RefreshControl,
-  View,
+  View, TouchableOpacity,
 } from '@src/components/core';
 import { BaseTextInputCustom } from '@src/components/core/BaseTextInput';
 import { FONT, COLORS } from '@src/styles';
@@ -17,6 +17,9 @@ import globalStyled from '@src/theme/theme.styled';
 import { BtnCircleBack } from '@components/Button';
 import debounce from 'lodash/debounce';
 import { useNavigation } from 'react-navigation-hooks';
+import { InfoIcon } from '@components/Icons';
+import routeNames from '@routers/routeNames';
+import helperConst from '@src/constants/helper';
 import { actionFetchPools } from './Pools.actions';
 import { handleFilterPoolByKeySeach } from './Pools.utils';
 import { isFetchingSelector } from './Pools.selector';
@@ -32,13 +35,13 @@ export const styled = StyleSheet.create({
   },
   input: {
     width: 200,
-    height: 40
+    height: 40,
   }
 });
 
 const HEADER_FACTORIES = [
   {
-    text: 'Name / Vol',
+    text: 'Reward pools',
     style: {
       flex: 1,
       marginRight: 15,
@@ -47,7 +50,7 @@ const HEADER_FACTORIES = [
     },
   },
   {
-    text: 'APY',
+    text: 'APR',
     style: {
       width: 80,
       flexDirection: 'row',
@@ -56,22 +59,25 @@ const HEADER_FACTORIES = [
       textAlign: 'right',
     },
   },
-  {
-    text: ' ',
-    style: {
-      width: 30,
-    },
-  },
 ];
 
 export const PoolsListHeader = React.memo(() => {
+  const navigation = useNavigation();
   return (
-    <Row style={{ marginTop: 24, marginBottom: 16 }}>
+    <Row style={{ marginTop: 32, marginBottom: 8, marginHorizontal: 24 }}>
       {HEADER_FACTORIES.map((item) => (
         <Text key={item.text} style={{ ...styled.headerText, ...item.style }}>
           {item.text}
         </Text>
       ))}
+      <TouchableOpacity
+        onPress={() =>
+          navigation.navigate(routeNames.Helper, helperConst.HELPER_CONSTANT.LIQUIDITY_APR)
+        }
+        style={{ width: 30, flexDirection: 'row' ,justifyContent: 'flex-end' }}
+      >
+        <InfoIcon />
+      </TouchableOpacity>
     </Row>
   );
 });
@@ -86,7 +92,7 @@ export const PoolsList = React.memo(({ onPressPool, pools }) => {
   return (
     <FlatList
       data={data}
-      refreshControl={() => (
+      refreshControl={(
         <RefreshControl
           refreshing={refreshing}
           onRefresh={onRefresh}
@@ -109,7 +115,7 @@ export const PoolsList = React.memo(({ onPressPool, pools }) => {
 });
 
 const PoolsListContainer = (props) => {
-  const { onPressPool, listPools, style } = props;
+  const { onPressPool, listPools, style, canSearch } = props;
   const navigation = useNavigation();
   const [text, setText] = React.useState(text);
   const [pools, setPools] = React.useState([]);
@@ -132,18 +138,20 @@ const PoolsListContainer = (props) => {
   }, [listPools]);
   return (
     <>
-      <Row style={[globalStyled.defaultPaddingHorizontal, { marginBottom: 16 }]} centerVertical>
-        <BtnCircleBack onPress={_handleGoBack} />
-        <BaseTextInputCustom
-          value={text}
-          inputProps={{
-            onChangeText: onChange,
-            placeholder: 'Search coins',
-            style: styled.input,
-            autFocus: true,
-          }}
-        />
-      </Row>
+      {canSearch && (
+        <Row style={[globalStyled.defaultPaddingHorizontal, { marginBottom: 16 }]} centerVertical>
+          <BtnCircleBack onPress={_handleGoBack} />
+          <BaseTextInputCustom
+            value={text}
+            inputProps={{
+              onChangeText: onChange,
+              placeholder: 'Search coins',
+              style: styled.input,
+              autFocus: true,
+            }}
+          />
+        </Row>
+      )}
       <View style={[styled.container, style]} borderTop>
         <PoolsList onPressPool={onPressPool} pools={pools} />
       </View>
@@ -158,12 +166,14 @@ PoolsList.propTypes = {
 
 PoolsListContainer.defaultProps = {
   style: undefined,
+  canSearch: true
 };
 
 PoolsListContainer.propTypes = {
   onPressPool: PropTypes.func.isRequired,
   listPools: PropTypes.array.isRequired,
   style: PropTypes.any,
+  canSearch: PropTypes.bool
 };
 
 export default React.memo(PoolsListContainer);
