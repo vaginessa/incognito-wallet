@@ -239,8 +239,8 @@ const TabPro = React.memo(() => {
   return (
     <View
       style={{
+        ...(toggleProTab ? {} : { display: 'none', opacity: 0 }),
         ...styled.container,
-        ...(toggleProTab ? {} : { display: 'none' }),
       }}
     >
       {extraFactories.map((extra) => (

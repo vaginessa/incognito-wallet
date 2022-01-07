@@ -21,7 +21,7 @@ const HistoryConvert = () => {
   return (
     <>
       <Header title={selectedPrivacy?.name || 'Incognito Token'} customHeaderTitle={<BtnInfo />} />
-      <View borderTop style={{ paddingTop: 10 }}>
+      <View fullFlex borderTop style={{ paddingTop: 10 }}>
         <HistoryList
           histories={histories}
           onRefreshHistoryList={handleRefresh}
