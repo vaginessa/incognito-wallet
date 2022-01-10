@@ -145,7 +145,6 @@ const PRIVATE_TOKEN_CURRENCY_TYPE = {
   USD: 6,
   BSC_BNB: 7,
   BSC_BEP20: 8,
-
   TOMO: 9,
   ZIL: 10,
   XMR: 11,
@@ -155,6 +154,7 @@ const PRIVATE_TOKEN_CURRENCY_TYPE = {
   DOGE: 15,
   ZEC: 16,
   DOT: 17,
+  POLYGON: 19, // Polygon
 };
 
 const PRIVATE_TOKEN_CURRENCY_NAME = {
@@ -247,7 +247,7 @@ export default {
       COMPLETE: [3, 5],
       TIMED_OUT: [14, 16],
       EXPIRED: [16],
-      INVALID_AMOUNT: [17]
+      INVALID_AMOUNT: [17],
     },
     //unshield decentralized
     STATUS_CODE_UNSHIELD_DECENTRALIZED: {
