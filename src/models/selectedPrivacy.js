@@ -14,6 +14,8 @@ function getNetworkName() {
     this?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BSC_BNB;
   const isBNB =
     this?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BNB;
+  const isMATIC =
+     this?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.POLYGON;
   if (this.isPrivateCoin) {
     name = `${this.name}`;
   } else if (this.isErc20Token) {
@@ -22,6 +24,8 @@ function getNetworkName() {
     name = 'BEP20';
   } else if (this.isBep2Token) {
     name = 'BEP2';
+  } else if(this.isPolygonErc20Token) {
+    name = 'Polygon ERC20';
   } else if (this.isIncognitoToken || this.isMainCrypto) {
     name = 'Incognito';
   }
@@ -32,6 +36,8 @@ function getNetworkName() {
     rootNetworkName = CONSTANT_COMMONS.NETWORK_NAME.BSC;
   } else if (isBNB || this?.isBep2Token) {
     rootNetworkName = CONSTANT_COMMONS.NETWORK_NAME.BINANCE;
+  } else if (isMATIC || this?.isPolygonErc20Token) {
+    rootNetworkName = CONSTANT_COMMONS.NETWORK_NAME.POLYGON;
   }
   return {
     networkName: name,
@@ -74,7 +80,6 @@ class SelectedPrivacy {
   constructor(account = {}, token = {}, pTokenData: PToken = {}, _tokenID) {
     const tokenId = pTokenData?.tokenId || token?.id;
 
-
     const isUnknown = _tokenID !== PRV_ID && !tokenId;
     const unknownText = 'Incognito Token';
 
@@ -96,6 +101,10 @@ class SelectedPrivacy {
       this.isPrivateToken &&
       this.currencyType ===
         CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BNB_BEP2;
+    this.isPolygonErc20Token =
+      this.isPrivateToken &&
+      this.currencyType ===
+        CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.POLYGON_ERC20;
     this.isBep20Token =
       this.isPrivateToken &&
       this.currencyType ===
