@@ -115,7 +115,7 @@ export const actionGetAddressToShield = async ({
         signPublicKeyEncode,
       });
     } else if (
-      selectedPrivacy?.isPolygonToken ||
+      selectedPrivacy?.isPolygonErc20Token ||
       selectedPrivacy?.currencyType ===
         CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.POLYGON
     ) {
