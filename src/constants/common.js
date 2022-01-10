@@ -156,7 +156,7 @@ const PRIVATE_TOKEN_CURRENCY_TYPE = {
   DOGE: 15,
   ZEC: 16,
   DOT: 17,
-  POLYGON: 19, // Polygon
+  MATIC: 19,
   POLYGON_ERC20: 20
 };
 

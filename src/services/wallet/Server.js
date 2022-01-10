@@ -136,7 +136,7 @@ export const DEV_TEST_SERVER = {
   IncBSCContractAddress: '0x1ce57B254DC2DBB41e1aeA296Dc7dBD6fb549241',
   explorer: 'https://testnet1.incognito.org',
   portalServices: 'http://139.162.55.124:8010',
-  tradeServices: 'http://51.161.119.66:6022',
+  tradeServices: 'http://51.89.21.38:6022',
   webviewChartServices: 'https://chart-webview-staging.incognito.org',
   bscConfigs: BSC_CONSTANT.BSC_TESTNET_CONFIGS,
   pancakeConfigs: PANCAKE_CONSTANTS.PANCAKE_TESTNET_CONFIGS,
