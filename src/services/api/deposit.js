@@ -154,10 +154,5 @@ export const genPolygonDepositAddress = ({
   if (signPublicKeyEncode) {
     body.SignPublicKeyEncode = signPublicKeyEncode;
   }
-  return http
-    .post('plg/generate', body)
-    .then(formatResponse)
-    .catch((err) => {
-      console.log('fuckkkkkk', err);
-    });
+  return http.post('plg/generate', body).then(formatResponse);
 };

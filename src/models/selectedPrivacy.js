@@ -15,7 +15,7 @@ function getNetworkName() {
   const isBNB =
     this?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BNB;
   const isMATIC =
-     this?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.POLYGON;
+    this?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.MATIC;
   if (this.isPrivateCoin) {
     name = `${this.name}`;
   } else if (this.isErc20Token) {
@@ -24,7 +24,7 @@ function getNetworkName() {
     name = 'BEP20';
   } else if (this.isBep2Token) {
     name = 'BEP2';
-  } else if(this.isPolygonErc20Token) {
+  } else if (this.isPolygonErc20Token) {
     name = 'Polygon ERC20';
   } else if (this.isIncognitoToken || this.isMainCrypto) {
     name = 'Incognito';
@@ -145,14 +145,18 @@ class SelectedPrivacy {
     this.isWithdrawable = this.isPToken;
     this.isDeposable = this.isPToken;
     this.isDecentralized =
+      this.isErc20Token ||
       (this.isToken &&
         this.currencyType ===
           CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.ETH) ||
-      this.isErc20Token ||
       this.isBep20Token ||
       (this.isToken &&
         this.currencyType ===
-          CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BSC_BNB);
+          CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BSC_BNB) ||
+      this.isPolygonErc20Token ||
+      (this.isToken &&
+        this.currencyType ===
+          CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.MATIC);
     this.isCentralized = this.isToken && !this.isDecentralized;
     this.incognitoTotalSupply =
       (this.isIncognitoToken && Number(token?.totalSupply)) || 0;

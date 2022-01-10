@@ -37,7 +37,7 @@ export const withdraw = (data) => {
   const {
     isErc20Token,
     isBep20Token,
-    isPolygonToken,
+    isPolygonErc20Token,
     paymentAddress,
     tokenId,
     burningTxId,
@@ -87,8 +87,9 @@ export const withdraw = (data) => {
 
   // Polygon Token
   if (
-    currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.POLYGON ||
-    isPolygonToken
+    isPolygonErc20Token ||
+    currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.MATIC ||
+    currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.POLYGON_ERC20
   ) {
     return http.post('plg/add-tx-withdraw');
   }
@@ -145,7 +146,7 @@ export const estimateUserFees = (data) => {
     currencyType,
     isErc20Token,
     isBep20Token,
-    isPolygonToken,
+    isPolygonErc20Token,
     signPublicKeyEncode,
   } = data;
   if (
@@ -188,8 +189,9 @@ export const estimateUserFees = (data) => {
 
   // Polygon Token
   if (
-    isPolygonToken ||
-    currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.POLYGON
+    isPolygonErc20Token ||
+    currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.MATIC ||
+    currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.POLYGON_ERC20
   ) {
     return http.post('plg/estimate-fees', payload);
   }

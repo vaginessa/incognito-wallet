@@ -117,7 +117,7 @@ export const actionGetAddressToShield = async ({
     } else if (
       selectedPrivacy?.isPolygonErc20Token ||
       selectedPrivacy?.currencyType ===
-        CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.POLYGON
+        CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.MATIC
     ) {
       generateResult = await genPolygonDepositAddress({
         paymentAddress: account.PaymentAddress,
