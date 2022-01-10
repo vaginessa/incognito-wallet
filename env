@@ -1,0 +1,31 @@
+API_BASE_URL=https://<%= network %>api.incognito.org
+API_BASE_URL_MAINNET=https://api.incognito.org
+API_BASE_URL_TESTNET=https://test-api2.incognito.org
+PASSWORD_SECRET_KEY=FJexuTITEw
+PASSPHRASE_WALLET_DEFAULT=$as90_jasLsS
+SHARD_ID=
+EXPLORER_CONSTANT_CHAIN_URL=https://<%= network %>.incognito.org
+TESTNET_SERVER_ADDRESS=https://test-mobile.incognito.org
+MAINNET_SERVER_ADDRESS=https://mainnet.incognito.org/fullnode
+DEFAULT_DEVICE_ID=
+API_MINER_URL=https://autonomousbrain.com/v4
+PASS_HOSPOT=0kbzQgxu
+TEST_URL=
+CRYPTO_ICON_URL=https://s3.amazonaws.com/incognito-org/wallet/cryptocurrency-icons/32@2x/color
+API_REQUEST_STAKE_URL=https://hooks.slack.com/services/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
+SSH_USER=nuc
+SSH_PASS=Binh!2345
+INCOGNITO_TOKEN_ICON_URL_MAINNET=https://storage.googleapis.com/incognito/wallet/tokens/icons
+INCOGNITO_TOKEN_ICON_URL_TESTNET=https://storage.googleapis.com/incognito/wallet-testnet/tokens/icons
+ETHERSCAN_URL_MAINNET=https://etherscan.io
+ETHERSCAN_URL_TESTNET=https://kovan.etherscan.io
+BINANCE_EXPLORER_URL_MAINNET=https://explorer.binance.org
+BINANCE_EXPLORER_URL_TESTNET=https://testnet-explorer.binance.org
+DEX_BINANCE_TOKEN_URL_MAINNET=https://dex.binance.org/api/v1/tokens
+DEX_BINANCE_TOKEN_URL_TESTNET=https://testnet-dex.binance.org/api/v1/tokens
+TRACK_LOG_URL=https://device-network.incognito.org
+USDT_TOKEN_ID_MAINNET=716fd1009e2a1669caacc36891e707bfdf02590f96ebd897548e8963c95ebac0
+USDT_TOKEN_ID_TESTNET=880ea0787f6c1555e59e3958a595086b7802fc7a38276bcd80d4525606557fbc
+NODE_URL=https://incognito.org/node.html
+NODE_PASSWORD=Binh!2345
+NODE_USER_NAME=nuc
