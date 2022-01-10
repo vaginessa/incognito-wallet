@@ -91,7 +91,7 @@ export const withdraw = (data) => {
     currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.MATIC ||
     currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.POLYGON_ERC20
   ) {
-    return http.post('plg/add-tx-withdraw');
+    return http.post('plg/add-tx-withdraw', payload);
   }
 
   return http.post('eta/add-tx-withdraw', payload);
