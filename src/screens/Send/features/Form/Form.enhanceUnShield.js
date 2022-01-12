@@ -31,7 +31,6 @@ import {
   ACCOUNT_CONSTANT,
   BurningPBSCRequestMeta,
   BurningRequestMeta,
-  BurningPLGRequestMeta,
   BurningPRVERC20RequestMeta,
   BurningPRVBEP20RequestMeta,
   PrivacyVersion,
@@ -56,17 +55,13 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
   const dev = useSelector(devSelector);
   const { isUnshieldPegPRV } = props;
   const selector = formValueSelector(formName);
-  const currencyTypeName = useSelector((state) =>
-    selector(state, 'currencyType'),
-  );
+  const currencyTypeName = useSelector((state) => selector(state, 'currencyType'));
   const selectedPrivacy = useSelector(selectedPrivacySelector.selectedPrivacy);
   const [childSelectedPrivacy, setChildSelectedPrivacy] = useState();
 
   React.useEffect(() => {
     if (isUnshieldPegPRV) {
-      const childToken = selectedPrivacy.listChildToken.find(
-        (item) => item.currencyType === currencyTypeName,
-      );
+      const childToken = selectedPrivacy.listChildToken.find(item => item.currencyType === currencyTypeName);
       const childSelectedPrivacy = new SelectedPrivacy(
         account,
         null,
@@ -86,7 +81,6 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
     currencyType,
     isErc20Token,
     isBep20Token,
-    isPolygonErc20Token,
     externalSymbol,
     paymentAddress: walletAddress,
     symbol,
@@ -119,7 +113,7 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
   const wallet = useSelector(walletSelector);
   const handleBurningToken = async (payload = {}, txHashHandler) => {
     try {
-      const { originalAmount, feeForBurn, paymentAddress, isBSC, isPolygon } = payload;
+      const { originalAmount, feeForBurn, paymentAddress, isBSC } = payload;
       const { FeeAddress: masterAddress } = userFeesData;
 
       const res = await accountService.createBurningRequest({
@@ -137,11 +131,7 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
         info,
         remoteAddress: paymentAddress,
         txHashHandler,
-        burningType: isBSC
-          ? BurningPBSCRequestMeta
-          : isPolygon
-            ? BurningPLGRequestMeta
-            : BurningRequestMeta,
+        burningType: isBSC ? BurningPBSCRequestMeta : BurningRequestMeta,
         version: PrivacyVersion.ver2,
       });
       if (res.txId) {
@@ -173,9 +163,7 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
         info,
         remoteAddress: paymentAddress,
         txHashHandler,
-        burningType: isBSC
-          ? BurningPRVBEP20RequestMeta
-          : BurningPRVERC20RequestMeta,
+        burningType: isBSC ? BurningPRVBEP20RequestMeta : BurningPRVERC20RequestMeta,
         version: PrivacyVersion.ver2,
       });
       if (res.txId) {
@@ -367,11 +355,6 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
         isBSC:
           isBep20Token ||
           currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BSC_BNB,
-        isPolygon:
-          isPolygonErc20Token ||
-          currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.MATIC ||
-          currencyType ===
-            CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.POLYGON_ERC20,
       };
       let res;
       if (isDecentralized) {
