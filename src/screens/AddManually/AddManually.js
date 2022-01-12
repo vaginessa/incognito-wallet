@@ -12,7 +12,6 @@ import { useSelector } from 'react-redux';
 import AddERC20Token from '@src/components/AddERC20Token';
 import AddBep2Token from '@src/components/AddBep2Token';
 import AddBep20Token from '@src/components/AddBep20Token';
-import AddPolygonToken from '@src/components/AddPolygonToken';
 import Icons from 'react-native-vector-icons/Fontisto';
 import Header from '@src/components/Header';
 import PureModal from '@src/components/Modal/features/PureModal';
@@ -39,7 +38,7 @@ const SelectType = (props) => {
           <Text style={styles.text}>{type}</Text>
           <Icons
             name="angle-right"
-            style={[styles.selectNetworkValueIcon, { color: colors?.text1 }]}
+            style={[styles.selectNetworkValueIcon, {color: colors?.text1} ]}
             size={16}
           />
         </TouchableOpacity>
@@ -49,8 +48,9 @@ const SelectType = (props) => {
 };
 
 const ModalSelectType = () => {
-  const { isShowChooseType, toggleChooseType } =
-    React.useContext(AddManuallyContext);
+  const { isShowChooseType, toggleChooseType } = React.useContext(
+    AddManuallyContext,
+  );
   return (
     <PureModal
       visible={isShowChooseType}
@@ -75,7 +75,6 @@ const AddManually = () => {
             {type === TYPES.BEP2.value && <AddBep2Token />}
             {type === TYPES.ERC20.value && <AddERC20Token />}
             {type === TYPES.BEP20.value && <AddBep20Token />}
-            {type === TYPES.POLYGON.value && <AddPolygonToken />}
           </View>
         </KeyboardAwareScrollView>
         <ModalSelectType />

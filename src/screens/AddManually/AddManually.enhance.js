@@ -8,7 +8,6 @@ export const TYPES = {
   ERC20: { label: 'ERC20', value: 'ERC20' },
   BEP2: { label: 'BEP2', value: 'BEP2' },
   BEP20: { label: 'BEP20', value: 'BEP20' },
-  POLYGON: { label: 'POLYGON', value: 'POLYGON' },
 };
 
 export const AddManuallyContext = React.createContext();
@@ -40,4 +39,7 @@ const enhance = (WrappedComp) => (props) => {
   );
 };
 
-export default compose(withLayout_2, enhance);
+export default compose(
+  withLayout_2,
+  enhance,
+);
