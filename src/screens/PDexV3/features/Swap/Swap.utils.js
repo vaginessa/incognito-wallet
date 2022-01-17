@@ -1,5 +1,5 @@
 import React from 'react';
-import { PANCAKE_CONSTANTS , PRVIDSTR } from 'incognito-chain-web-js/build/wallet';
+import { PANCAKE_CONSTANTS } from 'incognito-chain-web-js/build/wallet';
 import maxBy from 'lodash/maxBy';
 import minBy from 'lodash/minBy';
 import Web3 from 'web3'; // ETH sdk
@@ -126,7 +126,7 @@ export const maxAmountValidatorForSellInput = (sellInputAmount, navigation) => {
         disableBackToShield: true
       });
     };
-    if (navigation && !availableOriginalAmount && tokenData.tokenId !== PRVIDSTR) {
+    if (navigation && !availableOriginalAmount) {
       return (
         <Text onPress={onMessagePress}>
           Insufficient balance. <Text style={{ textDecorationLine: 'underline' }}>Add funds</Text>.
