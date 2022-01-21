@@ -86,7 +86,13 @@ const enhance = (WrappedComp) => (props) => {
   }
 
   /** render term off user */
-  if (isDecentralized && showTerm && selectedPrivacy?.tokenId !== PRV_ID) {
+  if (
+    isDecentralized &&
+    showTerm &&
+    selectedPrivacy?.tokenId !== PRV_ID &&
+    currencyType !== CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.MATIC &&
+    currencyType !== CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.POLYGON_ERC20
+  ) {
     return renderTermOfUse();
   }
 
