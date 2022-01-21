@@ -35,7 +35,7 @@ export const enhanceAddressValidation = (WrappedComp) => (props) => {
 
   const isBEP20 = React.useMemo(() => {
     return isBep20Token ||
-      currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BSC;
+      currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BSC_BNB;
   }, [isBep20Token, currencyType]);
 
   const isPolygon20 = React.useMemo(() => {
