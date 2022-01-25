@@ -63,7 +63,7 @@ const BETA_SERVER = {
   IncBSCContractAddress: '0x43D037A562099A4C2c95b1E2120cc43054450629',
   explorer: 'https://explorer.incognito.org',
   tradeServices: 'https://api-coinservice-beta3.incognito.org',
-  portalServices: 'http://139.162.55.124:8010',
+  portalServices: 'https://api-portalv4.incognito.org',
   webviewChartServices: 'https://chart-webview.incognito.org',
   bscConfigs: BSC_CONSTANT.BSC_MAINNET_CONFIGS,
   pancakeConfigs: PANCAKE_CONSTANTS.PANCAKE_MAINNET_CONFIGS,
