@@ -99,11 +99,11 @@ export const listShareSelector = createSelector(
       const validNFT = !!getValidRealAmountNFT(nftId);
       const disableBtn = isFetchingNFT || !validNFT;
       const mapLPRewards = mapRewardToUSD({
-        rewards,
+        rewards: rewards || {},
         getPrivacyDataByTokenID
       }) || [];
       const mapOrderRewards = mapRewardToUSD({
-        rewards: orderRewards,
+        rewards: orderRewards  || {},
         getPrivacyDataByTokenID
       }) || [];
       const totalRewardUSD = mapLPRewards.concat(mapOrderRewards).reduce((prev, curr) => new BigNumber(prev).plus(curr.rewardUSD).toNumber(), 0);
@@ -116,7 +116,7 @@ export const listShareSelector = createSelector(
       }));
 
       const hookOrderRewards = mapOrderRewards.map((item) => ({
-        label: 'Liquidity reward',
+        label: 'Order reward collected',
         valueText: item.rewardStr,
       }));
 
