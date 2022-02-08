@@ -190,8 +190,8 @@ const TabPro = React.memo(() => {
                 slippage,
               ),
             );
-            let defaultSlippage = slippage;
-            if (isNaN(slippage)) {
+            let defaultSlippage = convert.toNumber(slippage, true);
+            if (isNaN(defaultSlippage)) {
               defaultSlippage = '1';
             }
             dispatch(actionChangeSlippage(defaultSlippage));
