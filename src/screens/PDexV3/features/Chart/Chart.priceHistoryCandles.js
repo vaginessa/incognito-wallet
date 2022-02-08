@@ -100,6 +100,10 @@ const PriceHistoryCandles = () => {
       ref.current.postMessage(message);
     }
   };
+  const UTCToLocalTimeStamp = (timeStamp) => {
+    const d = new Date(timeStamp * 1000);
+    return Date.UTC(d.getFullYear(), d.getMonth(), d.getDate(), d.getHours(), d.getMinutes(), d.getSeconds(), d.getMilliseconds()) / 1000;
+  };
   const handleFetchData = async (actived) => {
     try {
       const pdexV3Inst = await dispatch(actionGetPDexV3Inst());
@@ -142,7 +146,7 @@ const PriceHistoryCandles = () => {
         const value = convert.toHumanAmountVer2(close, pDecimals);
         const result = {
           ...c,
-          time: timestamp,
+          time: UTCToLocalTimeStamp(timestamp),
           value,
         };
         return result;
