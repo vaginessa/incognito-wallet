@@ -17,6 +17,7 @@ import minBy from 'lodash/minBy';
 import { colorsSelector } from '@src/theme';
 import BigNumber from 'bignumber.js';
 import floor from 'lodash/floor';
+import { rateDataSelector } from '@screens/PDexV3/features/OrderLimit';
 import { poolSelectedSelector } from './Chart.selector';
 
 const styled = StyleSheet.create({
@@ -50,7 +51,7 @@ const periods = [
 
 export const Period = React.memo(({ handleFetchData }) => {
   const colors = useSelector(colorsSelector);
-  const [actived, setActived] = React.useState(periods[3].period);
+  const [actived, setActived] = React.useState(periods[0].period);
   return (
     <Row
       style={{
@@ -87,6 +88,7 @@ export const Period = React.memo(({ handleFetchData }) => {
 });
 
 const PriceHistoryCandles = () => {
+  const { rateStr } = useSelector(rateDataSelector);
   const [initted, setInitted] = React.useState(false);
   const [uri, setURI] = React.useState('');
   const [visible, setVisible] = React.useState(false);
@@ -151,6 +153,18 @@ const PriceHistoryCandles = () => {
         };
         return result;
       });
+      const timeNow = new Date().getTime() / 1000;
+      const rateNow = convert.toNumber(rateStr, true);
+      const chartDataNow = {
+        'close': rateNow,
+        'high': rateNow,
+        'low': rateNow,
+        'open': rateNow,
+        'time': UTCToLocalTimeStamp(timeNow),
+        'timestamp': UTCToLocalTimeStamp(timeNow),
+        'value': rateNow
+      };
+      chartData.push(chartDataNow);
       if (chartData.length > 0) {
         let width = Number(ScreenWidth);
         const minLow = minBy(chartData, (c) => c?.low)?.low || 0;
@@ -222,7 +236,7 @@ const PriceHistoryCandles = () => {
     const parseData = JSON.parse(data);
     if (parseData?.initted) {
       await setInitted(true);
-      handleFetchData(periods[3].period);
+      handleFetchData(periods[0].period);
     }
   };
   const handleInit = async () => {
@@ -235,7 +249,7 @@ const PriceHistoryCandles = () => {
   };
   React.useEffect(() => {
     handleInit();
-  }, []);
+  }, [rateStr]);
   return (
     <View style={[styled.container]}>
       {!initted && <ActivityIndicator />}
