@@ -39,18 +39,18 @@ const styled = StyleSheet.create({
 });
 
 const periods = [
-  '15m',
-  '1h',
-  '4h',
-  '1d',
-  'W',
+  { label: '1D', period: '15m' },
+  { label: '1W', period: '1h' },
+  { label: '1M', period: '4h' },
+  { label: '2M', period: '1d' },
+  { label: '1Y', period: 'W' },
   // 'M',
   // 'Y'
 ];
 
 export const Period = React.memo(({ handleFetchData }) => {
   const colors = useSelector(colorsSelector);
-  const [actived, setActived] = React.useState(periods[3]);
+  const [actived, setActived] = React.useState(periods[3].period);
   return (
     <Row
       style={{
@@ -59,7 +59,7 @@ export const Period = React.memo(({ handleFetchData }) => {
         marginTop: 10,
       }}
     >
-      {periods?.map((period, index, arr) => (
+      {periods?.map(({ label, period }, index, arr) => (
         <ButtonBasic
           btnStyle={{
             ...styled.btnStyle,
@@ -71,7 +71,7 @@ export const Period = React.memo(({ handleFetchData }) => {
               ? { color: colors.mainText }
               : { color: colors.subText }),
           }}
-          title={period}
+          title={label}
           key={period}
           onPress={async () => {
             if (actived === period) {
@@ -165,6 +165,7 @@ const PriceHistoryCandles = () => {
                   timeVisible: true,
                   visible: true,
                   borderColor: colors.grey8,
+                  secondsVisible: false,
                 },
                 rightPriceScale: {
                   timeVisible: true,
@@ -217,7 +218,7 @@ const PriceHistoryCandles = () => {
     const parseData = JSON.parse(data);
     if (parseData?.initted) {
       await setInitted(true);
-      handleFetchData(periods[3]);
+      handleFetchData(periods[3].period);
     }
   };
   const handleInit = async () => {
