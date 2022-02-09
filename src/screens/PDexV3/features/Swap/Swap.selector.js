@@ -32,6 +32,7 @@ export const slippagetoleranceSelector = createSelector(
   (state) => {
     const selector = formValueSelector(formConfigs.formName);
     let slippagetolerance = selector(state, formConfigs.slippagetolerance);
+    slippagetolerance = convert.toNumber(slippagetolerance || 0, true);
     slippagetolerance = Number(slippagetolerance);
     if (isNaN(slippagetolerance)) {
       return 0;
