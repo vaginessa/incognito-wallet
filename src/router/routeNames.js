@@ -195,6 +195,7 @@ export default {
   RemoveLPDetail: 'RemoveLPDetail',
   WithdrawFeeLPDetail: 'WithdrawFeeLPDetail',
   OrdeSwapDetail: 'OrdeSwapDetail',
+  SwapRewardHistoryDetail: 'SwapRewardHistoryDetail',
   MainTabBar: 'MainTabBar',
   PoolsTab: 'PoolsTab',
   SelectTokenModal: 'SelectTokenModal',

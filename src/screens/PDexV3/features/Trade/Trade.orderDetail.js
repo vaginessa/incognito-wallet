@@ -10,7 +10,7 @@ export const styled = StyleSheet.create({
   label: {
     fontFamily: FONT.NAME.medium,
     fontSize: FONT.SIZE.small,
-    width: 100,
+    width: 120,
   },
   row: {
     justifyContent: 'space-between',
