@@ -51,10 +51,19 @@ export const pancakePairsSelector = createSelector(
   ({ pancakeTokens }) => pancakeTokens,
 );
 
+export const uniPairsSelector = createSelector(
+  swapSelector,
+  ({ uniTokens }) => uniTokens,
+);
+
 export const findTokenPancakeByIdSelector = createSelector(
   pancakePairsSelector,
   (pancakeTokens) =>
     memoize((tokenID) => pancakeTokens.find((t) => t?.tokenID === tokenID)),
+);
+
+export const findTokenUniByIdSelector = createSelector(uniPairsSelector, (uniTokens) =>
+  memoize((tokenID) => uniTokens.find((t) => t?.tokenID === tokenID)),
 );
 
 export const hashmapContractIDsSelector = createSelector(
@@ -99,7 +108,7 @@ export const listPairsSelector = createSelector(
   swapSelector,
   getPrivacyDataByTokenIDSelector,
   (
-    { pairs, isPrivacyApp, defaultExchange, pancakeTokens },
+    { pairs, isPrivacyApp, defaultExchange, pancakeTokens, uniTokens },
     getPrivacyDataByTokenID,
   ) => {
     if (!pairs) {
@@ -113,6 +122,24 @@ export const listPairsSelector = createSelector(
         list = list.map((token: SelectedPrivacy) => {
           let { priority, isVerified } = token;
           const foundedToken = pancakeTokens.find(
+            (pt) => pt?.tokenID === token?.tokenId,
+          );
+          if (foundedToken) {
+            priority = foundedToken?.priority;
+            isVerified = foundedToken?.verify;
+          }
+          return {
+            ...token,
+            isVerified,
+            priority,
+          };
+        });
+        break;
+      }
+      case KEYS_PLATFORMS_SUPPORTED.uni: {
+        list = list.map((token: SelectedPrivacy) => {
+          let { priority, isVerified } = token;
+          const foundedToken = uniTokens.find(
             (pt) => pt?.tokenID === token?.tokenId,
           );
           if (foundedToken) {
@@ -204,6 +231,30 @@ export const isPairSupportedTradeOnPancakeSelector = createSelector(
   },
 );
 
+export const isPairSupportedTradeOnUniSelector = createSelector(
+  findTokenUniByIdSelector,
+  selltokenSelector,
+  buytokenSelector,
+  (
+    getUniTokenParamReq,
+    sellToken: SelectedPrivacy,
+    buyToken: SelectedPrivacy,
+  ) => {
+    let isSupported = false;
+    try {
+      const tokenSellUni = getUniTokenParamReq(sellToken.tokenId);
+      const tokenBuyUni = getUniTokenParamReq(buyToken.tokenId);
+      if (!!tokenSellUni && !!tokenBuyUni) {
+        isSupported = true;
+      }
+    } catch (error) {
+      //
+      console.log('platformsSupportedSelector-error', error);
+    }
+    return isSupported;
+  },
+);
+
 // platform supported
 export const platformsSelector = createSelector(
   swapSelector,
@@ -219,12 +270,23 @@ export const platformsSupportedSelector = createSelector(
   swapSelector,
   platformsVisibleSelector,
   isPairSupportedTradeOnPancakeSelector,
-  ({ data }, platforms, isPairSupportedTradeOnPancake) => {
+  isPairSupportedTradeOnUniSelector,
+  (
+    { data },
+    platforms,
+    isPairSupportedTradeOnPancake,
+    isPairSupportedTradeOnUni,
+  ) => {
     let _platforms = [...platforms];
     try {
       if (!isPairSupportedTradeOnPancake) {
         _platforms = _platforms.filter(
           (platform) => platform.id !== KEYS_PLATFORMS_SUPPORTED.pancake,
+        );
+      }
+      if (!isPairSupportedTradeOnUni) {
+        _platforms = _platforms.filter(
+          (platform) => platform.id !== KEYS_PLATFORMS_SUPPORTED.uni,
         );
       }
       _platforms = _platforms.filter(({ id: platformId }) => {
@@ -449,19 +511,25 @@ export const feetokenDataSelector = createSelector(
             );
             break;
           }
+          case KEYS_PLATFORMS_SUPPORTED.uni: {
+            tradePathArr = tokenRoute;
+            break;
+          }
           default:
             break;
           }
         }
-        tradePathStr = tradePathArr
-          .map((tokenID, index, arr) => {
-            const token: SelectedPrivacy = getPrivacyDataByTokenID(tokenID);
-            return (
-              `${token?.symbol}${index === arr?.length - 1 ? '' : ' > '}` || ''
-            );
-          })
-          .filter((symbol) => !!symbol)
-          .join('');
+        if (KEYS_PLATFORMS_SUPPORTED.uni) {
+          tradePathStr = feeDataByPlatform.routerString;
+        } else {
+          tradePathStr = tradePathArr
+            .map((tokenID, index, arr) => {
+              const token: SelectedPrivacy = getPrivacyDataByTokenID(tokenID);
+              return `${token?.symbol}${index === arr?.length - 1 ? '' : ' > '}` || '';
+            })
+            .filter((symbol) => !!symbol)
+            .join('');
+        }
       } catch (error) {
         console.log('GET TRADE PATH ERROR', error);
       }
@@ -536,6 +604,9 @@ export const feeTypesSelector = createSelector(
       }
       break;
     case KEYS_PLATFORMS_SUPPORTED.pancake: {
+      break;
+    }
+    case KEYS_PLATFORMS_SUPPORTED.uni: {
       break;
     }
     default:

@@ -10,8 +10,11 @@ import {
 } from '@src/components/core';
 import { useSelector } from 'react-redux';
 import { Row } from '@src/components';
-import { FONT } from '@src/styles';
+import { FONT, COLORS } from '@src/styles';
 import formatUtil from '@src/utils/format';
+import { useNavigation } from 'react-navigation-hooks';
+import routeNames from '@src/router/routeNames';
+import { PRV } from '@src/constants/common';
 import { swapHistorySelector } from './Swap.selector';
 
 const styled = StyleSheet.create({
@@ -30,13 +33,6 @@ const styled = StyleSheet.create({
     justifyContent: 'space-between',
     paddingVertical: 24,
   },
-  itemTitle: {
-    fontFamily: FONT.NAME.medium,
-    fontSize: FONT.SIZE.small,
-    lineHeight: FONT.SIZE.small + 5,
-    marginRight: 15,
-    flex: 1,
-  },
   itemDesc: {
     fontFamily: FONT.NAME.regular,
     fontSize: FONT.SIZE.regular,
@@ -52,49 +48,50 @@ const styled = StyleSheet.create({
 });
 
 const RewardHistoryItem = React.memo(({ data }) => {
-  const {
-    createdAt,
-    fromTime,
-    rewardAmount,
-    sumTotalVolume,
-    totalVolume,
-    toTime,
-  } = data;
+  const { createdAt, rewardAmount, tx } = data;
+
+  const navigation = useNavigation();
+
+  const navigateToRewardHistoryDetailScreen = () => {
+    navigation.navigate(routeNames.SwapRewardHistoryDetail, {
+      rewardHistoryDetail: data,
+    });
+  };
   return (
-    <TouchableOpacity style={styled.itemContainer}>
+    <TouchableOpacity
+      onPress={navigateToRewardHistoryDetailScreen}
+      style={styled.itemContainer}
+    >
       <View style={styled.itemWrapper}>
-        <Row style={{ ...styled.row, marginBottom: 4 }}>
-          <Text style={[styled.itemTitle]}>Create At:</Text>
-          <Text style={[styled.itemDesc]}>
-            {formatUtil.formatDateTime(createdAt)}
-          </Text>
-        </Row>
-        <Row style={{ ...styled.row, marginBottom: 4 }}>
-          <Text style={[styled.swap]}>Sum Total Volume</Text>
-          <Text style={[styled.itemDesc]}>{sumTotalVolume?.toFixed(4)}</Text>
-        </Row>
-        <Row style={{ ...styled.row, marginBottom: 4 }}>
-          <Text style={[styled.swap]}>Total Volume</Text>
-          <Text style={[styled.itemDesc]}>{totalVolume?.toFixed(4)}</Text>
-        </Row>
-        <Row style={{ ...styled.row, marginBottom: 4 }}>
-          <Text style={[styled.swap]}>Reward Amount</Text>
-          <Text style={[styled.itemDesc]}>
-            {(rewardAmount / 1e9).toFixed(4)}
-          </Text>
-        </Row>
-        <Row style={{ ...styled.row, marginBottom: 4 }}>
-          <Text style={[styled.swap]}>From Time</Text>
-          <Text style={[styled.itemDesc]}>
-            {formatUtil.formatDateTime(fromTime)}
-          </Text>
-        </Row>
-        <Row style={{ ...styled.row, marginBottom: 4 }}>
-          <Text style={[styled.swap]}>To Time</Text>
-          <Text style={[styled.itemDesc]}>
-            {' '}
-            {formatUtil.formatDateTime(toTime)}
-          </Text>
+        <Row style={{ ...styled.row }}>
+          <View style={{ flex: 1, marginRight: 48 }}>
+            <Text
+              numberOfLines={1}
+              ellipsizeMode="middle"
+              style={[
+                styled.itemDesc,
+                { color: COLORS.lightGrey36, marginBottom: 4 },
+              ]}
+            >
+              #{tx}
+            </Text>
+            <Text
+              numberOfLines={1}
+              ellipsizeMode="middle"
+              style={[styled.itemDesc, {}]}
+            >
+              {formatUtil.formatDateTime(createdAt)}
+            </Text>
+          </View>
+          <View>
+            <Text
+              numberOfLines={1}
+              ellipsizeMode="middle"
+              style={[styled.itemDesc]}
+            >
+              {formatUtil.amountVer2(rewardAmount, PRV.pDecimals)} PRV
+            </Text>
+          </View>
         </Row>
       </View>
     </TouchableOpacity>
@@ -104,7 +101,7 @@ const RewardHistoryItem = React.memo(({ data }) => {
 const RewardHistory = () => {
   const { isFetching } = useSelector(swapHistorySelector);
   const rewardHistories = useSelector(
-    (state) => state.pDexV3.swap.pancakeRewardHistories,
+    (state) => state.pDexV3.swap.rewardHistories,
   );
   return (
     <View style={styled.container}>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { withLayout_2 } from '@src/components/Layout';
 import { ScrollViewBorder } from '@components/core';
 import { PancakeIcon2 } from '@src/components/Icons';
@@ -15,14 +15,15 @@ import { useFocusEffect, useNavigation } from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
 import Header from '@src/components/Header';
 import { activedTabSelector, actionChangeTab } from '@src/components/core/Tabs';
+import { FlatList } from '@src/components/core/FlatList';
 import PrivacyAppsItem from './PrivacyApps.item';
 
 const styled = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
   scrollview: {
     flex: 1,
+  },
+  itemSpace: {
+    height: 20,
   },
 });
 
@@ -34,6 +35,9 @@ const PrivacyApps = () => {
     switch (id) {
     case KEYS_PLATFORMS_SUPPORTED.pancake:
       navigation.navigate(routeNames.PrivacyAppsPancake);
+      break;
+    case KEYS_PLATFORMS_SUPPORTED.uni:
+      navigation.navigate(routeNames.PrivacyAppsUni);
       break;
     default:
       break;
@@ -59,6 +63,24 @@ const PrivacyApps = () => {
         desc: 'Trade anonymously on Binance Smart Chain’s leading DEX. Deep liquidity and super low fees – now with privacy.',
         onPressItem,
       },
+      {
+        privacyAppId: KEYS_PLATFORMS_SUPPORTED.uni,
+        icon: <PancakeIcon2 />,
+        headerTitle: 'pUniswap',
+        headerSub: 'Private Uniswap',
+        groupActions: [
+          {
+            id: 'POLYGON',
+            title: 'Polygon',
+          },
+          {
+            id: 'DEX',
+            title: 'DEX',
+          },
+        ],
+        desc: 'Trade anonymously on Polygon’s leading DEX. Deep liquidity and super low fees – now with privacy.',
+        onPressItem,
+      },
     ];
   }, []);
   useFocusEffect(() => {
@@ -69,6 +91,14 @@ const PrivacyApps = () => {
       );
     }
   });
+
+  const renderItem = ({ item }) => {
+    return <PrivacyAppsItem {...item} />;
+  };
+
+  const renderItemSeparatorComponent = () => {
+    return <View style={styled.itemSpace} />;
+  };
   return (
     <>
       <Header
@@ -77,9 +107,12 @@ const PrivacyApps = () => {
         hideBackButton
       />
       <ScrollViewBorder style={styled.scrollview}>
-        {factories.map((item) => (
-          <PrivacyAppsItem key={item.id} {...item} />
-        ))}
+        <FlatList
+          data={factories}
+          keyExtractor={(item) => item?.id?.toString()}
+          renderItem={renderItem}
+          ItemSeparatorComponent={renderItemSeparatorComponent}
+        />
       </ScrollViewBorder>
     </>
   );

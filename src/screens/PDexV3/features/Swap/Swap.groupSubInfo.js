@@ -1,6 +1,8 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Tabs } from '@src/components/core';
+import { useNavigation } from 'react-navigation-hooks';
+import routeNames from '@src/router/routeNames';
 import History from './Swap.orderHistory';
 import {
   ROOT_TAB_SUB_INFO,
@@ -17,6 +19,7 @@ const styled = StyleSheet.create({
 });
 
 const GroupSubInfo = () => {
+  const navigation = useNavigation();
   return (
     <View style={styled.container}>
       <Tabs rootTabID={ROOT_TAB_SUB_INFO}>
@@ -28,9 +31,17 @@ const GroupSubInfo = () => {
         >
           <History />
         </View>
-        <View tabID={TAB_REWARD_HISTORY_ID} label="Reward history">
-          <RewardHistory />
-        </View>
+        {(navigation?.state?.routeName === routeNames.PrivacyAppsPancake ||
+        navigation?.state?.routeName === routeNames.PrivacyAppsUni) ? (
+            // eslint-disable-next-line react/jsx-indent
+            <View tabID={TAB_REWARD_HISTORY_ID} label="Reward history">
+              <RewardHistory />
+            </View>
+          ) : (
+            <View tabID="" label="">
+              <View />
+            </View>
+          )}
       </Tabs>
     </View>
   );

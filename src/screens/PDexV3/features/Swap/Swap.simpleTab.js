@@ -34,6 +34,7 @@ export const useTabFactories = () => {
       {
         label: 'Trade path',
         value: feeTokenData?.tradePathStr,
+        valueNumberOfLine: 10,
       },
       {
         label: 'Price impact',

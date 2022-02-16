@@ -96,7 +96,10 @@ import ConvertTokenList from '@screens/Home/features/ConvertTokenList';
 import HistoryConvert from '@src/screens/Home/features/HistoryConvert';
 import HomePDexV3 from '@screens/PDexV3/features/Home';
 import { PoolsList, PoolsTab } from '@screens/PDexV3/features/Pools';
-import { OrdeSwapDetail } from '@screens/PDexV3/features/Swap';
+import {
+  OrdeSwapDetail,
+  SwapRewardHistoryDetail,
+} from '@screens/PDexV3/features/Swap';
 import Trade, {
   ReviewOrder,
   TradeOrderHistory,
@@ -141,7 +144,10 @@ import MainTabBar from '@screens/MainTabBar';
 import More from '@screens/MainTabBar/features/More';
 import Market from '@screens/MainTabBar/features/Market';
 import { SelectOptionModal } from '@components/SelectOption';
-import { PrivacyAppsPancake } from '@screens/PDexV3/features/PrivacyApps';
+import {
+  PrivacyAppsPancake,
+  PrivacyAppsUni,
+} from '@screens/PDexV3/features/PrivacyApps';
 import MarketSearchCoins from '@screens/MainTabBar/features/Market/Market.searchCoins';
 import HomeLP from '@screens/MainTabBar/features/HomeLP';
 
@@ -321,6 +327,10 @@ const pDexV3Routes = [
     name: routeNames.OrdeSwapDetail,
   },
   {
+    screen: SwapRewardHistoryDetail,
+    name: routeNames.SwapRewardHistoryDetail,
+  },
+  {
     screen: PoolsTab,
     name: routeNames.PoolsTab,
   },
@@ -333,13 +343,17 @@ const pDexV3Routes = [
     name: routeNames.PrivacyAppsPancake,
   },
   {
+    screen: PrivacyAppsUni,
+    name: routeNames.PrivacyAppsUni,
+  },
+  {
     screen: MarketSearchCoins,
     name: routeNames.MarketSearchCoins,
   },
   {
     screen: HomeLP,
     name: routeNames.HomeLP,
-  }
+  },
 ];
 
 const homeRoutes = [

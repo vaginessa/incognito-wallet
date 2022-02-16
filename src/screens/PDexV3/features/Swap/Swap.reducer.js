@@ -36,9 +36,9 @@ import {
   ACTION_SET_ERROR,
   ACTION_REMOVE_ERROR,
   ACTION_CHANGE_SLIPPAGE,
-  ACTION_FETCHING_PANCAKE_REWARD_HISTORY,
-  ACTION_FETCHED_PANCAKE_REWARD_HISTORY,
-  ACTION_FETCH_FAIL_PANCAKE_REWARD_HISTORY,
+  ACTION_FETCHING_REWARD_HISTORY,
+  ACTION_FETCHED_REWARD_HISTORY,
+  ACTION_FETCH_FAIL_REWARD_HISTORY,
 } from './Swap.constant';
 
 const initialState = {
@@ -53,6 +53,11 @@ const initialState = {
     },
     [KEYS_PLATFORMS_SUPPORTED.pancake]: {
       // pancake
+      feePrv: {},
+      error: null,
+    },
+    [KEYS_PLATFORMS_SUPPORTED.uni]: {
+      // uni
       feePrv: {},
       error: null,
     },
@@ -81,6 +86,7 @@ const initialState = {
   toggleProTab: false,
   pDEXPairs: [],
   pancakeTokens: [],
+  uniTokens: [],
   platforms: [...PLATFORMS_SUPPORTED],
   field: '',
   useMax: false,
@@ -88,7 +94,7 @@ const initialState = {
   isPrivacyApp: false,
   error: null,
   slippage: '1',
-  pancakeRewardHistories: [],
+  rewardHistories: [],
 };
 
 const reducer = (state = initialState, action) => {
@@ -160,6 +166,9 @@ const reducer = (state = initialState, action) => {
     let feetoken = state.feetoken;
     switch (platformID) {
     case KEYS_PLATFORMS_SUPPORTED.pancake:
+      feetoken = PRV_ID;
+      break;
+    case KEYS_PLATFORMS_SUPPORTED.uni:
       feetoken = PRV_ID;
       break;
     default:
@@ -241,12 +250,13 @@ const reducer = (state = initialState, action) => {
     };
   }
   case ACTION_FETCHED_LIST_PAIRS: {
-    const { pairs, pDEXPairs, pancakeTokens } = action.payload;
+    const { pairs, pDEXPairs, pancakeTokens, uniTokens } = action.payload;
     return {
       ...state,
       pairs,
       pDEXPairs,
       pancakeTokens,
+      uniTokens
     };
   }
   case ACTION_FETCH_SWAP: {
@@ -335,13 +345,13 @@ const reducer = (state = initialState, action) => {
       swapingToken: action.payload,
     };
   }
-  case ACTION_FETCHED_PANCAKE_REWARD_HISTORY: {
+  case ACTION_FETCHED_REWARD_HISTORY: {
     return {
       ...state,
-      pancakeRewardHistories: action.payload,
+      rewardHistories: action.payload,
     };
   }
-  case ACTION_FETCH_FAIL_PANCAKE_REWARD_HISTORY: {
+  case ACTION_FETCH_FAIL_REWARD_HISTORY: {
     return {
       ...state
     };
