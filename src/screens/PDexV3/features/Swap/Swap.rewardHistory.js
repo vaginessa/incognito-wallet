@@ -14,6 +14,7 @@ import { FONT, COLORS } from '@src/styles';
 import formatUtil from '@src/utils/format';
 import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
+import { PRV } from '@src/constants/common';
 import { swapHistorySelector } from './Swap.selector';
 
 const styled = StyleSheet.create({
@@ -88,7 +89,7 @@ const RewardHistoryItem = React.memo(({ data }) => {
               ellipsizeMode="middle"
               style={[styled.itemDesc]}
             >
-              {(rewardAmount / 1e9).toFixed(4)} PRV
+              {formatUtil.amountVer2(rewardAmount, PRV.pDecimals)} PRV
             </Text>
           </View>
         </Row>
