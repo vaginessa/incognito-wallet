@@ -16,6 +16,7 @@ import TradeOrderDetail, {
 import { Row } from '@src/components';
 import LinkingService from '@src/services/linking';
 import { CONSTANT_CONFIGS } from '@src/constants';
+import { PRV } from '@src/constants/common';
 
 const styled = StyleSheet.create({
   container: { flex: 1 },
@@ -41,7 +42,7 @@ const SwapRewardHistoryDetail = () => {
     },
     {
       label: 'Reward Amount',
-      value: (rewardHistoryDetail?.rewardAmount / 1e9)?.toFixed(4),
+      value: `${formatUtil.amountVer2(rewardHistoryDetail?.rewardAmount, PRV.pDecimals)} PRV`,
     },
     {
       label: 'From Time',
