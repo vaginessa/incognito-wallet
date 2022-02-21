@@ -1,6 +1,6 @@
 import React from 'react';
 import ErrorBoundary from '@src/components/ErrorBoundary';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { actionToggleModal } from '@src/components/Modal';
 import { TradeSuccessModal } from '@src/screens/PDexV3/features/Trade';
 import { focus } from 'redux-form';
@@ -9,6 +9,7 @@ import FaucetPRVModal from '@src/components/Modal/features/FaucetPRVModal';
 import RemoveSuccessDialog from '@src/screens/Setting/features/RemoveStorage/RemoveStorage.Dialog';
 import { compose } from 'recompose';
 import withLazy from '@src/components/LazyHoc/LazyHoc';
+import useDebounceSelector from '@src/shared/hooks/debounceSelector';
 import { formConfigs, KEYS_PLATFORMS_SUPPORTED } from './Swap.constant';
 import {
   actionInitSwapForm,
@@ -26,10 +27,10 @@ import {
 
 const enhance = (WrappedComp) => (props) => {
   const dispatch = useDispatch();
-  const swapInfo = useSelector(swapInfoSelector);
-  const formErrors = useSelector(swapFormErrorSelector);
-  const sellInputToken = useSelector(sellInputTokenSelector);
-  const feeTokenData = useSelector(feetokenDataSelector);
+  const swapInfo = useDebounceSelector(swapInfoSelector);
+  const formErrors = useDebounceSelector(swapFormErrorSelector);
+  const sellInputToken = useDebounceSelector(sellInputTokenSelector);
+  const feeTokenData = useDebounceSelector(feetokenDataSelector);
   const [visibleSignificant, setVisibleSignificant] = React.useState(false);
   const [ordering, setOrdering] = React.useState(false);
   const {

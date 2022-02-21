@@ -17,6 +17,7 @@ import { PRV_ID } from '@src/screens/Dex/constants';
 import { useSelector } from 'react-redux';
 import { themeModeSelector } from '@src/theme/theme.selector';
 import { THEME_KEYS } from '@src/theme/theme.consts';
+import withLazy from '@components/LazyHoc/LazyHoc';
 
 const enhance = (WrappedComp) => (props) => {
   const {
@@ -113,6 +114,7 @@ const enhance = (WrappedComp) => (props) => {
 export default compose(
   withAccount,
   withShieldData,
+  withLazy,
   withLayout_2,
   enhance,
 );
