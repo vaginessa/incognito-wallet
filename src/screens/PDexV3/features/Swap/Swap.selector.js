@@ -84,12 +84,45 @@ export const hashmapContractIDsSelector = createSelector(
       }, {}),
 );
 
+export const hashmapUniContractIDsSelector = createSelector(
+  uniPairsSelector,
+  (uniTokens) =>
+    uniTokens
+      .filter((token) => token?.isPopular === true)
+      .reduce((curr, token) => {
+        const { symbol, contractIdGetRate, decimals } = token;
+        curr = {
+          ...curr,
+          [toLower(contractIdGetRate)]: {
+            symbol: toLower(symbol),
+            decimals,
+          },
+        };
+        return curr;
+      }, {}),
+);
+
 export const getTokenIdByContractIdGetRateSelector = createSelector(
   pancakePairsSelector,
   (pancakeTokens) =>
     memoize((contractIdGetRate) => {
       let tokenID = '';
       const foundToken = pancakeTokens.find((token) =>
+        isEqual(toLower(contractIdGetRate), toLower(token?.contractIdGetRate)),
+      );
+      if (foundToken) {
+        tokenID = foundToken?.tokenID;
+      }
+      return tokenID;
+    }),
+);
+
+export const getTokenIdByUniContractIdGetRateSelector = createSelector(
+  uniPairsSelector,
+  (uniTokens) =>
+    memoize((contractIdGetRate) => {
+      let tokenID = '';
+      const foundToken = uniTokens.find((token) =>
         isEqual(toLower(contractIdGetRate), toLower(token?.contractIdGetRate)),
       );
       if (foundToken) {

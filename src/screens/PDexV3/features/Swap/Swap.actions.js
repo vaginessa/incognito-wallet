@@ -837,88 +837,8 @@ export const actionEstimateTradeForPancake =
     };
   };
 
-export const actionFindBestRateBetweenPlatformsUni =
-    ({ pDexData, uniData, params }) =>
-      async (dispatch, getState) => {
-        const { field } = params;
-        const state = getState();
-        const {
-          minSellOriginalAmount: sellPDexAmount,
-          maxBuyOriginalAmount: buyPDexAmount,
-        } = pDexData;
-        const {
-          minSellOriginalAmount: sellUniAmount,
-          maxBuyOriginalAmount: buyUniAmount,
-        } = uniData;
-        let platformIdHasBestRate;
-        const isPairSupportedTradeOnUni =
-          isPairSupportedTradeOnUniSelector(state);
-        console.log('pdexData', pDexData);
-        console.log('uniData', uniData);
-        try {
-          switch (field) {
-          case formConfigs.selltoken: {
-            let arrMaxBuyAmount = [];
-            if (new BigNumber(buyPDexAmount).isGreaterThan(0)) {
-              arrMaxBuyAmount.push({
-                id: KEYS_PLATFORMS_SUPPORTED.incognito,
-                amount: buyPDexAmount,
-              });
-            }
-            if (
-              isPairSupportedTradeOnUni &&
-              new BigNumber(buyUniAmount).isGreaterThan(0)
-            ) {
-              arrMaxBuyAmount.push({
-                id: KEYS_PLATFORMS_SUPPORTED.uni,
-                amount: buyUniAmount,
-              });
-            }
-            if (arrMaxBuyAmount.length > 0) {
-              const bestRate = findBestRateOfMaxBuyAmount(arrMaxBuyAmount);
-              platformIdHasBestRate = bestRate?.id;
-            }
-            break;
-          }
-          case formConfigs.buytoken: {
-            const arrMinSellAmount = [];
-            if (new BigNumber(sellPDexAmount).isGreaterThan(0)) {
-              arrMinSellAmount.push({
-                id: KEYS_PLATFORMS_SUPPORTED.incognito,
-                amount: sellPDexAmount,
-              });
-            }
-            if (
-              isPairSupportedTradeOnUni &&
-              new BigNumber(sellUniAmount).isGreaterThan(0)
-            ) {
-              arrMinSellAmount.push({
-                id: KEYS_PLATFORMS_SUPPORTED.uni,
-                amount: sellUniAmount,
-              });
-            }
-            if (arrMinSellAmount.length > 0) {
-              const bestRate = findBestRateOfMinSellAmount(arrMinSellAmount);
-              platformIdHasBestRate = bestRate?.id;
-            }
-            break;
-          }
-          default:
-            break;
-          }
-          platformIdHasBestRate = KEYS_PLATFORMS_SUPPORTED[platformIdHasBestRate]
-            ? platformIdHasBestRate
-            : KEYS_PLATFORMS_SUPPORTED.incognito;
-          if (platformIdHasBestRate) {
-            await dispatch(actionSwitchPlatform(platformIdHasBestRate));
-          }
-        } catch (error) {
-          throw error;
-        }
-      };
-
 export const actionFindBestRateBetweenPlatforms =
-  ({ pDexData, pancakeData, params }) =>
+  ({ pDexData, pancakeData, uniData, params }) =>
     async (dispatch, getState) => {
       const { field } = params;
       const state = getState();
@@ -930,11 +850,18 @@ export const actionFindBestRateBetweenPlatforms =
         minSellOriginalAmount: sellPancakeAmount,
         maxBuyOriginalAmount: buyPancakeAmount,
       } = pancakeData;
+      const {
+        minSellOriginalAmount: sellUniAmount,
+        maxBuyOriginalAmount: buyUniAmount,
+      } = uniData;
       let platformIdHasBestRate;
       const isPairSupportedTradeOnPancake =
       isPairSupportedTradeOnPancakeSelector(state);
+      const isPairSupportedTradeOnUni =
+        isPairSupportedTradeOnUniSelector(state);
       console.log('pdexData', pDexData);
       console.log('pancakeData', pancakeData);
+      console.log('uniData', uniData);
       try {
         switch (field) {
         case formConfigs.selltoken: {
@@ -952,6 +879,15 @@ export const actionFindBestRateBetweenPlatforms =
             arrMaxBuyAmount.push({
               id: KEYS_PLATFORMS_SUPPORTED.pancake,
               amount: buyPancakeAmount,
+            });
+          }
+          if (
+            isPairSupportedTradeOnUni &&
+            new BigNumber(buyUniAmount).isGreaterThan(0)
+          ) {
+            arrMaxBuyAmount.push({
+              id: KEYS_PLATFORMS_SUPPORTED.uni,
+              amount: buyUniAmount,
             });
           }
           if (arrMaxBuyAmount.length > 0) {
@@ -975,6 +911,15 @@ export const actionFindBestRateBetweenPlatforms =
             arrMinSellAmount.push({
               id: KEYS_PLATFORMS_SUPPORTED.pancake,
               amount: sellPancakeAmount,
+            });
+          }
+          if (
+            isPairSupportedTradeOnUni &&
+            new BigNumber(sellUniAmount).isGreaterThan(0)
+          ) {
+            arrMinSellAmount.push({
+              id: KEYS_PLATFORMS_SUPPORTED.uni,
+              amount: sellUniAmount,
             });
           }
           if (arrMinSellAmount.length > 0) {
@@ -1073,47 +1018,21 @@ export const actionEstimateTrade =
         ) {
           return;
         }
-
-        const platform = platformSelectedSelector(state);
-
-        let task;
-        if (platform.id === KEYS_PLATFORMS_SUPPORTED.pancake) {
-          task = [
-            dispatch(actionEstimateTradeForPDex(payload)),
-            dispatch(actionEstimateTradeForPancake(payload)),
-          ];
-        }
-
-        if (platform.id === KEYS_PLATFORMS_SUPPORTED.uni) {
-          task = [
-            dispatch(actionEstimateTradeForPDex(payload)),
-            dispatch(actionEstimateTradeForUni(payload)),
-          ];
-        }
-        
-        const [pDexData, pancakeData] = await Promise.all(task);
-
-        if (platform.id === KEYS_PLATFORMS_SUPPORTED.pancake) {
-          await dispatch(
-            actionFindBestRateBetweenPlatforms({
-              pDexData,
-              pancakeData,
-              params,
-              payload,
-            }),
-          );
-        }
-
-        if (platform.id === KEYS_PLATFORMS_SUPPORTED.uni) {
-          await dispatch(
-            actionFindBestRateBetweenPlatformsUni({
-              pDexData,
-              uniData: pancakeData,
-              params,
-              payload,
-            }),
-          );
-        }
+        let task = [
+          dispatch(actionEstimateTradeForPDex(payload)),
+          dispatch(actionEstimateTradeForPancake(payload)),
+          dispatch(actionEstimateTradeForUni(payload)),
+        ];
+        const [pDexData, pancakeData, uniData] = await Promise.all(task);
+        await dispatch(
+          actionFindBestRateBetweenPlatforms({
+            pDexData,
+            pancakeData,
+            uniData,
+            params,
+            payload,
+          }),
+        );
         isFetched = true;
         state = getState();
         const { availableAmountText, availableOriginalAmount } =
@@ -1164,16 +1083,21 @@ export const actionFetchPairs = (refresh) => async (dispatch, getState) => {
     const defaultExchange = defaultExchangeSelector(state);
     const isPrivacyApp = isPrivacyAppSelector(state);
     if (!isPrivacyApp) {
-      [pDEXPairs, pancakeTokens] = await Promise.all([
+      [pDEXPairs, pancakeTokens, uniTokens] = await Promise.all([
         pDexV3Inst.getListPair(),
         pDexV3Inst.getPancakeTokens(),
+        pDexV3Inst.getUniTokens(),
       ]);
       pairs = pDEXPairs.reduce(
         (prev, current) =>
           (prev = prev.concat([current.tokenId1, current.tokenId2])),
         [],
       );
-      pairs = [...pairs, ...pancakeTokens.map((t) => t?.tokenID)];
+      pairs = [
+        ...pairs,
+        ...pancakeTokens.map((t) => t?.tokenID),
+        ...uniTokens.map((t) => t?.tokenID),
+      ];
       pairs = uniq(pairs);
     } else {
       switch (defaultExchange) {
