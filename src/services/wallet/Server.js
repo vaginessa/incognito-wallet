@@ -40,7 +40,7 @@ const MAIN_NET_SERVER = {
   IncContractAddress: '0x43D037A562099A4C2c95b1E2120cc43054450629',
   IncBSCContractAddress: '0x43D037A562099A4C2c95b1E2120cc43054450629',
   explorer: 'https://explorer.incognito.org',
-  tradeServices: 'https://api-coinservice.incognito.org',
+  tradeServices: 'http://51.161.119.66:9005',
   portalServices: 'https://api-portalv4.incognito.org',
   webviewChartServices: 'https://chart-webview.incognito.org',
   bscConfigs: BSC_CONSTANT.BSC_MAINNET_CONFIGS,

@@ -10,18 +10,16 @@ import { useFocusEffect, useNavigation } from 'react-navigation-hooks';
 import { actionFetch as actionFetchProfile } from '@screens/Profile';
 import withPin from '@components/pin.enhance';
 import KeepAwake from 'react-native-keep-awake';
-import { getInternalTokenList, getPTokenList } from '@src/redux/actions/token';
 import {
   actionLoadDefaultWallet,
   loadAllMasterKeyAccounts,
 } from '@src/redux/actions/masterKey';
-import { getBanners } from '@src/redux/actions/settings';
-import { actionFetchPairs } from '@screens/PDexV3/features/Swap';
 import { actionFetchListPools } from '@screens/PDexV3/features/Pools';
 import { requestUpdateMetrics } from '@src/redux/actions/app';
 import { ANALYTICS } from '@src/constants';
 import {actionFetch as actionFetchHomeConfigs} from '@screens/Home/Home.actions';
 import {actionCheckUnreadNews} from '@screens/News';
+import { actionFetchPairs } from '@screens/PDexV3/features/Swap';
 import withDetectStatusNetwork from './GetStarted.enhanceNetwork';
 import withWizard from './GetStarted.enhanceWizard';
 import withWelcome from './GetStarted.enhanceWelcome';
@@ -60,9 +58,8 @@ const enhance = (WrappedComp) => (props) => {
       login();
       batch(() => {
         dispatch(actionFetchProfile());
-        dispatch(getPTokenList());
-        dispatch(getInternalTokenList());
-        dispatch(getBanners());
+        // dispatch(getInternalTokenList());
+        // dispatch(getBanners());
         dispatch(requestUpdateMetrics(ANALYTICS.ANALYTIC_DATA_TYPE.OPEN_APP));
         dispatch(actionFetchListPools());
         dispatch(actionFetchPairs(true));
@@ -78,10 +75,14 @@ const enhance = (WrappedComp) => (props) => {
       await setError(getErrorMsg(error));
       throw error;
     }
-    await setLoading(false);
     console.timeEnd('CONFIGS_APP');
     if (!hasError) {
-      navigation.navigate(routeNames.MainTabBar);
+      setTimeout(() => {
+        setLoading(false);
+        navigation.navigate(routeNames.MainTabBar);
+      }, 2000);
+    } else {
+      setLoading(false);
     }
   };
 
