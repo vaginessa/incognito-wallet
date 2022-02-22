@@ -74,7 +74,7 @@ const MarketList = (props) => {
       showsVerticalScrollIndicator={false}
       style={styled.scrollView}
       refreshControl={
-        <RefreshControl refreshing={loading} onRefresh={onRefresh} />
+        <RefreshControl refreshing={loading || tokensFactories[0].length === 0} onRefresh={onRefresh} />
       }
     >
       {!keySearch && (

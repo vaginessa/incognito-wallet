@@ -26,6 +26,7 @@ import { PRV_ID } from '@src/screens/DexV2/constants';
 import { ExHandler } from '@src/services/exception';
 import { colorsSelector, themeModeSelector } from '@src/theme/theme.selector';
 import { THEME_KEYS } from '@src/theme/theme.consts';
+import useDebounceSelector from '@src/shared/hooks/debounceSelector';
 import withGenQRCode from './GenQRCode.enhance';
 import { styled } from './GenQRCode.styled';
 
@@ -70,7 +71,7 @@ const ShieldError = React.memo(({ handleShield, isPortalCompatible }) => {
 });
 
 const Extra = (props) => {
-  const { address, min, expiredAt, decentralized, isPortal } = useSelector(
+  const { address, min, expiredAt, decentralized, isPortal } = useDebounceSelector(
     shieldDataSelector,
   );
   const { selectedPrivacy, defaultFee, colors } = props;
@@ -264,17 +265,17 @@ const GenQRCode = (props) => {
     isPortalCompatible,
     data: shieldData,
   } = props;
-  const shieldDataBsc = useSelector(
+  const shieldDataBsc = useDebounceSelector(
     shieldDataBscSelector,
   );
-  const colors = useSelector(colorsSelector);
+  const colors = useDebounceSelector(colorsSelector);
   const { address } = shieldData || {};
   const [toggle, setToggle] = React.useState(true);
   const platforms = ['ETH', 'BSC'];
-  const selectedPrivacy = useSelector(selectedPrivacySelector.selectedPrivacy);
+  const selectedPrivacy = useDebounceSelector(selectedPrivacySelector.selectedPrivacy);
   const [selectedPlatform, setPlatform] = React.useState(0);
   const [selectingPlatform, setSelectingPlatform] = React.useState(0);
-  const account = useSelector(defaultAccountSelector);
+  const account = useDebounceSelector(defaultAccountSelector);
   const isPRV = selectedPrivacy?.tokenId === PRV_ID;
   const [defaultFee, setDefaultFee] = React.useState({
     estimateFee: 0,

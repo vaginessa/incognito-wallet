@@ -47,11 +47,11 @@ function getNetworkName() {
 
 function combineData(pData, incognitoData, defaultData) {
   if (this.isPToken) {
-    return pData;
+    return pData || incognitoData;
   }
 
   if (this.isIncognitoToken) {
-    return incognitoData;
+    return incognitoData || pData;
   }
 
   return defaultData;
@@ -79,7 +79,6 @@ function getIconUrl(chainTokenImageUri) {
 class SelectedPrivacy {
   constructor(account = {}, token = {}, pTokenData: PToken = {}, _tokenID) {
     const tokenId = pTokenData?.tokenId || token?.id;
-
     const isUnknown = _tokenID !== PRV_ID && !tokenId;
     const unknownText = 'Incognito Token';
 
@@ -185,7 +184,7 @@ class SelectedPrivacy {
     }
     this.amount = this.amount || 0;
     this.listChildToken = pTokenData?.listChildToken;
-    this.iconUrl = getIconUrl.call(this, token?.image);
+    this.iconUrl = getIconUrl.call(this, token?.image || pTokenData.image);
     this.change = pTokenData?.change;
     this.defaultPoolPair = pTokenData?.defaultPoolPair;
     this.defaultPairToken = pTokenData?.defaultPairToken;
