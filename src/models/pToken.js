@@ -27,6 +27,7 @@ class PToken {
     this.defaultPoolPair = data?.DefaultPoolPair;
     this.defaultPairToken = data?.DefaultPairToken;
     this.network = data?.Network;
+    this.image = data?.Image;
     const tokens =
       pTokens &&
       pTokens.filter(
