@@ -1437,11 +1437,12 @@ export const actionFetchHistory = () => async (dispatch, getState) => {
     const defaultExchange = defaultExchangeSelector(state);
     const isPrivacyApp = isPrivacyAppSelector(state);
     if (!isPrivacyApp) {
-      const [swapHistory, pancakeHistory] = await Promise.all([
+      const [swapHistory, pancakeHistory, uniHistory] = await Promise.all([
         pDexV3.getSwapHistory({ version: PrivacyVersion.ver2 }),
         pDexV3.getSwapPancakeHistory(),
+        pDexV3.getSwapUniHistory(),
       ]);
-      history = flatten([swapHistory, pancakeHistory]);
+      history = flatten([swapHistory, pancakeHistory, uniHistory]);
     } else {
       switch (defaultExchange) {
       case KEYS_PLATFORMS_SUPPORTED.pancake: {
