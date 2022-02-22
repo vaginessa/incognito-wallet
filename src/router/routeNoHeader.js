@@ -96,7 +96,10 @@ import ConvertTokenList from '@screens/Home/features/ConvertTokenList';
 import HistoryConvert from '@src/screens/Home/features/HistoryConvert';
 import HomePDexV3 from '@screens/PDexV3/features/Home';
 import { PoolsList, PoolsTab } from '@screens/PDexV3/features/Pools';
-import { OrdeSwapDetail } from '@screens/PDexV3/features/Swap';
+import {
+  OrdeSwapDetail,
+  SwapRewardHistoryDetail,
+} from '@screens/PDexV3/features/Swap';
 import Trade, {
   ReviewOrder,
   TradeOrderHistory,
@@ -321,6 +324,10 @@ const pDexV3Routes = [
     name: routeNames.OrdeSwapDetail,
   },
   {
+    screen: SwapRewardHistoryDetail,
+    name: routeNames.SwapRewardHistoryDetail,
+  },
+  {
     screen: PoolsTab,
     name: routeNames.PoolsTab,
   },
@@ -339,7 +346,7 @@ const pDexV3Routes = [
   {
     screen: HomeLP,
     name: routeNames.HomeLP,
-  }
+  },
 ];
 
 const homeRoutes = [
