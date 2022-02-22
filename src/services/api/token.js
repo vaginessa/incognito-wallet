@@ -9,6 +9,7 @@ import axios from 'axios';
 import { cachePromise, EXPIRED_TIME, KEYS } from '@services/cache';
 import http1 from '@services/http1';
 import PolygonToken from '@src/models/polygonToken';
+import uniq from 'lodash/uniq';
 
 let BEP2Tokens = [];
 
@@ -17,6 +18,11 @@ const getTokenListNoCache = () => {
     .get('coins/tokenlist')
     .then((res) => res.map((token) => new PToken(token, res)));
 };
+
+export const getTokensInfo = (tokenIDs = []) => {
+  return http1
+    .post('coins/tokeninfo', { TokenIDs: tokenIDs })
+    .then((res) => res.map((token) => new PToken(token, res)));};
 
 export const getTokenList = ({ expiredTime = EXPIRED_TIME } = {}) => {
   return cachePromise(KEYS.P_TOKEN, getTokenListNoCache, expiredTime);

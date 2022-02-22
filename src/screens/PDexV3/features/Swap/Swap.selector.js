@@ -512,14 +512,40 @@ export const feetokenDataSelector = createSelector(
             break;
           }
           case KEYS_PLATFORMS_SUPPORTED.uni: {
-            tradePathArr = tokenRoute;
+            let routes = feeDataByPlatform.route;
+            for (var i = 0; i < routes?.length; i++) {
+              let pathStr = '';
+              for (var j = 0; j < routes[i]?.length; j++) {
+                if(routes[i].length === 1) {
+                  pathStr =
+                    routes[i][0].tokenIn.symbol +  ' > ' + routes[i][0].tokenOut.symbol;
+                } else {
+                  if (routes[i][j] % 2 === 0) {
+                    pathStr =
+                      pathStr +
+                      routes[i][j].tokenIn.symbol +
+                      (j === routes[i].length - 1 ? '' : ' > ');
+                  } else {
+                    pathStr =
+                      pathStr +
+                      routes[i][j].tokenOut.symbol +
+                      (j === routes[i].length - 1 ? '' : ' > ');
+                  }
+                }
+                
+              }
+              tradePathArr.push({
+                pathStr,
+                percent: routes[i][0]?.percent,
+              });
+            }
             break;
           }
           default:
             break;
           }
         }
-        if (KEYS_PLATFORMS_SUPPORTED.uni) {
+        if (platformID === KEYS_PLATFORMS_SUPPORTED.uni) {
           tradePathStr = feeDataByPlatform.routerString;
         } else {
           tradePathStr = tradePathArr
@@ -568,6 +594,7 @@ export const feetokenDataSelector = createSelector(
         buyOriginalAmount,
         rateStr,
         tradePathStr,
+        tradePathArr,
         impactAmountStr,
       };
     } catch (error) {

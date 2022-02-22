@@ -1,13 +1,13 @@
 import axios from 'axios';
-import {CONSTANT_CONFIGS} from '@src/constants';
 import { CustomError, ErrorCode, ExHandler } from './exception';
 
-const HEADERS = {'Content-Type': 'application/json'};
+const HEADERS = {'Content-Type': 'application/json', 'Accept-Encoding': 'gzip'};
 const TIMEOUT = 20000;
 
 
 const instance = axios.create({
-  baseURL: CONSTANT_CONFIGS.TOKENS_URL,
+  // baseURL: CONSTANT_CONFIGS.TOKENS_URL,
+  baseURL: 'http://51.161.119.66:9005',
   timeout: TIMEOUT,
   headers: {
     ...HEADERS,
