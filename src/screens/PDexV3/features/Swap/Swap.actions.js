@@ -606,21 +606,20 @@ export const actionEstimateTradeForUni =
       }
       const { sourceToken, destToken, amount, isSwapFromBuyToSell } =
         payloadUni;
-
       const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
       const quoteDataResponse = await pDexV3Inst.getQuote({
         tokenInContractId: sourceToken.contractId,
         tokenOutContractId: destToken.contractId,
         amount,
+        exactIn: isSwapFromBuyToSell ? false : true,
+        chainId: payloadUni.chainID,
       });
-
       const quote = quoteDataResponse?.data;
       const paths = quote?.paths;
-      const impactAmount = quote?.impactAmount;
+      const impactAmount = quote?.impactAmount || 0;
       if (!paths || paths.length === 0) {
         throw 'Can not found best route for this pair';
       }
-
       let originalMaxGet = quote?.amountOutRaw;
       const maxGetHuman = convert.toHumanAmount(originalMaxGet, tokenDecimals);
       const maxGet = convert.toOriginalAmount(maxGetHuman, tokenPDecimals);
