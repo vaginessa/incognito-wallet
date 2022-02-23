@@ -1,8 +1,9 @@
 import React from 'react';
 import { StyleSheet } from 'react-native';
 import { withLayout_2 } from '@src/components/Layout';
-import { ScrollViewBorder } from '@components/core';
-import { PancakeIcon2 } from '@src/components/Icons';
+// import { ScrollViewBorder } from '@components/core';
+import { View } from '@src/components/core';
+import { PancakeIcon2, UniIcon } from '@src/components/Icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { FONT } from '@src/styles';
 import { KEYS_PLATFORMS_SUPPORTED } from '@screens/PDexV3/features/Swap';
@@ -15,14 +16,16 @@ import { useFocusEffect, useNavigation } from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
 import Header from '@src/components/Header';
 import { activedTabSelector, actionChangeTab } from '@src/components/core/Tabs';
+import { FlatList } from '@src/components/core/FlatList';
 import PrivacyAppsItem from './PrivacyApps.item';
 
 const styled = StyleSheet.create({
-  container: {
-    flex: 1,
+  flatListContainer: {
+    flexGrow: 1,
+    padding: 20
   },
-  scrollview: {
-    flex: 1,
+  itemSpace: {
+    height: 20,
   },
 });
 
@@ -34,6 +37,9 @@ const PrivacyApps = () => {
     switch (id) {
     case KEYS_PLATFORMS_SUPPORTED.pancake:
       navigation.navigate(routeNames.PrivacyAppsPancake);
+      break;
+    case KEYS_PLATFORMS_SUPPORTED.uni:
+      navigation.navigate(routeNames.PrivacyAppsUni);
       break;
     default:
       break;
@@ -59,6 +65,24 @@ const PrivacyApps = () => {
         desc: 'Trade anonymously on Binance Smart Chain’s leading DEX. Deep liquidity and super low fees – now with privacy.',
         onPressItem,
       },
+      {
+        privacyAppId: KEYS_PLATFORMS_SUPPORTED.uni,
+        icon: <UniIcon />,
+        headerTitle: 'pUniswap',
+        headerSub: 'Private Uniswap',
+        groupActions: [
+          {
+            id: 'POLYGON',
+            title: 'Polygon',
+          },
+          {
+            id: 'DEX',
+            title: 'DEX',
+          },
+        ],
+        desc: 'Trade anonymously on Polygon’s leading DEX. Deep liquidity and super low fees – now with privacy.',
+        onPressItem,
+      },
     ];
   }, []);
   useFocusEffect(() => {
@@ -69,6 +93,14 @@ const PrivacyApps = () => {
       );
     }
   });
+
+  const renderItem = ({ item }) => {
+    return <PrivacyAppsItem {...item} />;
+  };
+
+  const renderItemSeparatorComponent = () => {
+    return <View style={styled.itemSpace} />;
+  };
   return (
     <>
       <Header
@@ -76,11 +108,15 @@ const PrivacyApps = () => {
         titleStyled={[{ ...FONT.TEXT.incognitoH4 }]}
         hideBackButton
       />
-      <ScrollViewBorder style={styled.scrollview}>
-        {factories.map((item) => (
-          <PrivacyAppsItem key={item.id} {...item} />
-        ))}
-      </ScrollViewBorder>
+      <View borderTop fullFlex>
+        <FlatList
+          data={factories}
+          keyExtractor={(item) => item?.id?.toString()}
+          renderItem={renderItem}
+          ItemSeparatorComponent={renderItemSeparatorComponent}
+          contentContainerStyle={styled.flatListContainer}
+        />
+      </View>
     </>
   );
 };

@@ -31,15 +31,17 @@ const GroupSubInfo = () => {
         >
           <History />
         </View>
-        {navigation?.state?.routeName === routeNames.PrivacyAppsPancake ? (
-          <View tabID={TAB_REWARD_HISTORY_ID} label="Reward history">
-            <RewardHistory />
-          </View>
-        ) : (
-          <View tabID="" label="">
-            <View />
-          </View>
-        )}
+        {(navigation?.state?.routeName === routeNames.PrivacyAppsPancake ||
+        navigation?.state?.routeName === routeNames.PrivacyAppsUni) ? (
+            // eslint-disable-next-line react/jsx-indent
+            <View tabID={TAB_REWARD_HISTORY_ID} label="Reward history">
+              <RewardHistory />
+            </View>
+          ) : (
+            <View tabID="" label="">
+              <View />
+            </View>
+          )}
       </Tabs>
     </View>
   );

@@ -4,6 +4,7 @@ import {
   PANCAKE_CONSTANTS,
   WEB3_CONSTANT,
   BSC_CONSTANT,
+  UNI_CONSTANTS,
 } from 'incognito-chain-web-js/build/wallet';
 
 export const MAINNET_FULLNODE = 'https://lb-fullnode.incognito.org/fullnode';
@@ -45,6 +46,7 @@ const MAIN_NET_SERVER = {
   webviewChartServices: 'https://chart-webview.incognito.org',
   bscConfigs: BSC_CONSTANT.BSC_MAINNET_CONFIGS,
   pancakeConfigs: PANCAKE_CONSTANTS.PANCAKE_MAINNET_CONFIGS,
+  uniConfigs: UNI_CONSTANTS.UNI_MAINNET_CONFIGS,
   web3Configs: WEB3_CONSTANT.WEB3_MAINNET_CONFIGS,
 };
 const BETA_SERVER = {
@@ -67,6 +69,7 @@ const BETA_SERVER = {
   webviewChartServices: 'https://chart-webview.incognito.org',
   bscConfigs: BSC_CONSTANT.BSC_MAINNET_CONFIGS,
   pancakeConfigs: PANCAKE_CONSTANTS.PANCAKE_MAINNET_CONFIGS,
+  uniConfigs: UNI_CONSTANTS.UNI_MAINNET_CONFIGS,
   web3Configs: WEB3_CONSTANT.WEB3_MAINNET_CONFIGS,
 };
 const TEST_NET_SERVER = {
@@ -89,6 +92,7 @@ const TEST_NET_SERVER = {
   webviewChartServices: 'https://chart-webview-staging.incognito.org',
   bscConfigs: BSC_CONSTANT.BSC_TESTNET_CONFIGS,
   pancakeConfigs: PANCAKE_CONSTANTS.PANCAKE_TESTNET_CONFIGS,
+  uniConfigs: UNI_CONSTANTS.UNI_TESTNET_CONFIGS,
   web3Configs: WEB3_CONSTANT.WEB3_TESTNET_CONFIGS,
 };
 
@@ -140,6 +144,7 @@ export const DEV_TEST_SERVER = {
   webviewChartServices: 'https://chart-webview-staging.incognito.org',
   bscConfigs: BSC_CONSTANT.BSC_TESTNET_CONFIGS,
   pancakeConfigs: PANCAKE_CONSTANTS.PANCAKE_TESTNET_CONFIGS,
+  uniConfigs: UNI_CONSTANTS.UNI_TESTNET_CONFIGS,
   web3Configs: WEB3_CONSTANT.WEB3_TESTNET_CONFIGS,
 };
 
@@ -247,6 +252,7 @@ export default class Server {
               bscConfigs: server?.bscConfigs || '',
               web3Configs: server?.web3Configs || '',
               pancakeConfigs: server?.pancakeConfigs || '',
+              uniConfigs: server?.uniConfigs || '',
             };
           }
         }

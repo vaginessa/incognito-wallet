@@ -101,7 +101,7 @@ const RewardHistoryItem = React.memo(({ data }) => {
 const RewardHistory = () => {
   const { isFetching } = useSelector(swapHistorySelector);
   const rewardHistories = useSelector(
-    (state) => state.pDexV3.swap.pancakeRewardHistories,
+    (state) => state.pDexV3.swap.rewardHistories,
   );
   return (
     <View style={styled.container}>

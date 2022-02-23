@@ -90,6 +90,13 @@ export const SelectItem = React.memo(
         />
       );
       break;
+    case KEYS_PLATFORMS_SUPPORTED.uni:
+      icon = (
+        <PancakeIcon
+          style={!isSelectItem ? styled.selectedIcon : styled.icon}
+        />
+      );
+      break;
     default:
       break;
     }
