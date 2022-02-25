@@ -139,7 +139,7 @@ export const enhanceAddressValidation = (WrappedComp) => (props) => {
   };
 
   const getWarningAddress = () => {
-    if (isExternalAddress && selectedPrivacy.isDecentralized) {
+    if (isExternalAddress && (selectedPrivacy.isDecentralized || selectedPrivacy.isMainCrypto)) {
       return 'To avoid loss of funds, please make sure your destination address can receive funds from smart contracts. If you’re not sure, a personal address is always recommended.';
     }
     if (isExternalAddress && isERC20) {
