@@ -804,6 +804,7 @@ export const mappingOrderHistorySelector = createSelector(
         feeToken: feeTokenId,
         fromStorage,
         price,
+        amountOut,
         statusCode,
       } = order;
       let statusStr = capitalize(status);
@@ -823,9 +824,9 @@ export const mappingOrderHistorySelector = createSelector(
       const buyToken: SelectedPrivacy = getPrivacyDataByTokenID(buyTokenId);
       const feeToken: SelectedPrivacy = getPrivacyDataByTokenID(feeTokenId);
       const amountStr = format.amountVer2(amount, sellToken.pDecimals);
-      const priceStr = format.amountVer2(price, buyToken.pDecimals);
+      const buyAmountStr = format.amountVer2(amountOut, buyToken.pDecimals);
       const sellStr = `${amountStr} ${sellToken.symbol}`;
-      const buyStr = `${priceStr} ${buyToken.symbol}`;
+      const buyStr = `${buyAmountStr} ${buyToken.symbol}`;
       const timeStr = format.formatDateTime(requestime, 'DD MMM HH:mm');
       const rate = getPairRate({
         token1Value: amount,
