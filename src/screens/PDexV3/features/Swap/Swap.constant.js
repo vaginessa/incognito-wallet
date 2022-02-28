@@ -84,14 +84,14 @@ export const PLATFORMS_SUPPORTED = [
   },
   {
     id: KEYS_PLATFORMS_SUPPORTED.pancake,
-    title: 'Pancake',
+    title: 'PancakeSwap',
     desc: '',
     visible: true,
     isSelected: false,
   },
   {
     id: KEYS_PLATFORMS_SUPPORTED.uni,
-    title: 'Uni',
+    title: 'Uniswap',
     desc: '',
     visible: true,
     isSelected: false,
