@@ -659,7 +659,7 @@ export const actionEstimateTradeForCurve =
         tokenOutContractId: destToken.contractId,
         amount,
       });
-      const paths = [quote?.tokenIn, quote?.tokenOut];
+      const paths = [sourceToken.contractId, destToken.contractId];
       const impactAmount = quote?.impactAmount || 0;
       
       let originalMaxGet = quote?.amountOutRaw;
