@@ -676,17 +676,15 @@ export const actionEstimateTradeForCurve =
       const { sourceToken, destToken, amount } =
         payloadCurve;
       const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
-      const quote = await pDexV3Inst.getQuote({
+      const quote = await pDexV3Inst.getQuoteCurve({
         tokenInContractId: sourceToken.contractId,
         tokenOutContractId: destToken.contractId,
         amount,
       });
-      const paths = [];
+      const paths = [quote?.tokenIn, quote?.tokenOut];
 
       const impactAmount = quote?.impactAmount || 0;
-      // if (!paths || paths.length === 0) {
-      //   throw 'Can not found best route for this pair';
-      // }
+      
       let originalMaxGet = quote?.amountOutRaw;
       const maxGetHuman = convert.toHumanAmount(originalMaxGet, tokenDecimals);
       const maxGet = convert.toOriginalAmount(maxGetHuman, tokenPDecimals);
@@ -1662,12 +1660,8 @@ export const actionFetchSwap = () => async (dispatch, getState) => {
           tradeID,
           srcTokenID: tokenSellCurve?.tokenID,
           destTokenID: tokenBuyCurve?.tokenID,
-          paths: tradePath.join(','),
           srcQties: String(sellAmount),
           expectedDestAmt: String(minAcceptableAmount),
-          isNative:
-              tokenBuyCurve?.contractId ===
-              '0x0000000000000000000000000000000000000000',
         },
       });
       tx = response;
