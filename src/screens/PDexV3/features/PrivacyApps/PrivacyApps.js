@@ -93,15 +93,15 @@ const PrivacyApps = () => {
         headerSub: 'Private Curve',
         groupActions: [
           {
-            id: 'Ethereum',
-            title: 'Ethereum',
+            id: 'POLYGON',
+            title: 'Polygon',
           },
           {
             id: 'DEX',
             title: 'DEX',
           },
         ],
-        desc: 'Trade anonymously on Ethereum leading DEX. Deep liquidity and super low fees – now with privacy.',
+        desc: 'Trade anonymously on Polygon’s leading DEX. Deep liquidity and super low fees – now with privacy.',
         onPressItem,
       },
     ];

@@ -639,42 +639,20 @@ export const actionEstimateTradeForCurve =
     try {
       const { selltoken, buytoken, sellamount, buyamount } = payload;
       const isPairSup = isPairSupportedTradeOnCurveSelector(state);
-      const { field } = feetokenDataSelector(state);
       const getCurveTokenParamReq = findTokenCurveByIdSelector(state);
       const tokenSellCurve = getCurveTokenParamReq(selltoken);
       const tokenBuyCurve = getCurveTokenParamReq(buytoken);
       if (!isPairSup) {
         throw 'This pair is not existed on curve';
       }
-      let tokenDecimals, tokenPDecimals;
+
       let payloadCurve = {
         sourceToken: tokenSellCurve,
         destToken: tokenBuyCurve,
+        amount: convert.toHumanAmount(sellamount, tokenSellCurve.pDecimals)
       };
-      switch (field) {
-      case formConfigs.selltoken: {
-        payloadCurve.amount = convert.toHumanAmount(
-          sellamount,
-          tokenSellCurve.pDecimals,
-        );
-        tokenDecimals = tokenBuyCurve.decimals;
-        tokenPDecimals = tokenBuyCurve.pDecimals;
-        break;
-      }
-      case formConfigs.buytoken: {
-        payloadCurve.amount = convert.toHumanAmount(
-          buyamount,
-          tokenBuyCurve.pDecimals,
-        );
-        tokenDecimals = tokenSellCurve.decimals;
-        tokenPDecimals = tokenSellCurve.pDecimals;
-        break;
-      }
-      default:
-        break;
-      }
-      const { sourceToken, destToken, amount } =
-        payloadCurve;
+       
+      const { sourceToken, destToken, amount } = payloadCurve;
       const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
       const quote = await pDexV3Inst.getQuoteCurve({
         tokenInContractId: sourceToken.contractId,
@@ -682,10 +660,12 @@ export const actionEstimateTradeForCurve =
         amount,
       });
       const paths = [quote?.tokenIn, quote?.tokenOut];
-
       const impactAmount = quote?.impactAmount || 0;
       
       let originalMaxGet = quote?.amountOutRaw;
+
+      const tokenDecimals = tokenBuyCurve.decimals;
+      const tokenPDecimals = tokenBuyCurve.pDecimals;
       const maxGetHuman = convert.toHumanAmount(originalMaxGet, tokenDecimals);
       const maxGet = convert.toOriginalAmount(maxGetHuman, tokenPDecimals);
       // only PRV
@@ -698,23 +678,9 @@ export const actionEstimateTradeForCurve =
         throw 'Can not estimate trading fee';
       }
       const { feeAddress, tradeID, signAddress, originalTradeFee } = tradingFee;
-      let sellAmount = 0;
-      switch (field) {
-      case formConfigs.selltoken: {
-        minSellOriginalAmount = sellamount;
-        maxBuyOriginalAmount = maxGet;
-        sellAmount = sellamount;
-        break;
-      }
-      case formConfigs.buytoken: {
-        minSellOriginalAmount = maxGet;
-        maxBuyOriginalAmount = buyamount;
-        sellAmount = maxGet;
-        break;
-      }
-      default:
-        break;
-      }
+      minSellOriginalAmount = sellamount;
+      maxBuyOriginalAmount = maxGet;
+      
       await dispatch(
         actionChangeEstimateData({
           [KEYS_PLATFORMS_SUPPORTED.curve]: {
@@ -723,12 +689,14 @@ export const actionEstimateTradeForCurve =
               isSignificant: false,
               maxGet,
               route: paths,
-              sellAmount,
+              sellAmount: sellamount,
+              buyAmount: maxGet,
               impactAmount,
               tokenRoute: paths,
             },
             feeToken: {
-              sellAmount,
+              sellAmount: sellamount,
+              buyAmount: maxGet,
               fee: 0,
               isSignificant: false,
               maxGet,
@@ -988,20 +956,17 @@ export const actionEstimateTradeForPancake =
       }
       const { feeAddress, tradeID, signAddress, originalTradeFee } = tradingFee;
       let sellAmount = 0;
-      let buyAmount = 0;
       switch (field) {
       case formConfigs.selltoken: {
         minSellOriginalAmount = sellamount;
         maxBuyOriginalAmount = maxGet;
         sellAmount = sellamount;
-        buyAmount = maxGet;
         break;
       }
       case formConfigs.buytoken: {
         minSellOriginalAmount = maxGet;
         maxBuyOriginalAmount = buyamount;
         sellAmount = maxGet;
-        buyAmount = buyamount;
         break;
       }
       default:
@@ -1016,13 +981,11 @@ export const actionEstimateTradeForPancake =
               maxGet,
               route: paths,
               sellAmount,
-              buyAmount,
               impactAmount,
               tokenRoute: paths,
             },
             feeToken: {
               sellAmount,
-              buyAmount,
               fee: 0,
               isSignificant: false,
               maxGet,
