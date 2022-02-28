@@ -31,9 +31,10 @@ const GroupSubInfo = () => {
         >
           <History />
         </View>
-        {(navigation?.state?.routeName === routeNames.PrivacyAppsPancake ||
-        navigation?.state?.routeName === routeNames.PrivacyAppsUni) ? (
-            // eslint-disable-next-line react/jsx-indent
+        {navigation?.state?.routeName === routeNames.PrivacyAppsPancake ||
+        navigation?.state?.routeName === routeNames.PrivacyAppsUni ||
+        navigation?.state?.routeName === routeNames.PrivacyAppsCurve ? (
+          // eslint-disable-next-line react/jsx-indent
             <View tabID={TAB_REWARD_HISTORY_ID} label="Reward history">
               <RewardHistory />
             </View>

@@ -71,7 +71,8 @@ export const formConfigs = {
 export const KEYS_PLATFORMS_SUPPORTED = {
   incognito: 'incognito',
   pancake: 'pancake',
-  uni: 'uni'
+  uni: 'uni',
+  curve: 'curve',
 };
 
 export const PLATFORMS_SUPPORTED = [
@@ -92,6 +93,13 @@ export const PLATFORMS_SUPPORTED = [
   {
     id: KEYS_PLATFORMS_SUPPORTED.uni,
     title: 'Uni',
+    desc: '',
+    visible: true,
+    isSelected: false,
+  },
+  {
+    id: KEYS_PLATFORMS_SUPPORTED.curve,
+    title: 'Curve',
     desc: '',
     visible: true,
     isSelected: false,

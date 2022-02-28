@@ -41,6 +41,9 @@ const PrivacyApps = () => {
     case KEYS_PLATFORMS_SUPPORTED.uni:
       navigation.navigate(routeNames.PrivacyAppsUni);
       break;
+    case KEYS_PLATFORMS_SUPPORTED.curve:
+      navigation.navigate(routeNames.PrivacyAppsCurve);
+      break;
     default:
       break;
     }
@@ -81,6 +84,24 @@ const PrivacyApps = () => {
           },
         ],
         desc: 'Trade anonymously on Polygon’s leading DEX. Deep liquidity and super low fees – now with privacy.',
+        onPressItem,
+      },
+      {
+        privacyAppId: KEYS_PLATFORMS_SUPPORTED.curve,
+        icon: <UniIcon />,
+        headerTitle: 'pCurve',
+        headerSub: 'Private Curve',
+        groupActions: [
+          {
+            id: 'Ethereum',
+            title: 'Ethereum',
+          },
+          {
+            id: 'DEX',
+            title: 'DEX',
+          },
+        ],
+        desc: 'Trade anonymously on Ethereum leading DEX. Deep liquidity and super low fees – now with privacy.',
         onPressItem,
       },
     ];

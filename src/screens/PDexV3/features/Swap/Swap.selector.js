@@ -56,6 +56,11 @@ export const uniPairsSelector = createSelector(
   ({ uniTokens }) => uniTokens,
 );
 
+export const curvePairsSelector = createSelector(
+  swapSelector,
+  ({ curveTokens }) => curveTokens,
+);
+
 export const findTokenPancakeByIdSelector = createSelector(
   pancakePairsSelector,
   (pancakeTokens) =>
@@ -64,6 +69,12 @@ export const findTokenPancakeByIdSelector = createSelector(
 
 export const findTokenUniByIdSelector = createSelector(uniPairsSelector, (uniTokens) =>
   memoize((tokenID) => uniTokens.find((t) => t?.tokenID === tokenID)),
+);
+
+export const findTokenCurveByIdSelector = createSelector(
+  curvePairsSelector,
+  (curveTokens) =>
+    memoize((tokenID) => curveTokens.find((t) => t?.tokenID === tokenID)),
 );
 
 export const hashmapContractIDsSelector = createSelector(
@@ -141,7 +152,7 @@ export const listPairsSelector = createSelector(
   swapSelector,
   getPrivacyDataByTokenIDSelector,
   (
-    { pairs, isPrivacyApp, defaultExchange, pancakeTokens, uniTokens },
+    { pairs, isPrivacyApp, defaultExchange, pancakeTokens, uniTokens, curveTokens },
     getPrivacyDataByTokenID,
   ) => {
     if (!pairs) {
@@ -173,6 +184,24 @@ export const listPairsSelector = createSelector(
         list = list.map((token: SelectedPrivacy) => {
           let { priority, isVerified } = token;
           const foundedToken = uniTokens.find(
+            (pt) => pt?.tokenID === token?.tokenId,
+          );
+          if (foundedToken) {
+            priority = foundedToken?.priority;
+            isVerified = foundedToken?.verify;
+          }
+          return {
+            ...token,
+            isVerified,
+            priority,
+          };
+        });
+        break;
+      }
+      case KEYS_PLATFORMS_SUPPORTED.curve: {
+        list = list.map((token: SelectedPrivacy) => {
+          let { priority, isVerified } = token;
+          const foundedToken = curveTokens.find(
             (pt) => pt?.tokenID === token?.tokenId,
           );
           if (foundedToken) {
@@ -288,6 +317,30 @@ export const isPairSupportedTradeOnUniSelector = createSelector(
   },
 );
 
+export const isPairSupportedTradeOnCurveSelector = createSelector(
+  findTokenCurveByIdSelector,
+  selltokenSelector,
+  buytokenSelector,
+  (
+    getCurveTokenParamReq,
+    sellToken: SelectedPrivacy,
+    buyToken: SelectedPrivacy,
+  ) => {
+    let isSupported = false;
+    try {
+      const tokenSellCurve = getCurveTokenParamReq(sellToken.tokenId);
+      const tokenBuyCurve = getCurveTokenParamReq(buyToken.tokenId);
+      if (!!tokenSellCurve && !!tokenBuyCurve) {
+        isSupported = true;
+      }
+    } catch (error) {
+      //
+      console.log('platformsSupportedSelector-error', error);
+    }
+    return isSupported;
+  },
+);
+
 // platform supported
 export const platformsSelector = createSelector(
   swapSelector,
@@ -304,11 +357,13 @@ export const platformsSupportedSelector = createSelector(
   platformsVisibleSelector,
   isPairSupportedTradeOnPancakeSelector,
   isPairSupportedTradeOnUniSelector,
+  isPairSupportedTradeOnCurveSelector,
   (
     { data },
     platforms,
     isPairSupportedTradeOnPancake,
     isPairSupportedTradeOnUni,
+    isPairSupportedTradeOnCurve,
   ) => {
     let _platforms = [...platforms];
     try {
@@ -320,6 +375,11 @@ export const platformsSupportedSelector = createSelector(
       if (!isPairSupportedTradeOnUni) {
         _platforms = _platforms.filter(
           (platform) => platform.id !== KEYS_PLATFORMS_SUPPORTED.uni,
+        );
+      }
+      if (!isPairSupportedTradeOnCurve) {
+        _platforms = _platforms.filter(
+          (platform) => platform.id !== KEYS_PLATFORMS_SUPPORTED.curve,
         );
       }
       _platforms = _platforms.filter(({ id: platformId }) => {
@@ -667,6 +727,9 @@ export const feeTypesSelector = createSelector(
       break;
     }
     case KEYS_PLATFORMS_SUPPORTED.uni: {
+      break;
+    }
+    case KEYS_PLATFORMS_SUPPORTED.curve: {
       break;
     }
     default:
