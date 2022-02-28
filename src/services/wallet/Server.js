@@ -79,7 +79,7 @@ const TEST_NET_SERVER = {
   username: '',
   password: '',
   name: 'Testnet',
-  coinServices: 'http://51.89.21.38:8096',
+  coinServices: 'http://api-coinservice-staging.incognito.org',
   pubsubServices: 'http://51.89.21.38:8096/txservice',
   requestServices: 'http://51.89.21.38:8096',
   apiServices: 'https://staging-api-service.incognito.org',
