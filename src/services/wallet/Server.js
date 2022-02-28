@@ -52,7 +52,7 @@ const MAIN_NET_SERVER = {
 const BETA_SERVER = {
   id: 'beta',
   default: false,
-  address: MAINNET_FULLNODE,
+  address: 'http://51.161.119.66:9005',
   username: '',
   password: '',
   name: 'Beta',
