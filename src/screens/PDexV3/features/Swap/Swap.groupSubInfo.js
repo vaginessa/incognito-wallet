@@ -34,7 +34,7 @@ const GroupSubInfo = () => {
         {(navigation?.state?.routeName === routeNames.PrivacyAppsPancake ||
         navigation?.state?.routeName === routeNames.PrivacyAppsUni) ? (
             // eslint-disable-next-line react/jsx-indent
-            <View tabID={TAB_REWARD_HISTORY_ID} label="Reward history">
+            <View tabID={TAB_REWARD_HISTORY_ID} label="Trading rewards">
               <RewardHistory />
             </View>
           ) : (
