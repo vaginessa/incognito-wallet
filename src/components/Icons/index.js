@@ -99,3 +99,4 @@ export { default as RatioIcon } from './icon.ratio';
 export { default as TradeIconSuccess } from './icon.tradeSuccess';
 export { default as CancelIcon } from './icon.cancel';
 export { default as UniIcon } from './icon.uni';
+export { default as UniIcon2 } from './icon.uni2';
