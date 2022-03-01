@@ -3,7 +3,10 @@ import isNaN from 'lodash/isNaN';
 import toLower from 'lodash/toLower';
 import { getPrivacyDataByTokenID as getPrivacyDataByTokenIDSelector } from '@src/redux/selectors/selectedPrivacy';
 import format from '@src/utils/format';
-import { ACCOUNT_CONSTANT } from 'incognito-chain-web-js/build/wallet';
+import {
+  ACCOUNT_CONSTANT,
+  EXCHANGE_SUPPORTED,
+} from 'incognito-chain-web-js/build/wallet';
 import capitalize from 'lodash/capitalize';
 import { formValueSelector, isValid, getFormSyncErrors } from 'redux-form';
 import convert from '@src/utils/convert';
@@ -806,6 +809,8 @@ export const mappingOrderHistorySelector = createSelector(
         fromStorage,
         amountOut,
         statusCode,
+        minAccept,
+        exchange
       } = order;
       let statusStr = capitalize(status);
       if (fromStorage) {
@@ -819,6 +824,9 @@ export const mappingOrderHistorySelector = createSelector(
           statusStr = 'Processing';
           break;
         }
+      }
+      if (exchange === EXCHANGE_SUPPORTED.incognito) {
+        amountOut = minAccept;
       }
       const sellToken: SelectedPrivacy = getPrivacyDataByTokenID(sellTokenId);
       const buyToken: SelectedPrivacy = getPrivacyDataByTokenID(buyTokenId);
