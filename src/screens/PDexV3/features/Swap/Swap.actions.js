@@ -634,17 +634,20 @@ export const actionEstimateTradeForUni =
       }
       const { feeAddress, tradeID, signAddress, originalTradeFee } = tradingFee;
       let sellAmount = 0;
+      let buyAmount = 0;
       switch (field) {
       case formConfigs.selltoken: {
         minSellOriginalAmount = sellamount;
         maxBuyOriginalAmount = maxGet;
         sellAmount = sellamount;
+        buyAmount = maxGet;
         break;
       }
       case formConfigs.buytoken: {
         minSellOriginalAmount = maxGet;
         maxBuyOriginalAmount = buyamount;
         sellAmount = maxGet;
+        buyAmount = buyamount;
         break;
       }
       default:
@@ -659,11 +662,13 @@ export const actionEstimateTradeForUni =
               maxGet,
               route: paths,
               sellAmount,
+              buyAmount,
               impactAmount,
               tokenRoute: paths,
             },
             feeToken: {
               sellAmount,
+              buyAmount,
               fee: 0,
               isSignificant: false,
               maxGet,

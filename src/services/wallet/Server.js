@@ -80,7 +80,7 @@ const TEST_NET_SERVER = {
   password: '',
   name: 'Testnet',
   coinServices: 'http://51.89.21.38:8096',
-  pubsubServices: 'http://51.89.21.38:9096/txservice',
+  pubsubServices: 'http://51.89.21.38:9096',
   requestServices: 'http://51.89.21.38:8096',
   apiServices: 'https://staging-api-service.incognito.org',
   shardNumber: DEFAULT_SHARD_NUMBER,
