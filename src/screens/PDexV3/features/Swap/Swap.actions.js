@@ -1449,7 +1449,7 @@ export const actionFetchHistory = () => async (dispatch, getState) => {
       const [swapHistory, pancakeHistory, uniHistory] = await Promise.all([
         pDexV3.getSwapHistory({ version: PrivacyVersion.ver2 }),
         pDexV3.getSwapPancakeHistory(),
-        pDexV3.getSwapUniHistory(),
+        pDexV3.getSwapUniHistoryFromApi(),
       ]);
       history = flatten([swapHistory, pancakeHistory, uniHistory]);
     } else {
