@@ -39,6 +39,7 @@ import {
   ACTION_FETCHING_REWARD_HISTORY,
   ACTION_FETCHED_REWARD_HISTORY,
   ACTION_FETCH_FAIL_REWARD_HISTORY,
+  ACTION_RESET_DATA,
 } from './Swap.constant';
 
 const initialState = {
@@ -273,6 +274,12 @@ const reducer = (state = initialState, action) => {
   }
   case ACTION_RESET: {
     return Object.assign({}, { ...initialState, slippage: state.slippage });
+  }
+  case ACTION_RESET_DATA: {
+    return {
+      ...state,
+      data: Object.assign({}, initialState.data),
+    };
   }
   case ACTION_FETCHING: {
     return {
