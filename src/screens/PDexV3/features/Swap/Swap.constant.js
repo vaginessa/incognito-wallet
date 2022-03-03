@@ -52,6 +52,8 @@ export const ACTION_FETCHING_REWARD_HISTORY = '[pDexV3][swap] Fetching reward hi
 export const ACTION_FETCHED_REWARD_HISTORY = '[pDexV3][swap] Fetched reward history';
 export const ACTION_FETCH_FAIL_REWARD_HISTORY ='[pDexV3][swap] Fetch fail reward history';
 
+export const ACTION_RESET_DATA ='[pDexV3][swap] Reset data';
+
 export const TAB_SIMPLE_ID = '[swap] simple';
 export const TAB_PRO_ID = '[swap] pro';
 export const ROOT_TAB_ID = 'ROOT_TAB_SWAP';

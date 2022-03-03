@@ -9,7 +9,9 @@ import { useSearchBox } from '@src/components/Header';
 import { withLayout_2 } from '@src/components/Layout';
 import { useNavigation, useNavigationParam } from 'react-navigation-hooks';
 import { delay } from '@src/utils/delay';
+import { useDispatch } from 'react-redux';
 import { ListAllTokenSelectable } from './SelectToken';
+import { actionResetData } from '../Swap/Swap.actions';
 
 const styled = StyleSheet.create({
   container: { flex: 1 },
@@ -28,6 +30,7 @@ const styled = StyleSheet.create({
 const SelectTokenModal = () => {
   const data = useNavigationParam('data');
   const onPress = useNavigationParam('onPress');
+  const dispatch = useDispatch();
   const [availableTokens, keySearch] = useSearchBox({
     data,
     shouldCleanSearch: false,
@@ -49,6 +52,7 @@ const SelectTokenModal = () => {
             <TokenTrade
               onPress={async () => {
                 goBack();
+                dispatch(actionResetData());
                 await delay(0);
                 if (typeof onPress === 'function') {
                   onPress(item);

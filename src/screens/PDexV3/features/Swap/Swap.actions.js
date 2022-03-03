@@ -58,6 +58,7 @@ import {
   ACTION_FETCHING_REWARD_HISTORY,
   ACTION_FETCHED_REWARD_HISTORY,
   ACTION_FETCH_FAIL_REWARD_HISTORY,
+  ACTION_RESET_DATA
 } from './Swap.constant';
 import {
   buytokenSelector,
@@ -168,6 +169,11 @@ export const actionFetchFail = () => ({
 
 export const actionReset = (payload) => ({
   type: ACTION_RESET,
+  payload,
+});
+
+export const actionResetData = (payload) => ({
+  type: ACTION_RESET_DATA,
   payload,
 });
 
@@ -1459,7 +1465,7 @@ export const actionFetchHistory = () => async (dispatch, getState) => {
         break;
       }
       case KEYS_PLATFORMS_SUPPORTED.uni: {
-        history = await pDexV3.getSwapUniHistory();
+        history = await pDexV3.getSwapUniHistoryFromApi();
         break;
       }
       default:
