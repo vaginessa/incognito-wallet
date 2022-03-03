@@ -623,7 +623,7 @@ export const actionEstimateTradeForUni =
       const quote = quoteDataResponse?.data;
       const paths = quote?.paths;
       const impactAmount = quote?.impactAmount || 0;
-      if (!paths || paths.length === 0) {
+      if (!quote || !paths || paths.length === 0) {
         throw 'Can not found best route for this pair';
       }
       let originalMaxGet = quote?.amountOutRaw;
@@ -692,6 +692,7 @@ export const actionEstimateTradeForUni =
       );
     } catch (error) {
       console.log('ERROR-actionEstimateTradeForUni', error);
+      new ExHandler(error).showErrorToast();
       dispatch(
         actionSetError({ platformId: KEYS_PLATFORMS_SUPPORTED.uni, error }),
       );
