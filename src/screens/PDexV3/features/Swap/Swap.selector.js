@@ -520,7 +520,7 @@ export const feetokenDataSelector = createSelector(
       const tokenRoute = payFeeByPRV ? tokenRoutePRV : tokenRouteToken;
       const impactAmount = payFeeByPRV ? impactAmountPRV : impactAmountToken;
       const impactOriginalAmount = convert.toOriginalAmount(impactAmount, 2);
-      const impactAmountStr = format.amountVer2(impactOriginalAmount, 2);
+      let impactAmountStr = format.amountVer2(impactOriginalAmount, 2);
       maxGet = payFeeByPRV ? maxGetPRV : maxGetToken;
       const sellOriginalAmount = payFeeByPRV ? sellAmountPRV : sellAmountToken;
       const buyOriginalAmount = calMintAmountExpected({
@@ -530,9 +530,31 @@ export const feetokenDataSelector = createSelector(
       const rateStr = getExchangeRate(
         sellTokenData,
         buyTokenData,
-        sellOriginalAmount,
-        buyOriginalAmount,
+        sellAmountToken,
+        buyAmountToken,
       );
+
+      if(platformID === KEYS_PLATFORMS_SUPPORTED.uni) {
+        // Calculate price impact for pUniswap
+        const sellTokenPriceUSD = sellTokenData.priceUsd;
+        const buyTokenPriceUSD = buyTokenData.priceUsd;
+
+        const sellHumanAmount = convert.toHumanAmount(
+          sellAmountToken,
+          sellTokenData?.pDecimals,
+        );
+        const buyHumanAmount = convert.toHumanAmount(
+          buyAmountToken,
+          buyTokenData?.pDecimals,
+        );
+
+        impactAmountStr =
+          ((sellHumanAmount * sellTokenPriceUSD) /
+            (buyHumanAmount * buyTokenPriceUSD) -
+            1) *
+            100 || 0;
+      }
+
       let tradePathStr = '';
       let tradePathArr = [];
       try {
