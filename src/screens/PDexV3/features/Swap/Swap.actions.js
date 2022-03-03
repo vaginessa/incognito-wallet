@@ -622,7 +622,6 @@ export const actionEstimateTradeForUni =
       });
       const quote = quoteDataResponse?.data;
       const paths = quote?.paths;
-      const impactAmount = quote?.impactAmount || 0;
       if (!quote || !paths || paths.length === 0) {
         throw 'Can not found best route for this pair';
       }
@@ -669,7 +668,6 @@ export const actionEstimateTradeForUni =
               route: paths,
               sellAmount,
               buyAmount,
-              impactAmount,
               tokenRoute: paths,
             },
             feeToken: {
@@ -679,7 +677,6 @@ export const actionEstimateTradeForUni =
               isSignificant: false,
               maxGet,
               route: paths,
-              impactAmount,
               tokenRoute: paths,
             },
             tradeID,
