@@ -549,10 +549,17 @@ export const feetokenDataSelector = createSelector(
         );
 
         impactAmountStr =
-          ((sellHumanAmount * sellTokenPriceUSD) /
-            (buyHumanAmount * buyTokenPriceUSD) -
-            1) *
-            100 || 0;
+          sellTokenPriceUSD === 0 ||
+          buyTokenPriceUSD === 0 ||
+          sellHumanAmount === 0 ||
+          buyHumanAmount === 0
+            ? 0
+            : (
+                ((sellHumanAmount * sellTokenPriceUSD) /
+                  (buyHumanAmount * buyTokenPriceUSD) -
+                  1) *
+                100
+              )?.toFixed(2);
       }
 
       let tradePathStr = '';
