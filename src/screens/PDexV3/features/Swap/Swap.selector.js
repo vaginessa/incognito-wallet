@@ -536,8 +536,8 @@ export const feetokenDataSelector = createSelector(
 
       if(platformID === KEYS_PLATFORMS_SUPPORTED.uni) {
         // Calculate price impact for pUniswap
-        const sellTokenPriceUSD = sellTokenData.priceUsd;
-        const buyTokenPriceUSD = buyTokenData.priceUsd;
+        const sellTokenPriceUSD = sellTokenData.externalPriceUSD;
+        const buyTokenPriceUSD = buyTokenData.externalPriceUSD;
 
         const sellHumanAmount = convert.toHumanAmount(
           sellAmountToken,
