@@ -613,10 +613,13 @@ export const feetokenDataSelector = createSelector(
         buyAmountToken,
       );
 
-      if (platformID === KEYS_PLATFORMS_SUPPORTED.uni) {
+      if (
+        platformID === KEYS_PLATFORMS_SUPPORTED.uni ||
+        platformID === KEYS_PLATFORMS_SUPPORTED.curve
+      ) {
         // Calculate price impact for pUniswap
-        const sellTokenPriceUSD = sellTokenData.externalPriceUSD;
-        const buyTokenPriceUSD = buyTokenData.externalPriceUSD;
+        const sellTokenPriceUSD = sellTokenData?.externalPriceUSD;
+        const buyTokenPriceUSD = buyTokenData?.externalPriceUSD;
 
         const sellHumanAmount = convert.toHumanAmount(
           sellAmountToken,

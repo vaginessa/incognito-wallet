@@ -643,7 +643,7 @@ export const actionEstimateTradeForCurve =
       };
     }
     try {
-      const { selltoken, buytoken, sellamount, buyamount } = payload;
+      const { selltoken, buytoken, sellamount } = payload;
       const isPairSup = isPairSupportedTradeOnCurveSelector(state);
       const getCurveTokenParamReq = findTokenCurveByIdSelector(state);
       const tokenSellCurve = getCurveTokenParamReq(selltoken);
@@ -1053,7 +1053,7 @@ export const actionFindBestRateBetweenPlatforms =
       console.log('pdexData', pDexData);
       console.log('pancakeData', pancakeData);
       console.log('uniData', uniData);
-      console.log('uniData', curveData);
+      console.log('curveData', curveData);
       try {
         switch (field) {
         case formConfigs.selltoken: {
@@ -1124,8 +1124,8 @@ export const actionFindBestRateBetweenPlatforms =
             });
           }
           if (
-            isPairSupportedTradeOnUni &&
-            new BigNumber(sellUniAmount).isGreaterThan(0)
+            isPairSupportedTradeOnCurve &&
+            new BigNumber(sellCurveAmount).isGreaterThan(0)
           ) {
             arrMinSellAmount.push({
               id: KEYS_PLATFORMS_SUPPORTED.curve,
@@ -1692,6 +1692,7 @@ export const actionFetchHistory = () => async (dispatch, getState) => {
     const defaultExchange = defaultExchangeSelector(state);
     const isPrivacyApp = isPrivacyAppSelector(state);
     if (!isPrivacyApp) {
+      // Fetch history of all platform when current screen is pDexV3 
       const [swapHistory, pancakeHistory, uniHistory, curveHistory] =
         await Promise.all([
           pDexV3.getSwapHistory({ version: PrivacyVersion.ver2 }),
@@ -1702,14 +1703,17 @@ export const actionFetchHistory = () => async (dispatch, getState) => {
       history = flatten([swapHistory, pancakeHistory, uniHistory, curveHistory]);
     } else {
       switch (defaultExchange) {
+      // Fetch PancakeSwap history when current screen is pPancakeSwap
       case KEYS_PLATFORMS_SUPPORTED.pancake: {
         history = await pDexV3.getSwapPancakeHistory();
         break;
       }
+      // Fetch Uniswap history when current screen is pUniswap
       case KEYS_PLATFORMS_SUPPORTED.uni: {
         history = await pDexV3.getSwapUniHistoryFromApi();
         break;
       }
+      // Fetch Curve history when current screen is pCurve
       case KEYS_PLATFORMS_SUPPORTED.curve: {
         history = await pDexV3.getSwapCurveHistoryFromApi();
         break;
