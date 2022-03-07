@@ -382,6 +382,7 @@ export const feetokenDataSelector = createSelector(
   getPrivacyDataByTokenIDSelector,
   platformSelectedSelector,
   getTokenIdByContractIdGetRateSelector,
+  getTokenIdByUniContractIdGetRateSelector,
   slippagetoleranceSelector,
   (
     state,
@@ -390,6 +391,7 @@ export const feetokenDataSelector = createSelector(
     getPrivacyDataByTokenID,
     platform,
     getTokenIdByContractIdGetRate,
+    getTokenIdByUniContractIdGetRate,
     slippagetolerance,
   ) => {
     try {
@@ -534,7 +536,7 @@ export const feetokenDataSelector = createSelector(
         buyAmountToken,
       );
 
-      if(platformID === KEYS_PLATFORMS_SUPPORTED.uni) {
+      if (platformID === KEYS_PLATFORMS_SUPPORTED.uni) {
         // Calculate price impact for pUniswap
         const sellTokenPriceUSD = sellTokenData.externalPriceUSD;
         const buyTokenPriceUSD = buyTokenData.externalPriceUSD;
@@ -578,33 +580,35 @@ export const feetokenDataSelector = createSelector(
             break;
           }
           case KEYS_PLATFORMS_SUPPORTED.uni: {
-            let routes = feeDataByPlatform.route;
-            for (var i = 0; i < routes?.length; i++) {
-              let pathStr = '';
-              for (var j = 0; j < routes[i]?.length; j++) {
-                if(routes[i].length === 1) {
-                  pathStr =
-                    routes[i][0].tokenIn.symbol +  ' > ' + routes[i][0].tokenOut.symbol;
-                } else {
-                  if (routes[i][j] % 2 === 0) {
-                    pathStr =
-                      pathStr +
-                      routes[i][j].tokenIn.symbol +
-                      (j === routes[i].length - 1 ? '' : ' > ');
-                  } else {
-                    pathStr =
-                      pathStr +
-                      routes[i][j].tokenOut.symbol +
-                      (j === routes[i].length - 1 ? '' : ' > ');
-                  }
-                }
-                
-              }
-              tradePathArr.push({
-                pathStr,
-                percent: routes[i][0]?.percent,
-              });
+            let tokenIdArr = [];
+            if (!feeDataByPlatform?.multiRouter) {
+              tokenIdArr = [
+                tokenRoute.map((contractId) =>
+                  getTokenIdByUniContractIdGetRate(contractId),
+                ),
+              ];
+            } else {
+              tokenIdArr = tokenRoute.map((item) =>
+                item?.map((contractId) =>
+                  getTokenIdByUniContractIdGetRate(contractId),
+                ),
+              );
             }
+
+            tradePathArr = tokenIdArr?.map((tradePathArrChild) => {
+              return tradePathArrChild
+                ?.map((tokenID, index, arr) => {
+                  const token: SelectedPrivacy =
+                    getPrivacyDataByTokenID(tokenID);
+                  return (
+                    `${token?.symbol}${
+                      index === arr?.length - 1 ? '' : ' > '
+                    }` || ''
+                  );
+                })
+                .filter((symbol) => !!symbol)
+                .join('');
+            });
             break;
           }
           default:

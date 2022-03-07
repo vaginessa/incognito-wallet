@@ -962,7 +962,11 @@ export const actionEstimateTrade =
       let state = getState();
       try {
         const params = { field, useMax };
+        
+        // Show loading estimate trade and reset data
         dispatch(actionFetching(true));
+        dispatch(change(formConfigs.formName, formConfigs.feetoken, ''));
+
         const inputAmount = inputAmountSelector(state);
         let sellInputToken, buyInputToken, inputToken, inputPDecimals;
         sellInputToken = inputAmount(formConfigs.selltoken);
@@ -1026,8 +1030,8 @@ export const actionEstimateTrade =
         payload.inputToken = inputToken;
         if (
           isEmpty(sellInputToken) ||
-        isEmpty(buyInputToken) ||
-        isEmpty(feetoken)
+          isEmpty(buyInputToken) ||
+          isEmpty(feetoken)
         ) {
           return;
         }
@@ -1049,7 +1053,7 @@ export const actionEstimateTrade =
         isFetched = true;
         state = getState();
         const { availableAmountText, availableOriginalAmount } =
-        sellInputTokenSelector(state);
+          sellInputTokenSelector(state);
         const errorEstTrade = errorEstimateTradeSelector(state);
         if (errorEstTrade) {
           new ExHandler(errorEstTrade).showErrorToast();
@@ -1423,6 +1427,12 @@ export const actionFetchSwap = () => async (dispatch, getState) => {
       dispatch(actionFetchingSwap(false));
       dispatch(actionFetchHistory());
       dispatch(actionFetchRewardHistories());
+
+      // Reset data after swap
+      dispatch(actionResetData());
+      dispatch(
+        change(formConfigs.formName, formConfigs.feetoken, ''),
+      );
     });
   }
   return tx;
