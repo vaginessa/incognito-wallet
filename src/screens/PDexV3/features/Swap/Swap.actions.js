@@ -689,7 +689,6 @@ export const actionEstimateTradeForUni =
       );
     } catch (error) {
       console.log('ERROR-actionEstimateTradeForUni', error);
-      new ExHandler(error).showErrorToast();
       dispatch(
         actionSetError({ platformId: KEYS_PLATFORMS_SUPPORTED.uni, error }),
       );
