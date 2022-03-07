@@ -26,7 +26,7 @@ const PrivacyAppsUni = () => {
   return (
     <>
       <Header
-        title="pUniSwap"
+        title="pUniswap"
         accountSelectable
         handleSelectedAccount={handleOnRefresh}
       />
