@@ -34,6 +34,7 @@ import {
 import {
   actionHandleInjectEstDataForPancake,
   actionHandleInjectEstDataForPDex,
+  actionHandleInjectEstDataForUni,
   actionSetFeeToken,
   actionSwitchPlatform,
   actionChangeSlippage,
@@ -81,6 +82,9 @@ const TabPro = React.memo(() => {
       break;
     case KEYS_PLATFORMS_SUPPORTED.pancake:
       await dispatch(actionHandleInjectEstDataForPancake());
+      break;
+    case KEYS_PLATFORMS_SUPPORTED.uni:
+      await dispatch(actionHandleInjectEstDataForUni());
       break;
     default:
       break;

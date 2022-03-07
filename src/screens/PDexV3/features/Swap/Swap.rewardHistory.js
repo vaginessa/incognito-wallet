@@ -34,9 +34,9 @@ const styled = StyleSheet.create({
     paddingVertical: 24,
   },
   itemDesc: {
-    fontFamily: FONT.NAME.regular,
-    fontSize: FONT.SIZE.regular,
-    lineHeight: FONT.SIZE.regular + 5,
+    fontFamily: FONT.NAME.medium,
+    fontSize: FONT.SIZE.small,
+    lineHeight: FONT.SIZE.small + 5,
   },
   itemWrapper: {
     flex: 1,
@@ -101,7 +101,7 @@ const RewardHistoryItem = React.memo(({ data }) => {
 const RewardHistory = () => {
   const { isFetching } = useSelector(swapHistorySelector);
   const rewardHistories = useSelector(
-    (state) => state.pDexV3.swap.pancakeRewardHistories,
+    (state) => state.pDexV3.swap.rewardHistories,
   );
   return (
     <View style={styled.container}>

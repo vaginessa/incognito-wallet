@@ -48,9 +48,11 @@ export const ACTION_FREE_HISTORY_ORDERS = '[pDexV3][swap] Free history orders';
 
 export const ACTION_CHANGE_SLIPPAGE = '[pDexV3][swap] Change slippage';
 
-export const ACTION_FETCHING_PANCAKE_REWARD_HISTORY = '[pDexV3][swap] Fetching pancake reward history';
-export const ACTION_FETCHED_PANCAKE_REWARD_HISTORY = '[pDexV3][swap] Fetched pancake reward history';
-export const ACTION_FETCH_FAIL_PANCAKE_REWARD_HISTORY ='[pDexV3][swap] Fetch fail pancake reward history';
+export const ACTION_FETCHING_REWARD_HISTORY = '[pDexV3][swap] Fetching reward history';
+export const ACTION_FETCHED_REWARD_HISTORY = '[pDexV3][swap] Fetched reward history';
+export const ACTION_FETCH_FAIL_REWARD_HISTORY ='[pDexV3][swap] Fetch fail reward history';
+
+export const ACTION_RESET_DATA ='[pDexV3][swap] Reset data';
 
 export const TAB_SIMPLE_ID = '[swap] simple';
 export const TAB_PRO_ID = '[swap] pro';
@@ -71,6 +73,7 @@ export const formConfigs = {
 export const KEYS_PLATFORMS_SUPPORTED = {
   incognito: 'incognito',
   pancake: 'pancake',
+  uni: 'uni'
 };
 
 export const PLATFORMS_SUPPORTED = [
@@ -83,7 +86,14 @@ export const PLATFORMS_SUPPORTED = [
   },
   {
     id: KEYS_PLATFORMS_SUPPORTED.pancake,
-    title: 'Pancake',
+    title: 'PancakeSwap',
+    desc: '',
+    visible: true,
+    isSelected: false,
+  },
+  {
+    id: KEYS_PLATFORMS_SUPPORTED.uni,
+    title: 'Uniswap',
     desc: '',
     visible: true,
     isSelected: false,
