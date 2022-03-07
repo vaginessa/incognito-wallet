@@ -82,7 +82,7 @@ const PrivacyApps = () => {
             title: 'DEX',
           },
         ],
-        desc: 'Trade anonymously on Polygon’s leading DEX. Deep liquidity and super low fees – now with privacy.',
+        desc: 'Trade confidentially on everyone’s favorite DEX. Faster and cheaper thanks to Polygon, and private like all Incognito apps.',
         onPressItem,
       },
       {

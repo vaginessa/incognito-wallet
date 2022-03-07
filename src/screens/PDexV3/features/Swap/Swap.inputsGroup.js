@@ -26,6 +26,7 @@ import {
 } from './Swap.selector';
 import {
   actionEstimateTrade,
+  actionResetData,
   actionSelectToken,
   actionSetFocusToken,
   actionSwapToken,
@@ -68,7 +69,11 @@ const SwapInputsGroup = React.memo(() => {
   };
   const onFocusToken = (e, field) => dispatch(actionSetFocusToken(swap[field]));
   const onEndEditing = (field) => dispatch(actionEstimateTrade({ field }));
-  const onSwapButtons = () => dispatch(actionSwapToken());
+  const onSwapButtons = () => {
+    dispatch(actionSwapToken());
+    dispatch(actionResetData());
+    dispatch(change(formConfigs.formName, formConfigs.feetoken, ''));
+  };
   let _maxAmountValidatorForSellInput = React.useCallback(
     () => maxAmountValidatorForSellInput(sellInputAmount, navigation),
     [

@@ -3,7 +3,10 @@ import isNaN from 'lodash/isNaN';
 import toLower from 'lodash/toLower';
 import { getPrivacyDataByTokenID as getPrivacyDataByTokenIDSelector } from '@src/redux/selectors/selectedPrivacy';
 import format from '@src/utils/format';
-import { ACCOUNT_CONSTANT } from 'incognito-chain-web-js/build/wallet';
+import {
+  ACCOUNT_CONSTANT,
+  EXCHANGE_SUPPORTED,
+} from 'incognito-chain-web-js/build/wallet';
 import capitalize from 'lodash/capitalize';
 import { formValueSelector, isValid, getFormSyncErrors } from 'redux-form';
 import convert from '@src/utils/convert';
@@ -455,6 +458,7 @@ export const feetokenDataSelector = createSelector(
   platformSelectedSelector,
   getTokenIdByContractIdGetRateSelector,
   getTokenIdByCurveContractIdSelector,
+  getTokenIdByUniContractIdGetRateSelector,
   slippagetoleranceSelector,
   (
     state,
@@ -464,6 +468,7 @@ export const feetokenDataSelector = createSelector(
     platform,
     getTokenIdByContractIdGetRate, // get TokenId by ContractId PancakeSwap
     getTokenIdByCurveContractId, // get TokenId by ContractId Curve
+    getTokenIdByUniContractIdGetRate,
     slippagetolerance,
   ) => {
     try {
@@ -594,7 +599,7 @@ export const feetokenDataSelector = createSelector(
       const tokenRoute = payFeeByPRV ? tokenRoutePRV : tokenRouteToken;
       const impactAmount = payFeeByPRV ? impactAmountPRV : impactAmountToken;
       const impactOriginalAmount = convert.toOriginalAmount(impactAmount, 2);
-      const impactAmountStr = format.amountVer2(impactOriginalAmount, 2);
+      let impactAmountStr = format.amountVer2(impactOriginalAmount, 2);
       maxGet = payFeeByPRV ? maxGetPRV : maxGetToken;
       const sellOriginalAmount = payFeeByPRV ? sellAmountPRV : sellAmountToken;
       const buyOriginalAmount = calMintAmountExpected({
@@ -604,9 +609,38 @@ export const feetokenDataSelector = createSelector(
       const rateStr = getExchangeRate(
         sellTokenData,
         buyTokenData,
-        sellOriginalAmount,
-        buyOriginalAmount,
+        sellAmountToken,
+        buyAmountToken,
       );
+
+      if (platformID === KEYS_PLATFORMS_SUPPORTED.uni) {
+        // Calculate price impact for pUniswap
+        const sellTokenPriceUSD = sellTokenData.externalPriceUSD;
+        const buyTokenPriceUSD = buyTokenData.externalPriceUSD;
+
+        const sellHumanAmount = convert.toHumanAmount(
+          sellAmountToken,
+          sellTokenData?.pDecimals,
+        );
+        const buyHumanAmount = convert.toHumanAmount(
+          buyAmountToken,
+          buyTokenData?.pDecimals,
+        );
+
+        impactAmountStr =
+          sellTokenPriceUSD === 0 ||
+          buyTokenPriceUSD === 0 ||
+          sellHumanAmount === 0 ||
+          buyHumanAmount === 0
+            ? 0
+            : (
+                ((sellHumanAmount * sellTokenPriceUSD) /
+                  (buyHumanAmount * buyTokenPriceUSD) -
+                  1) *
+                100
+              )?.toFixed(2);
+      }
+
       let tradePathStr = '';
       let tradePathArr = [];
 
@@ -625,34 +659,35 @@ export const feetokenDataSelector = createSelector(
             break;
           }
           case KEYS_PLATFORMS_SUPPORTED.uni: {
-            let routes = feeDataByPlatform.route;
-            for (var i = 0; i < routes?.length; i++) {
-              let pathStr = '';
-              for (var j = 0; j < routes[i]?.length; j++) {
-                if (routes[i].length === 1) {
-                  pathStr =
-                      routes[i][0].tokenIn.symbol +
-                      ' > ' +
-                      routes[i][0].tokenOut.symbol;
-                } else {
-                  if (routes[i][j] % 2 === 0) {
-                    pathStr =
-                        pathStr +
-                        routes[i][j].tokenIn.symbol +
-                        (j === routes[i].length - 1 ? '' : ' > ');
-                  } else {
-                    pathStr =
-                        pathStr +
-                        routes[i][j].tokenOut.symbol +
-                        (j === routes[i].length - 1 ? '' : ' > ');
-                  }
-                }
-              }
-              tradePathArr.push({
-                pathStr,
-                percent: routes[i][0]?.percent,
-              });
+            let tokenIdArr = [];
+            if (!feeDataByPlatform?.multiRouter) {
+              tokenIdArr = [
+                tokenRoute.map((contractId) =>
+                  getTokenIdByUniContractIdGetRate(contractId),
+                ),
+              ];
+            } else {
+              tokenIdArr = tokenRoute.map((item) =>
+                item?.map((contractId) =>
+                  getTokenIdByUniContractIdGetRate(contractId),
+                ),
+              );
             }
+
+            tradePathArr = tokenIdArr?.map((tradePathArrChild) => {
+              return tradePathArrChild
+                ?.map((tokenID, index, arr) => {
+                  const token: SelectedPrivacy =
+                    getPrivacyDataByTokenID(tokenID);
+                  return (
+                    `${token?.symbol}${
+                      index === arr?.length - 1 ? '' : ' > '
+                    }` || ''
+                  );
+                })
+                .filter((symbol) => !!symbol)
+                .join('');
+            });
             break;
           }
           case KEYS_PLATFORMS_SUPPORTED.curve: {
@@ -907,6 +942,8 @@ export const mappingOrderHistorySelector = createSelector(
         fromStorage,
         amountOut,
         statusCode,
+        minAccept,
+        exchange
       } = order;
       let statusStr = capitalize(status);
       if (fromStorage) {
@@ -920,6 +957,9 @@ export const mappingOrderHistorySelector = createSelector(
           statusStr = 'Processing';
           break;
         }
+      }
+      if (exchange === EXCHANGE_SUPPORTED.incognito) {
+        amountOut = minAccept;
       }
       const sellToken: SelectedPrivacy = getPrivacyDataByTokenID(sellTokenId);
       const buyToken: SelectedPrivacy = getPrivacyDataByTokenID(buyTokenId);

@@ -166,6 +166,7 @@ class SelectedPrivacy {
       !isUnknown,
     ); // PRV always is verified
     this.priceUsd = pTokenData?.priceUsd || 0;
+    this.externalPriceUSD = pTokenData?.externalPriceUSD || 0;
     this.pricePrv = pTokenData?.pricePrv || 0;
     this.pairWithPrv = pTokenData?.pairPrv;
     const { networkName, rootNetworkName } = getNetworkName.call(this);

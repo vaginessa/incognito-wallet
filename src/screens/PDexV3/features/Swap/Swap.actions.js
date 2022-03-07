@@ -58,6 +58,7 @@ import {
   ACTION_FETCHING_REWARD_HISTORY,
   ACTION_FETCHED_REWARD_HISTORY,
   ACTION_FETCH_FAIL_REWARD_HISTORY,
+  ACTION_RESET_DATA
 } from './Swap.constant';
 import {
   buytokenSelector,
@@ -170,6 +171,11 @@ export const actionFetchFail = () => ({
 
 export const actionReset = (payload) => ({
   type: ACTION_RESET,
+  payload,
+});
+
+export const actionResetData = (payload) => ({
+  type: ACTION_RESET_DATA,
   payload,
 });
 
@@ -660,7 +666,6 @@ export const actionEstimateTradeForCurve =
         amount,
       });
       const paths = [sourceToken.contractId, destToken.contractId];
-      const impactAmount = quote?.impactAmount || 0;
       
       let originalMaxGet = quote?.amountOutRaw;
 
@@ -691,7 +696,6 @@ export const actionEstimateTradeForCurve =
               route: paths,
               sellAmount: sellamount,
               buyAmount: maxGet,
-              impactAmount,
               tokenRoute: paths,
             },
             feeToken: {
@@ -701,7 +705,6 @@ export const actionEstimateTradeForCurve =
               isSignificant: false,
               maxGet,
               route: paths,
-              impactAmount,
               tokenRoute: paths,
             },
             tradeID,
@@ -792,8 +795,7 @@ export const actionEstimateTradeForUni =
       });
       const quote = quoteDataResponse?.data;
       const paths = quote?.paths;
-      const impactAmount = quote?.impactAmount || 0;
-      if (!paths || paths.length === 0) {
+      if (!quote || !paths || paths.length === 0) {
         throw 'Can not found best route for this pair';
       }
       let originalMaxGet = quote?.amountOutRaw;
@@ -839,7 +841,6 @@ export const actionEstimateTradeForUni =
               route: paths,
               sellAmount,
               buyAmount,
-              impactAmount,
               tokenRoute: paths,
             },
             feeToken: {
@@ -849,7 +850,6 @@ export const actionEstimateTradeForUni =
               isSignificant: false,
               maxGet,
               route: paths,
-              impactAmount,
               tokenRoute: paths,
             },
             tradeID,
@@ -1159,7 +1159,11 @@ export const actionEstimateTrade =
       let state = getState();
       try {
         const params = { field, useMax };
+        
+        // Show loading estimate trade and reset data
         dispatch(actionFetching(true));
+        dispatch(change(formConfigs.formName, formConfigs.feetoken, ''));
+
         const inputAmount = inputAmountSelector(state);
         let sellInputToken, buyInputToken, inputToken, inputPDecimals;
         sellInputToken = inputAmount(formConfigs.selltoken);
@@ -1223,8 +1227,8 @@ export const actionEstimateTrade =
         payload.inputToken = inputToken;
         if (
           isEmpty(sellInputToken) ||
-        isEmpty(buyInputToken) ||
-        isEmpty(feetoken)
+          isEmpty(buyInputToken) ||
+          isEmpty(feetoken)
         ) {
           return;
         }
@@ -1248,7 +1252,7 @@ export const actionEstimateTrade =
         isFetched = true;
         state = getState();
         const { availableAmountText, availableOriginalAmount } =
-        sellInputTokenSelector(state);
+          sellInputTokenSelector(state);
         const errorEstTrade = errorEstimateTradeSelector(state);
         if (errorEstTrade) {
           new ExHandler(errorEstTrade).showErrorToast();
@@ -1655,6 +1659,12 @@ export const actionFetchSwap = () => async (dispatch, getState) => {
       dispatch(actionFetchingSwap(false));
       dispatch(actionFetchHistory());
       dispatch(actionFetchRewardHistories());
+
+      // Reset data after swap
+      dispatch(actionResetData());
+      dispatch(
+        change(formConfigs.formName, formConfigs.feetoken, ''),
+      );
     });
   }
   return tx;
@@ -1686,8 +1696,8 @@ export const actionFetchHistory = () => async (dispatch, getState) => {
         await Promise.all([
           pDexV3.getSwapHistory({ version: PrivacyVersion.ver2 }),
           pDexV3.getSwapPancakeHistory(),
-          pDexV3.getSwapUniHistory(),
-          pDexV3.getSwapCurveHistory(),
+          pDexV3.getSwapUniHistoryFromApi(),
+          pDexV3.getSwapCurveHistoryFromApi(),
         ]);
       history = flatten([swapHistory, pancakeHistory, uniHistory, curveHistory]);
     } else {
@@ -1697,11 +1707,11 @@ export const actionFetchHistory = () => async (dispatch, getState) => {
         break;
       }
       case KEYS_PLATFORMS_SUPPORTED.uni: {
-        history = await pDexV3.getSwapUniHistory();
+        history = await pDexV3.getSwapUniHistoryFromApi();
         break;
       }
       case KEYS_PLATFORMS_SUPPORTED.curve: {
-        history = await pDexV3.getSwapCurveHistory();
+        history = await pDexV3.getSwapCurveHistoryFromApi();
         break;
       }
       default:
