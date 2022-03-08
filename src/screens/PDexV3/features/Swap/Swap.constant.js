@@ -65,6 +65,9 @@ export const ROOT_TAB_ID = 'ROOT_TAB_SWAP';
 
 export const ROOT_TAB_SUB_INFO = 'ROOT_TAB_SUB_INFO';
 export const TAB_HISTORY_ID = '[swap_sub_info] history order';
+
+export const ROOT_TAB_SWAP_HISTORY = 'ROOT_TAB_SWAP_HISTORY';
+export const TAB_SWAP_HISTORY_ID = 'swap_sub_info] swap history';
 export const TAB_REWARD_HISTORY_ID = '[swap_sub_info] reward history';
 
 export const SCREENS_TO_SHOW_REWARD_HISTORY_TAB = [
