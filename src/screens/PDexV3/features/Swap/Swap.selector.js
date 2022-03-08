@@ -976,7 +976,19 @@ export const mappingOrderHistorySelector = createSelector(
         token1: sellToken,
         token2: buyToken,
       });
-      const rateStr = getExchangeRate(sellToken, buyToken, amount, amountOut || minAccept);
+      let rateStr = '';
+      if (
+        statusCode !== ACCOUNT_CONSTANT.TX_STATUS.TXSTATUS_CANCELED &&
+        statusCode !== ACCOUNT_CONSTANT.TX_STATUS.TXSTATUS_FAILED
+      ) {
+        rateStr = getExchangeRate(
+          sellToken,
+          buyToken,
+          amount,
+          amountOut || minAccept,
+        );
+      }
+        
       let totalFee = fee;
       let networkFee = ACCOUNT_CONSTANT.MAX_FEE_PER_TX;
       if (feeToken.isMainCrypto) {
