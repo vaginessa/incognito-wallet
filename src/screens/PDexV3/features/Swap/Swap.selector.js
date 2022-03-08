@@ -999,7 +999,13 @@ export const mappingOrderHistorySelector = createSelector(
         feeToken.pDecimals,
         false,
       )} ${feeToken.symbol}`;
-      const swapStr = amountOut || minAccept ? `${sellStr} = ${buyStr}` : '';
+      let swapStr = '';
+      if (
+        statusCode !== ACCOUNT_CONSTANT.TX_STATUS.TXSTATUS_CANCELED &&
+        statusCode !== ACCOUNT_CONSTANT.TX_STATUS.TXSTATUS_FAILED
+      ) {
+        swapStr = amountOut || minAccept ? `${sellStr} = ${buyStr}` : '';
+      }
       const result = {
         ...order,
         sellStr,
