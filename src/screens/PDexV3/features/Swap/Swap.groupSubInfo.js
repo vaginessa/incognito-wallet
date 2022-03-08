@@ -8,6 +8,7 @@ import {
   ROOT_TAB_SUB_INFO,
   TAB_HISTORY_ID,
   TAB_REWARD_HISTORY_ID,
+  SCREENS_TO_SHOW_REWARD_HISTORY_TAB
 } from './Swap.constant';
 import RewardHistory from './Swap.rewardHistory';
 
@@ -31,9 +32,10 @@ const GroupSubInfo = () => {
         >
           <History />
         </View>
-        {(navigation?.state?.routeName === routeNames.PrivacyAppsPancake ||
-        navigation?.state?.routeName === routeNames.PrivacyAppsUni) ? (
-            // eslint-disable-next-line react/jsx-indent
+        {SCREENS_TO_SHOW_REWARD_HISTORY_TAB.includes(
+          navigation?.state?.routeName,
+        ) ? (
+          // eslint-disable-next-line react/jsx-indent
             <View tabID={TAB_REWARD_HISTORY_ID} label="Trading rewards">
               <RewardHistory />
             </View>
