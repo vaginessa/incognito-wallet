@@ -5,8 +5,8 @@ import { getPrivacyDataByTokenID as getPrivacyDataByTokenIDSelector } from '@src
 import format from '@src/utils/format';
 import {
   ACCOUNT_CONSTANT,
-  EXCHANGE_SUPPORTED,
 } from 'incognito-chain-web-js/build/wallet';
+import { HISTORY_STATUS_CODE } from '@src/constants/trading';
 import capitalize from 'lodash/capitalize';
 import { formValueSelector, isValid, getFormSyncErrors } from 'redux-form';
 import convert from '@src/utils/convert';
@@ -874,10 +874,7 @@ export const mappingOrderHistorySelector = createSelector(
         token2: buyToken,
       });
       let rateStr = '';
-      if (
-        statusCode !== ACCOUNT_CONSTANT.TX_STATUS.TXSTATUS_CANCELED &&
-        statusCode !== ACCOUNT_CONSTANT.TX_STATUS.TXSTATUS_FAILED
-      ) {
+      if (statusCode !== HISTORY_STATUS_CODE.REJECTED) {
         rateStr = getExchangeRate(
           sellToken,
           buyToken,
@@ -897,10 +894,7 @@ export const mappingOrderHistorySelector = createSelector(
         false,
       )} ${feeToken.symbol}`;
       let swapStr = '';
-      if (
-        statusCode !== ACCOUNT_CONSTANT.TX_STATUS.TXSTATUS_CANCELED &&
-        statusCode !== ACCOUNT_CONSTANT.TX_STATUS.TXSTATUS_FAILED
-      ) {
+      if (statusCode !== HISTORY_STATUS_CODE.REJECTED) {
         swapStr = amountOut || minAccept ? `${sellStr} = ${buyStr}` : '';
       }
       const result = {
