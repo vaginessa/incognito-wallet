@@ -9,7 +9,7 @@ import axios from 'axios';
 import { cachePromise, EXPIRED_TIME, KEYS } from '@services/cache';
 import http1 from '@services/http1';
 import PolygonToken from '@src/models/polygonToken';
-import uniq from 'lodash/uniq';
+import FantomToken from '@src/models/fantomToken';
 
 let BEP2Tokens = [];
 
@@ -63,6 +63,32 @@ export const addPolygonToken = ({ symbol, name, contractId, decimals }) => {
   if (!Number.isInteger(parseDecimals)) throw new Error('Invalid decimals');
   return http
     .post('plg/erc20/add', {
+      ContractID: contractId,
+    })
+    .then((res) => new PToken(res));
+};
+
+export const detectFantomToken = (fantomAddress) => {
+  if (!fantomAddress) throw new Error('Missing fantomAddress to detect');
+  return http
+    .post('ftm/detect-erc20', {
+      Address: fantomAddress,
+    })
+    .then((res) => new FantomToken(res))
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
+export const addFantomToken = ({ symbol, name, contractId, decimals }) => {
+  const parseDecimals = Number(decimals);
+
+  if (!symbol) throw new Error('Missing symbol');
+  if (!name) throw new Error('Missing name');
+  if (!contractId) throw new Error('Missing contractId');
+  if (!Number.isInteger(parseDecimals)) throw new Error('Invalid decimals');
+  return http
+    .post('ftm/erc20/add', {
       ContractID: contractId,
     })
     .then((res) => new PToken(res));

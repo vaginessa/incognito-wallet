@@ -7,12 +7,12 @@ import {
 } from '@src/components/core';
 import { colorsSelector } from '@src/theme/theme.selector';
 import { View2 } from '@src/components/core/View';
-import globalStyled from '@src/theme/theme.styled';
 import { useSelector } from 'react-redux';
 import AddERC20Token from '@src/components/AddERC20Token';
 import AddBep2Token from '@src/components/AddBep2Token';
 import AddBep20Token from '@src/components/AddBep20Token';
 import AddPolygonToken from '@src/components/AddPolygonToken';
+import AddFantomToken from '@src/components/AddFantomToken';
 import Icons from 'react-native-vector-icons/Fontisto';
 import Header from '@src/components/Header';
 import PureModal from '@src/components/Modal/features/PureModal';
@@ -76,6 +76,7 @@ const AddManually = () => {
             {type === TYPES.ERC20.value && <AddERC20Token />}
             {type === TYPES.BEP20.value && <AddBep20Token />}
             {type === TYPES.POLYGON.value && <AddPolygonToken />}
+            {type === TYPES.FANTOM.value && <AddFantomToken />}
           </View>
         </KeyboardAwareScrollView>
         <ModalSelectType />

@@ -126,7 +126,7 @@ const Extra = (props) => {
       selectedPrivacy?.currencyType ===
         CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.MATIC ||
       selectedPrivacy?.currencyType ===
-        CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.POLYGON_ERC20;
+        CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.FTM;
     let humanFee = convert.toNumber(
       (isNativeToken ? defaultFee?.estimateFee : defaultFee?.tokenFee) || 0,
       true,
@@ -240,7 +240,10 @@ const Extra = (props) => {
     <View style={styled.extra}>
       {isPortal
         ? renderShieldPortalAddress()
-        : decentralized === 2 || decentralized === 3 || decentralized === 4
+        : decentralized === 2 ||
+          decentralized === 3 ||
+          decentralized === 4 ||
+          decentralized === 5
           ? renderShieldUserAddress()
           : renderShieldIncAddress()}
     </View>
