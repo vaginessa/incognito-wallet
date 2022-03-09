@@ -1151,6 +1151,8 @@ export const actionInitSwapForm =
         batch(() => {
           dispatch(actionInitingSwapForm(true));
           dispatch(reset(formConfigs.formName));
+          dispatch(actionResetData());
+          dispatch(change(formConfigs.formName, formConfigs.feetoken, ''));
           dispatch(actionSetSellTokenFetched(pair?.selltoken));
           dispatch(actionSetBuyTokenFetched(pair?.buytoken));
           dispatch(actionChangeSelectedPlatform(defaultExchange));

@@ -5,8 +5,8 @@ import { getPrivacyDataByTokenID as getPrivacyDataByTokenIDSelector } from '@src
 import format from '@src/utils/format';
 import {
   ACCOUNT_CONSTANT,
-  EXCHANGE_SUPPORTED,
 } from 'incognito-chain-web-js/build/wallet';
+import { HISTORY_STATUS_CODE } from '@src/constants/trading';
 import capitalize from 'lodash/capitalize';
 import { formValueSelector, isValid, getFormSyncErrors } from 'redux-form';
 import convert from '@src/utils/convert';
@@ -843,9 +843,10 @@ export const mappingOrderHistorySelector = createSelector(
         amountOut,
         statusCode,
         minAccept,
-        exchange
       } = order;
       let statusStr = capitalize(status);
+      amountOut = parseInt(amountOut);
+      minAccept = parseInt(minAccept);
       if (fromStorage) {
         switch (statusCode) {
         case ACCOUNT_CONSTANT.TX_STATUS.TXSTATUS_CANCELED:
@@ -858,24 +859,30 @@ export const mappingOrderHistorySelector = createSelector(
           break;
         }
       }
-      if (exchange === EXCHANGE_SUPPORTED.incognito) {
-        amountOut = minAccept;
-      }
       const sellToken: SelectedPrivacy = getPrivacyDataByTokenID(sellTokenId);
       const buyToken: SelectedPrivacy = getPrivacyDataByTokenID(buyTokenId);
       const feeToken: SelectedPrivacy = getPrivacyDataByTokenID(feeTokenId);
       const amountStr = format.amountVer2(amount, sellToken.pDecimals);
-      const buyAmountStr = format.amountVer2(amountOut, buyToken.pDecimals);
+      const buyAmountStr = format.amountVer2(amountOut || minAccept, buyToken.pDecimals);
       const sellStr = `${amountStr} ${sellToken.symbol}`;
       const buyStr = `${buyAmountStr} ${buyToken.symbol}`;
       const timeStr = format.formatDateTime(requestime, 'DD MMM HH:mm');
       const rate = getPairRate({
         token1Value: amount,
-        token2Value: amountOut,
+        token2Value: amountOut || minAccept,
         token1: sellToken,
         token2: buyToken,
       });
-      const rateStr = getExchangeRate(sellToken, buyToken, amount, amountOut);
+      let rateStr = '';
+      if (statusCode !== HISTORY_STATUS_CODE.REJECTED) {
+        rateStr = getExchangeRate(
+          sellToken,
+          buyToken,
+          amount,
+          amountOut || minAccept,
+        );
+      }
+        
       let totalFee = fee;
       let networkFee = ACCOUNT_CONSTANT.MAX_FEE_PER_TX;
       if (feeToken.isMainCrypto) {
@@ -886,7 +893,10 @@ export const mappingOrderHistorySelector = createSelector(
         feeToken.pDecimals,
         false,
       )} ${feeToken.symbol}`;
-      const swapStr = amountOut ? `${sellStr} = ${buyStr}` : '';
+      let swapStr = '';
+      if (statusCode !== HISTORY_STATUS_CODE.REJECTED) {
+        swapStr = amountOut || minAccept ? `${sellStr} = ${buyStr}` : '';
+      }
       const result = {
         ...order,
         sellStr,
