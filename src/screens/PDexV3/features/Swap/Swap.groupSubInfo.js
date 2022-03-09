@@ -5,10 +5,10 @@ import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
 import History from './Swap.orderHistory';
 import {
-  ROOT_TAB_SUB_INFO,
-  TAB_HISTORY_ID,
   TAB_REWARD_HISTORY_ID,
-  SCREENS_TO_SHOW_REWARD_HISTORY_TAB
+  SCREENS_TO_SHOW_REWARD_HISTORY_TAB,
+  ROOT_TAB_SWAP_HISTORY,
+  TAB_SWAP_HISTORY_ID
 } from './Swap.constant';
 import RewardHistory from './Swap.rewardHistory';
 
@@ -23,9 +23,9 @@ const GroupSubInfo = () => {
   const navigation = useNavigation();
   return (
     <View style={styled.container}>
-      <Tabs rootTabID={ROOT_TAB_SUB_INFO}>
+      <Tabs rootTabID={ROOT_TAB_SWAP_HISTORY}>
         <View
-          tabID={TAB_HISTORY_ID}
+          tabID={TAB_SWAP_HISTORY_ID}
           label="Swap history"
           onChangeTab={() => null}
           upperCase={false}
@@ -36,11 +36,16 @@ const GroupSubInfo = () => {
           navigation?.state?.routeName,
         ) ? (
           // eslint-disable-next-line react/jsx-indent
-            <View tabID={TAB_REWARD_HISTORY_ID} label="Trading rewards">
+            <View
+              tabID={TAB_REWARD_HISTORY_ID}
+              label="Trading rewards"
+              onChangeTab={() => null}
+              upperCase={false}
+            >
               <RewardHistory />
             </View>
           ) : (
-            <View tabID="" label="">
+            <View tabID="" label="" onChangeTab={() => null} upperCase={false}>
               <View />
             </View>
           )}
