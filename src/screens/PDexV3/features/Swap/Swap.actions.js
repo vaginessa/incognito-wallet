@@ -9,6 +9,7 @@ import {
 import serverService from '@src/services/wallet/Server';
 import { defaultAccountWalletSelector } from '@src/redux/selectors/account';
 import { ExHandler } from '@src/services/exception';
+import routeNames from '@src/router/routeNames';
 import { change, reset } from 'redux-form';
 import isEmpty from 'lodash/isEmpty';
 import SelectedPrivacy from '@src/models/selectedPrivacy';
@@ -19,6 +20,7 @@ import convert from '@src/utils/convert';
 import format from '@src/utils/format';
 import BigNumber from 'bignumber.js';
 import floor from 'lodash/floor';
+import { currentScreenSelector } from '@screens/Navigation';
 import difference from 'lodash/difference';
 import { isUsePRVToPayFeeSelector } from '@screens/Setting';
 import flatten from 'lodash/flatten';
@@ -665,6 +667,12 @@ export const actionEstimateTradeForCurve =
         tokenOutContractId: destToken.contractId,
         amount,
       });
+      if (!quote || !quote?.amountOutRaw) {
+        new ExHandler(
+          'Can not found best route for this pair',
+        ).showErrorToast();
+        throw 'Can not found best route for this pair';
+      }
       const paths = [sourceToken.contractId, destToken.contractId];
       
       let originalMaxGet = quote?.amountOutRaw;
@@ -796,6 +804,9 @@ export const actionEstimateTradeForUni =
       const quote = quoteDataResponse?.data;
       const paths = quote?.paths;
       if (!quote || !paths || paths.length === 0) {
+        new ExHandler(
+          'Can not found best route for this pair',
+        ).showErrorToast();
         throw 'Can not found best route for this pair';
       }
       let originalMaxGet = quote?.amountOutRaw;
@@ -1406,7 +1417,10 @@ export const actionInitSwapForm =
           }
           if (shouldFetchHistory) {
             dispatch(actionFetchHistory());
-            dispatch(actionFetchRewardHistories());
+            const currentScreen = currentScreenSelector(state);
+            if(currentScreen !== routeNames.Trade) {
+              dispatch(actionFetchRewardHistories());
+            }
           }
         });
       } catch (error) {
