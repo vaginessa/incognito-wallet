@@ -668,10 +668,8 @@ export const actionEstimateTradeForCurve =
         amount,
       });
       if (!quote || !quote?.amountOutRaw) {
-        new ExHandler(
-          'Can not found best route for this pair',
-        ).showErrorToast();
-        throw 'Can not found best route for this pair';
+        new ExHandler('No trade route found').showErrorToast();
+        throw 'No trade route found';
       }
       const paths = [sourceToken.contractId, destToken.contractId];
       
@@ -1531,8 +1529,9 @@ export const actionFetchingSwap = (payload) => ({
 
 export const actionFetchSwap = () => async (dispatch, getState) => {
   let tx;
+  const state = getState();
+  const currentScreen = currentScreenSelector(state);
   try {
-    const state = getState();
     const { disabledBtnSwap } = swapInfoSelector(state);
     if (disabledBtnSwap) {
       return;
@@ -1674,8 +1673,9 @@ export const actionFetchSwap = () => async (dispatch, getState) => {
     batch(() => {
       dispatch(actionFetchingSwap(false));
       dispatch(actionFetchHistory());
-      dispatch(actionFetchRewardHistories());
-
+      if (currentScreen !== routeNames.Trade) {
+        dispatch(actionFetchRewardHistories());
+      }
       // Reset data after swap
       dispatch(actionResetData());
       dispatch(
@@ -1792,7 +1792,6 @@ export const actionFetchRewardHistories = () => async (dispatch, getState) => {
     dispatch(actionFetchedRewardHistories(rewardHistoriesApiResponse));
   } catch (error) {
     console.log('actionFetchHistory-error', error);
-    new ExHandler(error).showErrorToast();
     await dispatch(actionFetchFailRewardHistories());
   }
 };
