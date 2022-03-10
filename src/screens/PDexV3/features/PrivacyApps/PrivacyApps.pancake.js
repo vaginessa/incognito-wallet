@@ -18,7 +18,7 @@ const PrivacyAppsPancake = () => {
         exchange: KEYS_PLATFORMS_SUPPORTED.pancake,
       }),
     );
-    dispatch(actionInitSwapForm({ refresh: true, shouldFetchHistory: true }));
+    dispatch(actionInitSwapForm({ refresh: false, shouldFetchHistory: true }));
   };
   React.useEffect(() => {
     dispatch(actionReset());
