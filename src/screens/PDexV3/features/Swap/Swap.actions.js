@@ -1169,7 +1169,7 @@ export const actionEstimateTrade =
       try {
         const params = { field, useMax };
         
-        // Show loading estimate trade and reset data
+        // Show loading estimate trade and reset fee data
         dispatch(actionFetching(true));
         dispatch(change(formConfigs.formName, formConfigs.feetoken, ''));
 
@@ -1705,6 +1705,7 @@ export const actionFetchHistory = () => async (dispatch, getState) => {
     await dispatch(actionFetchingOrdersHistory());
     const state = getState();
     const pDexV3 = await dispatch(actionGetPDexV3Inst());
+    // get trading platform incognito | pancake | uni | curve
     const defaultExchange = defaultExchangeSelector(state);
     const isPrivacyApp = isPrivacyAppSelector(state);
     if (!isPrivacyApp) {
