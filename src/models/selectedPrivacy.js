@@ -17,7 +17,7 @@ function getNetworkName() {
     this?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.MATIC;
 
   if (isBSC) {
-    name ='BEP20 BSC';
+    name ='BNB BSC';
   } else if (isBNB) {
     name ='BNB Chain';
   } else if (this.isIncognitoToken || this.isMainCrypto) {
