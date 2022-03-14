@@ -637,9 +637,9 @@ export const feetokenDataSelector = createSelector(
           buyHumanAmount === 0
             ? 0
             : (
-                ((sellHumanAmount * sellTokenPriceUSD) /
-                  (buyHumanAmount * buyTokenPriceUSD) -
-                  1) *
+                (1 -
+                  (buyHumanAmount * buyTokenPriceUSD) /
+                    (sellHumanAmount * sellTokenPriceUSD)) *
                 100
               )?.toFixed(2);
       }
