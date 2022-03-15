@@ -12,6 +12,7 @@ import { ExHandler } from '@src/services/exception';
 import routeNames from '@src/router/routeNames';
 import { change, reset } from 'redux-form';
 import isEmpty from 'lodash/isEmpty';
+import Util from '@utils/Util';
 import SelectedPrivacy from '@src/models/selectedPrivacy';
 import { batch } from 'react-redux';
 import uniq from 'lodash/uniq';
@@ -1247,7 +1248,11 @@ export const actionEstimateTrade =
         case formConfigs.selltoken: {
           inputToken = formConfigs.buytoken;
           payload.sellamount = sellAmount;
-          if (!payload.sellamount) {
+          if (
+            !payload.sellamount ||
+            payload.sellamount < 0 ||
+            !Util.isNumber(sellInputToken?.amountText)
+          ) {
             return;
           }
           payload.sellamount = String(payload.sellamount);
@@ -1261,7 +1266,11 @@ export const actionEstimateTrade =
               .multipliedBy(100 / (100 - slippagetolerance))
               .toNumber(),
           );
-          if (!payload.buyamount) {
+          if (
+            !payload.buyamount ||
+            payload.buyamount < 0 ||
+            !Util.isNumber(buyInputToken?.amountText)
+          ) {
             return;
           }
           payload.buyamount = String(payload.buyamount);
