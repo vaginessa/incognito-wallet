@@ -417,6 +417,24 @@ export const actionEstimateTradeForPDex =
     };
   };
 
+export const setDefaultTradingPlatformOnPdexV3 = () => async (dispatch, getState) => {
+  const state = getState();
+  const isPairSupportedTradeOnPancake =
+    isPairSupportedTradeOnPancakeSelector(state);
+  const isPairSupportedTradeOnUni = isPairSupportedTradeOnUniSelector(state);
+  const isPairSupportedTradeOnCurve =
+    isPairSupportedTradeOnCurveSelector(state);
+  if (isPairSupportedTradeOnPancake) {
+    dispatch(actionChangeSelectedPlatform(KEYS_PLATFORMS_SUPPORTED.pancake));
+  } else if (isPairSupportedTradeOnUni) {
+    dispatch(actionChangeSelectedPlatform(KEYS_PLATFORMS_SUPPORTED.uni));
+  } else if (isPairSupportedTradeOnCurve) {
+    dispatch(actionChangeSelectedPlatform(KEYS_PLATFORMS_SUPPORTED.curve));
+  } else {
+    dispatch(actionChangeSelectedPlatform(KEYS_PLATFORMS_SUPPORTED.incognito));
+  }
+};
+
 export const actionHandleInjectEstDataForCurve =
   () => async (dispatch, getState) => {
     try {
@@ -1394,7 +1412,6 @@ export const actionInitSwapForm =
           dispatch(change(formConfigs.formName, formConfigs.feetoken, ''));
           dispatch(actionSetSellTokenFetched(pair?.selltoken));
           dispatch(actionSetBuyTokenFetched(pair?.buytoken));
-          dispatch(actionChangeSelectedPlatform(defaultExchange));
           if (refresh && shouldFetchHistory) {
             dispatch(actionFreeHistoryOrders());
           }
@@ -1444,6 +1461,12 @@ export const actionInitSwapForm =
             }
           }
         });
+        const currentScreen = currentScreenSelector(state);
+        if(currentScreen === routeNames.Trade) {
+          dispatch(setDefaultTradingPlatformOnPdexV3());
+        } else {
+          dispatch(actionChangeSelectedPlatform(defaultExchange));
+        }
       } catch (error) {
         new ExHandler(error).showErrorToast();
       } finally {
