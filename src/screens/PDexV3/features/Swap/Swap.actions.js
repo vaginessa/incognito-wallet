@@ -667,7 +667,7 @@ export const actionEstimateTradeForCurve =
         tokenOutContractId: destToken.contractId,
         amount,
       });
-      if (!quote || !quote?.amountOutRaw) {
+      if (!quote || !quote?.amountOutRaw || !parseInt(quote?.amountOutRaw || 0)) {
         new ExHandler('No trade route found').showErrorToast();
         throw 'No trade route found';
       }
@@ -1075,7 +1075,7 @@ export const actionFindBestRateBetweenPlatforms =
           }
           if (
             isPairSupportedTradeOnPancake &&
-            new BigNumber(buyPancakeAmount).isGreaterThan(0)
+              new BigNumber(buyPancakeAmount).isGreaterThan(0)
           ) {
             arrMaxBuyAmount.push({
               id: KEYS_PLATFORMS_SUPPORTED.pancake,
@@ -1084,7 +1084,7 @@ export const actionFindBestRateBetweenPlatforms =
           }
           if (
             isPairSupportedTradeOnUni &&
-            new BigNumber(buyUniAmount).isGreaterThan(0)
+              new BigNumber(buyUniAmount).isGreaterThan(0)
           ) {
             arrMaxBuyAmount.push({
               id: KEYS_PLATFORMS_SUPPORTED.uni,
@@ -1093,7 +1093,7 @@ export const actionFindBestRateBetweenPlatforms =
           }
           if (
             isPairSupportedTradeOnCurve &&
-            new BigNumber(buyCurveAmount).isGreaterThan(0)
+              new BigNumber(buyCurveAmount).isGreaterThan(0)
           ) {
             arrMaxBuyAmount.push({
               id: KEYS_PLATFORMS_SUPPORTED.curve,
@@ -1116,7 +1116,7 @@ export const actionFindBestRateBetweenPlatforms =
           }
           if (
             isPairSupportedTradeOnPancake &&
-            new BigNumber(sellPancakeAmount).isGreaterThan(0)
+              new BigNumber(sellPancakeAmount).isGreaterThan(0)
           ) {
             arrMinSellAmount.push({
               id: KEYS_PLATFORMS_SUPPORTED.pancake,
@@ -1125,7 +1125,7 @@ export const actionFindBestRateBetweenPlatforms =
           }
           if (
             isPairSupportedTradeOnUni &&
-            new BigNumber(sellUniAmount).isGreaterThan(0)
+              new BigNumber(sellUniAmount).isGreaterThan(0)
           ) {
             arrMinSellAmount.push({
               id: KEYS_PLATFORMS_SUPPORTED.uni,
@@ -1134,7 +1134,7 @@ export const actionFindBestRateBetweenPlatforms =
           }
           if (
             isPairSupportedTradeOnCurve &&
-            new BigNumber(sellCurveAmount).isGreaterThan(0)
+              new BigNumber(sellCurveAmount).isGreaterThan(0)
           ) {
             arrMinSellAmount.push({
               id: KEYS_PLATFORMS_SUPPORTED.curve,
@@ -1150,9 +1150,20 @@ export const actionFindBestRateBetweenPlatforms =
         default:
           break;
         }
-        platformIdHasBestRate = KEYS_PLATFORMS_SUPPORTED[platformIdHasBestRate]
-          ? platformIdHasBestRate
-          : KEYS_PLATFORMS_SUPPORTED.incognito;
+
+        // Set default platformIdBestRate if can not find platformIdBestRate
+        if (!platformIdHasBestRate) {
+          if (isPairSupportedTradeOnPancake) {
+            platformIdHasBestRate = KEYS_PLATFORMS_SUPPORTED.pancake;
+          } else if (isPairSupportedTradeOnUni) {
+            platformIdHasBestRate = KEYS_PLATFORMS_SUPPORTED.uni;
+          } else if (isPairSupportedTradeOnCurve) {
+            platformIdHasBestRate = KEYS_PLATFORMS_SUPPORTED.curve;
+          } else {
+            platformIdHasBestRate = KEYS_PLATFORMS_SUPPORTED.incognito;
+          }
+        }
+
         if (platformIdHasBestRate) {
           await dispatch(actionSwitchPlatform(platformIdHasBestRate));
         }
@@ -1168,7 +1179,7 @@ export const actionEstimateTrade =
       let state = getState();
       try {
         const params = { field, useMax };
-        
+
         // Show loading estimate trade and reset fee data
         dispatch(actionFetching(true));
         dispatch(change(formConfigs.formName, formConfigs.feetoken, ''));
@@ -1190,6 +1201,18 @@ export const actionEstimateTrade =
           sellAmount = availableSellOriginalAmount;
           useMax = true;
         }
+
+        // change sell token input when press max
+        if(useMax && sellAmount) {
+          dispatch(
+            change(
+              formConfigs.formName,
+              formConfigs.selltoken,
+              convert.toHumanAmount(sellAmount, sellPDecimals)?.toString(),
+            ),
+          );
+        }
+
         const {
           tokenId: buytoken,
           originalAmount: buyAmount,

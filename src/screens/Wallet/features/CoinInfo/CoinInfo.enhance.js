@@ -46,12 +46,30 @@ const enhance = (WrappedComp) => (props) => {
     isVerified,
     isBep2Token,
     isErc20Token,
+    isPolygonErc20Token,
+    isETH,
+    isBSC,
+    isMATIC,
     contractId,
     pDecimals,
     incognitoTotalSupply,
     externalSymbol,
     symbol,
   } = selectedPrivacy;
+
+  const link = () => {
+    if (isErc20Token || isETH) {
+      return `${CONSTANT_CONFIGS.ETHERSCAN_URL}/token/${contractId}`;
+    }
+    if (isBep2Token || isBSC) {
+      return `${CONSTANT_CONFIGS.BSCSCAN_URL}/token/${contractId}`;
+    }
+    if (isPolygonErc20Token || isMATIC) {
+      return `${CONSTANT_CONFIGS.POLYGONSCAN_URL}/token/${contractId}`;
+    }
+    return '';
+  };
+
   const infosFactories = [
     {
       label: 'Origin',
@@ -73,9 +91,7 @@ const enhance = (WrappedComp) => (props) => {
     {
       label: 'Contract ID',
       value: contractId,
-      link: isErc20Token
-        ? `${CONSTANT_CONFIGS.ETHERSCAN_URL}/token/${contractId}`
-        : `${CONSTANT_CONFIGS.BSCSCAN_URL}/token/${contractId}`,
+      link: link(),
     },
     {
       label: 'Coin supply',

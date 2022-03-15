@@ -404,8 +404,26 @@ export const platformsSupportedSelector = createSelector(
         const hasError = !data[platformId]?.error;
         return hasError;
       });
+
+      // if don't have platforms supported => set default platforms
       if (_platforms.length === 0 || !_platforms) {
-        _platforms = [PLATFORMS_SUPPORTED[0]];
+        if (isPairSupportedTradeOnPancake) {
+          _platforms = platforms.filter(
+            (platform) => platform.id === KEYS_PLATFORMS_SUPPORTED.pancake,
+          );
+        } else if(isPairSupportedTradeOnUni) {
+          _platforms = platforms.filter(
+            (platform) => platform.id === KEYS_PLATFORMS_SUPPORTED.uni,
+          );
+        } else if(isPairSupportedTradeOnCurve) {
+          _platforms = platforms.filter(
+            (platform) => platform.id === KEYS_PLATFORMS_SUPPORTED.curve,
+          );
+        } else {
+          _platforms = platforms.filter(
+            (platform) => platform.id === KEYS_PLATFORMS_SUPPORTED.incognito,
+          );
+        }
       }
     } catch (error) {
       console.log('error', error);
