@@ -48,7 +48,7 @@ const SwapOrderDetail = () => {
         copiable: true,
         openUrl: true,
         handleOpenUrl: () =>
-          LinkingService.openUrl(
+          LinkingService.openUrlInSide(
             `${CONSTANT_CONFIGS.EXPLORER_CONSTANT_CHAIN_URL}/tx/${order?.requestTx}`,
           ),
       },

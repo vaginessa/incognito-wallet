@@ -196,6 +196,12 @@ class SelectedPrivacy {
     this.defaultPairToken = pTokenData?.defaultPairToken;
     this.network = pTokenData.network;
     this.hasSameSymbol = pTokenData.hasSameSymbol;
+
+    // Native Token of Network
+    this.isETH = this?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.ETH;
+    this.isBSC = this?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BSC_BNB;
+    this.isBNB = this?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BNB;
+    this.isMATIC = this?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.MATIC;
   }
 }
 

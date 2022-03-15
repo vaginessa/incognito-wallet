@@ -100,7 +100,7 @@ const PrivacyApps = () => {
             title: 'DEX',
           },
         ],
-        desc: 'Trade anonymously on Polygon’s leading DEX. Deep liquidity and super low fees – now with privacy.',
+        desc: 'Swap stablecoins with complete confidentiality using Privacy Curve. Low fees on Polygon meets full privacy on Incognito.',
         onPressItem,
       },
     ];
