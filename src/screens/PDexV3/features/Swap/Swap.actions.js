@@ -1248,11 +1248,7 @@ export const actionEstimateTrade =
         case formConfigs.selltoken: {
           inputToken = formConfigs.buytoken;
           payload.sellamount = sellAmount;
-          if (
-            !payload.sellamount ||
-            payload.sellamount < 0 ||
-            !Util.isNumber(sellInputToken?.amountText)
-          ) {
+          if (!payload.sellamount) {
             return;
           }
           payload.sellamount = String(payload.sellamount);
@@ -1266,11 +1262,7 @@ export const actionEstimateTrade =
               .multipliedBy(100 / (100 - slippagetolerance))
               .toNumber(),
           );
-          if (
-            !payload.buyamount ||
-            payload.buyamount < 0 ||
-            !Util.isNumber(buyInputToken?.amountText)
-          ) {
+          if (!payload.buyamount) {
             return;
           }
           payload.buyamount = String(payload.buyamount);
