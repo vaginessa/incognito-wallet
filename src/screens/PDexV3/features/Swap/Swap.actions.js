@@ -1406,8 +1406,8 @@ export const actionInitSwapForm =
         const defaultExchange = defaultExchangeSelector(state);
         const isUsePRVToPayFee = isUsePRVToPayFeeSelector(state);
         let pair = defaultPair || defaultPairSelector(state);
-        await dispatch(actionInitingSwapForm(true));
         batch(() => {
+          dispatch(actionInitingSwapForm(true));
           dispatch(reset(formConfigs.formName));
           dispatch(actionResetData());
           dispatch(change(formConfigs.formName, formConfigs.feetoken, ''));
