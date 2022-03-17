@@ -38,14 +38,14 @@ const TabNavigator = createMaterialBottomTabNavigator(
       screen: TabTrade,
       navigationOptions: {
         tabBarIcon: ({ focused }) => <TradeIcon active={focused} />,
-        tabBarLabel: <Text style={styled.label}>Markets</Text>,
+        tabBarLabel: <Text style={styled.label}>Trade</Text>,
       },
     },
     Assets: {
       screen: TabAssets,
       navigationOptions: {
         tabBarIcon: ({ focused }) => <AssetsIcon active={focused} />,
-        tabBarLabel: <Text style={styled.label}>Trade</Text>,
+        tabBarLabel: <Text style={styled.label}>Wallet</Text>,
       },
     },
     PrivacyApps: {
