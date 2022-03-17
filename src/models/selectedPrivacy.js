@@ -3,7 +3,6 @@ import { CONSTANT_COMMONS, CONSTANT_CONFIGS } from '@src/constants';
 import { BIG_COINS } from '@src/screens/DexV2/constants';
 import { PRV_ID } from '@screens/Dex/constants';
 import { detectToken } from '@src/utils/misc';
-import convert from '@utils/convert';
 import PToken from './pToken';
 
 function getNetworkName() {
@@ -16,7 +15,14 @@ function getNetworkName() {
     this?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BNB;
   const isMATIC =
     this?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.MATIC;
-  if (this.isPrivateCoin) {
+
+  if (isBSC) {
+    name ='BSC';
+  } else if (isBNB) {
+    name ='BNB Chain';
+  } else if (this.isIncognitoToken || this.isMainCrypto) {
+    name = 'Incognito';
+  } else if (this.isPrivateCoin) {
     name = `${this.name}`;
   } else if (this.isErc20Token) {
     name = 'ERC20';
@@ -26,9 +32,8 @@ function getNetworkName() {
     name = 'BEP2';
   } else if (this.isPolygonErc20Token) {
     name = 'Polygon ERC20';
-  } else if (this.isIncognitoToken || this.isMainCrypto) {
-    name = 'Incognito';
   }
+
   let rootNetworkName = name;
   if (isETH || this?.isErc20Token) {
     rootNetworkName = CONSTANT_COMMONS.NETWORK_NAME.ETHEREUM;
@@ -191,6 +196,12 @@ class SelectedPrivacy {
     this.defaultPairToken = pTokenData?.defaultPairToken;
     this.network = pTokenData.network;
     this.hasSameSymbol = pTokenData.hasSameSymbol;
+
+    // Native Token of Network
+    this.isETH = this?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.ETH;
+    this.isBSC = this?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BSC_BNB;
+    this.isBNB = this?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BNB;
+    this.isMATIC = this?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.MATIC;
   }
 }
 

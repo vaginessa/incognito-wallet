@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, ImageProps } from 'react-native';
 import { Image } from '@src/components/core';
-import uniSrcIcon from '@src/assets/images/new-icons/uni2.png';
+import curveSrcIcon from '@src/assets/images/new-icons/curve2.png';
 
 const styled = StyleSheet.create({
   icon: {
@@ -10,11 +10,11 @@ const styled = StyleSheet.create({
   },
 });
 
-const UniIcon2 = (props: ImageProps) => {
+const CurveIcon2 = (props: ImageProps) => {
   const { style, ...rest } = props;
-  return <Image source={uniSrcIcon} style={[styled.icon, style]} {...rest} />;
+  return <Image source={curveSrcIcon} style={[styled.icon, style]} {...rest} />;
 };
 
-UniIcon2.propTypes = {};
+CurveIcon2.propTypes = {};
 
-export default UniIcon2;
+export default CurveIcon2;
