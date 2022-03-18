@@ -12,6 +12,7 @@ import { ExHandler } from '@src/services/exception';
 import routeNames from '@src/router/routeNames';
 import { change, reset } from 'redux-form';
 import isEmpty from 'lodash/isEmpty';
+import Util from '@utils/Util';
 import SelectedPrivacy from '@src/models/selectedPrivacy';
 import { batch } from 'react-redux';
 import uniq from 'lodash/uniq';
@@ -417,6 +418,24 @@ export const actionEstimateTradeForPDex =
     };
   };
 
+export const setDefaultTradingPlatformOnPdexV3 = () => async (dispatch, getState) => {
+  const state = getState();
+  const isPairSupportedTradeOnPancake =
+    isPairSupportedTradeOnPancakeSelector(state);
+  const isPairSupportedTradeOnUni = isPairSupportedTradeOnUniSelector(state);
+  const isPairSupportedTradeOnCurve =
+    isPairSupportedTradeOnCurveSelector(state);
+  if (isPairSupportedTradeOnPancake) {
+    dispatch(actionChangeSelectedPlatform(KEYS_PLATFORMS_SUPPORTED.pancake));
+  } else if (isPairSupportedTradeOnUni) {
+    dispatch(actionChangeSelectedPlatform(KEYS_PLATFORMS_SUPPORTED.uni));
+  } else if (isPairSupportedTradeOnCurve) {
+    dispatch(actionChangeSelectedPlatform(KEYS_PLATFORMS_SUPPORTED.curve));
+  } else {
+    dispatch(actionChangeSelectedPlatform(KEYS_PLATFORMS_SUPPORTED.incognito));
+  }
+};
+
 export const actionHandleInjectEstDataForCurve =
   () => async (dispatch, getState) => {
     try {
@@ -667,11 +686,9 @@ export const actionEstimateTradeForCurve =
         tokenOutContractId: destToken.contractId,
         amount,
       });
-      if (!quote || !quote?.amountOutRaw) {
-        new ExHandler(
-          'Can not found best route for this pair',
-        ).showErrorToast();
-        throw 'Can not found best route for this pair';
+      if (!quote || !quote?.amountOutRaw || !parseInt(quote?.amountOutRaw || 0)) {
+        new ExHandler('No trade route found').showErrorToast();
+        throw 'No trade route found';
       }
       const paths = [sourceToken.contractId, destToken.contractId];
       
@@ -1077,7 +1094,7 @@ export const actionFindBestRateBetweenPlatforms =
           }
           if (
             isPairSupportedTradeOnPancake &&
-            new BigNumber(buyPancakeAmount).isGreaterThan(0)
+              new BigNumber(buyPancakeAmount).isGreaterThan(0)
           ) {
             arrMaxBuyAmount.push({
               id: KEYS_PLATFORMS_SUPPORTED.pancake,
@@ -1086,7 +1103,7 @@ export const actionFindBestRateBetweenPlatforms =
           }
           if (
             isPairSupportedTradeOnUni &&
-            new BigNumber(buyUniAmount).isGreaterThan(0)
+              new BigNumber(buyUniAmount).isGreaterThan(0)
           ) {
             arrMaxBuyAmount.push({
               id: KEYS_PLATFORMS_SUPPORTED.uni,
@@ -1095,7 +1112,7 @@ export const actionFindBestRateBetweenPlatforms =
           }
           if (
             isPairSupportedTradeOnCurve &&
-            new BigNumber(buyCurveAmount).isGreaterThan(0)
+              new BigNumber(buyCurveAmount).isGreaterThan(0)
           ) {
             arrMaxBuyAmount.push({
               id: KEYS_PLATFORMS_SUPPORTED.curve,
@@ -1118,7 +1135,7 @@ export const actionFindBestRateBetweenPlatforms =
           }
           if (
             isPairSupportedTradeOnPancake &&
-            new BigNumber(sellPancakeAmount).isGreaterThan(0)
+              new BigNumber(sellPancakeAmount).isGreaterThan(0)
           ) {
             arrMinSellAmount.push({
               id: KEYS_PLATFORMS_SUPPORTED.pancake,
@@ -1127,7 +1144,7 @@ export const actionFindBestRateBetweenPlatforms =
           }
           if (
             isPairSupportedTradeOnUni &&
-            new BigNumber(sellUniAmount).isGreaterThan(0)
+              new BigNumber(sellUniAmount).isGreaterThan(0)
           ) {
             arrMinSellAmount.push({
               id: KEYS_PLATFORMS_SUPPORTED.uni,
@@ -1136,7 +1153,7 @@ export const actionFindBestRateBetweenPlatforms =
           }
           if (
             isPairSupportedTradeOnCurve &&
-            new BigNumber(sellCurveAmount).isGreaterThan(0)
+              new BigNumber(sellCurveAmount).isGreaterThan(0)
           ) {
             arrMinSellAmount.push({
               id: KEYS_PLATFORMS_SUPPORTED.curve,
@@ -1152,9 +1169,20 @@ export const actionFindBestRateBetweenPlatforms =
         default:
           break;
         }
-        platformIdHasBestRate = KEYS_PLATFORMS_SUPPORTED[platformIdHasBestRate]
-          ? platformIdHasBestRate
-          : KEYS_PLATFORMS_SUPPORTED.incognito;
+
+        // Set default platformIdBestRate if can not find platformIdBestRate
+        if (!platformIdHasBestRate) {
+          if (isPairSupportedTradeOnPancake) {
+            platformIdHasBestRate = KEYS_PLATFORMS_SUPPORTED.pancake;
+          } else if (isPairSupportedTradeOnUni) {
+            platformIdHasBestRate = KEYS_PLATFORMS_SUPPORTED.uni;
+          } else if (isPairSupportedTradeOnCurve) {
+            platformIdHasBestRate = KEYS_PLATFORMS_SUPPORTED.curve;
+          } else {
+            platformIdHasBestRate = KEYS_PLATFORMS_SUPPORTED.incognito;
+          }
+        }
+
         if (platformIdHasBestRate) {
           await dispatch(actionSwitchPlatform(platformIdHasBestRate));
         }
@@ -1170,8 +1198,8 @@ export const actionEstimateTrade =
       let state = getState();
       try {
         const params = { field, useMax };
-        
-        // Show loading estimate trade and reset data
+
+        // Show loading estimate trade and reset fee data
         dispatch(actionFetching(true));
         dispatch(change(formConfigs.formName, formConfigs.feetoken, ''));
 
@@ -1192,6 +1220,18 @@ export const actionEstimateTrade =
           sellAmount = availableSellOriginalAmount;
           useMax = true;
         }
+
+        // change sell token input when press max
+        if(useMax && sellAmount) {
+          dispatch(
+            change(
+              formConfigs.formName,
+              formConfigs.selltoken,
+              convert.toHumanAmount(sellAmount, sellPDecimals)?.toString(),
+            ),
+          );
+        }
+
         const {
           tokenId: buytoken,
           originalAmount: buyAmount,
@@ -1373,7 +1413,6 @@ export const actionInitSwapForm =
           dispatch(change(formConfigs.formName, formConfigs.feetoken, ''));
           dispatch(actionSetSellTokenFetched(pair?.selltoken));
           dispatch(actionSetBuyTokenFetched(pair?.buytoken));
-          dispatch(actionChangeSelectedPlatform(defaultExchange));
           if (refresh && shouldFetchHistory) {
             dispatch(actionFreeHistoryOrders());
           }
@@ -1423,6 +1462,12 @@ export const actionInitSwapForm =
             }
           }
         });
+        const currentScreen = currentScreenSelector(state);
+        if(currentScreen === routeNames.Trade) {
+          dispatch(setDefaultTradingPlatformOnPdexV3());
+        } else {
+          dispatch(actionChangeSelectedPlatform(defaultExchange));
+        }
       } catch (error) {
         new ExHandler(error).showErrorToast();
       } finally {
@@ -1531,8 +1576,9 @@ export const actionFetchingSwap = (payload) => ({
 
 export const actionFetchSwap = () => async (dispatch, getState) => {
   let tx;
+  const state = getState();
+  const currentScreen = currentScreenSelector(state);
   try {
-    const state = getState();
     const { disabledBtnSwap } = swapInfoSelector(state);
     if (disabledBtnSwap) {
       return;
@@ -1674,8 +1720,9 @@ export const actionFetchSwap = () => async (dispatch, getState) => {
     batch(() => {
       dispatch(actionFetchingSwap(false));
       dispatch(actionFetchHistory());
-      dispatch(actionFetchRewardHistories());
-
+      if (currentScreen !== routeNames.Trade) {
+        dispatch(actionFetchRewardHistories());
+      }
       // Reset data after swap
       dispatch(actionResetData());
       dispatch(
@@ -1705,6 +1752,7 @@ export const actionFetchHistory = () => async (dispatch, getState) => {
     await dispatch(actionFetchingOrdersHistory());
     const state = getState();
     const pDexV3 = await dispatch(actionGetPDexV3Inst());
+    // get trading platform incognito | pancake | uni | curve
     const defaultExchange = defaultExchangeSelector(state);
     const isPrivacyApp = isPrivacyAppSelector(state);
     if (!isPrivacyApp) {
@@ -1792,7 +1840,6 @@ export const actionFetchRewardHistories = () => async (dispatch, getState) => {
     dispatch(actionFetchedRewardHistories(rewardHistoriesApiResponse));
   } catch (error) {
     console.log('actionFetchHistory-error', error);
-    new ExHandler(error).showErrorToast();
     await dispatch(actionFetchFailRewardHistories());
   }
 };

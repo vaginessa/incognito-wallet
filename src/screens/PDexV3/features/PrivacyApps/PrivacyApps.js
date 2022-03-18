@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useCallback} from 'react';
 import { StyleSheet } from 'react-native';
 import { withLayout_2 } from '@src/components/Layout';
 import { View } from '@src/components/core';
@@ -100,7 +100,7 @@ const PrivacyApps = () => {
             title: 'DEX',
           },
         ],
-        desc: 'Trade anonymously on Polygon’s leading DEX. Deep liquidity and super low fees – now with privacy.',
+        desc: 'Swap stablecoins with complete confidentiality using Privacy Curve. Low fees on Polygon meets full privacy on Incognito.',
         onPressItem,
       },
     ];
@@ -114,13 +114,18 @@ const PrivacyApps = () => {
     }
   });
 
-  const renderItem = ({ item }) => {
-    return <PrivacyAppsItem {...item} />;
-  };
+  const keyExtractor = useCallback((item) => item?.id?.toString(), []);
 
-  const renderItemSeparatorComponent = () => {
-    return <View style={styled.itemSpace} />;
-  };
+  const renderItem = useCallback(
+    ({ item }) => <PrivacyAppsItem {...item} />,
+    [],
+  );
+
+  const renderItemSeparatorComponent = useCallback(
+    () => <View style={styled.itemSpace} />,
+    [],
+  );
+
   return (
     <>
       <Header
@@ -131,10 +136,15 @@ const PrivacyApps = () => {
       <View borderTop fullFlex>
         <FlatList
           data={factories}
-          keyExtractor={(item) => item?.id?.toString()}
+          keyExtractor={keyExtractor}
           renderItem={renderItem}
           ItemSeparatorComponent={renderItemSeparatorComponent}
           contentContainerStyle={styled.flatListContainer}
+          initialNumToRender={5}
+          removeClippedSubviews
+          maxToRenderPerBatch={10}
+          updateCellsBatchingPeriod={100}
+          windowSize={10}
         />
       </View>
     </>

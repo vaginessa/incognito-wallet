@@ -23,7 +23,13 @@ function getNetworkName() {
   const isFTM =
     this?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.FTM;
   
-  if (this.isPrivateCoin) {
+  if (isBSC) {
+    name ='BSC';
+  } else if (isBNB) {
+    name ='BNB Chain';
+  } else if (this.isIncognitoToken || this.isMainCrypto) {
+    name = 'Incognito';
+  } else if (this.isPrivateCoin) {
     name = `${this.name}`;
   } else if (this.isErc20Token) {
     name = 'ERC20';
@@ -38,6 +44,7 @@ function getNetworkName() {
   } else if (this.isIncognitoToken || this.isMainCrypto) {
     name = 'Incognito';
   }
+
   let rootNetworkName = name;
   if (isETH || this?.isErc20Token) {
     rootNetworkName = CONSTANT_COMMONS.NETWORK_NAME.ETHEREUM;
@@ -209,6 +216,12 @@ class SelectedPrivacy {
     this.defaultPairToken = pTokenData?.defaultPairToken;
     this.network = pTokenData.network;
     this.hasSameSymbol = pTokenData.hasSameSymbol;
+
+    // Native Token of Network
+    this.isETH = this?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.ETH;
+    this.isBSC = this?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BSC_BNB;
+    this.isBNB = this?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BNB;
+    this.isMATIC = this?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.MATIC;
   }
 }
 
