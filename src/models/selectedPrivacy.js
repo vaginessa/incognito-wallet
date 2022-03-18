@@ -7,15 +7,22 @@ import PToken from './pToken';
 
 function getNetworkName() {
   let name = 'Unknown';
+  // Native token of Ethereum network
   const isETH =
     this?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.ETH;
+  // Native token of Binance Smart Chain network
   const isBSC =
     this?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BSC_BNB;
+  // Native token of Binance Chain network
   const isBNB =
     this?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BNB;
+  // Native token of Polygon network
   const isMATIC =
     this?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.MATIC;
-
+  // Native token of Fantom network
+  const isFTM =
+    this?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.FTM;
+  
   if (isBSC) {
     name ='BSC';
   } else if (isBNB) {
@@ -32,6 +39,10 @@ function getNetworkName() {
     name = 'BEP2';
   } else if (this.isPolygonErc20Token) {
     name = 'Polygon ERC20';
+  } else if (this.isFantomErc20Token) {
+    name = 'Fantom ERC20';
+  } else if (this.isIncognitoToken || this.isMainCrypto) {
+    name = 'Incognito';
   }
 
   let rootNetworkName = name;
@@ -43,6 +54,8 @@ function getNetworkName() {
     rootNetworkName = CONSTANT_COMMONS.NETWORK_NAME.BINANCE;
   } else if (isMATIC || this?.isPolygonErc20Token) {
     rootNetworkName = CONSTANT_COMMONS.NETWORK_NAME.POLYGON;
+  } else if (isFTM || this?.isFantomErc20Token) {
+    rootNetworkName = CONSTANT_COMMONS.NETWORK_NAME.FANTOM;
   }
   return {
     networkName: name,
@@ -109,6 +122,10 @@ class SelectedPrivacy {
       this.isPrivateToken &&
       this.currencyType ===
         CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.POLYGON_ERC20;
+    this.isFantomErc20Token =
+      this.isPrivateToken &&
+      this.currencyType ===
+        CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.FANTOM_ERC20;
     this.isBep20Token =
       this.isPrivateToken &&
       this.currencyType ===
@@ -160,7 +177,10 @@ class SelectedPrivacy {
       this.isPolygonErc20Token ||
       (this.isToken &&
         this.currencyType ===
-          CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.MATIC);
+          CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.MATIC) ||
+      this.isFantomErc20Token ||
+      (this.isToken &&
+        this.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.FTM);
     this.isCentralized = this.isToken && !this.isDecentralized;
     this.incognitoTotalSupply =
       (this.isIncognitoToken && Number(token?.totalSupply)) || 0;
