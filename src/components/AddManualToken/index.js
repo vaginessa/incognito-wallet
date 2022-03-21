@@ -7,12 +7,17 @@ import { accountSelector } from '@src/redux/selectors';
 import { setWallet } from '@src/redux/actions/wallet';
 import { getPTokenList } from '@src/redux/actions/token';
 import accountService from '@src/services/wallet/accountService';
-import { detectFantomToken, addFantomToken } from '@src/services/api/token';
+import {
+  detectTokenInNetwork,
+  addManuallyToken,
+} from '@src/services/api/token';
 import LoadingContainer from '@src/components/LoadingContainer';
 import { ExHandler, CustomError, ErrorCode } from '@src/services/exception';
-import AddFantomToken from './AddFantomToken';
+import { AddManuallyContext } from '../../screens/AddManually/AddManually.enhance';
+import AddManualToken from './AddManualToken';
 
-export class AddFantomTokenContainer extends Component {
+export class AddManualTokenComponent extends Component {
+  static contextType = AddManuallyContext;
   constructor(props) {
     super(props);
 
@@ -24,8 +29,9 @@ export class AddFantomTokenContainer extends Component {
     this.handleSearch = debounce(this.handleSearch.bind(this), 1000);
   }
 
-  detectFantomToken = async (address) => {
-    const data = await detectFantomToken(address);
+  detectTokenInNetwork = async (address) => {
+    const { type } = this.context;
+    const data = await detectTokenInNetwork({ address, network: type });
     if (!data) {
       throw new CustomError(ErrorCode.addBep2Token_not_found);
     }
@@ -46,7 +52,7 @@ export class AddFantomTokenContainer extends Component {
         decimals,
       };
 
-      newPToken = await addFantomToken(data);
+      newPToken = await addManuallyToken(data);
       // add this new token to user following list
 
       await accountService.addFollowingTokens(
@@ -76,14 +82,14 @@ export class AddFantomTokenContainer extends Component {
 
       // search by address/contractId
       if (address) {
-        await this.detectFantomToken(address);
+        await this.detectTokenInNetwork(address);
       } else if (symbol) {
         // TODO: search by symbol
       }
     } catch (e) {
       new ExHandler(
         e,
-        'Can not search this Fantom coin, please try again.',
+        'Can not search this Bep20 coin, please try again.',
       ).showErrorToast();
     } finally {
       this.setState({ isSearching: false });
@@ -99,7 +105,7 @@ export class AddFantomTokenContainer extends Component {
     }
 
     return (
-      <AddFantomToken
+      <AddManualToken
         data={data}
         isSearching={isSearching}
         onAdd={this.handleAdd}
@@ -119,11 +125,11 @@ const mapDispatchToProps = {
   getPTokenList,
 };
 
-AddFantomTokenContainer.propTypes = {
+AddManualTokenComponent.propTypes = {
   account: PropTypes.object.isRequired,
   wallet: PropTypes.object.isRequired,
   setWallet: PropTypes.func.isRequired,
   getPTokenList: PropTypes.func.isRequired,
 };
 
-export default connect(mapState, mapDispatchToProps)(AddFantomTokenContainer);
+export default connect(mapState, mapDispatchToProps)(AddManualTokenComponent);
