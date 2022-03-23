@@ -199,7 +199,7 @@ const BETA_2 = {
   password: '',
   name: 'Beta2',
   coinServices: 'https://api-coinservice-beta2.incognito.org',
-  pubsubServices: 'https://api-coinservice.-beta2incognito.org/txservice',
+  pubsubServices: 'https://api-coinservice-beta2.incognito.org/txservice',
   requestServices: 'https://api-coinservice-beta2.incognito.org',
   apiServices: 'https://api-service.incognito.org',
   shardNumber: DEFAULT_SHARD_NUMBER,
