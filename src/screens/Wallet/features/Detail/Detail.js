@@ -125,7 +125,7 @@ const Balance = React.memo(() => {
   };
   return (
     <View style={balanceStyled.container}>
-      <Amount {...amountProps} amount={token.amount} />
+      <Amount {...amountProps} amount={token?.amount} />
       <View style={balanceStyled.hook}>
         <Price pricePrv={selected.pricePrv} priceUsd={selected.priceUsd} textStyle={{ color: colors.text3 }} />
         <ChangePrice {...changePriceProps} />

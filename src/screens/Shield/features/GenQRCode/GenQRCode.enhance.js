@@ -28,8 +28,7 @@ const enhance = (WrappedComp) => (props) => {
     selectedPrivacy,
     handleShield,
   } = props;
-  const { currencyType, isDecentralized }  = selectedPrivacy;
-
+  const { currencyType, isDecentralized } = selectedPrivacy;
   const [showTerm, setShowTerm] = useState(true);
   const [selectedTerm, setSelectedTerm] = React.useState(undefined);
   const navigation = useNavigation();
@@ -41,7 +40,7 @@ const enhance = (WrappedComp) => (props) => {
   const hasError = !isFetched && !isFetching;
 
   const handleGoBack = () => {
-    if (disableBackToShield ) return navigation.goBack();
+    if (disableBackToShield) return navigation.goBack();
     navigation.navigate(routeNames.Shield);
   };
   const themeMode = useSelector(themeModeSelector);
@@ -86,13 +85,23 @@ const enhance = (WrappedComp) => (props) => {
     return renderLoading();
   }
 
+  // Check token belong to Polygon network
+  const isPolygonToken =
+    selectedPrivacy?.isPolygonErc20Token ||
+    currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.MATIC;
+
+  // Check token belong to Fantom network
+  const isFantomToken =
+    selectedPrivacy?.isFantomErc20Token ||
+    currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.FTM;
+
   /** render term off user */
   if (
     isDecentralized &&
     showTerm &&
     selectedPrivacy?.tokenId !== PRV_ID &&
-    currencyType !== CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.MATIC &&
-    currencyType !== CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.POLYGON_ERC20
+    !isPolygonToken &&
+    !isFantomToken
   ) {
     return renderTermOfUse();
   }
@@ -106,7 +115,16 @@ const enhance = (WrappedComp) => (props) => {
   return (
     <ErrorBoundary>
       {renderHeader()}
-      <WrappedComp {...{ ...props, isFetching, isFetched, hasError, selectedTerm, setSelectedTerm}} />
+      <WrappedComp
+        {...{
+          ...props,
+          isFetching,
+          isFetched,
+          hasError,
+          selectedTerm,
+          setSelectedTerm,
+        }}
+      />
     </ErrorBoundary>
   );
 };

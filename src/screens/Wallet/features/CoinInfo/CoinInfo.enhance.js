@@ -24,6 +24,9 @@ export const getNetworkName = (selectedPrivacy) => {
   if(selectedPrivacy?.isPolygonErc20Token) {
     return 'Polygon network (ERC20)';
   }
+  if (selectedPrivacy?.isFantomErc20Token) {
+    return 'Fantom network (ERC20)';
+  }
   if (
     selectedPrivacy?.currencyType ===
     CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BNB
