@@ -38,7 +38,7 @@ const enhance = (WrappedComp) => (props) => {
   const selectedPrivacyWithTokenIDFn = useSelector(
     selectedPrivacySelector.getPrivacyDataByTokenID,
   );
-  
+
   const formatSendItems = (items) => {
     const results =
       (items &&
@@ -247,7 +247,9 @@ const enhance = (WrappedComp) => (props) => {
     counterSuccess.current = counterSuccess.current + 1;
     setForcePercent(() =>
       Math.round(
-        (counterSuccess.current / (tokenIDsVer2.current.length + tokenIDsVer1.current.length)) * 100,
+        (counterSuccess.current /
+          (tokenIDsVer2.current.length + tokenIDsVer1.current.length)) *
+          100,
       ),
     );
     return [
@@ -297,7 +299,7 @@ const enhance = (WrappedComp) => (props) => {
     );
     setForcePercent(0);
     counterSuccess.current = 0;
-    return [...historyVer1, flatten(historyVer2)].sort(
+    return [...historyVer1, ...flatten(historyVer2)].sort(
       (a, b) =>
         moment(b.Date, [
           'MM/DD/YYYY hh:mm:ss',
