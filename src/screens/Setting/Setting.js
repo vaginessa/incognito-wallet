@@ -91,7 +91,7 @@ const Setting = () => {
           <DecimalDigitsSection />
           {/*<CurrencySection />*/}
           <AddressBookSection />
-          {/*<ExportCSVSection handlePress={handlePressExportCSV} />*/}
+          <ExportCSVSection handlePress={handlePressExportCSV} />
           <UTXOSection />
           <ConvertCoinsSection />
           <RemoveStorage />

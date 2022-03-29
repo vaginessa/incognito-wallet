@@ -26,6 +26,7 @@ import difference from 'lodash/difference';
 import { isUsePRVToPayFeeSelector } from '@screens/Setting';
 import flatten from 'lodash/flatten';
 import orderBy from 'lodash/orderBy';
+import {CONSTANT_CONFIGS} from '@src/constants';
 import {
   ACTION_FETCHING,
   ACTION_FETCHED,
@@ -678,7 +679,7 @@ export const actionEstimateTradeForCurve =
         destToken: tokenBuyCurve,
         amount: convert.toHumanAmount(sellamount, tokenSellCurve.pDecimals)
       };
-       
+
       const { sourceToken, destToken, amount } = payloadCurve;
       const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
       const quote = await pDexV3Inst.getQuoteCurve({
@@ -691,7 +692,7 @@ export const actionEstimateTradeForCurve =
         throw 'No trade route found';
       }
       const paths = [sourceToken.contractId, destToken.contractId];
-      
+
       let originalMaxGet = quote?.amountOutRaw;
 
       const tokenDecimals = tokenBuyCurve.decimals;
@@ -710,7 +711,7 @@ export const actionEstimateTradeForCurve =
       const { feeAddress, tradeID, signAddress, originalTradeFee } = tradingFee;
       minSellOriginalAmount = sellamount;
       maxBuyOriginalAmount = maxGet;
-      
+
       await dispatch(
         actionChangeEstimateData({
           [KEYS_PLATFORMS_SUPPORTED.curve]: {
@@ -1287,9 +1288,17 @@ export const actionEstimateTrade =
           dispatch(actionEstimateTradeForPDex(payload)),
           dispatch(actionEstimateTradeForPancake(payload)),
           dispatch(actionEstimateTradeForUni(payload)),
-          dispatch(actionEstimateTradeForCurve(payload)),
         ];
-        const [pDexData, pancakeData, uniData, curveData] = await Promise.all(task);
+        let pDexData = [];
+        let pancakeData = [];
+        let uniData = [];
+        let curveData = [];
+        if (CONSTANT_CONFIGS.isMainnet) {
+          task.push(dispatch(actionEstimateTradeForCurve(payload)));
+          [pDexData, pancakeData, uniData, curveData] = await Promise.all(task);
+        } else {
+          [pDexData, pancakeData, uniData] = await Promise.all(task);
+        }
         await dispatch(
           actionFindBestRateBetweenPlatforms({
             pDexData,
@@ -1351,12 +1360,17 @@ export const actionFetchPairs = (refresh) => async (dispatch, getState) => {
     const defaultExchange = defaultExchangeSelector(state);
     const isPrivacyApp = isPrivacyAppSelector(state);
     if (!isPrivacyApp) {
-      [pDEXPairs, pancakeTokens, uniTokens, curveTokens] = await Promise.all([
+      const tasks = [
         pDexV3Inst.getListPair(),
         pDexV3Inst.getPancakeTokens(),
         pDexV3Inst.getUniTokens(),
-        pDexV3Inst.getCurveTokens(),
-      ]);
+      ];
+      if (CONSTANT_CONFIGS.isMainnet) {
+        tasks.push(pDexV3Inst.getCurveTokens());
+        [pDEXPairs, pancakeTokens, uniTokens, curveTokens] = await Promise.all(tasks);
+      } else {
+        [pDEXPairs, pancakeTokens, uniTokens] = await Promise.all(tasks);
+      }
       pairs = pDEXPairs.reduce(
         (prev, current) =>
           (prev = prev.concat([current.tokenId1, current.tokenId2])),
@@ -1756,14 +1770,24 @@ export const actionFetchHistory = () => async (dispatch, getState) => {
     const defaultExchange = defaultExchangeSelector(state);
     const isPrivacyApp = isPrivacyAppSelector(state);
     if (!isPrivacyApp) {
-      // Fetch history of all platform when current screen is pDexV3 
-      const [swapHistory, pancakeHistory, uniHistory, curveHistory] =
-        await Promise.all([
-          pDexV3.getSwapHistory({ version: PrivacyVersion.ver2 }),
-          pDexV3.getSwapPancakeHistory(),
-          pDexV3.getSwapUniHistoryFromApi(),
-          pDexV3.getSwapCurveHistoryFromApi(),
-        ]);
+      // Fetch history of all platform when current screen is pDexV3
+      let swapHistory = [];
+      let pancakeHistory = [];
+      let uniHistory = [];
+      let curveHistory = [];
+      const tasks = [
+        pDexV3.getSwapHistory({ version: PrivacyVersion.ver2 }),
+        pDexV3.getSwapPancakeHistory(),
+        pDexV3.getSwapUniHistoryFromApi(),
+      ];
+      if (CONSTANT_CONFIGS.isMainnet) {
+        tasks.push(pDexV3.getSwapCurveHistoryFromApi());
+        [swapHistory, pancakeHistory, uniHistory, curveHistory] =
+            await Promise.all(tasks);
+      } else {
+        [swapHistory, pancakeHistory, uniHistory] =
+          await Promise.all(tasks);
+      }
       history = flatten([swapHistory, pancakeHistory, uniHistory, curveHistory]);
     } else {
       switch (defaultExchange) {

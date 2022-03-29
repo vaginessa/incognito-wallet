@@ -42,6 +42,7 @@ export const exportAndSaveCSVFile = (arr) => {
 
       if (dir) {
         const path = `${dir}/incognito_${time}.csv`;
+        // console.log('PATH CSV ', path);
         rnfs
           .writeFile(path, csv, 'utf8')
           .then(() => {
