@@ -12,10 +12,9 @@ import {
 } from '@src/screens/Setting/features/ExportCSVSection/ExportCSVSection.utils';
 import formatUtil from '@src/utils/format';
 import BigNumber from 'bignumber.js';
-import { PrivacyVersion } from 'incognito-chain-web-js/build/wallet';
 import flatten from 'lodash/flatten';
 import moment from 'moment';
-import React, { useEffect, useRef, useState } from 'react';
+import React from 'react';
 import Share from 'react-native-share';
 import { useSelector } from 'react-redux';
 import { compose } from 'recompose';
@@ -39,7 +38,7 @@ const enhance = (WrappedComp) => (props) => {
     selectedPrivacySelector.getPrivacyDataByTokenID,
   );
 
-  const formatSendItems = (items) => {
+  const formatSendItems = (items, token) => {
     const results =
       (items &&
         items.length > 0 &&
@@ -52,10 +51,10 @@ const enhance = (WrappedComp) => (props) => {
               'Received Currency': '',
               'Send Quantity': `${renderAmount({
                 amount: amount || 0,
-                pDecimals: COINS.PRV.pDecimals || 9,
-                decimalDigits: false,
+                pDecimals: token.pDecimals || 9,
+                decimalDigits: true,
               })}`,
-              'Send Currency': COINS.PRV.symbol || '',
+              'Send Currency': token.symbol || token?.externalSymbol || '',
               'Fee Amount': `${
                 new BigNumber(fee || 0)
                   .dividedBy(Math.pow(10, COINS.PRV.pDecimals || 9))
@@ -72,7 +71,7 @@ const enhance = (WrappedComp) => (props) => {
     return results;
   };
 
-  const formatReceiveItems = (items) => {
+  const formatReceiveItems = (items, token) => {
     const results =
       (items &&
         items.length > 0 &&
@@ -83,10 +82,10 @@ const enhance = (WrappedComp) => (props) => {
               Date: formatUtil.formatDateTime(time, 'MM/DD/YYYY HH:mm:ss'),
               'Received Quantity': `${renderAmount({
                 amount: amount || 0,
-                pDecimals: COINS.PRV.pDecimals || 9,
+                pDecimals: token.pDecimals || 9,
                 decimalDigits: true,
               })}`,
-              'Received Currency': COINS.PRV.symbol || '',
+              'Received Currency': token.symbol || token?.externalSymbol || '',
               'Send Quantity': '',
               'Send Currency': '',
               'Fee Amount': '',
