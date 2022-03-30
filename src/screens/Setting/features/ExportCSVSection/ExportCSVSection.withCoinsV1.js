@@ -1,12 +1,12 @@
 import ErrorBoundary from '@src/components/ErrorBoundary';
 import { getDefaultAccountWalletSelector } from '@src/redux/selectors/shared';
-import React, {useEffect, useRef, useState} from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { selectedPrivacySelector } from '@src/redux/selectors';
 import { PrivacyVersion } from 'incognito-chain-web-js/build/wallet';
 import formatUtil from '@utils/format';
-import {renderAmount} from '@src/redux/selectors/history';
-import {COINS} from '@src/constants';
+import { renderAmount } from '@src/redux/selectors/history';
+import { COINS } from '@src/constants';
 import BigNumber from 'bignumber.js';
 import flatten from 'lodash/flatten';
 
@@ -92,23 +92,20 @@ const withExportCSVVer1 = (WrappedComp) => (props) => {
       isPToken: tokenSelected.isPToken,
       version: PrivacyVersion.ver1,
     });
-    let {
-      txsReceiver = [],
-      txsTransactor = [],
-    } = data;
-    txsTransactor = txsTransactor.filter(({ txTypeStr }) => !txTypeStr.includes('Convert'));
+    let { txsReceiver = [], txsTransactor = [] } = data;
+    txsTransactor = txsTransactor.filter(
+      ({ txTypeStr }) => !txTypeStr.includes('Convert'),
+    );
     const sendFormated = formatSendItems(txsTransactor, tokenSelected);
     const receiveFormated = formatReceiveItems(txsReceiver, tokenSelected);
     counterSuccess.current = counterSuccess.current + 1;
     setForcePercent(() =>
       Math.round(
-        (counterSuccess.current / (tokenIDsVer2.length + tokenIDsVer1.length)) * 100,
+        (counterSuccess.current / (tokenIDsVer2.length + tokenIDsVer1.length)) *
+          100,
       ),
     );
-    return [
-      ...sendFormated,
-      ...receiveFormated,
-    ];
+    return [...sendFormated, ...receiveFormated];
   };
 
   const getTxsHistoryCoinsVer1 = async () => {
@@ -135,13 +132,9 @@ const withExportCSVVer1 = (WrappedComp) => (props) => {
 
   const getKeyInfo = async () => {
     setDisableBtn(true);
-    await Promise.all([
-      getKeyInfoCoinsV1(),
-      getKeyInfoCoinsV2()
-    ]);
+    await Promise.all([getKeyInfoCoinsV1(), getKeyInfoCoinsV2()]);
     setDisableBtn(false);
   };
-
 
   useEffect(() => {
     getKeyInfo();
