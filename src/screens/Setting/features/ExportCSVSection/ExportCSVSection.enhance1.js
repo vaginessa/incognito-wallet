@@ -20,7 +20,7 @@ import { compose } from 'recompose';
 import withExportCSVVer1 from '@screens/Setting/features/ExportCSVSection/ExportCSVSection.withCoinsV1';
 
 export const formatConsolidateTxs = (tx) => {
-  const { time = 0 } = tx;
+  const { time = 0, txTypeStr = '' } = tx;
   return {
     Date: formatUtil.formatDateTime(time, 'MM/DD/YYYY HH:mm:ss'),
     'Received Quantity': '',
@@ -32,7 +32,8 @@ export const formatConsolidateTxs = (tx) => {
       pDecimals: COINS.PRV.pDecimals || 9,
     })}`,
     'Fee Currency': COINS.PRV.symbol || '',
-    Tag: 'Consolidate',
+    Tag: 'Send',
+    TxType: txTypeStr,
   };
 };
 
@@ -80,6 +81,7 @@ const enhance = (WrappedComp) => (props) => {
                 })}`,
                 'Fee Currency': COINS.PRV.symbol || '',
                 Tag: 'Send',
+                TxType: txTypeStr,
               };
               currentResult.push(data);
             }
@@ -114,6 +116,7 @@ const enhance = (WrappedComp) => (props) => {
                 'Fee Amount': '',
                 'Fee Currency': '',
                 Tag: 'Receive',
+                TxType: txTypeStr,
               };
               currentResult.push(data);
             }
@@ -153,7 +156,8 @@ const enhance = (WrappedComp) => (props) => {
                 'Send Currency': '',
                 'Fee Amount': '',
                 'Fee Currency': '',
-                Tag: 'Shield',
+                Tag: 'Receive',
+                TxType: txTypeStr,
               };
               currentResult.push(data);
             }
@@ -173,7 +177,8 @@ const enhance = (WrappedComp) => (props) => {
                   pDecimals: COINS.PRV.pDecimals,
                 })}`,
                 'Fee Currency': COINS.PRV.symbol || '',
-                Tag: 'Unshield',
+                Tag: 'Send',
+                TxType: txTypeStr,
               };
               currentResult.push(data);
             }
@@ -214,7 +219,8 @@ const enhance = (WrappedComp) => (props) => {
                 'Send Currency': '',
                 'Fee Amount': '',
                 'Fee Currency': '',
-                Tag: 'Shield',
+                Tag: 'Receive',
+                TxType: txTypeStr,
               };
               currentResult.push(data);
             }
@@ -234,7 +240,8 @@ const enhance = (WrappedComp) => (props) => {
                   pDecimals: COINS.PRV.pDecimals || 9,
                 })}`,
                 'Fee Currency': token?.externalSymbol || token?.symbol || '',
-                Tag: 'Unshield',
+                Tag: 'Send',
+                TxType: txTypeStr,
               };
               currentResult.push(data);
             }
