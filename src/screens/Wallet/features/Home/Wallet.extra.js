@@ -23,7 +23,6 @@ import routeNames from '@routers/routeNames';
 import { actionToggleGuide } from '@screens/Shield/Shield.actions';
 import useFeatureConfig from '@src/shared/hooks/featureConfig';
 import appConstant from '@src/constants/app';
-import Tooltip from '@components/Tooltip/Tooltip';
 import { BtnClose } from '@components/Button';
 import { Text3 } from '@components/core/Text';
 import globalStyled from '@src/theme/theme.styled';
@@ -31,7 +30,7 @@ import { View } from '@components/core';
 import { Row } from '@src/components';
 import AddToken from '@screens/Wallet/features/Home/Wallet.addToken';
 import useDebounceSelector from '@src/shared/hooks/debounceSelector';
-import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
+import { TouchableOpacity } from 'react-native';
 
 const Balance = React.memo(({ hideBalance }) => {
   const dispatch = useDispatch();
@@ -53,9 +52,10 @@ const Balance = React.memo(({ hideBalance }) => {
         <AddToken />
       </Row>
       <Row style={styledBalance.wrapBalance} center>
-        <TouchableWithoutFeedback
+        <TouchableOpacity
           style={styledBalance.wrapperAmount}
           onPress={wrapperAmountOnPressed}
+          activeOpacity={1}
         >
           <Amount
             amount={totalShielded}
@@ -70,7 +70,7 @@ const Balance = React.memo(({ hideBalance }) => {
             hideBalance={hideBalance}
             fromBalance
           />
-        </TouchableWithoutFeedback>
+        </TouchableOpacity>
       </Row>
     </View>
   );
