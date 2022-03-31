@@ -50,7 +50,6 @@ const enhance = (WrappedComp) => (props) => {
   } = props;
 
   const accountWallet = useSelector(getDefaultAccountWalletSelector);
-
   const selectedPrivacyWithTokenIDFn = useSelector(
     selectedPrivacySelector.getPrivacyDataByTokenID,
   );
@@ -308,7 +307,10 @@ const enhance = (WrappedComp) => (props) => {
         setLoading(true);
         const mergedDataCSV = await getAllHistory();
         if (mergedDataCSV && mergedDataCSV.length > 0) {
-          const path = await exportAndSaveCSVFile(mergedDataCSV);
+          const path = await exportAndSaveCSVFile(
+            mergedDataCSV,
+            accountWallet.name,
+          );
           setTimeout(() => {
             Share.open({
               url: path,
