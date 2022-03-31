@@ -50,7 +50,6 @@ const enhance = (WrappedComp) => (props) => {
   } = props;
 
   const accountWallet = useSelector(getDefaultAccountWalletSelector);
-
   const selectedPrivacyWithTokenIDFn = useSelector(
     selectedPrivacySelector.getPrivacyDataByTokenID,
   );
@@ -99,7 +98,10 @@ const enhance = (WrappedComp) => (props) => {
         items.reduce((currentResult, item) => {
           const { amount = 0, time = 0, txTypeStr = '' } = item;
           if (item.statusStr === 'Success') {
-            if (txTypeStr.toLowerCase().includes('consolidate')) {
+            if (
+              txTypeStr.toLowerCase().includes('consolidate') ||
+              txTypeStr.toLowerCase().includes('convert')
+            ) {
               const data = formatConsolidateTxs(item);
               currentResult.push(data);
             } else {
@@ -140,7 +142,10 @@ const enhance = (WrappedComp) => (props) => {
             outchainFee = 0,
           } = item;
           if (statusMessage === 'Complete') {
-            if (txTypeStr.toLowerCase().includes('consolidate')) {
+            if (
+              txTypeStr.toLowerCase().includes('consolidate') ||
+              txTypeStr.toLowerCase().includes('convert')
+            ) {
               const data = formatConsolidateTxs(item);
               currentResult.push(data);
             }
@@ -203,7 +208,10 @@ const enhance = (WrappedComp) => (props) => {
             txTypeStr = '',
           } = item;
           if (statusStr === 'Complete') {
-            if (txTypeStr.toLowerCase().includes('consolidate')) {
+            if (
+              txTypeStr.toLowerCase().includes('consolidate') ||
+              txTypeStr.toLowerCase().includes('convert')
+            ) {
               const data = formatConsolidateTxs(item);
               currentResult.push(data);
             }
@@ -299,7 +307,10 @@ const enhance = (WrappedComp) => (props) => {
         setLoading(true);
         const mergedDataCSV = await getAllHistory();
         if (mergedDataCSV && mergedDataCSV.length > 0) {
-          const path = await exportAndSaveCSVFile(mergedDataCSV);
+          const path = await exportAndSaveCSVFile(
+            mergedDataCSV,
+            accountWallet.name,
+          );
           setTimeout(() => {
             Share.open({
               url: path,
