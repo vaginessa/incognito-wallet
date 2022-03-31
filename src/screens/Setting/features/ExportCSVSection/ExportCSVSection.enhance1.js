@@ -99,7 +99,10 @@ const enhance = (WrappedComp) => (props) => {
         items.reduce((currentResult, item) => {
           const { amount = 0, time = 0, txTypeStr = '' } = item;
           if (item.statusStr === 'Success') {
-            if (txTypeStr.toLowerCase().includes('consolidate')) {
+            if (
+              txTypeStr.toLowerCase().includes('consolidate') ||
+              txTypeStr.toLowerCase().includes('convert')
+            ) {
               const data = formatConsolidateTxs(item);
               currentResult.push(data);
             } else {
@@ -140,7 +143,10 @@ const enhance = (WrappedComp) => (props) => {
             outchainFee = 0,
           } = item;
           if (statusMessage === 'Complete') {
-            if (txTypeStr.toLowerCase().includes('consolidate')) {
+            if (
+              txTypeStr.toLowerCase().includes('consolidate') ||
+              txTypeStr.toLowerCase().includes('convert')
+            ) {
               const data = formatConsolidateTxs(item);
               currentResult.push(data);
             }
@@ -203,7 +209,10 @@ const enhance = (WrappedComp) => (props) => {
             txTypeStr = '',
           } = item;
           if (statusStr === 'Complete') {
-            if (txTypeStr.toLowerCase().includes('consolidate')) {
+            if (
+              txTypeStr.toLowerCase().includes('consolidate') ||
+              txTypeStr.toLowerCase().includes('convert')
+            ) {
               const data = formatConsolidateTxs(item);
               currentResult.push(data);
             }
