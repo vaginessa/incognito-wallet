@@ -61,7 +61,7 @@ export const uniPairsSelector = createSelector(
 
 export const curvePairsSelector = createSelector(
   swapSelector,
-  ({ curveTokens }) => curveTokens,
+  ({ curveTokens }) => curveTokens || [],
 );
 
 export const findTokenPancakeByIdSelector = createSelector(
