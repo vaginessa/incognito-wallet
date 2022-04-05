@@ -17,8 +17,18 @@ import {
 } from '@src/redux/utils/history';
 import { PRV } from '@src/constants/common';
 import { CONSTANT_CONFIGS, CONSTANT_COMMONS } from '@src/constants';
+import BigNumber from 'bignumber.js';
 import { selectedPrivacy } from './selectedPrivacy';
 import { burnerAddressSelector } from './account';
+
+export const renderNoClipAmount = (params) => {
+  const { amount, pDecimals } = params;
+  return (
+    new BigNumber(amount || 0)
+      .dividedBy(Math.pow(10, pDecimals || 9))
+      .toFixed() || ''
+  );
+};
 
 const renderAmount = (params) => {
   const { amount, pDecimals, decimalDigits } = params;
@@ -127,6 +137,7 @@ export const mappingTxPTokenSelector = createSelector(
       outchainFee,
       receivedAmount,
       tokenFee,
+      isUnShieldByPToken,
     } = txp;
     const shouldRenderQrShieldingAddress =
       isShieldTx &&
@@ -181,7 +192,7 @@ export const mappingTxPTokenSelector = createSelector(
       }),
       outchainFeeStr: renderAmount({
         amount: outchainFee,
-        pDecimals: PRV.pDecimals,
+        pDecimals: isUnShieldByPToken ? pDecimals : PRV.pDecimals,
         decimalDigits,
       }),
       receivedFundsStr,
@@ -478,6 +489,7 @@ export const historyDetailFactoriesSelector = createSelector(
           outchainFeeStr,
           memo,
           network,
+          isUnShieldByPToken,
         } = tx;
 
         return [
@@ -499,7 +511,7 @@ export const historyDetailFactoriesSelector = createSelector(
           },
           {
             label: 'Outchain fee',
-            value: `${outchainFeeStr} ${PRV.symbol}`,
+            value: `${outchainFeeStr} ${isUnShieldByPToken ? selectedPrivacy.symbol : PRV.symbol}`,
             disabled: !outchainFee,
           },
           {

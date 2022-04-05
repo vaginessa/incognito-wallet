@@ -32,10 +32,10 @@ import {
   BurningPBSCRequestMeta,
   BurningRequestMeta,
   BurningPLGRequestMeta,
+  BurningFantomRequestMeta,
   BurningPRVERC20RequestMeta,
   BurningPRVBEP20RequestMeta,
   PrivacyVersion,
-  PRVIDSTR,
 } from 'incognito-chain-web-js/build/wallet';
 import { formName } from './Form.enhance';
 
@@ -52,6 +52,7 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
     fast2x,
     totalFeeText,
     isUnShield,
+    isUseTokenFee,
   } = useSelector(feeDataSelector);
   const dev = useSelector(devSelector);
   const { isUnshieldPegPRV } = props;
@@ -87,12 +88,11 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
     isErc20Token,
     isBep20Token,
     isPolygonErc20Token,
+    isFantomErc20Token,
     externalSymbol,
     paymentAddress: walletAddress,
-    symbol,
     pDecimals,
     isDecentralized,
-    name,
   } = childSelectedPrivacy ? childSelectedPrivacy : selectedPrivacy;
   const keySave = isDecentralized
     ? CONSTANT_KEYS.UNSHIELD_DATA_DECENTRALIZED
@@ -119,29 +119,50 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
   const wallet = useSelector(walletSelector);
   const handleBurningToken = async (payload = {}, txHashHandler) => {
     try {
-      const { originalAmount, feeForBurn, paymentAddress, isBSC, isPolygon } = payload;
+      const {
+        originalAmount,
+        feeForBurn,
+        paymentAddress,
+        isBSC,
+        isPolygon,
+        isFantom,
+      } = payload;
       const { FeeAddress: masterAddress } = userFeesData;
+
+      // set default BurningRequestMeta
+      let burningRequestMeta = BurningRequestMeta;
+
+      if (isBSC) burningRequestMeta = BurningPBSCRequestMeta;
+      if (isPolygon) burningRequestMeta = BurningPLGRequestMeta;
+      if (isFantom) burningRequestMeta = BurningFantomRequestMeta;
+
+
+      /**--> Get payment info <--*/
+      const paymentInfo = [{
+        paymentAddress: masterAddress,
+        amount: userFee,
+      }];
+      let prvPayments = [];
+      let tokenPayments = [];
+      if (isUseTokenFee) {
+        tokenPayments = paymentInfo;
+      } else {
+        prvPayments = paymentInfo;
+      }
+      /**---------------------------*/
 
       const res = await accountService.createBurningRequest({
         wallet,
         account,
         fee: feeForBurn,
         tokenId,
-        burnAmount: originalAmount,
-        prvPayments: [
-          {
-            paymentAddress: masterAddress,
-            amount: userFee,
-          },
-        ],
+        burnAmount: String(originalAmount),
+        prvPayments,
+        tokenPayments,
         info,
         remoteAddress: paymentAddress,
         txHashHandler,
-        burningType: isBSC
-          ? BurningPBSCRequestMeta
-          : isPolygon
-            ? BurningPLGRequestMeta
-            : BurningRequestMeta,
+        burningType: burningRequestMeta,
         version: PrivacyVersion.ver2,
       });
       if (res.txId) {
@@ -167,7 +188,7 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
         prvPayments: [
           {
             paymentAddress: masterAddress,
-            amount: userFee,
+            amount: String(userFee),
           },
         ],
         info,
@@ -208,6 +229,8 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
         currencyType: currencyType,
         isErc20Token: isErc20Token,
         isBep20Token: isBep20Token,
+        isPolygonErc20Token: isPolygonErc20Token,
+        isFantomErc20Token: isFantomErc20Token,
         externalSymbol: externalSymbol,
         isUsedPRVFee,
         userFeesData,
@@ -305,26 +328,47 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
       }
       const { FeeAddress: masterAddress } = userFeesData;
 
+      /**--> Get payment info <--*/
+      const paymentInfo = [
+        {
+          PaymentAddress: masterAddress,
+          Amount: String(userFee),
+        }
+      ];
+
+      let prvPayments = [
+        {
+          PaymentAddress: tempAddress,
+          Amount: String(originalFee),
+        },
+      ];
+
+      let tokenPayments = [
+        {
+          PaymentAddress: tempAddress,
+          Amount: String(originalAmount),
+        },
+      ];
+
+      if (isUseTokenFee) {
+        tokenPayments = [
+          ...tokenPayments,
+          ...paymentInfo
+        ];
+      } else {
+        prvPayments = [
+          ...prvPayments,
+          ...paymentInfo
+        ];
+      }
+      /**---------------------------*/
+
       const res = await accountService.createAndSendPrivacyToken({
         wallet,
         account,
         fee: originalFee,
-        tokenPayments: [
-          {
-            PaymentAddress: tempAddress,
-            Amount: originalAmount,
-          },
-        ],
-        prvPayments: [
-          {
-            PaymentAddress: masterAddress,
-            Amount: userFee,
-          },
-          {
-            PaymentAddress: tempAddress,
-            Amount: originalFee,
-          },
-        ],
+        tokenPayments,
+        prvPayments,
         txType: ACCOUNT_CONSTANT.TX_TYPE.SEND,
         tokenID: selectedPrivacy?.tokenId,
         txHashHandler,
@@ -369,9 +413,10 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
           currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BSC_BNB,
         isPolygon:
           isPolygonErc20Token ||
-          currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.MATIC ||
-          currencyType ===
-            CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.POLYGON_ERC20,
+          currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.MATIC,
+        isFantom:
+          isFantomErc20Token ||
+          currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.FTM,
       };
       let res;
       if (isDecentralized) {
