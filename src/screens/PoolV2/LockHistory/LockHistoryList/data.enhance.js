@@ -16,8 +16,8 @@ const withData = WrappedComp => (props) => {
     return item.id === coin.id && item.locked === coin.locked && item.active !== LockStatus.Inactive && item.balance > 0;
   });
 
-  lockHistories = _.orderBy(lockHistories, ['lockDate'], ['desc']);
-  
+  lockHistories = _.orderBy(lockHistories, [i => i.active === LockStatus.Finished, 'lockDate'], ['asce', 'desc']);
+
   return (
     <WrappedComp
       {...{
