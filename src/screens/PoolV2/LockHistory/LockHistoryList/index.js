@@ -88,6 +88,7 @@ const LockHistory = ({
                 </View>
               );
             })}
+            <View style={{ height: 30 }} />
           </ScrollViewBorder>
         )
         : renderEmptyList()
