@@ -77,9 +77,20 @@ const LockHistory = ({
                           {item.displayUnlockDate}
                         </Text>
                         {isEndTerm && (
-                          <Text style={[mainStyles.textRight, styles.unlockDate]}>
-                            End Term
-                          </Text>
+                          <View style={{
+                            backgroundColor: colors.btnBG3, alignSelf: 'flex-end', borderRadius: 12,
+                            paddingHorizontal: 8
+                          }}
+                          >
+                            <Text style={[
+                              mainStyles.textCenter,
+                              styles.endTerm,
+                              { color: colors.blue1 }
+                            ]}
+                            >
+                              End Term
+                            </Text>
+                          </View>
                         )}
                       </View>
                     </Row>
