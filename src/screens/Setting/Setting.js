@@ -7,6 +7,7 @@ import { useSelector } from 'react-redux';
 import CurrencySection from '@screens/Setting/features/CurrencySection/CurrencySection';
 import RemoveStorage from '@screens/Setting/features/RemoveStorage/RemoveStorage';
 import ConvertCoinsSection from '@screens/Setting/features/ConvertCoinsSection';
+import ConvertToUnifiedTokenSection from '@screens/Setting/features/ConvertToUnifiedTokenSection';
 import DeviceInfo from 'react-native-device-info';
 import { SafeAreaView } from 'react-native';
 import { NetworkIcon, SecurityIcon } from '@components/Icons';
@@ -93,6 +94,7 @@ const Setting = () => {
           <AddressBookSection />
           <ExportCSVSection handlePress={handlePressExportCSV} />
           <UTXOSection />
+          <ConvertToUnifiedTokenSection />
           <ConvertCoinsSection />
           <RemoveStorage />
           <RemoveBalanceCached />

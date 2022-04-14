@@ -195,6 +195,7 @@
     "styled-components": "^5.3.3",
     "timers-browserify": "^1.4.2",
     "tty-browserify": "0.0.0",
+    "typesafe-actions": "^5.1.0",
     "url": "^0.10.3",
     "util": "^0.10.4",
     "uuid": "^7.0.2",
@@ -215,6 +216,10 @@
     "@babel/plugin-proposal-throw-expressions": "^7.2.0",
     "@babel/preset-flow": "^7.0.0",
     "@babel/runtime": "^7.9.2",
+    "@types/jest": "^27.4.1",
+    "@types/react": "^17.0.43",
+    "@types/react-native": "^0.67.3",
+    "@types/react-test-renderer": "^17.0.1",
     "babel-eslint": "^10.0.1",
     "babel-jest": "^24.7.1",
     "babel-plugin-module-resolver": "^3.2.0",
@@ -243,7 +248,8 @@
     "redux-devtools-extension": "^2.13.8",
     "remote-redux-devtools": "^0.5.16",
     "remotedev-server": "^0.3.1",
-    "rn-nodeify": "github:tradle/rn-nodeify"
+    "rn-nodeify": "github:tradle/rn-nodeify",
+    "typescript": "^4.6.3"
   },
   "husky": {
     "hooks": {

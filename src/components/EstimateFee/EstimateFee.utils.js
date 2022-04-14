@@ -77,8 +77,7 @@ export const getFeeData = (estimateFee, selectedPrivacy) => {
     isUseTokenFee,
     totalFee,
   });
-  let titleBtnSubmit =
-    screen === 'Send' ? 'Send anonymously' : 'Unshield my crypto';
+  let titleBtnSubmit = 'Send';
   if (isFetching) {
     titleBtnSubmit = 'Calculating fee...';
   }

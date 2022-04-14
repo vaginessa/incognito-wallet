@@ -1039,6 +1039,85 @@ export default class Account {
     });
   }
 
+  static async createBurningRequestForUnifiedToken({
+    wallet,
+    account,
+    fee,
+    tokenId,
+    prvPayments,
+    info,
+    txHashHandler,
+    burningType,
+    burningInfos,
+    version = PrivacyVersion.ver2,
+  } = {}) {
+    new Validator('account', account).required();
+    new Validator('wallet', wallet).required();
+    new Validator('fee', fee).required().amount();
+    new Validator('tokenId', tokenId).required().string();
+    new Validator('prvPayments', prvPayments).required().array();
+    new Validator('info', info).string();
+    new Validator('burningType', burningType).required().number();
+    new Validator('burningInfos', burningInfos).required().array();
+
+    const accountWallet = getAccountWallet(account, wallet);
+    return accountWallet.createAndSendBurnUnifiedTokenRequestTx({
+      transfer: {
+        fee,
+        tokenID: tokenId,
+        prvPayments,
+        info,
+      },
+      extra: {
+        burningInfos,
+        txHashHandler,
+        burningType,
+        version,
+      },
+    });
+  }
+
+  static async createBurningRequestForConvertUnifiedToken({
+    wallet,
+    account,
+    fee,
+    tokenId,
+    prvPayments,
+    info,
+    txHashHandler,
+    pUnifiedTokenID,
+    convertAmount,
+    networkId,
+    version = PrivacyVersion.ver2,
+  } = {}) {
+    new Validator('account', account).required();
+    new Validator('wallet', wallet).required();
+    new Validator('fee', fee).required().amount();
+    new Validator('tokenId', tokenId).required().string();
+    new Validator('prvPayments', prvPayments).required().array();
+    new Validator('info', info).string();
+    new Validator('pUnifiedTokenID', pUnifiedTokenID).required();
+    new Validator('networkId', networkId).required().number();
+    new Validator('convertAmount', convertAmount).required().number();
+
+    const accountWallet = getAccountWallet(account, wallet);
+    return accountWallet.createAndSendConvertUnifiedTokenRequestTx({
+      transfer: {
+        fee,
+        tokenID: tokenId,
+        prvPayments,
+        info,
+      },
+      extra: {
+        pUnifiedTokenID,
+        txHashHandler,
+        version,
+        networkID: networkId,
+        convertAmount,
+      },
+    });
+  }
+
   static async createBurningPegPRVRequest({
     wallet,
     account,
