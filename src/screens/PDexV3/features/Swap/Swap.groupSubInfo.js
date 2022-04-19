@@ -4,7 +4,7 @@ import { Tabs , TouchableOpacity } from '@src/components/core';
 import { useNavigation } from 'react-navigation-hooks';
 import routeNames from '@src/router/routeNames';
 import PropTypes from 'prop-types';
-import { ArrowFillIcon } from '@components/Icons';
+import { ChevronIcon } from '@components/Icons';
 import { useSelector } from 'react-redux';
 import { colorsSelector } from '@src/theme';
 import History from './Swap.orderHistory';
@@ -46,7 +46,7 @@ const GroupSubInfo = ({ page, isExpandPage, setShowHistory }) => {
             style={[styled.header, { backgroundColor: colors.btnBG3 }]}
             onPress={() => setShowHistory(!isExpandPage)}
           >
-            <ArrowFillIcon position={isExpandPage ? 'DOWN' : 'UP'} />
+            <ChevronIcon toggle={isExpandPage} />
           </TouchableOpacity>
         )}
       >
