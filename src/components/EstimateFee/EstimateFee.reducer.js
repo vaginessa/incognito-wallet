@@ -22,6 +22,7 @@ import {
   ACTION_REMOVE_FEE_TYPE,
   ACTION_FETCH_FAIL_USER_FEES,
   ACTION_RESET_FORM_SUPPORT_SEND_IN_CHAIN,
+  ACTION_FETCHED_VAULT,
 } from './EstimateFee.constant';
 import { MAX_FEE_PER_TX, hasMultiLevelUsersFee } from './EstimateFee.utils';
 
@@ -85,6 +86,7 @@ const initialState = {
   },
   isValidating: false,
   fast2x: false,
+  vaultInfo: null
 };
 
 export default (state = initialState, action) => {
@@ -291,6 +293,12 @@ export default (state = initialState, action) => {
       ...state,
       types: [..._initFeeType],
       actived: CONSTANT_COMMONS.PRV.id,
+    };
+  }
+  case ACTION_FETCHED_VAULT: {
+    return {
+      ...state,
+      vaultInfo: action.payload
     };
   }
   default:

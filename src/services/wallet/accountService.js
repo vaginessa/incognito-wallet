@@ -1048,9 +1048,9 @@ export default class Account {
     fee,
     tokenId,
     prvPayments,
+    tokenPayments,
     info,
     txHashHandler,
-    burningType,
     burningInfos,
     version = PrivacyVersion.ver2,
   } = {}) {
@@ -1059,8 +1059,8 @@ export default class Account {
     new Validator('fee', fee).required().amount();
     new Validator('tokenId', tokenId).required().string();
     new Validator('prvPayments', prvPayments).required().array();
+    new Validator('tokenPayments', tokenPayments).required().array();
     new Validator('info', info).string();
-    new Validator('burningType', burningType).required().number();
     new Validator('burningInfos', burningInfos).required().array();
 
     const accountWallet = getAccountWallet(account, wallet);
@@ -1069,12 +1069,12 @@ export default class Account {
         fee,
         tokenID: tokenId,
         prvPayments,
+        tokenPayments,
         info,
       },
       extra: {
         burningInfos,
         txHashHandler,
-        burningType,
         version,
       },
     });

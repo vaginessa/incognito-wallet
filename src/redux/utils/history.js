@@ -96,7 +96,7 @@ export const getStatusColorUnshield = (history) => {
     const { decentralized, status } = history;
     // Check centralized
     if (CENTRALIZED_ARRAY.includes(decentralized)) {
-      if (STATUS_CODE_UNSHIELD_CENTRALIZED.COMPLETE.includes(status)) {
+      if (STATUS_CODE_UNSHIELD_CENTRALIZED.COMPLETE === status) {
         statusColor = COLORS.green;
       } else {
         statusColor = COLORS.lightGrey36;

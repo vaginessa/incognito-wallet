@@ -207,4 +207,7 @@ export default {
   PrivacyAppsCurve: 'PrivacyAppsCurve',
   MarketSearchCoins: 'MarketSearchCoins',
   HomeLP: 'TabHomeLP',
+  ConvertToUnifiedToken: 'ConvertToUnifiedToken',
+  ChooseNetworkForShield: 'ChooseNetworkForShield',
+  ProcessConvertToUnifiedToken: 'ProcessConvertToUnifiedToken',
 };

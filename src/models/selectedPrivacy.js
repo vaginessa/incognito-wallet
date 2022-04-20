@@ -108,6 +108,9 @@ class SelectedPrivacy {
     this.isPrivateCoin =
       pTokenData?.type === CONSTANT_COMMONS.PRIVATE_TOKEN_TYPE.COIN; // pETH, pBTC, pTOMO,...
     this.isPToken = !!pTokenData.pSymbol; // pToken is private token (pETH <=> ETH, pBTC <=> BTC, ...)
+    this.isPUnifiedToken =
+      this.currencyType ===
+      CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.UNIFIED_TOKEN; // pToken is private token (pETH <=> ETH, pBTC <=> BTC, ...)
     this.isIncognitoToken =
       (!this.isPToken && !this.isMainCrypto) ||
       detectToken.ispNEO(this?.tokenId); // is tokens were issued from users
@@ -215,7 +218,13 @@ class SelectedPrivacy {
     this.defaultPoolPair = pTokenData?.defaultPoolPair;
     this.defaultPairToken = pTokenData?.defaultPairToken;
     this.network = pTokenData.network;
+    this.networkId = pTokenData.networkId;
     this.hasSameSymbol = pTokenData.hasSameSymbol;
+
+    // Unified Token
+    this.listUnifiedToken = pTokenData?.listUnifiedToken;
+    this.movedUnifiedToken = pTokenData?.movedUnifiedToken;
+    this.parentUnifiedID = pTokenData?.parentUnifiedID;
 
     // Native Token of Network
     this.isETH = this?.currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.ETH;

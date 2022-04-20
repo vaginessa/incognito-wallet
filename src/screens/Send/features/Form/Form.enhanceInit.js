@@ -5,6 +5,7 @@ import {
   actionInitEstimateFee,
   actionFetchedMaxFeePrv,
   actionFetchedMaxFeePToken,
+  actionFetchVault,
 } from '@src/components/EstimateFee/EstimateFee.actions';
 import {
   selectedPrivacySelector,
@@ -45,6 +46,7 @@ export const enhanceInit = (WrappedComp) => (props) => {
       await dispatch(actionInitEstimateFee());
       await dispatch(actionFetchedMaxFeePrv(accountBalance));
       await dispatch(actionFetchedMaxFeePToken(selectedPrivacy));
+      await dispatch(actionFetchVault());
     } catch (error) {
       console.debug(error);
     } finally {

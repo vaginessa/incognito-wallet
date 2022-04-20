@@ -1,5 +1,10 @@
 import React, { useState } from 'react';
-import { KeyboardAwareScrollView, View, Text, Button  } from '@src/components/core';
+import {
+  KeyboardAwareScrollView,
+  View,
+  Text,
+  Button,
+} from '@src/components/core';
 import { change, Field } from 'redux-form';
 import {
   createForm,
@@ -7,13 +12,17 @@ import {
   InputField,
   InputMaxValueField,
   SelectOptionField,
+  SelectNetworkField,
 } from '@components/core/reduxForm';
 import { SEND } from '@src/constants/elements';
 import { generateTestId } from '@src/utils/misc';
 import EstimateFee from '@components/EstimateFee/EstimateFee.input';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
-import { feeDataSelector } from '@src/components/EstimateFee/EstimateFee.selector';
+import {
+  feeDataSelector,
+  networksSelector,
+} from '@src/components/EstimateFee/EstimateFee.selector';
 import { selectedPrivacySelector } from '@src/redux/selectors';
 import SelectedPrivacy from '@src/models/selectedPrivacy';
 import { defaultAccountSelector } from '@src/redux/selectors/account';
@@ -24,6 +33,7 @@ import appConstant from '@src/constants/app';
 import { CONSTANT_COMMONS } from '@src/constants';
 import { colorsSelector } from '@src/theme/theme.selector';
 import { FONT } from '@src/styles';
+import { formValueSelector } from 'redux-form';
 import { styledForm as styled } from './Form.styled';
 import withSendForm, { formName } from './Form.enhance';
 
@@ -75,11 +85,11 @@ const SendForm = (props) => {
     navigation,
     isPortalToken,
     isUnshieldPegPRV,
+    isUnshieldPUnifiedToken
   } = props;
   const dispatch = useDispatch();
-  const { titleBtnSubmit, isUnShield, editableInput } = useSelector(
-    feeDataSelector,
-  );
+  const { titleBtnSubmit, isUnShield, editableInput } =
+    useSelector(feeDataSelector);
   const selectedPrivacy = useSelector(selectedPrivacySelector.selectedPrivacy);
   const [onCentralizedPress, isCentralizedDisabled] = useFeatureConfig(
     appConstant.DISABLED.UNSHIELD_CENTRALIZED,
@@ -89,16 +99,10 @@ const SendForm = (props) => {
     appConstant.DISABLED.UNSHIELD_DECENTRALIZED,
     handleSend,
   );
-  let placeholderAddress = selectedPrivacy?.isMainCrypto
-    ? 'Incognito or ETH/BSC address'
-    : `Incognito${
-      selectedPrivacy?.isIncognitoToken
-        ? ' '
-        : ` or ${selectedPrivacy?.rootNetworkName} `
-    }address`;
+  let placeholderAddress = 'Recipient address';
 
   const amountValidator = validateAmount;
-  const isDisabled =
+  const isDisabled = 
     isUnShield &&
     ((selectedPrivacy.isCentralized && isCentralizedDisabled) ||
       (selectedPrivacy.isDecentralized && isDecentralizedDisabled));
@@ -108,7 +112,44 @@ const SendForm = (props) => {
       : onDecentralizedPress
     : handleSend;
   const submitHandler = handlePressSend;
-  const [ childSelectedPrivacy, setChildSelectedPrivacy] = useState(null);
+  const [childSelectedPrivacy, setChildSelectedPrivacy] = useState(null);
+
+  const getNetworks = () => {
+    let networks = useSelector(networksSelector);
+    let incognitoNetwork = [
+      {
+        network: 'Incognito',
+        networkId: 'INCOGNITO',
+        currencyType: 'INCOGNITO',
+      },
+    ];
+    return [...incognitoNetwork, ...networks];
+  };
+  const networks = getNetworks();
+
+  const selector = formValueSelector(formName);
+  const currencyTypeName = useSelector((state) =>
+    selector(state, 'currencyType'),
+  );
+
+  React.useEffect(() => {
+    if (isIncognitoAddress && !currencyTypeName) {
+      onChangeField('INCOGNITO', 'currencyType');
+      let childSelectedPrivacy = networks.find(
+        (item) => item.currencyType === 'INCOGNITO',
+      );
+      if (selectedPrivacy?.isMainCrypto) {
+        childSelectedPrivacy = new SelectedPrivacy(
+          account,
+          null,
+          childSelectedPrivacy,
+          selectedPrivacy.tokenId,
+        );
+      }
+      setChildSelectedPrivacy(childSelectedPrivacy);
+    }
+  }, [isIncognitoAddress]);
+
   const account = useSelector(defaultAccountSelector);
   const colors = useSelector(colorsSelector);
 
@@ -160,41 +201,30 @@ const SendForm = (props) => {
   };
 
   const renderNetworkType = () => {
-    if (isUnshieldPegPRV) {
-      const platforms = [
-        {
-          label: 'ETH',
-          value: CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.ERC20
-        },
-        {
-          label: 'BSC',
-          value: CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BSC_BEP20
-        },
-      ];
-
       return (
         <Field
           onChange={(value) => {
             onChangeField(value, 'currencyType');
-            const childToken = selectedPrivacy.listChildToken.find(item => item.currencyType === value);
-            const childSelectedPrivacy = new SelectedPrivacy(
-              account,
-              null,
-              childToken,
-              selectedPrivacy.tokenId,
+            let childSelectedPrivacy = networks.find(
+              (item) => item.currencyType === value,
             );
+            if(selectedPrivacy?.isMainCrypto) {
+              childSelectedPrivacy = new SelectedPrivacy(
+                account,
+                null,
+                childSelectedPrivacy,
+                selectedPrivacy.tokenId,
+              );
+            }
             setChildSelectedPrivacy(childSelectedPrivacy);
           }}
-          component={SelectOptionField}
-          items={platforms}
+          component={SelectNetworkField}
+          networks={networks}
+          selectedNetwork={childSelectedPrivacy}
           name="currencyType"
-          label="Network type"
-          labelStyle={[{color: colors.text1}, {...FONT.TEXT.formLabel}]}
-          // labelStyle={{color: colors.text1}}
+          style={styled.selectNetwork}
         />
       );
-    }
-    return null;
   };
 
   React.useEffect(() => {
@@ -275,11 +305,9 @@ const SendForm = (props) => {
                   styled.submitBtn,
                   isUnShield ? styled.submitBtnUnShield : null,
                 ]}
-                style={{marginTop: 24}}
-                disabled={disabledForm || isDisabled}
-                onPress={handleSubmit(
-                  submitHandler
-                )}
+                style={{ marginTop: 24 }}
+                disabled={disabledForm || isDisabled || !childSelectedPrivacy}
+                onPress={handleSubmit(submitHandler)}
                 {...generateTestId(SEND.SUBMIT_BUTTON)}
               />
             </>
@@ -287,7 +315,6 @@ const SendForm = (props) => {
         </Form>
       </KeyboardAwareScrollView>
       {isSending && <LoadingTx text={textLoadingTx} />}
-
     </View>
   );
 };
@@ -317,6 +344,7 @@ SendForm.propTypes = {
   validateMemo: PropTypes.any.isRequired,
   navigation: PropTypes.object.isRequired,
   isUnshieldPegPRV: PropTypes.bool.isRequired,
+  isUnshieldPUnifiedToken: PropTypes.bool.isRequired,
 };
 
 export default withSendForm(SendForm);

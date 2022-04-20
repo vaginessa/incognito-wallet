@@ -102,4 +102,6 @@ export { default as UniIcon } from './icon.uni';
 export { default as UniIcon2 } from './icon.uni2';
 export { default as CurveIcon } from './icon.curve';
 export { default as CurveIcon2 } from './icon.curve2';
-
+export { default as ConvertIcon2 } from './icon.convert2';
+export { default as SquareIcon } from './icon.square';
+export { default as CheckIcon } from './icon.check';

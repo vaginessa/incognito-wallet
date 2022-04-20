@@ -43,7 +43,6 @@ const ShieldDecentralized = (props) => {
     handleApproveERC20,
     handleDepositERC20,
     handleGetNonce,
-    setShowTerm,
     selectedPrivacy,
   } = props;
 
@@ -255,7 +254,6 @@ const ShieldDecentralized = (props) => {
     ) {
       if (isConnect) {
         handleDisconnect();
-        setShowTerm(true);
       } else {
         handleConnect();
       }
@@ -330,7 +328,6 @@ ShieldDecentralized.propTypes = {
   handleApproveERC20: PropTypes.func.isRequired,
   handleDepositERC20: PropTypes.func.isRequired,
   handleGetNonce: PropTypes.func.isRequired,
-  setShowTerm: PropTypes.func.isRequired,
   selectedPrivacy: PropTypes.object.isRequired,
 };
 

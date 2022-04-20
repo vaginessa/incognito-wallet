@@ -1,4 +1,5 @@
 import http from '@src/services/http';
+import http1 from '@services/http1';
 import { CONSTANT_COMMONS } from '@src/constants';
 import convert from '@src/utils/convert';
 
@@ -214,4 +215,8 @@ export const estimateUserFees = (data) => {
   }
 
   return http.post('eta/estimate-fees', payload);
+};
+
+export const getVault = () => {
+  return http1.get('bridge/aggregatestate');
 };

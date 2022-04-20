@@ -138,6 +138,7 @@ export const mappingTxPTokenSelector = createSelector(
       receivedAmount,
       tokenFee,
       isUnShieldByPToken,
+      rewardAmount,
     } = txp;
     const shouldRenderQrShieldingAddress =
       isShieldTx &&
@@ -198,6 +199,11 @@ export const mappingTxPTokenSelector = createSelector(
       receivedFundsStr,
       shieldingFeeStr,
       network,
+      rewardAmountStr: renderAmount({
+        amount: rewardAmount,
+        pDecimals,
+        decimalDigits,
+      }),
     };
     return result;
   },
@@ -379,7 +385,8 @@ export const historyDetailFactoriesSelector = createSelector(
           shieldingFeeStr,
           txReceive,
           canRetryInvalidAmountShield,
-          network
+          network,
+          rewardAmountStr,
         } = tx;
         return [
           {
@@ -465,6 +472,11 @@ export const historyDetailFactoriesSelector = createSelector(
             label: 'Network',
             value: network,
             disabled: !network,
+          },
+          {
+            label: 'Reward amount',
+            value: `${rewardAmountStr} ${symbol}`,
+            disabled: !rewardAmountStr,
           },
         ];
       }

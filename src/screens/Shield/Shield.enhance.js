@@ -1,15 +1,15 @@
-import React from 'react';
 import ErrorBoundary from '@src/components/ErrorBoundary';
-import { compose } from 'recompose';
 import { withLayout_2 } from '@src/components/Layout';
-import withTokenSelect from '@src/components/TokenSelect/TokenSelect.enhance';
-import { useSelector } from 'react-redux';
-import { useNavigation } from 'react-navigation-hooks';
-import routeNames from '@src/router/routeNames';
-import PropTypes from 'prop-types';
-import { selectedPrivacySelector } from '@src/redux/selectors';
 import { withTokenVerified } from '@src/components/Token';
+import withTokenSelect from '@src/components/TokenSelect/TokenSelect.enhance';
+import { selectedPrivacySelector } from '@src/redux/selectors';
+import routeNames from '@src/router/routeNames';
 import useDebounceSelector from '@src/shared/hooks/debounceSelector';
+import PropTypes from 'prop-types';
+import React from 'react';
+import { useNavigation } from 'react-navigation-hooks';
+import { compose } from 'recompose';
+import { PRV_ID } from '@src/screens/DexV2/constants';
 
 const enhance = (WrappedComp) => (props) => {
   const navigation = useNavigation();
@@ -28,9 +28,15 @@ const enhance = (WrappedComp) => (props) => {
       if (!isTokenSelectable(item?.tokenId)) {
         return;
       }
-      navigation.navigate(routeNames.ShieldGenQRCode, {
-        tokenShield: item
-      });
+      if (item?.tokenId === PRV_ID) {
+        navigation.navigate(routeNames.ShieldGenQRCode, {
+          tokenShield: item,
+        });
+      } else {
+        navigation.navigate(routeNames.ChooseNetworkForShield, {
+          tokenShield: item,
+        });
+      }
     } catch (error) {
       console.debug('SHIELD ERROR', error);
     }

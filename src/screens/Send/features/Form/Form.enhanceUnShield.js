@@ -55,7 +55,7 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
     isUseTokenFee,
   } = useSelector(feeDataSelector);
   const dev = useSelector(devSelector);
-  const { isUnshieldPegPRV } = props;
+  const { isUnshieldPegPRV, isUnshieldPUnifiedToken } = props;
   const selector = formValueSelector(formName);
   const currencyTypeName = useSelector((state) =>
     selector(state, 'currencyType'),
@@ -77,6 +77,15 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
       setChildSelectedPrivacy(childSelectedPrivacy);
     }
   }, [isUnshieldPegPRV, currencyTypeName]);
+
+  React.useEffect(() => {
+    if (isUnshieldPUnifiedToken) {
+       const childSelectedPrivacy = selectedPrivacy.listUnifiedToken.find(
+         (item) => item?.currencyType === currencyTypeName,
+       );
+       setChildSelectedPrivacy(childSelectedPrivacy);
+    }
+  }, [isUnshieldPUnifiedToken, currencyTypeName]);
 
   const signPublicKeyEncode = useSelector(
     accountSelector.signPublicKeyEncodeSelector,
@@ -209,6 +218,64 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
     }
   };
 
+  const handleBurningUnifiedToken = async (payload = {}, txHashHandler) => {
+    try {
+      const {
+        feeForBurn,
+        paymentAddress,
+      } = payload;
+      const { FeeAddress: masterAddress } = userFeesData;
+
+      const burningAmount = userFeesData?.EstimateReceivedAmount?.BurntAmount; 
+      const expectedAmount = userFeesData?.EstimateReceivedAmount?.ExpectedAmount;
+
+      const burningInfos = [
+        {
+          networkID: childSelectedPrivacy?.networkId,
+          burningAmount: burningAmount,
+          expectedAmount: expectedAmount,
+          remoteAddress: paymentAddress,
+        },
+      ];
+
+      /**--> Get payment info <--*/
+      const paymentInfo = [
+        {
+          paymentAddress: masterAddress,
+          amount: userFee,
+        },
+      ];
+      let prvPayments = [];
+      let tokenPayments = [];
+      if (isUseTokenFee) {
+        tokenPayments = paymentInfo;
+      } else {
+        prvPayments = paymentInfo;
+      }
+      /**---------------------------*/
+
+      const res = await accountService.createBurningRequestForUnifiedToken({
+        wallet,
+        account,
+        fee: feeForBurn,
+        tokenId: selectedPrivacy?.tokenId,
+        prvPayments,
+        tokenPayments,
+        info,
+        txHashHandler,
+        burningInfos,
+        version: PrivacyVersion.ver2,
+      });
+      if (res.txId) {
+        return { ...res, burningTxId: res?.txId };
+      } else {
+        throw new Error('Burned token, but doesnt have txID, please check it');
+      }
+    } catch (e) {
+      throw e;
+    }
+  };
+
   const handleDecentralizedWithdraw = async (payload) => {
     try {
       const { amount, originalAmount, paymentAddress } = payload;
@@ -250,6 +317,8 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
       let tx;
       if (isUnshieldPegPRV) {
         tx = await handleBurningPegPRV(payload, txHashHandler);
+      } else if (isUnshieldPUnifiedToken) {
+        tx = await handleBurningUnifiedToken(payload, txHashHandler);
       } else {
         tx = await handleBurningToken(payload, txHashHandler);
       }
@@ -362,7 +431,6 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
         ];
       }
       /**---------------------------*/
-
       const res = await accountService.createAndSendPrivacyToken({
         wallet,
         account,

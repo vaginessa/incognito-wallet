@@ -31,13 +31,13 @@ const enhance = (WrappedComp) => (props) => {
     childSelectedPrivacy,
   ) => {
     try {
-      if (!amount || !address) {
+      if (!amount || !address || !childSelectedPrivacy) {
         return;
       }
       let screen = 'Send';
-      if (isExternalAddress) {
+      if (childSelectedPrivacy?.networkId !== 'INCOGNITO') {
         screen = 'UnShield';
-      } else if (isIncognitoAddress) {
+      } else {
         screen = 'Send';
       }
       if (isPortalToken && screen === 'UnShield') {

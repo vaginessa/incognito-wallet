@@ -1,12 +1,12 @@
 /* eslint-disable import/no-cycle */
+import { validator } from '@src/components/core/reduxForm';
+import { feeDataSelector } from '@src/components/EstimateFee/EstimateFee.selector';
+import { CONSTANT_COMMONS } from '@src/constants';
+import { selectedPrivacySelector } from '@src/redux/selectors';
+import accountService from '@src/services/wallet/accountService';
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { formValueSelector } from 'redux-form';
-import { validator } from '@src/components/core/reduxForm';
-import { CONSTANT_COMMONS } from '@src/constants';
-import accountService from '@src/services/wallet/accountService';
-import { selectedPrivacySelector } from '@src/redux/selectors';
-import { feeDataSelector } from '@src/components/EstimateFee/EstimateFee.selector';
 import { formName } from './Form.enhance';
 
 export const enhanceAddressValidation = (WrappedComp) => (props) => {
@@ -20,6 +20,7 @@ export const enhanceAddressValidation = (WrappedComp) => (props) => {
     isFantomErc20Token,
     isMainCrypto,
     currencyType,
+    isPUnifiedToken,
   } = selectedPrivacy;
   const toAddress = useSelector((state) => selector(state, 'toAddress'));
   const isIncognitoAddress =
@@ -27,6 +28,12 @@ export const enhanceAddressValidation = (WrappedComp) => (props) => {
   const isExternalAddress =
     (!!toAddress && !isIncognitoAddress) && selectedPrivacy?.isWithdrawable;
   const isUnshieldPegPRV = isMainCrypto && isExternalAddress;
+  const isUnshieldPUnifiedToken = isPUnifiedToken && isExternalAddress;
+
+   const currencyTypeName = useSelector((state) =>
+     selector(state, 'currencyType'),
+   );
+
   const { isAddressValidated } = useSelector(feeDataSelector);
 
   const isERC20 = React.useMemo(() => {
@@ -138,7 +145,7 @@ export const enhanceAddressValidation = (WrappedComp) => (props) => {
   };
 
   const getAddressValidator = () => {
-    if (isExternalAddress) {
+    if(currencyTypeName !== 'INCOGNITO') {
       return getExternalAddressValidator();
     }
     return validator.combinedIncognitoAddress;
@@ -179,6 +186,7 @@ export const enhanceAddressValidation = (WrappedComp) => (props) => {
         isIncognitoAddress,
         isExternalAddress,
         isUnshieldPegPRV,
+        isUnshieldPUnifiedToken,
       }}
     />
   );

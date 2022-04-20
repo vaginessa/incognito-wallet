@@ -11,6 +11,7 @@ import { trim } from 'lodash';
 import {
   estimateUserFees,
   genCentralizedWithdrawAddress,
+  getVault,
 } from '@src/services/api/withdraw';
 import { PRVIDSTR } from 'incognito-chain-web-js/build/wallet';
 import {
@@ -33,6 +34,7 @@ import {
   ACTION_REMOVE_FEE_TYPE,
   ACTION_FETCH_FAIL_USER_FEES,
   ACTION_RESET_FORM_SUPPORT_SEND_IN_CHAIN,
+  ACTION_FETCHED_VAULT
 } from './EstimateFee.constant';
 import { apiCheckValidAddress } from './EstimateFee.services';
 import { estimateFeeSelector, feeDataSelector } from './EstimateFee.selector';
@@ -129,7 +131,10 @@ export const actionFetchFee = ({ amount, address, screen, memo, childSelectedPri
   getState,
 ) => {
   const state = getState();
-  const selectedPrivacy = childSelectedPrivacy ? childSelectedPrivacy : selectedPrivacySelector.selectedPrivacy(state);
+  const selectedPrivacy =
+    childSelectedPrivacy && childSelectedPrivacy?.networkId !== 'INCOGNITO'
+      ? childSelectedPrivacy
+      : selectedPrivacySelector.selectedPrivacy(state);
   let feeEst = MAX_FEE_PER_TX;
   let feePTokenEst = null;
   let minFeePTokenEst = null;
@@ -145,16 +150,17 @@ export const actionFetchFee = ({ amount, address, screen, memo, childSelectedPri
       !amount ||
       !address ||
       !selectedPrivacy?.tokenId ||
+      !childSelectedPrivacy ||
       _originalAmount === 0
     ) {
       return;
     }
     await dispatch(actionFetchingFee());
     await dispatch(actionInitEstimateFee({ screen }));
-    if (selectedPrivacy?.isWithdrawable && screen === 'UnShield') {
+    if (selectedPrivacy && screen === 'UnShield') {
       const isAddressValidated = await dispatch(actionValAddr(address, childSelectedPrivacy));
       if (isAddressValidated) {
-        await dispatch(actionFetchUserFees({ address, amount, memo, childSelectedPrivacy }));
+        await dispatch(actionFetchUserFees({ address, amount, memo, childSelectedPrivacy}));
       }
     } else {
       dispatch(actionResetFormSupportSendInChain());
@@ -436,46 +442,57 @@ export const actionFetchedValidAddr = (payload) => ({
   payload,
 });
 
-export const actionValAddr = (address = '', childSelectedPrivacy = null) => async (dispatch, getState) => {
-  let isAddressValidated = true;
-  let isValidETHAddress = true;
-  const state = getState();
-  const selectedPrivacy = childSelectedPrivacy ? childSelectedPrivacy : selectedPrivacySelector.selectedPrivacy(state);
-  const { isUnShield } = feeDataSelector(state);
-  if (!isUnShield || (childSelectedPrivacy === null & selectedPrivacy?.isMainCrypto)) {
-    return;
-  }
-  try {
-    const _address = trim(address);
-    if (_address) {
-      const validAddr = await apiCheckValidAddress(
-        _address,
-        selectedPrivacy?.currencyType,
-      );
-      isAddressValidated = !!validAddr?.data?.Result;
-      // const isAddressERC20Valid = walletValidator.validate(
-      //   _address,
-      //   CONSTANT_COMMONS.CRYPTO_SYMBOL.ETH,
-      //   'both',
-      // );
-      // const isERC20 =
-      //   selectedPrivacy?.isErc20Token ||
-      //   selectedPrivacy?.externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.ETH;
-      //check is smart contract address
-      // if (isERC20 && isAddressERC20Valid && !!_address) {
-      //   const validETHAddr = await apiCheckIfValidAddressETH(_address);
-      //   isValidETHAddress = !!validETHAddr?.data?.Result;
-      // }
+export const actionValAddr =
+  (address = '', childSelectedPrivacy = null) =>
+  async (dispatch, getState) => {
+    let isAddressValidated = true;
+    let isValidETHAddress = true;
+    const state = getState();
+    const selectedPrivacy = childSelectedPrivacy
+      ? childSelectedPrivacy
+      : selectedPrivacySelector.selectedPrivacy(state);
+    const { isUnShield } = feeDataSelector(state);
+    if (
+      !isUnShield ||
+      (childSelectedPrivacy === null && selectedPrivacy?.isMainCrypto)
+    ) {
+      return;
     }
-  } catch (error) {
-    throw error;
-  } finally {
-    await dispatch(
-      actionFetchedValidAddr({ isAddressValidated, isValidETHAddress, childSelectedPrivacy }),
-    );
-  }
-  return isAddressValidated;
-};
+    try {
+      const _address = trim(address);
+      if (_address) {
+        const validAddr = await apiCheckValidAddress(
+          _address,
+          selectedPrivacy?.currencyType,
+        );
+        isAddressValidated = !!validAddr?.data?.Result;
+        // const isAddressERC20Valid = walletValidator.validate(
+        //   _address,
+        //   CONSTANT_COMMONS.CRYPTO_SYMBOL.ETH,
+        //   'both',
+        // );
+        // const isERC20 =
+        //   selectedPrivacy?.isErc20Token ||
+        //   selectedPrivacy?.externalSymbol === CONSTANT_COMMONS.CRYPTO_SYMBOL.ETH;
+        //check is smart contract address
+        // if (isERC20 && isAddressERC20Valid && !!_address) {
+        //   const validETHAddr = await apiCheckIfValidAddressETH(_address);
+        //   isValidETHAddress = !!validETHAddr?.data?.Result;
+        // }
+      }
+    } catch (error) {
+      throw error;
+    } finally {
+      await dispatch(
+        actionFetchedValidAddr({
+          isAddressValidated,
+          isValidETHAddress,
+          childSelectedPrivacy,
+        }),
+      );
+    }
+    return isAddressValidated;
+  };
 
 export const actionFetchedUserFees = (payload) => ({
   type: ACTION_FETCHED_USER_FEES,
@@ -593,3 +610,17 @@ export const actionToggleFastFee = (payload) => ({
   type: ACTION_TOGGLE_FAST_FEE,
   payload,
 });
+
+export const actionFetchedVault = (payload) => ({
+  type: ACTION_FETCHED_VAULT,
+  payload,
+});
+
+export const actionFetchVault = () => async (dispatch, getState) => {
+  try {
+    const result = await getVault();
+    dispatch(actionFetchedVault(result));
+  } catch (error) {
+    console.log(error);
+  }
+};

@@ -153,13 +153,13 @@ export const getTotalFee = ({
     const userFees = isUsedPRVFee
       ? userFeesData?.PrivacyFees
       : userFeesData?.TokenFees;
-    userFee = Number(userFees?.Level1) || 0;
+    userFee = (Number(userFees?.Level1) || 0);
+    const extraFee = Number(userFeesData?.EstimateReceivedAmount?.Fee || 0);
+    const fee = userFee + extraFee;
     if (hasMultiLevel && fast2x) {
       userFee = Number(userFees?.Level2);
     }
-    totalFee = isUsedPRVFee
-      ? floor(userFee + Number(feeEst))
-      : userFee;
+    totalFee = isUsedPRVFee ? floor(userFee + Number(feeEst)) : fee;
     totalFeeText = format.toFixed(
       convert.toHumanAmount(totalFee, pDecimals),
       pDecimals,
@@ -168,6 +168,29 @@ export const getTotalFee = ({
     throw error;
   }
   return { totalFee, totalFeeText, userFee };
+};
+
+export const getNetworksForUnifiedToken = ({ selectedPrivacy, vault }) => {
+  let networksData = [];
+  // list pToken of unifiedToken;
+  const listPToken = selectedPrivacy.listUnifiedToken;
+  
+  const unifiedTokenId = selectedPrivacy.tokenId;
+  try {
+    for (var i = 0; i < listPToken.length; i++) {
+      // Only add network when vault > 0
+      if (vault[unifiedTokenId][listPToken[i]?.networkId].State?.Reserve > 0) {
+        const networkInfo = {
+          ...listPToken[i],
+          vault: vault[unifiedTokenId][listPToken[i]?.networkId].State,
+        };
+        networksData.push(networkInfo);
+      }
+    }
+    return networksData;
+  } catch (error) {
+    throw error;
+  }
 };
 
 export const hasMultiLevelUsersFee = (data) =>

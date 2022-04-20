@@ -95,6 +95,10 @@ import SelectTokenStreamline from '@screens/Streamline/features/SelectTokens';
 import ConvertTokenList from '@screens/Home/features/ConvertTokenList';
 import HistoryConvert from '@src/screens/Home/features/HistoryConvert';
 import HomePDexV3 from '@screens/PDexV3/features/Home';
+import ConvertToUnifiedToken from '@screens/ConvertToUnifiedToken';
+import ProcessConvertToUnifiedToken from '@screens/ConvertToUnifiedToken/ProcessConvertToUnifiedToken';
+import ChooseNetworkForShield from '@src/screens/ChooseNetworkForShield';
+
 import { PoolsList, PoolsTab } from '@screens/PDexV3/features/Pools';
 import {
   OrdeSwapDetail,
@@ -720,6 +724,18 @@ const routes = [
   {
     screen: ConvertTokenList,
     name: routeNames.ConvertTokenList,
+  },
+  {
+    screen: ConvertToUnifiedToken,
+    name: routeNames.ConvertToUnifiedToken,
+  },
+  {
+    screen: ProcessConvertToUnifiedToken,
+    name: routeNames.ProcessConvertToUnifiedToken,
+  },
+  {
+    screen: ChooseNetworkForShield,
+    name: routeNames.ChooseNetworkForShield,
   },
   {
     screen: HistoryConvert,

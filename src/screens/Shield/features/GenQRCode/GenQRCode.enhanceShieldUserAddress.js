@@ -52,16 +52,16 @@ const enhance = (WrappedComp) => (props) => {
   }
 
   /** render term off user */
-  if (
-    isShieldAddressDecentralized === false
-    && (selectedPrivacy?.currencyType === 1 || selectedPrivacy?.currencyType === 3)
-    && !selectedPrivacy?.isVerified
-    && selectedPrivacy?.priceUsd <= 0
-    && !hasError
-    && showTerm
-  ) {
-    return renderTermOfUse();
-  }
+  // if (
+  //   isShieldAddressDecentralized === false
+  //   && (selectedPrivacy?.currencyType === 1 || selectedPrivacy?.currencyType === 3)
+  //   && !selectedPrivacy?.isVerified
+  //   && selectedPrivacy?.priceUsd <= 0
+  //   && !hasError
+  //   && showTerm
+  // ) {
+  //   return renderTermOfUse();
+  // }
 
   return (
     <ErrorBoundary>
