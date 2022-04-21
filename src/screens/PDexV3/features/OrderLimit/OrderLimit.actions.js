@@ -24,6 +24,8 @@ import {
   TAB_SELL_LIMIT_ID,
 } from '@screens/PDexV3/features/Trade/Trade.constant';
 import { differenceBy, orderBy } from 'lodash';
+import { requestUpdateMetrics } from '@src/redux/actions/app';
+import { ANALYTICS } from '@src/constants';
 import {
   ACTION_FETCHING,
   ACTION_FETCHED,
@@ -318,6 +320,9 @@ export const actionFetchOrdersHistory =
       if (!pool || !field || field !== activedTab) {
         return;
       }
+      setTimeout(() => {
+        dispatch(requestUpdateMetrics(ANALYTICS.ANALYTIC_DATA_TYPE.ORDER));
+      }, 300);
       await dispatch(actionFetchingOrdersHistory({ field }));
       const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
       const nftData = nftTokenDataSelector(state);
