@@ -106,7 +106,7 @@ const OrderHistory = ({ page }) => {
   const historyDisplay = React.useMemo(() => {
     if (!page) return [];
     return history.slice(0, page);
-  }, [page]);
+  }, [page, history]);
 
   const renderItem = React.useCallback((item, index) => {
     return (
