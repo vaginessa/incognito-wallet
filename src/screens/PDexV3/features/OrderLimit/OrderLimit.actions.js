@@ -393,9 +393,6 @@ export const actionWithdrawOrder =
         if (!requestTx || !poolid) {
           return;
         }
-        setTimeout(() => {
-          dispatch(requestUpdateMetrics(ANALYTICS.ANALYTIC_DATA_TYPE.ORDER));
-        }, 300);
         await dispatch(actionWithdrawingOrder(requestTx));
         const data = {
           withdrawTokenIDs: [token1ID, token2ID],
@@ -435,6 +432,9 @@ export const actionBookOrder = () => async (dispatch, getState) => {
       return;
     }
     const { totalAmountToken, totalOriginalAmount } = totalAmountData;
+    setTimeout(() => {
+      dispatch(requestUpdateMetrics(ANALYTICS.ANALYTIC_DATA_TYPE.ORDER));
+    }, 300);
     const pDexV3Inst = await dispatch(actionGetPDexV3Inst());
     const { poolId: poolPairID } = poolSelectedDataSelector(state);
     let extra;
