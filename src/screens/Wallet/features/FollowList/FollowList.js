@@ -63,7 +63,7 @@ const FollowList = ({ loadBalance }) => {
         handleRemoveToken={() => handleRemoveToken(id)}
       />
     );
-  }, []);
+  }, [selectPrivacyTokenID]);
 
   return (
     <View fullFlex borderTop>
