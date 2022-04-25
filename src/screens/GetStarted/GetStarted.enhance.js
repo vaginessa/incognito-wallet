@@ -21,7 +21,6 @@ import {actionFetch as actionFetchHomeConfigs} from '@screens/Home/Home.actions'
 import {actionCheckUnreadNews} from '@screens/News';
 import { actionFetchPairs } from '@screens/PDexV3/features/Swap';
 import { setTokenHeader } from '@services/http';
-import { setSelectedPrivacy } from '@src/redux/actions/selectedPrivacy';
 import withDetectStatusNetwork from './GetStarted.enhanceNetwork';
 import withWizard from './GetStarted.enhanceWizard';
 import withWelcome from './GetStarted.enhanceWelcome';
