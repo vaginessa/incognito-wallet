@@ -125,7 +125,6 @@ export const styles = StyleSheet.create({
     height: 32,
   },
   sectionFirst: {
-    flex: 1,
     paddingRight: 5,
     height: '100%',
   },
