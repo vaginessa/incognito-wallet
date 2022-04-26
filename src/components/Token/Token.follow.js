@@ -13,6 +13,7 @@ import { Text } from '@components/core';
 import styled from 'styled-components/native';
 import useDebounceSelector from '@src/shared/hooks/debounceSelector';
 import { colorsSelector } from '@src/theme';
+import { PRVIDSTR } from 'incognito-chain-web-js/build/wallet';
 
 const CustomTouchableOpacity = styled(TouchableOpacity)`
   padding-left: 24px;
@@ -21,7 +22,7 @@ const CustomTouchableOpacity = styled(TouchableOpacity)`
   border-bottom-color: ${({ theme }) => theme.border4};
 `;
 
-const TokenFollow = ({ item, hideStar, handleToggleFollowToken, onPress }) => {
+const TokenFollow = ({ item, hideStar, handleToggleFollowToken, onPress, showInfo = true }) => {
   const { symbol, priceUsd, change, tokenId, isFollowed, shortName, network } = item;
   const colors = useDebounceSelector(colorsSelector);
   const balance = React.useMemo(() => {
@@ -48,17 +49,19 @@ const TokenFollow = ({ item, hideStar, handleToggleFollowToken, onPress }) => {
                   style={styles.blackLabel}
                   text={symbol}
                 />
-                <BtnInfo
-                  tokenId={tokenId}
-                  style={styles.btnInfo}
-                />
+                {showInfo && (
+                  <BtnInfo
+                    tokenId={tokenId}
+                    style={styles.btnInfo}
+                  />
+                )}
               </Row>
               <Row>
                 <NormalText
                   style={styles.greyText}
                   text={shortName}
                 />
-                {!!network && (
+                {!!network && tokenId !== PRVIDSTR && (
                   <NormalText
                     style={[styles.networkLabel, { backgroundColor: colors.background3, color: colors.grey1 }]}
                     text={network}
@@ -201,6 +204,7 @@ TokenFollow.propTypes = {
   hideStar: PropTypes.bool.isRequired,
   handleToggleFollowToken: PropTypes.func.isRequired,
   onPress: PropTypes.func.isRequired,
+  showInfo: PropTypes.bool.isRequired,
 };
 
 FollowHeader.propTypes = {
