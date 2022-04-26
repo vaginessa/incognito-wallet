@@ -142,6 +142,10 @@ class SelectedPrivacy {
       token?.name,
       isUnknown ? unknownText : 'Privacy',
     );
+    this.shortName = this.name;
+    if (this.name.includes('(')) {
+      this.shortName = this.name.split('(')[0];
+    }
     this.displayName = combineData.call(
       this,
       `Privacy ${pTokenData?.symbol}`,
