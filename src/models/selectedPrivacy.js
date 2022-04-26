@@ -220,7 +220,7 @@ class SelectedPrivacy {
     this.defaultPairToken = pTokenData?.defaultPairToken;
     this.network = pTokenData.network;
     if (tokenId === PRV_ID) {
-      this.network = 'Incogito';
+      this.network = 'Incognito';
     }
     this.hasSameSymbol = pTokenData.hasSameSymbol;
 
