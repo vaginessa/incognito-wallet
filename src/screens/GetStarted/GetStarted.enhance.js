@@ -74,7 +74,6 @@ const enhance = (WrappedComp) => (props) => {
       batch(() => {
         dispatch(actionFetchProfile());
         // dispatch(getInternalTokenList());
-        // dispatch(getBanners());
         dispatch(requestUpdateMetrics(ANALYTICS.ANALYTIC_DATA_TYPE.OPEN_APP));
         dispatch(actionFetchListPools());
         dispatch(actionFetchPairs(true));
