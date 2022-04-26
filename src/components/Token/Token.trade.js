@@ -8,6 +8,7 @@ import { useSelector } from 'react-redux';
 import { colorsSelector } from '@src/theme';
 import { styles } from '@components/Token/Token.follow';
 import { BtnInfo } from '@components/Button';
+import { PRVIDSTR } from 'incognito-chain-web-js/build/wallet';
 import { Name, NormalText, Symbol } from './Token';
 import { Icon } from './Token.shared';
 import withToken from './Token.enhance';
@@ -71,7 +72,7 @@ const TokenTrade = (props) => {
               shouldShowInfo={false}
               isVerified={false}
             />
-            {!!network && (
+            {!!network && tokenId !== PRVIDSTR && (
               <NormalText
                 style={[styles.networkLabel, { backgroundColor: colors.background3, color: colors.grey1 }]}
                 text={network}

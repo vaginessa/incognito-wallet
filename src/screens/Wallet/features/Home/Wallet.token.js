@@ -1,5 +1,5 @@
 import React, {memo} from 'react';
-import { Text, TouchableOpacity, View } from 'react-native';
+import { TouchableOpacity, View } from 'react-native';
 import PropTypes from 'prop-types';
 import withToken from '@screens/Wallet/features/Home/Wallet.enhanceToken';
 import { useSelector } from 'react-redux';
@@ -20,7 +20,7 @@ import incognito from '@assets/images/new-icons/incognito.png';
 import { colorsSelector } from '@src/theme/theme.selector';
 import useDebounceSelector from '@src/shared/hooks/debounceSelector';
 import { styles } from '@components/Token/Token.follow';
-import { BtnInfo } from '@components/Button';
+import { PRVIDSTR } from 'incognito-chain-web-js/build/wallet';
 
 const TokenDefault = React.memo((props) => {
   const {
@@ -65,22 +65,16 @@ const TokenDefault = React.memo((props) => {
     <TouchableOpacity style={tokenStyled.container} onPress={onPress}>
       <ImageCached style={tokenStyled.icon} uri={iconUrl} defaultImage={incognito} />
       <View style={tokenStyled.wrapFirst}>
-        <Row>
-          <NormalText
-            style={tokenStyled.mainText}
-            text={symbol}
-          />
-          <BtnInfo
-            tokenId={tokenId}
-            style={styles.btnInfo}
-          />
-        </Row>
+        <NormalText
+          style={tokenStyled.mainText}
+          text={symbol}
+        />
         <Row>
           <NormalText
             text={shortName}
             style={[tokenStyled.grayText, { color: colors.text3 }]}
           />
-          {!!network && (
+          {!!network && tokenId !== PRVIDSTR && (
             <NormalText
               style={[styles.networkLabel, { backgroundColor: colors.background3, color: colors.grey1 }]}
               text={network}
