@@ -4,7 +4,6 @@ export const VIDEOS_LIST = [
     'sub': 'How to shield & unshield your crypto.',
     'video': 'G_sTdq57S74',
     'thumb': 'https://i.ytimg.com/vi/G_sTdq57S74/hqdefault.jpg',
-    'default': true
   },
   {
     'title': 'Become a liquidity provider.',
