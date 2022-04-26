@@ -25,7 +25,7 @@ export const styled = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     // flex: 1,
-    maxWidth: '60%',
+    // maxWidth: '60%',
   },
   leftText: {
     textAlign: 'left',
