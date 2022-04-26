@@ -31,13 +31,14 @@ const TokenDefault = React.memo((props) => {
     pricePrv,
     change,
     onPress,
-    name,
+    shortName,
     isGettingBalance,
     showGettingBalance,
     iconUrl,
     amount,
     networkName,
-    tokenId
+    tokenId,
+    network
   } = props;
   const shouldShowGettingBalance = isGettingBalance || showGettingBalance;
   const isToggleUSD = useDebounceSelector(currencySelector);
@@ -69,19 +70,23 @@ const TokenDefault = React.memo((props) => {
             style={tokenStyled.mainText}
             text={symbol}
           />
-          <NormalText
-            style={[styles.networkLabel, { backgroundColor: colors.text11 }]}
-            text={networkName}
-          />
           <BtnInfo
             tokenId={tokenId}
             style={styles.btnInfo}
           />
         </Row>
-        <NormalText
-          text={name}
-          style={[tokenStyled.grayText, { color: colors.text3 }]}
-        />
+        <Row>
+          <NormalText
+            text={shortName}
+            style={[tokenStyled.grayText, { color: colors.text3 }]}
+          />
+          {!!network && (
+            <NormalText
+              style={[styles.networkLabel, { backgroundColor: colors.background3, color: colors.grey1 }]}
+              text={network}
+            />
+          )}
+        </Row>
       </View>
       <View style={tokenStyled.wrapSecond}>
         {shouldShowGettingBalance ? (

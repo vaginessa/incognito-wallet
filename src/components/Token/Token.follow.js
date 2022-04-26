@@ -22,7 +22,7 @@ const CustomTouchableOpacity = styled(TouchableOpacity)`
 `;
 
 const TokenFollow = ({ item, hideStar, handleToggleFollowToken, onPress }) => {
-  const { symbol, priceUsd, change, tokenId, isFollowed, name, networkName } = item;
+  const { symbol, priceUsd, change, tokenId, isFollowed, shortName, network } = item;
   const colors = useDebounceSelector(colorsSelector);
   const balance = React.useMemo(() => {
     const price = priceUsd;
@@ -48,19 +48,23 @@ const TokenFollow = ({ item, hideStar, handleToggleFollowToken, onPress }) => {
                   style={styles.blackLabel}
                   text={symbol}
                 />
-                <NormalText
-                  style={[styles.networkLabel, { backgroundColor: colors.text11 }]}
-                  text={networkName}
-                />
                 <BtnInfo
                   tokenId={tokenId}
                   style={styles.btnInfo}
                 />
               </Row>
-              <NormalText
-                style={styles.greyText}
-                text={name}
-              />
+              <Row>
+                <NormalText
+                  style={styles.greyText}
+                  text={shortName}
+                />
+                {!!network && (
+                  <NormalText
+                    style={[styles.networkLabel, { backgroundColor: colors.background3, color: colors.grey1 }]}
+                    text={network}
+                  />
+                )}
+              </Row>
             </View>
           </Row>
         </View>
@@ -164,12 +168,13 @@ export const styles = StyleSheet.create({
   },
   networkLabel: {
     fontFamily: FONT.NAME.medium,
-    fontSize: FONT.SIZE.small,
+    fontSize: FONT.SIZE.superSmall,
     textAlign: 'left',
     marginLeft: 6,
     paddingHorizontal: 4,
     borderRadius: 3,
     overflow: 'hidden',
+    lineHeight: FONT.SIZE.superSmall + 4
   },
   btnInfo: {
     width: 32,
@@ -188,7 +193,7 @@ TokenFollow.propTypes = {
     change: PropTypes.string,
     tokenId: PropTypes.string.isRequired,
     isFollowed: PropTypes.bool.isRequired,
-    name: PropTypes.string.isRequired,
+    shortName: PropTypes.string.isRequired,
     network: PropTypes.string,
     hasSameSymbol: PropTypes.bool,
     networkName: PropTypes.string,
