@@ -17,7 +17,7 @@ import routeNames from '@routers/routeNames';
 const styles = StyleSheet.create({
   webview: {
     borderRadius: 10,
-    overflow: 'hidden'
+    overflow: 'hidden',
   },
   title: {
     ...FONT.TEXT.incognitoH6,
@@ -29,12 +29,15 @@ const styles = StyleSheet.create({
     lineHeight: 21,
   },
   wrapContent: {
-    marginBottom: 31,
+    marginBottom: 20,
   },
   loading: {
     height: 40,
     position: 'absolute',
     alignSelf: 'center'
+  },
+  wrapper: {
+    marginBottom: 21
   }
 });
 const VIDEO_HEIGHT = Math.floor((ScreenWidth - 24 * 2) * 0.565);
@@ -66,8 +69,12 @@ const Video = React.memo((props) => {
 
   return (
     <View>
+      <TouchableOpacity style={styles.wrapContent} onPress={onExpandVideo}>
+        <Text8 style={styles.title}>{title}</Text8>
+        <Text3 style={styles.sub}>{sub}</Text3>
+      </TouchableOpacity>
       {displayIndex === index && (
-        <>
+        <View style={styles.wrapper}>
           {loading && (
             <LoadingContainer containerStyled={styles.loading} />
           )}
@@ -79,12 +86,8 @@ const Video = React.memo((props) => {
             onChangeState={onStateChange}
             onReady={onLoadVideo}
           />
-        </>
+        </View>
       )}
-      <TouchableOpacity style={styles.wrapContent} onPress={onExpandVideo}>
-        <Text8 style={styles.title}>{title}</Text8>
-        <Text3 style={styles.sub}>{sub}</Text3>
-      </TouchableOpacity>
     </View>
   );
 });
