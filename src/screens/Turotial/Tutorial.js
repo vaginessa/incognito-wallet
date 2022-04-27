@@ -3,21 +3,24 @@ import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import MainLayout from '@components/MainLayout';
 import globalStyled from '@src/theme/theme.styled';
 import YoutubePlayer from 'react-native-youtube-iframe';
-import { ScreenWidth } from '@utils/devices';
+import { ScreenHeight, ScreenWidth } from '@utils/devices';
 import { useDispatch, useSelector } from 'react-redux';
 import { newUserTutorialSelector, videosSelector } from '@src/redux/selectors/settings';
 import { Text8 } from '@components/core/Text';
-import { LoadingContainer, Text3 } from '@components/core';
+import { LoadingContainer, ScrollView, Text3 } from '@components/core';
 import { FONT } from '@src/styles';
 import PropTypes from 'prop-types';
 import { setNewUserTutorial } from '@src/redux/actions/settings';
 import { useNavigation } from 'react-navigation-hooks/src/Hooks';
 import routeNames from '@routers/routeNames';
+import { Header } from '@src/components';
 
 const styles = StyleSheet.create({
   webview: {
     borderRadius: 10,
     overflow: 'hidden',
+    // width: ScreenWidth - 24 * 2,
+    alignSelf: 'center'
   },
   title: {
     ...FONT.TEXT.incognitoH6,
@@ -40,12 +43,13 @@ const styles = StyleSheet.create({
     marginBottom: 21
   }
 });
-const VIDEO_HEIGHT = Math.floor((ScreenWidth - 24 * 2) * 0.565);
+const VIDEO_HEIGHT = Math.floor((ScreenWidth - 24 * 2) / 16 * 9);
 
 const Video = React.memo((props) => {
   const { title, sub, video: videoID, onPressExpand, index, displayIndex } = props;
   const [playing, setPlaying] = React.useState(false);
   const [loading, setLoading] = React.useState(displayIndex === index);
+  const [fullScreen, setFullScreen] = React.useState(false);
 
   const onStateChange = React.useCallback((state) => {
     if (state === 'ended') {
@@ -63,35 +67,39 @@ const Video = React.memo((props) => {
     setLoading(false);
   }, []);
 
+  const onFullScreenChange = (fullscreenStatus) => {
+    console.log('fullscreenStatus::: ', fullscreenStatus);
+    setFullScreen(fullscreenStatus);
+  };
+
   React.useEffect(() => {
     if (index === displayIndex) setLoading(true);
   }, [index, displayIndex]);
 
   return (
     <View>
-      <TouchableOpacity style={styles.wrapContent} onPress={onExpandVideo}>
+      <TouchableOpacity style={[styles.wrapContent, globalStyled.defaultPaddingHorizontal]} onPress={onExpandVideo}>
         <Text8 style={styles.title}>{title}</Text8>
         <Text3 style={styles.sub}>{sub}</Text3>
       </TouchableOpacity>
       {displayIndex === index && (
         <View style={styles.wrapper}>
-          {loading && (
-            <LoadingContainer containerStyled={styles.loading} />
-          )}
-
-          <YoutubePlayer
-            height={VIDEO_HEIGHT}
-            play={playing}
-            videoId={videoID}
-            webViewStyle={styles.webview}
-            onChangeState={onStateChange}
-            onReady={onLoadVideo}
-            javaScriptEnabled
-            scrollEnabled={false}
-            allowsFullscreenVideo
-            userAgent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36
- (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"
-          />
+          <>
+            {loading && (
+              <LoadingContainer containerStyled={styles.loading} />
+            )}
+            <YoutubePlayer
+              height={VIDEO_HEIGHT}
+              play={playing}
+              videoId={videoID}
+              webViewStyle={[styles.webview, { width: fullScreen ? ScreenWidth : (ScreenWidth - 24 *2) }]}
+              onChangeState={onStateChange}
+              onReady={onLoadVideo}
+              javaScriptEnabled
+              scrollEnabled={false}
+              onFullScreenChange={onFullScreenChange}
+            />
+          </>
         </View>
       )}
     </View>
@@ -121,14 +129,12 @@ const TutorialList = () => {
   };
 
   return (
-    <MainLayout
-      header="Tutorial"
-      scrollable
-      contentStyle={globalStyled.defaultBorderSection}
-      onGoBack={onGoBack}
-    >
-      {(videos || []).map(renderVideo)}
-    </MainLayout>
+    <>
+      <Header title="Tutorial" onGoBack={onGoBack} />
+      <ScrollView style={[globalStyled.defaultBorderSection, { paddingHorizontal: 0 }]}>
+        {(videos || []).map(renderVideo)}
+      </ScrollView>
+    </>
   );
 };
 
