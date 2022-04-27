@@ -151,6 +151,7 @@ import {
 } from '@screens/PDexV3/features/PrivacyApps';
 import MarketSearchCoins from '@screens/MainTabBar/features/Market/Market.searchCoins';
 import HomeLP from '@screens/MainTabBar/features/HomeLP';
+import Tutorial from '@screens/Turotial/Tutorial';
 
 const masterKeyRoutes = [
   {
@@ -736,6 +737,10 @@ const routes = [
   {
     screen: SelectOptionModal,
     name: routeNames.SelectOptionModal,
+  },
+  {
+    screen: Tutorial,
+    name: routeNames.Tutorial,
   },
   ...masterKeyRoutes,
   ...devRoutes,
