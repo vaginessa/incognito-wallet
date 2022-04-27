@@ -28,7 +28,7 @@ index 377d6d2..9f0dd26 100644
  
  export const playMode = {
 diff --git a/node_modules/react-native-youtube-iframe/src/YoutubeIframe.js b/node_modules/react-native-youtube-iframe/src/YoutubeIframe.js
-index ca95eae..8dc4720 100644
+index ca95eae..9a2b607 100644
 --- a/node_modules/react-native-youtube-iframe/src/YoutubeIframe.js
 +++ b/node_modules/react-native-youtube-iframe/src/YoutubeIframe.js
 @@ -68,6 +68,8 @@ const YoutubeIframe = (props, ref) => {
@@ -40,40 +40,45 @@ index ca95eae..8dc4720 100644
        getDuration: () => {
          webViewRef.current.injectJavaScript(PLAYER_FUNCTIONS.durationScript);
          return new Promise(resolve => {
-@@ -117,6 +119,23 @@ const YoutubeIframe = (props, ref) => {
+@@ -117,6 +119,28 @@ const YoutubeIframe = (props, ref) => {
      [],
    );
  
 +  const reload = async (startTimeInSeconds?: number) => {
-+    if (!videoId) {
-+      return;
++    try {
++      console.log('videoId: ', videoId);
++      if (!videoId) {
++        return;
++      }
++
++      const currentTime = await getCurrentTime();
++      const _startTimeInSeconds = startTimeInSeconds ?? currentTime ?? 0;
++      injectJs(
++        PLAYER_SCRIPTS.loadAndPlayVideoByIdScript({
++          videoId,
++          startSeconds: _startTimeInSeconds,
++        }),
++      );
++
++      onFullScreenChange('hihihi');
++    } catch (e) {
++      console.log('error');
 +    }
-+
-+    const currentTime = await getCurrentTime();
-+    const _startTimeInSeconds = startTimeInSeconds ?? currentTime ?? 0;
-+    injectJs(
-+      PLAYER_SCRIPTS.loadAndPlayVideoByIdScript({
-+        videoId,
-+        startSeconds: _startTimeInSeconds,
-+      }),
-+    );
-+
-+    onFullScreenChange('hihihi');
 +  };
 +
    useEffect(() => {
      if (!playerReady) {
        // no instance of player is ready
-@@ -171,7 +190,7 @@ const YoutubeIframe = (props, ref) => {
+@@ -171,7 +195,7 @@ const YoutubeIframe = (props, ref) => {
  
          switch (message.eventType) {
            case 'fullScreenChange':
 -            onFullScreenChange(message.data);
-+            reload(2000)
++            reload(2000);
              break;
            case 'playerStateChange':
              onChangeState(PLAYER_STATES[message.data]);
-@@ -201,7 +220,7 @@ const YoutubeIframe = (props, ref) => {
+@@ -201,7 +225,7 @@ const YoutubeIframe = (props, ref) => {
        onReady,
        onError,
        onChangeState,

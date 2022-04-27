@@ -14,6 +14,7 @@ import { setNewUserTutorial } from '@src/redux/actions/settings';
 import { useNavigation } from 'react-navigation-hooks/src/Hooks';
 import routeNames from '@routers/routeNames';
 import { Header } from '@src/components';
+import { View2, View3, View4 } from '@components/core/View';
 
 const styles = StyleSheet.create({
   webview: {
@@ -94,6 +95,7 @@ const Video = React.memo((props) => {
               videoId={videoID}
               webViewStyle={[styles.webview, { width: fullScreen ? ScreenWidth : (ScreenWidth - 24 *2) }]}
               onChangeState={onStateChange}
+              webViewProps={{ allowsFullscreenVideo: true }}
               onReady={onLoadVideo}
               javaScriptEnabled
               scrollEnabled={false}
@@ -129,12 +131,12 @@ const TutorialList = () => {
   };
 
   return (
-    <>
+    <View2 fullFlex>
       <Header title="Tutorial" onGoBack={onGoBack} />
       <ScrollView style={[globalStyled.defaultBorderSection, { paddingHorizontal: 0 }]}>
         {(videos || []).map(renderVideo)}
       </ScrollView>
-    </>
+    </View2>
   );
 };
 
