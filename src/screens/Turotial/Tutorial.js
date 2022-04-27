@@ -78,6 +78,7 @@ const Video = React.memo((props) => {
           {loading && (
             <LoadingContainer containerStyled={styles.loading} />
           )}
+
           <YoutubePlayer
             height={VIDEO_HEIGHT}
             play={playing}
@@ -85,6 +86,11 @@ const Video = React.memo((props) => {
             webViewStyle={styles.webview}
             onChangeState={onStateChange}
             onReady={onLoadVideo}
+            javaScriptEnabled
+            scrollEnabled={false}
+            allowsFullscreenVideo
+            userAgent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36
+ (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"
           />
         </View>
       )}
