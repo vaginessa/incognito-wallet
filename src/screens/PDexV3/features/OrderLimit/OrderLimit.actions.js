@@ -409,6 +409,9 @@ export const actionWithdrawOrder =
             ]);
           },
         };
+        setTimeout(() => {
+          dispatch(requestUpdateMetrics(ANALYTICS.ANALYTIC_DATA_TYPE.CANCEL_ORDER));
+        }, 300);
         await pDexV3Inst.createAndSendWithdrawOrderRequestTx({ extra: data });
       } catch (error) {
         new ExHandler(error).showErrorToast();
