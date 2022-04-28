@@ -14,14 +14,15 @@ import { setNewUserTutorial } from '@src/redux/actions/settings';
 import { useNavigation } from 'react-navigation-hooks/src/Hooks';
 import routeNames from '@routers/routeNames';
 import { Header } from '@src/components';
-import { View2, View3, View4 } from '@components/core/View';
+import { View2 } from '@components/core/View';
 
 const styles = StyleSheet.create({
   webview: {
     borderRadius: 10,
     overflow: 'hidden',
     // width: ScreenWidth - 24 * 2,
-    alignSelf: 'center'
+    alignSelf: 'center',
+    backgroundColor: 'transparent'
   },
   title: {
     ...FONT.TEXT.incognitoH6,
@@ -41,7 +42,8 @@ const styles = StyleSheet.create({
     alignSelf: 'center'
   },
   wrapper: {
-    marginBottom: 21
+    marginBottom: 21,
+    borderRadius: 10,
   }
 });
 const VIDEO_HEIGHT = Math.floor((ScreenWidth - 24 * 2) / 16 * 9);
