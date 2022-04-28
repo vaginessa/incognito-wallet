@@ -143,7 +143,7 @@ class SelectedPrivacy {
       isUnknown ? unknownText : 'Privacy',
     );
     this.shortName = this.name;
-    if (this.name.includes('(')) {
+    if (this.name && this.name.includes('(')) {
       const splitArr_1 = this.name.split('(');
       const splitArr_2 = this.name.split(')');
       if (splitArr_1[0] && splitArr_1[0].trim()) {
