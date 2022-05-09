@@ -46,11 +46,13 @@ export const PoolItem = React.memo((props) => {
           <Text style={[styled.network, { color: colors.text3 }]}>{`${token1.network} / ${token2.network}`}</Text>
         </View>
         <View style={styled.block2}>
-          <Text style={styled.subText}>{`${apyStr}`}</Text>
-        </View>
-        <Text style={styled.earnBtn}>Earn now</Text>
-        <View style={styled.block3}>
-          <BtnStar onPress={handleToggleFollowingPool} isBlue={isFollowed} />
+          <Row centerVertical>
+            <Text style={styled.subText}>{`${apyStr}`}</Text>
+            <View style={styled.block3}>
+              <BtnStar onPress={handleToggleFollowingPool} isBlue={isFollowed} />
+            </View>
+          </Row>
+          <Text style={styled.earnBtn}>Earn now</Text>
         </View>
       </Row>
     </TouchableOpacity>

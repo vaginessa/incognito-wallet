@@ -9,11 +9,10 @@ export const styled = StyleSheet.create({
   },
   rowName: {
     alignItems: 'center',
-    // marginBottom: 8,
   },
   name: {
     marginRight: 5,
-    fontSize: FONT.SIZE.regular,
+    fontSize: FONT.SIZE.medium,
     fontFamily: FONT.NAME.medium,
   },
   nameFollowed: {
@@ -22,6 +21,7 @@ export const styled = StyleSheet.create({
   subText: {
     fontSize: FONT.SIZE.medium,
     fontFamily: FONT.NAME.medium,
+    marginTop: 4
   },
   block1: {
     flex: 1,
@@ -32,12 +32,9 @@ export const styled = StyleSheet.create({
   block2: {
     flexDirection: 'column',
     alignItems: 'flex-end',
-    marginRight: 5,
-    width: 65,
   },
   block3: {
     width: 25,
-    marginRight: 5,
     justifyContent: 'flex-end',
     flexDirection: 'row',
     alignItems: 'flex-start',
@@ -51,14 +48,15 @@ export const styled = StyleSheet.create({
     marginTop: 4
   },
   earnBtn: {
-    width: 68,
     marginLeft: 5,
     textAlign: 'center',
     fontSize: FONT.SIZE.small,
-    fontFamily: FONT.NAME.regular,
+    fontFamily: FONT.NAME.medium,
     backgroundColor: '#1A73E8',
-    paddingVertical: 5,
+    paddingVertical: 6,
     borderRadius: 3,
-    overflow: 'hidden'
+    overflow: 'hidden',
+    marginTop: 4,
+    paddingHorizontal: 12
   }
 });
