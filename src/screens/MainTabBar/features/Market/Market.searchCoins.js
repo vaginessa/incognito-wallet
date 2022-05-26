@@ -6,14 +6,12 @@ import MarketList from '@components/Token/Token.marketList';
 import routeNames from '@routers/routeNames';
 import { headerStyled } from '@screens/MainTabBar/features/Market/Market.styled';
 import {
-  actionInit,
   actionSetPoolSelected,
 } from '@screens/PDexV3/features/OrderLimit';
 import {
   ROOT_TAB_TRADE,
-  TAB_BUY_LIMIT_ID,
+  TAB_SWAP_ID,
 } from '@screens/PDexV3/features/Trade/Trade.constant';
-import { actionLogEvent } from '@screens/Performance';
 import { Header } from '@src/components';
 import PropTypes from 'prop-types';
 import React, { memo, useState } from 'react';
@@ -29,23 +27,15 @@ const MarketSearchCoins = (props) => {
   const onOrderPress = (item) => {
     const poolId = item.defaultPoolPair;
     navigation.navigate(routeNames.Trade, { tabIndex: 0 });
-    dispatch(
-      actionLogEvent({
-        desc: 'POOL-SELECTED-Market-' + JSON.stringify(poolId || ''),
-      }),
-    );
     if (poolId) {
       batch(() => {
         dispatch(actionSetPoolSelected(poolId));
         dispatch(
           actionChangeTab({
             rootTabID: ROOT_TAB_TRADE,
-            tabID: TAB_BUY_LIMIT_ID,
+            tabID: TAB_SWAP_ID,
           }),
         );
-        setTimeout(() => {
-          dispatch(actionInit());
-        }, 200);
       });
     }
   };
