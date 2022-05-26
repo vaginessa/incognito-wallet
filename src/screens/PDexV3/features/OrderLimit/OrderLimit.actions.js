@@ -385,7 +385,7 @@ export const actionWithdrawingOrder = (payload) => ({
 });
 
 export const actionWithdrawOrder =
-  ({ requestTx, txType, nftid, poolId: poolid, token1ID, token2ID }) =>
+  ({ requestTx, txType, nftid, poolId: poolid, token1ID, token2ID, type, minAccept }) =>
     async (dispatch, getState) => {
       try {
         const state = getState();
@@ -410,7 +410,12 @@ export const actionWithdrawOrder =
           },
         };
         setTimeout(() => {
-          dispatch(requestUpdateMetrics(ANALYTICS.ANALYTIC_DATA_TYPE.CANCEL_ORDER));
+          dispatch(requestUpdateMetrics(ANALYTICS.ANALYTIC_DATA_TYPE.CANCEL_ORDER, {
+            token_id1: token1ID,
+            token_id2: token2ID,
+            type,
+            min_accept: minAccept
+          }));
         }, 300);
         await pDexV3Inst.createAndSendWithdrawOrderRequestTx({ extra: data });
       } catch (error) {
