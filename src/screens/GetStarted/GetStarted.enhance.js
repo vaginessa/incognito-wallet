@@ -8,7 +8,6 @@ import { ExHandler } from '@src/services/exception';
 import serverService from '@src/services/wallet/Server';
 import { useFocusEffect, useNavigation } from 'react-navigation-hooks';
 import { actionFetch as actionFetchProfile } from '@screens/Profile';
-import withPin from '@components/pin.enhance';
 import KeepAwake from 'react-native-keep-awake';
 import {
   actionLoadDefaultWallet,
@@ -93,8 +92,6 @@ const enhance = (WrappedComp) => (props) => {
     if (!hasError) {
       setTimeout(() => {
         setLoading(false);
-        // navigation.navigate(routeNames.Send);
-        // dispatch(setSelectedPrivacy('880ea0787f6c1555e59e3958a595086b7802fc7a38276bcd80d4525606557fbc'));
         navigation.navigate(routeNames.MainTabBar);
       }, 2000);
     } else {
@@ -131,7 +128,6 @@ const enhance = (WrappedComp) => (props) => {
 export default compose(
   withDetectStatusNetwork,
   withWizard,
-  withPin,
   withWelcome,
   enhance,
 );
