@@ -7,7 +7,6 @@ import Header, {
   MarketTabs,
 } from '@screens/MainTabBar/features/Market/Market.header';
 import {
-  actionInit,
   actionSetPoolSelected,
 } from '@screens/PDexV3/features/OrderLimit';
 import {
