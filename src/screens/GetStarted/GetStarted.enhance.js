@@ -8,7 +8,6 @@ import { ExHandler } from '@src/services/exception';
 import serverService from '@src/services/wallet/Server';
 import { useFocusEffect, useNavigation } from 'react-navigation-hooks';
 import { actionFetch as actionFetchProfile } from '@screens/Profile';
-import withPin from '@components/pin.enhance';
 import KeepAwake from 'react-native-keep-awake';
 import {
   actionLoadDefaultWallet,
@@ -21,7 +20,6 @@ import {actionFetch as actionFetchHomeConfigs} from '@screens/Home/Home.actions'
 import {actionCheckUnreadNews} from '@screens/News';
 import { actionFetchPairs } from '@screens/PDexV3/features/Swap';
 import { setTokenHeader } from '@services/http';
-import { setSelectedPrivacy } from '@src/redux/actions/selectedPrivacy';
 import withDetectStatusNetwork from './GetStarted.enhanceNetwork';
 import withWizard from './GetStarted.enhanceWizard';
 import withWelcome from './GetStarted.enhanceWelcome';
@@ -75,7 +73,6 @@ const enhance = (WrappedComp) => (props) => {
       batch(() => {
         dispatch(actionFetchProfile());
         // dispatch(getInternalTokenList());
-        // dispatch(getBanners());
         dispatch(requestUpdateMetrics(ANALYTICS.ANALYTIC_DATA_TYPE.OPEN_APP));
         dispatch(actionFetchListPools());
         dispatch(actionFetchPairs(true));
@@ -95,8 +92,6 @@ const enhance = (WrappedComp) => (props) => {
     if (!hasError) {
       setTimeout(() => {
         setLoading(false);
-        // navigation.navigate(routeNames.Send);
-        // dispatch(setSelectedPrivacy('880ea0787f6c1555e59e3958a595086b7802fc7a38276bcd80d4525606557fbc'));
         navigation.navigate(routeNames.MainTabBar);
       }, 2000);
     } else {
@@ -133,7 +128,6 @@ const enhance = (WrappedComp) => (props) => {
 export default compose(
   withDetectStatusNetwork,
   withWizard,
-  withPin,
   withWelcome,
   enhance,
 );

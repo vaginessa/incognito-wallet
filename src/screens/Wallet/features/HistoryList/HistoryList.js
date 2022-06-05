@@ -18,7 +18,7 @@ import { actionSetSelectedTx } from '@src/redux/actions/history';
 import routeNames from '@src/router/routeNames';
 import { colorsSelector } from '@src/theme';
 import globalStyled from '@src/theme/theme.styled';
-import { isEmpty } from 'lodash';
+import { isEmpty, debounce } from 'lodash';
 import styleSheet from './History.styled';
 
 const HistoryItemWrapper = ({ history, onCancelEtaHistory, ...otherProps }) =>
@@ -127,6 +127,7 @@ const HistoryList = (props) => {
     onLoadmoreHistory,
     onCancelEtaHistory,
     loading,
+    page
   } = props;
   const initing = loading && histories.length === 0;
   if (initing) {
@@ -139,15 +140,24 @@ const HistoryList = (props) => {
       />
     );
   }
+
   const renderItem = React.useCallback(({ item: history }) => {
     return <HistoryItemWrapper {...{ history, onCancelEtaHistory }} />;
   }, []);
   const getItemLayout = React.useCallback((data, index) => (
     { length: 74, offset: 74 * index, index}
   ), []);
+
   const onEndReached = React.useCallback(() =>
-    typeof onLoadmoreHistory === 'function' && onLoadmoreHistory(),
-  [onLoadmoreHistory]);
+      typeof onLoadmoreHistory === 'function' && onLoadmoreHistory(),
+    [onLoadmoreHistory]);
+
+  const _onEndReached = debounce(onEndReached, 1000);
+
+  const historyDisplay = React.useMemo(() => {
+    return histories.slice(0, page);
+  }, [page, histories.length]);
+
   const renderKey = React.useCallback((item) => item?.txId || item?.id, []);
   return (
     <FlatList
@@ -158,10 +168,11 @@ const HistoryList = (props) => {
             typeof onRefreshHistoryList === 'function' && onRefreshHistoryList()}
         />
       )}
-      data={histories}
+      data={historyDisplay}
       renderItem={renderItem}
       keyExtractor={renderKey}
-      onEndReached={onEndReached}
+      onEndReachedThreshold={0.7}
+      onEndReached={_onEndReached}
       getItemLayout={getItemLayout}
       ListFooterComponent={<View style={{ marginBottom: 30 }} />}
       ListEmptyComponent={
@@ -183,6 +194,8 @@ HistoryList.defaultProps = {
   oversize: false,
   renderEmpty: null,
   showEmpty: false,
+  loading: false,
+  page: 1000
 };
 
 HistoryList.propTypes = {
@@ -194,6 +207,8 @@ HistoryList.propTypes = {
   oversize: PropTypes.bool,
   renderEmpty: PropTypes.func,
   showEmpty: PropTypes.bool,
+  loading: PropTypes.bool,
+  page: PropTypes.number
 };
 
 export default React.memo(HistoryList);

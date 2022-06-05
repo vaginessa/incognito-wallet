@@ -211,4 +211,6 @@ export default {
   ChooseNetworkForShield: 'ChooseNetworkForShield',
   ProcessConvertToUnifiedToken: 'ProcessConvertToUnifiedToken',
   ConvertToUnifiedTokenInfo: 'ConvertToUnifiedTokenInfo',
+  Tutorial: 'Tutorial',
+  LiquidityVer1: 'LiquidityVer1'
 };

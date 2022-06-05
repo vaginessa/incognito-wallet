@@ -9,7 +9,7 @@ import {
   isFetchingNetworksSelector,
 } from '@src/components/EstimateFee/EstimateFee.selector';
 import { compose } from 'recompose';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { isValid, formValueSelector, change, focus } from 'redux-form';
 import { actionFetchFeeByMax } from '@src/components/EstimateFee/EstimateFee.actions';
 import { useKeyboard } from '@src/components/UseEffect/useKeyboard';

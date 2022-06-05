@@ -2,7 +2,7 @@
 import withDefaultAccount from '@components/Hoc/withDefaultAccount';
 import { Toast } from '@src/components/core';
 import ErrorBoundary from '@src/components/ErrorBoundary';
-import { COINS } from '@src/constants';
+import { COINS, CONSTANT_CONFIGS } from '@src/constants';
 import { selectedPrivacySelector } from '@src/redux/selectors';
 import { renderNoClipAmount } from '@src/redux/selectors/history';
 import { getDefaultAccountWalletSelector } from '@src/redux/selectors/shared';
@@ -17,12 +17,14 @@ import React from 'react';
 import Share from 'react-native-share';
 import { useSelector } from 'react-redux';
 import { compose } from 'recompose';
-import withExportCSVVer1 from '@screens/Setting/features/ExportCSVSection/ExportCSVSection.withCoinsV1';
+import withExportCSVVer1, {
+  TIME_FORMAT
+} from '@screens/Setting/features/ExportCSVSection/ExportCSVSection.withCoinsV1';
 
 export const formatConsolidateTxs = (tx) => {
-  const { time = 0, txTypeStr = '' } = tx;
+  const { time = 0, txTypeStr = '', txId } = tx;
   return {
-    Date: formatUtil.formatDateTime(time, 'MM/DD/YYYY HH:mm:ss'),
+    Date: formatUtil.formatDateTime(time, TIME_FORMAT),
     'Received Quantity': '',
     'Received Currency': '',
     'Send Quantity': '',
@@ -34,6 +36,8 @@ export const formatConsolidateTxs = (tx) => {
     'Fee Currency': COINS.PRV.symbol || '',
     Tag: 'Send',
     TxType: txTypeStr,
+    'InChain Tx': `${CONSTANT_CONFIGS.EXPLORER_CONSTANT_CHAIN_URL}/tx/${txId}`,
+    'OutChain Tx': '',
   };
 };
 
@@ -59,14 +63,14 @@ const enhance = (WrappedComp) => (props) => {
       (items &&
         items.length > 0 &&
         items.reduce((currentResult, item) => {
-          const { amount = 0, time = 0, fee = 0, txTypeStr = '' } = item;
+          const { amount = 0, time = 0, fee = 0, txTypeStr = '', txId = '' } = item;
           if (item.statusStr === 'Success') {
             if (txTypeStr.toLowerCase().includes('consolidate')) {
               const data = formatConsolidateTxs(item);
               currentResult.push(data);
             } else {
               const data = {
-                Date: formatUtil.formatDateTime(time, 'MM/DD/YYYY HH:mm:ss'),
+                Date: formatUtil.formatDateTime(time, TIME_FORMAT),
                 'Received Quantity': '',
                 'Received Currency': '',
                 'Send Quantity': `${renderNoClipAmount({
@@ -81,6 +85,8 @@ const enhance = (WrappedComp) => (props) => {
                 'Fee Currency': COINS.PRV.symbol || '',
                 Tag: 'Send',
                 TxType: txTypeStr,
+                'InChain Tx': `${CONSTANT_CONFIGS.EXPLORER_CONSTANT_CHAIN_URL}/tx/${txId}`,
+                'OutChain Tx': '',
               };
               currentResult.push(data);
             }
@@ -96,7 +102,7 @@ const enhance = (WrappedComp) => (props) => {
       (items &&
         items.length > 0 &&
         items.reduce((currentResult, item) => {
-          const { amount = 0, time = 0, txTypeStr = '' } = item;
+          const { amount = 0, time = 0, txTypeStr = '', txId } = item;
           if (item.statusStr === 'Success') {
             if (
               txTypeStr.toLowerCase().includes('consolidate') ||
@@ -106,7 +112,7 @@ const enhance = (WrappedComp) => (props) => {
               currentResult.push(data);
             } else {
               const data = {
-                Date: formatUtil.formatDateTime(time, 'MM/DD/YYYY HH:mm:ss'),
+                Date: formatUtil.formatDateTime(time, TIME_FORMAT),
                 'Received Quantity': `${renderNoClipAmount({
                   amount: amount || 0,
                   pDecimals: token.pDecimals || 9,
@@ -119,6 +125,8 @@ const enhance = (WrappedComp) => (props) => {
                 'Fee Currency': '',
                 Tag: 'Receive',
                 TxType: txTypeStr,
+                'InChain Tx': `${CONSTANT_CONFIGS.EXPLORER_CONSTANT_CHAIN_URL}/tx/${txId}`,
+                'OutChain Tx': ''
               };
               currentResult.push(data);
             }
@@ -140,6 +148,8 @@ const enhance = (WrappedComp) => (props) => {
             txTypeStr = '',
             incognitoAmount = 0,
             outchainFee = 0,
+            inChainTx,
+            outChainTx = ''
           } = item;
           if (statusMessage === 'Complete') {
             if (
@@ -151,7 +161,7 @@ const enhance = (WrappedComp) => (props) => {
             }
             if (txTypeStr === 'Shield') {
               const data = {
-                Date: formatUtil.formatDateTime(time, 'MM/DD/YYYY HH:mm:ss'),
+                Date: formatUtil.formatDateTime(time, TIME_FORMAT),
                 'Received Quantity': `${renderNoClipAmount({
                   amount: incognitoAmount || 0,
                   pDecimals: token.pDecimals || 9,
@@ -163,13 +173,15 @@ const enhance = (WrappedComp) => (props) => {
                 'Fee Currency': '',
                 Tag: 'Receive',
                 TxType: txTypeStr,
+                'InChain Tx': inChainTx,
+                'OutChain Tx': outChainTx || '',
               };
               currentResult.push(data);
             }
 
             if (txTypeStr === 'Unshield') {
               const data = {
-                Date: formatUtil.formatDateTime(time, 'MM/DD/YYYY HH:mm:ss'),
+                Date: formatUtil.formatDateTime(time, TIME_FORMAT),
                 'Received Quantity': '',
                 'Received Currency': '',
                 'Send Quantity': `${renderNoClipAmount({
@@ -184,6 +196,8 @@ const enhance = (WrappedComp) => (props) => {
                 'Fee Currency': COINS.PRV.symbol || '',
                 Tag: 'Send',
                 TxType: txTypeStr,
+                'InChain Tx': inChainTx,
+                'OutChain Tx': outChainTx || '',
               };
               currentResult.push(data);
             }
@@ -206,6 +220,8 @@ const enhance = (WrappedComp) => (props) => {
             time = 0,
             externalFee = 0,
             txTypeStr = '',
+            inchainTx,
+            outchainTx = '',
           } = item;
           if (statusStr === 'Complete') {
             if (
@@ -217,7 +233,7 @@ const enhance = (WrappedComp) => (props) => {
             }
             if (txTypeStr === 'Shield') {
               const data = {
-                Date: formatUtil.formatDateTime(time, 'MM/DD/YYYY HH:mm:ss'),
+                Date: formatUtil.formatDateTime(time, TIME_FORMAT),
                 'Received Quantity': `${renderNoClipAmount({
                   amount: amount || 0,
                   pDecimals: token.pDecimals || 9,
@@ -227,6 +243,8 @@ const enhance = (WrappedComp) => (props) => {
                 'Send Currency': '',
                 'Fee Amount': '',
                 'Fee Currency': '',
+                'InChain Tx': inchainTx,
+                'OutChain Tx': outchainTx || '',
                 Tag: 'Receive',
                 TxType: txTypeStr,
               };
@@ -235,7 +253,7 @@ const enhance = (WrappedComp) => (props) => {
 
             if (txTypeStr === 'Unshield') {
               const data = {
-                Date: formatUtil.formatDateTime(time, 'MM/DD/YYYY HH:mm:ss'),
+                Date: formatUtil.formatDateTime(time, TIME_FORMAT),
                 'Received Quantity': '',
                 'Received Currency': '',
                 'Send Quantity': `${renderNoClipAmount({
@@ -250,6 +268,8 @@ const enhance = (WrappedComp) => (props) => {
                 'Fee Currency': token?.externalSymbol || token?.symbol || '',
                 Tag: 'Send',
                 TxType: txTypeStr,
+                'InChain Tx': inchainTx,
+                'OutChain Tx': outchainTx || '',
               };
               currentResult.push(data);
             }
@@ -283,7 +303,7 @@ const enhance = (WrappedComp) => (props) => {
     );
     const portalFomated = formatPortalItems(txsPortal, token);
 
-    //Update percent when format data succesful
+    //Update percent when format data successful
     counterSuccess.current = counterSuccess.current + 1;
     setForcePercent(() =>
       Math.round(
@@ -345,14 +365,14 @@ const enhance = (WrappedComp) => (props) => {
     return [...historyVer1, ...flatten(historyVer2)].sort(
       (a, b) =>
         moment(b.Date, [
-          'MM/DD/YYYY hh:mm:ss',
-          'MM/DD/YYYY HH:mm:SS',
-          'MM/DD/YYYY HH:MM:SS',
+          TIME_FORMAT,
+          TIME_FORMAT,
+          TIME_FORMAT,
         ]).unix() -
         moment(a.Date, [
-          'MM/DD/YYYY hh:mm:ss',
-          'MM/DD/YYYY HH:mm:SS',
-          'MM/DD/YYYY HH:MM:SS',
+          TIME_FORMAT,
+          TIME_FORMAT,
+          TIME_FORMAT,
         ]).unix(),
     );
   };
