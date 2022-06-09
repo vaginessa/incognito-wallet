@@ -191,14 +191,27 @@ export const getPortalStatusDetail = (history) => {
 };
 
 export const checkShieldProcessing = (status, decentralized) => {
-  const isShieldProcessing =
-    (DECENTRALIZE_ARRAY.includes(decentralized) &&
-      (STATUS_CODE_SHIELD_DECENTRALIZED.PROCESSING.includes(status) ||
-        STATUS_CODE_SHIELD_DECENTRALIZED.PENDING === status)) ||
-    (CENTRALIZED_ARRAY.includes(decentralized) &&
-      (STATUS_CODE_SHIELD_CENTRALIZED.PROCESSING.includes(status) ||
-        STATUS_CODE_SHIELD_CENTRALIZED.PENDING === status));
-  if (isShieldProcessing) {
+  // case shield decentralize
+  if (DECENTRALIZE_ARRAY.includes(decentralized)) {
+    if (
+      status === STATUS_CODE_SHIELD_DECENTRALIZED.COMPLETE ||
+      status === STATUS_CODE_SHIELD_DECENTRALIZED.TIMED_OUT ||
+      status === STATUS_CODE_SHIELD_DECENTRALIZED.RETRYING
+    ) {
+      return false;
+    }
+    return true;
+  }
+
+  // case shield centralized
+  if (CENTRALIZED_ARRAY.includes(decentralized)) {
+    if (
+      STATUS_CODE_SHIELD_CENTRALIZED.COMPLETE.includes(status) ||
+      STATUS_CODE_SHIELD_CENTRALIZED.TIMED_OUT.includes(status) ||
+      STATUS_CODE_SHIELD_CENTRALIZED.INVALID_AMOUNT.includes(status)
+    ) {
+      return false;
+    }
     return true;
   }
   return false;
