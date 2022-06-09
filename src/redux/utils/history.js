@@ -189,3 +189,17 @@ export const getPortalStatusDetail = (history) => {
   }
   return statusDetail;
 };
+
+export const checkShieldProcessing = (status, decentralized) => {
+  const isShieldProcessing =
+    (DECENTRALIZE_ARRAY.includes(decentralized) &&
+      (STATUS_CODE_SHIELD_DECENTRALIZED.PROCESSING.includes(status) ||
+        STATUS_CODE_SHIELD_DECENTRALIZED.PENDING === status)) ||
+    (CENTRALIZED_ARRAY.includes(decentralized) &&
+      (STATUS_CODE_SHIELD_CENTRALIZED.PROCESSING.includes(status) ||
+        STATUS_CODE_SHIELD_CENTRALIZED.PENDING === status));
+  if (isShieldProcessing) {
+    return true;
+  }
+  return false;
+};
