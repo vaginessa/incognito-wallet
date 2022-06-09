@@ -113,6 +113,40 @@ const Extra = (props) => {
     return minComp;
   };
 
+  const renderEstimateShieldingTime = () => {
+    let shieldingTimeText = '';
+    if (isPortal) {
+      shieldingTimeText = '60 mins';
+    }
+    if (selectedPrivacy?.isETH || selectedPrivacy?.isErc20Token) {
+      shieldingTimeText = '20 mins';
+    }
+    if (
+      selectedPrivacy?.isBSC ||
+      selectedPrivacy?.isBep20Token ||
+      selectedPrivacy?.isMATIC ||
+      selectedPrivacy?.isPolygonErc20Token ||
+      selectedPrivacy?.isFTM ||
+      selectedPrivacy?.isFantomErc20Token
+    ) {
+      shieldingTimeText = '10 mins';
+    }
+
+    if (isEmpty(shieldingTimeText)) {
+      return null;
+    }
+
+    return (
+      <Text
+        style={[styled.noteText, { color: colors.text1 }]}
+      >
+        {`Your ${
+          selectedPrivacy?.externalSymbol || selectedPrivacy?.symbol
+        } shielding transaction is estimated to complete in ${shieldingTimeText}.`}
+      </Text>
+    );
+  };
+
   const renderEstimateFee = () => {
     const isNativeToken =
       selectedPrivacy?.currencyType ===
@@ -178,6 +212,18 @@ const Extra = (props) => {
   const renderNoteBox = () => {
     return (
       <View style={styled.noteBoxContainer}>
+        <View style={styled.noteItemContainer}>
+          <View style={styled.dot} />
+          {renderEstimateShieldingTime()}
+        </View>
+        <View style={styled.space} />
+        <View style={styled.noteItemContainer}>
+          <View style={styled.dot} />
+          <Text style={styled.noteText}>
+            If sending from an exchange, please take withdrawal times into
+            account.
+          </Text>
+        </View>
         <View style={styled.noteItemContainer}>
           <View style={styled.dot} />
           <Text style={styled.noteText}>
@@ -250,6 +296,7 @@ const Extra = (props) => {
         textStyle={{ color: colors.text1 }}
         btnStyle={{ backgroundColor: colors.background6 }}
       />
+      <View style={{marginTop: 10}}>{renderEstimateShieldingTime()}</View>
     </>
   );
 
