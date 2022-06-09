@@ -140,9 +140,9 @@ export const mappingTxPTokenSelector = createSelector(
       receivedAmount,
       tokenFee,
       isUnShieldByPToken,
-      rewardAmount,
       pDecimals,
       decimals,
+      unifiedReward,
     } = txp;
     const shouldRenderQrShieldingAddress =
       isShieldTx &&
@@ -204,7 +204,7 @@ export const mappingTxPTokenSelector = createSelector(
       shieldingFeeStr,
       network,
       rewardAmountStr: renderAmount({
-        amount: rewardAmount,
+        amount: unifiedReward?.reward || 0,
         pDecimals,
         decimalDigits,
       }),
@@ -310,7 +310,8 @@ export const historyDetailFactoriesSelector = createSelector(
   historyDetailSelector,
   selectedPrivacy,
   burnerAddressSelector,
-  ({ tx }, selectedPrivacy, burnerAddress) => {
+  decimalDigitsSelector,
+  ({ tx }, selectedPrivacy, burnerAddress, decimalDigits) => {
     const { txType } = tx;
     try {
       switch (txType) {
@@ -390,9 +391,10 @@ export const historyDetailFactoriesSelector = createSelector(
           txReceive,
           canRetryInvalidAmountShield,
           network,
-          rewardAmountStr,
           decentralized,
-          status
+          status,
+          unifiedReward,
+          pDecimals,
         } = tx;
         const isShieldProcessing = checkShieldProcessing(status, decentralized);
         let estimationShieldingTime = '';
@@ -403,6 +405,11 @@ export const historyDetailFactoriesSelector = createSelector(
             estimationShieldingTime = '10 mins';
           }
         }
+        const rewardAmountStr = renderAmount({
+          amount: unifiedReward?.reward || 0,
+          pDecimals,
+          decimalDigits,
+        });
         let data = [
           {
             label: 'ID',
