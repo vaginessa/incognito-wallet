@@ -1,4 +1,3 @@
-import { MAX_PDEX_TRADE_STEPS } from '@screens/DexV2/constants';
 import convert from '@src/utils/convert';
 import { CONSTANT_COMMONS } from '@src/constants';
 import format from '@src/utils/format';
@@ -173,23 +172,6 @@ export const getTotalFee = ({
     throw error;
   }
   return { totalFee, totalFeeText, userFee };
-};
-
-export const getNetworksForUnifiedToken = ({ selectedPrivacy, networkSupports }) => {
-  let networksData = [];
-  // list pToken of unifiedToken;
-  const listPToken = selectedPrivacy.listUnifiedToken;
-  try {
-    for (var i = 0; i < listPToken.length; i++) {
-      networksData.push({
-        ...listPToken[i],
-        vault: networkSupports ? networkSupports[listPToken[i]?.networkId]?.MaxReceivedAmount : null,
-      });
-    }
-    return networksData;
-  } catch (error) {
-    throw error;
-  }
 };
 
 export const hasMultiLevelUsersFee = (data) =>

@@ -1,6 +1,6 @@
 import { createSelector } from 'reselect';
 import { selectedPrivacySelector, childSelectedPrivacySelector } from '@src/redux/selectors';
-import { getFeeData, getNetworksForUnifiedToken } from './EstimateFee.utils';
+import { getFeeData } from './EstimateFee.utils';
 
 export const estimateFeeSelector = createSelector(
   (state) => state.estimateFee,
@@ -17,23 +17,14 @@ export const feeDataSelector = createSelector(
 
 
 export const networksSelector = createSelector(
-  estimateFeeSelector,
   selectedPrivacySelector.selectedPrivacy,
-  (estimateFee, selectedPrivacy) => {
+  (selectedPrivacy) => {
     if (selectedPrivacy?.isMainCrypto) {
       return selectedPrivacy?.listChildToken;
     } else if (selectedPrivacy?.isPUnifiedToken) {
-      return getNetworksForUnifiedToken({
-        selectedPrivacy,
-        networkSupports: estimateFee?.networkSupports || null,
-      });
+      return selectedPrivacy?.listUnifiedToken;
     } else {
       return [selectedPrivacy];
     }
   },
-);
-
-export const isFetchingNetworksSelector = createSelector(
-  estimateFeeSelector,
-  (estimateFee) => estimateFee?.isFetchingNetworkSupports,
 );

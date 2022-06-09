@@ -197,7 +197,7 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
 
       const burningInfos = [
         {
-          networkID: childSelectedPrivacy?.networkId,
+          incTokenID: childSelectedPrivacy?.tokenId,
           burningAmount: burningAmount,
           expectedAmount: expectedAmount,
           remoteAddress: paymentAddress,

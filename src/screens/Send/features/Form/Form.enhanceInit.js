@@ -5,7 +5,6 @@ import {
   actionInitEstimateFee,
   actionFetchedMaxFeePrv,
   actionFetchedMaxFeePToken,
-  actionFetchVault,
 } from '@src/components/EstimateFee/EstimateFee.actions';
 import {
   selectedPrivacySelector,

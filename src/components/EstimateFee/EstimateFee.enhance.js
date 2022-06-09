@@ -1,18 +1,14 @@
 /* eslint-disable import/no-cycle */
-import React from 'react';
 import ErrorBoundary from '@src/components/ErrorBoundary';
+import { ExHandler } from '@src/services/exception';
+import debounce from 'lodash/debounce';
+import PropTypes from 'prop-types';
+import React from 'react';
+import { useFocusEffect } from 'react-navigation-hooks';
 import { useDispatch } from 'react-redux';
 import { reset } from 'redux-form';
-import debounce from 'lodash/debounce';
-import { useFocusEffect } from 'react-navigation-hooks';
-import PropTypes from 'prop-types';
-import { ExHandler } from '@src/services/exception';
-import convert from '@src/utils/convert';
-import {
-  actionFetchFee,
-  actionGetNetworkSupports,
-} from './EstimateFee.actions';
 import { useKeyboard } from '../UseEffect/useKeyboard';
+import { actionFetchFee } from './EstimateFee.actions';
 
 const enhance = (WrappedComp) => (props) => {
   const {
@@ -31,23 +27,9 @@ const enhance = (WrappedComp) => (props) => {
     address,
     amount,
     memo,
-    isExternalAddress,
-    isIncognitoAddress,
-    selectedPrivacy,
     childSelectedPrivacy,
   ) => {
     try {
-      if (selectedPrivacy?.isPUnifiedToken && amount) {
-        await dispatch(
-          actionGetNetworkSupports({
-            amount: convert.toOriginalAmount(
-              amount,
-              selectedPrivacy?.pDecimals,
-            ),
-          }),
-        );
-      }
-      
       if (!amount || !address || !childSelectedPrivacy) {
         return;
       }
@@ -60,11 +42,6 @@ const enhance = (WrappedComp) => (props) => {
       if (isPortalToken && screen === 'UnShield') {
         return;
       }
-
-      // await dispatch(actionGetNetworkSupports({
-      //   amount,
-      //   childSelectedPrivacy
-      // }));
 
       await dispatch(
         actionFetchFee({

@@ -11,8 +11,6 @@ import { trim } from 'lodash';
 import {
   estimateUserFees,
   genCentralizedWithdrawAddress,
-  getVault,
-  checkVault
 } from '@src/services/api/withdraw';
 import { PRVIDSTR } from 'incognito-chain-web-js/build/wallet';
 import {
@@ -35,10 +33,6 @@ import {
   ACTION_REMOVE_FEE_TYPE,
   ACTION_FETCH_FAIL_USER_FEES,
   ACTION_RESET_FORM_SUPPORT_SEND_IN_CHAIN,
-  ACTION_FETCHED_VAULT,
-  ACTION_FETCHED_NETWORKS_SUPPORT,
-  ACTION_FETCH_FAILED_NETWORKS_SUPPORT,
-  ACTION_FETCHING_NETWORKS_SUPPORT
 } from './EstimateFee.constant';
 import { apiCheckValidAddress } from './EstimateFee.services';
 import { estimateFeeSelector, feeDataSelector } from './EstimateFee.selector';
@@ -189,41 +183,6 @@ export const actionFetchFee = ({ amount, address, screen, memo, childSelectedPri
   }
 };
 
-export const actionFetchingNetworksSupport = (payload) => ({
-  type: ACTION_FETCHING_NETWORKS_SUPPORT,
-  payload,
-});
-
-export const actionFetchFailedNetworksSupport = (payload) => ({
-  type: ACTION_FETCH_FAILED_NETWORKS_SUPPORT,
-  payload,
-});
-
-
-export const actionFetchedNetworksSupport = (payload) => ({
-  type: ACTION_FETCHED_NETWORKS_SUPPORT,
-  payload,
-});
-
-export const actionGetNetworkSupports =
-  ({ amount }) =>
-  async (dispatch, getState) => {
-    const state = getState();
-    const selectedPrivacy = selectedPrivacySelector.selectedPrivacy(state);
-
-    if (!selectedPrivacy || !amount) return;
-    try {
-      await dispatch(actionFetchingNetworksSupport());
-      const networkSupports = await checkVault({
-        pUnifiedTokenId: selectedPrivacy.tokenId,
-        amount: amount,
-      });
-      await dispatch(actionFetchedNetworksSupport(networkSupports));
-    } catch (error) {
-      await dispatch(actionFetchFailedNetworksSupport());
-    }
-  };
-
 export const actionHandleMinFeeEst = ({ minFeePTokenEst }) => async (
   dispatch,
   getState,
@@ -358,11 +317,6 @@ export const actionHandleFeePTokenEst = ({ feePTokenEst }) => async (
     userFeePToken;
   const state = getState();
   const parentSelectedPrivacy = selectedPrivacySelector.selectedPrivacy(state);
-  const childSelectedPrivacy = childSelectedPrivacySelector.childSelectedPrivacy(state);
-  const selectedPrivacy =
-    childSelectedPrivacy && childSelectedPrivacy?.networkId !== 'INCOGNITO'
-      ? childSelectedPrivacy
-      : parentSelectedPrivacy;
   const {
     rate,
     userFees,
@@ -616,7 +570,7 @@ export const actionFetchUserFees = (payload) => async (dispatch, getState) => {
           currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BSC_BNB
             ? ''
             : contractId,
-        tokenId: parentTokenSelectedPrivacy.tokenId,
+        tokenId: childSelectedPrivacy?.tokenId,
         burningTxId: '',
         currencyType: currencyType,
         isErc20Token: isErc20Token,
@@ -626,6 +580,7 @@ export const actionFetchUserFees = (payload) => async (dispatch, getState) => {
         externalSymbol: externalSymbol,
         isUsedPRVFee,
         signPublicKeyEncode,
+        unifiedTokenId: parentTokenSelectedPrivacy?.tokenId,
       };
       userFeesData = await estimateUserFees(data);
     } else {
@@ -677,16 +632,3 @@ export const actionToggleFastFee = (payload) => ({
   payload,
 });
 
-export const actionFetchedVault = (payload) => ({
-  type: ACTION_FETCHED_VAULT,
-  payload,
-});
-
-export const actionFetchVault = () => async (dispatch, getState) => {
-  try {
-    const result = await getVault();
-    dispatch(actionFetchedVault(result));
-  } catch (error) {
-    console.log(error);
-  }
-};

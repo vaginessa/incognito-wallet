@@ -1,22 +1,10 @@
 import { Text, TouchableOpacity } from '@src/components/core';
 import { ConvertIcon2 } from '@src/components/Icons';
-import { selectedPrivacySelector } from '@src/redux/selectors';
-import useDebounceSelector from '@src/shared/hooks/debounceSelector';
 import { COLORS } from '@src/styles';
-import convert from '@src/utils/convert';
 import React, { useState } from 'react';
-import {
-  ActivityIndicator,
-  ScrollView,
-  TextStyle,
-  View,
-  ViewStyle,
-} from 'react-native';
+import { ScrollView, TextStyle, View, ViewStyle } from 'react-native';
 import Modal, { ModalProps } from 'react-native-modal';
-import { useSelector } from 'react-redux';
-import { formValueSelector } from 'redux-form';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import { isFetchingNetworksSelector } from '@src/components/EstimateFee/EstimateFee.selector';
 
 export interface SelectNetworkForUnshieldInputProps extends ModalProps {
   style?: ViewStyle;
@@ -35,33 +23,6 @@ export const SelectNetworkForUnshieldInput: React.FC<
 }: SelectNetworkForUnshieldInputProps) => {
   const [isVisible, setIsVisible] = useState<boolean>(false);
 
-  const selector = formValueSelector('formSend');
-  const amount = useDebounceSelector((state) => selector(state, 'amount'));
-
-  const selectedPrivacy = useSelector(selectedPrivacySelector.selectedPrivacy);
-  const originalAmount = convert.toOriginalAmount(
-    amount,
-    selectedNetwork?.pDecimals || selectedPrivacy.pDecimals,
-  );
-
-  const isFetchingNetworks = useSelector(isFetchingNetworksSelector);
-
-  const checkDisableSelectNetwork = (networkInfo) => {
-    if (selectedPrivacy?.isPUnifiedToken) {
-      if (networkInfo?.vault === null || networkInfo?.vault === undefined) {
-        return false;
-      }
-      if (
-        originalAmount < networkInfo?.vault ||
-        networkInfo?.networkId === 'INCOGNITO'
-      ) {
-        return false;
-      }
-      return true;
-    }
-    return false;
-  };
-
   return (
     <>
       {/* Render select network input */}
@@ -71,7 +32,6 @@ export const SelectNetworkForUnshieldInput: React.FC<
           activeOpacity={1}
           onPress={() => setIsVisible(true)}
           style={networkMainContainerStyle}
-          disabled={isFetchingNetworks}
         >
           {selectedNetwork ? (
             <Text numberOfLines={1} style={networkTextStyle}>
@@ -83,9 +43,6 @@ export const SelectNetworkForUnshieldInput: React.FC<
             </Text>
           )}
           <View style={rightItemStyle}>
-            {isFetchingNetworks && (
-              <ActivityIndicator size="small" style={loadingStyle} />
-            )}
             <ConvertIcon2 />
           </View>
         </TouchableOpacity>
@@ -117,7 +74,6 @@ export const SelectNetworkForUnshieldInput: React.FC<
             {networks?.map((network, networkIndex) => {
               return (
                 <TouchableOpacity
-                  disabled={checkDisableSelectNetwork(network)}
                   key={networkIndex}
                   onPress={() => {
                     onChange(network?.currencyType);
@@ -126,17 +82,7 @@ export const SelectNetworkForUnshieldInput: React.FC<
                   activeOpacity={0.8}
                   style={networkItemContainerStyle}
                 >
-                  <View>
-                    <Text
-                      style={
-                        checkDisableSelectNetwork(network)
-                          ? networkNameDisabledStyle
-                          : networkNameStyle
-                      }
-                    >
-                      {network?.network || ''}
-                    </Text>
-                  </View>
+                  <Text style={networkNameStyle}>{network?.network || ''}</Text>
                   <MaterialIcons
                     name="chevron-right"
                     size={24}
@@ -231,17 +177,8 @@ const selectNetworkTextStyle: TextStyle = {
   fontWeight: '500',
 };
 
-const networkNameDisabledStyle: TextStyle = {
-  ...networkNameStyle,
-  opacity: 0.3,
-};
-
 const rightItemStyle: ViewStyle = {
   flexDirection: 'row',
   alignItems: 'center',
   marginLeft: 16,
-};
-
-const loadingStyle: ViewStyle = {
-  marginRight: 16,
 };

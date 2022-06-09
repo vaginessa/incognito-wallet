@@ -20,14 +20,3 @@ export const ACTION_FETCH_FAIL_USER_FEES = '[estimateFee] Fetch fail user fees';
 export const ACTION_TOGGLE_FAST_FEE = '[estimateFee] Toggle fast fee';
 export const ACTION_REMOVE_FEE_TYPE = '[estimateFee] Remove fee type';
 export const ACTION_RESET_FORM_SUPPORT_SEND_IN_CHAIN = '[estimateFee] Reset form support send in-chain';
-
-export const ACTION_FETCHED_VAULT = '[estimateFee] fetched vault';
-export const ACTION_FETCHING_NETWORKS_SUPPORT =
-  '[estimateFee] action fetching networks support';
-export const ACTION_FETCH_FAILED_NETWORKS_SUPPORT =
-  '[estimateFee] action fetch failed networks support';
-export const ACTION_FETCHED_NETWORKS_SUPPORT =
-  '[estimateFee] action fetched networks support';
-
-export const ACTION_ =
-  '[estimateFee] action fetched networks support';
