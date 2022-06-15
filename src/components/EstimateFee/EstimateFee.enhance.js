@@ -27,6 +27,9 @@ const enhance = (WrappedComp) => (props) => {
     address,
     amount,
     memo,
+    isExternalAddress,
+    isIncognitoAddress,
+    selectedPrivacy,
     childSelectedPrivacy,
   ) => {
     try {
@@ -49,7 +52,6 @@ const enhance = (WrappedComp) => (props) => {
           address,
           screen,
           memo,
-          childSelectedPrivacy,
         }),
       );
     } catch (error) {
@@ -84,6 +86,7 @@ const enhance = (WrappedComp) => (props) => {
         memo,
         isExternalAddress,
         isIncognitoAddress,
+        selectedPrivacy,
         childSelectedPrivacy,
       );
     }

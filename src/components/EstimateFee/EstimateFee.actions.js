@@ -124,12 +124,14 @@ export const actionFetchFailFee = () => ({
   type: ACTION_FETCH_FAIL_FEE,
 });
 
-export const actionFetchFee = ({ amount, address, screen, memo, childSelectedPrivacy = null }) => async (
+export const actionFetchFee = ({ amount, address, screen, memo }) => async (
   dispatch,
   getState,
 ) => {
   const state = getState();
   const parentSelectedPrivacy = selectedPrivacySelector.selectedPrivacy(state);
+  const childSelectedPrivacy =
+    childSelectedPrivacySelector.childSelectedPrivacy(state);
   const selectedPrivacy =
     childSelectedPrivacy && childSelectedPrivacy?.networkId !== 'INCOGNITO'
       ? childSelectedPrivacy
