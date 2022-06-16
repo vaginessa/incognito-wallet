@@ -989,7 +989,14 @@ export const actionEstimateTradeForPancake =
       if (!tradingFee) {
         throw 'Can not estimate trading fee';
       }
-      const { feeAddress, tradeID, signAddress, originalTradeFee } = tradingFee;
+      const {
+        feeAddress,
+        tradeID,
+        signAddress,
+        originalTradeFee,
+        unifiedTokenId,
+        tokenId,
+      } = tradingFee;
       let sellAmount = 0;
       let buyAmount = 0;
       switch (field) {
@@ -1036,6 +1043,8 @@ export const actionEstimateTradeForPancake =
             tradeID,
             feeAddress,
             signAddress,
+            unifiedTokenId,
+            tokenId,
             error: null,
           },
         }),
@@ -1642,115 +1651,143 @@ export const actionFetchSwap = () => async (dispatch, getState) => {
     const pDexV3Inst = await getPDexV3Instance({ account });
     const platform = platformSelectedSelector(state);
     switch (platform.id) {
-    case KEYS_PLATFORMS_SUPPORTED.incognito:
-      {
-        const params = {
-          transfer: { fee: ACCOUNT_CONSTANT.MAX_FEE_PER_TX, info: '' },
-          extra: {
-            tokenIDToSell,
-            sellAmount: String(sellAmount),
-            tokenIDToBuy,
-            tradingFee,
-            tradePath,
-            feetoken,
-            version: PrivacyVersion.ver2,
-            minAcceptableAmount: String(minAcceptableAmount),
-          },
-        };
-        tx = await pDexV3Inst.createAndSendSwapRequestTx(params);
-        if (!tx) {
-          console.log('error');
+      case KEYS_PLATFORMS_SUPPORTED.incognito:
+        {
+          const params = {
+            transfer: { fee: ACCOUNT_CONSTANT.MAX_FEE_PER_TX, info: '' },
+            extra: {
+              tokenIDToSell,
+              sellAmount: String(sellAmount),
+              tokenIDToBuy,
+              tradingFee,
+              tradePath,
+              feetoken,
+              version: PrivacyVersion.ver2,
+              minAcceptableAmount: String(minAcceptableAmount),
+            },
+          };
+          tx = await pDexV3Inst.createAndSendSwapRequestTx(params);
+          if (!tx) {
+            console.log('error');
+          }
         }
+        break;
+      case KEYS_PLATFORMS_SUPPORTED.pancake: {
+        const { tradeID, feeAddress, signAddress, unifiedTokenId, tokenId } = feeDataByPlatform;
+        const getPancakeTokenParamReq = findTokenPancakeByIdSelector(state);
+        const tokenSellPancake = getPancakeTokenParamReq(tokenIDToSell);
+        const tokenBuyPancake = getPancakeTokenParamReq(tokenIDToBuy);
+        let response;
+        if (tokenSellPancake?.currencyType === 25) {
+          response =
+            await pDexV3Inst.createAndSendTradeRequestPancakeTxForUnifiedToken({
+              burningPayload: {
+                originalBurnAmount: sellAmount,
+                tokenID: unifiedTokenId,
+                signKey: signAddress,
+                feeAddress,
+                tradeFee: tradingFee,
+                info: String(tradeID),
+                feeToken: feetoken,
+                incTokenID: tokenId,
+              },
+              tradePayload: {
+                tradeID,
+                srcTokenID: tokenSellPancake?.tokenID,
+                destTokenID: tokenBuyPancake?.tokenID,
+                paths: tradePath.join(','),
+                srcQties: String(sellAmount),
+                expectedDestAmt: String(minAcceptableAmount),
+                isNative:
+                  tokenBuyPancake?.contractId ===
+                  '0x0000000000000000000000000000000000000000',
+              },
+            });
+        } else {
+          response = await pDexV3Inst.createAndSendTradeRequestPancakeTx({
+            burningPayload: {
+              originalBurnAmount: sellAmount,
+              tokenID: tokenIDToSell,
+              signKey: signAddress,
+              feeAddress,
+              tradeFee: tradingFee,
+              info: String(tradeID),
+              feeToken: feetoken,
+            },
+            tradePayload: {
+              tradeID,
+              srcTokenID: tokenSellPancake?.tokenID,
+              destTokenID: tokenBuyPancake?.tokenID,
+              paths: tradePath.join(','),
+              srcQties: String(sellAmount),
+              expectedDestAmt: String(minAcceptableAmount),
+              isNative:
+                tokenBuyPancake?.contractId ===
+                '0x0000000000000000000000000000000000000000',
+            },
+          });
+        }
+        tx = response;
+        break;
       }
-      break;
-    case KEYS_PLATFORMS_SUPPORTED.pancake: {
-      const { tradeID, feeAddress, signAddress } = feeDataByPlatform;
-      const getPancakeTokenParamReq = findTokenPancakeByIdSelector(state);
-      const tokenSellPancake = getPancakeTokenParamReq(tokenIDToSell);
-      const tokenBuyPancake = getPancakeTokenParamReq(tokenIDToBuy);
-      const response = await pDexV3Inst.createAndSendTradeRequestPancakeTx({
-        burningPayload: {
-          originalBurnAmount: sellAmount,
-          tokenID: tokenIDToSell,
-          signKey: signAddress,
-          feeAddress,
-          tradeFee: tradingFee,
-          info: String(tradeID),
-          feeToken: feetoken,
-        },
-        tradePayload: {
-          tradeID,
-          srcTokenID: tokenSellPancake?.tokenID,
-          destTokenID: tokenBuyPancake?.tokenID,
-          paths: tradePath.join(','),
-          srcQties: String(sellAmount),
-          expectedDestAmt: String(minAcceptableAmount),
-          isNative:
-              tokenBuyPancake?.contractId ===
-              '0x0000000000000000000000000000000000000000',
-        },
-      });
-      tx = response;
-      break;
-    }
-    case KEYS_PLATFORMS_SUPPORTED.uni: {
-      const { tradeID, feeAddress, signAddress } = feeDataByPlatform;
-      const getUniTokenParamReq = findTokenUniByIdSelector(state);
-      const tokenSellUni = getUniTokenParamReq(tokenIDToSell);
-      const tokenBuyUni = getUniTokenParamReq(tokenIDToBuy);
-      const response = await pDexV3Inst.createAndSendTradeRequestUniTx({
-        burningPayload: {
-          originalBurnAmount: sellAmount,
-          tokenID: tokenIDToSell,
-          signKey: signAddress,
-          feeAddress,
-          tradeFee: tradingFee,
-          info: String(tradeID),
-          feeToken: feetoken,
-        },
-        tradePayload: {
-          fees: JSON.stringify(feetokenData?.uni?.fees),
-          tradeID,
-          srcTokenID: tokenSellUni?.tokenID,
-          destTokenID: tokenBuyUni?.tokenID,
-          paths: JSON.stringify(tradePath),
-          srcQties: String(sellAmount),
-          expectedDestAmt: String(minAcceptableAmount),
-          percents: JSON.stringify(feetokenData?.uni?.percents),
-          isMulti: feetokenData?.uni?.multiRouter,
-        },
-      });
-      tx = response;
-      break;
-    }
-    case KEYS_PLATFORMS_SUPPORTED.curve: {
-      const { tradeID, feeAddress, signAddress } = feeDataByPlatform;
-      const getCurveTokenParamReq = findTokenCurveByIdSelector(state);
-      const tokenSellCurve = getCurveTokenParamReq(tokenIDToSell);
-      const tokenBuyCurve = getCurveTokenParamReq(tokenIDToBuy);
-      const response = await pDexV3Inst.createAndSendTradeRequestCurveTx({
-        burningPayload: {
-          originalBurnAmount: sellAmount,
-          tokenID: tokenIDToSell,
-          signKey: signAddress,
-          feeAddress,
-          tradeFee: tradingFee,
-          info: String(tradeID),
-          feeToken: feetoken,
-        },
-        tradePayload: {
-          tradeID,
-          srcTokenID: tokenSellCurve?.tokenID,
-          destTokenID: tokenBuyCurve?.tokenID,
-          srcQties: String(sellAmount),
-          expectedDestAmt: String(minAcceptableAmount),
-        },
-      });
-      tx = response;
-      break;
-    }
-    default:
-      break;
+      case KEYS_PLATFORMS_SUPPORTED.uni: {
+        const { tradeID, feeAddress, signAddress } = feeDataByPlatform;
+        const getUniTokenParamReq = findTokenUniByIdSelector(state);
+        const tokenSellUni = getUniTokenParamReq(tokenIDToSell);
+        const tokenBuyUni = getUniTokenParamReq(tokenIDToBuy);
+        const response = await pDexV3Inst.createAndSendTradeRequestUniTx({
+          burningPayload: {
+            originalBurnAmount: sellAmount,
+            tokenID: tokenIDToSell,
+            signKey: signAddress,
+            feeAddress,
+            tradeFee: tradingFee,
+            info: String(tradeID),
+            feeToken: feetoken,
+          },
+          tradePayload: {
+            fees: JSON.stringify(feetokenData?.uni?.fees),
+            tradeID,
+            srcTokenID: tokenSellUni?.tokenID,
+            destTokenID: tokenBuyUni?.tokenID,
+            paths: JSON.stringify(tradePath),
+            srcQties: String(sellAmount),
+            expectedDestAmt: String(minAcceptableAmount),
+            percents: JSON.stringify(feetokenData?.uni?.percents),
+            isMulti: feetokenData?.uni?.multiRouter,
+          },
+        });
+        tx = response;
+        break;
+      }
+      case KEYS_PLATFORMS_SUPPORTED.curve: {
+        const { tradeID, feeAddress, signAddress } = feeDataByPlatform;
+        const getCurveTokenParamReq = findTokenCurveByIdSelector(state);
+        const tokenSellCurve = getCurveTokenParamReq(tokenIDToSell);
+        const tokenBuyCurve = getCurveTokenParamReq(tokenIDToBuy);
+        const response = await pDexV3Inst.createAndSendTradeRequestCurveTx({
+          burningPayload: {
+            originalBurnAmount: sellAmount,
+            tokenID: tokenIDToSell,
+            signKey: signAddress,
+            feeAddress,
+            tradeFee: tradingFee,
+            info: String(tradeID),
+            feeToken: feetoken,
+          },
+          tradePayload: {
+            tradeID,
+            srcTokenID: tokenSellCurve?.tokenID,
+            destTokenID: tokenBuyCurve?.tokenID,
+            srcQties: String(sellAmount),
+            expectedDestAmt: String(minAcceptableAmount),
+          },
+        });
+        tx = response;
+        break;
+      }
+      default:
+        break;
     }
   } catch (error) {
     new ExHandler(error).showErrorToast();
