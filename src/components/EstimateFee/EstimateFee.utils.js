@@ -72,7 +72,7 @@ export const getFeeData = (estimateFee, selectedPrivacyData, childSelectedPrivac
   const feePDecimals = isUseTokenFee
     ? selectedPrivacyData?.pDecimals
     : CONSTANT_COMMONS.PRV.pDecimals;
-  const isUnShield = screen === 'UnShield';
+  const isUnShield = childSelectedPrivacyData?.networkId !== 'INCOGNITO';
   let fee = isUseTokenFee ? feePToken : feePrv;
   // UnShield payment fee by PToken, network fee always PRV
   if (isUnShield) {
@@ -122,7 +122,7 @@ export const getFeeData = (estimateFee, selectedPrivacyData, childSelectedPrivac
     titleBtnSubmit,
     isFetching,
     isUnShield,
-    isSend: screen === 'Send',
+    isSend: childSelectedPrivacyData?.networkId === 'INCOGNITO',
     isAddressValidated,
     isValidETHAddress,
     isETH,

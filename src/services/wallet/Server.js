@@ -161,7 +161,7 @@ export const DEV_TEST_UNIFIED_TOKEN_SERVER = {
   apiServices: 'https://dev-api-service.incognito.org',
   shardNumber: 2,
   IncContractAddress: '0xf90860014c7e13dE4A86B81c54dDE797820c72bE',
-  IncBSCContractAddress: '0x5cAA31ADf0Ae8767f651EdEe1Cd6C57C0a707EC1',
+  IncBSCContractAddress: '0x9ee4E8FE2D977c8869F2e29736b21e8fc6FF830E',
   explorer: 'https://testnet1.incognito.org',
   portalServices: 'http://139.162.55.124:8010',
   tradeServices: 'http://51.161.117.193:6002',

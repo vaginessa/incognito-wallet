@@ -37,7 +37,10 @@ const enhance = (WrappedComp) => (props) => {
         return;
       }
       let screen = 'Send';
-      if (childSelectedPrivacy?.networkId !== 'INCOGNITO') {
+      if (
+        childSelectedPrivacy?.networkId !== 'INCOGNITO' ||
+        isExternalAddress
+      ) {
         screen = 'UnShield';
       } else {
         screen = 'Send';
