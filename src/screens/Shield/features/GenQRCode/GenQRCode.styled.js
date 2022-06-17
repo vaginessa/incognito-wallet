@@ -86,6 +86,7 @@ export const styled = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     marginTop: 42,
+    padding: 16,
   },
   errorText: {
     fontFamily: FONT.NAME.medium,
@@ -258,6 +259,12 @@ export const styled = StyleSheet.create({
   redText: {
     fontSize: 12,
     color: COLORS.red,
+    fontWeight: '400',
+    lineHeight: 18,
+  },
+  orangeText: {
+    fontSize: 12,
+    color: COLORS.lightOrange,
     fontWeight: '400',
     lineHeight: 18,
   },

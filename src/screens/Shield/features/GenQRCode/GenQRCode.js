@@ -72,7 +72,7 @@ const ShieldError = React.memo(({ handleShield, isPortalCompatible }) => {
 const Extra = (props) => {
   const { address, min, expiredAt, decentralized, isPortal } =
     useDebounceSelector(shieldDataSelector);
-  const { selectedPrivacy, defaultFee, colors } = props;
+  const { selectedPrivacy, defaultFee, colors, selectedPlatform } = props;
   const navigation = useNavigation();
   const isPRV = selectedPrivacy?.tokenId === PRV_ID;
   const renderMinShieldAmount = () => {
@@ -118,7 +118,11 @@ const Extra = (props) => {
     if (isPortal) {
       shieldingTimeText = '60 mins';
     }
-    if (selectedPrivacy?.isETH || selectedPrivacy?.isErc20Token) {
+    if (
+      selectedPrivacy?.isETH ||
+      selectedPrivacy?.isErc20Token ||
+      (isPRV && selectedPlatform === 0)
+    ) {
       shieldingTimeText = '20 mins';
     }
     if (
@@ -127,7 +131,8 @@ const Extra = (props) => {
       selectedPrivacy?.isMATIC ||
       selectedPrivacy?.isPolygonErc20Token ||
       selectedPrivacy?.isFTM ||
-      selectedPrivacy?.isFantomErc20Token
+      selectedPrivacy?.isFantomErc20Token ||
+      (isPRV && selectedPlatform === 1)
     ) {
       shieldingTimeText = '10 mins';
     }
@@ -137,13 +142,17 @@ const Extra = (props) => {
     }
 
     return (
-      <Text
-        style={[styled.noteText, { color: colors.text1 }]}
-      >
-        {`Your ${
-          selectedPrivacy?.externalSymbol || selectedPrivacy?.symbol
-        } shielding transaction is estimated to complete in ${shieldingTimeText}.`}
-      </Text>
+      <View>
+        <View style={styled.noteItemContainer}>
+          <View style={styled.dot} />
+          <Text style={[styled.noteText, { color: colors.text1 }]}>
+            {`Your ${
+              selectedPrivacy?.externalSymbol || selectedPrivacy?.symbol
+            } shielding transaction is estimated to complete in ${shieldingTimeText}.`}
+          </Text>
+        </View>
+        <View style={styled.space} />
+      </View>
     );
   };
 
@@ -177,7 +186,7 @@ const Extra = (props) => {
             }`}
           </Text>
         </View>
-        <Text style={styled.redText}>
+        <Text style={styled.orangeText}>
           This fee will be deducted from the shielded funds.
         </Text>
       </>
@@ -212,18 +221,7 @@ const Extra = (props) => {
   const renderNoteBox = () => {
     return (
       <View style={styled.noteBoxContainer}>
-        <View style={styled.noteItemContainer}>
-          <View style={styled.dot} />
-          {renderEstimateShieldingTime()}
-        </View>
-        <View style={styled.space} />
-        <View style={styled.noteItemContainer}>
-          <View style={styled.dot} />
-          <Text style={styled.noteText}>
-            If sending from an exchange, please take withdrawal times into
-            account.
-          </Text>
-        </View>
+        {renderEstimateShieldingTime()}
         <View style={styled.noteItemContainer}>
           <View style={styled.dot} />
           <Text style={styled.noteText}>
@@ -414,6 +412,7 @@ const GenQRCode = (props) => {
               defaultFee,
               colors,
               isPRV,
+              selectedPlatform
             }}
           />
         </ScrollViewBorder>

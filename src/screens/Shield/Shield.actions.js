@@ -190,19 +190,14 @@ export const actionFetch =
           return;
         }
         dispatch(actionFetching());
-        const [dataMinMax, addressShield] = await Promise.all([
-          actionGetMinMaxShield({ tokenId }),
-          actionGetAddressToShield({
-            selectedPrivacy,
-            account,
-            signPublicKeyEncode,
-          }),
-        ]);
+        const addressShield = await actionGetAddressToShield({
+          selectedPrivacy,
+          account,
+          signPublicKeyEncode,
+        });
 
         let { address, expiredAt, decentralized, tokenFee, estimateFee } =
-        addressShield;
-
-        const [min, max] = dataMinMax;
+          addressShield;
         if (expiredAt) {
           expiredAt = formatUtil.formatDateTime(expiredAt);
         }
@@ -216,8 +211,6 @@ export const actionFetch =
 
         await dispatch(
           actionFetched({
-            min,
-            max,
             address,
             expiredAt,
             decentralized,

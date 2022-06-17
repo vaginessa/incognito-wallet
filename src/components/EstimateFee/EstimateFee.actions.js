@@ -6,7 +6,6 @@ import { change, focus } from 'redux-form';
 import format from '@src/utils/format';
 import { CONSTANT_COMMONS } from '@src/constants';
 import floor from 'lodash/floor';
-import { getMinMaxWithdrawAmount } from '@src/services/api/misc';
 import { trim } from 'lodash';
 import {
   estimateUserFees,
@@ -53,8 +52,6 @@ export const actionInitEstimateFee = (config = {}) => async (
   }
   const { screen = 'Send' } = config;
   let rate;
-  let minAmount = 1 / 10 ** selectedPrivacy?.pDecimals;
-  let minAmountText = format.toFixed(minAmount, selectedPrivacy?.pDecimals);
   try {
     switch (screen) {
     case 'UnShield': {
@@ -66,16 +63,6 @@ export const actionInitEstimateFee = (config = {}) => async (
       break;
     }
     }
-    if (screen === 'UnShield') {
-      const [min] = await getMinMaxWithdrawAmount(selectedPrivacy?.tokenId);
-      if (min) {
-        minAmountText = format.toFixed(min, selectedPrivacy?.pDecimals);
-        minAmount = convert.toOriginalAmount(
-          minAmountText,
-          selectedPrivacy?.pDecimals,
-        );
-      }
-    }
   } catch (error) {
     throw error;
   } finally {
@@ -83,8 +70,6 @@ export const actionInitEstimateFee = (config = {}) => async (
       actionInitFetched({
         screen,
         rate,
-        minAmount,
-        minAmountText,
         isAddressValidated: true,
         isValidETHAddress: true,
       }),

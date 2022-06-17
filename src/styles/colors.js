@@ -1,6 +1,7 @@
 const COLORS = {
   transparent: 'transparent',
   orange: '#FF9500',
+  lightOrange: '#FFC043',
   white: 'white',
   black: '#000000',
   black1: '#515151',
