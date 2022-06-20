@@ -151,7 +151,7 @@ const Extra = (props) => {
             } shielding transaction is estimated to complete in ${shieldingTimeText}.`}
           </Text>
         </View>
-        <View style={styled.space} />
+        {!isPortal && <View style={styled.space} />}
       </View>
     );
   };
@@ -211,7 +211,6 @@ const Extra = (props) => {
       <CopiableText
         data={address}
         textStyle={{ color: colors.text1 }}
-        btnStyle={{ backgroundColor: colors.background6 }}
       />
       {renderMinShieldAmount()}
       {renderNoteBox()}
@@ -270,7 +269,6 @@ const Extra = (props) => {
       <CopiableText
         data={address}
         textStyle={{ color: colors.text1 }}
-        btnStyle={{ backgroundColor: colors.background6 }}
       />
       {renderMinShieldAmount()}
       {renderEstimateFee()}
@@ -289,12 +287,10 @@ const Extra = (props) => {
         <QrCodeGenerate value={address} size={175} />
       </View>
       <View style={styled.hook}>{renderMinPortalShieldAmount()}</View>
-      <CopiableText
-        data={address}
-        textStyle={{ color: colors.text1 }}
-        btnStyle={{ backgroundColor: colors.background6 }}
-      />
-      <View style={{marginTop: 10}}>{renderEstimateShieldingTime()}</View>
+      <CopiableText data={address} textStyle={{ color: colors.text1 }} />
+      <View style={styled.noteBoxContainer}>
+        {renderEstimateShieldingTime()}
+      </View>
     </>
   );
 
