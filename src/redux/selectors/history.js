@@ -143,6 +143,7 @@ export const mappingTxPTokenSelector = createSelector(
       pDecimals,
       decimals,
       unifiedReward,
+      network
     } = txp;
     const shouldRenderQrShieldingAddress =
       isShieldTx &&
@@ -172,9 +173,9 @@ export const mappingTxPTokenSelector = createSelector(
           decimalDigits,
         })
         : '';
-    const network = tokenId === PRVIDSTR && currencyType && currencyType !== 0
-      ? CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_NAME[currencyType]
-      : '';
+    // const network = tokenId === PRVIDSTR && currencyType && currencyType !== 0
+    //   ? CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_NAME[currencyType]
+    //   : '';
     const result = {
       ...txp,
       timeStr: formatUtil.formatDateTime(time),
