@@ -229,9 +229,9 @@ class SelectedPrivacy {
     this.defaultPairToken = pTokenData?.defaultPairToken;
     this.network = pTokenData.network;
     this.networkId = pTokenData.networkId;
-    if (tokenId === PRV_ID) {
-      this.network = 'Incognito';
-    }
+    // if (tokenId === PRV_ID) {
+    //   this.network = 'Incognito';
+    // }
     this.hasSameSymbol = pTokenData.hasSameSymbol;
 
     // Unified Token
