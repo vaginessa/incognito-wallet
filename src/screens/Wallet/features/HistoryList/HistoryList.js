@@ -19,6 +19,7 @@ import routeNames from '@src/router/routeNames';
 import { colorsSelector } from '@src/theme';
 import globalStyled from '@src/theme/theme.styled';
 import { isEmpty, debounce } from 'lodash';
+import { IconReward } from '@src/components/Icons';
 import styleSheet from './History.styled';
 
 const HistoryItemWrapper = ({ history, onCancelEtaHistory, ...otherProps }) =>
@@ -89,9 +90,8 @@ const HistoryItem = React.memo(({ history }) => {
         <View style={styleSheet.amountContainer}>
           {!isEmpty(rewardAmountStr) && (
             <View style={styleSheet.rewardAmountContainer}>
-              <Text style={styleSheet.rewardAmountText}>
-                +{rewardAmountStr}
-              </Text>
+              <Text style={styleSheet.rewardAmountText}>+</Text>
+              <IconReward />
             </View>
           )}
           <NormalText

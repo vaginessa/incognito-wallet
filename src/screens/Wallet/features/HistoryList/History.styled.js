@@ -90,6 +90,7 @@ const style = StyleSheet.create({
     alignItems: 'center',
   },
   rewardAmountContainer: {
+    flexDirection: 'row',
     paddingHorizontal: 8,
     paddingVertical: 4,
     backgroundColor: COLORS.gray1,
@@ -99,7 +100,8 @@ const style = StyleSheet.create({
   rewardAmountText: {
     fontSize: 12,
     lineHeight: 18,
-    fontWeight: '500',
+    fontWeight: 'bold',
+    marginRight: 3
   },
 });
 

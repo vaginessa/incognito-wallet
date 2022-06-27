@@ -97,6 +97,7 @@ export const mappingTxReceiverSelector = createSelector(
   selectedPrivacy,
   decimalDigitsSelector,
   ({ pDecimals }, decimalDigits) => (txr) => {
+    const metaDataObj = JSON.parse(txr?.metaData);
     const result = {
       ...txr,
       timeStr: formatUtil.formatDateTime(txr?.time),
@@ -105,7 +106,12 @@ export const mappingTxReceiverSelector = createSelector(
         pDecimals,
         decimalDigits,
       }),
-      statusColor: TX_STATUS_COLOR[(txr?.status)],
+      rewardAmountStr: renderAmount({
+        amount: metaDataObj?.Reward || 0,
+        pDecimals: selectedPrivacy?.pDecimals,
+        decimalDigits,
+      }),
+      statusColor: TX_STATUS_COLOR[txr?.status],
     };
     return result;
   },
@@ -327,7 +333,14 @@ export const historyDetailFactoriesSelector = createSelector(
           statusStr,
           txTypeStr,
           memo,
+          metaData,
         } = tx;
+        const metaDataObj = JSON.parse(metaData);
+        const rewardAmountStr = renderAmount({
+          amount: metaDataObj?.Reward || 0,
+          pDecimals: selectedPrivacy?.pDecimals,
+          decimalDigits,
+        });
         return [
           {
             label: 'TxID',
@@ -344,6 +357,11 @@ export const historyDetailFactoriesSelector = createSelector(
             label: 'Receive',
             value: `${tx?.amountStr} ${selectedPrivacy.symbol}`,
             disabled: !amount,
+          },
+          {
+            label: 'Reward amount',
+            value: `${rewardAmountStr} ${selectedPrivacy.symbol}`,
+            disabled: !rewardAmountStr,
           },
           {
             label: 'Status',
