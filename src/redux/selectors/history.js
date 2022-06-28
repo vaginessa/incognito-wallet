@@ -97,7 +97,7 @@ export const mappingTxReceiverSelector = createSelector(
   selectedPrivacy,
   decimalDigitsSelector,
   ({ pDecimals }, decimalDigits) => (txr) => {
-    const metaDataObj = JSON.parse(txr?.metaData);
+    const metaDataObj = JSON.parse(txr?.metaData || null);
     const result = {
       ...txr,
       timeStr: formatUtil.formatDateTime(txr?.time),
@@ -335,7 +335,7 @@ export const historyDetailFactoriesSelector = createSelector(
           memo,
           metaData,
         } = tx;
-        const metaDataObj = JSON.parse(metaData);
+        const metaDataObj = JSON.parse(metaData || null);
         const rewardAmountStr = renderAmount({
           amount: metaDataObj?.Reward || 0,
           pDecimals: selectedPrivacy?.pDecimals,
