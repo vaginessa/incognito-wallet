@@ -172,7 +172,7 @@ const buttonStyle: ViewStyle = {
 const textBoxStyle: TextStyle = {
   fontSize: 14,
   fontWeight: '500',
-  marginLeft: 16,
+  marginHorizontal: 16,
 };
 
 const buttonTitleStyle: TextStyle = {
