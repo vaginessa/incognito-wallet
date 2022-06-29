@@ -196,6 +196,7 @@ const ConvertToUnifiedToken: React.FC = () => {
         leftButtonStyle={swapButtonStyle}
         leftButtonTitleStyle={swapButtonTitle}
         rightButtonTitle="Faucet"
+        hideRightButton={!enableFaucet}
         disabledRightButton={!enableFaucet}
         onBackdropPress={() => setIsVisibleModalWarning(false)}
       />

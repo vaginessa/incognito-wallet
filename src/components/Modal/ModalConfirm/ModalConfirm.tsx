@@ -24,6 +24,8 @@ export interface ModalConfirmProps {
   rightButtonTitleStyle?: TextStyle;
   leftButtonTitleDisabledStyle?: TextStyle;
   rightButtonTitleDisabledStyle?: TextStyle;
+  hideLeftButton?: boolean;
+  hideRightButton?: boolean;
 }
 
 export const ModalConfirm: React.FC<ModalConfirmProps> = ({
@@ -45,6 +47,8 @@ export const ModalConfirm: React.FC<ModalConfirmProps> = ({
   rightButtonTitleStyle,
   leftButtonTitleDisabledStyle,
   rightButtonTitleDisabledStyle,
+  hideLeftButton,
+  hideRightButton,
   style,
 }) => {
   return (
@@ -62,25 +66,29 @@ export const ModalConfirm: React.FC<ModalConfirmProps> = ({
         <Text style={modalTitleStyle}>{title}</Text>
         <Text style={modalDescriptionStyle}>{description}</Text>
         <View style={rowStyle}>
-          <Button
-            title={leftButtonTitle || 'Cancel'}
-            onPress={() => onPressLeftButton?.()}
-            buttonStyle={[defaultLeftButtonStyle, leftButtonStyle]}
-            disabled={disabledLeftButton}
-            titleStyle={leftButtonTitleStyle}
-            disabledStyle={leftButtonDisabledStyle}
-            disabledTitleStyle={leftButtonTitleDisabledStyle}
-          />
-          <View style={spaceStyle} />
-          <Button
-            title={rightButtonTitle || 'Confirm'}
-            onPress={() => onPressRightButton?.()}
-            buttonStyle={[defaultRightButtonStyle, rightButtonStyle]}
-            disabled={disabledRightButton}
-            titleStyle={rightButtonTitleStyle}
-            disabledStyle={rightButtonDisabledStyle}
-            disabledTitleStyle={rightButtonTitleDisabledStyle}
-          />
+          {!hideLeftButton && (
+            <Button
+              title={leftButtonTitle || 'Cancel'}
+              onPress={() => onPressLeftButton?.()}
+              buttonStyle={[defaultLeftButtonStyle, leftButtonStyle]}
+              disabled={disabledLeftButton}
+              titleStyle={leftButtonTitleStyle}
+              disabledStyle={leftButtonDisabledStyle}
+              disabledTitleStyle={leftButtonTitleDisabledStyle}
+            />
+          )}
+          {!hideLeftButton && !hideRightButton && <View style={spaceStyle} />}
+          {!hideRightButton && (
+            <Button
+              title={rightButtonTitle || 'Confirm'}
+              onPress={() => onPressRightButton?.()}
+              buttonStyle={[defaultRightButtonStyle, rightButtonStyle]}
+              disabled={disabledRightButton}
+              titleStyle={rightButtonTitleStyle}
+              disabledStyle={rightButtonDisabledStyle}
+              disabledTitleStyle={rightButtonTitleDisabledStyle}
+            />
+          )}
         </View>
       </View>
     </Modal>
