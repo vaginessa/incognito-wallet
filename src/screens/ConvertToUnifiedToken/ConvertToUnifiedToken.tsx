@@ -189,7 +189,11 @@ const ConvertToUnifiedToken: React.FC = () => {
       <ModalConfirm
         isVisible={isVisibleModalWarning}
         title="Where can I get some?"
-        description="Please go to Swap or Faucet to get more PRV to create converting transactions."
+        description={
+          enableFaucet
+            ? 'Please go to Swap or Faucet to get more PRV to create converting transactions.'
+            : 'Please go to Swap to get more PRV to create converting transactions.'
+        }
         onPressLeftButton={() => goToSwaps()}
         onPressRightButton={() => goToFaucet()}
         leftButtonTitle="Swap"

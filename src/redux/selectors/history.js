@@ -418,7 +418,11 @@ export const historyDetailFactoriesSelector = createSelector(
         const isShieldProcessing = checkShieldProcessing(status, decentralized);
         let estimationShieldingTime = '';
         if (isShieldProcessing) {
-          if (selectedPrivacy?.isETH || selectedPrivacy?.isErc20Token) {
+          if (
+            selectedPrivacy?.isETH ||
+            selectedPrivacy?.isErc20Token ||
+            network === 'Ethereum'
+          ) {
             estimationShieldingTime = '20 mins';
           } else {
             estimationShieldingTime = '10 mins';
