@@ -1752,7 +1752,7 @@ export const actionFetchSwap = () => async (dispatch, getState) => {
             });
         } else {
           response =
-            await pDexV3Inst.createAndSendTradeRequestUniTxForUnifiedToken({
+            await pDexV3Inst.createAndSendTradeRequestPancakeTx({
               burningPayload: {
                 originalBurnAmount: sellAmount,
                 tokenID: tokenIDToSell,
