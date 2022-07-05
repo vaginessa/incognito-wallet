@@ -27,11 +27,10 @@ export const ConvertItem: React.FC<ConvertItemProps> = ({
 
   let unifiedTokenAmount = unifiedTokenData?.listUnifiedToken
     .map((item) =>
-      parseFloat(format.amountVer2(item?.balance, item?.pDecimals)),
+      parseFloat(convert.toHumanAmount(item?.balance, item?.pDecimals)),
     )
     .reduce((prevValue, nextValue) => ((prevValue + nextValue) * 100) / 100);
-
-
+  unifiedTokenAmount = format.amountVer2(unifiedTokenAmount);
   return (
     <TouchableOpacity
       activeOpacity={0.8}
@@ -53,7 +52,7 @@ export const ConvertItem: React.FC<ConvertItemProps> = ({
       <View style={pUnifiedTokenInfoContainerStyle}>
         <Text style={pUnifiedTokenTextStyle}>{unifiedTokenData?.symbol}</Text>
         <Text style={pUnifiedTokenTextStyle}>
-          {convert.toPlainString(unifiedTokenAmount)} {unifiedTokenData?.symbol}
+          {unifiedTokenAmount} {unifiedTokenData?.symbol}
         </Text>
       </View>
 

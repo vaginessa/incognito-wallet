@@ -1,4 +1,4 @@
-import { Text } from '@src/components/core';
+import { ActivityIndicator, Text } from '@src/components/core';
 import { COLORS } from '@src/styles';
 import format from '@utils/format';
 import React from 'react';
@@ -79,7 +79,12 @@ export const ConvertProcessItem: React.FC<ConvertProcessItemProps> = ({
       <View style={lineStyle} />
       <View style={statusBoxContainer}>
         <Text style={statusLabel}>Status</Text>
-        <Text style={{ color: statusColor }}>{statusText}</Text>
+        <View style={rowStyle}>
+          {pTokenData?.convertStatus === 'PROCESSING' && (
+            <ActivityIndicator style={indicatorStyle} />
+          )}
+          <Text style={{ color: statusColor }}>{statusText}</Text>
+        </View>
       </View>
     </View>
   );
@@ -134,4 +139,8 @@ const statusLabel: TextStyle = {
 const statusBoxContainer: ViewStyle = {
   ...rowStyle,
   justifyContent: 'space-between',
+};
+
+const indicatorStyle: ViewStyle = {
+  marginRight: 8,
 };

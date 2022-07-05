@@ -76,6 +76,7 @@ const setListTokenConvert = () => async (dispatch, getState) => {
         ...unifiedTokens[i],
         listUnifiedToken: newListPTokenConvert,
         balance: unifiedTokenBalance,
+        selected: true,
       });
     }
   }

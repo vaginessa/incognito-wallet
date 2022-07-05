@@ -61,8 +61,14 @@ const ProcessConvertToUnifiedToken: React.FC = () => {
   const renderWarningBox = () => {
     return (
       <View style={warningBoxContainer}>
-        <ActivityIndicator size="small" color="white" />
-        <Text style={textBoxStyle}>
+        <View style={waringBoxIconContainer}>
+          <MaterialCommunityIcons
+            size={16}
+            name="exclamation"
+            color={COLORS.lightOrange}
+          />
+        </View>
+        <Text style={textBoxWarningStyle}>
           Please do not navigate away till this process completes
         </Text>
       </View>
@@ -72,14 +78,14 @@ const ProcessConvertToUnifiedToken: React.FC = () => {
   const renderSuccessBox = () => {
     return (
       <View style={successBoxContainer}>
-        <View style={leftBoxContainer}>
+        <View style={successBoxIconContainer}>
           <MaterialCommunityIcons
             size={16}
             name="check-bold"
             color={COLORS.green}
           />
         </View>
-        <Text style={textBoxStyle}>The convert process completed.</Text>
+        <Text style={textBoxSuccessStyle}>The convert process completed.</Text>
       </View>
     );
   };
@@ -138,19 +144,24 @@ const flatListContentContainerStyle: ViewStyle = {
 const warningBoxContainer: ViewStyle = {
   flexDirection: 'row',
   alignItems: 'center',
-  backgroundColor: COLORS.red1,
+  backgroundColor: COLORS.lightOrange,
   borderRadius: 6,
   padding: 16,
   marginHorizontal: 16,
   marginTop: 16,
 };
 
-const leftBoxContainer: ViewStyle = {
+const waringBoxIconContainer: ViewStyle = {
   width: 24,
   height: 24,
   borderRadius: 12,
   alignItems: 'center',
   justifyContent: 'center',
+  backgroundColor: COLORS.black,
+};
+
+const successBoxIconContainer: ViewStyle = {
+  ...waringBoxIconContainer,
   backgroundColor: COLORS.white,
 };
 
@@ -169,10 +180,16 @@ const buttonStyle: ViewStyle = {
   borderRadius: 8,
 };
 
-const textBoxStyle: TextStyle = {
+const textBoxWarningStyle: TextStyle = {
   fontSize: 14,
   fontWeight: '500',
   marginHorizontal: 16,
+  color: COLORS.black,
+};
+
+const textBoxSuccessStyle: TextStyle = {
+  ...textBoxWarningStyle,
+  color: COLORS.white,
 };
 
 const buttonTitleStyle: TextStyle = {

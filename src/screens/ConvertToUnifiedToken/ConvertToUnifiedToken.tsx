@@ -1,4 +1,4 @@
-import { Button, RefreshControl, View } from '@src/components/core';
+import { Button, View, ActivityIndicator } from '@src/components/core';
 import Empty from '@src/components/Empty';
 import { MAX_FEE_PER_TX } from '@src/components/EstimateFee/EstimateFee.utils';
 import Header from '@src/components/Header';
@@ -155,24 +155,23 @@ const ConvertToUnifiedToken: React.FC = () => {
         handleSelectedAccount={() => dispatch(setListTokenConvert())}
       />
       <View borderTop fullFlex>
-        <FlatList
-          refreshControl={
-            <RefreshControl
-              refreshing={isLoading}
-              onRefresh={() => dispatch(setListTokenConvert())}
-            />
-          }
-          data={listUnifiedTokenConvert}
-          keyExtractor={keyExtractor}
-          renderItem={renderItem}
-          ItemSeparatorComponent={renderItemSeparatorComponent}
-          contentContainerStyle={flatListContentContainerStyle}
-          initialNumToRender={10}
-          maxToRenderPerBatch={10}
-          updateCellsBatchingPeriod={100}
-          windowSize={10}
-          ListEmptyComponent={renderListEmptyComponent}
-        />
+        {isLoading ? (
+          <ActivityIndicator size="large" style={loadingIndicatorStyle} />
+        ) : (
+          <FlatList
+            data={listUnifiedTokenConvert}
+            keyExtractor={keyExtractor}
+            renderItem={renderItem}
+            ItemSeparatorComponent={renderItemSeparatorComponent}
+            contentContainerStyle={flatListContentContainerStyle}
+            initialNumToRender={10}
+            maxToRenderPerBatch={10}
+            updateCellsBatchingPeriod={100}
+            windowSize={10}
+            ListEmptyComponent={renderListEmptyComponent}
+            showsVerticalScrollIndicator={false}
+          />
+        )}
       </View>
       <View style={bottomButtonContainerStyle}>
         <Button
@@ -233,6 +232,14 @@ const flatListContentContainerStyle: ViewStyle = {
   flexGrow: 1,
   paddingHorizontal: 16,
   paddingVertical: 24,
+};
+
+const loadingIndicatorStyle: ViewStyle = {
+  position: 'absolute',
+  top: 0,
+  right: 0,
+  left: 0,
+  bottom: 0,
 };
 
 const bottomButtonContainerStyle: ViewStyle = {
