@@ -17,7 +17,7 @@ export const ConvertProcessItem: React.FC<ConvertProcessItemProps> = ({
   const getConvertStatusTextAndColor = () => {
     if (pTokenData?.convertStatus === 'SUCCESSFULLY') {
       return {
-        statusText: 'Successful',
+        statusText: 'Success',
         color: COLORS.green1,
       };
     }

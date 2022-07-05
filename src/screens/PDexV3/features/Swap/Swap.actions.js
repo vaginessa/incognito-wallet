@@ -1736,6 +1736,7 @@ export const actionFetchSwap = () => async (dispatch, getState) => {
                 info: String(tradeID),
                 feeToken: feetoken,
                 incTokenID: tokenId,
+                expectedAmt: sellAmount,
               },
               tradePayload: {
                 tradeID,
@@ -1801,6 +1802,7 @@ export const actionFetchSwap = () => async (dispatch, getState) => {
                 info: String(tradeID),
                 feeToken: feetoken,
                 incTokenID: tokenId,
+                expectedAmt: sellAmount,
               },
               tradePayload: {
                 fees: JSON.stringify(feetokenData?.uni?.fees),
