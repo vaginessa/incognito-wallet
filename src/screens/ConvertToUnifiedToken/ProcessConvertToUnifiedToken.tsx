@@ -14,7 +14,10 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import { useNavigation } from 'react-navigation-hooks';
 import { useDispatch, useSelector } from 'react-redux';
 import { ConvertProcessItem } from './ConvertProcessItem';
-import { convertToUnifiedToken } from './state/operations';
+import {
+  convertToUnifiedToken,
+  actionFollowUnifiedTokens,
+} from './state/operations';
 import { listTokenConvertSelector } from './state/selectors';
 
 const ProcessConvertToUnifiedToken: React.FC = () => {
@@ -56,6 +59,7 @@ const ProcessConvertToUnifiedToken: React.FC = () => {
 
   useEffect(() => {
     dispatch(convertToUnifiedToken());
+    dispatch(actionFollowUnifiedTokens());
   }, []);
 
   const renderWarningBox = () => {

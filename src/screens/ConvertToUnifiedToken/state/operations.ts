@@ -7,6 +7,7 @@ import { getDefaultAccountWalletSelector } from '@src/redux/selectors/shared';
 import { pTokensSelector } from '@src/redux/selectors/token';
 import { walletSelector } from '@src/redux/selectors/wallet';
 import { ExHandler } from '@src/services/exception';
+import { actionAddFollowToken } from '@src/redux/actions/token';
 import {
   ACCOUNT_CONSTANT,
   constants,
@@ -23,6 +24,7 @@ import {
 import {
   listTokenConvertSelector,
   listUnifiedTokenSelector,
+  listUnifiedTokenSelectedSelector,
 } from './selectors';
 import { MINIMUM_PRV_UTXO_TO_CREATE_TRANSACTION } from './utils';
 
@@ -244,6 +246,15 @@ const createTransactionConvert = () => async (dispatch, getState) => {
   }
 };
 
+const actionFollowUnifiedTokens = () => async (dispatch, getState) => {
+  let state = getState();
+  const listUnifiedToken = listUnifiedTokenSelectedSelector(state);
+  if (!listUnifiedToken.length) return;
+  for (var i = 0; i < listUnifiedToken.length; i++) {
+    dispatch(actionAddFollowToken(listUnifiedToken[i].tokenId));
+  }
+};
+
 const convertToUnifiedToken = () => async (dispatch, getState) => {
   let state = getState();
   const account: any = accountSelector?.defaultAccountSelector(state);
@@ -335,4 +346,5 @@ export {
   setListTokenConvert,
   convertToUnifiedToken,
   updateSelectedTokenToConvert,
+  actionFollowUnifiedTokens,
 };

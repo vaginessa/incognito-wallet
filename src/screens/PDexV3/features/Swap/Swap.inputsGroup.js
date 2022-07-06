@@ -62,7 +62,8 @@ const SwapInputsGroup = React.memo(() => {
   const onSelectBuyToken = () => {
     navigation.navigate(routeNames.SelectTokenModal, {
       data: pairsToken.filter(
-        (token: SelectedPrivacy) => token?.tokenId !== buytoken?.tokenId,
+        (token: SelectedPrivacy) =>
+          token?.tokenId !== buytoken?.tokenId && !token?.movedUnifiedToken,
       ),
       onPress: (token) => onSelectToken(token, formConfigs.buytoken),
     });
