@@ -20,6 +20,7 @@ const enhance = (WrappedComp) => (props) => {
   const account = useDebounceSelector(defaultAccountSelector);
   const accountWallet = useDebounceSelector(getDefaultAccountWalletSelector);
   const tokenShield = useNavigationParam('tokenShield') || {};
+  const parentTokenShield = useNavigationParam('parentTokenShield') || {};
   const tokenSymbol = tokenShield?.externalSymbol || tokenShield?.symbol;
   const { tokenId } = tokenShield;
   const { decentralized } = useDebounceSelector(shieldDataSelector);
@@ -40,7 +41,7 @@ const enhance = (WrappedComp) => (props) => {
   const handleUpdateTokenSelector = () => {
     batch(() => {
       dispatch(setSelectedPrivacy(tokenId));
-      dispatch(actionAddFollowToken(tokenId));
+      dispatch(actionAddFollowToken(parentTokenShield?.tokenId));
     });
   };
 

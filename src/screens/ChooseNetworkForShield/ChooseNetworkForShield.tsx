@@ -81,10 +81,12 @@ const ChooseNetworkForShield: React.FC = (props) => {
 
   const navigateToShieldGenerateQrCodeScreen = () => {
     if (!selectedNetwork) return;
+    const parentTokenShieldSelectedPrivacy = getPrivacyDataByTokenID(tokenInfo?.tokenId);
     const tokenShieldSelectedPrivacy = getPrivacyDataByTokenID(
       selectedNetwork?.tokenId,
     );
     const params = {
+      parentTokenShield: parentTokenShieldSelectedPrivacy,
       tokenShield: tokenShieldSelectedPrivacy,
       selectedTerm: selectedSubView,
     };
