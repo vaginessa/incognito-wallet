@@ -175,6 +175,7 @@ const Extra = (props) => {
       selectedPrivacy?.pDecimals,
     );
     humanFee = convert.toHumanAmount(originalFee, selectedPrivacy?.pDecimals);
+    humanFee = convert.toPlainString(humanFee);
     if (!humanFee) return null;
     return (
       <>
