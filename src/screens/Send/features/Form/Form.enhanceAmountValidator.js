@@ -4,12 +4,13 @@ import debounce from 'lodash/debounce';
 import { validator } from '@src/components/core/reduxForm';
 import convert from '@src/utils/convert';
 import { feeDataSelector } from '@src/components/EstimateFee/EstimateFee.selector';
-import { selectedPrivacySelector } from '@src/redux/selectors';
+import { childSelectedPrivacySelector, selectedPrivacySelector } from '@src/redux/selectors';
 import { detectToken } from '@src/utils/misc';
 
 export const enhanceAmountValidation = (WrappedComp) => (props) => {
   const feeData = useSelector(feeDataSelector);
   const selectedPrivacy = useSelector(selectedPrivacySelector.selectedPrivacy);
+  const childSelectedPrivacy = useSelector(childSelectedPrivacySelector.childSelectedPrivacy);
 
   const { fee, feeUnitByTokenId, minAmount, maxAmount } = feeData;
   const initialState = {
@@ -67,7 +68,7 @@ export const enhanceAmountValidation = (WrappedComp) => (props) => {
 
   React.useEffect(() => {
     setFormValidator();
-  }, [selectedPrivacy?.tokenId, fee, feeUnitByTokenId, maxAmount, minAmount]);
+  }, [selectedPrivacy?.tokenId, childSelectedPrivacy?.tokenId, fee, feeUnitByTokenId, maxAmount, minAmount]);
 
   const validateAmount = getAmountValidator();
 

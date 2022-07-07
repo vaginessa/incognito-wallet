@@ -5,7 +5,7 @@ import {
   Text,
   Button,
 } from '@src/components/core';
-import { change, Field } from 'redux-form';
+import { change, Field , formValueSelector } from 'redux-form';
 import {
   createForm,
   InputQRField,
@@ -37,7 +37,7 @@ import appConstant from '@src/constants/app';
 import { CONSTANT_COMMONS } from '@src/constants';
 import { colorsSelector } from '@src/theme/theme.selector';
 import { FONT } from '@src/styles';
-import { formValueSelector } from 'redux-form';
+import { actionResetFormSupportSendInChain } from '@src/components/EstimateFee/EstimateFee.actions';
 import { styledForm as styled } from './Form.styled';
 import withSendForm, { formName } from './Form.enhance';
 
@@ -232,6 +232,9 @@ const SendForm = (props) => {
               );
             }
             childSelectedPrivacy.amount = selectedPrivacy?.amount || 0;
+            if(childSelectedPrivacy?.networkId === 'INCOGNITO') {
+              dispatch(actionResetFormSupportSendInChain());
+            }
             dispatch(setChildSelectedPrivacy(childSelectedPrivacy));
           }}
           component={SelectNetworkField}
