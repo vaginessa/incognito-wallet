@@ -249,8 +249,8 @@ const createTransactionConvert = () => async (dispatch, getState) => {
 const actionFollowUnifiedTokens = () => async (dispatch, getState) => {
   let state = getState();
   const listUnifiedToken = listUnifiedTokenSelectedSelector(state);
-  if (!listUnifiedToken.length) return;
-  for (var i = 0; i < listUnifiedToken.length; i++) {
+  if (!listUnifiedToken?.length) return;
+  for (var i = 0; i < listUnifiedToken?.length; i++) {
     dispatch(actionAddFollowToken(listUnifiedToken[i].tokenId));
   }
 };

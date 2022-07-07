@@ -90,6 +90,7 @@ import {
   isExchangeVisibleSelector,
   errorEstimateTradeSelector,
   listPairsIDVerifiedSelector,
+  listPairsIDBuyTokenVerifiedSelector,
 } from './Swap.selector';
 import {
   calMintAmountExpected,
@@ -1489,10 +1490,11 @@ export const actionInitSwapForm =
         difference([pair?.selltoken, pair?.buytoken], pairs).length === 0;
         if (!pair?.selltoken || !pair?.buytoken || !isDefaultPairExisted) {
           state = getState();
-          const listPairs = listPairsIDVerifiedSelector(state);
+          const listPairsSellToken = listPairsIDVerifiedSelector(state);
+          const listPairsBuyToken = listPairsIDBuyTokenVerifiedSelector(state);
           pair = {
-            selltoken: listPairs[0],
-            buytoken: listPairs[1],
+            selltoken: listPairsSellToken[0],
+            buytoken: listPairsBuyToken[1],
           };
           batch(() => {
             dispatch(actionSetSellTokenFetched(pair.selltoken));

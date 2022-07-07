@@ -253,6 +253,19 @@ export const listPairsIDVerifiedSelector = createSelector(
   },
 );
 
+export const listPairsIDBuyTokenVerifiedSelector = createSelector(
+  listPairsSelector,
+  (pairs) => {
+    const result = pairs
+      .filter(
+        (token: SelectedPrivacy) =>
+          !!token?.isVerified && !token?.movedUnifiedToken,
+      )
+      .map((token) => token?.tokenId);
+    return result;
+  },
+);
+
 // group inputs
 
 export const inpuTokenSelector = createSelector(

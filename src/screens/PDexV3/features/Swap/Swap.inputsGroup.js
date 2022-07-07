@@ -71,6 +71,9 @@ const SwapInputsGroup = React.memo(() => {
   const onFocusToken = (e, field) => dispatch(actionSetFocusToken(swap[field]));
   const onEndEditing = (field) => dispatch(actionEstimateTrade({ field }));
   const onSwapButtons = () => {
+    if(selltoken?.movedUnifiedToken) {
+      return;
+    }
     dispatch(actionSwapToken());
     dispatch(actionResetData());
     dispatch(change(formConfigs.formName, formConfigs.feetoken, ''));
