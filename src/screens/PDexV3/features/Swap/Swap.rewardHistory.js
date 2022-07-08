@@ -20,7 +20,6 @@ import PropTypes from 'prop-types';
 const styled = StyleSheet.create({
   container: {
     flex: 1,
-    minHeight: 200,
   },
   itemContainer: {
     flex: 1,
