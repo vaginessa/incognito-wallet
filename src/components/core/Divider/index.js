@@ -5,7 +5,7 @@ import { colorsSelector } from '@src/theme';
 
 const styled = StyleSheet.create({
   divider: {
-    width: '100%',
+    flex: 1,
     height: 1,
   },
 });
