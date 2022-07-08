@@ -132,7 +132,7 @@ const modalDescriptionStyle: TextStyle = {
 
 const modalContentStyle: ViewStyle = {
   paddingHorizontal: 16,
-  paddingBottom: 24,
+  paddingBottom: 50,
 };
 
 const networkItemContainerStyle: ViewStyle = {

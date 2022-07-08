@@ -215,13 +215,3 @@ export const estimateUserFees = (data) => {
 
   return http.post('eta/estimate-fees', payload);
 };
-
-export const getVault = () => {
-  return http1.get('bridge/aggregatestate');
-};
-
-export const checkVault = ({ pUnifiedTokenId, amount }) => {
-  return http1.get(
-    `bridge/getsupportedvault?punified=${pUnifiedTokenId}&expectedamount=${amount}`,
-  );
-};
