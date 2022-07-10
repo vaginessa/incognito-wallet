@@ -284,47 +284,60 @@ const convertToUnifiedToken = () => async (dispatch, getState) => {
     if (minimumPRVBalanceToCreateTransaction < 1000) {
       minimumPRVBalanceToCreateTransaction = 1000;
     }
-    if (prvBalance >= minimumPRVBalanceToCreateTransaction) {
-      if (unspentCoinsOfPRV?.length >= MINIMUM_PRV_UTXO_TO_CREATE_TRANSACTION) {
-        // create transaction
-        dispatch(createTransactionConvert());
-      } else {
-        // split PRV if unspentCoinsOfPRV not enough, after split => create transaction
-        let tokenPaymentInfo: any = [];
-        for (
-          var i = 0;
-          i <
-          MINIMUM_PRV_UTXO_TO_CREATE_TRANSACTION - unspentCoinsOfPRV?.length;
-          i++
-        ) {
-          tokenPaymentInfo.push({
-            PaymentAddress: account?.PaymentAddress,
-            Amount: MAX_FEE_PER_TX,
-            Message: '',
-          });
-        }
-        const res = await accountService.createAndSendNativeToken({
-          wallet,
-          account,
-          fee: MAX_FEE_PER_TX,
-          info: '',
-          prvPayments: tokenPaymentInfo,
-          txType: ACCOUNT_CONSTANT.TX_TYPE.SEND,
-          version: PrivacyVersion.ver2,
-        });
-        if (res) {
-          setTimeout(() => {
-            dispatch(createTransactionConvert());
-          }, 30000);
-        }
-      }
-    } else {
+    if (prvBalance < minimumPRVBalanceToCreateTransaction) {
       throw 'PRV balance not enough to convert';
+    }
+
+    // check prv utxo
+    let numberPRVUTXOsEnoughBalance: number = 0;
+    for (var i = 0; i < unspentCoinsOfPRV?.length; i++) {
+      if (unspentCoinsOfPRV[i].Value >= MAX_FEE_PER_TX) {
+        numberPRVUTXOsEnoughBalance = numberPRVUTXOsEnoughBalance + 1;
+      }
+    }
+
+    if (numberPRVUTXOsEnoughBalance >= MINIMUM_PRV_UTXO_TO_CREATE_TRANSACTION) {
+      // create transaction
+      dispatch(createTransactionConvert());
+    } else {
+      // split UTXO of PRV, after split => create convert transaction
+      const res = await dispatch(
+        splitPRVUTXOs(MINIMUM_PRV_UTXO_TO_CREATE_TRANSACTION - numberPRVUTXO),
+      );
+      if (res) {
+        setTimeout(() => {
+          dispatch(createTransactionConvert());
+        }, 30000);
+      }
     }
   } catch (error) {
     new ExHandler(error).showErrorToast();
     throw error;
   }
+};
+
+const splitPRVUTXOs = (numberUTXO: number) => async (dispatch, getState) => {
+  let state = getState();
+  const account: any = accountSelector?.defaultAccountSelector(state);
+  const wallet: any = walletSelector(state);
+  let tokenPaymentInfo: any = [];
+  for (var i = 0; i < numberUTXO; i++) {
+    tokenPaymentInfo.push({
+      PaymentAddress: account?.PaymentAddress,
+      Amount: MAX_FEE_PER_TX,
+      Message: '',
+    });
+  }
+  const res = await accountService.createAndSendNativeToken({
+    wallet,
+    account,
+    fee: MAX_FEE_PER_TX,
+    info: '',
+    prvPayments: tokenPaymentInfo,
+    txType: ACCOUNT_CONSTANT.TX_TYPE.SEND,
+    version: PrivacyVersion.ver2,
+  });
+  return res;
 };
 
 const updateSelectedTokenToConvert =

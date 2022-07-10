@@ -399,7 +399,7 @@ const GenQRCode = (props) => {
       return <LoadingContainer />;
     }
     return (
-      <View2>
+      <View2 style={{flex: 1}}>
         <ScrollViewBorder style={styled.scrollViewContainer} contentContainerStyle={styled.scrollview}>
           {isPRV && renderOptionsPRV()}
           <Extra
