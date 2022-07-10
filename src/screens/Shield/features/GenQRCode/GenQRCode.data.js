@@ -14,6 +14,7 @@ import { actionAddFollowToken } from '@src/redux/actions/token';
 import { defaultAccountSelector } from '@src/redux/selectors/account';
 import { getDefaultAccountWalletSelector } from '@src/redux/selectors/shared';
 import useDebounceSelector from '@src/shared/hooks/debounceSelector';
+import { setChildSelectedPrivacy } from '@src/redux/actions/childSelectedPrivacy';
 
 const enhance = (WrappedComp) => (props) => {
   const dispatch = useDispatch();
@@ -40,7 +41,8 @@ const enhance = (WrappedComp) => (props) => {
 
   const handleUpdateTokenSelector = () => {
     batch(() => {
-      dispatch(setSelectedPrivacy(tokenId));
+      dispatch(setSelectedPrivacy(parentTokenShield?.tokenId));
+      dispatch(setChildSelectedPrivacy(tokenShield));
       dispatch(actionAddFollowToken(parentTokenShield?.tokenId));
     });
   };

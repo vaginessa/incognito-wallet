@@ -25,8 +25,6 @@ const ChooseNetworkForShield: React.FC = (props) => {
     selectedPrivacySelector.getPrivacyDataByTokenID,
   );
 
-  const dispatch = useDispatch();
-
   const getNetworks = () => {
     let networks: SelectedPrivacy[] =
       tokenInfo?.isPUnifiedToken && tokenInfo.listUnifiedToken
@@ -82,12 +80,12 @@ const ChooseNetworkForShield: React.FC = (props) => {
   const navigateToShieldGenerateQrCodeScreen = () => {
     if (!selectedNetwork) return;
     const parentTokenShieldSelectedPrivacy = getPrivacyDataByTokenID(tokenInfo?.tokenId);
-    const tokenShieldSelectedPrivacy = getPrivacyDataByTokenID(
+    const childTokenSelectedPrivacy = getPrivacyDataByTokenID(
       selectedNetwork?.tokenId,
     );
     const params = {
       parentTokenShield: parentTokenShieldSelectedPrivacy,
-      tokenShield: tokenShieldSelectedPrivacy,
+      tokenShield: childTokenSelectedPrivacy,
       selectedTerm: selectedSubView,
     };
     navigation.navigate(routeNames.ShieldGenQRCode, params);
@@ -115,10 +113,6 @@ const ChooseNetworkForShield: React.FC = (props) => {
   };
 
   const onNext = async () => {
-    if (selectedNetwork?.networkId === 'INCOGNITO') {
-      await dispatch(setSelectedPrivacy(tokenInfo?.tokenId));
-      navigation.navigate(routeNames.ReceiveCrypto);
-    }
     if (isShowSubView()) {
       if (selectedSubView === 'GENERATE_ADDRESS') {
         navigateToShieldGenerateQrCodeScreen();

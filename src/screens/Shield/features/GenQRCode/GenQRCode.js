@@ -12,7 +12,7 @@ import LoadingContainer from '@src/components/LoadingContainer';
 import QrCodeGenerate from '@src/components/QrCodeGenerate';
 import Tooltip from '@src/components/Tooltip/Tooltip';
 import { CONSTANT_COMMONS } from '@src/constants';
-import { selectedPrivacySelector } from '@src/redux/selectors';
+import { childSelectedPrivacySelector } from '@src/redux/selectors';
 import { defaultAccountSelector } from '@src/redux/selectors/account';
 import { PRV_ID } from '@src/screens/DexV2/constants';
 import { ExHandler } from '@src/services/exception';
@@ -333,7 +333,7 @@ const GenQRCode = (props) => {
   const [toggle, setToggle] = React.useState(true);
   const platforms = ['ETH', 'BSC'];
   const selectedPrivacy = useDebounceSelector(
-    selectedPrivacySelector.selectedPrivacy,
+    childSelectedPrivacySelector.childSelectedPrivacy,
   );
   const [selectedPlatform, setPlatform] = React.useState(0);
   const [selectingPlatform, setSelectingPlatform] = React.useState(0);
