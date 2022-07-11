@@ -33,7 +33,7 @@ const POLYGONSCAN_URL = isMainnet
   ? 'https://polygonscan.com'
   : 'https://mumbai.polygonscan.com';
 const FANTOMSCAN_URL = isMainnet
-  ? 'https://ftmscan.com/'
+  ? 'https://ftmscan.com'
   : 'https://testnet.ftmscan.com';
 const BTC_EXPLORER_URL = isMainnet
   ? 'https://live.blockcypher.com/btc'
