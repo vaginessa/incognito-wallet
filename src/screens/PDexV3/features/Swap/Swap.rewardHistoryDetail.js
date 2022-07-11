@@ -44,7 +44,9 @@ const SwapRewardHistoryDetail = () => {
     },
     {
       label: 'Your trading volume',
-      value: convert.toPlainString(rewardHistoryDetail?.totalVolume),
+      value: convert.toPlainString(
+        Math.round(rewardHistoryDetail?.totalVolume * 1000000000) / 1000000000,
+      ),
     },
     {
       label: 'Reward amount',
