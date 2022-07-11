@@ -302,7 +302,9 @@ const convertToUnifiedToken = () => async (dispatch, getState) => {
     } else {
       // split UTXO of PRV, after split => create convert transaction
       const res = await dispatch(
-        splitPRVUTXOs(MINIMUM_PRV_UTXO_TO_CREATE_TRANSACTION - numberPRVUTXO),
+        splitPRVUTXOs(
+          MINIMUM_PRV_UTXO_TO_CREATE_TRANSACTION - numberPRVUTXOsEnoughBalance,
+        ),
       );
       if (res) {
         setTimeout(() => {
