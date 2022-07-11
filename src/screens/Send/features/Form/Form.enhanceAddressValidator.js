@@ -154,12 +154,11 @@ export const enhanceAddressValidation = (WrappedComp) => (props) => {
 
   const getAddressValidator = () => {
     if (
-      currencyTypeName !==
-      CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.INCOGNITO
+      currencyTypeName == CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.INCOGNITO
     ) {
-      return getExternalAddressValidator();
+      return validator.combinedIncognitoAddress;
     }
-    return validator.combinedIncognitoAddress;
+    return getExternalAddressValidator();
   };
 
   const getWarningAddress = () => {

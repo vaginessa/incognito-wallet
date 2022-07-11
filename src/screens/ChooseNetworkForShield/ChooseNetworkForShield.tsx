@@ -3,8 +3,6 @@ import { Button, ScrollViewBorder, Text, View } from '@src/components/core';
 import Header from '@src/components/Header';
 import { withLayout_2 } from '@src/components/Layout';
 import { CONSTANT_COMMONS } from '@src/constants';
-import SelectedPrivacy from '@src/models/selectedPrivacy';
-import { setSelectedPrivacy } from '@src/redux/actions/selectedPrivacy';
 import { selectedPrivacySelector } from '@src/redux/selectors';
 import routeNames from '@src/router/routeNames';
 import { PRV_ID } from '@src/screens/DexV2/constants';
@@ -13,7 +11,7 @@ import { COLORS } from '@src/styles';
 import React, { useState } from 'react';
 import { TextStyle, ViewStyle } from 'react-native';
 import { useNavigation, useNavigationParam } from 'react-navigation-hooks';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { compose } from 'redux';
 import { ListItem } from './ListItem';
 
@@ -26,17 +24,21 @@ const ChooseNetworkForShield: React.FC = (props) => {
   );
 
   const getNetworks = () => {
-    let networks: SelectedPrivacy[] =
-      tokenInfo?.isPUnifiedToken && tokenInfo.listUnifiedToken
-        ? tokenInfo.listUnifiedToken
-        : [tokenInfo];
+    let networks: any = [];
+    if (tokenInfo?.isPUnifiedToken) {
+      networks = tokenInfo?.listUnifiedToken;
+    } else if (tokenInfo?.tokenId === PRV_ID) {
+      networks = tokenInfo?.listChildToken;
+    } else {
+      networks = [tokenInfo];
+    }
     return networks;
   };
 
   const networks = getNetworks();
 
   // state
-  const [selectedNetwork, setSelectedNetwork] = useState<SelectedPrivacy>(
+  const [selectedNetwork, setSelectedNetwork] = useState<any>(
     networks?.length === 1 ? networks[0] : null,
   );
   const [selectedSubView, setSelectedSubView] = useState<
@@ -79,7 +81,9 @@ const ChooseNetworkForShield: React.FC = (props) => {
 
   const navigateToShieldGenerateQrCodeScreen = () => {
     if (!selectedNetwork) return;
-    const parentTokenShieldSelectedPrivacy = getPrivacyDataByTokenID(tokenInfo?.tokenId);
+    const parentTokenShieldSelectedPrivacy = getPrivacyDataByTokenID(
+      tokenInfo?.tokenId,
+    );
     const childTokenSelectedPrivacy = getPrivacyDataByTokenID(
       selectedNetwork?.tokenId,
     );
@@ -166,14 +170,16 @@ const ChooseNetworkForShield: React.FC = (props) => {
               key={i}
               content={item?.network}
               onPress={() => {
-                if (selectedNetwork?.networkId === item?.networkId) return;
+                if (selectedNetwork?.currencyType === item?.currencyType) {
+                  return;
+                }
                 setSelectedNetwork(item);
                 setSelectedSubView(null);
               }}
-              selected={selectedNetwork?.networkId === item?.networkId}
+              selected={selectedNetwork?.currencyType === item?.currencyType}
               disabled={
                 networks?.length === 1 &&
-                selectedNetwork.networkId === item?.networkId
+                selectedNetwork.currencyType === item?.currencyType
               }
             />
           );

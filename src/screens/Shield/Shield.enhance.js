@@ -37,6 +37,7 @@ const enhance = (WrappedComp) => (props) => {
       }, 300);
       if (item?.tokenId === PRV_ID) {
         navigation.navigate(routeNames.ShieldGenQRCode, {
+          parentTokenShield: item,
           tokenShield: item,
         });
       } else {

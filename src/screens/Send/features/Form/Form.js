@@ -123,8 +123,6 @@ const SendForm = (props) => {
         network: 'Incognito',
         networkId: 'INCOGNITO',
         currencyType: CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.INCOGNITO,
-        tokenId:
-          '0000000000000000000000000000000000000000000000000000000000000006',
       },
     ];
     return [...incognitoNetwork, ...networks];
