@@ -69,14 +69,7 @@ const enhance = (WrappedComp) => (props) => {
   };
 
   const getContracts = () => {
-    let contractInfos = [
-      {
-        label: 'Contract ID',
-        value: contractId,
-        link: getContractLinkByTokenInfo(selectedPrivacy),
-        copyable: true,
-      },
-    ];
+    let contractInfos = [];
 
     if (tokenId === PRVIDSTR) {
       listChildToken?.map((item) => {
@@ -87,9 +80,7 @@ const enhance = (WrappedComp) => (props) => {
           copyable: true,
         });
       });
-    }
-
-    if (isPUnifiedToken && listUnifiedToken?.length > 0) {
+    } else if (isPUnifiedToken && listUnifiedToken?.length > 0) {
       listUnifiedToken?.map((item) => {
         contractInfos.push({
           label: `${item?.network} ID:`,
@@ -97,6 +88,13 @@ const enhance = (WrappedComp) => (props) => {
           link: getContractLinkByTokenInfo(item),
           copyable: true,
         });
+      });
+    } else {
+      contractInfos.push({
+        label: 'Contract ID',
+        value: contractId,
+        link: getContractLinkByTokenInfo(selectedPrivacy),
+        copyable: true,
       });
     }
     return contractInfos;

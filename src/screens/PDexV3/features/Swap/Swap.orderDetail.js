@@ -59,11 +59,11 @@ const SwapOrderDetail = () => {
       },
       {
         label: 'Sell',
-        value: order?.sellStr,
+        value: `${order?.sellStr} (${order?.sellTokenNetwork})`,
       },
       {
         label: 'Buy',
-        value: order?.buyStr,
+        value: `${order?.buyStr} (${order?.buyTokenNetwork})`,
       },
       {
         label: 'Status',
@@ -71,7 +71,7 @@ const SwapOrderDetail = () => {
       },
       {
         label: 'Rate',
-        value: order?.rateStr
+        value: order?.rateStr,
       },
       {
         label: 'Fee',

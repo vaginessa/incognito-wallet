@@ -1064,6 +1064,8 @@ export const mappingOrderHistorySelector = createSelector(
         ...order,
         sellStr,
         buyStr,
+        sellTokenNetwork: sellToken?.network,
+        buyTokenNetwork: buyToken?.network,
         rateStr,
         timeStr,
         rate,
