@@ -719,8 +719,7 @@ export const actionEstimateTradeForCurve =
         amount,
       });
       if (!quote || !quote?.amountOutRaw || !parseInt(quote?.amountOutRaw || 0)) {
-        new ExHandler('No trade route found').showErrorToast();
-        throw 'No trade route found';
+        throw 'Can not found best route for this pair';
       }
       const paths = [sourceToken.contractId, destToken.contractId];
 
@@ -853,9 +852,6 @@ export const actionEstimateTradeForUni =
       const quote = quoteDataResponse?.data;
       const paths = quote?.paths;
       if (!quote || !paths || paths.length === 0) {
-        new ExHandler(
-          'Can not found best route for this pair',
-        ).showErrorToast();
         throw 'Can not found best route for this pair';
       }
       let originalMaxGet = quote?.amountOutRaw;
