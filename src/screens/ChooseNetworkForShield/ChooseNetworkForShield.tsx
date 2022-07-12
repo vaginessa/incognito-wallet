@@ -3,7 +3,6 @@ import { Button, ScrollViewBorder, Text, View } from '@src/components/core';
 import Header from '@src/components/Header';
 import { withLayout_2 } from '@src/components/Layout';
 import { CONSTANT_COMMONS } from '@src/constants';
-import { selectedPrivacySelector } from '@src/redux/selectors';
 import routeNames from '@src/router/routeNames';
 import { PRV_ID } from '@src/screens/DexV2/constants';
 import withBridgeConnect from '@src/screens/Wallet/features/BridgeConnect/WalletConnect.enhance';
@@ -11,17 +10,12 @@ import { COLORS } from '@src/styles';
 import React, { useEffect, useState } from 'react';
 import { TextStyle, ViewStyle } from 'react-native';
 import { useNavigation, useNavigationParam } from 'react-navigation-hooks';
-import { useSelector } from 'react-redux';
 import { compose } from 'redux';
 import { ListItem } from './ListItem';
 
 const ChooseNetworkForShield: React.FC = (props) => {
   // get route params
-  const tokenInfo = useNavigationParam('tokenShield');
-
-  const getPrivacyDataByTokenID = useSelector(
-    selectedPrivacySelector.getPrivacyDataByTokenID,
-  );
+  const tokenInfo = useNavigationParam('tokenSelected');
 
   const getNetworks = () => {
     let networks: any = [];
@@ -88,16 +82,9 @@ const ChooseNetworkForShield: React.FC = (props) => {
   };
 
   const navigateToShieldGenerateQrCodeScreen = () => {
-    if (!selectedNetwork) return;
-    const parentTokenShieldSelectedPrivacy = getPrivacyDataByTokenID(
-      tokenInfo?.tokenId,
-    );
-    const childTokenSelectedPrivacy = getPrivacyDataByTokenID(
-      selectedNetwork?.tokenId,
-    );
     const params = {
-      parentTokenShield: parentTokenShieldSelectedPrivacy,
-      tokenShield: childTokenSelectedPrivacy,
+      parentTokenShield: tokenInfo,
+      tokenShield: selectedNetwork,
       selectedTerm: selectedSubView,
     };
     navigation.navigate(routeNames.ShieldGenQRCode, params);
@@ -156,9 +143,9 @@ const ChooseNetworkForShield: React.FC = (props) => {
     return (
       <View style={subViewContainerStyle}>
         <Text style={descStyle}>
-          To anonymize your coins, you’ll need to send funds to Incognito. You
-          can simply generate a shielding address, or connect directly with the
-          bridge smart contract using your {selectedNetwork?.network} wallet.
+          {showWalletConnect
+            ? `To anonymize your coins, you’ll need to send funds to Incognito. You can simply generate a shielding address, or connect directly with the bridge smart contract using your ${selectedNetwork?.network} wallet.`
+            : 'To anonymize your coins, you’ll need to send funds to Incognito. You can simply generate a shielding address.'}
         </Text>
         {subViewItems?.map((item: any, i) => {
           return (

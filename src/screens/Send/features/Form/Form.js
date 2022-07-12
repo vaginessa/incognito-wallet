@@ -1,45 +1,44 @@
-import React, { useState } from 'react';
-import {
-  KeyboardAwareScrollView,
-  View,
-  Text,
-  Button,
-} from '@src/components/core';
-import { change, Field , formValueSelector } from 'redux-form';
 import {
   createForm,
-  InputQRField,
   InputField,
   InputMaxValueField,
-  SelectOptionField,
+  InputQRField,
   SelectNetworkField,
 } from '@components/core/reduxForm';
-import { SEND } from '@src/constants/elements';
-import { generateTestId } from '@src/utils/misc';
 import EstimateFee from '@components/EstimateFee/EstimateFee.input';
-import PropTypes from 'prop-types';
-import { useDispatch, useSelector } from 'react-redux';
+import {
+  Button,
+  KeyboardAwareScrollView,
+  Text,
+  View,
+} from '@src/components/core';
+import { actionResetFormSupportSendInChain } from '@src/components/EstimateFee/EstimateFee.actions';
 import {
   feeDataSelector,
   networksSelector,
 } from '@src/components/EstimateFee/EstimateFee.selector';
-import { selectedPrivacySelector, childSelectedPrivacySelector } from '@src/redux/selectors';
-import {
-  setChildSelectedPrivacy,
-  clearChildSelectedPrivacy,
-} from '@src/redux/actions/childSelectedPrivacy';
-import SelectedPrivacy from '@src/models/selectedPrivacy';
-import { defaultAccountSelector } from '@src/redux/selectors/account';
 import LoadingTx from '@src/components/LoadingTx';
-import format from '@src/utils/format';
-import useFeatureConfig from '@src/shared/hooks/featureConfig';
-import appConstant from '@src/constants/app';
 import { CONSTANT_COMMONS } from '@src/constants';
+import appConstant from '@src/constants/app';
+import { SEND } from '@src/constants/elements';
+import {
+  clearChildSelectedPrivacy,
+  setChildSelectedPrivacy,
+} from '@src/redux/actions/childSelectedPrivacy';
+import {
+  childSelectedPrivacySelector,
+  selectedPrivacySelector,
+} from '@src/redux/selectors';
+import useFeatureConfig from '@src/shared/hooks/featureConfig';
 import { colorsSelector } from '@src/theme/theme.selector';
-import { FONT } from '@src/styles';
-import { actionResetFormSupportSendInChain } from '@src/components/EstimateFee/EstimateFee.actions';
-import { styledForm as styled } from './Form.styled';
+import format from '@src/utils/format';
+import { generateTestId } from '@src/utils/misc';
+import PropTypes from 'prop-types';
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Field, formValueSelector } from 'redux-form';
 import withSendForm, { formName } from './Form.enhance';
+import { styledForm as styled } from './Form.styled';
 
 const initialFormValues = {
   amount: '',
@@ -93,7 +92,9 @@ const SendForm = (props) => {
   const { titleBtnSubmit, isUnShield, editableInput } =
     useSelector(feeDataSelector);
   const selectedPrivacy = useSelector(selectedPrivacySelector.selectedPrivacy);
-  const childSelectedPrivacy = useSelector(childSelectedPrivacySelector.childSelectedPrivacy);
+  const childSelectedPrivacy = useSelector(
+    childSelectedPrivacySelector.childSelectedPrivacy,
+  );
   const [onCentralizedPress, isCentralizedDisabled] = useFeatureConfig(
     appConstant.DISABLED.UNSHIELD_CENTRALIZED,
     handleSend,
@@ -105,7 +106,7 @@ const SendForm = (props) => {
   let placeholderAddress = 'Recipient address';
 
   const amountValidator = validateAmount;
-  const isDisabled = 
+  const isDisabled =
     isUnShield &&
     ((selectedPrivacy.isCentralized && isCentralizedDisabled) ||
       (selectedPrivacy.isDecentralized && isDecentralizedDisabled));
@@ -149,20 +150,11 @@ const SendForm = (props) => {
           item.currencyType ===
           CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.INCOGNITO,
       );
-      if (selectedPrivacy?.isMainCrypto) {
-        childSelectedPrivacy = new SelectedPrivacy(
-          account,
-          null,
-          childSelectedPrivacy,
-          selectedPrivacy.tokenId,
-        );
-      }
       childSelectedPrivacy.amount = selectedPrivacy?.amount || 0;
       dispatch(setChildSelectedPrivacy(childSelectedPrivacy));
     }
   }, [isIncognitoAddress]);
 
-  const account = useSelector(defaultAccountSelector);
   const colors = useSelector(colorsSelector);
 
   const renderMemo = () => {
@@ -213,34 +205,26 @@ const SendForm = (props) => {
   };
 
   const renderNetworkType = () => {
-      return (
-        <Field
-          onChange={(value) => {
-            onChangeField(value, 'currencyType');
-            let childSelectedPrivacy = networks.find(
-              (item) => item.currencyType === value,
-            );
-            if(selectedPrivacy?.isMainCrypto) {
-              childSelectedPrivacy = new SelectedPrivacy(
-                account,
-                null,
-                childSelectedPrivacy,
-                selectedPrivacy.tokenId,
-              );
-            }
-            childSelectedPrivacy.amount = selectedPrivacy?.amount || 0;
-            if(childSelectedPrivacy?.networkId === 'INCOGNITO') {
-              dispatch(actionResetFormSupportSendInChain());
-            }
-            dispatch(setChildSelectedPrivacy(childSelectedPrivacy));
-          }}
-          component={SelectNetworkField}
-          networks={networks}
-          selectedNetwork={childSelectedPrivacy}
-          name="currencyType"
-          style={styled.selectNetwork}
-        />
-      );
+    return (
+      <Field
+        onChange={(value) => {
+          onChangeField(value, 'currencyType');
+          let childSelectedPrivacy = networks.find(
+            (item) => item.currencyType === value,
+          );
+          childSelectedPrivacy.amount = selectedPrivacy?.amount || 0;
+          if (childSelectedPrivacy?.networkId === 'INCOGNITO') {
+            dispatch(actionResetFormSupportSendInChain());
+          }
+          dispatch(setChildSelectedPrivacy(childSelectedPrivacy));
+        }}
+        component={SelectNetworkField}
+        networks={networks}
+        selectedNetwork={childSelectedPrivacy}
+        name="currencyType"
+        style={styled.selectNetwork}
+      />
+    );
   };
 
   React.useEffect(() => {

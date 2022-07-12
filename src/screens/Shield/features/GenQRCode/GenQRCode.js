@@ -1,21 +1,14 @@
 import { ScrollViewBorder, Text, View } from '@components/core';
-import { actionGetPRVBep20FeeToShield } from '@screens/Shield/Shield.actions';
-import {
-  shieldDataBscSelector,
-  shieldDataSelector,
-} from '@screens/Shield/Shield.selector';
+import { shieldDataSelector } from '@screens/Shield/Shield.selector';
 import { ButtonBasic } from '@src/components/Button';
 import { CopiableTextDefault as CopiableText } from '@src/components/CopiableText';
 import { View2 } from '@src/components/core/View';
-import { ClockWiseIcon, ConvertIcon2, RatioIcon } from '@src/components/Icons';
+import { ClockWiseIcon, ConvertIcon2 } from '@src/components/Icons';
 import LoadingContainer from '@src/components/LoadingContainer';
 import QrCodeGenerate from '@src/components/QrCodeGenerate';
 import Tooltip from '@src/components/Tooltip/Tooltip';
 import { CONSTANT_COMMONS } from '@src/constants';
 import { childSelectedPrivacySelector } from '@src/redux/selectors';
-import { defaultAccountSelector } from '@src/redux/selectors/account';
-import { PRV_ID } from '@src/screens/DexV2/constants';
-import { ExHandler } from '@src/services/exception';
 import useDebounceSelector from '@src/shared/hooks/debounceSelector';
 import { COLORS } from '@src/styles';
 import { colorsSelector } from '@src/theme/theme.selector';
@@ -23,9 +16,8 @@ import convert from '@utils/convert';
 import { isEmpty } from 'lodash';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { TouchableOpacity, View as View3 } from 'react-native';
+import { TouchableOpacity } from 'react-native';
 import { useNavigation } from 'react-navigation-hooks';
-import { useDispatch } from 'react-redux';
 import withGenQRCode from './GenQRCode.enhance';
 import { styled } from './GenQRCode.styled';
 
@@ -72,9 +64,8 @@ const ShieldError = React.memo(({ handleShield, isPortalCompatible }) => {
 const Extra = (props) => {
   const { address, min, expiredAt, isPortal } =
     useDebounceSelector(shieldDataSelector);
-  const { selectedPrivacy, defaultFee, colors, selectedPlatform } = props;
+  const { selectedPrivacy, defaultFee, colors } = props;
   const navigation = useNavigation();
-  const isPRV = selectedPrivacy?.tokenId === PRV_ID;
   const renderMinShieldAmount = () => {
     if (!min) return null;
     return (
@@ -99,11 +90,7 @@ const Extra = (props) => {
     if (isPortal) {
       shieldingTimeText = '60 mins';
     }
-    if (
-      selectedPrivacy?.isETH ||
-      selectedPrivacy?.isErc20Token ||
-      (isPRV && selectedPlatform === 0)
-    ) {
+    if (selectedPrivacy?.isETH || selectedPrivacy?.isErc20Token) {
       shieldingTimeText = '20 mins';
     }
     if (
@@ -112,8 +99,7 @@ const Extra = (props) => {
       selectedPrivacy?.isMATIC ||
       selectedPrivacy?.isPolygonErc20Token ||
       selectedPrivacy?.isFTM ||
-      selectedPrivacy?.isFantomErc20Token ||
-      (isPRV && selectedPlatform === 1)
+      selectedPrivacy?.isFantomErc20Token
     ) {
       shieldingTimeText = '10 mins';
     }
@@ -215,19 +201,17 @@ const Extra = (props) => {
           <Text style={styled.shieldExpiration}>Expires at: {expiredAt}</Text>
         )}
       </View>
-      {!isPRV && (
-        <View>
-          <Text style={styled.networkTypeLabel}>Network type</Text>
-          <TouchableOpacity
-            activeOpacity={0.7}
-            onPress={() => navigation.goBack()}
-            style={styled.networkBoxContainer}
-          >
-            <Text>{selectedPrivacy?.network}</Text>
-            <ConvertIcon2 />
-          </TouchableOpacity>
-        </View>
-      )}
+      <View>
+        <Text style={styled.networkTypeLabel}>Network type</Text>
+        <TouchableOpacity
+          activeOpacity={0.7}
+          onPress={() => navigation.goBack()}
+          style={styled.networkBoxContainer}
+        >
+          <Text>{selectedPrivacy?.network}</Text>
+          <ConvertIcon2 />
+        </TouchableOpacity>
+      </View>
       <Text style={styled.addressLabel}>
         {selectedPrivacy?.externalSymbol || selectedPrivacy?.symbol} Shielding
         address
@@ -260,26 +244,16 @@ const GenQRCode = (props) => {
     isPortalCompatible,
     data: shieldData,
   } = props;
-  const shieldDataBsc = useDebounceSelector(shieldDataBscSelector);
   const colors = useDebounceSelector(colorsSelector);
   const { address } = shieldData || {};
   const [toggle, setToggle] = React.useState(true);
-  const platforms = ['ETH', 'BSC'];
   const selectedPrivacy = useDebounceSelector(
     childSelectedPrivacySelector.childSelectedPrivacy,
   );
-  const [selectedPlatform, setPlatform] = React.useState(0);
-  const [selectingPlatform, setSelectingPlatform] = React.useState(0);
-  const account = useDebounceSelector(defaultAccountSelector);
-  const isPRV = selectedPrivacy?.tokenId === PRV_ID;
   const [defaultFee, setDefaultFee] = React.useState({
     estimateFee: 0,
     tokenFee: 0,
   });
-  const dispatch = useDispatch();
-  const [ethFee, setEthFee] = React.useState({ estimateFee: 0, tokenFee: 0 });
-  const [bscFee, setBscFee] = React.useState({ estimateFee: 0, tokenFee: 0 });
-  const [isLoadingBsc, setIsLoadingBsc] = React.useState(false);
   if (
     (shieldData?.tokenFee || shieldData?.estimateFee) &&
     defaultFee?.estimateFee === 0 &&
@@ -290,23 +264,6 @@ const GenQRCode = (props) => {
       tokenFee: shieldData?.tokenFee,
     };
     setDefaultFee(temp);
-    if (isPRV) {
-      setEthFee(ethFee);
-    }
-  } else if (
-    (shieldDataBsc?.tokenFee || shieldDataBsc?.estimateFee) &&
-    bscFee?.estimateFee === 0 &&
-    bscFee?.tokenFee === 0 &&
-    isPRV
-  ) {
-    const temp = {
-      estimateFee: shieldDataBsc?.estimateFeem,
-      tokenFee: shieldDataBsc?.tokenFee,
-    };
-    setPlatform(selectingPlatform);
-    setDefaultFee(temp);
-    setBscFee(temp);
-    setIsLoadingBsc(false);
   }
 
   React.useEffect(() => {
@@ -337,15 +294,12 @@ const GenQRCode = (props) => {
           style={styled.scrollViewContainer}
           contentContainerStyle={styled.scrollview}
         >
-          {isPRV && renderOptionsPRV()}
           <Extra
             {...{
               ...props,
               selectedPrivacy,
               defaultFee,
               colors,
-              isPRV,
-              selectedPlatform,
             }}
           />
         </ScrollViewBorder>
@@ -353,62 +307,6 @@ const GenQRCode = (props) => {
     );
   };
 
-  const handlePress = (index) => {
-    if (index !== selectedPlatform && isPRV) {
-      setIsLoadingBsc(true);
-      if (platforms[index] === 'ETH') {
-        setDefaultFee(ethFee);
-        setPlatform(index);
-        setIsLoadingBsc(false);
-      } else if (
-        platforms[index] === 'BSC' &&
-        (shieldDataBsc?.tokenFee || shieldDataBsc?.estimateFee)
-      ) {
-        setDefaultFee(bscFee);
-        setPlatform(index);
-        setIsLoadingBsc(false);
-      } else {
-        setSelectingPlatform(index);
-        try {
-          dispatch(
-            actionGetPRVBep20FeeToShield(
-              account,
-              account?.signPublicKeyEncode,
-              selectedPrivacy,
-            ),
-          );
-        } catch (e) {
-          new ExHandler(e).showErrorToast();
-          setIsLoadingBsc(false);
-        }
-      }
-    }
-  };
-
-  const renderOptionsPRV = () => (
-    <View style={styled.selectBox}>
-      {platforms.map((item, index) => {
-        const isSelected = index === selectedPlatform;
-        return (
-          <TouchableOpacity
-            style={[
-              styled.optionBtn,
-              { borderColor: colors.border1 },
-              { marginBottom: 10 },
-            ]}
-            key={`key-${index}`}
-            onPress={() => handlePress(index)}
-            disabled={isLoadingBsc}
-          >
-            <View3 style={styled.optionContent}>
-              <RatioIcon style={styled.icon} selected={isSelected} />
-              <Text style={[styled.textSelectBox]}>{item}</Text>
-            </View3>
-          </TouchableOpacity>
-        );
-      })}
-    </View>
-  );
   return (
     <View style={styled.container}>
       {toggle && (

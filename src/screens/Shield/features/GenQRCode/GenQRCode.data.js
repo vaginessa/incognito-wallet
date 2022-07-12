@@ -1,20 +1,24 @@
-import React from 'react';
-import ErrorBoundary from '@src/components/ErrorBoundary';
-import { useNavigationParam } from 'react-navigation-hooks';
-import { batch, useDispatch } from 'react-redux';
+import {
+  actionFetch as fetchDataShield,
+  actionPortalFetch as fetchPortalDataShield,
+  actionReset,
+} from '@screens/Shield/Shield.actions';
 import {
   shieldDataSelector,
   shieldSelector,
 } from '@screens/Shield/Shield.selector';
-import { actionFetch as fetchDataShield, actionPortalFetch as fetchPortalDataShield, actionReset } from '@screens/Shield/Shield.actions';
 import { wcProviderOptionals } from '@screens/Wallet/features/BridgeConnect';
-import WalletConnectProvider from '@walletconnect/react-native-dapp';
+import ErrorBoundary from '@src/components/ErrorBoundary';
+import { setChildSelectedPrivacy } from '@src/redux/actions/childSelectedPrivacy';
 import { setSelectedPrivacy } from '@src/redux/actions/selectedPrivacy';
 import { actionAddFollowToken } from '@src/redux/actions/token';
 import { defaultAccountSelector } from '@src/redux/selectors/account';
 import { getDefaultAccountWalletSelector } from '@src/redux/selectors/shared';
 import useDebounceSelector from '@src/shared/hooks/debounceSelector';
-import { setChildSelectedPrivacy } from '@src/redux/actions/childSelectedPrivacy';
+import WalletConnectProvider from '@walletconnect/react-native-dapp';
+import React from 'react';
+import { useNavigationParam } from 'react-navigation-hooks';
+import { batch, useDispatch } from 'react-redux';
 
 const enhance = (WrappedComp) => (props) => {
   const dispatch = useDispatch();
@@ -25,12 +29,20 @@ const enhance = (WrappedComp) => (props) => {
   const tokenSymbol = tokenShield?.externalSymbol || tokenShield?.symbol;
   const { tokenId } = tokenShield;
   const { decentralized } = useDebounceSelector(shieldDataSelector);
-  const { isFetching, isFetched, isFetchFailed, isPortalCompatible, data } = useDebounceSelector(shieldSelector);
+  const { isFetching, isFetched, isFetchFailed, isPortalCompatible, data } =
+    useDebounceSelector(shieldSelector);
   const handleShield = async () => {
-    const isPortalToken  = await accountWallet.handleCheckIsPortalToken({ tokenID: tokenId});
-    if( isPortalToken ){
+    const isPortalToken = await accountWallet.handleCheckIsPortalToken({
+      tokenID: tokenId,
+    });
+    if (isPortalToken) {
       dispatch(
-        fetchPortalDataShield({ tokenID: tokenId, selectedPrivacy: tokenShield, account, accountWallet }),
+        fetchPortalDataShield({
+          tokenID: tokenId,
+          selectedPrivacy: tokenShield,
+          account,
+          accountWallet,
+        }),
       );
     } else {
       dispatch(

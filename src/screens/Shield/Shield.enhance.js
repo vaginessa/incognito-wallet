@@ -35,16 +35,9 @@ const enhance = (WrappedComp) => (props) => {
       setTimeout(() => {
         dispatch(requestUpdateMetrics(ANALYTICS.ANALYTIC_DATA_TYPE.SHIELD));
       }, 300);
-      if (item?.tokenId === PRV_ID) {
-        navigation.navigate(routeNames.ShieldGenQRCode, {
-          parentTokenShield: item,
-          tokenShield: item,
-        });
-      } else {
-        navigation.navigate(routeNames.ChooseNetworkForShield, {
-          tokenShield: item,
-        });
-      }
+      navigation.navigate(routeNames.ChooseNetworkForShield, {
+        tokenSelected: item,
+      });
     } catch (error) {
       console.debug('SHIELD ERROR', error);
     }

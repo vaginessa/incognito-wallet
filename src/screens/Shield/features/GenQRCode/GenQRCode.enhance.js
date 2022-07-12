@@ -26,9 +26,8 @@ const enhance = (WrappedComp) => (props) => {
     selectedPrivacy,
     handleShield,
   } = props;
-  const { currencyType, isDecentralized } = selectedPrivacy;
+  const { currencyType } = selectedPrivacy;
   const navigation = useNavigation();
-  const disableBackToShield = useNavigationParam('disableBackToShield');
   const selectedTerm = useNavigationParam('selectedTerm');
 
   const handleToggleTooltip = () => {
@@ -37,8 +36,6 @@ const enhance = (WrappedComp) => (props) => {
   const hasError = !isFetched && !isFetching;
 
   const handleGoBack = () => {
-    // if (disableBackToShield) return navigation.goBack();
-    // navigation.navigate(routeNames.Shield);
     return navigation.goBack();
   };
   const themeMode = useSelector(themeModeSelector);
