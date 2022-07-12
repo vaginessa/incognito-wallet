@@ -8,7 +8,7 @@ import routeNames from '@src/router/routeNames';
 import { PRV_ID } from '@src/screens/DexV2/constants';
 import withBridgeConnect from '@src/screens/Wallet/features/BridgeConnect/WalletConnect.enhance';
 import { COLORS } from '@src/styles';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { TextStyle, ViewStyle } from 'react-native';
 import { useNavigation, useNavigationParam } from 'react-navigation-hooks';
 import { useSelector } from 'react-redux';
@@ -38,6 +38,7 @@ const ChooseNetworkForShield: React.FC = (props) => {
   const networks = getNetworks();
 
   // state
+  const [showWalletConnect, setShowWalletConnect] = useState<boolean>(false);
   const [selectedNetwork, setSelectedNetwork] = useState<any>(
     networks?.length === 1 ? networks[0] : null,
   );
@@ -46,6 +47,28 @@ const ChooseNetworkForShield: React.FC = (props) => {
   >(null);
 
   const navigation = useNavigation();
+
+  // Only show Sub View when selected network is Ethereum of Binance Smart Chain
+  const checkShowConnectWallet = (): boolean => {
+    const isPRV = selectedNetwork?.tokenId === PRV_ID;
+    if (
+      selectedNetwork?.isDecentralized &&
+      !isPRV &&
+      !isPolygonToken &&
+      !isFantomToken
+    ) {
+      return true;
+    }
+    return false;
+  };
+
+  useEffect(() => {
+    const isShowWalletConnect = checkShowConnectWallet();
+    if ((networks?.length === 1 || selectedNetwork) && !isShowWalletConnect) {
+      setSelectedSubView('GENERATE_ADDRESS');
+    }
+    setShowWalletConnect(isShowWalletConnect);
+  }, [selectedNetwork]);
 
   // Check token belong to Polygon network
   const isPolygonToken =
@@ -59,23 +82,8 @@ const ChooseNetworkForShield: React.FC = (props) => {
     selectedNetwork?.currencyType ===
       CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.FTM;
 
-  // Only show Sub View when selected network is Ethereum of Binance Smart Chain
-  const isShowSubView = (): boolean => {
-    const isPRV = selectedNetwork?.tokenId === PRV_ID;
-    if (
-      selectedNetwork?.isDecentralized &&
-      !isPRV &&
-      !isPolygonToken &&
-      !isFantomToken
-    ) {
-      return true;
-    }
-    return false;
-  };
-
   const isDisabledNextButton = () => {
-    if (!selectedNetwork) return true;
-    if (selectedNetwork && isShowSubView() && !selectedSubView) return true;
+    if (!selectedNetwork || !selectedSubView) return true;
     return false;
   };
 
@@ -117,7 +125,7 @@ const ChooseNetworkForShield: React.FC = (props) => {
   };
 
   const onNext = async () => {
-    if (isShowSubView()) {
+    if (showWalletConnect) {
       if (selectedSubView === 'GENERATE_ADDRESS') {
         navigateToShieldGenerateQrCodeScreen();
       }
@@ -130,16 +138,21 @@ const ChooseNetworkForShield: React.FC = (props) => {
   };
 
   const renderSubView = () => {
-    const subViewItems = [
+    let subViewItems = [
       {
         key: 'GENERATE_ADDRESS',
         label: 'Generate a shielding address',
       },
-      {
+    ];
+    if (showWalletConnect) {
+      subViewItems.push({
         key: 'CONNECT_WALLET',
         label: `Connect your ${selectedNetwork?.network} wallet`,
-      },
-    ];
+      });
+    }
+    if (!selectedNetwork) {
+      return null;
+    }
     return (
       <View style={subViewContainerStyle}>
         <Text style={descStyle}>
@@ -152,6 +165,7 @@ const ChooseNetworkForShield: React.FC = (props) => {
             <ListItem
               key={i}
               content={item?.label}
+              disabled={!showWalletConnect || selectedSubView === item?.key}
               onPress={() => setSelectedSubView(item?.key)}
               selected={selectedSubView === item?.key}
             />
@@ -170,16 +184,13 @@ const ChooseNetworkForShield: React.FC = (props) => {
               key={i}
               content={item?.network}
               onPress={() => {
-                if (selectedNetwork?.currencyType === item?.currencyType) {
-                  return;
-                }
                 setSelectedNetwork(item);
                 setSelectedSubView(null);
               }}
               selected={selectedNetwork?.currencyType === item?.currencyType}
               disabled={
-                networks?.length === 1 &&
-                selectedNetwork.currencyType === item?.currencyType
+                networks?.length === 1 ||
+                selectedNetwork?.currencyType === item?.currencyType
               }
             />
           );
@@ -201,7 +212,7 @@ const ChooseNetworkForShield: React.FC = (props) => {
           or assets maybe lost.
         </Text>
         {renderNetworks()}
-        {isShowSubView() && renderSubView()}
+        {renderSubView()}
       </ScrollViewBorder>
       <View style={bottomButtonContainerStyle}>
         <Button

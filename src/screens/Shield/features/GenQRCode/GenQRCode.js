@@ -7,7 +7,7 @@ import {
 import { ButtonBasic } from '@src/components/Button';
 import { CopiableTextDefault as CopiableText } from '@src/components/CopiableText';
 import { View2 } from '@src/components/core/View';
-import { ClockWiseIcon, RatioIcon, ConvertIcon2 } from '@src/components/Icons';
+import { ClockWiseIcon, ConvertIcon2, RatioIcon } from '@src/components/Icons';
 import LoadingContainer from '@src/components/LoadingContainer';
 import QrCodeGenerate from '@src/components/QrCodeGenerate';
 import Tooltip from '@src/components/Tooltip/Tooltip';
@@ -70,7 +70,7 @@ const ShieldError = React.memo(({ handleShield, isPortalCompatible }) => {
 });
 
 const Extra = (props) => {
-  const { address, min, expiredAt, decentralized, isPortal } =
+  const { address, min, expiredAt, isPortal } =
     useDebounceSelector(shieldDataSelector);
   const { selectedPrivacy, defaultFee, colors, selectedPlatform } = props;
   const navigation = useNavigation();
@@ -87,30 +87,11 @@ const Extra = (props) => {
             }`}
           </Text>
         </View>
-        <Text style={styled.redText}>
+        <Text style={styled.orangeText}>
           Smaller amounts will be rejected by the network and lost.
         </Text>
       </>
     );
-  };
-
-  const renderMinPortalShieldAmount = () => {
-    let minComp;
-    const symbol = selectedPrivacy?.externalSymbol || selectedPrivacy?.symbol;
-    if (min) {
-      minComp = (
-        <>
-          <NormalText text="Minimum: " style={{ color: colors?.text1 }}>
-            <Text style={[styled.boldText]}>{`${min} ${symbol}`}</Text>
-          </NormalText>
-          <NormalText
-            text={'Smaller amounts will be rejected\nby the network and lost.'}
-            style={styled.smallText}
-          />
-        </>
-      );
-    }
-    return minComp;
   };
 
   const renderEstimateShieldingTime = () => {
@@ -176,7 +157,7 @@ const Extra = (props) => {
     );
     humanFee = convert.toHumanAmount(originalFee, selectedPrivacy?.pDecimals);
     humanFee = convert.toPlainString(humanFee);
-    if (!humanFee) return null;
+    if (!humanFee || humanFee == 0) return null;
     return (
       <>
         <View style={styled.warningBoxContainer}>
@@ -194,53 +175,34 @@ const Extra = (props) => {
     );
   };
 
-  const renderShieldIncAddress = () => (
-    <>
-      <NormalText style={[styled.title, { color: colors.text1 }]}>
-        {'Send to this shielding\naddress once only.'}
-      </NormalText>
-      <View style={styled.qrCode}>
-        <QrCodeGenerate value={address} size={175} />
-      </View>
-      <View style={styled.hook}>
-        {!isEmpty(expiredAt) && (
-          <NormalText text="Expires at: " style={{ color: colors.text1 }}>
-            <Text style={[styled.boldText, styled.countdown]}>{expiredAt}</Text>
-          </NormalText>
-        )}
-      </View>
-      <CopiableText
-        data={address}
-        textStyle={{ color: colors.text1 }}
-      />
-      {renderMinShieldAmount()}
-      {renderNoteBox()}
-    </>
-  );
-
   const renderNoteBox = () => {
     return (
       <View style={styled.noteBoxContainer}>
         {renderEstimateShieldingTime()}
-        <View style={styled.noteItemContainer}>
-          <View style={styled.dot} />
-          <Text style={styled.noteText}>
-            If sending from an exchange, please take withdrawal times into
-            account.
-          </Text>
-        </View>
-        <View style={styled.space} />
-        <View style={styled.noteItemContainer}>
-          <View style={styled.dot} />
-          <Text style={styled.noteText}>
-            If maybe more reliable to use a normal wallet as an intermediary.
-          </Text>
-        </View>
+        {!isPortal && (
+          <>
+            <View style={styled.noteItemContainer}>
+              <View style={styled.dot} />
+              <Text style={styled.noteText}>
+                If sending from an exchange, please take withdrawal times into
+                account.
+              </Text>
+            </View>
+            <View style={styled.space} />
+            <View style={styled.noteItemContainer}>
+              <View style={styled.dot} />
+              <Text style={styled.noteText}>
+                If maybe more reliable to use a normal wallet as an
+                intermediary.
+              </Text>
+            </View>
+          </>
+        )}
       </View>
     );
   };
 
-  const renderShieldUserAddress = () => (
+  const renderShieldAddress = () => (
     <>
       <View style={styled.qrCode}>
         <QrCodeGenerate value={address} size={175} />
@@ -249,6 +211,9 @@ const Extra = (props) => {
             selectedPrivacy?.externalSymbol || selectedPrivacy?.symbol
           } to this shielding address.`}
         </Text>
+        {selectedPrivacy?.isCentralized && !isEmpty(expiredAt) && (
+          <Text style={styled.shieldExpiration}>Expires at: {expiredAt}</Text>
+        )}
       </View>
       {!isPRV && (
         <View>
@@ -267,46 +232,14 @@ const Extra = (props) => {
         {selectedPrivacy?.externalSymbol || selectedPrivacy?.symbol} Shielding
         address
       </Text>
-      <CopiableText
-        data={address}
-        textStyle={{ color: colors.text1 }}
-      />
+      <CopiableText data={address} textStyle={{ color: colors.text1 }} />
       {renderMinShieldAmount()}
       {renderEstimateFee()}
       {renderNoteBox()}
     </>
   );
 
-  const renderShieldPortalAddress = () => (
-    <>
-      <NormalText style={[styled.title, { color: colors.text1 }]}>
-        {`Send only ${
-          selectedPrivacy?.externalSymbol || selectedPrivacy?.symbol
-        } \nto this shielding address.`}
-      </NormalText>
-      <View style={styled.qrCode}>
-        <QrCodeGenerate value={address} size={175} />
-      </View>
-      <View style={styled.hook}>{renderMinPortalShieldAmount()}</View>
-      <CopiableText data={address} textStyle={{ color: colors.text1 }} />
-      <View style={styled.noteBoxContainer}>
-        {renderEstimateShieldingTime()}
-      </View>
-    </>
-  );
-
-  return (
-    <View style={styled.extra}>
-      {isPortal
-        ? renderShieldPortalAddress()
-        : decentralized === 2 ||
-          decentralized === 3 ||
-          decentralized === 4 ||
-          decentralized === 5
-        ? renderShieldUserAddress()
-        : renderShieldIncAddress()}
-    </View>
-  );
+  return <View style={styled.extra}>{renderShieldAddress()}</View>;
 };
 
 const Content = () => {
@@ -399,8 +332,11 @@ const GenQRCode = (props) => {
       return <LoadingContainer />;
     }
     return (
-      <View2 style={{flex: 1}}>
-        <ScrollViewBorder style={styled.scrollViewContainer} contentContainerStyle={styled.scrollview}>
+      <View2 style={{ flex: 1 }}>
+        <ScrollViewBorder
+          style={styled.scrollViewContainer}
+          contentContainerStyle={styled.scrollview}
+        >
           {isPRV && renderOptionsPRV()}
           <Extra
             {...{
@@ -409,7 +345,7 @@ const GenQRCode = (props) => {
               defaultFee,
               colors,
               isPRV,
-              selectedPlatform
+              selectedPlatform,
             }}
           />
         </ScrollViewBorder>

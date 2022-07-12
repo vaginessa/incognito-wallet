@@ -20,6 +20,14 @@ export const styled = StyleSheet.create({
     textAlign: 'center',
     marginTop: 16,
   },
+  shieldExpiration: {
+    fontSize: 14,
+    color: COLORS.lightGrey36,
+    fontWeight: '400',
+    lineHeight: 21,
+    textAlign: 'center',
+    marginTop: 5,
+  },
   text: {
     fontFamily: FONT.NAME.regular,
     lineHeight: FONT.SIZE.regular + 9,
