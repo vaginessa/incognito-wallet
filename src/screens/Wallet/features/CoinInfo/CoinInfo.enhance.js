@@ -74,7 +74,7 @@ const enhance = (WrappedComp) => (props) => {
     if (tokenId === PRVIDSTR) {
       listChildToken?.map((item) => {
         contractInfos.push({
-          label: `${item?.network} ID:`,
+          label: `${item?.network} ID`,
           value: item?.contractId,
           link: getContractLinkByTokenInfo(item),
           copyable: true,
@@ -83,7 +83,7 @@ const enhance = (WrappedComp) => (props) => {
     } else if (isPUnifiedToken && listUnifiedToken?.length > 0) {
       listUnifiedToken?.map((item) => {
         contractInfos.push({
-          label: `${item?.network} ID:`,
+          label: `${item?.network} ID`,
           value: item?.contractId,
           link: getContractLinkByTokenInfo(item),
           copyable: true,

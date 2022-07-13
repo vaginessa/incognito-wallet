@@ -149,7 +149,7 @@ const ConvertToUnifiedToken: React.FC = () => {
   return (
     <>
       <Header
-        title="Convert coins"
+        title="Unify coins"
         accountSelectable
         customHeaderTitle={<BtnInfo />}
         handleSelectedAccount={() => dispatch(setListTokenConvert())}
@@ -175,7 +175,7 @@ const ConvertToUnifiedToken: React.FC = () => {
       </View>
       <View style={bottomButtonContainerStyle}>
         <Button
-          title="Convert"
+          title="Unify"
           onPress={onPressButtonConvert}
           disabled={!listUnifiedTokenConvertSelected.length || isLoading}
           disabledStyle={disabledButtonStyle}

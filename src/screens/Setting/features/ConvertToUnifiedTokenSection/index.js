@@ -14,8 +14,8 @@ const ConvertToUnifiedTokenSection = React.memo(() => {
   return (
     <Section
       data={{
-        title: 'Convert to unified coins',
-        desc: 'Convert to unified coins',
+        title: 'Unify coins',
+        desc: 'Unify coins for each keychain',
         handlePress: handleGoConvert,
         icon: <ConvertIcon />,
       }}

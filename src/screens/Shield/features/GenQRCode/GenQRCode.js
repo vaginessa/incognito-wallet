@@ -102,7 +102,7 @@ const Extra = (props) => {
     if (selectedPrivacy?.isFTM || selectedPrivacy?.isFantomErc20Token) {
       shieldingTimeText = '3 mins';
     }
-  
+
     if (isEmpty(shieldingTimeText)) {
       return null;
     }
@@ -165,23 +165,14 @@ const Extra = (props) => {
       <View style={styled.noteBoxContainer}>
         {renderEstimateShieldingTime()}
         {!isPortal && (
-          <>
-            <View style={styled.noteItemContainer}>
-              <View style={styled.dot} />
-              <Text style={styled.noteText}>
-                If sending from an exchange, please take withdrawal times into
-                account.
-              </Text>
-            </View>
-            <View style={styled.space} />
-            <View style={styled.noteItemContainer}>
-              <View style={styled.dot} />
-              <Text style={styled.noteText}>
-                If maybe more reliable to use a normal wallet as an
-                intermediary.
-              </Text>
-            </View>
-          </>
+          <View style={styled.noteItemContainer}>
+            <View style={styled.dot} />
+            <Text style={styled.noteText}>
+              Sending coins or tokens other than{' '}
+              {selectedPrivacy?.externalSymbol || selectedPrivacy?.symbol} to
+              this address may result in the loss of your funds.
+            </Text>
+          </View>
         )}
       </View>
     );

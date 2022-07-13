@@ -63,8 +63,8 @@ export const SelectNetworkForUnshieldInput: React.FC<
           <View style={modalHeaderStyle}>
             <Text style={modalTitleStyle}>Choose network type</Text>
             <Text style={modalDescriptionStyle}>
-              Ensure the network you choose to shield matches your funds
-              networks, or assets maybe lost.
+              Please check the selected network if it matches your wallet
+              network, or assets might be lost.
             </Text>
           </View>
 

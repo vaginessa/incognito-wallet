@@ -90,7 +90,7 @@ const ProcessConvertToUnifiedToken: React.FC = () => {
 
   return (
     <>
-      <Header title="Convert coins" hideBackButton />
+      <Header title="Unify coins" hideBackButton />
       <View borderTop fullFlex>
         {isConverted && renderSuccessBox()}
         {isConvertProcessing && renderWarningBox()}
