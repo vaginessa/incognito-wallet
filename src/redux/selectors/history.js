@@ -414,6 +414,7 @@ export const historyDetailFactoriesSelector = createSelector(
           status,
           unifiedReward,
           pDecimals,
+          currencyType
         } = tx;
         const isShieldProcessing = checkShieldProcessing(status, decentralized);
         let estimationShieldingTime = '';
@@ -421,20 +422,40 @@ export const historyDetailFactoriesSelector = createSelector(
           if (
             selectedPrivacy?.isETH ||
             selectedPrivacy?.isErc20Token ||
+            currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.ETH ||
+            currencyType ===
+              CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.ERC20 ||
             network === 'Ethereum'
           ) {
             estimationShieldingTime = '10 mins';
           }
-          if (selectedPrivacy?.isBSC || selectedPrivacy?.isBep20Token) {
+          if (
+            selectedPrivacy?.isBSC ||
+            selectedPrivacy?.isBep20Token ||
+            currencyType ===
+              CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BSC_BNB ||
+            currencyType ===
+              CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BSC_BEP20
+          ) {
             estimationShieldingTime = '5 mins';
           }
           if (
             selectedPrivacy?.isMATIC ||
-            selectedPrivacy?.isPolygonErc20Token
+            selectedPrivacy?.isPolygonErc20Token ||
+            currencyType ===
+              CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.MATIC ||
+            currencyType ===
+              CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.POLYGON_ERC20
           ) {
             estimationShieldingTime = '9 mins';
           }
-          if (selectedPrivacy?.isFTM || selectedPrivacy?.isFantomErc20Token) {
+          if (
+            selectedPrivacy?.isFTM ||
+            selectedPrivacy?.isFantomErc20Token ||
+            currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.FTM ||
+            currencyType ===
+              CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.FANTOM_ERC20
+          ) {
             estimationShieldingTime = '3 mins';
           }
         }
@@ -534,7 +555,7 @@ export const historyDetailFactoriesSelector = createSelector(
             disabled: !network,
           },
         ];
-        if (isShieldProcessing) {
+        if (isShieldProcessing && estimationShieldingTime) {
           data.push({
             label: 'Estimation time',
             value: estimationShieldingTime,
