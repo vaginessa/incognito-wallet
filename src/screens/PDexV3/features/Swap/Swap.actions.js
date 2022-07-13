@@ -708,7 +708,7 @@ export const actionEstimateTradeForCurve =
       let payloadCurve = {
         sourceToken: tokenSellCurve,
         destToken: tokenBuyCurve,
-        amount: convert.toHumanAmount(sellamount, tokenSellCurve.decimals)
+        amount: convert.toHumanAmount(sellamount, tokenSellCurve.pDecimals)
       };
 
       const { sourceToken, destToken, amount } = payloadCurve;
@@ -817,8 +817,17 @@ export const actionEstimateTradeForUni =
       };
       switch (field) {
       case formConfigs.selltoken: {
-        payloadUni.amount = convert.toHumanAmount(
+        // human amount in chain
+        const humanAmountInChain = convert.toHumanAmount(
           sellamount,
+          tokenSellUni.pDecimals,
+        );
+        const originalAmountOutChain = convert.toOriginalAmount(
+          humanAmountInChain,
+          tokenSellUni.decimals,
+        );
+        payloadUni.amount = convert.toHumanAmount(
+          originalAmountOutChain,
           tokenSellUni.decimals,
         );
         payloadUni.isSwapFromBuyToSell = false;
@@ -827,9 +836,18 @@ export const actionEstimateTradeForUni =
         break;
       }
       case formConfigs.buytoken: {
-        payloadUni.amount = convert.toHumanAmount(
+        // human amount in chain
+        const humanAmountInChain = convert.toHumanAmount(
           buyamount,
           tokenBuyUni.pDecimals,
+        );
+        const originalAmountOutChain = convert.toOriginalAmount(
+          humanAmountInChain,
+          tokenBuyUni.decimals,
+        );
+        payloadUni.amount = convert.toHumanAmount(
+          originalAmountOutChain,
+          tokenBuyUni.decimals,
         );
         payloadUni.isSwapFromBuyToSell = true; // convert from buy -> sell
         tokenDecimals = tokenSellUni.decimals;
@@ -973,9 +991,18 @@ export const actionEstimateTradeForPancake =
       };
       switch (field) {
       case formConfigs.selltoken: {
-        payloadPancake.amount = convert.toHumanAmount(
+        // human amount in chain
+        const humanAmountInChain = convert.toHumanAmount(
           sellamount,
           tokenSellPancake.pDecimals,
+        );
+        const originalAmountOutChain = convert.toOriginalAmount(
+          humanAmountInChain,
+          tokenSellPancake.decimals,
+        );
+        payloadPancake.amount = convert.toHumanAmount(
+          originalAmountOutChain,
+          tokenSellPancake.decimals,
         );
         payloadPancake.isSwapFromBuyToSell = false;
         tokenDecimals = tokenBuyPancake.decimals;
@@ -983,8 +1010,17 @@ export const actionEstimateTradeForPancake =
         break;
       }
       case formConfigs.buytoken: {
-        payloadPancake.amount = convert.toHumanAmount(
+        // human amount in chain
+        const humanAmountInChain = convert.toHumanAmount(
           buyamount,
+          tokenBuyPancake.pDecimals,
+        );
+        const originalAmountOutChain = convert.toOriginalAmount(
+          humanAmountInChain,
+          tokenBuyPancake.decimals,
+        );
+        payloadPancake.amount = convert.toHumanAmount(
+          originalAmountOutChain,
           tokenBuyPancake.decimals,
         );
         payloadPancake.isSwapFromBuyToSell = true; // convert from buy -> sell
