@@ -186,14 +186,12 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
 
   const handleBurningUnifiedToken = async (payload = {}, txHashHandler) => {
     try {
-      const {
-        feeForBurn,
-        paymentAddress,
-      } = payload;
+      const { feeForBurn, paymentAddress } = payload;
       const { FeeAddress: masterAddress } = userFeesData;
 
-      const burningAmount = userFeesData?.EstimateReceivedAmount?.BurntAmount; 
-      const expectedAmount = userFeesData?.EstimateReceivedAmount?.ExpectedAmount;
+      const burningAmount = userFeesData?.EstimateReceivedAmount?.BurntAmount;
+      const expectedAmount =
+        userFeesData?.EstimateReceivedAmount?.ExpectedAmount;
 
       const burningInfos = [
         {
@@ -215,12 +213,6 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
       let prvPayments = [];
       if (isUseTokenFee) {
         tokenPayments = paymentInfo;
-        prvPayments = [
-          {
-            paymentAddress: masterAddress,
-            amount: ACCOUNT_CONSTANT.MAX_FEE_PER_TX,
-          },
-        ];
       } else {
         prvPayments = paymentInfo;
       }
