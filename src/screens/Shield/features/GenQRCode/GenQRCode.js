@@ -193,9 +193,11 @@ const Extra = (props) => {
       <View style={styled.qrCode}>
         <QrCodeGenerate value={address} size={175} />
         <Text style={styled.shieldDescription}>
-          {`Send only ${
-            selectedPrivacy?.externalSymbol || selectedPrivacy?.symbol
-          } to this shielding address.`}
+          {selectedPrivacy?.isCentralized
+            ? 'Send to this shielding address once only.'
+            : `Send only ${
+                selectedPrivacy?.externalSymbol || selectedPrivacy?.symbol
+              } to this shielding address.`}
         </Text>
         {selectedPrivacy?.isCentralized && !isEmpty(expiredAt) && (
           <Text style={styled.shieldExpiration}>Expires at: {expiredAt}</Text>
