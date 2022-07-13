@@ -423,9 +423,19 @@ export const historyDetailFactoriesSelector = createSelector(
             selectedPrivacy?.isErc20Token ||
             network === 'Ethereum'
           ) {
-            estimationShieldingTime = '20 mins';
-          } else {
             estimationShieldingTime = '10 mins';
+          }
+          if (selectedPrivacy?.isBSC || selectedPrivacy?.isBep20Token) {
+            estimationShieldingTime = '5 mins';
+          }
+          if (
+            selectedPrivacy?.isMATIC ||
+            selectedPrivacy?.isPolygonErc20Token
+          ) {
+            estimationShieldingTime = '9 mins';
+          }
+          if (selectedPrivacy?.isFTM || selectedPrivacy?.isFantomErc20Token) {
+            estimationShieldingTime = '3 mins';
           }
         }
         const rewardAmountStr = renderAmount({

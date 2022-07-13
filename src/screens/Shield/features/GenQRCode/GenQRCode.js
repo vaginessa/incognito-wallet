@@ -91,19 +91,18 @@ const Extra = (props) => {
       shieldingTimeText = '60 mins';
     }
     if (selectedPrivacy?.isETH || selectedPrivacy?.isErc20Token) {
-      shieldingTimeText = '20 mins';
-    }
-    if (
-      selectedPrivacy?.isBSC ||
-      selectedPrivacy?.isBep20Token ||
-      selectedPrivacy?.isMATIC ||
-      selectedPrivacy?.isPolygonErc20Token ||
-      selectedPrivacy?.isFTM ||
-      selectedPrivacy?.isFantomErc20Token
-    ) {
       shieldingTimeText = '10 mins';
     }
-
+    if (selectedPrivacy?.isBSC || selectedPrivacy?.isBep20Token) {
+      shieldingTimeText = '5 mins';
+    }
+    if (selectedPrivacy?.isMATIC || selectedPrivacy?.isPolygonErc20Token) {
+      shieldingTimeText = '9 mins';
+    }
+    if (selectedPrivacy?.isFTM || selectedPrivacy?.isFantomErc20Token) {
+      shieldingTimeText = '3 mins';
+    }
+  
     if (isEmpty(shieldingTimeText)) {
       return null;
     }
