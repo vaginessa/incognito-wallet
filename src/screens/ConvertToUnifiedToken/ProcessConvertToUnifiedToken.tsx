@@ -1,22 +1,18 @@
 import { Button, Text, View } from '@src/components/core';
+import Loading2 from '@src/components/core/ActivityIndicator/Loading2';
 import Header from '@src/components/Header';
 import { withLayout_2 } from '@src/components/Layout';
 import { COLORS } from '@src/styles';
 import React, { useCallback, useEffect } from 'react';
-import {
-  ActivityIndicator,
-  FlatList,
-  TextStyle,
-  ViewStyle,
-} from 'react-native';
+import { FlatList, TextStyle, ViewStyle } from 'react-native';
 import KeepAwake from 'react-native-keep-awake';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useNavigation } from 'react-navigation-hooks';
 import { useDispatch, useSelector } from 'react-redux';
 import { ConvertProcessItem } from './ConvertProcessItem';
 import {
-  convertToUnifiedToken,
   actionFollowUnifiedTokens,
+  convertToUnifiedToken,
 } from './state/operations';
 import { listTokenConvertSelector } from './state/selectors';
 
@@ -65,13 +61,7 @@ const ProcessConvertToUnifiedToken: React.FC = () => {
   const renderWarningBox = () => {
     return (
       <View style={warningBoxContainer}>
-        <View style={waringBoxIconContainer}>
-          <MaterialCommunityIcons
-            size={16}
-            name="exclamation"
-            color={COLORS.lightOrange}
-          />
-        </View>
+        <Loading2 />
         <Text style={textBoxWarningStyle}>
           Please do not navigate away till this process completes
         </Text>
@@ -155,17 +145,12 @@ const warningBoxContainer: ViewStyle = {
   marginTop: 16,
 };
 
-const waringBoxIconContainer: ViewStyle = {
+const successBoxIconContainer: ViewStyle = {
   width: 24,
   height: 24,
   borderRadius: 12,
   alignItems: 'center',
   justifyContent: 'center',
-  backgroundColor: COLORS.black,
-};
-
-const successBoxIconContainer: ViewStyle = {
-  ...waringBoxIconContainer,
   backgroundColor: COLORS.white,
 };
 
