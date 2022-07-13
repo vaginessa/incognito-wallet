@@ -708,7 +708,7 @@ export const actionEstimateTradeForCurve =
       let payloadCurve = {
         sourceToken: tokenSellCurve,
         destToken: tokenBuyCurve,
-        amount: convert.toHumanAmount(sellamount, tokenSellCurve.pDecimals)
+        amount: convert.toHumanAmount(sellamount, tokenSellCurve.decimals)
       };
 
       const { sourceToken, destToken, amount } = payloadCurve;
@@ -819,7 +819,7 @@ export const actionEstimateTradeForUni =
       case formConfigs.selltoken: {
         payloadUni.amount = convert.toHumanAmount(
           sellamount,
-          tokenSellUni.pDecimals,
+          tokenSellUni.decimals,
         );
         payloadUni.isSwapFromBuyToSell = false;
         tokenDecimals = tokenBuyUni.decimals;
@@ -985,7 +985,7 @@ export const actionEstimateTradeForPancake =
       case formConfigs.buytoken: {
         payloadPancake.amount = convert.toHumanAmount(
           buyamount,
-          tokenBuyPancake.pDecimals,
+          tokenBuyPancake.decimals,
         );
         payloadPancake.isSwapFromBuyToSell = true; // convert from buy -> sell
         tokenDecimals = tokenSellPancake.decimals;
