@@ -80,6 +80,15 @@ export const withdraw = (data) => {
   if (signPublicKeyEncode) {
     payload.SignPublicKeyEncode = signPublicKeyEncode;
   }
+
+  // Ethereum ERC20 Token
+  if (
+    currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.ETH ||
+    isErc20Token
+  ) {
+    return http.post('eth/add-tx-withdraw', payload);
+  }
+
   if (
     currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BSC_BNB ||
     isBep20Token

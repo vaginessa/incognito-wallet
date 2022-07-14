@@ -206,8 +206,8 @@ const ConvertToUnifiedToken: React.FC = () => {
       {/* Modal confirm */}
       <ModalConfirm
         isVisible={isVisibleModalConfirm}
-        title="Convert unified coins"
-        description="Are you sure to convert your coins to unified coins?"
+        title="Unify coins"
+        description="Are you sure to unify your coins?"
         onPressLeftButton={() => setIsVisibleModalConfirm(false)}
         onPressRightButton={() => {
           setIsVisibleModalConfirm(false);
