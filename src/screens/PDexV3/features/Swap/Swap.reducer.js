@@ -55,16 +55,19 @@ const initialState = {
     [KEYS_PLATFORMS_SUPPORTED.pancake]: {
       // pancake
       feePrv: {},
+      feeToken: {},
       error: null,
     },
     [KEYS_PLATFORMS_SUPPORTED.uni]: {
       // uni
       feePrv: {},
+      feeToken: {},
       error: null,
     },
     [KEYS_PLATFORMS_SUPPORTED.curve]: {
       // curve
       feePrv: {},
+      feeToken: {},
       error: null,
     },
   },

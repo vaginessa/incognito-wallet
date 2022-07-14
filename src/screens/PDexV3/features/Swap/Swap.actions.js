@@ -705,10 +705,24 @@ export const actionEstimateTradeForCurve =
         throw 'This pair is not existed on curve';
       }
 
+      // human amount in chain
+      const humanAmountInChain = convert.toHumanAmount(
+        sellamount,
+        tokenSellCurve.pDecimals,
+      );
+
+      const originalAmountOutChain = convert.toOriginalAmount(
+        humanAmountInChain,
+        tokenSellCurve.decimals,
+      );
+
       let payloadCurve = {
         sourceToken: tokenSellCurve,
         destToken: tokenBuyCurve,
-        amount: convert.toHumanAmount(sellamount, tokenSellCurve.pDecimals)
+        amount: convert.toHumanAmount(
+          originalAmountOutChain,
+          tokenSellCurve.decimals,
+        ),
       };
 
       const { sourceToken, destToken, amount } = payloadCurve;
@@ -718,7 +732,11 @@ export const actionEstimateTradeForCurve =
         tokenOutContractId: destToken.contractId,
         amount,
       });
-      if (!quote || !quote?.amountOutRaw || !parseInt(quote?.amountOutRaw || 0)) {
+      if (
+        !quote ||
+        !quote?.amountOutRaw ||
+        !parseInt(quote?.amountOutRaw || 0)
+      ) {
         throw 'Can not found best route for this pair';
       }
       const paths = [sourceToken.contractId, destToken.contractId];
@@ -738,7 +756,16 @@ export const actionEstimateTradeForCurve =
       if (!tradingFee) {
         throw 'Can not estimate trading fee';
       }
-      const { feeAddress, tradeID, signAddress, originalTradeFee } = tradingFee;
+      const {
+        feeAddress,
+        tradeID,
+        signAddress,
+        originalTradeFee,
+        unifiedTokenId,
+        tokenId,
+        isUseTokenFee,
+      } = tradingFee;
+
       minSellOriginalAmount = sellamount;
       maxBuyOriginalAmount = maxGet;
 
@@ -746,7 +773,7 @@ export const actionEstimateTradeForCurve =
         actionChangeEstimateData({
           [KEYS_PLATFORMS_SUPPORTED.curve]: {
             feePrv: {
-              fee: originalTradeFee,
+              fee: isUseTokenFee ? 0 : originalTradeFee,
               isSignificant: false,
               maxGet,
               route: paths,
@@ -757,7 +784,7 @@ export const actionEstimateTradeForCurve =
             feeToken: {
               sellAmount: sellamount,
               buyAmount: maxGet,
-              fee: 0,
+              fee: isUseTokenFee ? originalTradeFee : 0,
               isSignificant: false,
               maxGet,
               route: paths,
@@ -766,6 +793,9 @@ export const actionEstimateTradeForCurve =
             tradeID,
             feeAddress,
             signAddress,
+            unifiedTokenId,
+            tokenId,
+            isUseTokenFee,
             ...quote,
             error: null,
           },
@@ -1881,28 +1911,59 @@ export const actionFetchSwap = () => async (dispatch, getState) => {
         break;
       }
       case KEYS_PLATFORMS_SUPPORTED.curve: {
-        const { tradeID, feeAddress, signAddress } = feeDataByPlatform;
+        const { tradeID, feeAddress, signAddress, tokenId } = feeDataByPlatform;
         const getCurveTokenParamReq = findTokenCurveByIdSelector(state);
         const tokenSellCurve = getCurveTokenParamReq(tokenIDToSell);
         const tokenBuyCurve = getCurveTokenParamReq(tokenIDToBuy);
-        const response = await pDexV3Inst.createAndSendTradeRequestCurveTx({
-          burningPayload: {
-            originalBurnAmount: sellAmount,
-            tokenID: tokenIDToSell,
-            signKey: signAddress,
-            feeAddress,
-            tradeFee: tradingFee,
-            info: String(tradeID),
-            feeToken: feetoken,
-          },
-          tradePayload: {
-            tradeID,
-            srcTokenID: tokenSellCurve?.tokenID,
-            destTokenID: tokenBuyCurve?.tokenID,
-            srcQties: String(sellAmount),
-            expectedDestAmt: String(minAcceptableAmount),
-          },
-        });
+        let response;
+        if (
+          tokenSellCurve?.currencyType ===
+          CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.UNIFIED_TOKEN
+        ) {
+          response =
+            await pDexV3Inst.createAndSendTradeRequestCurveTxForUnifiedToken({
+              burningPayload: {
+                originalBurnAmount: sellAmount,
+                tokenID: tokenIDToSell,
+                signKey: signAddress,
+                feeAddress,
+                tradeFee: tradingFee,
+                info: String(tradeID),
+                feeToken: feetoken,
+                incTokenID: tokenId,
+                expectedAmt: sellAmount,
+              },
+              tradePayload: {
+                tradeID,
+                srcTokenID: tokenSellCurve?.tokenID,
+                destTokenID: tokenBuyCurve?.tokenID,
+                srcQties: String(sellAmount),
+                expectedDestAmt: String(minAcceptableAmount),
+                userFeeSelection: feetoken === PRV.id ? 2 : 1,
+              },
+            });
+        } else {
+          response = await pDexV3Inst.createAndSendTradeRequestCurveTx({
+            burningPayload: {
+              originalBurnAmount: sellAmount,
+              tokenID: tokenIDToSell,
+              signKey: signAddress,
+              feeAddress,
+              tradeFee: tradingFee,
+              info: String(tradeID),
+              feeToken: feetoken,
+            },
+            tradePayload: {
+              tradeID,
+              srcTokenID: tokenSellCurve?.tokenID,
+              destTokenID: tokenBuyCurve?.tokenID,
+              srcQties: String(sellAmount),
+              expectedDestAmt: String(minAcceptableAmount),
+              userFeeSelection: feetoken === PRV.id ? 2 : 1,
+            },
+          });
+        }
+        
         tx = response;
         break;
       }
