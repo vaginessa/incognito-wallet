@@ -193,6 +193,10 @@ export const enhanceUnshield = (WrappedComp) => (props) => {
       const expectedAmount =
         userFeesData?.EstimateReceivedAmount?.ExpectedAmount;
 
+      if (!userFeesData?.EstimateReceivedAmount || !burningAmount) {
+        throw new Error('Please try again');
+      }
+
       const burningInfos = [
         {
           incTokenID: childSelectedPrivacy?.tokenId,

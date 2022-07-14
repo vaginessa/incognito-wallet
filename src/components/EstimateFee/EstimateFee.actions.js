@@ -596,9 +596,7 @@ export const actionFetchUserFees = (payload) => async (dispatch, getState) => {
     }
     if (!userFeesData.FeeAddress || _error) {
       await dispatch(actionFetchFailUserFees());
-      throw new Error(
-        'Enter a smaller amount to generate a more accurate fee estimation',
-      );
+      throw new Error('Please try again.');
     }
     let actived = PRVIDSTR;
     let feeTypes = [{ tokenId: PRVIDSTR, symbol: 'PRV' }];
