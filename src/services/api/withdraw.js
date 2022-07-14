@@ -158,7 +158,7 @@ export const estimateUserFees = (data) => {
     isPolygonErc20Token,
     isFantomErc20Token,
     signPublicKeyEncode,
-    unifiedTokenId
+    unifiedTokenId,
   } = data;
   if (
     (isBep20Token ||
@@ -184,12 +184,22 @@ export const estimateUserFees = (data) => {
     PrivacyTokenAddress: tokenId,
     WalletAddress: walletAddress,
     IncognitoTx: '',
-    UnifiedTokenID: unifiedTokenId
+    UnifiedTokenID: unifiedTokenId,
   };
 
   if (signPublicKeyEncode) {
     payload.SignPublicKeyEncode = signPublicKeyEncode;
   }
+
+  // Ethereum ERC20 Token
+  if (
+    isErc20Token ||
+    currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.ETH
+  ) {
+    return http.post('eth/estimate-fees', payload);
+  }
+
+  // Binance Smart Chain Token
   if (
     isBep20Token ||
     currencyType === CONSTANT_COMMONS.PRIVATE_TOKEN_CURRENCY_TYPE.BSC_BNB

@@ -196,7 +196,7 @@ const ChooseNetworkForShield: React.FC = (props) => {
         <Text style={titleStyle}>Choose network type</Text>
         <Text style={descStyle}>
           Please check the selected network if it matches your wallet network,
-          or assets might be lost..
+          or assets might be lost.
         </Text>
         {renderNetworks()}
         {renderSubView()}
