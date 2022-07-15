@@ -134,6 +134,9 @@ const SendForm = (props) => {
   const currencyTypeName = useSelector((state) =>
     selector(state, 'currencyType'),
   );
+  const amountValue = useSelector((state) =>
+    selector(state, 'amount'),
+  );
 
   React.useEffect(() => {
     dispatch(clearChildSelectedPrivacy());
@@ -186,22 +189,25 @@ const SendForm = (props) => {
       }
       return null;
     }
-    return (
-      <Field
-        component={InputField}
-        name="message"
-        placeholder="Add a note (optional)"
-        label="Memo"
-        maxLength={500}
-        componentProps={{
-          editable: editableInput,
-          inputStyle: {
-            color: colors.text1,
-          },
-        }}
-        {...generateTestId(SEND.MEMO_INPUT)}
-      />
-    );
+    if (childSelectedPrivacy?.networkId === 'INCOGNITO') {
+      return (
+        <Field
+          component={InputField}
+          name="message"
+          placeholder="Add a note (optional)"
+          label="Memo"
+          maxLength={500}
+          componentProps={{
+            editable: editableInput,
+            inputStyle: {
+              color: colors.text1,
+            },
+          }}
+          {...generateTestId(SEND.MEMO_INPUT)}
+        />
+      );
+    }
+    return null;
   };
 
   const renderNetworkType = () => {
@@ -264,6 +270,11 @@ const SendForm = (props) => {
                   },
                 }}
                 validate={amountValidator}
+                warning={
+                  amountValidator &&
+                  selectedPrivacy?.isPUnifiedToken &&
+                  `The receiving amount will be at least ${amountValue} ${selectedPrivacy?.symbol}`
+                }
                 {...generateTestId(SEND.AMOUNT_INPUT)}
               />
               <Field

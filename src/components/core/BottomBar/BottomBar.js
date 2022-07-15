@@ -7,12 +7,13 @@ import PropTypes from 'prop-types';
 
 const styled = StyleSheet.create({
   container: {
+    width: '100%',
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: COLORS.black,
     justifyContent: 'center',
     paddingVertical: 10,
-    paddingHorizontal: 16,
+    paddingHorizontal: 20,
     position: 'relative',
   },
   text: {

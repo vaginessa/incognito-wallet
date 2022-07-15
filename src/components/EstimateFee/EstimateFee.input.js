@@ -48,6 +48,7 @@ const EstimateFeeInput = (props) => {
     isUseTokenFee,
     feePDecimals,
     totalFee,
+    isUnShield,
   } = useSelector(feeDataSelector);
   const [state, setState] = React.useState({
     minFeeValidator: null,
@@ -115,7 +116,7 @@ const EstimateFeeInput = (props) => {
               // color: COLORS.black,
             },
           }}
-          label="Fee"
+          label={isUnShield ? 'Fee (est)' : 'Fee'}
           {...props}
         />
       )}
