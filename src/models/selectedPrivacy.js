@@ -179,6 +179,7 @@ class SelectedPrivacy {
     this.isWithdrawable = this.isPToken;
     this.isDeposable = this.isPToken;
     this.isDecentralized =
+      this.isPUnifiedToken ||
       this.isErc20Token ||
       (this.isToken &&
         this.currencyType ===

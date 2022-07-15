@@ -15,6 +15,8 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { FlatList, TextStyle, ViewStyle } from 'react-native';
 import { useNavigation } from 'react-navigation-hooks';
 import { useDispatch, useSelector } from 'react-redux';
+import useFeatureConfig from '@src/shared/hooks/featureConfig';
+import appConstant from '@src/constants/app';
 import { ConvertItem } from './ConvertItem';
 import {
   setListTokenConvert,
@@ -60,6 +62,10 @@ const ConvertToUnifiedToken: React.FC = () => {
   const onSelectTokenConvert = (tokenId: string) => {
     dispatch(updateSelectedTokenToConvert(tokenId));
   };
+
+  const [onPress, isDisabledConvert] = useFeatureConfig(
+    appConstant.DISABLED.CONVERT_UNIFY,
+  );
 
   const renderItem = useCallback(
     ({ item }) => (
@@ -177,7 +183,11 @@ const ConvertToUnifiedToken: React.FC = () => {
         <Button
           title="Unify"
           onPress={onPressButtonConvert}
-          disabled={!listUnifiedTokenConvertSelected.length || isLoading}
+          disabled={
+            !listUnifiedTokenConvertSelected.length ||
+            isLoading ||
+            isDisabledConvert
+          }
           disabledStyle={disabledButtonStyle}
           titleStyle={buttonTitleStyle}
           buttonStyle={buttonStyle}
