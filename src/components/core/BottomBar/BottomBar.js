@@ -8,11 +8,13 @@ import TextMarquee from '@screens/MainTabBar/features/Home/AutoScrollText';
 
 const styled = StyleSheet.create({
   container: {
+    width: '100%',
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: COLORS.black,
     justifyContent: 'center',
     paddingVertical: 10,
+    paddingHorizontal: 20,
     position: 'relative',
     paddingHorizontal: 10
   },
@@ -21,6 +23,7 @@ const styled = StyleSheet.create({
     fontSize: FONT.SIZE.small,
     lineHeight: FONT.SIZE.small + 3,
     fontFamily: FONT.NAME.medium,
+    marginRight: 8,
   },
 });
 
