@@ -1,3 +1,5 @@
+import { selectedPrivacySelector } from '@src/redux/selectors';
+import { followTokensWalletSelector } from '@src/screens/Wallet/features/FollowList/FollowList.selector';
 import { createSelector } from 'reselect';
 import { PTokenConvert, TokenConvert } from './models';
 
@@ -32,9 +34,27 @@ const listTokenConvertSelector = createSelector(
   },
 );
 
+const checkConvertSelector = createSelector(
+  followTokensWalletSelector,
+  selectedPrivacySelector.getPrivacyDataByTokenID,
+  (followList, getPrivacyDataByTokenID) => {
+    for (var i = 0; i < followList?.length; i++) {
+      let tokenData = getPrivacyDataByTokenID(followList[i]?.id);
+      if (
+        tokenData?.movedUnifiedToken &&
+        parseFloat(followList[i]?.amount) > 0
+      ) {
+        return true;
+      }
+    }
+    return false;
+  },
+);
+
 export {
   listUnifiedTokenSelector,
   listTokenConvertSelector,
   listUnifiedTokenSelectedSelector,
   loadingGetListUnifiedTokenSelector,
+  checkConvertSelector,
 };

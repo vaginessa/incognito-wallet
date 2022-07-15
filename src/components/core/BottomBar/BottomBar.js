@@ -12,6 +12,7 @@ const styled = StyleSheet.create({
     backgroundColor: COLORS.black,
     justifyContent: 'center',
     paddingVertical: 10,
+    paddingHorizontal: 16,
     position: 'relative',
   },
   text: {
@@ -19,6 +20,7 @@ const styled = StyleSheet.create({
     fontSize: FONT.SIZE.small,
     lineHeight: FONT.SIZE.small + 3,
     fontFamily: FONT.NAME.medium,
+    marginRight: 8,
   },
 });
 
