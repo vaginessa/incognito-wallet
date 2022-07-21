@@ -96,7 +96,7 @@ export const getStatusColorUnshield = (history) => {
     const { decentralized, status } = history;
     // Check centralized
     if (CENTRALIZED_ARRAY.includes(decentralized)) {
-      if (STATUS_CODE_UNSHIELD_CENTRALIZED.COMPLETE.includes(status)) {
+      if (STATUS_CODE_UNSHIELD_CENTRALIZED.COMPLETE === status) {
         statusColor = COLORS.green;
       } else {
         statusColor = COLORS.lightGrey36;
@@ -188,4 +188,39 @@ export const getPortalStatusDetail = (history) => {
     console.log('getPortalStatusDetail', error);
   }
   return statusDetail;
+};
+
+export const checkShieldProcessing = (status, decentralized) => {
+  // case shield decentralize
+  if (DECENTRALIZE_ARRAY.includes(decentralized)) {
+    if (
+      status === STATUS_CODE_SHIELD_DECENTRALIZED.COMPLETE ||
+      status === STATUS_CODE_SHIELD_DECENTRALIZED.TIMED_OUT ||
+      status === STATUS_CODE_SHIELD_DECENTRALIZED.RETRYING ||
+      status === STATUS_CODE_SHIELD_DECENTRALIZED.REPLACED
+    ) {
+      return false;
+    }
+    return true;
+  }
+
+  // case shield centralized
+  if (CENTRALIZED_ARRAY.includes(decentralized)) {
+    if (
+      STATUS_CODE_SHIELD_CENTRALIZED.COMPLETE.includes(status) ||
+      STATUS_CODE_SHIELD_CENTRALIZED.TIMED_OUT.includes(status) ||
+      STATUS_CODE_SHIELD_CENTRALIZED.INVALID_AMOUNT.includes(status)
+    ) {
+      return false;
+    }
+    return true;
+  }
+  return false;
+};
+
+export const checkShieldPortalProcessing = (status) => {
+  if (status === STATUS_CODE_SHIELD_PORTAL.PROCESSING) {
+    return true;
+  }
+  return false;
 };

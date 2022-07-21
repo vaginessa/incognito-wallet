@@ -6,6 +6,7 @@ import routeNames from '@src/router/routeNames';
 import { useSelector } from 'react-redux';
 import RemoveStorage from '@screens/Setting/features/RemoveStorage/RemoveStorage';
 import ConvertCoinsSection from '@screens/Setting/features/ConvertCoinsSection';
+import ConvertToUnifiedTokenSection from '@screens/Setting/features/ConvertToUnifiedTokenSection';
 import DeviceInfo from 'react-native-device-info';
 import { NetworkIcon, SecurityIcon } from '@components/Icons';
 import { Header } from '@src/components';
@@ -13,6 +14,7 @@ import HideBalance from '@screens/Setting/features/HideBalance';
 import { compose } from 'recompose';
 import { withLayout_2 } from '@components/Layout';
 import RemoveOldPool from '@screens/Setting/features/RemoveOldPool';
+import { CONSTANT_CONFIGS } from '@src/constants';
 import PINSection from './features/PINSection';
 import SeparatorSection from './features/SeparatorSection';
 import DevSection from './features/DevSection';
@@ -70,6 +72,7 @@ const Setting = () => {
           <DecimalDigitsSection />
           {/*<CurrencySection />*/}
           <AddressBookSection />
+          <ConvertToUnifiedTokenSection />
           {/* <ExportCSVSection handlePress={handlePressExportCSV} /> */}
           {/* <UTXOSection /> */}
           <ConvertCoinsSection />
@@ -81,7 +84,7 @@ const Setting = () => {
         </View>
         <View>
           <Text style={[settingStyle.textVersion]}>
-            {`v${AppUpdater.appVersion}${
+            {`v${CONSTANT_CONFIGS.BUILD_VERSION}${
               global.isDebug() ? ` (${DeviceInfo.getBuildNumber()})` : ''
             }`}
           </Text>

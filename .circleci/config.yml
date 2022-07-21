@@ -163,6 +163,7 @@ jobs:
       - run: yarn deployIOS:next3
       - run: curl -X POST -H 'Content-type:application/json' --data '{"text":"'"Deploy iOS $APP_VERSION next3 release successfully! $LAST_COMMIT_MESSAGE"'"}' $SLACK_HOOK
   push_android_production:
+    resource_class: "xlarge"
     executor:
       name: rn/linux_android
     steps:
@@ -173,6 +174,7 @@ jobs:
       - run: yarn deployAndroid:prod
       - run: curl -X POST -H "Content-type:application/json" --data '{"text":"'"Deploy Android $APP_VERSION production successfully! $LAST_COMMIT_MESSAGE"'"}' $SLACK_HOOK
   push_ios_production:
+    resource_class: "xlarge"
     executor:
       name: rn/linux_android
     steps:
@@ -183,7 +185,7 @@ jobs:
       - run: yarn deployIOS:prod
       - run: curl -X POST -H 'Content-type:application/json' --data '{"text":"'"Deploy iOS $APP_VERSION production successfully! $LAST_COMMIT_MESSAGE"'"}' $SLACK_HOOK
   push_play_store:
-    resource_class: "large"
+    resource_class: "xlarge"
     executor:
       name: rn/linux_android
     steps:
@@ -197,18 +199,22 @@ jobs:
       - run: bash .circleci/slack-upload.sh -f ./$APP_VERSION.apk -c '$SLACK_CHANNEL' -s $SLACK_API_KEY -n "$APP_VERSION" -x "\"$LAST_COMMIT_MESSAGE\""
   push_app_store:
     macos:
-      xcode: 12.3.0
+      xcode: 13.1.0
     steps:
       - attach_workspace:
           at: .
       - get_app_info
+      - run: nvm install 12 && nvm alias default 12
       - run: bundle install
       - run: |
           cd ios
           pod install
       - run: brew update
       - run: brew install watchman
-      - run: bundle exec fastlane ios release
+      - run:
+          name: bundle ios release
+          no_output_timeout: 30m
+          command: node --version && bundle exec fastlane ios release
       - run: chmod +x .circleci/slack-upload.sh
       - run: curl -X POST -H 'Content-type:application/json' --data '{"text":"'"Push iOS $APP_VERSION to the app store successfully!"'"}' $SLACK_HOOK
   publish_github_release:
@@ -302,7 +308,7 @@ workflows:
           filters:
             branches:
               only:
-                - inc-next2
+                - features/new-unified
       - generate_data:
           requires:
             - checkout_code
